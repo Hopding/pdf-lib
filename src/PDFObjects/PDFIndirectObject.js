@@ -25,7 +25,7 @@ From PDF 1.7 Specification, "7.3.10 Indirect Objects"
   The object may be referred to from elsewhere in the file by an indirect reference. Such indirect references shall consist of the object number, the generation number, and the keyword R (with white space separating each part):
     12 0 R
 */
-export default class PDFIndirectObject {
+class PDFIndirectObject {
   isPDFIndirectObject = true;
 
   constructor(objectNum, generationNum, content) {
@@ -54,3 +54,5 @@ export default class PDFIndirectObject {
       }\n` +
     `endobj`;
 }
+
+export default (...args) => new PDFIndirectObject(...args);

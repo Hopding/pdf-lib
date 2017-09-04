@@ -6,12 +6,12 @@ import {
   PDFStreamObject,
 } from './src/PDFObjects';
 
-const outlinesObj = new PDFIndirectObject(2, 0, {
+const outlinesObj = PDFIndirectObject(2, 0, {
   'Type': new PDFNameObject('Outlines'),
   'Count': 0,
 });
 
-const pagesObj = new PDFIndirectObject(3, 0);
+const pagesObj = PDFIndirectObject(3, 0);
 
 const contentsObj = new PDFStreamObject(5, 0, {
   'Length': 73,
@@ -24,12 +24,12 @@ const contentsObj = new PDFStreamObject(5, 0, {
   ET
 `);
 
-const procSetObj = new PDFIndirectObject(6, 0, [
+const procSetObj = PDFIndirectObject(6, 0, [
   new PDFNameObject('PDF'),
   new PDFNameObject('Text'),
 ]);
 
-const fontObj = new PDFIndirectObject(7, 0, {
+const fontObj = PDFIndirectObject(7, 0, {
   'Type': new PDFNameObject('Font'),
   'Subtype': new PDFNameObject('Type1'),
   'Name': new PDFNameObject('F1'),
@@ -37,7 +37,7 @@ const fontObj = new PDFIndirectObject(7, 0, {
   'Encoding': new PDFNameObject('MacRomanEncoding'),
 });
 
-const pageObj = new PDFIndirectObject(4, 0, {
+const pageObj = PDFIndirectObject(4, 0, {
   'Type': new PDFNameObject('Page'),
   'Parent': pagesObj,
   'MediaBox': new PDFArrayObject([0, 0, 612, 792]),
@@ -54,7 +54,7 @@ pagesObj.setContent({
   'Count': 1,
 });
 
-const catalogObj = new PDFIndirectObject(1, 0, {
+const catalogObj = PDFIndirectObject(1, 0, {
   'Type': new PDFNameObject('Catalog'),
   'Outlines': outlinesObj,
   'Pages': pagesObj,
