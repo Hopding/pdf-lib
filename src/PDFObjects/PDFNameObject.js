@@ -14,7 +14,7 @@ From PDF 1.7 Specification, "7.3.5 Name Objects"
 
   Regular characters that are outside the range EXCLAMATION MARK(21h) (!) to TILDE (7Eh) (~) should be written using the hexadecimal notation.
 */
-export default class PDFNameObject {
+class PDFNameObject {
   static isRegularChar = (char) => (
     charCode(char) >= charCode('!') && charCode(char) <= charCode('~')
   );
@@ -34,3 +34,5 @@ export default class PDFNameObject {
 
   toString = () => this.key;
 }
+
+export default (...args) => new PDFNameObject(...args);

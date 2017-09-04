@@ -17,7 +17,7 @@ From PDF 1.7 Specification, "7.3.8 Stream Objects"
 
   All streams shall be indirect objects (see 7.3.10, "Indirect Objects") and the stream dictionary shall be a direct object. The keyword stream that follows the stream dictionary shall be followed by an end-of-line marker consisting of either a CARRIAGE RETURN and a LINE FEED or just a LINE FEED, and not by a CARRIAGE RETURN alone. The sequence of bytes that make up a stream lie between the end-of-line marker following the stream keyword and the endstream keyword; the stream dictionary specifies the exact number of bytes. There should be an end-of-line marker after the data and before endstream; this marker shall not be included in the stream length. There shall not be any extra bytes, other than white space, between endstream and endobj.
 */
-export default class PDFStreamObject extends PDFIndirectObject {
+class PDFStreamObject extends PDFIndirectObject {
   isPDFStreamObject = true;
 
   constructor(objectNum, generationNum, dictionary, streamContent) {
@@ -28,3 +28,5 @@ export default class PDFStreamObject extends PDFIndirectObject {
     );
   }
 }
+
+export default (...args) => new PDFStreamObject(...args);

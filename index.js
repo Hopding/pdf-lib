@@ -7,13 +7,13 @@ import {
 } from './src/PDFObjects';
 
 const outlinesObj = PDFIndirectObject(2, 0, {
-  'Type': new PDFNameObject('Outlines'),
+  'Type': PDFNameObject('Outlines'),
   'Count': 0,
 });
 
 const pagesObj = PDFIndirectObject(3, 0);
 
-const contentsObj = new PDFStreamObject(5, 0, {
+const contentsObj = PDFStreamObject(5, 0, {
   'Length': 73,
 },
 `
@@ -25,37 +25,37 @@ const contentsObj = new PDFStreamObject(5, 0, {
 `);
 
 const procSetObj = PDFIndirectObject(6, 0, [
-  new PDFNameObject('PDF'),
-  new PDFNameObject('Text'),
+  PDFNameObject('PDF'),
+  PDFNameObject('Text'),
 ]);
 
 const fontObj = PDFIndirectObject(7, 0, {
-  'Type': new PDFNameObject('Font'),
-  'Subtype': new PDFNameObject('Type1'),
-  'Name': new PDFNameObject('F1'),
-  'BaseFont': new PDFNameObject('Helvetica'),
-  'Encoding': new PDFNameObject('MacRomanEncoding'),
+  'Type': PDFNameObject('Font'),
+  'Subtype': PDFNameObject('Type1'),
+  'Name': PDFNameObject('F1'),
+  'BaseFont': PDFNameObject('Helvetica'),
+  'Encoding': PDFNameObject('MacRomanEncoding'),
 });
 
 const pageObj = PDFIndirectObject(4, 0, {
-  'Type': new PDFNameObject('Page'),
+  'Type': PDFNameObject('Page'),
   'Parent': pagesObj,
-  'MediaBox': new PDFArrayObject([0, 0, 612, 792]),
+  'MediaBox': PDFArrayObject([0, 0, 612, 792]),
   'Contents': contentsObj,
-  'Resources': new PDFDictionaryObject({
+  'Resources': PDFDictionaryObject({
     'ProcSet': procSetObj,
-    'Font': new PDFDictionaryObject({ 'F1': fontObj }),
+    'Font': PDFDictionaryObject({ 'F1': fontObj }),
   }),
 });
 
 pagesObj.setContent({
-  'Type': new PDFNameObject('Pages'),
-  'Kids': new PDFArrayObject([pageObj.toIndirectRef()]),
+  'Type': PDFNameObject('Pages'),
+  'Kids': PDFArrayObject([pageObj.toIndirectRef()]),
   'Count': 1,
 });
 
 const catalogObj = PDFIndirectObject(1, 0, {
-  'Type': new PDFNameObject('Catalog'),
+  'Type': PDFNameObject('Catalog'),
   'Outlines': outlinesObj,
   'Pages': pagesObj,
 });
@@ -90,7 +90,7 @@ xref
 0000000496 00000 n
 
 trailer
-${new PDFDictionaryObject({
+${PDFDictionaryObject({
   'Size': 8,
   'Root': catalogObj,
 })}

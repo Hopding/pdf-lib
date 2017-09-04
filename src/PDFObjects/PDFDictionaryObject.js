@@ -26,7 +26,7 @@ From PDF 1.7 Specification, "7.3.7 Dictionary Objects"
                       >>
     >>
 */
-export default class PDFDictionaryObject {
+class PDFDictionaryObject {
   /**
    * `object` should be an object literal whose keys are strings, and
    *          whose values are one of:
@@ -55,3 +55,5 @@ export default class PDFDictionaryObject {
       '<<\n',
     ) + '>>';
 }
+
+export default (...args) => new PDFDictionaryObject(...args);
