@@ -1,0 +1,26 @@
+{
+  "name": "pdf-lib",
+  "version": "0.0.0",
+  "description": "Library for creating and editing PDF files in JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "babel-node index.js",
+    "build": "babel . -d dist --ignore=\"node_modules\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hopding/pdf-lib.git"
+  },
+  "author": "Andrew Dillon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hopding/pdf-lib/issues"
+  },
+  "homepage": "https://github.com/Hopding/pdf-lib#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}
