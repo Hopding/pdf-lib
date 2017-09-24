@@ -1,5 +1,6 @@
-import { charCode, isString, PDFString } from '../utils';
+import { charCode, isString } from '../utils';
 import PDFNameObject from './PDFNameObject';
+import PDFString from './PDFString';
 
 /*
 Represents a PDF Dictionary Object.
@@ -45,7 +46,7 @@ class PDFDictionaryObject {
   toString = () =>
     Object.keys(this.object).reduce(
       (dict, key) =>
-        dict.concat(new PDFNameObject(key))
+        dict.concat(PDFNameObject(key))
             .concat(' ')
             .concat(
                 isString(this.object[key])           ? PDFString(this.object[key])

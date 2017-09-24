@@ -1,5 +1,6 @@
 import PDFIndirectObject from './PDFIndirectObject';
 import PDFDictionaryObject from './PDFDictionaryObject';
+import dedent from 'dedent';
 
 /*
 Represents a PDF Stream Object.
@@ -20,13 +21,38 @@ From PDF 1.7 Specification, "7.3.8 Stream Objects"
 class PDFStreamObject extends PDFIndirectObject {
   isPDFStreamObject = true;
 
-  constructor(objectNum, generationNum, dictionary, streamContent) {
-    super(
-      objectNum,
-      generationNum,
-      `${new PDFDictionaryObject(dictionary)}\nstream\n${streamContent}\nendstream`,
-    );
+  constructor(objectNum, generationNum, dictionary={}, stream='') {
+    super(objectNum, generationNum);
+    this.dictionary = dictionary;
+    this.stream = stream;
   }
+
+  setDictionary = (obj) => {
+    this.dictionary = obj;
+    return this;
+  }
+  setInDictionary = (key, val) => {
+    this.dictionary[key] = val;
+    return this;
+  }
+
+  setStream = (obj) => {
+    this.stream = String(obj);
+    return this;
+  }
+  appendToStream = (obj) => {
+    this.stream += String(str);
+    return this;
+  }
+
+  toString = () => dedent(`
+    ${this.objectNum} ${this.generationNum} obj
+    ${PDFDictionaryObject(this.dictionary)}
+    stream
+    ${this.stream}
+    endstream
+    endobj
+  `);
 }
 
 export default (...args) => new PDFStreamObject(...args);

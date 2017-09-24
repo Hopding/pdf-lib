@@ -1,6 +1,8 @@
 import { isInt, isString, isObject } from '../utils';
 import PDFDictionaryObject from './PDFDictionaryObject';
 import PDFArrayObject from './PDFArrayObject';
+import dedent from 'dedent';
+import _ from 'lodash';
 
 /*
 Represents a PDF Indirect Object.
@@ -38,21 +40,19 @@ class PDFIndirectObject {
     this.objectNum = objectNum;
     this.generationNum = generationNum;
     this.content = content;
-    console.log(Object.prototype.toString.call(this.content));
   }
 
   setContent = (content) => { this.content = content; }
 
-  toIndirectRef = () =>
-    `${this.objectNum} ${this.generationNum} R`;
+  toIndirectRef = () => `${this.objectNum} ${this.generationNum} R`;
 
-  toString = () =>
-    `${this.objectNum} ${this.generationNum} obj\n` +
-    `${isObject(this.content)         ? new PDFDictionaryObject(this.content)
-        : Array.isArray(this.content) ? new PDFArrayObject(this.content)
-        : this.content
-      }\n` +
-    `endobj`;
+  toString = () => dedent(`
+    ${this.objectNum} ${this.generationNum} obj
+    ${  _.isObject(this.content) ? PDFDictionaryObject(this.content)
+      : _.isArray(this.content)  ? PDFArrayObject(this.content)
+      : this.content}
+    endobj
+  `);
 }
 
 export default (...args) => new PDFIndirectObject(...args);

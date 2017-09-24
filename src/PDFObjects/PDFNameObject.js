@@ -19,20 +19,20 @@ class PDFNameObject {
     charCode(char) >= charCode('!') && charCode(char) <= charCode('~')
   );
 
-  constructor(keyStr) {
-    if (keyStr.charAt(0) === ' ') throw new Error(
+  constructor(key) {
+    if (key.charAt(0) === ' ') throw new Error(
       'PDF Name objects may not begin with a space character.'
     );
-    this.key = ('/' + keyStr)
-      .replace('#', '#23')
-      .split('')
-      .map(char =>
-        PDFNameObject.isRegularChar(char) ? char : `#${charCode(char).toString(16)}`
-      )
-      .join('');
+    this.key = key;
   }
 
-  toString = () => this.key;
+  toString = () => ('/' + this.key)
+    .replace('#', '#23')
+    .split('')
+    .map(char =>
+      PDFNameObject.isRegularChar(char) ? char : `#${charCode(char).toString(16)}`
+    )
+    .join('');
 }
 
 export default (...args) => new PDFNameObject(...args);

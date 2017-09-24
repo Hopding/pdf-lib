@@ -4,6 +4,9 @@ import {
   PDFNameObject,
   PDFIndirectObject,
   PDFStreamObject,
+  PDFTextObject,
+  PDFCrossRefTable,
+  PDFTrailer,
 } from './src/PDFObjects';
 
 const outlinesObj = PDFIndirectObject(2, 0, {
@@ -13,16 +16,14 @@ const outlinesObj = PDFIndirectObject(2, 0, {
 
 const pagesObj = PDFIndirectObject(3, 0);
 
-const contentsObj = PDFStreamObject(5, 0, {
-  'Length': 73,
-},
-`
-  BT
-    /F1 24 Tf
-    100 100 Td
-    (Hello World) Tj
-  ET
-`);
+const textObj = PDFTextObject()
+  .setFont(PDFNameObject('F1'), 24)
+  .moveText(100, 100)
+  .showText('Hello World!');
+
+const contentsObj = PDFStreamObject(5, 0)
+  .setInDictionary('Length', 73)
+  .setStream(textObj);
 
 const procSetObj = PDFIndirectObject(6, 0, [
   PDFNameObject('PDF'),
@@ -60,6 +61,24 @@ const catalogObj = PDFIndirectObject(1, 0, {
   'Pages': pagesObj,
 });
 
+const crossRefTable = PDFCrossRefTable([
+  [catalogObj.objectNum, [
+    [  0, 65535, false],
+    [  9, 0, true],
+    [ 74, 0, true],
+    [120, 0, true],
+    [179, 0, true],
+    [364, 0, true],
+    [466, 0, true],
+    [496, 0, true],
+  ]],
+]);
+
+const trailer = PDFTrailer({
+  'Size': 8,
+  'Root': catalogObj,
+}, 625);
+
 const pdfStr =
 `
 %PDF-1.7
@@ -78,26 +97,8 @@ ${procSetObj}
 
 ${fontObj}
 
-xref
-0 7
-0000000000 65535 f
-0000000009 00000 n
-0000000074 00000 n
-0000000120 00000 n
-0000000179 00000 n
-0000000364 00000 n
-0000000466 00000 n
-0000000496 00000 n
-
-trailer
-${PDFDictionaryObject({
-  'Size': 8,
-  'Root': catalogObj,
-})}
-
-startxref
-625
-%%EOF
+${crossRefTable}
+${trailer}
 `;
 
 console.log(pdfStr);

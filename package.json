@@ -22,5 +22,9 @@
     "babel-core": "^6.26.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "^6.24.1"
+  },
+  "dependencies": {
+    "dedent": "^0.7.0",
+    "lodash": "^4.17.4"
   }
 }
