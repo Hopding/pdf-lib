@@ -52,7 +52,7 @@ class PDFStreamObject extends PDFIndirectObject {
     ${this.stream}
     endstream
     endobj
-  `);
+  `) + '\n\n';
 }
 
 export default (...args) => new PDFStreamObject(...args);

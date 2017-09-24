@@ -5,15 +5,62 @@ import PDFNameObject from './PDFNameObject';
 import PDFString from './PDFString';
 import dedent from 'dedent';
 
-const EntryStr = ([ offset, generationNum, isInUse ]) =>
-  `${_.padStart(String(offset), 10, '0')} ` +
-  `${_.padStart(String(generationNum), 5, '0')} ` +
-  `${isInUse ? 'n' : 'f'} \n`;
+// const EntryStr = ([ offset, generationNum, isInUse ]) =>
+  // `${_.padStart(String(offset), 10, '0')} ` +
+  // `${_.padStart(String(generationNum), 5, '0')} ` +
+  // `${isInUse ? 'n' : 'f'} \n`;
 
-const SubsectionStr = ([ firstObjNum, entries ]) => dedent(`
-  ${firstObjNum} ${entries.length}
-  ${entries.map(EntryStr).join('')}
-`);
+export class Entry {
+  offset = null;
+  generationNum = null;
+  isInUse = null;
+
+  setOffset = (offset) => {
+    this.offset = offset;
+    return this;
+  }
+
+  setGenerationNum = (generationNum) => {
+    this.generationNum = generationNum;
+    return this;
+  }
+
+  setIsInUse = (isInUse) => {
+    this.isInUse = isInUse;
+    return this;
+  }
+
+  toString = () =>
+    `${_.padStart(String(this.offset), 10, '0')} ` +
+    `${_.padStart(String(this.generationNum), 5, '0')} ` +
+    `${this.isInUse ? 'n' : 'f'} \n`;
+}
+
+// const SubsectionStr = ([ firstObjNum, entries ]) => dedent(`
+//   ${firstObjNum} ${entries.length}
+//   ${entries.map(EntryStr).join('')}
+// `);
+export class Subsection {
+  entries = [];
+  firstObjNum = null;
+
+  addEntry = (entry) => {
+    this.entries.push(entry);
+    return this;
+  }
+
+  setFirstObjNum = (firstObjNum) => {
+    this.firstObjNum = firstObjNum;
+    return this;
+  }
+
+  getLastEntry = () => _(this.entries).last();
+
+  toString = () => dedent(`
+    ${this.firstObjNum} ${this.entries.length}
+    ${this.entries.map(String).join('')}
+  `);
+}
 
 /*
 Represents a PDF Cross-Reference Table.
@@ -33,7 +80,30 @@ From PDF 1.7 Specification, "7.5.4 Cross-Reference Table"
  *  ]],
  * ]);
  */
-export default (outline=[]) => dedent(`
-  xref
-  ${outline.map(SubsectionStr)}
-`);
+class Table {
+  subsections = [];
+
+  addSubsection = (subsection) => {
+    this.subsections.push(subsection);
+    return this;
+  }
+
+  getLastSubsection = () => _.last(this.subsections);
+
+  toString = () => dedent(`
+    xref
+    ${this.subsections.map(String)}
+  `);
+}
+
+const PDFCrossRef = {
+  Table,
+  Subsection,
+  Entry,
+};
+
+export default PDFCrossRef;
+// export default (outline=[]) => dedent(`
+//   xref
+//   ${outline.map(SubsectionStr)}
+// `);

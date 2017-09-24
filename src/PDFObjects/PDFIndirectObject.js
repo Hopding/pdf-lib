@@ -52,7 +52,7 @@ class PDFIndirectObject {
       : _.isArray(this.content)  ? PDFArrayObject(this.content)
       : this.content}
     endobj
-  `);
+  `) + '\n\n';
 }
 
 export default (...args) => new PDFIndirectObject(...args);
