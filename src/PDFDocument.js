@@ -1,7 +1,10 @@
 import {
   PDFCrossRef,
   PDFTrailer,
+  PDFIndirectObject,
+  PDFNameObject,
 } from './PDFObjects';
+import PDFPageTree from './PDFPageTree';
 import _ from 'lodash';
 import dedent from 'dedent';
 
@@ -21,20 +24,34 @@ From PDF 1.7 Specification, "7.5 File Structure"
 class PDFDocument {
   fileHeader = '%PDF-1.7\n';
   indirectObjects = [];
-
-  // pagesObj = PDFIndirectObject(2, 0);
-  //
-  // root =  PDFIndirectObject(1, 0, {
-  //   'Type': PDFNameObject('Catalog'),
-  //   'Pages': pagesObj,
-  // });
+  pageTree = null;
   root = null;
 
-  // crossRefTable = [[ this.root.objectNum, [[0, 65535, false]] ]];
-  crossRefTable = null;
-
   constructor() {
-    this.crossRefTable = new PDFCrossRef.Table();
+    this.pageTree = PDFPageTree(2, 0);
+
+    this.root =  PDFIndirectObject(1, 0, {
+      'Type': PDFNameObject('Catalog'),
+      'Pages': this.pageTree,
+    });
+
+    this.addIndirectObject(this.root);
+    this.addIndirectObject(this.pageTree);
+  }
+
+  addIndirectObject = (obj) => {
+    this.indirectObjects.push(obj);
+    return this;
+  };
+
+  addPage = (pageObj) => {
+    this.pageTree.addPage(pageObj);
+    this.addIndirectObject(pageObj);
+    return this;
+  }
+
+  generateCrossRefTable = () => {
+    const crossRefTable = new PDFCrossRef.Table();
 
     // Initialize the cross reference table with a subsection, and
     // add the first entry.
@@ -42,42 +59,32 @@ class PDFDocument {
       .setGenerationNum(0)
       .setOffset(65535)
       .setIsInUse(false);
-    this.crossRefTable.addSubsection(
+    crossRefTable.addSubsection(
       new PDFCrossRef.Subsection()
         .setFirstObjNum(0)
         .addEntry(initialEntry)
     );
+
+    // Add entries for indirect objects
+    this.indirectObjects.forEach((currObj, idx) => {
+      let offset;
+      if (idx === 0) {
+        offset = this.fileHeader.length;
+      } else {
+        const prevObj = this.indirectObjects[idx - 1];
+        offset = crossRefTable.getLastSubsection().getEntry(idx).offset;
+        offset += prevObj.toString().length;
+      }
+
+      const newEntry = new PDFCrossRef.Entry()
+        .setGenerationNum(0)
+        .setOffset(offset)
+        .setIsInUse(true);
+      crossRefTable.getLastSubsection().addEntry(newEntry);
+    });
+
+    return crossRefTable;
   }
-
-  setRootObject = (rootObj) => {
-    this.root = rootObj;
-    this.addIndirectObject(rootObj);
-    return this;
-  }
-
-  addIndirectObject = (obj) => {
-    // Update the cross reference table
-    let offset;
-    if (this.indirectObjects.length === 0) {
-      offset = this.fileHeader.length;
-    } else {
-      offset = this.crossRefTable
-        .getLastSubsection()
-        .getLastEntry().offset;
-      offset += _.last(this.indirectObjects).toString().length;
-    }
-
-    const newEntry = new PDFCrossRef.Entry()
-      .setGenerationNum(0)
-      .setOffset(offset)
-      .setIsInUse(true);
-    this.crossRefTable.getLastSubsection().addEntry(newEntry);
-
-    // Add the indirect object
-    this.indirectObjects.push(obj);
-
-    return this;
-  };
 
   toString = () => {
     const headerAndObjects = dedent(`
@@ -86,7 +93,7 @@ class PDFDocument {
     `) + '\n\n';
 
     return dedent(`
-      ${headerAndObjects}${this.crossRefTable}
+      ${headerAndObjects}${this.generateCrossRefTable()}
       ${PDFTrailer({
           'Size': this.indirectObjects.length, // Fine until start doing modification
           'Root': this.root,

@@ -10,11 +10,6 @@ import {
 } from './src/PDFObjects';
 import PDFDocument from './src/PDFDocument';
 
-// const outlinesObj = PDFIndirectObject(2, 0, {
-//   'Type': PDFNameObject('Outlines'),
-//   'Count': 0,
-// });
-
 const pagesObj = PDFIndirectObject(2, 0);
 
 const textObj = PDFTextObject()
@@ -58,22 +53,8 @@ pagesObj.setContent({
 
 const catalogObj = PDFIndirectObject(1, 0, {
   'Type': PDFNameObject('Catalog'),
-  // 'Outlines': outlinesObj,
   'Pages': pagesObj,
 });
-
-// const crossRefTable = PDFCrossRef.Table([
-//   [catalogObj.objectNum, [
-//     [  0, 65535, false],
-//     [  9, 0, true],
-//     [ 74, 0, true],
-//     [120, 0, true],
-//     [179, 0, true],
-//     [364, 0, true],
-//     [466, 0, true],
-//     [496, 0, true],
-//   ]],
-// ]);
 
 const trailer = PDFTrailer({
   'Size': 8,
@@ -101,11 +82,21 @@ ${fontObj}
 ${trailer}`;
 
 // console.log(pdfStr);
-
 const pdf = PDFDocument()
-  .setRootObject(catalogObj)
-  .addIndirectObject(pagesObj)
-  .addIndirectObject(pageObj)
+
+const myPageObj = PDFIndirectObject(3, 0, {
+  'Type': PDFNameObject('Page'),
+  'Parent': pdf.pageTree,
+  'MediaBox': PDFArrayObject([0, 0, 612, 792]),
+  'Contents': contentsObj,
+  'Resources': PDFDictionaryObject({
+    'ProcSet': procSetObj,
+    'Font': PDFDictionaryObject({ 'F1': fontObj }),
+  }),
+});
+
+pdf
+  .addPage(myPageObj)
   .addIndirectObject(contentsObj)
   .addIndirectObject(procSetObj)
   .addIndirectObject(fontObj);

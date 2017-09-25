@@ -5,11 +5,6 @@ import PDFNameObject from './PDFNameObject';
 import PDFString from './PDFString';
 import dedent from 'dedent';
 
-// const EntryStr = ([ offset, generationNum, isInUse ]) =>
-  // `${_.padStart(String(offset), 10, '0')} ` +
-  // `${_.padStart(String(generationNum), 5, '0')} ` +
-  // `${isInUse ? 'n' : 'f'} \n`;
-
 export class Entry {
   offset = null;
   generationNum = null;
@@ -36,10 +31,6 @@ export class Entry {
     `${this.isInUse ? 'n' : 'f'} \n`;
 }
 
-// const SubsectionStr = ([ firstObjNum, entries ]) => dedent(`
-//   ${firstObjNum} ${entries.length}
-//   ${entries.map(EntryStr).join('')}
-// `);
 export class Subsection {
   entries = [];
   firstObjNum = null;
@@ -55,6 +46,7 @@ export class Subsection {
   }
 
   getLastEntry = () => _(this.entries).last();
+  getEntry = (idx) => this.entries[idx];
 
   toString = () => dedent(`
     ${this.firstObjNum} ${this.entries.length}
@@ -72,14 +64,6 @@ From PDF 1.7 Specification, "7.5.4 Cross-Reference Table"
 
   The table comprises one or more cross-reference sections. Initially, the entire table consists of a single section (or two sections if the file is linearized; see Annex F). One additional section shall be added each time the file is incrementally updated (see 7.5.6, "Incremental Updates").
 */
-/**
- * PDFCrossRefTable([
- *  [ 0, [
- *    [ 10, 1, true ],
- *    [ 15, 1, false ],
- *  ]],
- * ]);
- */
 class Table {
   subsections = [];
 
@@ -103,7 +87,3 @@ const PDFCrossRef = {
 };
 
 export default PDFCrossRef;
-// export default (outline=[]) => dedent(`
-//   xref
-//   ${outline.map(SubsectionStr)}
-// `);

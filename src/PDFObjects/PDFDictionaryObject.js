@@ -1,6 +1,7 @@
 import { charCode, isString } from '../utils';
 import PDFNameObject from './PDFNameObject';
 import PDFString from './PDFString';
+import _ from 'lodash';
 
 /*
 Represents a PDF Dictionary Object.

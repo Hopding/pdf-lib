@@ -15,8 +15,15 @@ From PDF 1.7 Specification, "7.3.6 Array Objects"
   PDF directly supports only one-dimensional arrays. Arrays of higher dimension can be constructed by using arrays as elements of arrays, nested to any depth.
 */
 class PDFArrayObject {
-  constructor(array) {
+  array = null;
+
+  constructor(array=[]) {
     this.array = array;
+  }
+
+  push = (elem) => {
+    this.array.push(elem);
+    return this;
   }
 
   toString = () =>

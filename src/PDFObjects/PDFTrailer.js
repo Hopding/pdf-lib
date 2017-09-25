@@ -1,4 +1,6 @@
 import PDFDictionaryObject from './PDFDictionaryObject';
+import dedent from 'dedent';
+
 /*
 Represents a PDF Trailer.
 
@@ -16,9 +18,10 @@ From PDF 1.7 Specification, "7.5.5 File Trailer"
     Byte_offset_of_last_cross-reference_section
     %%EOF
 */
-export default (dictionary, offset) =>
-  `trailer\n` +
-  `${PDFDictionaryObject(dictionary)}\n` +
-  `startxref\n` +
-  `${offset}\n` +
-  `%%EOF`;
+export default (dictionary, offset) => dedent(`
+  trailer
+  ${PDFDictionaryObject(dictionary)}
+  startxref
+  ${offset}
+  %%EOF
+`);
