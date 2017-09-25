@@ -5,6 +5,7 @@ import {
   PDFNameObject,
 } from './PDFObjects';
 import PDFPageTree from './PDFPageTree';
+import PDFPage from './PDFPage';
 import _ from 'lodash';
 import dedent from 'dedent';
 
@@ -24,30 +25,48 @@ From PDF 1.7 Specification, "7.5 File Structure"
 class PDFDocument {
   fileHeader = '%PDF-1.7\n';
   indirectObjects = [];
+  currentObjectNumber = 1;
   pageTree = null;
   root = null;
+  fonts = {};
 
   constructor() {
-    this.pageTree = PDFPageTree(2, 0);
+    this.pageTree = PDFPageTree(null, 0);
 
-    this.root =  PDFIndirectObject(1, 0, {
+    this.root =  PDFIndirectObject(null, 0, {
       'Type': PDFNameObject('Catalog'),
       'Pages': this.pageTree,
     });
 
+    this.fonts.F1 = PDFIndirectObject(null, 0, {
+      'Type': PDFNameObject('Font'),
+      'Subtype': PDFNameObject('Type1'),
+      'Name': PDFNameObject('F1'),
+      'BaseFont': PDFNameObject('Helvetica'),
+      'Encoding': PDFNameObject('MacRomanEncoding'),
+    });
+
     this.addIndirectObject(this.root);
     this.addIndirectObject(this.pageTree);
+    this.addIndirectObject(this.fonts.F1);
   }
 
   addIndirectObject = (obj) => {
+    if (obj.objectNum === null) {
+      obj.objectNum = this.currentObjectNumber++;
+    }
     this.indirectObjects.push(obj);
     return this;
   };
 
-  addPage = (pageObj) => {
-    this.pageTree.addPage(pageObj);
-    this.addIndirectObject(pageObj);
-    return this;
+  newPage = () => {
+    const page = new PDFPage(null, 0, this);
+    page
+      .setParent(this.pageTree)
+      .addFont('F1', this.fonts.F1);
+    this.addIndirectObject(page);
+    this.pageTree.addPage(page);
+    return page;
   }
 
   generateCrossRefTable = () => {

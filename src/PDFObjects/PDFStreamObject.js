@@ -41,18 +41,23 @@ class PDFStreamObject extends PDFIndirectObject {
     return this;
   }
   appendToStream = (obj) => {
-    this.stream += String(str);
+    this.stream += String(obj);
     return this;
   }
 
-  toString = () => dedent(`
-    ${this.objectNum} ${this.generationNum} obj
-    ${PDFDictionaryObject(this.dictionary)}
-    stream
-    ${this.stream}
-    endstream
-    endobj
-  `) + '\n\n';
+  toString = () => {
+    const streamStr = String(this.stream);
+    this.dictionary.Length = streamStr.length;
+
+    return dedent(`
+      ${this.objectNum} ${this.generationNum} obj
+      ${PDFDictionaryObject(this.dictionary)}
+      stream
+      ${streamStr}
+      endstream
+      endobj
+    `) + '\n\n';
+  }
 }
 
 export default (...args) => new PDFStreamObject(...args);
