@@ -4,6 +4,7 @@
   "description": "Library for creating and editing PDF files in JavaScript",
   "main": "index.js",
   "scripts": {
+    "start": "babel-node index.js",
     "test": "babel-node index.js > test.pdf && open test.pdf",
     "build": "babel . -d dist --ignore=\"node_modules\""
   },
