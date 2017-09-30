@@ -1,16 +1,19 @@
 import parseDict from './parseDict';
-const parseTrailer = (input) => {
+
+const parseTrailer = (input, parseHandlers={}) => {
   const trimmed = input.trim();
   const trailerRegex = /^trailer[\n|\ ]*([^]+)startxref[\n|\ ]+?(\d+)[\n|\ ]+?%%EOF/;
   const result = trimmed.match(trailerRegex);
   if (!result) return null;
 
   const [fullMatch, dictStr, lastXRefOffset] = result;
+  const { onParseTrailer=() => {} } = parseHandlers;
+  const obj = {
+    dict: parseDict(dictStr, parseHandlers).pdfObject,
+    lastXRefOffset,
+  };
   return {
-    pdfObject: {
-      dict: parseDict(dictStr).pdfObject,
-      lastXRefOffset,
-    },
+    pdfObject: onParseTrailer(obj) || obj,
     remainder: trimmed.substring(fullMatch.length).trim(),
   }
 }

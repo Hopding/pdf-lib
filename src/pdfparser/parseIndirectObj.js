@@ -9,7 +9,23 @@ import parseDict from './parseDict';
 import parseArray from './parseArray';
 import parseStream from './parseStream';
 
-const parseIndirectObj = (input) => {
+// const parseIndirectObj = (
+//   input,
+//   {
+//     onParseIndirectObj,
+//     onParseNull,
+//     onParseBool,
+//     onParseString,
+//     onParseHexString,
+//     onParseNumber,
+//     onParseArray,
+//     onParseDict,
+//     onParseName,
+//     onParseIndirectRef,
+//     onParseStream,
+//   },
+// ) => {
+const parseIndirectObj = (input, parseHandlers={}) => {
   const trimmed = input.trim();
   const indirectObjRegex = /^(\d+)\ (\d+)\ obj/;
   const result = trimmed.match(indirectObjRegex);
@@ -20,22 +36,24 @@ const parseIndirectObj = (input) => {
   const content = trimmed.substring(fullMatch.length, endobjIdx);
 
   const { pdfObject: contentObj, remainder: r } =
-    parseNull(content)        ||
-    parseStream(content)      ||
-    parseIndirectRef(content) ||
-    parseString(content)      ||
-    parseHexString(content)   ||
-    parseName(content)        ||
-    parseBool(content)        ||
-    parseNumber(content)      ||
-    parseArray(content)       ||
-    parseDict(content);
+    parseNull(content, parseHandlers)        ||
+    parseStream(content, parseHandlers)      ||
+    parseIndirectRef(content, parseHandlers) ||
+    parseString(content, parseHandlers)      ||
+    parseHexString(content, parseHandlers)   ||
+    parseName(content, parseHandlers)        ||
+    parseBool(content, parseHandlers)        ||
+    parseNumber(content, parseHandlers)      ||
+    parseArray(content, parseHandlers)       ||
+    parseDict(content, parseHandlers);
   if (r.trim().length > 0) throw new Error('Failed to parse object contents');
 
+  const { onParseIndirectObj=() => {} } = parseHandlers;
+  const obj = { objNum, genNum, contentObj };
   return {
-    pdfObject: { objNum, genNum, contentObj },
-    remainder: trimmed.substring(endobjIdx + 6).trim()
-  }
+    pdfObject: onParseIndirectObj(obj) || obj,
+    remainder: trimmed.substring(endobjIdx + 6).trim(),
+  };
 }
 
 export default parseIndirectObj;

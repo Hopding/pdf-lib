@@ -1,4 +1,4 @@
-const parseString = (input) => {
+const parseString = (input, parseHandlers={}) => {
   const trimmed = input.trim();
   if (trimmed.charAt(0) !== '(') return null;
 
@@ -23,8 +23,10 @@ const parseString = (input) => {
 
     // Once (if) the unescaped parenthesis balance out, return their contents
     if (parensStack.length === 0) {
+      const { onParseString=() => {} } = parseHandlers;
+      const str = trimmed.substring(1, idx);
       return {
-        pdfObject: trimmed.substring(1, idx),
+        pdfObject: onParseString(str) || str,
         remainder: trimmed.substring(idx + 1).trim(),
       };
     }
