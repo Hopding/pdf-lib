@@ -74,9 +74,19 @@ class Table {
 
   getLastSubsection = () => _.last(this.subsections);
 
+  getUsedObjNums = () => {
+    const usedObjNums = new Set();
+    this.subsections.forEach(({ firstObjNum, entries }) => {
+      _.range(firstObjNum, entries.length).forEach(n => {
+        usedObjNums.add(n);
+      })
+    });
+    return usedObjNums;
+  }
+
   toString = () => dedent(`
     xref
-    ${this.subsections.map(String)}
+    ${this.subsections.map(String).join('\n')}
   `);
 }
 

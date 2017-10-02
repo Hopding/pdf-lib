@@ -15,7 +15,7 @@ const parseDict = (input, parseHandlers) => {
   let remainder = trimmed.substring(2).trim(); // Remove starting '<<'
   while (remainder.substring(0, 2) !== '>>' && remainder.length > 0) {
     // Parse the key for this entry
-    const { pdfObject: key, remainder: r1 } = parseName(remainder, parseHandlers);
+    const { pdfObject: key, remainder: r1 } = parseName(remainder);
     remainder = r1;
 
     // Parse the value for this entry

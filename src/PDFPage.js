@@ -23,28 +23,59 @@ From PDF 1.7 Specification, "7.7.3.3 Page Objects"
 class PDFPage extends PDFIndirectObject {
   parentDocument = null;
   contentStream = null;
-  resources = {};
-  fonts = {};
+  // resources = {};
+  // fonts = {};
 
-  constructor(objectNum, generationNum, parentDocument) {
+  constructor(objectNum, generationNum, parentDocument, pdfDict) {
     super(objectNum, generationNum);
-
     this.parentDocument = parentDocument;
-    this.contentStream = PDFStreamObject(null, 0);
-    this.resources.ProcSet = new PDFIndirectObject(null, 0, [
-      PDFNameObject('PDF'),
-      PDFNameObject('Text'),
-    ]);
-    this.resources.Font = PDFDictionaryObject(this.fonts);
-    this.content = {
-      'Type': PDFNameObject('Page'),
-      'MediaBox': PDFArrayObject([0, 0, 612, 792]),
-      'Contents': this.contentStream,
-      'Resources': PDFDictionaryObject(this.resources),
-    };
 
+    this.contentStream = PDFStreamObject(null, 0);
     parentDocument.addIndirectObject(this.contentStream);
-    parentDocument.addIndirectObject(this.resources.ProcSet);
+
+    // if this is a new page
+    if (!pdfDict) {
+      const resources = PDFDictionaryObject({
+        Font: PDFDictionaryObject({}),
+        ProcSet: new PDFIndirectObject(null, 0, [
+          PDFNameObject('PDF'),
+          PDFNameObject('Text'),
+        ]),
+      });
+      this.content = {
+        'Type': PDFNameObject('Page'),
+        'MediaBox': PDFArrayObject([0, 0, 612, 792]),
+        'Contents': this.contentStream,
+        'Resources': resources,
+      };
+
+      // parentDocument.addIndirectObject(this.contentStream);
+      parentDocument.addIndirectObject(resources.get('ProcSet'));
+    }
+    // If this is an existing page
+    else {
+      // Need to make contents an array if it isn't already
+      if (pdfDict.get('Contents').isPDFIndirectRefObject) {
+        pdfDict.add('Contents', PDFArrayObject([
+          pdfDict.get('Contents'),
+          this.contentStream.toIndirectRef(),
+        ]));
+      }
+
+      this.content = pdfDict.object;
+
+      // TODO: Make sure ProcSet is up to date
+    }
+  }
+
+  getResourcesDict = () => {
+    if (this.content.Resources.isPDFIndirectRefObject) {
+      const indirectObj = this.parentDocument.getIndirectObject(this.content.Resources);
+      const resourcesRef = this.content.Resources;
+      resourcesRef.objectNum = indirectObj.objectNum;
+      return indirectObj.content;
+    }
+    return this.content.Resources;
   }
 
   setParent = (pageTree) => {
@@ -53,7 +84,8 @@ class PDFPage extends PDFIndirectObject {
   }
 
   addFont = (fontName, fontObj) => {
-    this.fonts[fontName] = fontObj;
+    console.log('RESOURCES DICT:', this.getResourcesDict())
+    this.getResourcesDict().get('Font').add(fontName, fontObj);
     return this;
   }
 

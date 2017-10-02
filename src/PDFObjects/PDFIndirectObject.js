@@ -48,7 +48,8 @@ export class PDFIndirectObject {
 
   toString = () => dedent(`
     ${this.objectNum} ${this.generationNum} obj
-    ${  _.isObject(this.content) ? PDFDictionaryObject(this.content)
+    ${  this.content.isPDFDictionaryObject ? this.content 
+      : _.isObject(this.content) ? PDFDictionaryObject(this.content)
       : _.isArray(this.content)  ? PDFArrayObject(this.content)
       : this.content}
     endobj

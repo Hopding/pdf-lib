@@ -29,6 +29,9 @@ From PDF 1.7 Specification, "7.3.7 Dictionary Objects"
     >>
 */
 class PDFDictionaryObject {
+  isPDFDictionaryObject = true;
+  object = null;
+
   /**
    * `object` should be an object literal whose keys are strings, and
    *          whose values are one of:
@@ -43,6 +46,13 @@ class PDFDictionaryObject {
   constructor(object) {
     this.object = object;
   }
+
+  add = (key, val) => {
+    this.object[key] = val;
+    return this;
+  }
+
+  get = (key) => this.object[key];
 
   toString = () =>
     Object.keys(this.object).reduce(

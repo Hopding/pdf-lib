@@ -18,10 +18,29 @@ From PDF 1.7 Specification, "7.5.5 File Trailer"
     Byte_offset_of_last_cross-reference_section
     %%EOF
 */
-export default (dictionary, offset) => dedent(`
-  trailer
-  ${PDFDictionaryObject(dictionary)}
-  startxref
-  ${offset}
-  %%EOF
-`);
+class PDFTrailer {
+  dictionary = null;
+  offset = null;
+
+  constructor(dictionary, offset) {
+    this.dictionary = dictionary;
+    this.offset = offset;
+  }
+
+  toString = () => dedent(`
+    trailer
+    ${PDFDictionaryObject(this.dictionary)}
+    startxref
+    ${this.offset}
+    %%EOF
+  `);
+}
+
+export default (...args) => new PDFTrailer(...args);
+// export default (dictionary, offset) => dedent(`
+//   trailer
+//   ${PDFDictionaryObject(dictionary)}
+//   startxref
+//   ${offset}
+//   %%EOF
+// `);

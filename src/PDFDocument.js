@@ -23,7 +23,7 @@ From PDF 1.7 Specification, "7.5 File Structure"
   This initial structure may be modified by later updates, which append additional elements to the end of the file; see 7.5.6, "Incremental Updates," for details.
 */
 class PDFDocument {
-  fileHeader = '%PDF-1.7\n';
+  fileHeader = `%PDF-1.7\n%${String.fromCharCode(256, 256, 256, 256)}\n`;
   indirectObjects = [];
   currentObjectNumber = 1;
   pageTree = null;
