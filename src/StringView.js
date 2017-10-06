@@ -689,4 +689,40 @@ StringView.prototype.valueOf = StringView.prototype.toString = function () {
 
 };
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+// StringView.prototype.trimFrontSubview = function() {
+// 	let start = 0;
+// 	let isSet = false;
+// 	this.forEachChar((code, currIdx) => {
+// 		const currChar = String.fromCharCode(code);
+// 		if (!isSet && currChar !== ' ' && currChar != '\n') {
+// 			start = currIdx;
+// 			isSet = true;
+// 		}
+// 	});
+// }
+
+StringView.prototype.indexOfChar = function(targetChar, startFrom) {
+	return this.rawData.indexOf(targetChar.charCodeAt(0), startFrom || 0);
+}
+
+// StringView.prototype.indexOf = function(targetStr, startFrom) {
+// 	const nRawIdx = isFinite(this.nChrOffset) ? this.nChrOffset : 0;
+// 	const nRawEnd = isFinite(this.nChrLen) ? this.nChrLen + nRawIdx : this.rawData.length;
+//
+// 	let currIdx = startFrom || 0;
+// 	while (this.subview(currIdx, targetStr.length).toString() !== targetStr) {
+// 		currIdx++;
+// 		if (currIdx >= nRawEnd) return undefined;
+// 	}
+// 	return currIdx + nRawIdx;
+// }
+
+StringView.prototype.match = function(regex) {
+	return this.toString().match(regex);
+}
+
 export default StringView;
