@@ -1,24 +1,11 @@
-import StringView from '../StringView';
-// const parseNull = (input, parseHandlers={}) => {
-//   const trimmed = input.trim();
-//   const result = trimmed.match(`^null`);
-//   if (!result) return null;
-//
-//   const { onParseNull=() => {} } = parseHandlers;
-//   return {
-//     pdfObject: onParseNull(null) || null,
-//     remainder: trimmed.substring(4),
-//   };
-// }
+import { arrayToString, trimArray } from '../utils';
 
-const parseNull = (input, startIdx, parseHandlers={}) => {
-  const sv = (new StringView(input)).subview(startIdx);
-  const result = sv.match(/^(?:[\ |\n]*)null/);
-  if (!result) return null;
+const parseNull = (input, parseHandlers={}) => {
+  const trimmed = trimArray(input);
+  if (arrayToString(trimmed, 0, 4) !== 'null') return null;
 
-  const [fullMatch] = result;
   const { onParseNull=() => {} } = parseHandlers;
-  return [onParseNull(null) || null, startIdx + fullMatch.length];
+  return [onParseNull(null) || null, trimmed.subarray(4)];
 }
 
 export default parseNull;

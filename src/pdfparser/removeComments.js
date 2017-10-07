@@ -1,5 +1,4 @@
 import parseHeader from './parseHeader';
-import StringView from '../StringView';
 import { mergeUint8Arrays } from '../utils';
 
 // const removeComments = (input) => {

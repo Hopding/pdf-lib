@@ -1,33 +1,18 @@
-import StringView from '../StringView';
-// const parseHeader = (input, parseHandlers={}) => {
-//   const trimmed = input.trim();
-//   const fileHeaderRegex = /^%PDF-(\d+)\.(\d+)/;
-//   const result = trimmed.match(fileHeaderRegex);
-//   if (!result) return null;
-//
-//   const [fullMatch, major, minor] = result;
-//   const { onParseHeader=() => {} } = parseHandlers;
-//   return {
-//     pdfObject: onParseHeader({ major, minor }) || { major, minor },
-//     remainder: trimmed.substring(fullMatch.length).trim()
-//   };
-// }
+import { arrayToString, trimArray } from '../utils';
 
-const parseHeader = (input, startIdx, parseHandlers={}) => {
-  const sv = (new StringView(input)).subview(startIdx);
-  const fileHeaderRegex = /^(?:(\ |\n)*)%PDF-(\d+)\.(\d+)/;
-  const result = sv.match(fileHeaderRegex);
+const parseHeader = (input, parseHandlers={}) => {
+  const trimmed = trimArray(input);
+  const fileHeaderRegex = /^%PDF-(\d+)\.(\d+)/;
+  let idx = 0;
+  while (String.fromCharCode(trimmed[idx]).match(/^[%PDF-\d\.]/)) idx++;
+  const result = arrayToString(trimmed, 0, idx).match(fileHeaderRegex);
   if (!result) return null;
 
   const [fullMatch, major, minor] = result;
   const { onParseHeader=() => {} } = parseHandlers;
-  // return {
-  //   pdfObject: onParseHeader({ major, minor }) || { major, minor },
-  //   stopIdx: startIdx + fullMatch.length,
-  // };
   return [
     onParseHeader({ major, minor }) || { major, minor },
-    startIdx + fullMatch.length,
+    trimmed.subarray(fullMatch.length),
   ];
 }
 

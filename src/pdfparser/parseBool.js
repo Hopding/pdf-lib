@@ -1,32 +1,17 @@
-import StringView from '../StringView';
+import {
+  arrayToString,
+} from '../utils';
 
-// const parseBool = (input, parseHandlers={}) => {
-//   const trimmed = input.trim();
-//   const boolRegex = /^(true|false)(?=\ |\]|\n)/;
-//   const result = trimmed.match(boolRegex);
-//   if (!result) return null;
-//
-//   const [fullMatch, bool] = result;
-//   const { onParseBool=() => {} } = parseHandlers;
-//   return {
-//     pdfObject: onParseBool(bool) || bool === 'true' ? true : false,
-//     remainder: trimmed.substring(fullMatch.length).trim()
-//   }
-// }
-
-const parseBool = (input, startIdx, parseHandlers={}) => {
-  const sv = (new StringView(input)).subview(startIdx);
+const parseBool = (input, parseHandlers={}) => {
   const boolRegex = /^(?:[\ |\n]*)(true|false)(?=\ |\]|\n)/;
-  const result = sv.match(boolRegex);
+  let idx = 0;
+  while (String.fromCharCode(input[idx]).match(/^[\ \ntruefalse]/)) idx++;
+  const result = arrayToString(input, 0, idx).match(boolRegex);
   if (!result) return null;
 
   const [fullMatch, bool] = result;
   const { onParseBool=() => {} } = parseHandlers;
-  // return {
-  //   pdfObject: onParseBool(bool) || bool === 'true' ? true : false,
-  //   remainder: trimmed.substring(fullMatch.length).trim()
-  // }
-  return [onParseBool(bool) || bool === 'true' ? true : false, startIdx + fullMatch.length];
+  return [onParseBool(bool) || bool === 'true' ? true : false, input.subarray(fullMatch.length)];
 }
 
 export default parseBool;

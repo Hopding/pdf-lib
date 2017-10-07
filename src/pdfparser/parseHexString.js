@@ -1,33 +1,17 @@
-import StringView from '../StringView';
+import { arrayToString, arrayIndexOf, arrayCharAt, trimArray } from '../utils';
 
-// const parseHexString = (input, parseHandlers={}) => {
-//   const trimmed = input.trim();
-//   const hexStringRegex = /^<([\dABCDEFabcdef]+)>/;
-//   const result = trimmed.match(hexStringRegex);
-//   if (!result) return null;
-//
-//   const [fullMatch, hexString] = result;
-//   const { onParseHexString=() => {} } = parseHandlers;
-//   return {
-//     pdfObject: onParseHexString(hexString) || hexString,
-//     remainder: trimmed.substring(fullMatch.length).trim()
-//   }
-// }
+const parseHexString = (input, parseHandlers={}) => {
+  const hexStringRegex = /^<([\dABCDEFabcdef]+)>/;
 
-const parseHexString = (input, startIdx, parseHandlers={}) => {
-  const sv = (new StringView(input)).subview(startIdx);
-  // const trimmed = inputStr.trim();
-  const hexStringRegex = /^[\n|\ ]*<([\dABCDEFabcdef]+)>/;
-  const result = sv.match(hexStringRegex);
+  const trimmed = trimArray(input);
+  let idx = 0;
+  while (String.fromCharCode(trimmed[idx]).match(/^[<(\dABCDEFabcdef]/)) idx++;
+  const result = arrayToString(trimmed, 0, idx + 2).match(hexStringRegex);
   if (!result) return null;
 
   const [fullMatch, hexString] = result;
   const { onParseHexString=() => {} } = parseHandlers;
-  // return {
-  //   pdfObject: onParseHexString(hexString) || hexString,
-  //   remainder: trimmed.substring(fullMatch.length).trim()
-  // }
-  return [onParseHexString(hexString) || hexString, startIdx + fullMatch.length];
+  return [onParseHexString(hexString) || hexString, trimmed.subarray(fullMatch.length)];
 }
 
 export default parseHexString;

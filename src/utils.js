@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import StringView from './StringView';
 
 export const isInt = (num) => (num % 1 === 0);
 
@@ -26,30 +25,39 @@ export const mergeUint8Arrays = (...arrs) => {
   return newArray;
 }
 
-// export const arrayIndexOf = (arr, targetStr, startFrom) => {
-//   	let currIdx = startFrom || 0;
-//   	while ((new StringView(arr)).subview(currIdx, targetStr.length).toString() !== targetStr) {
-//   		currIdx++;
-//   		if (currIdx >= arr.length) return undefined;
-//   	}
-//   	return currIdx;
-// }
+export const arrayToString = (arr, startAt=0, stopAt) => {
+  const stopIdx = stopAt === undefined || stopAt >= arr.length ? arr.length : stopAt;
+  return Array.from(arr.subarray(startAt, stopIdx))
+    .map(n => String.fromCharCode(n))
+    .join('');
+}
 
-export const arrayIndexOf = (arr, targetStr, startFrom) => {
-  	let currIdx = startFrom || 0;
-  	// while ((new StringView(arr)).subview(currIdx, targetStr.length).toString() !== targetStr) {
+export const arrayCharAt = (arr, idx) => String.fromCharCode(arr[idx]);
 
-    while (
-      Array.from(
-        arr.slice(currIdx, currIdx + targetStr.length
-      )).map(n => String.fromCharCode(n)).join('') !== targetStr
-    ) {
-      const x = Array.from(
-        arr.slice(currIdx, currIdx + targetStr.length
-      )).map(n => String.fromCharCode(n)).join('');
-      if (x.includes('e')) console.log(x)
-  		currIdx++;
-  		if (currIdx >= arr.length) return undefined;
-  	}
-  	return currIdx;
+export const trimArray = (arr) => {
+  let idx = 0;
+  while (String.fromCharCode(arr[idx]).match(/^[\ \n]/)) idx++;
+  return arr.subarray(idx);
+}
+
+export const arraysAreEqual = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return false;
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) return false;
+  }
+  return true;
+}
+
+export const arrayIndexOf = (arr, targetStr, startFrom=0) => {
+  const targetArr = targetStr.split('').map(c => c.charCodeAt(0));
+	let currIdx = startFrom;
+
+  while (
+    !arraysAreEqual(arr.subarray(currIdx, currIdx + targetStr.length), targetArr)
+  ) {
+		currIdx++;
+		if (currIdx >= arr.length) return undefined;
+	}
+
+	return currIdx;
 }
