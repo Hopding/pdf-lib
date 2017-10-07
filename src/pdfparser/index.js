@@ -21,6 +21,7 @@ const parser = (input) => {
     onParseHeader: (header) => {},
     onParseXRefTable: (sections) => {
       const xRefTable = new XRef.Table();
+      console.log(sections)
 
       sections.forEach(({ firstObjNum, objCount, entries }) => {
         const subsection = new XRef.Subsection().setFirstObjNum(firstObjNum);
@@ -39,6 +40,7 @@ const parser = (input) => {
       pdfDoc.setUsedObjNums(xRefTable.getUsedObjNums());
     },
     onParseTrailer: ({ dict, lastXRefOffset }) => {
+      console.log({ dict, lastXRefOffset})
       pdfDoc.setExistingTrailer(PDFTrailer(dict.object, lastXRefOffset));
     },
     onParseBool: (bool) => {},
@@ -47,6 +49,7 @@ const parser = (input) => {
     onParseHexString: PDFHexString,
     onParseIndirectObj: (indirectObj) => {
       const { objNum, genNum, contentObj } = indirectObj;
+      console.log(indirectObj)
 
       indirectObjects[`${objNum} ${genNum} R`] = PDFIndirectObject(objNum, genNum, indirectObj.contentObj);
 
@@ -66,9 +69,15 @@ const parser = (input) => {
 
   parseDocument(input, parseHandlers);
 
-  console.log(indirectObjects)
+  // console.log(indirectObjects)
   pdfDoc.setExistingObjs(indirectObjects);
-  pages.forEach(({ objNum, genNum, contentObj }) => {
+
+  const firstPage = pages[0];
+  const { objNum, genNum, contentObj } = firstPage;
+  const page = new PDFPage(objNum, genNum, pdfDoc, contentObj, true);
+  pdfDoc.addExistingPage(page);
+
+  pages.slice(1).forEach(({ objNum, genNum, contentObj }) => {
     const page = new PDFPage(objNum, genNum, pdfDoc, contentObj);
     pdfDoc.addExistingPage(page);
   });

@@ -33,7 +33,7 @@ class PDFTrailer {
     startxref
     ${this.offset}
     %%EOF
-  `);
+  `) + '\n';
 }
 
 export default (...args) => new PDFTrailer(...args);

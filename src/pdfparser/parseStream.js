@@ -17,7 +17,7 @@ const parseStream = (input, parseHandlers={}) => {
     throw new Error('Invalid Stream!')
 
   const { onParseStream=() => {} } = parseHandlers;
-  const obj = { dict, contents: arrayToString(contents) };
+  const obj = { dict, contents };
   return [onParseStream(obj) || obj, trimmed.subarray(endstreamIdx + 9)];
 }
 

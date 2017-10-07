@@ -60,8 +60,11 @@ import { arrayIndexOf, arrayToString, trimArray } from './src/utils';
 
 // const bytes = new Uint8Array('fooNBar'.split('').map(c => c.charCodeAt(0)));
 // console.log(arrayIndexOf(bytes, 'NB'));
-const bytes = fs.readFileSync('/Users/user/Desktop/pdf.binary');
-const doc = parser(bytes);
+const bytes = fs.readFileSync('/Users/user/Desktop/updated-pdf.pdf');
+const updatedDoc = parser(bytes);
+updatedDoc.getPage(0)
+  .text(150, 150, 'F1', 24, 'This page has been modified!');
+fs.writeFileSync('/Users/user/Desktop/updated-pdf2.pdf', updatedDoc.toBytes(), 'utf8');
 
 // let str = ''
 // bytes.forEach((b) => {

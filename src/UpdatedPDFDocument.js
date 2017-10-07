@@ -4,6 +4,7 @@ import PDFIndirectObject from './PDFObjects/PDFIndirectObject';
 import PDFNameObject from './PDFObjects/PDFNameObject';
 import dedent from 'dedent';
 import _ from 'lodash';
+import { mergeUint8Arrays } from './utils';
 
 class UpdatedPDFDocument {
   existingContent = null;
@@ -16,7 +17,7 @@ class UpdatedPDFDocument {
   fonts = {};
 
   setExistingContent = (content) => {
-    this.existingContent = content + '\n';
+    this.existingContent = content;
     return this;
   }
 
@@ -54,6 +55,7 @@ class UpdatedPDFDocument {
 
   addIndirectObject = (obj) => {
     if (obj.objectNum === null) obj.objectNum = this.nextObjNum();
+    console.log(obj)
     this.usedObjNums.add(obj.objectNum);
     this.indirectObjects.push(obj);
     return this;
@@ -84,6 +86,9 @@ class UpdatedPDFDocument {
   }
 
   generateCrossRefTable = () => {
+    const os = this.indirectObjects.slice(0, -2);
+    console.log(os.map(o => o.objectNum));
+
     const xRefTable = new XRef.Table();
 
     // Initialize the cross reference table with a subsection, and
@@ -101,7 +106,7 @@ class UpdatedPDFDocument {
     // Add entries for indirect objects
     const objNums = [];
     const objNumToObj = {};
-    this.indirectObjects.forEach(indirectObj => {
+    os.forEach(indirectObj => {
       const { objectNum } = indirectObj;
       objNums.push(objectNum);
       objNumToObj[objectNum] = indirectObj;
@@ -135,18 +140,23 @@ class UpdatedPDFDocument {
     return PDFTrailer(trailerDict, offset);
   }
 
-  toString = () => {
-    console.log('Indirect Objs')
-    console.log(_.last(this.indirectObjects))
+  toBytes = () => {
+    const os = this.indirectObjects.slice(0, -2);
+    console.log(os.map(o => o.objectNum));
     const newBody = dedent(`
-      ${this.existingContent}
-      ${this.indirectObjects.map(String).join('')}
-    `) + '\n';
-    return dedent(`
-      ${newBody}
+      ${os.map(String).join('')}
       ${this.generateCrossRefTable()}
-      ${this.generateTrailer(newBody.length)}
     `);
+    console.log('this.existingContent.length:', this.existingContent.length)
+    console.log('newBody.length:', newBody.length)
+    const str = dedent(`
+      ${newBody}
+      ${this.generateTrailer(this.existingContent.length + newBody.length)}
+    `) + '\n';
+    const arr = new Uint8Array(
+      str.split('').map(c => c.charCodeAt(0))
+    );
+    return mergeUint8Arrays(this.existingContent, arr);
   }
 }
 

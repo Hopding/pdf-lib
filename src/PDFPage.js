@@ -26,12 +26,15 @@ class PDFPage extends PDFIndirectObject {
   // resources = {};
   // fonts = {};
 
-  constructor(objectNum, generationNum, parentDocument, pdfDict) {
+  constructor(objectNum, generationNum, parentDocument, pdfDict, editable) {
+    console.log('Creating new Page')
     super(objectNum, generationNum);
     this.parentDocument = parentDocument;
 
-    this.contentStream = PDFStreamObject(null, 0);
-    parentDocument.addIndirectObject(this.contentStream);
+    if (editable) {
+      this.contentStream = PDFStreamObject(null, 0);
+      parentDocument.addIndirectObject(this.contentStream);
+    }
 
     // if this is a new page
     if (!pdfDict) {
@@ -55,11 +58,20 @@ class PDFPage extends PDFIndirectObject {
     // If this is an existing page
     else {
       // Need to make contents an array if it isn't already
-      if (pdfDict.get('Contents').isPDFIndirectRefObject) {
-        pdfDict.add('Contents', PDFArrayObject([
-          pdfDict.get('Contents'),
-          this.contentStream.toIndirectRef(),
-        ]));
+      if (editable) {
+        if (pdfDict.get('Contents').isPDFIndirectRefObject) {
+          pdfDict.add('Contents', PDFArrayObject([
+            pdfDict.get('Contents'),
+            this.contentStream.toIndirectRef(),
+          ]));
+        }
+      }
+      else {
+        if (pdfDict.get('Contents').isPDFIndirectRefObject) {
+          pdfDict.add('Contents', PDFArrayObject([
+            pdfDict.get('Contents'),
+          ]));
+        }
       }
 
       this.content = pdfDict.object;

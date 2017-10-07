@@ -1,4 +1,4 @@
-import { arrayToString, trimArray } from '../utils';
+import { arrayToString, trimArray, arrayCharAt, arrayIndexOf } from '../utils';
 
 const parseHeader = (input, parseHandlers={}) => {
   const trimmed = trimArray(input);
@@ -10,9 +10,19 @@ const parseHeader = (input, parseHandlers={}) => {
 
   const [fullMatch, major, minor] = result;
   const { onParseHeader=() => {} } = parseHandlers;
+
+  const withoutVersion = trimArray(trimmed.subarray(fullMatch.length));
+  let returnArray = withoutVersion;
+
+  // Check for a comment with binary characters
+  if (arrayCharAt(withoutVersion, 0) === '%') {
+    const nextNewline = arrayIndexOf(withoutVersion, '\n');
+    returnArray = withoutVersion.subarray(nextNewline);
+  }
+
   return [
     onParseHeader({ major, minor }) || { major, minor },
-    trimmed.subarray(fullMatch.length),
+    returnArray,
   ];
 }
 
