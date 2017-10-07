@@ -61,7 +61,7 @@ import { arrayIndexOf, arrayToString, trimArray } from './src/utils';
 // const bytes = new Uint8Array('fooNBar'.split('').map(c => c.charCodeAt(0)));
 // console.log(arrayIndexOf(bytes, 'NB'));
 const bytes = fs.readFileSync('/Users/user/Desktop/pdf.binary');
-parseDocument(bytes, undefined);
+const doc = parser(bytes);
 
 // let str = ''
 // bytes.forEach((b) => {
