@@ -1,19 +1,26 @@
-import parseDocument from './src/pdfparser/parseDocument';
-import {
-  PDFArrayObject,
-  PDFDictionaryObject,
-  PDFNameObject,
-  PDFIndirectObject,
-  PDFStreamObject,
-  PDFTextObject,
-  PDFCrossRefTable,
-  PDFTrailer,
-} from './src/PDFObjects';
-import PDFDocument from './src/PDFDocument';
-import UpdatedPDFDocument from './src/UpdatedPDFDocument';
-import parser from './src/pdfparser';
+import PDFDictionary from './src/pdf-objects/PDFDictionary';
+const dict = new PDFDictionary();
+dict.test = 'WOOHOO';
+dict.toBytes();
+dict.toBytes = () => console.log('WUH?')
+dict.toBytes();
 
-import fs from 'fs';
+// import parseDocument from './src/pdfparser/parseDocument';
+// import {
+//   PDFArrayObject,
+//   PDFDictionaryObject,
+//   PDFNameObject,
+//   PDFIndirectObject,
+//   PDFStreamObject,
+//   PDFTextObject,
+//   PDFCrossRefTable,
+//   PDFTrailer,
+// } from './src/PDFObjects';
+// import PDFDocument from './src/PDFDocument';
+// import UpdatedPDFDocument from './src/UpdatedPDFDocument';
+// import parser from './src/pdfparser';
+//
+// import fs from 'fs';
 
 // const pdf = PDFDocument();
 // pdf.newPage()
@@ -42,29 +49,31 @@ import fs from 'fs';
 //   fs.writeFile('/Users/user/Desktop/test.foo', data);
 // })
 
-import removeComments from './src/pdfparser/removeComments';
-import parseIndirectObj from './src/pdfparser/parseIndirectObj';
-import parseXRefTable from './src/pdfparser/parseXRefTable';
-import parseTrailer from './src/pdfparser/parseTrailer';
-import parseBool from './src/pdfparser/parseBool';
-import parseName from './src/pdfparser/parseName';
-import parseNull from './src/pdfparser/parseNull';
-import parseNumber from './src/pdfparser/parseNumber';
-import parseString from './src/pdfparser/parseString';
-import parseHexString from './src/pdfparser/parseHexString';
-import parseArray from './src/pdfparser/parseArray';
-import parseDict from './src/pdfparser/parseDict';
-import parseIndirectRef from './src/pdfparser/parseDict';
-import parseHeader from './src/pdfparser/parseHeader';
-import { arrayIndexOf, arrayToString, trimArray } from './src/utils';
+// import removeComments from './src/pdfparser/removeComments';
+// import parseIndirectObj from './src/pdfparser/parseIndirectObj';
+// import parseXRefTable from './src/pdfparser/parseXRefTable';
+// import parseTrailer from './src/pdfparser/parseTrailer';
+// import parseBool from './src/pdfparser/parseBool';
+// import parseName from './src/pdfparser/parseName';
+// import parseNull from './src/pdfparser/parseNull';
+// import parseNumber from './src/pdfparser/parseNumber';
+// import parseString from './src/pdfparser/parseString';
+// import parseHexString from './src/pdfparser/parseHexString';
+// import parseArray from './src/pdfparser/parseArray';
+// import parseDict from './src/pdfparser/parseDict';
+// import parseIndirectRef from './src/pdfparser/parseDict';
+// import parseHeader from './src/pdfparser/parseHeader';
+// import { arrayIndexOf, arrayToString, trimArray } from './src/utils';
+
+
 
 // const bytes = new Uint8Array('fooNBar'.split('').map(c => c.charCodeAt(0)));
 // console.log(arrayIndexOf(bytes, 'NB'));
-const bytes = fs.readFileSync('/Users/user/Desktop/updated-pdf.pdf');
-const updatedDoc = parser(bytes);
-updatedDoc.getPage(0)
-  .text(150, 150, 'F1', 24, 'This page has been modified!');
-fs.writeFileSync('/Users/user/Desktop/updated-pdf2.pdf', updatedDoc.toBytes(), 'utf8');
+// const bytes = fs.readFileSync('/Users/user/Desktop/updated-pdf.pdf');
+// const updatedDoc = parser(bytes);
+// updatedDoc.getPage(0)
+//   .text(150, 150, 'F1', 24, 'This page has been modified!');
+// fs.writeFileSync('/Users/user/Desktop/updated-pdf2.pdf', updatedDoc.toBytes(), 'utf8');
 
 // let str = ''
 // bytes.forEach((b) => {
