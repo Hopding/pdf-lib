@@ -27,6 +27,8 @@ export const mergeUint8Arrays = (...arrs) => {
   return newArray;
 };
 
+export const charCodes = str => str.split('').map(c => c.charCodeAt(0));
+
 export const arrayToString = (arr, startAt = 0, stopAt) => {
   const stopIdx =
     stopAt === undefined || stopAt >= arr.length ? arr.length : stopAt;

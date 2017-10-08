@@ -23,6 +23,9 @@
     }],
     "import/no-named-as-default": "off"
   },
+  "globals": {
+    "$Subtype": true
+  },
   "plugins": [
     "prettier"
   ]
