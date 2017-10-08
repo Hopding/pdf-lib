@@ -1,4 +1,5 @@
 /* @flow */
+import { charCodes } from '../utils';
 import PDFObject from './PDFObject';
 
 const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
@@ -52,15 +53,9 @@ class PDFIndirectReference extends PDFObject {
   getObjectNumber = () => this.objectNumber;
   getGenerationNumber = () => this.generationNumber;
 
-  toString = () => {
-    if (this.objectNumber === null || this.generationNumber === null) {
-      throw new Error(
-        'toReference called on PDFIndirectObject without both objectNumber ' +
-          'and generationNumber being defined.',
-      );
-    }
-    return `${this.objectNumber} ${this.generationNumber} R`;
-  };
+  toString = () => `${this.objectNumber} ${this.generationNumber} R`;
+
+  toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }
 
 export default PDFIndirectReference;

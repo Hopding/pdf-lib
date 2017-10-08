@@ -19,7 +19,9 @@ class PDFStream extends PDFObject {
     }
   }
 
-  toBytes = () => {
+  toString = () => `<${this.content.length} bytes>`;
+
+  toBytes = (): Uint8Array => {
     /* eslint-disable */
     const dictArr = new Uint8Array(charCodes(dedent`
       ${this.dictionary}

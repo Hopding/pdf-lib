@@ -1,8 +1,8 @@
 /* @flow */
-import { charCode } from '../utils';
+import { charCodes, charCode } from '../utils';
 import PDFObject from './PDFObject';
 
-const pdfNameEnforcer = new Symbol();
+const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
 const pdfNamePool: Map<string, PDFName> = new Map();
 
 class PDFName extends PDFObject {
@@ -27,14 +27,14 @@ class PDFName extends PDFObject {
     if (typeof str !== 'string') {
       throw new Error('PDFName.forString() requires string as argument');
     }
-    
+
     let pdfName = pdfNamePool.get(str);
     if (!pdfName) {
       pdfName = new PDFName(pdfNameEnforcer, str);
       pdfNamePool.set(str, pdfName);
     }
     return pdfName;
-  }
+  };
 
   toString = () =>
     `/${this.key}`
@@ -47,6 +47,8 @@ class PDFName extends PDFObject {
             : `#${charCode(char).toString(16)}`,
       )
       .join('');
+
+  toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }
 
 export default PDFName;

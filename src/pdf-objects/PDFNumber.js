@@ -1,4 +1,5 @@
 /* @flow */
+import { charCodes } from '../utils';
 import PDFObject from './PDFObject';
 
 class PDFNumber extends PDFObject {
@@ -16,6 +17,7 @@ class PDFNumber extends PDFObject {
   static fromString = (numberStr: string) => new PDFNumber(Number(numberStr));
 
   toString = this.number.toString;
+  toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }
 
 export default PDFNumber;

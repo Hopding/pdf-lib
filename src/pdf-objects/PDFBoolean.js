@@ -1,4 +1,6 @@
 /* @flow */
+import { charCodes } from '../utils';
+
 import PDFObject from './PDFObject';
 
 class PDFBoolean extends PDFObject {
@@ -16,6 +18,7 @@ class PDFBoolean extends PDFObject {
   static fromString = (boolStr: string) => new PDFBoolean(Boolean(boolStr));
 
   toString = this.boolean.toString;
+  toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }
 
 export default PDFBoolean;

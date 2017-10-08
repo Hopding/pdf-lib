@@ -1,5 +1,6 @@
 /* @flow */
 import _ from 'lodash';
+import { charCodes, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
 import PDFIndirectObject from './PDFIndirectObject';
@@ -12,17 +13,7 @@ class PDFDictionary extends PDFObject {
     super();
     if (object) {
       _.forEach(object, (val, key) => {
-        if (typeof key !== 'string') {
-          throw new Error(
-            'Cannot construct PDFDictionary from object whose keys are not strings',
-          );
-        }
-        if (!(val instanceof PDFObject)) {
-          throw new Error(
-            'Cannot construct PDFDictionary from object whose values are not PDFObjects',
-          );
-        }
-        this.map.set(PDFName.forString(key), val);
+        this.set(key, val);
       });
     }
   }
@@ -64,6 +55,25 @@ class PDFDictionary extends PDFObject {
     str += '>>';
 
     return str;
+  };
+
+  toBytes = (): Uint8Array => {
+    const bytes = [...charCodes('<<')];
+
+    _.forEach((val, key) => {
+      bytes.push(...charCodes(key.toString()));
+      if (val instanceof PDFIndirectObject) {
+        bytes.push(...charCodes(val.toReference()));
+      } else if (val instanceof PDFObject) {
+        bytes.push(...val.toBytes());
+      } else {
+        throw new Error(`Not a PDFObject: ${val.constructor.name}`);
+      }
+      bytes.push(charCode('\n'));
+    });
+
+    bytes.push(...charCodes('>>'));
+    return new Uint8Array(bytes);
   };
 }
 

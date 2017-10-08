@@ -1,5 +1,6 @@
 /* @flow */
 import dedent from 'dedent';
+import { charCodes, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
 import PDFIndirectReference from './PDFIndirectReference';
@@ -40,6 +41,17 @@ class PDFIndirectObject extends PDFObject {
       ${this.pdfObject}
     endobj
   `;
+
+  toBytes = (): Uint8Array => {
+    const bytes = [
+      ...charCodes(
+        `${this.reference.getObjectNumber()} ${this.reference.getGenerationNumber()} obj\n`,
+      ),
+    ];
+    bytes.push(...this.pdfObject.toBytes());
+    bytes.push(...charCodes('\nendobj\n'));
+    return new Uint8Array(bytes);
+  };
 }
 
 export default PDFIndirectObject;

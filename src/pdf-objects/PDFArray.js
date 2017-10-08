@@ -1,4 +1,6 @@
 /* @flow */
+import { charCodes, charCode } from '../utils';
+
 import PDFObject from './PDFObject';
 import PDFIndirectObject from './PDFIndirectObject';
 
@@ -59,6 +61,24 @@ class PDFArray extends PDFObject {
     });
     str += ']';
     return str;
+  };
+
+  toBytes = (): Uint8Array => {
+    const bytes = [charCode('[')];
+
+    this.array.forEach((e, idx) => {
+      if (e instanceof PDFIndirectObject) {
+        bytes.push(...charCodes(e.toReference()));
+      } else if (e instanceof PDFObject) {
+        bytes.push(...e.toBytes());
+      } else {
+        throw new Error(`Not a PDFObject: ${e.constructor.name}`);
+      }
+      if (idx !== this.array.length - 1) bytes.push(charCode(' '));
+    });
+
+    bytes.push(charCode(']'));
+    return new Uint8Array(bytes);
   };
 }
 
