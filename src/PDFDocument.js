@@ -33,17 +33,17 @@ class PDFDocument {
   constructor() {
     this.pageTree = PDFPageTree(null, 0);
 
-    this.root =  PDFIndirectObject(null, 0, {
-      'Type': PDFNameObject('Catalog'),
-      'Pages': this.pageTree,
+    this.root = PDFIndirectObject(null, 0, {
+      Type: PDFNameObject('Catalog'),
+      Pages: this.pageTree,
     });
 
     this.fonts.F1 = PDFIndirectObject(null, 0, {
-      'Type': PDFNameObject('Font'),
-      'Subtype': PDFNameObject('Type1'),
-      'Name': PDFNameObject('F1'),
-      'BaseFont': PDFNameObject('Helvetica'),
-      'Encoding': PDFNameObject('MacRomanEncoding'),
+      Type: PDFNameObject('Font'),
+      Subtype: PDFNameObject('Type1'),
+      Name: PDFNameObject('F1'),
+      BaseFont: PDFNameObject('Helvetica'),
+      Encoding: PDFNameObject('MacRomanEncoding'),
     });
 
     this.addIndirectObject(this.root);
@@ -51,7 +51,7 @@ class PDFDocument {
     this.addIndirectObject(this.fonts.F1);
   }
 
-  addIndirectObject = (obj) => {
+  addIndirectObject = obj => {
     if (obj.objectNum === null) {
       obj.objectNum = this.currentObjectNumber++;
     }
@@ -61,13 +61,11 @@ class PDFDocument {
 
   newPage = () => {
     const page = new PDFPage(null, 0, this);
-    page
-      .setParent(this.pageTree)
-      .addFont('F1', this.fonts.F1);
+    page.setParent(this.pageTree).addFont('F1', this.fonts.F1);
     this.addIndirectObject(page);
     this.pageTree.addPage(page);
     return page;
-  }
+  };
 
   generateCrossRefTable = () => {
     const crossRefTable = new PDFCrossRef.Table();
@@ -79,9 +77,7 @@ class PDFDocument {
       .setOffset(65535)
       .setIsInUse(false);
     crossRefTable.addSubsection(
-      new PDFCrossRef.Subsection()
-        .setFirstObjNum(0)
-        .addEntry(initialEntry)
+      new PDFCrossRef.Subsection().setFirstObjNum(0).addEntry(initialEntry),
     );
 
     // Add entries for indirect objects
@@ -103,22 +99,25 @@ class PDFDocument {
     });
 
     return crossRefTable;
-  }
+  };
 
   toString = () => {
-    const headerAndObjects = dedent(`
+    const headerAndObjects = `${dedent(`
       ${this.fileHeader}
       ${this.indirectObjects.map(String).join('')}
-    `) + '\n\n';
+    `)}\n\n`;
 
     return dedent(`
       ${headerAndObjects}${this.generateCrossRefTable()}
-      ${PDFTrailer({
-          'Size': this.indirectObjects.length, // Fine until start doing modification
-          'Root': this.root,
-        }, headerAndObjects.length)}
+      ${PDFTrailer(
+        {
+          Size: this.indirectObjects.length, // Fine until start doing modification
+          Root: this.root,
+        },
+        headerAndObjects.length,
+      )}
     `);
-  }
+  };
 }
 
 export default (...args) => new PDFDocument(...args);

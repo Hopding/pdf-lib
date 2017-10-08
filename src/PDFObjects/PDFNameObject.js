@@ -15,24 +15,27 @@ From PDF 1.7 Specification, "7.3.5 Name Objects"
   Regular characters that are outside the range EXCLAMATION MARK(21h) (!) to TILDE (7Eh) (~) should be written using the hexadecimal notation.
 */
 class PDFNameObject {
-  static isRegularChar = (char) => (
-    charCode(char) >= charCode('!') && charCode(char) <= charCode('~')
-  );
+  static isRegularChar = char =>
+    charCode(char) >= charCode('!') && charCode(char) <= charCode('~');
 
   constructor(key) {
-    if (key.charAt(0) === ' ') throw new Error(
-      'PDF Name objects may not begin with a space character.'
-    );
+    if (key.charAt(0) === ' ') {
+      throw new Error('PDF Name objects may not begin with a space character.');
+    }
     this.key = key;
   }
 
-  toString = () => ('/' + this.key)
-    .replace('#', '#23')
-    .split('')
-    .map(char =>
-      PDFNameObject.isRegularChar(char) ? char : `#${charCode(char).toString(16)}`
-    )
-    .join('');
+  toString = () =>
+    `/${this.key}`
+      .replace('#', '#23')
+      .split('')
+      .map(
+        char =>
+          PDFNameObject.isRegularChar(char)
+            ? char
+            : `#${charCode(char).toString(16)}`,
+      )
+      .join('');
 }
 
 export default (...args) => new PDFNameObject(...args);

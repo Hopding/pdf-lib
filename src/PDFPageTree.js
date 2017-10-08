@@ -24,17 +24,17 @@ class PDFPageTree extends PDFIndirectObject {
   constructor(...args) {
     super(...args);
     this.content = {
-      'Type': PDFNameObject('Pages'),
-      'Kids': this.pagesArrayObj,
-      'Count': 0,
+      Type: PDFNameObject('Pages'),
+      Kids: this.pagesArrayObj,
+      Count: 0,
     };
   }
 
-  addPage = (pageObj) => {
+  addPage = pageObj => {
     this.pagesArrayObj.push(pageObj.toIndirectRef());
     this.content.Count += 1;
     return this;
-  }
+  };
 }
 
 export default (...args) => new PDFPageTree(...args);

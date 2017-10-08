@@ -1,1 +1,1 @@
-export const PDFHexString = (str) => `<${str}>`;
+export const PDFHexString = str => `<${str}>`;

@@ -17,17 +17,16 @@ From PDF 1.7 Specification, "7.3.6 Array Objects"
 class PDFArrayObject {
   array = null;
 
-  constructor(array=[]) {
+  constructor(array = []) {
     this.array = array;
   }
 
-  push = (elem) => {
+  push = elem => {
     this.array.push(elem);
     return this;
-  }
+  };
 
-  toString = () =>
-    `[${this.array.map(String).join(' ')}]`;
+  toString = () => `[${this.array.map(String).join(' ')}]`;
 }
 
 export default (...args) => new PDFArrayObject(...args);

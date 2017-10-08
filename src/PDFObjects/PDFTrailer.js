@@ -27,13 +27,14 @@ class PDFTrailer {
     this.offset = offset;
   }
 
-  toString = () => dedent(`
+  toString = () =>
+    `${dedent(`
     trailer
     ${PDFDictionaryObject(this.dictionary)}
     startxref
     ${this.offset}
     %%EOF
-  `) + '\n';
+  `)}\n`;
 }
 
 export default (...args) => new PDFTrailer(...args);

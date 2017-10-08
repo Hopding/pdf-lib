@@ -21,43 +21,43 @@ From PDF 1.7 Specification, "7.3.8 Stream Objects"
 class PDFStreamObject extends PDFIndirectObject {
   isPDFStreamObject = true;
 
-  constructor(objectNum, generationNum, dictionary={}, stream='') {
+  constructor(objectNum, generationNum, dictionary = {}, stream = '') {
     super(objectNum, generationNum);
     this.dictionary = dictionary;
     this.stream = stream;
   }
 
-  setDictionary = (obj) => {
+  setDictionary = obj => {
     this.dictionary = obj;
     return this;
-  }
+  };
   setInDictionary = (key, val) => {
     this.dictionary[key] = val;
     return this;
-  }
+  };
 
-  setStream = (obj) => {
+  setStream = obj => {
     this.stream = String(obj);
     return this;
-  }
-  appendToStream = (obj) => {
+  };
+  appendToStream = obj => {
     this.stream += String(obj);
     return this;
-  }
+  };
 
   toString = () => {
     const streamStr = String(this.stream);
     this.dictionary.Length = streamStr.length;
 
-    return dedent(`
+    return `${dedent(`
       ${this.objectNum} ${this.generationNum} obj
       ${PDFDictionaryObject(this.dictionary)}
       stream
       ${streamStr}
       endstream
       endobj
-    `) + '\n\n';
-  }
+    `)}\n\n`;
+  };
 }
 
 export default (...args) => new PDFStreamObject(...args);

@@ -15,7 +15,7 @@ class PDFDictionary extends PDFObject {
   set = (key: string, val: any) => {
     this.object[key] = val;
     return this;
-  }
+  };
 
   get = (key: string) => this.object[key];
 
@@ -30,7 +30,7 @@ class PDFDictionary extends PDFObject {
     str += '>>';
 
     return str;
-  }
+  };
 }
 
 export default PDFDictionary;

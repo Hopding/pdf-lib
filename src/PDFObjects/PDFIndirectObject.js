@@ -31,29 +31,37 @@ export class PDFIndirectObject {
   isPDFIndirectObject = true;
 
   constructor(objectNum, generationNum, content) {
-    if (!isInt(objectNum) && objectNum >= 0) throw new Error(
-      'PDF Indirect Objects must have integer object numbers >= 0'
-    );
-    if (!isInt(generationNum) && generationNum >= 0) throw new Error(
-      'PDF Indirect Objects must have integer generation numbers >= 0'
-    );
+    if (!isInt(objectNum) && objectNum >= 0) {
+      throw new Error(
+        'PDF Indirect Objects must have integer object numbers >= 0',
+      );
+    }
+    if (!isInt(generationNum) && generationNum >= 0) {
+      throw new Error(
+        'PDF Indirect Objects must have integer generation numbers >= 0',
+      );
+    }
     this.objectNum = objectNum;
     this.generationNum = generationNum;
     this.content = content;
   }
 
-  setContent = (content) => { this.content = content; }
+  setContent = content => {
+    this.content = content;
+  };
 
   toIndirectRef = () => `${this.objectNum} ${this.generationNum} R`;
 
-  toString = () => dedent(`
+  toString = () =>
+    `${dedent(`
     ${this.objectNum} ${this.generationNum} obj
-    ${  this.content.isPDFDictionaryObject ? this.content 
-      : _.isObject(this.content) ? PDFDictionaryObject(this.content)
-      : _.isArray(this.content)  ? PDFArrayObject(this.content)
-      : this.content}
+    ${this.content.isPDFDictionaryObject
+      ? this.content
+      : _.isObject(this.content)
+        ? PDFDictionaryObject(this.content)
+        : _.isArray(this.content) ? PDFArrayObject(this.content) : this.content}
     endobj
-  `) + '\n\n';
+  `)}\n\n`;
 }
 
 export default (...args) => new PDFIndirectObject(...args);

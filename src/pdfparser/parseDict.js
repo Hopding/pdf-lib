@@ -9,7 +9,7 @@ import parseBool from './parseBool';
 import parseNumber from './parseNumber';
 import parseArray from './parseArray';
 
-const parseDict = (input, parseHandlers={}) => {
+const parseDict = (input, parseHandlers = {}) => {
   const obj = {};
   const trimmed = trimArray(input);
   if (arrayToString(trimmed, 0, 2) !== '<<') return null;
@@ -17,30 +17,32 @@ const parseDict = (input, parseHandlers={}) => {
   let remainder = trimArray(trimmed.subarray(2));
   while (arrayToString(trimArray(remainder), 0, 2) !== '>>') {
     // Parse the key for this entry
-    const [ key, r1 ] = parseName(remainder);
+    const [key, r1] = parseName(remainder);
     remainder = r1;
 
     // Parse the value for this entry
-    const [ pdfObject, r2 ] =
-      parseNull(remainder, parseHandlers)        ||
+    const [pdfObject, r2] =
+      parseNull(remainder, parseHandlers) ||
       parseIndirectRef(remainder, parseHandlers) ||
-      parseString(remainder, parseHandlers)      ||
-      parseHexString(remainder, parseHandlers)   ||
-      parseName(remainder, parseHandlers)        ||
-      parseBool(remainder, parseHandlers)        ||
-      parseNumber(remainder, parseHandlers)      ||
-      parseArray(remainder, parseHandlers)       ||
+      parseString(remainder, parseHandlers) ||
+      parseHexString(remainder, parseHandlers) ||
+      parseName(remainder, parseHandlers) ||
+      parseBool(remainder, parseHandlers) ||
+      parseNumber(remainder, parseHandlers) ||
+      parseArray(remainder, parseHandlers) ||
       parseDict(remainder, parseHandlers);
 
     obj[key] = pdfObject;
     remainder = r2;
   }
   const remainderTrim = trimArray(remainder);
-  if (arrayToString(remainderTrim, 0, 2) !== '>>') throw new Error('Mismatched brackets!');
+  if (arrayToString(remainderTrim, 0, 2) !== '>>') {
+    throw new Error('Mismatched brackets!');
+  }
   remainder = trimArray(remainder.subarray(3)); // Remove ending '>>' pair
 
-  const { onParseDict=() => {} } = parseHandlers;
-  return [ onParseDict(obj) || obj, remainder];
-}
+  const { onParseDict = () => {} } = parseHandlers;
+  return [onParseDict(obj) || obj, remainder];
+};
 
 export default parseDict;

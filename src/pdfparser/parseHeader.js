@@ -1,6 +1,6 @@
 import { arrayToString, trimArray, arrayCharAt, arrayIndexOf } from '../utils';
 
-const parseHeader = (input, parseHandlers={}) => {
+const parseHeader = (input, parseHandlers = {}) => {
   const trimmed = trimArray(input);
   const fileHeaderRegex = /^%PDF-(\d+)\.(\d+)/;
   let idx = 0;
@@ -9,7 +9,7 @@ const parseHeader = (input, parseHandlers={}) => {
   if (!result) return null;
 
   const [fullMatch, major, minor] = result;
-  const { onParseHeader=() => {} } = parseHandlers;
+  const { onParseHeader = () => {} } = parseHandlers;
 
   const withoutVersion = trimArray(trimmed.subarray(fullMatch.length));
   let returnArray = withoutVersion;
@@ -20,10 +20,7 @@ const parseHeader = (input, parseHandlers={}) => {
     returnArray = withoutVersion.subarray(nextNewline);
   }
 
-  return [
-    onParseHeader({ major, minor }) || { major, minor },
-    returnArray,
-  ];
-}
+  return [onParseHeader({ major, minor }) || { major, minor }, returnArray];
+};
 
 export default parseHeader;

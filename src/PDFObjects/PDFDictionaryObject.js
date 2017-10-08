@@ -50,22 +50,26 @@ class PDFDictionaryObject {
   add = (key, val) => {
     this.object[key] = val;
     return this;
-  }
+  };
 
-  get = (key) => this.object[key];
+  get = key => this.object[key];
 
   toString = () =>
-    Object.keys(this.object).reduce(
+    `${Object.keys(this.object).reduce(
       (dict, key) =>
-        dict.concat(PDFNameObject(key))
-            .concat(' ')
-            .concat(
-                isString(this.object[key])           ? PDFString(this.object[key])
-              : this.object[key].isPDFIndirectObject ? this.object[key].toIndirectRef()
-              : this.object[key])
-            .concat('\n'),
+        dict
+          .concat(PDFNameObject(key))
+          .concat(' ')
+          .concat(
+            isString(this.object[key])
+              ? PDFString(this.object[key])
+              : this.object[key].isPDFIndirectObject
+                ? this.object[key].toIndirectRef()
+                : this.object[key],
+          )
+          .concat('\n'),
       '<<\n',
-    ) + '>>';
+    )}>>`;
 }
 
 export default (...args) => new PDFDictionaryObject(...args);

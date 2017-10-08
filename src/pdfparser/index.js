@@ -11,17 +11,17 @@ import PDFTrailer from '../PDFObjects/PDFTrailer';
 import { PDFHexString } from '../PDFObjects/PDFHexString';
 import parseDocument from './parseDocument';
 
-const parser = (input) => {
+const parser = input => {
   const pdfDoc = new UpdatedPDFDocument();
   pdfDoc.setExistingContent(input);
 
   const indirectObjects = {};
   const pages = [];
   const parseHandlers = {
-    onParseHeader: (header) => {},
-    onParseXRefTable: (sections) => {
+    onParseHeader: header => {},
+    onParseXRefTable: sections => {
       const xRefTable = new XRef.Table();
-      console.log(sections)
+      console.log(sections);
 
       sections.forEach(({ firstObjNum, objCount, entries }) => {
         const subsection = new XRef.Subsection().setFirstObjNum(firstObjNum);
@@ -30,28 +30,32 @@ const parser = (input) => {
           const entry = new XRef.Entry()
             .setOffset(offset)
             .setGenerationNum(genNum)
-            .setIsInUse(isInUse === 'n' ? true : false);
+            .setIsInUse(isInUse === 'n');
           subsection.addEntry(entry);
-        })
+        });
 
         xRefTable.addSubsection(subsection);
-      })
+      });
 
       pdfDoc.setUsedObjNums(xRefTable.getUsedObjNums());
     },
     onParseTrailer: ({ dict, lastXRefOffset }) => {
-      console.log({ dict, lastXRefOffset})
+      console.log({ dict, lastXRefOffset });
       pdfDoc.setExistingTrailer(PDFTrailer(dict.object, lastXRefOffset));
     },
-    onParseBool: (bool) => {},
+    onParseBool: bool => {},
     onParseArray: PDFArrayObject,
     onParseDict: PDFDictionaryObject,
     onParseHexString: PDFHexString,
-    onParseIndirectObj: (indirectObj) => {
+    onParseIndirectObj: indirectObj => {
       const { objNum, genNum, contentObj } = indirectObj;
-      console.log(indirectObj)
+      console.log(indirectObj);
 
-      indirectObjects[`${objNum} ${genNum} R`] = PDFIndirectObject(objNum, genNum, indirectObj.contentObj);
+      indirectObjects[`${objNum} ${genNum} R`] = PDFIndirectObject(
+        objNum,
+        genNum,
+        indirectObj.contentObj,
+      );
 
       if (contentObj.isPDFDictionaryObject) {
         if (contentObj.object.Type && contentObj.object.Type.key === 'Page') {
@@ -59,13 +63,14 @@ const parser = (input) => {
         }
       }
     },
-    onParseIndirectRef: ({ objNum, genNum }) => PDFIndirectRefObject(objNum, genNum),
+    onParseIndirectRef: ({ objNum, genNum }) =>
+      PDFIndirectRefObject(objNum, genNum),
     onParseName: PDFNameObject,
     onParseNull: () => null,
     onParseNumber: Number,
-    onParseStream: (strm) => {},
+    onParseStream: strm => {},
     onParseString: PDFString,
-  }
+  };
 
   parseDocument(input, parseHandlers);
 
@@ -83,6 +88,6 @@ const parser = (input) => {
   });
 
   return pdfDoc;
-}
+};
 
 export default parser;

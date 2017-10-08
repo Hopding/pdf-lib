@@ -22,22 +22,22 @@ From PDF 1.7 Specification, "9.4 Text Objects"
 class PDFTextObject {
   isPDFTextObject = true;
 
-  constructor(content='') {
+  constructor(content = '') {
     this.content = content;
   }
 
-  setContent = (content) => {
+  setContent = content => {
     this.content = content;
     return this;
-  }
+  };
 
-  addLine = (line) => {
+  addLine = line => {
     // Don't include newline at start of first line of content
     if (this.content) this.content += '\n';
-    
+
     this.content += `${line}`;
     return this;
-  }
+  };
 
   Tf = (fontName, fontSize) => this.addLine(`${fontName} ${fontSize} Tf`);
   setFont = this.Tf;
@@ -45,10 +45,11 @@ class PDFTextObject {
   Td = (x, y) => this.addLine(`${x} ${y} Td`);
   moveText = this.Td;
 
-  Tj = (str) => this.addLine(`${PDFString(str)} Tj`);
+  Tj = str => this.addLine(`${PDFString(str)} Tj`);
   showText = this.Tj;
 
-  toString = () => dedent(`
+  toString = () =>
+    dedent(`
     BT
     ${this.content}
     ET

@@ -16,74 +16,74 @@ class UpdatedPDFDocument {
   currentObjectNumber = 1;
   fonts = {};
 
-  setExistingContent = (content) => {
+  setExistingContent = content => {
     this.existingContent = content;
     return this;
-  }
+  };
 
-  setExistingTrailer = (trailer) => {
+  setExistingTrailer = trailer => {
     this.existingTrailer = trailer;
     return this;
-  }
+  };
 
-  setUsedObjNums = (usedObjNums) => {
+  setUsedObjNums = usedObjNums => {
     this.usedObjNums = usedObjNums;
     return this;
-  }
+  };
 
-  setExistingObjs = (indirectObjects) => {
+  setExistingObjs = indirectObjects => {
     this.existingObjs = indirectObjects;
     return this;
-  }
+  };
 
   gottenObjs = []; // TODO: Take this out - it is hacky
-  getIndirectObject = (indirectObjRef) => {
+  getIndirectObject = indirectObjRef => {
     const o = this.existingObjs[indirectObjRef.toString()];
     if (!this.gottenObjs.includes(o.toIndirectRef())) {
       o.objectNum = null;
       this.addIndirectObject(o);
     }
     return o;
-  }
+  };
 
   nextObjNum = () => {
     while (this.usedObjNums.has(this.currentObjectNumber)) {
       this.currentObjectNumber++;
     }
     return this.currentObjectNumber;
-  }
+  };
 
-  addIndirectObject = (obj) => {
+  addIndirectObject = obj => {
     if (obj.objectNum === null) obj.objectNum = this.nextObjNum();
-    console.log(obj)
+    console.log(obj);
     this.usedObjNums.add(obj.objectNum);
     this.indirectObjects.push(obj);
     return this;
   };
 
-  addExistingPage = (page) => {
+  addExistingPage = page => {
     this.existingPages.push(page);
     return this;
-  }
+  };
 
-  getPage = (idx) => {
+  getPage = idx => {
     const page = this.existingPages[idx];
     if (!this.indirectObjects.includes(page)) {
       this.indirectObjects.push(page);
       if (!this.fonts.F1) {
         this.fonts.F1 = PDFIndirectObject(null, 0, {
-          'Type': PDFNameObject('Font'),
-          'Subtype': PDFNameObject('Type1'),
-          'Name': PDFNameObject('F1'),
-          'BaseFont': PDFNameObject('Helvetica'),
-          'Encoding': PDFNameObject('MacRomanEncoding'),
+          Type: PDFNameObject('Font'),
+          Subtype: PDFNameObject('Type1'),
+          Name: PDFNameObject('F1'),
+          BaseFont: PDFNameObject('Helvetica'),
+          Encoding: PDFNameObject('MacRomanEncoding'),
         });
         this.addIndirectObject(this.fonts.F1);
       }
       page.addFont('F1', this.fonts.F1);
     }
     return page;
-  }
+  };
 
   generateCrossRefTable = () => {
     const os = this.indirectObjects.slice(0, -2);
@@ -98,9 +98,7 @@ class UpdatedPDFDocument {
       .setOffset(65535)
       .setIsInUse(false);
     xRefTable.addSubsection(
-      new XRef.Subsection()
-        .setFirstObjNum(0)
-        .addEntry(initialEntry)
+      new XRef.Subsection().setFirstObjNum(0).addEntry(initialEntry),
     );
 
     // Add entries for indirect objects
@@ -110,7 +108,7 @@ class UpdatedPDFDocument {
       const { objectNum } = indirectObj;
       objNums.push(objectNum);
       objNumToObj[objectNum] = indirectObj;
-    })
+    });
     objNums.sort();
 
     let offset = this.existingContent.length;
@@ -131,14 +129,14 @@ class UpdatedPDFDocument {
     });
 
     return xRefTable;
-  }
+  };
 
-  generateTrailer = (offset) => {
+  generateTrailer = offset => {
     const trailerDict = this.existingTrailer.dictionary;
     trailerDict.Size = _.max([...this.usedObjNums]) + 1;
     trailerDict.Prev = this.existingTrailer.offset;
     return PDFTrailer(trailerDict, offset);
-  }
+  };
 
   toBytes = () => {
     const os = this.indirectObjects.slice(0, -2);
@@ -147,17 +145,15 @@ class UpdatedPDFDocument {
       ${os.map(String).join('')}
       ${this.generateCrossRefTable()}
     `);
-    console.log('this.existingContent.length:', this.existingContent.length)
-    console.log('newBody.length:', newBody.length)
-    const str = dedent(`
+    console.log('this.existingContent.length:', this.existingContent.length);
+    console.log('newBody.length:', newBody.length);
+    const str = `${dedent(`
       ${newBody}
       ${this.generateTrailer(this.existingContent.length + newBody.length)}
-    `) + '\n';
-    const arr = new Uint8Array(
-      str.split('').map(c => c.charCodeAt(0))
-    );
+    `)}\n`;
+    const arr = new Uint8Array(str.split('').map(c => c.charCodeAt(0)));
     return mergeUint8Arrays(this.existingContent, arr);
-  }
+  };
 }
 
 export default UpdatedPDFDocument;

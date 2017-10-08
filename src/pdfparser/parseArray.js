@@ -9,7 +9,7 @@ import parseBool from './parseBool';
 import parseNumber from './parseNumber';
 import parseDict from './parseDict';
 
-const parseArray = (input, parseHandlers={}) => {
+const parseArray = (input, parseHandlers = {}) => {
   const array = [];
   const trimmed = trimArray(input);
   if (arrayCharAt(trimmed, 0) !== '[') return null;
@@ -17,26 +17,28 @@ const parseArray = (input, parseHandlers={}) => {
   let remainder = trimmed.subarray(1); // Remove the '['
   while (arrayCharAt(trimArray(remainder), 0) !== ']') {
     // Parse the value for this element
-    const [ pdfObject, r ] =
-      parseNull(remainder, parseHandlers)        ||
+    const [pdfObject, r] =
+      parseNull(remainder, parseHandlers) ||
       parseIndirectRef(remainder, parseHandlers) ||
-      parseString(remainder, parseHandlers)      ||
-      parseHexString(remainder, parseHandlers)   ||
-      parseName(remainder, parseHandlers)        ||
-      parseBool(remainder, parseHandlers)        ||
-      parseNumber(remainder, parseHandlers)      ||
-      parseArray(remainder, parseHandlers)       ||
+      parseString(remainder, parseHandlers) ||
+      parseHexString(remainder, parseHandlers) ||
+      parseName(remainder, parseHandlers) ||
+      parseBool(remainder, parseHandlers) ||
+      parseNumber(remainder, parseHandlers) ||
+      parseArray(remainder, parseHandlers) ||
       parseDict(remainder, parseHandlers);
 
     array.push(pdfObject);
     remainder = r;
   }
   const remainderTrim = trimArray(remainder);
-  if (arrayCharAt(remainderTrim, 0) !== ']') throw new Error('Mismatched brackets!');
+  if (arrayCharAt(remainderTrim, 0) !== ']') {
+    throw new Error('Mismatched brackets!');
+  }
   remainder = trimArray(remainderTrim.subarray(1)); // Remove the ']'
 
-  const { onParseArray=() => {} } = parseHandlers;
-  return [ onParseArray(array) || array, remainder];
-}
+  const { onParseArray = () => {} } = parseHandlers;
+  return [onParseArray(array) || array, remainder];
+};
 
 export default parseArray;

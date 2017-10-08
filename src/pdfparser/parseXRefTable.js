@@ -1,6 +1,6 @@
 import { arrayToString, trimArray } from '../utils';
 
-const parseEntries = (input) => {
+const parseEntries = input => {
   const trimmed = input.trim();
   const entryRegex = /^(\d{10})\ (\d{5})\ (n|f)/;
 
@@ -17,9 +17,9 @@ const parseEntries = (input) => {
   }
 
   return entriesArr;
-}
+};
 
-const parseSections = (input) => {
+const parseSections = input => {
   const trimmed = input.trim();
   const sectionsRegex = /^(\d+)\ (\d+)((\n|\ )(\d{10}\ \d{5}\ (n|f)(\ |\n|\r)*)+)/;
 
@@ -33,14 +33,14 @@ const parseSections = (input) => {
     const entries = parseEntries(entriesStr);
     if (!entries) return null;
 
-    sectionsArr.push({ firstObjNum, objCount, entries })
+    sectionsArr.push({ firstObjNum, objCount, entries });
     remainder = remainder.substring(fullMatch.length).trim();
   }
 
   return sectionsArr;
-}
+};
 
-const parseXRefTable = (input, parseHandlers={}) => {
+const parseXRefTable = (input, parseHandlers = {}) => {
   const trimmed = trimArray(input);
   const xRefTableRegex = /^xref[\n|\ ]*([\d|\ |\n|\r|f|n]+)/;
   let idx = 0;
@@ -52,12 +52,11 @@ const parseXRefTable = (input, parseHandlers={}) => {
   const sections = parseSections(contents);
   if (!sections) return null;
 
-  const { onParseXRefTable=() => {} } = parseHandlers;
+  const { onParseXRefTable = () => {} } = parseHandlers;
   return [
     onParseXRefTable(sections) || sections,
     trimmed.subarray(fullMatch.length),
   ];
-}
-
+};
 
 export default parseXRefTable;

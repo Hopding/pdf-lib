@@ -9,4 +9,4 @@ From PDF 1.7 Specification, "7.3.4 String Objects"
     • As a sequence of literal characters enclosed in parentheses ( ) (using LEFT PARENTHESIS (28h) and RIGHT PARENThESIS (29h)); see 7.3.4.2, "Literal Strings."
     • As hexadecimal data enclosed in angle brackets < > (using LESS-THAN SIGN (3Ch) and GREATER- THAN SIGN (3Eh)); see 7.3.4.3, "Hexadecimal Strings."
 */
-export const PDFString = (str) => `(${str})`;
+export const PDFString = str => `(${str})`;

@@ -1,8 +1,6 @@
-import {
-  arrayToString,
-} from '../utils';
+import { arrayToString } from '../utils';
 
-const parseBool = (input, parseHandlers={}) => {
+const parseBool = (input, parseHandlers = {}) => {
   const boolRegex = /^(?:[\ |\n]*)(true|false)(?=\ |\]|\n)/;
   let idx = 0;
   while (String.fromCharCode(input[idx]).match(/^[\ \ntruefalse]/)) idx++;
@@ -10,8 +8,11 @@ const parseBool = (input, parseHandlers={}) => {
   if (!result) return null;
 
   const [fullMatch, bool] = result;
-  const { onParseBool=() => {} } = parseHandlers;
-  return [onParseBool(bool) || bool === 'true' ? true : false, input.subarray(fullMatch.length)];
-}
+  const { onParseBool = () => {} } = parseHandlers;
+  return [
+    !!(onParseBool(bool) || bool === 'true'),
+    input.subarray(fullMatch.length),
+  ];
+};
 
 export default parseBool;

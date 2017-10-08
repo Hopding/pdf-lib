@@ -11,7 +11,6 @@ import { PDFIndirectObject } from './PDFObjects/PDFIndirectObject';
 import _ from 'lodash';
 import dedent from 'dedent';
 
-
 /*
 Represents a PDF Page Tree Object (Leaf Node).
 
@@ -27,7 +26,7 @@ class PDFPage extends PDFIndirectObject {
   // fonts = {};
 
   constructor(objectNum, generationNum, parentDocument, pdfDict, editable) {
-    console.log('Creating new Page')
+    console.log('Creating new Page');
     super(objectNum, generationNum);
     this.parentDocument = parentDocument;
 
@@ -46,32 +45,29 @@ class PDFPage extends PDFIndirectObject {
         ]),
       });
       this.content = {
-        'Type': PDFNameObject('Page'),
-        'MediaBox': PDFArrayObject([0, 0, 612, 792]),
-        'Contents': this.contentStream,
-        'Resources': resources,
+        Type: PDFNameObject('Page'),
+        MediaBox: PDFArrayObject([0, 0, 612, 792]),
+        Contents: this.contentStream,
+        Resources: resources,
       };
 
       // parentDocument.addIndirectObject(this.contentStream);
       parentDocument.addIndirectObject(resources.get('ProcSet'));
-    }
-    // If this is an existing page
-    else {
+    } else {
+      // If this is an existing page
       // Need to make contents an array if it isn't already
       if (editable) {
         if (pdfDict.get('Contents').isPDFIndirectRefObject) {
-          pdfDict.add('Contents', PDFArrayObject([
-            pdfDict.get('Contents'),
-            this.contentStream.toIndirectRef(),
-          ]));
+          pdfDict.add(
+            'Contents',
+            PDFArrayObject([
+              pdfDict.get('Contents'),
+              this.contentStream.toIndirectRef(),
+            ]),
+          );
         }
-      }
-      else {
-        if (pdfDict.get('Contents').isPDFIndirectRefObject) {
-          pdfDict.add('Contents', PDFArrayObject([
-            pdfDict.get('Contents'),
-          ]));
-        }
+      } else if (pdfDict.get('Contents').isPDFIndirectRefObject) {
+        pdfDict.add('Contents', PDFArrayObject([pdfDict.get('Contents')]));
       }
 
       this.content = pdfDict.object;
@@ -82,24 +78,28 @@ class PDFPage extends PDFIndirectObject {
 
   getResourcesDict = () => {
     if (this.content.Resources.isPDFIndirectRefObject) {
-      const indirectObj = this.parentDocument.getIndirectObject(this.content.Resources);
+      const indirectObj = this.parentDocument.getIndirectObject(
+        this.content.Resources,
+      );
       const resourcesRef = this.content.Resources;
       resourcesRef.objectNum = indirectObj.objectNum;
       return indirectObj.content;
     }
     return this.content.Resources;
-  }
+  };
 
-  setParent = (pageTree) => {
+  setParent = pageTree => {
     this.content.Parent = pageTree;
     return this;
-  }
+  };
 
   addFont = (fontName, fontObj) => {
-    console.log('RESOURCES DICT:', this.getResourcesDict())
-    this.getResourcesDict().get('Font').add(fontName, fontObj);
+    console.log('RESOURCES DICT:', this.getResourcesDict());
+    this.getResourcesDict()
+      .get('Font')
+      .add(fontName, fontObj);
     return this;
-  }
+  };
 
   text = (x, y, fontName, fontSize, text) => {
     const textObj = PDFTextObject()
@@ -108,7 +108,7 @@ class PDFPage extends PDFIndirectObject {
       .showText(text);
     this.contentStream.appendToStream(textObj);
     return this;
-  }
+  };
 }
 
 export default PDFPage;

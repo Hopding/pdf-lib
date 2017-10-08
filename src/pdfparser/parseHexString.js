@@ -1,6 +1,6 @@
 import { arrayToString, arrayIndexOf, arrayCharAt, trimArray } from '../utils';
 
-const parseHexString = (input, parseHandlers={}) => {
+const parseHexString = (input, parseHandlers = {}) => {
   const hexStringRegex = /^<([\dABCDEFabcdef]+)>/;
 
   const trimmed = trimArray(input);
@@ -10,8 +10,11 @@ const parseHexString = (input, parseHandlers={}) => {
   if (!result) return null;
 
   const [fullMatch, hexString] = result;
-  const { onParseHexString=() => {} } = parseHandlers;
-  return [onParseHexString(hexString) || hexString, trimmed.subarray(fullMatch.length)];
-}
+  const { onParseHexString = () => {} } = parseHandlers;
+  return [
+    onParseHexString(hexString) || hexString,
+    trimmed.subarray(fullMatch.length),
+  ];
+};
 
 export default parseHexString;

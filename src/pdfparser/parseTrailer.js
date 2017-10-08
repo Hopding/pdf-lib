@@ -2,7 +2,7 @@ import { arrayToString, trimArray, arrayIndexOf } from '../utils';
 import parseDict from './parseDict';
 import parseNumber from './parseNumber';
 
-const parseTrailer = (input, parseHandlers={}) => {
+const parseTrailer = (input, parseHandlers = {}) => {
   const trimmed = trimArray(input);
   const trailerRegex = /^trailer[\n|\ ]*([^]+)startxref[\n|\ ]+?(\d+)[\n|\ ]+?%%EOF/;
   const eofIdx = arrayIndexOf(trimmed, '%%EOF');
@@ -10,7 +10,7 @@ const parseTrailer = (input, parseHandlers={}) => {
   if (!result) return null;
 
   const [fullMatch, dictStr, lastXRefOffsetStr] = result;
-  const { onParseTrailer=() => {} } = parseHandlers;
+  const { onParseTrailer = () => {} } = parseHandlers;
   const parsedOffset = parseNumber(
     trimmed.subarray(fullMatch - lastXRefOffsetStr.length),
     parseHandlers,
@@ -22,6 +22,6 @@ const parseTrailer = (input, parseHandlers={}) => {
   };
 
   return [onParseTrailer(obj) || obj, trimmed.subarray(fullMatch.length)];
-}
+};
 
 export default parseTrailer;
