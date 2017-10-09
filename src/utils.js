@@ -41,7 +41,7 @@ export const arrayCharAt = (arr, idx) => String.fromCharCode(arr[idx]);
 
 export const trimArray = arr => {
   let idx = 0;
-  while (String.fromCharCode(arr[idx]).match(/^[\ \n]/)) idx++;
+  while (String.fromCharCode(arr[idx]).match(/^[\ \n\r]/)) idx++;
   return arr.subarray(idx);
 };
 

@@ -42,7 +42,7 @@ const parseSections = input => {
 
 const parseXRefTable = (input, parseHandlers = {}) => {
   const trimmed = trimArray(input);
-  const xRefTableRegex = /^xref[\n|\ ]*([\d|\ |\n|\r|f|n]+)/;
+  const xRefTableRegex = /^xref[\n|\r|\ ]*([\d|\ |\n|\r|f|n]+)/;
   let idx = 0;
   while (String.fromCharCode(trimmed[idx]).match(/^[xref\ \n\r\dfn]/)) idx++;
   const result1 = arrayToString(trimmed, 0, idx).match(xRefTableRegex);

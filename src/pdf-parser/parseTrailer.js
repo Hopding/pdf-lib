@@ -4,7 +4,7 @@ import parseNumber from './parseNumber';
 
 const parseTrailer = (input, parseHandlers = {}) => {
   const trimmed = trimArray(input);
-  const trailerRegex = /^trailer[\n|\ ]*([^]+)startxref[\n|\ ]+?(\d+)[\n|\ ]+?%%EOF/;
+  const trailerRegex = /^trailer[\n|\r|\ ]*([^]+)startxref[\n|\r|\ ]+?(\d+)[\n|\r|\ ]+?%%EOF/;
   const eofIdx = arrayIndexOf(trimmed, '%%EOF');
   const result = arrayToString(trimmed, 0, eofIdx + 5).match(trailerRegex);
   if (!result) return null;

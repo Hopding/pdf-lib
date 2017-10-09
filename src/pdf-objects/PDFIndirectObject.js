@@ -34,7 +34,7 @@ class PDFIndirectObject extends PDFObject {
   };
 
   getReference = () => this.reference;
-  toReference = this.reference.toString;
+  toReference = () => this.reference.toString();
 
   toString = () => dedent`
     ${this.reference.getObjectNumber()} ${this.reference.getGenerationNumber()} obj
@@ -49,7 +49,7 @@ class PDFIndirectObject extends PDFObject {
       ),
     ];
     bytes.push(...this.pdfObject.toBytes());
-    bytes.push(...charCodes('\nendobj\n'));
+    bytes.push(...charCodes('\nendobj\n\n'));
     return new Uint8Array(bytes);
   };
 }

@@ -2,7 +2,7 @@
 import { charCodes } from '../utils';
 import PDFObject from './PDFObject';
 
-const hexStringRegex = /^[\dABCDEFabcdef]+/;
+const hexStringRegex = /^[\dABCDEFabcdef]*/;
 class PDFHexString extends PDFObject {
   string: string;
 

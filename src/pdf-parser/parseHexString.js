@@ -1,7 +1,7 @@
 import { arrayToString, arrayIndexOf, arrayCharAt, trimArray } from '../utils';
 
 const parseHexString = (input, parseHandlers = {}) => {
-  const hexStringRegex = /^<([\dABCDEFabcdef]+)>/;
+  const hexStringRegex = /^<([\dABCDEFabcdef]*)>/;
 
   const trimmed = trimArray(input);
   let idx = 0;

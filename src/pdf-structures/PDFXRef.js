@@ -74,10 +74,10 @@ class Table {
   };
 
   toString = () =>
-    dedent(`
+    `${dedent(`
     xref
     ${this.subsections.map(String).join('\n')}
-  `);
+  `)}\n`;
 
   toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }

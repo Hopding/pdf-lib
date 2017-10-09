@@ -16,7 +16,7 @@ class PDFNumber extends PDFObject {
   static fromNumber = (number: number) => new PDFNumber(number);
   static fromString = (numberStr: string) => new PDFNumber(Number(numberStr));
 
-  toString = this.number.toString;
+  toString = () => this.number.toString();
   toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }
 

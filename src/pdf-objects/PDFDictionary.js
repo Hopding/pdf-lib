@@ -18,6 +18,8 @@ class PDFDictionary extends PDFObject {
     }
   }
 
+  static fromObject = object => new PDFDictionary(object);
+
   set = (key: string | PDFName, val: PDFObject) => {
     if (typeof key !== 'string' && !(key instanceof PDFName)) {
       throw new Error(
@@ -47,7 +49,7 @@ class PDFDictionary extends PDFObject {
   toString = () => {
     let str = '<<\n';
     this.map.forEach((val, key) => {
-      str += key.toString();
+      str += `${key.toString()} `;
       if (val instanceof PDFIndirectObject) str += `${val.toReference()}\n`;
       else if (val instanceof PDFObject) str += `${val.toString()}\n`;
       else throw new Error(`Not a PDFObject: ${val.constructor.name}`);
@@ -58,10 +60,10 @@ class PDFDictionary extends PDFObject {
   };
 
   toBytes = (): Uint8Array => {
-    const bytes = [...charCodes('<<')];
+    const bytes = [...charCodes('<<\n')];
 
-    _.forEach((val, key) => {
-      bytes.push(...charCodes(key.toString()));
+    this.map.forEach((val, key) => {
+      bytes.push(...charCodes(`${key.toString()} `));
       if (val instanceof PDFIndirectObject) {
         bytes.push(...charCodes(val.toReference()));
       } else if (val instanceof PDFObject) {

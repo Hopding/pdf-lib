@@ -1,6 +1,7 @@
 /* @flow */
 import { charCodes } from '../utils';
 import PDFObject from './PDFObject';
+import PDFNumber from './PDFNumber';
 
 const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
 const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();

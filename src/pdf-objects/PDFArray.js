@@ -19,6 +19,8 @@ class PDFArray extends PDFObject {
     });
   }
 
+  static fromArray = array => new PDFArray(array);
+
   push = (val: PDFObject) => {
     if (!(val instanceof PDFObject)) {
       throw new Error('PDFArray.set() requires values to be PDFObjects');
@@ -64,7 +66,7 @@ class PDFArray extends PDFObject {
   };
 
   toBytes = (): Uint8Array => {
-    const bytes = [charCode('[')];
+    const bytes = [...charCodes('[ ')];
 
     this.array.forEach((e, idx) => {
       if (e instanceof PDFIndirectObject) {
@@ -74,7 +76,7 @@ class PDFArray extends PDFObject {
       } else {
         throw new Error(`Not a PDFObject: ${e.constructor.name}`);
       }
-      if (idx !== this.array.length - 1) bytes.push(charCode(' '));
+      bytes.push(charCode(' '));
     });
 
     bytes.push(charCode(']'));

@@ -17,6 +17,8 @@ class PDFStream extends PDFObject {
     if (!(dictionary instanceof PDFDictionary)) {
       throw new Error('PDFStreams require PDFDictionary to be constructed');
     }
+    this.dictionary = dictionary;
+    this.content = content;
   }
 
   toString = () => `<${this.content.length} bytes>`;
@@ -26,12 +28,12 @@ class PDFStream extends PDFObject {
     const dictArr = new Uint8Array(charCodes(dedent`
       ${this.dictionary}
       stream
-    ` + '\n'));
+    `));
     /* eslint-enable */
     return mergeUint8Arrays(
       dictArr,
       this.content,
-      new Uint8Array(charCodes('endstream\n')),
+      new Uint8Array(charCodes('endstream')),
     );
   };
 }
