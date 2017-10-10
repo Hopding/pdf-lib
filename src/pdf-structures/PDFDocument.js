@@ -8,7 +8,7 @@ import {
 import { PDFHeader, PDFXRef, PDFTrailer } from '.';
 
 class PDFDocument {
-  header: PDFHeader = new PDFHeader(1, 5);
+  header: PDFHeader = new PDFHeader(1, 3);
   catalog: PDFObject;
   indirectObjects: Array<PDFIndirectObject> = [];
 
@@ -46,17 +46,6 @@ class PDFDocument {
     );
 
     this.sortIndirectObjects();
-    const mapped = this.indirectObjects.map(io =>
-      io.getReference().getObjectNumber(),
-    );
-    mapped.forEach((n, idx) => {
-      console.log(n);
-      if (n > mapped[idx - 1] + 1) {
-        console.log('\nWHOA: ');
-        console.log(`${mapped[idx - 1]} => ${n}`);
-      }
-    });
-
     this.indirectObjects.forEach(indirectObj => {
       const entry = new PDFXRef.Entry()
         .setOffset(bytes.length)
@@ -66,13 +55,12 @@ class PDFDocument {
 
       bytes.push(...indirectObj.toBytes());
     });
-
     table.addSubsection(subsection);
 
     const trailer = new PDFTrailer(
       bytes.length,
       PDFDictionary.fromObject({
-        Size: new PDFNumber(this.indirectObjects.length),
+        Size: new PDFNumber(this.indirectObjects.length + 1),
         Root: this.catalog,
       }),
     );

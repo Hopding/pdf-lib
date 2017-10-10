@@ -2,7 +2,7 @@
 import { charCodes, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
-import PDFIndirectObject from './PDFIndirectObject';
+import { PDFIndirectReference, PDFIndirectObject, PDFDictionary } from '.';
 
 class PDFArray extends PDFObject {
   array: Array<PDFObject> = [];
@@ -51,6 +51,18 @@ class PDFArray extends PDFObject {
   };
 
   forEach = this.array.forEach;
+
+  dereference = (
+    indirectObjects: Map<PDFIndirectReference, PDFIndirectObject>,
+  ) => {
+    this.array.forEach((val, idx) => {
+      if (val instanceof PDFIndirectReference) {
+        const obj = indirectObjects.get(val);
+        if (!obj) throw new Error(`Failed to dereference: ${val.toString()}`);
+        this.array[idx] = obj;
+      }
+    });
+  };
 
   toString = () => {
     let str = '[';

@@ -39,7 +39,7 @@ const parseDict = (input, parseHandlers = {}) => {
   if (arrayToString(remainderTrim, 0, 2) !== '>>') {
     throw new Error('Mismatched brackets!');
   }
-  remainder = trimArray(remainder.subarray(3)); // Remove ending '>>' pair
+  remainder = trimArray(remainderTrim.subarray(3)); // Remove ending '>>' pair
 
   const { onParseDict = () => {} } = parseHandlers;
   return [onParseDict(obj) || obj, remainder];

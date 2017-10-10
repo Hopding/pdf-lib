@@ -3,8 +3,7 @@ import _ from 'lodash';
 import { charCodes, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
-import PDFIndirectObject from './PDFIndirectObject';
-import PDFName from './PDFName';
+import { PDFIndirectReference, PDFIndirectObject, PDFName, PDFArray } from '.';
 
 class PDFDictionary extends PDFObject {
   map: Map<PDFName, PDFObject> = new Map();
@@ -44,6 +43,18 @@ class PDFDictionary extends PDFObject {
 
     if (typeof key === 'string') return this.map.get(PDFName.forString(key));
     return this.map.get(key);
+  };
+
+  dereference = (
+    indirectObjects: Map<PDFIndirectReference, PDFIndirectObject>,
+  ) => {
+    this.map.forEach((val, key) => {
+      if (val instanceof PDFIndirectReference) {
+        const obj = indirectObjects.get(val);
+        if (!obj) throw new Error(`Failed to dereference: ${key.toString()}`);
+        this.set(key, obj);
+      }
+    });
   };
 
   toString = () => {
