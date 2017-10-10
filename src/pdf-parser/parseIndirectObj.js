@@ -41,7 +41,7 @@ const parseIndirectObj = (input, parseHandlers = {}) => {
   }
 
   const { onParseIndirectObj = () => {} } = parseHandlers;
-  const obj = { objNum, genNum, contentObj };
+  const obj = { objNum: Number(objNum), genNum: Number(genNum), contentObj };
   return [onParseIndirectObj(obj) || obj, trimmed.subarray(endobjIdx + 6)];
 };
 

@@ -69,13 +69,13 @@ class PDFParser {
     genNum,
     contentObj,
   }: {
-    objNum: string,
-    genNum: string,
+    objNum: number,
+    genNum: number,
     contentObj: PDFObject,
   }) => {
     const obj = new PDFIndirectObject(contentObj).setReferenceNumbers(
-      Number(objNum),
-      Number(genNum),
+      objNum,
+      genNum,
     );
     if (
       obj.pdfObject instanceof PDFDictionary &&
@@ -84,7 +84,7 @@ class PDFParser {
       this.catalog = obj;
     }
     this.indirectObjects.set(
-      PDFIndirectReference.forNumbers(Number(objNum), Number(genNum)),
+      PDFIndirectReference.forNumbers(objNum, genNum),
       obj,
     );
     return obj;
