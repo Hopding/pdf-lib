@@ -3,23 +3,25 @@ import _ from 'lodash';
 import { charCodes, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
-import { PDFIndirectReference, PDFIndirectObject, PDFName, PDFArray } from '.';
+import { PDFIndirectReference, PDFIndirectObject, PDFName } from '.';
 
 class PDFDictionary extends PDFObject {
   map: Map<PDFName, PDFObject> = new Map();
+  validKeys: ?Array<string>;
 
-  constructor(object: ?{ [string]: PDFObject }) {
+  constructor(object: ?{ [string]: PDFObject }, validKeys: ?Array<string>) {
     super();
+    this.validKeys = validKeys;
     if (object) {
       _.forEach(object, (val, key) => {
-        this.set(key, val);
+        this.set(key, val, false);
       });
     }
   }
 
   static fromObject = object => new PDFDictionary(object);
 
-  set = (key: string | PDFName, val: PDFObject) => {
+  set = (key: string | PDFName, val: PDFObject, validate: ?boolean = true) => {
     if (typeof key !== 'string' && !(key instanceof PDFName)) {
       throw new Error(
         'PDFDictionary.set() requires keys to be strings or PDFNames',
@@ -29,8 +31,12 @@ class PDFDictionary extends PDFObject {
       throw new Error('PDFDictionary.set() requires values to be PDFObjects');
     }
 
-    if (typeof key === 'string') this.map.set(PDFName.forString(key), val);
-    else this.map.set(key, val);
+    const keyName = typeof key === 'string' ? PDFName.forString(key) : key;
+    if (validate && this.validKeys && !this.validKeys.includes(keyName.key)) {
+      throw new Error(`Invalid key: "${keyName.key}"`);
+    }
+    this.map.set(keyName, val);
+
     return this;
   };
 

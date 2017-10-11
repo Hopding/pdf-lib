@@ -1,9 +1,15 @@
 /* @flow */
-import PDFDictionary from '../pdf-objects/PDFDictionary';
-import PDFName from '../pdf-objects/PDFName';
-import PDFObject from '../pdf-objects/PDFObject';
+import {
+  PDFDictionary,
+  PDFStream,
+  PDFArray,
+  PDFIndirectObject,
+} from '../pdf-objects';
+import { PDFDocument, PDFContentStream } from '.';
 
 class PDFPage extends PDFDictionary {
+  pdfDocument: PDFDocument;
+
   static validKeys = Object.freeze([
     'Type',
     'Parent',
@@ -37,17 +43,53 @@ class PDFPage extends PDFDictionary {
     'VP',
   ]);
 
-  static isValidKey = (key: string | PDFName) => {
-    if (key instanceof PDFName) return PDFPage.validKeys.includes(key.key);
-    return PDFPage.validKeys.includes(key);
+  constructor(pdfDocument: PDFDocument, ...args) {
+    super(...args);
+    this.pdfDocument = pdfDocument;
+  }
+
+  static fromObject = (pdfDocument, object): PDFPage =>
+    new PDFPage(pdfDocument, object, PDFPage.validKeys);
+
+  getContentStreams = (): Array<PDFStream> => {
+    const contents = this.get('Contents');
+
+    // Could be either a PDFStream or PDFArray reference
+    if (contents instanceof PDFIndirectObject) {
+      if (contents.pdfObject instanceof PDFStream) {
+        return [contents.pdfObject];
+      } else if (contents.pdfObject instanceof PDFArray) {
+        return contents.pdfObject.array;
+      }
+    } else if (contents instanceof PDFArray) {
+      return contents.array;
+    }
+
+    // This page has no "Contents"
+    return [];
   };
 
-  set = (key: string | PDFName, val: PDFObject): PDFPage => {
-    if (PDFPage.isValidKey(key)) {
-      super.set(key, val);
-      return this;
+  addContentStream = (contentStream: PDFContentStream) => {
+    if (!(contentStream instanceof PDFContentStream)) {
+      throw new Error('Argument must be instance of PDFContentStreams');
     }
-    throw new Error(`Invalid key for PDFPage: ${key.toString()}`);
+    const indirectObject = this.pdfDocument.createIndirectObject(contentStream);
+
+    const contents = this.get('Contents');
+
+    // Could be either a PDFStream or PDFArray reference
+    if (contents instanceof PDFIndirectObject) {
+      if (contents.pdfObject instanceof PDFStream) {
+        this.set('Contents', PDFArray.fromArray([contents, indirectObject]));
+      } else if (contents.pdfObject instanceof PDFArray) {
+        contents.pdfObject.push(indirectObject);
+      }
+    } else if (contents instanceof PDFArray) {
+      contents.push(indirectObject);
+    } else {
+      // Page currently has no "Contents"
+      this.set('Contents', indirectObject);
+    }
   };
 }
 

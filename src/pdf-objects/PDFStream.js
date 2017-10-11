@@ -7,18 +7,21 @@ import PDFDictionary from './PDFDictionary';
 
 class PDFStream extends PDFObject {
   dictionary: PDFDictionary;
-  content: Uint8Array;
+  content: Uint8Array | string;
+  locked: boolean = false;
 
   constructor(
     dictionary: PDFDictionary = new PDFDictionary(),
-    content: Uint8Array,
+    content: ?Uint8Array,
   ) {
     super();
     if (!(dictionary instanceof PDFDictionary)) {
       throw new Error('PDFStreams require PDFDictionary to be constructed');
     }
+    if (content) this.locked = true;
+
     this.dictionary = dictionary;
-    this.content = content;
+    this.content = content || '\n';
   }
 
   toString = () => `<${this.content.length} bytes>`;
@@ -32,7 +35,9 @@ class PDFStream extends PDFObject {
     /* eslint-enable */
     return mergeUint8Arrays(
       dictArr,
-      this.content,
+      typeof this.content === 'string'
+        ? new Uint8Array(charCodes(`${this.content}`))
+        : this.content,
       new Uint8Array(charCodes('endstream')),
     );
   };

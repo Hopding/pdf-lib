@@ -14,6 +14,7 @@ import {
   PDFString,
 } from '../pdf-objects';
 import {
+  PDFCatalog,
   PDFDocument,
   PDFHeader,
   PDFPage,
@@ -28,6 +29,7 @@ class PDFParser {
   dictionaries: Array<PDFDictionary> = [];
   arrays: Array<PDFArray> = [];
   catalog: PDFObject;
+  pdfDoc: PDFDocument = new PDFDocument();
 
   handleBool = PDFBoolean.fromString;
   handleHexString = PDFHexString.fromString;
@@ -43,7 +45,21 @@ class PDFParser {
   };
 
   handleDict = (dictObj: Object) => {
-    const dict = PDFDictionary.fromObject(dictObj);
+    let dict;
+    switch (dictObj.Type) {
+      case PDFName.forString('Catalog'):
+        dict = PDFCatalog.fromObject(dictObj);
+        break;
+      case PDFName.forString('Pages'):
+        dict = PDFPageTree.fromObject(dictObj);
+        break;
+      case PDFName.forString('Page'):
+        dict = PDFPage.fromObject(this.pdfDoc, dictObj);
+        break;
+      default:
+        dict = PDFDictionary.fromObject(dictObj);
+    }
+
     this.dictionaries.push(dict);
     return dict;
   };
@@ -77,12 +93,9 @@ class PDFParser {
       objNum,
       genNum,
     );
-    if (
-      obj.pdfObject instanceof PDFDictionary &&
-      obj.pdfObject.get('Type') === PDFName.forString('Catalog')
-    ) {
-      this.catalog = obj;
-    }
+
+    if (obj.pdfObject instanceof PDFCatalog) this.catalog = obj;
+
     this.indirectObjects.set(
       PDFIndirectReference.forNumbers(objNum, genNum),
       obj,
@@ -128,10 +141,10 @@ class PDFParser {
     parseDocument(bytes, parseHandlers);
     this.normalize();
 
-    const pdfDoc = new PDFDocument()
+    this.pdfDoc
       .setCatalog(this.catalog)
       .setIndirectObjects(Array.from(this.indirectObjects.values()));
-    return pdfDoc;
+    return this.pdfDoc;
   };
 }
 

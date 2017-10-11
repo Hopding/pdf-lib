@@ -1,22 +1,28 @@
 /* @flow */
-import PDFDictionary from '../pdf-objects/PDFDictionary';
-import PDFName from '../pdf-objects/PDFName';
-import PDFObject from '../pdf-objects/PDFObject';
+import { PDFIndirectObject, PDFDictionary, PDFArray } from '../pdf-objects';
+import { PDFPage } from '.';
 
 class PDFPageTree extends PDFDictionary {
   static validKeys = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
 
-  static isValidKey = (key: string | PDFName) => {
-    if (key instanceof PDFName) return PDFPageTree.validKeys.includes(key.key);
-    return PDFPageTree.validKeys.includes(key);
+  static fromObject = (object): PDFPageTree =>
+    new PDFPageTree(object, PDFPageTree.validKeys);
+
+  getKids = () => {
+    const kids = this.get('Kids');
+
+    let kidsArr = kids;
+    if (kids instanceof PDFIndirectObject) kidsArr = kids.pdfObject;
+
+    return kidsArr.map((elem: PDFIndirectObject) => elem.pdfObject);
   };
 
-  set = (key: string | PDFName, val: PDFObject): PDFPageTree => {
-    if (PDFPageTree.isValidKey(key)) {
-      super.set(key, val);
-      return this;
-    }
-    throw new Error(`Invalid key for PDFPageTree: ${key.toString()}`);
+  traverse = (visit: Function) => {
+    this.getKids().forEach(kid => {
+      visit(kid);
+      if (kid instanceof PDFPageTree) kid.traverse(visit);
+    });
+    return this;
   };
 }
 

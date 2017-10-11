@@ -2,12 +2,12 @@
 import { charCodes, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
-import { PDFIndirectReference, PDFIndirectObject, PDFDictionary } from '.';
+import { PDFIndirectReference, PDFIndirectObject } from '.';
 
-class PDFArray extends PDFObject {
-  array: Array<PDFObject> = [];
+class PDFArray<T: PDFObject> extends PDFObject {
+  array: Array<T> = [];
 
-  constructor(array: Array<PDFObject>) {
+  constructor(array: Array<T>) {
     super();
     array.forEach(e => {
       if (!(e instanceof PDFObject)) {
@@ -21,7 +21,7 @@ class PDFArray extends PDFObject {
 
   static fromArray = array => new PDFArray(array);
 
-  push = (val: PDFObject) => {
+  push = (val: T) => {
     if (!(val instanceof PDFObject)) {
       throw new Error('PDFArray.set() requires values to be PDFObjects');
     }
@@ -30,7 +30,7 @@ class PDFArray extends PDFObject {
     return this;
   };
 
-  set = (idx: number, val: PDFObject) => {
+  set = (idx: number, val: T) => {
     if (typeof idx !== 'number') {
       throw new Error('PDFArray.set() requires indexes to be numbers');
     }
@@ -42,7 +42,7 @@ class PDFArray extends PDFObject {
     return this;
   };
 
-  get = (idx: number) => {
+  get = (idx: number): T => {
     if (typeof idx !== 'number') {
       throw new Error('PDFArray.set() requires indexes to be numbers');
     }
@@ -50,7 +50,8 @@ class PDFArray extends PDFObject {
     return this.array[idx];
   };
 
-  forEach = this.array.forEach;
+  forEach = (...args: any) => this.array.forEach(...args);
+  map = (...args: any) => this.array.map(...args);
 
   dereference = (
     indirectObjects: Map<PDFIndirectReference, PDFIndirectObject>,

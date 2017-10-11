@@ -1,16 +1,18 @@
 /* @flow */
+import _ from 'lodash';
 import {
   PDFDictionary,
   PDFIndirectObject,
   PDFObject,
   PDFNumber,
 } from '../pdf-objects';
-import { PDFHeader, PDFXRef, PDFTrailer } from '.';
+import { PDFCatalog, PDFHeader, PDFPage, PDFXRef, PDFTrailer } from '.';
 
 class PDFDocument {
   header: PDFHeader = new PDFHeader(1, 3);
-  catalog: PDFObject;
+  catalog: PDFCatalog;
   indirectObjects: Array<PDFIndirectObject> = [];
+  maxReferenceNumber: number;
 
   setCatalog = (catalog: PDFObject) => {
     this.catalog = catalog;
@@ -19,7 +21,32 @@ class PDFDocument {
 
   setIndirectObjects = (indirectObjects: Array<PDFIndirectObject>) => {
     this.indirectObjects = indirectObjects;
+    this.sortIndirectObjects();
+    this.maxReferenceNumber = _.last(this.indirectObjects)
+      .getReference()
+      .getObjectNumber();
     return this;
+  };
+
+  createIndirectObject = (pdfObject: PDFObject): PDFIndirectObject => {
+    if (!(pdfObject instanceof PDFObject)) {
+      throw new Error('Can only create indirect objects for PDFObjects');
+    }
+    this.maxReferenceNumber += 1;
+    const indirectObject = new PDFIndirectObject(pdfObject).setReferenceNumbers(
+      this.maxReferenceNumber,
+      0,
+    );
+    this.indirectObjects.push(indirectObject);
+    return indirectObject;
+  };
+
+  getPages = () => {
+    const pages = [];
+    this.catalog.pdfObject.getPageTree().traverse(node => {
+      if (node instanceof PDFPage) pages.push(node);
+    });
+    return pages;
   };
 
   sortIndirectObjects = () => {
