@@ -1,7 +1,8 @@
+import { writeToDebugFile } from '../utils';
 import parseHeader from './parseHeader';
 import parseIndirectObj from './parseIndirectObj';
 import parseXRefTable from './parseXRefTable';
-import parseTrailer from './parseTrailer';
+import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 import removeComments from './removeComments';
 
 const parseDocument = (input, parseHandlers) => {
@@ -21,8 +22,19 @@ const parseDocument = (input, parseHandlers) => {
     remainder = r2;
   }
 
-  const [xref, r3] = parseXRefTable(remainder, parseHandlers);
-  const [trailer, r4] = parseTrailer(r3, parseHandlers);
+  // Try to parse the XRef table (some PDFs omit the XRef table)
+  const parsedXRef = parseXRefTable(remainder, parseHandlers);
+  let xref;
+  let r3;
+  if (parsedXRef) [xref, r3] = parsedXRef;
+
+  // const [xref, r3] = parseXRefTable(remainder, parseHandlers);
+
+  // Try to parse the trailer with and without dictionary, because some
+  // malformatted documents are missing the dictionary.
+  const [trailer, r4] =
+    parseTrailer(r3 || remainder, parseHandlers) ||
+    parseTrailerWithoutDict(r3 || remainder, parseHandlers);
   console.log('done');
 };
 

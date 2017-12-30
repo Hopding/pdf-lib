@@ -1,0 +1,7 @@
+# Tests:
+* Make test for dictionaries like:
+  '<</Matrix [1 0 0 1 0 0]/Length 96/Resources<</ProcSet [/PDF /Text /ImageB /ImageC /ImageI]/Font<</ArialMT 2 0 R>>>>/Filter/FlateDecode/BBox[0 0 30.33 9.36]/Type/XObject/Subtype/Form/FormType 1>>'
+* Make tests for names like:
+  '/ModDate(D:20170322102501-05'00')'
+* Make test for booleans like:
+  ' true>>/Metadata 147 0 R>>'

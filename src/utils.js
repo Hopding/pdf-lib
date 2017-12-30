@@ -1,5 +1,11 @@
 import _ from 'lodash';
 
+export const writeToDebugFile = (data, postfix = 0) => {
+  // eslint-disable-next-line
+  const fs = require('fs');
+  fs.writeFileSync(`/Users/user/Desktop/pdf-lib/debug${postfix}`, data);
+};
+
 export const isInt = num => num % 1 === 0;
 
 export const charCode = char => {

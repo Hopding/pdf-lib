@@ -1,4 +1,9 @@
-import { arrayIndexOf, trimArray, arrayToString } from '../utils';
+import {
+  arrayIndexOf,
+  trimArray,
+  arrayToString,
+  writeToDebugFile,
+} from '../utils';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';

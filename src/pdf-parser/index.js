@@ -46,6 +46,9 @@ class PDFParser {
 
   handleDict = (dictObj: Object) => {
     let dict;
+    // if (dictObj.Type === PDFName.forString('Font')) {
+    // console.log(dictObj);
+    // }
     switch (dictObj.Type) {
       case PDFName.forString('Catalog'):
         dict = PDFCatalog.fromObject(dictObj);
@@ -110,6 +113,11 @@ class PDFParser {
   handleTrailer = ({ dict, lastXRefOffset }) => {};
 
   normalize = () => {
+    console.log(
+      `PDFPARSER.indirectObjects:`,
+      Array.from(this.indirectObjects.keys()).map(o => o.toString()),
+    );
+
     this.dictionaries.forEach(dict => dict.dereference(this.indirectObjects));
     this.arrays.forEach(arr => arr.dereference(this.indirectObjects));
 

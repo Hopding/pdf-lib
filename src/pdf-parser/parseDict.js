@@ -1,4 +1,9 @@
-import { arrayToString, trimArray, arrayCharAt } from '../utils';
+import {
+  arrayToString,
+  trimArray,
+  arrayCharAt,
+  writeToDebugFile,
+} from '../utils';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';
@@ -39,8 +44,8 @@ const parseDict = (input, parseHandlers = {}) => {
   if (arrayToString(remainderTrim, 0, 2) !== '>>') {
     throw new Error('Mismatched brackets!');
   }
-  remainder = trimArray(remainderTrim.subarray(3)); // Remove ending '>>' pair
 
+  remainder = trimArray(remainderTrim.subarray(2)); // Remove ending '>>' pair
   const { onParseDict = () => {} } = parseHandlers;
   return [onParseDict(obj) || obj, remainder];
 };

@@ -1,5 +1,10 @@
 import parseDict from './parseDict';
-import { arrayIndexOf, arrayToString, trimArray } from '../utils';
+import {
+  arrayIndexOf,
+  arrayToString,
+  trimArray,
+  writeToDebugFile,
+} from '../utils';
 
 const parseStream = (input, parseHandlers = {}) => {
   const parsedDict = parseDict(input, parseHandlers);

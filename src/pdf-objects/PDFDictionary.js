@@ -56,6 +56,9 @@ class PDFDictionary extends PDFObject {
   ) => {
     this.map.forEach((val, key) => {
       if (val instanceof PDFIndirectReference) {
+        console.log(
+          `Dereferencing: "${val.constructor.name}" :: with value: ${val}`,
+        );
         const obj = indirectObjects.get(val);
         if (!obj) throw new Error(`Failed to dereference: ${key.toString()}`);
         this.set(key, obj);

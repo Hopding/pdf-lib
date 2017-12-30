@@ -1,7 +1,7 @@
 import { arrayToString } from '../utils';
 
 const parseBool = (input, parseHandlers = {}) => {
-  const boolRegex = /^(?:[\ |\n|\r]*)(true|false)(?=\ |\]|\n|\r)/;
+  const boolRegex = /^(?:[\ |\n|\r]*)(true|false)((?=\ |\]|\n|\r))?/;
   let idx = 0;
   while (String.fromCharCode(input[idx]).match(/^[\ \n\rtruefalse]/)) idx++;
   const result = arrayToString(input, 0, idx).match(boolRegex);
