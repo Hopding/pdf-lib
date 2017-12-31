@@ -8,8 +8,14 @@ import { PDFContentStream } from './src/pdf-structures';
 const files = {
   BOL: n => `/Users/user/Desktop/bols/bol${n || ''}.pdf`,
   MINIMAL: '/Users/user/Desktop/pdf-lib/test-pdfs/minimal.pdf',
+  PDF_SPEC: '/Users/user/Documents/PDF32000_2008.pdf',
+  CMP_SIMPLE_TABLE_DECOMPRESS:
+    '/Users/user/Documents/cmp_simple_table-decompress.pdf',
+  CMP_SIMPLE_TABLE: '/Users/user/Documents/cmp_simple_table.pdf',
+  AST_SCI_DATA_TABLES: '/Users/user/Documents/ast_sci_data_tables_sample.pdf',
+  MOVE_CRM_WEB_SERV: '/Users/user/Documents/moveCRM_Webservices.pdf',
 };
-const inFile = files.BOL(7);
+const inFile = files.MOVE_CRM_WEB_SERV;
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -22,17 +28,19 @@ const page1 = pages[0];
 console.log(`Content Streams: ${page1.getContentStreams().length}`);
 
 const editPdf = () => {
-  page1
-    .get('Resources')
-    .pdfObject.get('Font')
-    .set(
-      'F1',
-      PDFDictionary.fromObject({
-        Type: PDFName.forString('Font'),
-        Subtype: PDFName.forString('Type1'),
-        BaseFont: PDFName.forString('Times-Roman'),
-      }),
-    );
+  const page1Resources = page1.get('Resources');
+  const page1Font = page1Resources.pdfObject
+    ? page1Resources.pdfObject.get('Font')
+    : page1Resources.get('Font');
+
+  page1Font.set(
+    'F1',
+    PDFDictionary.fromObject({
+      Type: PDFName.forString('Font'),
+      Subtype: PDFName.forString('Type1'),
+      BaseFont: PDFName.forString('Times-Roman'),
+    }),
+  );
 
   const stream = new PDFContentStream()
     .beginText()

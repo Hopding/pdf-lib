@@ -2,7 +2,7 @@ import { arrayToString, trimArray } from '../utils';
 
 const parseEntries = input => {
   const trimmed = input.trim();
-  const entryRegex = /^(\d{10})\ (\d{5})\ (n|f)/;
+  const entryRegex = /^(\d{10}) (\d{5}) (n|f)/;
 
   const entriesArr = [];
   let remainder = trimmed;
@@ -21,12 +21,12 @@ const parseEntries = input => {
 
 const parseSections = input => {
   const trimmed = input.trim();
-  const sectionsRegex = /^(\d+)\ (\d+)((\n|\ )(\d{10}\ \d{5}\ (n|f)(\ |\n|\r)*)+)/;
+  const sectionsRegex = /^(\d+) (\d+)((\n|\r| )*(\d{10} \d{5} (n|f)(\n|\r| )*)+)/;
 
   const sectionsArr = [];
   let remainder = trimmed;
   while (remainder.length > 0) {
-    const result = input.match(sectionsRegex);
+    const result = remainder.match(sectionsRegex);
     if (!result) return null;
 
     const [fullMatch, firstObjNum, objCount, entriesStr] = result;
@@ -42,9 +42,9 @@ const parseSections = input => {
 
 const parseXRefTable = (input, parseHandlers = {}) => {
   const trimmed = trimArray(input);
-  const xRefTableRegex = /^xref[\n|\r|\ ]*([\d|\ |\n|\r|f|n]+)/;
+  const xRefTableRegex = /^xref[\n|\r| ]*([\d|\n|\r| |f|n]+)/;
   let idx = 0;
-  while (String.fromCharCode(trimmed[idx]).match(/^[xref\ \n\r\dfn]/)) idx++;
+  while (String.fromCharCode(trimmed[idx]).match(/^[xref \n\r\dfn]/)) idx += 1;
   const result1 = arrayToString(trimmed, 0, idx).match(xRefTableRegex);
   if (!result1) return null;
 

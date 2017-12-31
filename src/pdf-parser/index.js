@@ -114,7 +114,9 @@ class PDFParser {
     return obj;
   };
 
-  handleHeader = header => {};
+  handleHeader = header => {
+    console.log('HEADER:', header);
+  };
 
   handleXRefTable = sections => {};
 
