@@ -56,12 +56,18 @@ class PDFDictionary extends PDFObject {
   ) => {
     this.map.forEach((val, key) => {
       if (val instanceof PDFIndirectReference) {
-        console.log(
-          `Dereferencing: "${val.constructor.name}" :: with value: ${val}`,
-        );
         const obj = indirectObjects.get(val);
-        if (!obj) throw new Error(`Failed to dereference: ${key.toString()}`);
-        this.set(key, obj);
+
+        if (!obj) {
+          const msg = `Failed to dereference: (${key.toString()}, ${val.toString()})`;
+
+          // For some reason, '/Obj' values always seem to fail dereferencing.
+          // This still seems to be a bug, however.
+          if (key.toString() === '/Obj') console.warn(msg);
+          else throw new Error(msg);
+        } else {
+          this.set(key, obj);
+        }
       }
     });
   };

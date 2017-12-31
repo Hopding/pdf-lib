@@ -1,4 +1,7 @@
 /* @flow */
+import pako from 'pako';
+
+import { writeToDebugFile } from '../utils';
 import {
   PDFBoolean,
   PDFArray,
@@ -22,7 +25,9 @@ import {
   PDFTrailer,
   PDFXRef,
 } from '../pdf-structures';
+
 import parseDocument from './parseDocument';
+import decodeStream from './encoding/decodeStream';
 
 class PDFParser {
   indirectObjects: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
@@ -46,9 +51,6 @@ class PDFParser {
 
   handleDict = (dictObj: Object) => {
     let dict;
-    // if (dictObj.Type === PDFName.forString('Font')) {
-    // console.log(dictObj);
-    // }
     switch (dictObj.Type) {
       case PDFName.forString('Catalog'):
         dict = PDFCatalog.fromObject(dictObj);
@@ -74,6 +76,12 @@ class PDFParser {
     dict: PDFDictionary,
     contents: Uint8Array,
   }) => new PDFStream(dict, contents);
+
+  handleObjectStream = (indirectObjects: PDFIndirectObject[]) => {
+    indirectObjects.forEach(indirectObj => {
+      this.indirectObjects.set(indirectObj.getReference(), indirectObj);
+    });
+  };
 
   handleIndirectRef = ({
     objNum,
@@ -113,11 +121,6 @@ class PDFParser {
   handleTrailer = ({ dict, lastXRefOffset }) => {};
 
   normalize = () => {
-    console.log(
-      `PDFPARSER.indirectObjects:`,
-      Array.from(this.indirectObjects.keys()).map(o => o.toString()),
-    );
-
     this.dictionaries.forEach(dict => dict.dereference(this.indirectObjects));
     this.arrays.forEach(arr => arr.dereference(this.indirectObjects));
 
@@ -139,6 +142,7 @@ class PDFParser {
       onParseNumber: this.handleNumber,
       onParseString: this.handleString,
       onParseStream: this.handleStream,
+      onParseObjectStream: this.handleObjectStream,
       onParseIndirectRef: this.handleIndirectRef,
       onParseIndirectObj: this.handleIndirectObj,
       onParseHeader: this.handleHeader,

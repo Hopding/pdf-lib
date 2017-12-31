@@ -75,3 +75,21 @@ export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
 
   return currIdx;
 };
+
+export const arrayFindIndexOf = (arr, predicate, startFrom = 0) => {
+  let currIdx = startFrom;
+
+  while (!predicate(arr.subarray(currIdx, currIdx + 1)[0])) {
+    currIdx += 1;
+    if (currIdx >= arr.length) return undefined;
+  }
+
+  return currIdx;
+};
+
+export const arrayFindIndexOfByChar = (arr, predicate, startFrom = 0) =>
+  arrayFindIndexOf(
+    arr,
+    byte => predicate(String.fromCharCode(byte)),
+    startFrom,
+  );

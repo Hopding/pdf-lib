@@ -17,6 +17,9 @@ class PDFIndirectObject extends PDFObject {
     this.pdfObject = pdfObject;
   }
 
+  static from = (pdfObject: ?$Subtype<PDFObject>) =>
+    new PDFIndirectObject(pdfObject);
+
   setReferenceNumbers = (objectNumber: number, generationNumber: number) => {
     if (
       typeof objectNumber !== 'number' ||

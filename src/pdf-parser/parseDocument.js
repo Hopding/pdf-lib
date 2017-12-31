@@ -28,8 +28,6 @@ const parseDocument = (input, parseHandlers) => {
   let r3;
   if (parsedXRef) [xref, r3] = parsedXRef;
 
-  // const [xref, r3] = parseXRefTable(remainder, parseHandlers);
-
   // Try to parse the trailer with and without dictionary, because some
   // malformatted documents are missing the dictionary.
   const [trailer, r4] =
