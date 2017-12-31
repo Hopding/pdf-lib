@@ -115,24 +115,6 @@ class PDFArray<T: PDFObject> extends PDFObject {
     remaining = addStringToBuffer(']', remaining);
     return remaining;
   };
-
-  toBytes = (): Uint8Array => {
-    const bytes = [...charCodes('[ ')];
-
-    this.array.forEach((e, idx) => {
-      if (e instanceof PDFIndirectObject) {
-        bytes.push(...charCodes(e.toReference()));
-      } else if (e instanceof PDFObject) {
-        bytes.push(...e.toBytes());
-      } else {
-        throw new Error(`Not a PDFObject: ${e.constructor.name}`);
-      }
-      bytes.push(charCode(' '));
-    });
-
-    bytes.push(charCode(']'));
-    return new Uint8Array(bytes);
-  };
 }
 
 export default PDFArray;

@@ -60,17 +60,6 @@ class PDFIndirectObject extends PDFObject {
     remaining = addStringToBuffer('\nendobj\n\n', remaining);
     return remaining;
   };
-
-  toBytes = (): Uint8Array => {
-    const bytes = [
-      ...charCodes(
-        `${this.reference.getObjectNumber()} ${this.reference.getGenerationNumber()} obj\n`,
-      ),
-    ];
-    bytes.push(...this.pdfObject.toBytes());
-    bytes.push(...charCodes('\nendobj\n\n'));
-    return new Uint8Array(bytes);
-  };
 }
 
 export default PDFIndirectObject;

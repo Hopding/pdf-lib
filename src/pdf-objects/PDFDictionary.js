@@ -121,25 +121,6 @@ class PDFDictionary extends PDFObject {
     remaining = addStringToBuffer('>>', remaining);
     return remaining;
   };
-
-  toBytes = (): Uint8Array => {
-    const bytes = [...charCodes('<<\n')];
-
-    this.map.forEach((val, key) => {
-      bytes.push(...charCodes(`${key.toString()} `));
-      if (val instanceof PDFIndirectObject) {
-        bytes.push(...charCodes(val.toReference()));
-      } else if (val instanceof PDFObject) {
-        bytes.push(...val.toBytes());
-      } else {
-        throw new Error(`Not a PDFObject: ${val.constructor.name}`);
-      }
-      bytes.push(charCode('\n'));
-    });
-
-    bytes.push(...charCodes('>>'));
-    return new Uint8Array(bytes);
-  };
 }
 
 export default PDFDictionary;

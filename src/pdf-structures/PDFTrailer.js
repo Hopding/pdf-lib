@@ -47,8 +47,6 @@ class PDFTrailer {
     );
     return remaining;
   };
-
-  toBytes = (): Uint8Array => new Uint8Array(charCodes(`${this.toString()}\n`));
 }
 
 export default PDFTrailer;

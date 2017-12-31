@@ -22,8 +22,8 @@ class PDFBoolean extends PDFObject {
 
   toString = () => this.boolean.toString();
   bytesSize = () => this.toString().length;
-  addBytes = (buffer: Uint8Array): Uint8Array => addStringToBuffer(this.toString(), buffer);
-  toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
+  addBytes = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default PDFBoolean;

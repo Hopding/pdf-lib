@@ -7,8 +7,8 @@ class PDFNull extends PDFObject {
 
   toString = () => 'null';
   bytesSize = () => 4;
-  addBytes = (buffer: Uint8Array): Uint8Array => addStringToBuffer('null', buffer);
-  toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
+  addBytes = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer('null', buffer);
 }
 
 export default PDFNull;

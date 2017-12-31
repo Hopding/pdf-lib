@@ -43,20 +43,7 @@ const editPdf = () => {
   page1.addContentStream(stream);
 };
 
-// editPdf();
+editPdf();
 // console.log(page1.getContentStreams().length);
 
-// const origBytes = pdfDoc.toBytes();
-// console.log(`pdfDoc.toBytes().length === ${origBytes.length}`);
-//
-// const bytesSize = pdfDoc.bytesSize(
-// pdfDoc.buildXRefTable(),
-// pdfDoc.buildTrailer(0),
-// );
-// console.log(`pdfDoc.bytesSize() === ${bytesSize}`);
-//
-// const toBytesEfficient = pdfDoc.toBytesEfficient();
-// console.log(`pdfDoc.toBytesEfficient() === ${toBytesEfficient}`);
-
-fs.writeFileSync(outFile, pdfDoc.toBytesEfficient());
-// fs.writeFileSync(outFile, pdfDoc.toBytes());
+fs.writeFileSync(outFile, pdfDoc.toBytes());

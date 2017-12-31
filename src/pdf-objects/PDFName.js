@@ -49,8 +49,8 @@ class PDFName extends PDFObject {
       .join('');
 
   bytesSize = () => this.toString().length;
-  addBytes = (buffer: Uint8Array): Uint8Array => addStringToBuffer(this.toString(), buffer);
-  toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
+  addBytes = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default PDFName;

@@ -45,22 +45,6 @@ class PDFStream extends PDFObject {
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
   };
-
-  toBytes = (): Uint8Array => {
-    /* eslint-disable */
-    const dictArr = new Uint8Array(charCodes(dedent`
-      ${this.dictionary}
-      stream
-    ` + '\n'));
-    /* eslint-enable */
-    return mergeUint8Arrays(
-      dictArr,
-      typeof this.content === 'string'
-        ? new Uint8Array(charCodes(`${this.content}`))
-        : this.content,
-      new Uint8Array(charCodes('\nendstream')),
-    );
-  };
 }
 
 export default PDFStream;

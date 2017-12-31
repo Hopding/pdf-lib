@@ -80,7 +80,6 @@ class PDFDocument {
         .setIsInUse(true);
       subsection.addEntry(entry);
 
-      // bytes.push(...indirectObj.toBytes());
       offset += indirectObj.bytesSize();
     });
     table.addSubsection(subsection);
@@ -108,7 +107,7 @@ class PDFDocument {
     return size;
   };
 
-  toBytesEfficient = () => {
+  toBytes = () => {
     const xRefOffset =
       this.header.bytesSize() +
       _(this.indirectObjects)
@@ -118,9 +117,8 @@ class PDFDocument {
     const xRefTable = this.buildXRefTable();
     const trailer = this.buildTrailer(xRefOffset);
 
-    const bytesSize = this.bytesSize(xRefTable, trailer);
-    // return bytesSize;
-    const buffer = new Uint8Array(bytesSize);
+    const bufferSize = this.bytesSize(xRefTable, trailer);
+    const buffer = new Uint8Array(bufferSize);
 
     let remaining = this.header.addBytes(buffer);
     this.indirectObjects.forEach(obj => {
@@ -129,43 +127,6 @@ class PDFDocument {
     remaining = xRefTable.addBytes(remaining);
     remaining = trailer.addBytes(remaining);
     return buffer;
-  };
-
-  toBytes = (): Uint8Array => {
-    const bytes = [...this.header.toBytes()];
-
-    const table = new PDFXRef.Table();
-    const subsection = new PDFXRef.Subsection().setFirstObjNum(0);
-    subsection.addEntry(
-      new PDFXRef.Entry()
-        .setOffset(0)
-        .setGenerationNum(65535)
-        .setIsInUse(false),
-    );
-
-    this.sortIndirectObjects();
-    this.indirectObjects.forEach(indirectObj => {
-      const entry = new PDFXRef.Entry()
-        .setOffset(bytes.length)
-        .setGenerationNum(0)
-        .setIsInUse(true);
-      subsection.addEntry(entry);
-
-      bytes.push(...indirectObj.toBytes());
-    });
-    table.addSubsection(subsection);
-
-    const trailer = new PDFTrailer(
-      bytes.length,
-      PDFDictionary.fromObject({
-        Size: new PDFNumber(this.indirectObjects.length + 1),
-        Root: this.catalog,
-      }),
-    );
-
-    bytes.push(...table.toBytes());
-    bytes.push(...trailer.toBytes());
-    return new Uint8Array(bytes);
   };
 }
 

@@ -35,12 +35,6 @@ class PDFHeader {
     remaining.set([charCode('%'), 130, 130, 130, 130, charCode('\n')], 0);
     return remaining.subarray(6);
   };
-
-  toBytes = (): Uint8Array => {
-    const bytes = [...charCodes(`%PDF-${this.major}.${this.minor}\n`)];
-    bytes.push(charCode('%'), 130, 130, 130, 130, charCode('\n'));
-    return new Uint8Array(bytes);
-  };
 }
 
 export default PDFHeader;
