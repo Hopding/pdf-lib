@@ -13,3 +13,4 @@
 
 # Bugs
 * Figure out why the "2 0 R" object reference fails to be resolved in bol2.pdf
+* Look into why pdfDoc.toBytes().length and pdfDoc.toBytesEfficient().length are different sizes...

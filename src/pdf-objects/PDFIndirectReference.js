@@ -1,5 +1,5 @@
 /* @flow */
-import { charCodes } from '../utils';
+import { addStringToBuffer, charCodes } from '../utils';
 import PDFObject from './PDFObject';
 import PDFNumber from './PDFNumber';
 
@@ -55,7 +55,8 @@ class PDFIndirectReference extends PDFObject {
   getGenerationNumber = () => this.generationNumber;
 
   toString = () => `${this.objectNumber} ${this.generationNumber} R`;
-
+  bytesSize = () => this.toString().length;
+  addBytes = (buffer: Uint8Array): Uint8Array => addStringToBuffer(this.toString(), buffer);
   toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }
 

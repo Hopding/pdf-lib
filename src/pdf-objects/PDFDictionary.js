@@ -1,6 +1,6 @@
 /* @flow */
 import _ from 'lodash';
-import { charCodes, charCode } from '../utils';
+import { addStringToBuffer, charCodes, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject, PDFName } from '.';
@@ -66,6 +66,11 @@ class PDFDictionary extends PDFObject {
           if (key.toString() === '/Obj') console.warn(msg);
           else throw new Error(msg);
         } else {
+          if (key.toString() === '/Obj') {
+            console.log(
+              `Successfully dereferenced (${key.toString()}, ${val.toString()})`,
+            );
+          }
           this.set(key, obj);
         }
       }
@@ -83,6 +88,38 @@ class PDFDictionary extends PDFObject {
     str += '>>';
 
     return str;
+  };
+
+  bytesSize = () =>
+    3 + // "<<\n"
+    _(Array.from(this.map.entries()))
+      .map(([key, val]) => {
+        const keySize = `${key.toString()} `.length;
+        if (val instanceof PDFIndirectObject) {
+          return keySize + val.toReference().length + 1;
+        } else if (val instanceof PDFObject) {
+          return keySize + val.bytesSize() + 1;
+        }
+        throw new Error(`Not a PDFObject: ${val.constructor.name}`);
+      })
+      .sum() +
+    2; // ">>"
+
+  addBytes = (buffer: Uint8Array): Uint8Array => {
+    let remaining = addStringToBuffer('<<\n', buffer);
+    this.map.forEach((val, key) => {
+      remaining = addStringToBuffer(`${key.toString()} `, remaining);
+      if (val instanceof PDFIndirectObject) {
+        remaining = addStringToBuffer(val.toReference(), remaining);
+      } else if (val instanceof PDFObject) {
+        remaining = val.addBytes(remaining);
+      } else {
+        throw new Error(`Not a PDFObject: ${val.constructor.name}`);
+      }
+      remaining = addStringToBuffer('\n', remaining);
+    });
+    remaining = addStringToBuffer('>>', remaining);
+    return remaining;
   };
 
   toBytes = (): Uint8Array => {

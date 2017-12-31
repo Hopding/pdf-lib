@@ -1,6 +1,6 @@
 /* @flow */
 import dedent from 'dedent';
-import { charCodes, charCode } from '../utils';
+import { charCodes, addStringToBuffer, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
 import PDFIndirectReference from './PDFIndirectReference';
@@ -44,6 +44,22 @@ class PDFIndirectObject extends PDFObject {
       ${this.pdfObject}
     endobj
   `;
+
+  bytesSize = () =>
+    `${this.reference.getObjectNumber()} ${this.reference.getGenerationNumber()} obj\n`
+      .length +
+    this.pdfObject.bytesSize() +
+    9; // "\nendobj\n\n"
+
+  addBytes = (buffer: Uint8Array): Uint8Array => {
+    let remaining = addStringToBuffer(
+      `${this.reference.getObjectNumber()} ${this.reference.getGenerationNumber()} obj\n`,
+      buffer,
+    );
+    remaining = this.pdfObject.addBytes(remaining);
+    remaining = addStringToBuffer('\nendobj\n\n', remaining);
+    return remaining;
+  };
 
   toBytes = (): Uint8Array => {
     const bytes = [

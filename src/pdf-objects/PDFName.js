@@ -1,5 +1,5 @@
 /* @flow */
-import { charCodes, charCode } from '../utils';
+import { addStringToBuffer, charCodes, charCode } from '../utils';
 import PDFObject from './PDFObject';
 
 const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
@@ -48,6 +48,8 @@ class PDFName extends PDFObject {
       )
       .join('');
 
+  bytesSize = () => this.toString().length;
+  addBytes = (buffer: Uint8Array): Uint8Array => addStringToBuffer(this.toString(), buffer);
   toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }
 

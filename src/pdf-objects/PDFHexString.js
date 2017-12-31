@@ -1,5 +1,5 @@
 /* @flow */
-import { charCodes } from '../utils';
+import { addStringToBuffer, charCodes } from '../utils';
 import PDFObject from './PDFObject';
 
 const hexStringRegex = /^[\dABCDEFabcdef]*/;
@@ -20,6 +20,8 @@ class PDFHexString extends PDFObject {
   static fromString = (string: string) => new PDFHexString(string);
 
   toString = () => `<${this.string}>`;
+  bytesSize = () => this.toString().length;
+  addBytes = (buffer: Uint8Array): Uint8Array => addStringToBuffer(this.toString(), buffer);
   toBytes = (): Uint8Array => new Uint8Array(charCodes(this.toString()));
 }
 

@@ -33,6 +33,13 @@ export const mergeUint8Arrays = (...arrs) => {
   return newArray;
 };
 
+export const addStringToBuffer = (str: string, buffer: Uint8Array) => {
+  for (let i = 0; i < str.length; i++) {
+    buffer[i] = str.charCodeAt(i);
+  }
+  return buffer.subarray(str.length);
+};
+
 export const charCodes = str => str.split('').map(c => c.charCodeAt(0));
 
 export const arrayToString = (arr, startAt = 0, stopAt) => {
@@ -93,3 +100,14 @@ export const arrayFindIndexOfByChar = (arr, predicate, startFrom = 0) =>
     byte => predicate(String.fromCharCode(byte)),
     startFrom,
   );
+
+export const validate = <T>(value: T, predicate: T => boolean, msg: string) => {
+  if (!predicate(value)) throw new Error(msg);
+};
+
+export const instanceOf = <T>(value: T, requiredClass: T, msg: string) => {
+  if (!(value instanceof requiredClass)) throw new Error(msg);
+};
+
+export const isInstance = <T>(requiredClass: T) => (value: any) =>
+  value instanceof requiredClass;

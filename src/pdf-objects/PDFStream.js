@@ -1,7 +1,7 @@
 /* @flow */
 import pako from 'pako';
 import dedent from 'dedent';
-import { mergeUint8Arrays, charCodes } from '../utils';
+import { addStringToBuffer, mergeUint8Arrays, charCodes } from '../utils';
 
 import PDFObject from './PDFObject';
 import PDFDictionary from './PDFDictionary';
@@ -29,6 +29,22 @@ class PDFStream extends PDFObject {
   }
 
   toString = () => `<${this.content.length} bytes>`;
+
+  bytesSize = () =>
+    this.dictionary.bytesSize() + 1 + 7 + this.content.length + 10;
+
+  addBytes = (buffer: Uint8Array): Uint8Array => {
+    let remaining = this.dictionary.addBytes(buffer);
+    remaining = addStringToBuffer('\nstream\n', remaining);
+    if (typeof this.content === 'string') {
+      remaining = addStringToBuffer(this.content, remaining);
+    } else {
+      remaining.set(this.content, 0);
+      remaining = remaining.subarray(this.content.length);
+    }
+    remaining = addStringToBuffer('\nendstream', remaining);
+    return remaining;
+  };
 
   toBytes = (): Uint8Array => {
     /* eslint-disable */

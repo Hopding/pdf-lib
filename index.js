@@ -1,21 +1,15 @@
 import fs from 'fs';
-import { arrayToString, charCodes } from './src/utils';
+import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
 import PDFParser from './src/pdf-parser';
 import parseDict from './src/pdf-parser/parseDict';
 import { PDFDictionary, PDFName } from './src/pdf-objects';
 import { PDFContentStream } from './src/pdf-structures';
 
-// const dict =
-//   '<</Matrix [1 0 0 1 0 0]/Length 96/Resources<</ProcSet [/PDF /Text /ImageB /ImageC /ImageI]/Font<</ArialMT 2 0 R>>>>/Filter/FlateDecode/BBox[0 0 30.33 9.36]/Type/XObject/Subtype/Form/FormType 1>>';
-// const res0 = parseDict(new Uint8Array(charCodes(dict)));
-// console.log('HEAD:', res0[0]);
-// console.log('TAIL:', arrayToString(res0[1]));
-
 const files = {
   BOL: n => `/Users/user/Desktop/bols/bol${n || ''}.pdf`,
   MINIMAL: '/Users/user/Desktop/pdf-lib/test-pdfs/minimal.pdf',
 };
-const inFile = files.BOL(2);
+const inFile = files.BOL(7);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -52,4 +46,17 @@ const editPdf = () => {
 // editPdf();
 // console.log(page1.getContentStreams().length);
 
-fs.writeFileSync(outFile, pdfDoc.toBytes());
+// const origBytes = pdfDoc.toBytes();
+// console.log(`pdfDoc.toBytes().length === ${origBytes.length}`);
+//
+// const bytesSize = pdfDoc.bytesSize(
+// pdfDoc.buildXRefTable(),
+// pdfDoc.buildTrailer(0),
+// );
+// console.log(`pdfDoc.bytesSize() === ${bytesSize}`);
+//
+// const toBytesEfficient = pdfDoc.toBytesEfficient();
+// console.log(`pdfDoc.toBytesEfficient() === ${toBytesEfficient}`);
+
+fs.writeFileSync(outFile, pdfDoc.toBytesEfficient());
+// fs.writeFileSync(outFile, pdfDoc.toBytes());
