@@ -4,6 +4,7 @@
 * Handle parsing PDFs with appended updates
 * Add in "early stops" to parsers (like checking if first char is a "<", for hex strings) to avoid excessive work.
 * Use "Length" dict entry when parsing streams
+* (Maybe) Speed up parser by created a function that looks at the next input character to guess what PDF Object is next in the input bytes.
 
 # Tests:
 * Make test for dictionaries like:

@@ -36,7 +36,7 @@ export type ParsedPDF = {
 
 export type ParseHandlers = {
   onParseBool?: PDFBoolean => any,
-  onParseArray?: (PDFArray<PDFObject>) => any,
+  onParseArray?: PDFArray => any,
   onParseDict?: PDFDictionary => any,
   onParseHexString?: PDFHexString => any,
   onParseName?: PDFName => any,
@@ -66,10 +66,8 @@ class PDFParser {
   catalog: PDFObject;
   pdfDoc: PDFDocument = new PDFDocument();
 
-  handleArray = (arrayObj: Array<*>) => {
-    const array = PDFArray.fromArray(arrayObj);
+  handleArray = (array: PDFArray) => {
     this.arrays.push(array);
-    return array;
   };
 
   handleDict = (dictObj: Object) => {

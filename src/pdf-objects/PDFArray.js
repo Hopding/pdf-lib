@@ -1,29 +1,27 @@
 /* @flow */
 import _ from 'lodash';
-import { addStringToBuffer, charCodes, charCode } from '../utils';
-import { validate, isInstance } from '../utils/validate';
+import { error, addStringToBuffer } from '../utils';
+import { validate, validateArr, isInstance } from '../utils/validate';
 
 import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject } from '.';
 
-class PDFArray<T: PDFObject> extends PDFObject {
-  array: Array<T> = [];
+class PDFArray extends PDFObject {
+  array: Array<Object>;
 
-  constructor(array: Array<T>) {
+  constructor(array: Array<Object>) {
     super();
-    array.forEach(e => {
-      validate(
-        e,
-        isInstance(PDFObject),
-        'Cannot construct PDFArray from array whose elements are not PDFObjects',
-      );
-      this.array.push(e);
-    });
+    validateArr(
+      array,
+      isInstance(PDFObject),
+      'Cannot construct PDFArray from array whose elements are not PDFObjects',
+    );
+    this.array = array.slice();
   }
 
-  static fromArray = array => new PDFArray(array);
+  static fromArray = (array: Array<*>) => new PDFArray(array);
 
-  push = (val: T) => {
+  push = (val: any) => {
     validate(
       val,
       isInstance(PDFObject),
@@ -34,7 +32,7 @@ class PDFArray<T: PDFObject> extends PDFObject {
     return this;
   };
 
-  set = (idx: number, val: T) => {
+  set = (idx: number, val: any) => {
     validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
     validate(
       val,
@@ -46,7 +44,7 @@ class PDFArray<T: PDFObject> extends PDFObject {
     return this;
   };
 
-  get = (idx: number): T => {
+  get = (idx: number) => {
     validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
     return this.array[idx];
   };
@@ -60,35 +58,19 @@ class PDFArray<T: PDFObject> extends PDFObject {
     this.array.forEach((val, idx) => {
       if (val instanceof PDFIndirectReference) {
         const obj = indirectObjects.get(val);
-        if (!obj) throw new Error(`Failed to dereference: ${val.toString()}`);
-        this.array[idx] = obj;
+        if (!obj) error(`Failed to dereference: ${val.toString()}`);
+        else this.array[idx] = obj;
       }
     });
-  };
-
-  toString = () => {
-    let str = '[';
-    this.array.forEach((e, idx) => {
-      if (e instanceof PDFIndirectObject) str += `${e.toReference()}`;
-      else if (e instanceof PDFObject) str += `${e.toString()}`;
-      else throw new Error(`Not a PDFObject: ${e.constructor.name}`);
-
-      if (idx !== this.array.length - 1) str += ' ';
-    });
-    str += ']';
-    return str;
   };
 
   bytesSize = () =>
     2 + // "[ "
     _(this.array)
       .map(e => {
-        if (e instanceof PDFIndirectObject) {
-          return e.toReference().length + 1;
-        } else if (e instanceof PDFObject) {
-          return e.bytesSize() + 1;
-        }
-        throw new Error(`Not a PDFObject: ${e.constructor.name}`);
+        if (e.is(PDFIndirectObject)) return e.toReference().length + 1;
+        else if (e.is(PDFObject)) return e.bytesSize() + 1;
+        return error(`Not a PDFObject: ${e.constructor.name}`);
       })
       .sum() +
     1; // "]";
@@ -97,12 +79,12 @@ class PDFArray<T: PDFObject> extends PDFObject {
     let remaining = addStringToBuffer('[ ', buffer);
 
     this.array.forEach((e, idx) => {
-      if (e instanceof PDFIndirectObject) {
+      if (e.is(PDFIndirectObject)) {
         remaining = addStringToBuffer(e.toReference(), remaining);
-      } else if (e instanceof PDFObject) {
+      } else if (e.is(PDFObject)) {
         remaining = e.copyBytesInto(remaining);
       } else {
-        throw new Error(`Not a PDFObject: ${e.constructor.name}`);
+        error(`Not a PDFObject: ${e.constructor.name}`);
       }
       remaining = addStringToBuffer(' ', remaining);
     });
