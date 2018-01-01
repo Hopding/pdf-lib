@@ -1,6 +1,8 @@
 /* @flow */
 
 class PDFObject {
+  is = (obj: any) => this instanceof obj;
+
   toString = (): string => {
     throw new Error(
       `toString() is not implemented on ${this.constructor.name}`,

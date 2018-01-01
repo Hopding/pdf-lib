@@ -1,6 +1,6 @@
 /* @flow */
 import _ from 'lodash';
-import { addStringToBuffer, charCodes, charCode } from '../utils';
+import { error, addStringToBuffer, charCodes, charCode } from '../utils';
 
 import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject, PDFName } from '.';
@@ -11,6 +11,7 @@ class PDFDictionary extends PDFObject {
 
   constructor(object: ?{ [string]: PDFObject }, validKeys: ?Array<string>) {
     super();
+
     this.validKeys = validKeys;
     if (object) {
       _.forEach(object, (val, key) => {
@@ -19,21 +20,32 @@ class PDFDictionary extends PDFObject {
     }
   }
 
-  static fromObject = object => new PDFDictionary(object);
+  static from = object => new PDFDictionary(object);
+
+  filter = (predicate: (any, PDFName) => boolean) =>
+    Array.from(this.map.entries()).filter(([key, value]) =>
+      predicate(value, key),
+    );
+
+  find = (predicate: (any, PDFName) => boolean) =>
+    Array.from(this.map.entries()).find(([key, value]) =>
+      predicate(value, key),
+    );
 
   set = (key: string | PDFName, val: PDFObject, validate: ?boolean = true) => {
     if (typeof key !== 'string' && !(key instanceof PDFName)) {
-      throw new Error(
-        'PDFDictionary.set() requires keys to be strings or PDFNames',
-      );
+      error('PDFDictionary.set() requires keys to be strings or PDFNames');
     }
     if (!(val instanceof PDFObject)) {
-      throw new Error('PDFDictionary.set() requires values to be PDFObjects');
+      error(
+        `PDFDictionary.set() requires values to be PDFObjects, found: "${val
+          .constructor.name}"`,
+      );
     }
 
-    const keyName = typeof key === 'string' ? PDFName.forString(key) : key;
+    const keyName = typeof key === 'string' ? PDFName.from(key) : key;
     if (validate && this.validKeys && !this.validKeys.includes(keyName.key)) {
-      throw new Error(`Invalid key: "${keyName.key}"`);
+      error(`Invalid key: "${keyName.key}"`);
     }
     this.map.set(keyName, val);
 
@@ -47,7 +59,7 @@ class PDFDictionary extends PDFObject {
       );
     }
 
-    if (typeof key === 'string') return this.map.get(PDFName.forString(key));
+    if (typeof key === 'string') return this.map.get(PDFName.from(key));
 
     return this.map.get(key);
   };
@@ -60,6 +72,11 @@ class PDFDictionary extends PDFObject {
         const obj = indirectObjects.get(val);
 
         if (!obj) {
+          console.log(`key.constructor.name === "${key.constructor.name}"`);
+          console.log(`key.key === "${key.key}"`);
+          console.log(`key.key.length === "${key.key.length}"`);
+          // console.log(`key.toString() === "${key.toString()}"`);
+          // console.log(`key.toString().length === "${key.toString().length}"`);
           const msg = `Failed to dereference: (${key.toString()}, ${val.toString()})`;
 
           // For some reason, '/Obj' values always seem to fail dereferencing.

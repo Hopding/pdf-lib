@@ -37,7 +37,8 @@ const parseDict = (input, parseHandlers = {}) => {
       parseArray(remainder, parseHandlers) ||
       parseDict(remainder, parseHandlers);
 
-    obj[key] = pdfObject;
+    // TODO: UPDATE THIS SO THAT DUPLICATE KEYS AREN'T BEING MADE
+    obj[key.key] = pdfObject;
     remainder = r2;
   }
   const remainderTrim = trimArray(remainder);

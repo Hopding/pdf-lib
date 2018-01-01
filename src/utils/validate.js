@@ -17,3 +17,9 @@ export const isInstance = <T>(requiredClass: T) => (value: any) =>
 
 export const isIdentity = <T>(requiredValue: T) => (value: any) =>
   value === requiredValue;
+
+export const isNotIdentity = <T>(requiredValue: T) => (value: any) =>
+  value !== requiredValue;
+
+export const doesMatch = (regex: RegExp) => (value: string) =>
+  !!value.match(regex);

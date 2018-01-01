@@ -10,5 +10,4 @@ export { default as PDFNull } from './PDFNull';
 export { default as PDFNumber } from './PDFNumber';
 export { default as PDFObject } from './PDFObject';
 export { default as PDFStream } from './PDFStream';
-export { default as PDFObjectStream } from './PDFObjectStream';
 export { default as PDFString } from './PDFString';

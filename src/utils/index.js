@@ -12,18 +12,27 @@ export const error = (msg: string) => {
 
 export const isInt = num => num % 1 === 0;
 
+export const and = (...predicates: ((any) => boolean)[]) => (
+  ...values: any[]
+) => predicates.every(predicate => predicate(...values));
+
+export const or = (...predicates: ((any) => boolean)[]) => (...values: any[]) =>
+  predicates.find(predicate => predicate(...values));
+
 export const toBoolean = (boolStr: string) => {
   if (boolStr === 'true') return true;
   if (boolStr === 'false') return false;
   throw new Error(`"${boolStr}" cannot be converted to a boolean`);
 };
 
-export const charCode = char => {
-  if (char.length !== 1) {
+export const charCode = charStr => {
+  if (charStr.length !== 1) {
     throw new Error('"char" must be exactly one character long');
   }
-  return char.charCodeAt(0);
+  return charStr.charCodeAt(0);
 };
+
+export const charFromCode = (code: number) => String.fromCharCode(code);
 
 export const isString = val => typeof val === 'string';
 

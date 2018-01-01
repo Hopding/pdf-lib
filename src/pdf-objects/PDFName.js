@@ -1,6 +1,9 @@
 /* @flow */
-import { addStringToBuffer, charCodes, charCode } from '../utils';
+import _ from 'lodash';
+
 import PDFObject from './PDFObject';
+import { and, addStringToBuffer, charCode } from '../utils';
+import { validate, isIdentity, isNotIdentity } from '../utils/validate';
 
 const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
 const pdfNamePool: Map<string, PDFName> = new Map();
@@ -10,23 +13,26 @@ class PDFName extends PDFObject {
 
   constructor(enforcer: Symbol, key: string) {
     super();
-    if (enforcer !== pdfNameEnforcer) {
-      throw new Error('Cannot create PDFName via constructor');
-    }
-
-    if (key.charAt(0) === ' ') {
-      throw new Error('PDF Name objects may not begin with a space character.');
-    }
+    validate(
+      enforcer,
+      isIdentity(pdfNameEnforcer),
+      'Cannot create PDFName via constructor',
+    );
+    validate(
+      key.charAt(0),
+      and(isNotIdentity(' '), isNotIdentity('/')),
+      'PDF Name objects may not begin with a space character.',
+    );
     this.key = key;
   }
 
-  static isRegularChar = char =>
+  static isRegularChar = (char: string) =>
     charCode(char) >= charCode('!') && charCode(char) <= charCode('~');
 
-  static forString = (str: string): PDFName => {
-    if (typeof str !== 'string') {
-      throw new Error('PDFName.forString() requires string as argument');
-    }
+  static from = (str: string): PDFName => {
+    validate(str, _.isString, 'PDFName.from() requires string as argument');
+
+    if (str.charCodeAt(0) === '/') console.log(`str: "${str.charCodeAt(0)}"`);
 
     let pdfName = pdfNamePool.get(str);
     if (!pdfName) {
@@ -49,6 +55,7 @@ class PDFName extends PDFObject {
       .join('');
 
   bytesSize = () => this.toString().length;
+
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }

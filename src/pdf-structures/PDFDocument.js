@@ -90,7 +90,7 @@ class PDFDocument {
   buildTrailer = (xrefOffset: number): PDFTrailer =>
     new PDFTrailer(
       xrefOffset,
-      PDFDictionary.fromObject({
+      PDFDictionary.from({
         Size: new PDFNumber(this.indirectObjects.length + 1),
         Root: this.catalog,
       }),

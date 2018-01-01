@@ -1,11 +1,6 @@
 /* @flow */
-import {
-  PDFStream,
-  PDFObjectStream,
-  PDFName,
-  PDFIndirectObject,
-  PDFDictionary,
-} from '../pdf-objects';
+import { PDFStream, PDFName, PDFDictionary } from '../pdf-objects';
+import { PDFObjectStream } from '../pdf-structures';
 import parseDict from './parseDict';
 import decodeStream from './encoding/decodeStream';
 import parseObjectStream from './parseObjectStream';
@@ -86,17 +81,18 @@ export default (
   if (!res) return null;
   const [dict, contents, remaining] = res;
 
-  // Extract type of the stream
-  const Type: ?PDFName = dict.get('Type');
-
   // If it's an Object Stream, parse it and return the indirect objects it contains
-  if (Type && Type.key === 'ObjStm') {
-    const decoded = decodeStream(dict, contents);
-    const indirectObjects = parseObjectStream(dict, decoded, parseHandlers);
-    if (parseHandlers.onParseObjectStream) {
-      parseHandlers.onParseObjectStream(indirectObjects);
+  if (dict.get('Type') === PDFName.from('ObjStm')) {
+    if (dict.get('Filter') !== PDFName.from('FlateDecode')) {
+      error(`Cannot decode "${+dict.get('Filter')}" Object Streams`);
     }
-    return [indirectObjects, remaining];
+
+    const decoded = decodeStream(dict, contents);
+    const objectStream = parseObjectStream(dict, decoded, parseHandlers);
+    if (parseHandlers.onParseObjectStream) {
+      parseHandlers.onParseObjectStream(objectStream);
+    }
+    return [objectStream, remaining];
   }
 
   // Otherwise, return a PDFStream without parsing the content bytes

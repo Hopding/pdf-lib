@@ -74,7 +74,7 @@ const parseMalformattedTrailer = (
 
   const trailer = PDFTrailer.from(
     lastXRefOffset.number,
-    PDFDictionary.fromObject({}),
+    PDFDictionary.from({}),
   );
   if (parseHandlers.onParseTrailer) parseHandlers.onParseTrailer(trailer);
   return [trailer, trimmed.subarray(fullMatch.length)];

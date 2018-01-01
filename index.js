@@ -35,10 +35,10 @@ const editPdf = () => {
 
   page1Font.set(
     'F1',
-    PDFDictionary.fromObject({
-      Type: PDFName.forString('Font'),
-      Subtype: PDFName.forString('Type1'),
-      BaseFont: PDFName.forString('Times-Roman'),
+    PDFDictionary.from({
+      Type: PDFName.from('Font'),
+      Subtype: PDFName.from('Type1'),
+      BaseFont: PDFName.from('Times-Roman'),
     }),
   );
 

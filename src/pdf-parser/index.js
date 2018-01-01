@@ -11,19 +11,21 @@ import {
   PDFNumber,
   PDFObject,
   PDFStream,
-  PDFObjectStream,
   PDFString,
 } from '../pdf-objects';
 import {
   PDFCatalog,
   PDFDocument,
   PDFHeader,
+  PDFObjectStream,
   PDFPage,
   PDFPageTree,
   PDFTrailer,
   PDFXRef,
 } from '../pdf-structures';
 import parseDocument from './parseDocument';
+
+import { writeToDebugFile } from '../utils';
 
 export type ParsedPDF = {
   header: PDFHeader,
@@ -64,10 +66,6 @@ class PDFParser {
   catalog: PDFObject;
   pdfDoc: PDFDocument = new PDFDocument();
 
-  handleBool = PDFBoolean.fromString;
-  handleHexString = PDFHexString.fromString;
-  handleName = PDFName.forString;
-  handleNull = PDFNull.fromNull;
   handleNumber = PDFNumber.fromString;
   handleString = PDFString.fromString;
 
@@ -80,36 +78,27 @@ class PDFParser {
   handleDict = (dictObj: Object) => {
     let dict;
     switch (dictObj.Type) {
-      case PDFName.forString('Catalog'):
+      case PDFName.from('Catalog'):
         dict = PDFCatalog.fromObject(dictObj);
         break;
-      case PDFName.forString('Pages'):
+      case PDFName.from('Pages'):
         dict = PDFPageTree.fromObject(dictObj);
         break;
-      case PDFName.forString('Page'):
+      case PDFName.from('Page'):
         dict = PDFPage.fromObject(this.pdfDoc, dictObj);
         break;
       default:
-        dict = PDFDictionary.fromObject(dictObj);
+        dict = PDFDictionary.from(dictObj);
     }
 
     this.dictionaries.push(dict);
     return dict;
   };
 
-  // handleStream = ({
-  //   dict,
-  //   contents,
-  // }: {
-  //   dict: PDFDictionary,
-  //   contents: Uint8Array,
-  // }) => new PDFStream(dict, contents);
-
   handleObjectStream = ({ objects }: PDFObjectStream) => {
-    // console.log('objects:', objects);
     objects.forEach(indirectObj => {
-      console.log(`Reference: ${indirectObj.getReference().toString()}`);
       this.indirectObjects.set(indirectObj.getReference(), indirectObj);
+
       this.parsedPdf.indirectObjects.set(
         indirectObj.getReference(),
         indirectObj,
@@ -118,10 +107,8 @@ class PDFParser {
   };
 
   handleIndirectObj = (indirectObj: PDFIndirectObject) => {
-    if (indirectObj.pdfObject instanceof PDFObjectStream) return;
-
     this.indirectObjects.set(indirectObj.getReference(), indirectObj);
-    if (indirectObj.pdfObject instanceof PDFCatalog) this.catalog = indirectObj;
+    if (indirectObj.pdfObject.is(PDFCatalog)) this.catalog = indirectObj;
 
     this.parsedPdf.indirectObjects.set(indirectObj.getReference(), indirectObj);
   };
@@ -142,6 +129,19 @@ class PDFParser {
     this.dictionaries.forEach(dict => dict.dereference(this.indirectObjects));
     this.arrays.forEach(arr => arr.dereference(this.indirectObjects));
 
+    // Remove Object Streams and Cross Reference Streams, because we've already
+    // parsed the Object Streams into PDFIndirectObjects, and will just write
+    // them as such and use normal xref tables to reference them.
+    this.indirectObjects.forEach(({ pdfObject }, ref) => {
+      if (pdfObject.is(PDFObjectStream)) this.indirectObjects.delete(ref);
+      else if (
+        pdfObject.is(PDFStream) &&
+        pdfObject.dictionary.get('Type') === PDFName.from('XRef')
+      ) {
+        this.indirectObjects.delete(ref);
+      }
+    });
+
     let objNum = 1;
     this.indirectObjects.forEach(obj => {
       obj.setReferenceNumbers(objNum, 0);
@@ -151,15 +151,11 @@ class PDFParser {
 
   parse = (bytes: Uint8Array): PDFDocument => {
     const parseHandlers = {
-      onParseBool: this.handleBool,
       onParseArray: this.handleArray,
       onParseDict: this.handleDict,
-      onParseHexString: this.handleHexString,
-      onParseName: this.handleName,
-      onParseNull: this.handleNull,
       onParseNumber: this.handleNumber,
       onParseString: this.handleString,
-      // onParseStream: this.handleStream,
+
       onParseObjectStream: this.handleObjectStream,
       onParseIndirectObj: this.handleIndirectObj,
       onParseHeader: this.handleHeader,
@@ -173,6 +169,7 @@ class PDFParser {
     this.pdfDoc
       .setCatalog(this.catalog)
       .setIndirectObjects(Array.from(this.indirectObjects.values()));
+
     return this.pdfDoc;
   };
 }

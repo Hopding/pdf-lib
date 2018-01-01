@@ -2,6 +2,8 @@
 * Support stream decompression for non FlateEncoded streams
 * Remove parseHandlers, just return PDFObjects
 * Handle parsing PDFs with appended updates
+* Add in "early stops" to parsers (like checking if first char is a "<", for hex strings) to avoid excessive work.
+* Use "Length" dict entry when parsing streams
 
 # Tests:
 * Make test for dictionaries like:
@@ -18,3 +20,5 @@
 * Figure out why the "2 0 R" object reference fails to be resolved in bol2.pdf
 * Look into why pdfDoc.toBytes().length and pdfDoc.toBytesEfficient().length are different sizes... (some of this code was removed in commit: c508f73103021317580b641a6f895737e4e6e1b5)
 * MAKE SURE OBJECT STREAM PDFStreams DON'T STICK AROUND SINCE WE'VE ALREADY EXTRACTED THEIR DATA
+* Update "parseTrailer" to handle files w/o "xref" and "trailer" keywords, as they are _not_ malformatted, but are to be expected in 1.5+ PDFs
+* Remove "is" method on PDFObject as it is fakeable
