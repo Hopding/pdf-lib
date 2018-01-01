@@ -1,6 +1,7 @@
 /* @flow */
 import _ from 'lodash';
-import { validate, addStringToBuffer, charCodes } from '../utils';
+import { toBoolean, addStringToBuffer } from '../utils';
+import { validate } from '../utils/validate';
 
 import PDFObject from './PDFObject';
 
@@ -18,11 +19,11 @@ class PDFBoolean extends PDFObject {
   }
 
   static fromBool = (bool: boolean) => new PDFBoolean(bool);
-  static fromString = (boolStr: string) => new PDFBoolean(Boolean(boolStr));
+  static fromString = (boolStr: string) => new PDFBoolean(toBoolean(boolStr));
 
   toString = () => this.boolean.toString();
   bytesSize = () => this.toString().length;
-  addBytes = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

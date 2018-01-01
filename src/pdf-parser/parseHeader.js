@@ -1,16 +1,36 @@
+/* @flow */
+import { PDFHeader } from '../pdf-structures';
 import { arrayToString, trimArray, arrayCharAt, arrayIndexOf } from '../utils';
 
-const parseHeader = (input, parseHandlers = {}) => {
+import type { ParseHandlers } from '.';
+
+/**
+Accepts an array of bytes as input. Checks to see if the first characters in the
+trimmed input make up a PDF Header.
+
+If so, returns a tuple containing (1) an object representing the parsed PDF
+Header and (2) a subarray of the input with the characters making up the parsed
+header removed. The "onParseHeader" parse handler will also be called with the
+PDFHeader obect.
+
+If not, null is returned.
+*/
+const parseHeader = (
+  input: Uint8Array,
+  { onParseHeader }: ParseHandlers = {},
+): ?[PDFHeader, Uint8Array] => {
   const trimmed = trimArray(input);
   const fileHeaderRegex = /^%PDF-(\d+)\.(\d+)/;
+
+  // Search for first character that isn't part of a header
   let idx = 0;
-  while (String.fromCharCode(trimmed[idx]).match(/^[%PDF-\d\.]/)) idx++;
+  while (String.fromCharCode(trimmed[idx]).match(/^[%PDF-\d.]/)) idx += 1;
+
+  // Try to match the regex up to that character to see if we've got a header
   const result = arrayToString(trimmed, 0, idx).match(fileHeaderRegex);
   if (!result) return null;
 
   const [fullMatch, major, minor] = result;
-  const { onParseHeader = () => {} } = parseHandlers;
-
   const withoutVersion = trimArray(trimmed.subarray(fullMatch.length));
   let returnArray = withoutVersion;
 
@@ -20,7 +40,9 @@ const parseHeader = (input, parseHandlers = {}) => {
     returnArray = withoutVersion.subarray(nextNewline);
   }
 
-  return [onParseHeader({ major, minor }) || { major, minor }, returnArray];
+  const pdfHeader = PDFHeader.from(Number(major), Number(minor));
+  if (onParseHeader) onParseHeader(pdfHeader);
+  return [pdfHeader, returnArray];
 };
 
 export default parseHeader;

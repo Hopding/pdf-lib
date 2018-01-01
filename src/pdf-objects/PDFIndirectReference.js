@@ -1,7 +1,8 @@
 /* @flow */
-import { addStringToBuffer, charCodes } from '../utils';
+import _ from 'lodash';
+import { addStringToBuffer } from '../utils';
+import { validate, isIdentity } from '../utils/validate';
 import PDFObject from './PDFObject';
-import PDFNumber from './PDFNumber';
 
 const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
 const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();
@@ -16,28 +17,19 @@ class PDFIndirectReference extends PDFObject {
     generationNumber: number,
   ) {
     super();
-    if (enforcer !== pdfIndirectRefEnforcer) {
-      throw new Error('Cannot create PDFIndirectReference via constructor');
-    }
+    validate(
+      enforcer,
+      isIdentity(pdfIndirectRefEnforcer),
+      'Cannot create PDFIndirectReference via constructor',
+    );
+    validate(objectNumber, _.isNumber, 'objectNumber must be a Number');
+    validate(generationNumber, _.isNumber, 'generationNumber must be a Number');
 
-    if (
-      typeof objectNumber !== 'number' ||
-      typeof generationNumber !== 'number'
-    ) {
-      throw new Error('objectNumber and generationNumber must be numbers');
-    }
     this.objectNumber = objectNumber;
     this.generationNumber = generationNumber;
   }
 
   static forNumbers = (objectNumber: number, generationNumber: number) => {
-    if (
-      typeof objectNumber !== 'number' ||
-      typeof generationNumber !== 'number'
-    ) {
-      throw new Error('PDFName.forNumbers() requires numbers for arguments');
-    }
-
     const key = `${objectNumber} ${generationNumber}`;
     let indirectRef = pdfIndirectRefPool.get(key);
     if (!indirectRef) {
@@ -51,12 +43,11 @@ class PDFIndirectReference extends PDFObject {
     return indirectRef;
   };
 
-  getObjectNumber = () => this.objectNumber;
-  getGenerationNumber = () => this.generationNumber;
-
   toString = () => `${this.objectNumber} ${this.generationNumber} R`;
+
   bytesSize = () => this.toString().length;
-  addBytes = (buffer: Uint8Array): Uint8Array =>
+
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

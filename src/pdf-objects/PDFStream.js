@@ -1,10 +1,7 @@
 /* @flow */
-import pako from 'pako';
-import dedent from 'dedent';
-import { addStringToBuffer, mergeUint8Arrays, charCodes } from '../utils';
-
-import PDFObject from './PDFObject';
-import PDFDictionary from './PDFDictionary';
+import { PDFObject, PDFDictionary } from '.';
+import { addStringToBuffer } from '../utils';
+import { validate, isInstance } from '../utils/validate';
 
 class PDFStream extends PDFObject {
   dictionary: PDFDictionary;
@@ -18,9 +15,12 @@ class PDFStream extends PDFObject {
     encoded?: boolean,
   ) {
     super();
-    if (!(dictionary instanceof PDFDictionary)) {
-      throw new Error('PDFStreams require PDFDictionary to be constructed');
-    }
+    validate(
+      dictionary,
+      isInstance(PDFDictionary),
+      'PDFStream.dictionary must be of type PDFDictionary',
+    );
+
     if (content) this.locked = true;
 
     this.dictionary = dictionary;
@@ -28,13 +28,14 @@ class PDFStream extends PDFObject {
     this.encoded = encoded || false;
   }
 
-  toString = () => `<${this.content.length} bytes>`;
+  static from = (dictionary: PDFDictionary, content: Uint8Array) =>
+    new PDFStream(dictionary, content, true);
 
   bytesSize = () =>
     this.dictionary.bytesSize() + 1 + 7 + this.content.length + 10;
 
-  addBytes = (buffer: Uint8Array): Uint8Array => {
-    let remaining = this.dictionary.addBytes(buffer);
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+    let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
     if (typeof this.content === 'string') {
       remaining = addStringToBuffer(this.content, remaining);

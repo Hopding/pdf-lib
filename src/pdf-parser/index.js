@@ -1,7 +1,4 @@
 /* @flow */
-import pako from 'pako';
-
-import { writeToDebugFile } from '../utils';
 import {
   PDFBoolean,
   PDFArray,
@@ -14,6 +11,7 @@ import {
   PDFNumber,
   PDFObject,
   PDFStream,
+  PDFObjectStream,
   PDFString,
 } from '../pdf-objects';
 import {
@@ -25,12 +23,42 @@ import {
   PDFTrailer,
   PDFXRef,
 } from '../pdf-structures';
-
 import parseDocument from './parseDocument';
-import decodeStream from './encoding/decodeStream';
+
+export type ParsedPDF = {
+  header: PDFHeader,
+  indirectObjects: Map<PDFIndirectReference, PDFIndirectObject>,
+  xRefTables: PDFXRef.Table[],
+  trailers: PDFTrailer[],
+};
+
+export type ParseHandlers = {
+  onParseBool?: PDFBoolean => any,
+  onParseArray?: (PDFArray<PDFObject>) => any,
+  onParseDict?: PDFDictionary => any,
+  onParseHexString?: PDFHexString => any,
+  onParseName?: PDFName => any,
+  onParseNull?: PDFNull => any,
+  onParseNumber?: PDFNumber => any,
+  onParseString?: PDFString => any,
+  onParseStream?: PDFStream => any,
+  onParseObjectStream?: PDFObjectStream => any,
+  onParseIndirectRef?: PDFIndirectReference => any,
+  onParseIndirectObj?: PDFIndirectObject => any,
+  onParseHeader?: PDFHeader => any,
+  onParseXRefTable?: PDFXRef.Table => any,
+  onParseTrailer?: PDFTrailer => any,
+};
 
 class PDFParser {
+  parsedPdf = {
+    header: null,
+    indirectObjects: (new Map(): Map<PDFIndirectReference, PDFIndirectObject>),
+    xRefTables: [],
+    trailers: [],
+  };
   indirectObjects: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
+
   dictionaries: Array<PDFDictionary> = [];
   arrays: Array<PDFArray> = [];
   catalog: PDFObject;
@@ -69,58 +97,46 @@ class PDFParser {
     return dict;
   };
 
-  handleStream = ({
-    dict,
-    contents,
-  }: {
-    dict: PDFDictionary,
-    contents: Uint8Array,
-  }) => new PDFStream(dict, contents);
+  // handleStream = ({
+  //   dict,
+  //   contents,
+  // }: {
+  //   dict: PDFDictionary,
+  //   contents: Uint8Array,
+  // }) => new PDFStream(dict, contents);
 
-  handleObjectStream = (indirectObjects: PDFIndirectObject[]) => {
-    indirectObjects.forEach(indirectObj => {
+  handleObjectStream = ({ objects }: PDFObjectStream) => {
+    // console.log('objects:', objects);
+    objects.forEach(indirectObj => {
+      console.log(`Reference: ${indirectObj.getReference().toString()}`);
       this.indirectObjects.set(indirectObj.getReference(), indirectObj);
+      this.parsedPdf.indirectObjects.set(
+        indirectObj.getReference(),
+        indirectObj,
+      );
     });
   };
 
-  handleIndirectRef = ({
-    objNum,
-    genNum,
-  }: {
-    objNum: string,
-    genNum: string,
-  }) => PDFIndirectReference.forNumbers(Number(objNum), Number(genNum));
+  handleIndirectObj = (indirectObj: PDFIndirectObject) => {
+    if (indirectObj.pdfObject instanceof PDFObjectStream) return;
 
-  handleIndirectObj = ({
-    objNum,
-    genNum,
-    contentObj,
-  }: {
-    objNum: number,
-    genNum: number,
-    contentObj: PDFObject,
-  }) => {
-    const obj = new PDFIndirectObject(contentObj).setReferenceNumbers(
-      objNum,
-      genNum,
-    );
+    this.indirectObjects.set(indirectObj.getReference(), indirectObj);
+    if (indirectObj.pdfObject instanceof PDFCatalog) this.catalog = indirectObj;
 
-    if (obj.pdfObject instanceof PDFCatalog) this.catalog = obj;
-
-    this.indirectObjects.set(
-      PDFIndirectReference.forNumbers(objNum, genNum),
-      obj,
-    );
-    return obj;
+    this.parsedPdf.indirectObjects.set(indirectObj.getReference(), indirectObj);
   };
 
-  handleHeader = header => {
-    console.log('HEADER:', header);
+  handleHeader = (header: PDFHeader) => {
+    this.parsedPdf.header = header;
   };
 
-  handleXRefTable = sections => {};
+  handleXRefTable = (xRefTable: PDFXRef.Table) => {
+    this.parsedPdf.xRefTables.push(xRefTable);
+  };
 
-  handleTrailer = ({ dict, lastXRefOffset }) => {};
+  handleTrailer = (trailer: PDFTrailer) => {
+    this.parsedPdf.trailers.push(trailer);
+  };
 
   normalize = () => {
     this.dictionaries.forEach(dict => dict.dereference(this.indirectObjects));
@@ -143,9 +159,8 @@ class PDFParser {
       onParseNull: this.handleNull,
       onParseNumber: this.handleNumber,
       onParseString: this.handleString,
-      onParseStream: this.handleStream,
+      // onParseStream: this.handleStream,
       onParseObjectStream: this.handleObjectStream,
-      onParseIndirectRef: this.handleIndirectRef,
       onParseIndirectObj: this.handleIndirectObj,
       onParseHeader: this.handleHeader,
       onParseXRefTable: this.handleXRefTable,

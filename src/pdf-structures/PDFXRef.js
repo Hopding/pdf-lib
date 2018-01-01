@@ -1,24 +1,30 @@
 /* @flow */
 import _ from 'lodash';
 import dedent from 'dedent';
-import { addStringToBuffer, charCodes } from '../utils';
+import { addStringToBuffer } from '../utils';
+import { validate, validateArr, isInstance } from '../utils/validate';
 
 export class Entry {
   offset = null;
   generationNum = null;
   isInUse = null;
 
+  static create = () => new Entry();
+
   setOffset = (offset: number) => {
+    validate(offset, _.isNumber, 'offset must be a number');
     this.offset = offset;
     return this;
   };
 
   setGenerationNum = (generationNum: number) => {
+    validate(generationNum, _.isNumber, 'generationNum must be a number');
     this.generationNum = generationNum;
     return this;
   };
 
   setIsInUse = (isInUse: boolean) => {
+    validate(isInUse, _.isBoolean, 'isInUse must be a boolean');
     this.isInUse = isInUse;
     return this;
   };
@@ -32,8 +38,20 @@ export class Entry {
 }
 
 export class Subsection {
-  entries: Array<Entry> = [];
+  entries: Entry[] = [];
   firstObjNum: number;
+
+  static from = (entries: Entry[]) => {
+    validateArr(
+      entries,
+      isInstance(Entry),
+      'PDFXRef.Subsection.entries must be an array of PDFXRef.Entry',
+    );
+
+    const subsection = new Subsection();
+    subsection.entries = entries;
+    return subsection;
+  };
 
   addEntry = (entry: Entry) => {
     this.entries.push(entry);
@@ -41,12 +59,10 @@ export class Subsection {
   };
 
   setFirstObjNum = (firstObjNum: number) => {
+    validate(firstObjNum, _.isNumber, 'firstObjNum must be a number');
     this.firstObjNum = firstObjNum;
     return this;
   };
-
-  getLastEntry = () => _(this.entries).last();
-  getEntry = (idx: number) => this.entries[idx];
 
   toString = () =>
     dedent(`
@@ -62,23 +78,23 @@ export class Subsection {
 }
 
 class Table {
-  subsections: Array<Subsection> = [];
+  subsections: Subsection[] = [];
+
+  static from = (subsections: Subsection[]) => {
+    validateArr(
+      subsections,
+      isInstance(Subsection),
+      'PDFXRef.Table.subsections must be an array of PDFXRef.Subsection',
+    );
+
+    const table = new Table();
+    table.subsections = subsections;
+    return table;
+  };
 
   addSubsection = (subsection: Subsection) => {
     this.subsections.push(subsection);
     return this;
-  };
-
-  getLastSubsection = () => _.last(this.subsections);
-
-  getUsedObjectNumbers = () => {
-    const usedObjNums: Set<number> = new Set();
-    this.subsections.forEach(({ firstObjNum, entries }) => {
-      _.range(firstObjNum, entries.length).forEach(n => {
-        usedObjNums.add(n);
-      });
-    });
-    return usedObjNums;
   };
 
   toString = () =>
@@ -93,7 +109,7 @@ class Table {
       .map(ss => ss.bytesSize() + 1)
       .sum();
 
-  addBytes = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('xref\n', buffer);
     this.subsections.map(String).forEach(subsectionStr => {
       remaining = addStringToBuffer(`${subsectionStr}\n`, remaining);

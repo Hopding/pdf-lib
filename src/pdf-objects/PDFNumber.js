@@ -18,7 +18,7 @@ class PDFNumber extends PDFObject {
 
   toString = () => this.number.toString();
   bytesSize = () => this.toString().length;
-  addBytes = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

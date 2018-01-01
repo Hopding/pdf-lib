@@ -7,7 +7,7 @@ class PDFNull extends PDFObject {
 
   toString = () => 'null';
   bytesSize = () => 4;
-  addBytes = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer('null', buffer);
 }
 

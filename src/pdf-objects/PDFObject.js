@@ -13,9 +13,9 @@ class PDFObject {
     );
   };
 
-  addBytes = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     throw new Error(
-      `addBytes() is not implemented on ${this.constructor.name}`,
+      `copyBytesInto() is not implemented on ${this.constructor.name}`,
     );
   };
 }

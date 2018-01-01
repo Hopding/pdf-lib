@@ -15,7 +15,7 @@ const files = {
   AST_SCI_DATA_TABLES: '/Users/user/Documents/ast_sci_data_tables_sample.pdf',
   MOVE_CRM_WEB_SERV: '/Users/user/Documents/moveCRM_Webservices.pdf',
 };
-const inFile = files.MOVE_CRM_WEB_SERV;
+const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 

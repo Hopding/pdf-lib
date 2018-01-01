@@ -21,7 +21,7 @@ class PDFHexString extends PDFObject {
 
   toString = () => `<${this.string}>`;
   bytesSize = () => this.toString().length;
-  addBytes = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

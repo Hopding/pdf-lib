@@ -2,7 +2,7 @@ import { writeToDebugFile, arrayToString } from '../utils';
 import parseHeader from './parseHeader';
 import parseIndirectObj from './parseIndirectObj';
 import parseXRefTable from './parseXRefTable';
-import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
+import { parseTrailer, parseMalformattedTrailer } from './parseTrailer';
 import removeComments from './removeComments';
 
 const parseDocument = (input, parseHandlers) => {
@@ -48,7 +48,7 @@ const parseDocument = (input, parseHandlers) => {
   // malformatted documents are missing the dictionary.
   const [trailer, r4] =
     parseTrailer(r3 || remainder, parseHandlers) ||
-    parseTrailerWithoutDict(r3 || remainder, parseHandlers);
+    parseMalformattedTrailer(r3 || remainder, parseHandlers);
   console.log('done');
 };
 

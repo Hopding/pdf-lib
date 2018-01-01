@@ -6,7 +6,7 @@ import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject, PDFName } from '.';
 
 class PDFDictionary extends PDFObject {
-  map: Map<PDFName, PDFObject> = new Map();
+  map: Map<PDFName, any> = new Map();
   validKeys: ?Array<string>;
 
   constructor(object: ?{ [string]: PDFObject }, validKeys: ?Array<string>) {
@@ -48,6 +48,7 @@ class PDFDictionary extends PDFObject {
     }
 
     if (typeof key === 'string') return this.map.get(PDFName.forString(key));
+
     return this.map.get(key);
   };
 
@@ -105,14 +106,14 @@ class PDFDictionary extends PDFObject {
       .sum() +
     2; // ">>"
 
-  addBytes = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('<<\n', buffer);
     this.map.forEach((val, key) => {
       remaining = addStringToBuffer(`${key.toString()} `, remaining);
       if (val instanceof PDFIndirectObject) {
         remaining = addStringToBuffer(val.toReference(), remaining);
       } else if (val instanceof PDFObject) {
-        remaining = val.addBytes(remaining);
+        remaining = val.copyBytesInto(remaining);
       } else {
         throw new Error(`Not a PDFObject: ${val.constructor.name}`);
       }

@@ -1,7 +1,8 @@
 /* @flow */
 import dedent from 'dedent';
 import _ from 'lodash';
-import { addStringToBuffer, validate, isInstance, charCodes } from '../utils';
+import { addStringToBuffer } from '../utils';
+import { validate, isInstance } from '../utils/validate';
 
 import PDFDictionary from '../pdf-objects/PDFDictionary';
 
@@ -21,6 +22,9 @@ class PDFTrailer {
     this.dictionary = dictionary;
   }
 
+  static from = (offset: number, dictionary: PDFDictionary) =>
+    new PDFTrailer(offset, dictionary);
+
   toString = () => dedent`
     trailer
     ${this.dictionary}
@@ -38,9 +42,9 @@ class PDFTrailer {
     1 + // "\n"
     5; // "%%EOF\n"
 
-  addBytes = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('trailer\n', buffer);
-    remaining = this.dictionary.addBytes(remaining);
+    remaining = this.dictionary.copyBytesInto(remaining);
     remaining = addStringToBuffer(
       `\nstartxref\n${this.offset}\n%%EOF\n`,
       remaining,

@@ -1,12 +1,7 @@
 /* @flow */
 import _ from 'lodash';
-import {
-  validate,
-  isInstance,
-  addStringToBuffer,
-  charCodes,
-  charCode,
-} from '../utils';
+import { addStringToBuffer, charCodes, charCode } from '../utils';
+import { validate, isInstance } from '../utils/validate';
 
 import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject } from '.';
@@ -98,14 +93,14 @@ class PDFArray<T: PDFObject> extends PDFObject {
       .sum() +
     1; // "]";
 
-  addBytes = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('[ ', buffer);
 
     this.array.forEach((e, idx) => {
       if (e instanceof PDFIndirectObject) {
         remaining = addStringToBuffer(e.toReference(), remaining);
       } else if (e instanceof PDFObject) {
-        remaining = e.addBytes(remaining);
+        remaining = e.copyBytesInto(remaining);
       } else {
         throw new Error(`Not a PDFObject: ${e.constructor.name}`);
       }

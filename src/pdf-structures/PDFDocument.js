@@ -25,7 +25,7 @@ class PDFDocument {
     this.sortIndirectObjects();
     this.maxReferenceNumber = _.last(this.indirectObjects)
       .getReference()
-      .getObjectNumber();
+      .objectNumber;
     return this;
   };
 
@@ -52,8 +52,8 @@ class PDFDocument {
 
   sortIndirectObjects = () => {
     this.indirectObjects.sort((a, b) => {
-      const aRefNum = a.getReference().getObjectNumber();
-      const bRefNum = b.getReference().getObjectNumber();
+      const aRefNum = a.getReference().objectNumber;
+      const bRefNum = b.getReference().objectNumber;
 
       if (aRefNum < bRefNum) return -1;
       else if (aRefNum > bRefNum) return 1;
@@ -120,12 +120,12 @@ class PDFDocument {
     const bufferSize = this.bytesSize(xRefTable, trailer);
     const buffer = new Uint8Array(bufferSize);
 
-    let remaining = this.header.addBytes(buffer);
+    let remaining = this.header.copyBytesInto(buffer);
     this.indirectObjects.forEach(obj => {
-      remaining = obj.addBytes(remaining);
+      remaining = obj.copyBytesInto(remaining);
     });
-    remaining = xRefTable.addBytes(remaining);
-    remaining = trailer.addBytes(remaining);
+    remaining = xRefTable.copyBytesInto(remaining);
+    remaining = trailer.copyBytesInto(remaining);
     return buffer;
   };
 }

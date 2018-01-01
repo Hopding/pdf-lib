@@ -6,7 +6,17 @@ export const writeToDebugFile = (data, postfix = 0) => {
   fs.writeFileSync(`/Users/user/Desktop/pdf-lib/debug${postfix}`, data);
 };
 
+export const error = (msg: string) => {
+  throw new Error(msg);
+};
+
 export const isInt = num => num % 1 === 0;
+
+export const toBoolean = (boolStr: string) => {
+  if (boolStr === 'true') return true;
+  if (boolStr === 'false') return false;
+  throw new Error(`"${boolStr}" cannot be converted to a boolean`);
+};
 
 export const charCode = char => {
   if (char.length !== 1) {
@@ -93,21 +103,3 @@ export const arrayFindIndexOf = (arr, predicate, startFrom = 0) => {
 
   return currIdx;
 };
-
-export const arrayFindIndexOfByChar = (arr, predicate, startFrom = 0) =>
-  arrayFindIndexOf(
-    arr,
-    byte => predicate(String.fromCharCode(byte)),
-    startFrom,
-  );
-
-export const validate = <T>(value: T, predicate: T => boolean, msg: string) => {
-  if (!predicate(value)) throw new Error(msg);
-};
-
-export const instanceOf = <T>(value: T, requiredClass: T, msg: string) => {
-  if (!(value instanceof requiredClass)) throw new Error(msg);
-};
-
-export const isInstance = <T>(requiredClass: T) => (value: any) =>
-  value instanceof requiredClass;
