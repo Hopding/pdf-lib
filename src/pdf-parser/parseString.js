@@ -1,12 +1,30 @@
+/* @flow */
+import { PDFString } from '../pdf-objects';
 import { arrayToString, trimArray, arrayCharAt } from '../utils';
 
-const parseString = (input, parseHandlers = {}) => {
+import type { ParseHandlers } from '.';
+
+/**
+Accepts an array of bytes as input. Checks to see if the first characters in the
+trimmed input make up a PDF String.
+
+If so, returns a tuple containing (1) an object representing the parsed PDF
+String and (2) a subarray of the input with the characters making up the parsed
+string removed. The "onParseString" parse handler will also be called with the
+PDFString object.
+
+If not, returns null.
+*/
+const parseString = (
+  input: Uint8Array,
+  { onParseString }: ParseHandlers = {},
+): ?[PDFString, Uint8Array] => {
   const trimmed = trimArray(input);
   if (arrayCharAt(trimmed, 0) !== '(') return null;
 
   const parensStack = [];
   let isEscaped = false;
-  for (let idx = 0; idx < trimmed.length; idx++) {
+  for (let idx = 0; idx < trimmed.length; idx += 1) {
     const c = arrayCharAt(trimmed, idx);
     // Check for unescaped parenthesis
     if (!isEscaped) {
@@ -25,9 +43,10 @@ const parseString = (input, parseHandlers = {}) => {
 
     // Once (if) the unescaped parenthesis balance out, return their contents
     if (parensStack.length === 0) {
-      const { onParseString = () => {} } = parseHandlers;
       const str = arrayToString(trimmed, 1, idx);
-      return [onParseString(str) || str, trimmed.subarray(idx + 1)];
+      const pdfString = PDFString.fromString(str);
+      if (onParseString) onParseString(pdfString);
+      return [pdfString, trimmed.subarray(idx + 1)];
     }
   }
   return null; // Parenthesis didn't balance out
