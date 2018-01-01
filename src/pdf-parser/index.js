@@ -66,7 +66,6 @@ class PDFParser {
   catalog: PDFObject;
   pdfDoc: PDFDocument = new PDFDocument();
 
-  handleNumber = PDFNumber.fromString;
   handleString = PDFString.fromString;
 
   handleArray = (arrayObj: Array<*>) => {
@@ -153,7 +152,6 @@ class PDFParser {
     const parseHandlers = {
       onParseArray: this.handleArray,
       onParseDict: this.handleDict,
-      onParseNumber: this.handleNumber,
       onParseString: this.handleString,
 
       onParseObjectStream: this.handleObjectStream,

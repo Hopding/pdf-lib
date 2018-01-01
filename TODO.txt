@@ -22,3 +22,4 @@
 * MAKE SURE OBJECT STREAM PDFStreams DON'T STICK AROUND SINCE WE'VE ALREADY EXTRACTED THEIR DATA
 * Update "parseTrailer" to handle files w/o "xref" and "trailer" keywords, as they are _not_ malformatted, but are to be expected in 1.5+ PDFs
 * Remove "is" method on PDFObject as it is fakeable
+* Update "parseDict" so multiple PDFNames are not being created!
