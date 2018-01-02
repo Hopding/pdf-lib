@@ -1,7 +1,7 @@
 import fs from 'fs';
-import PDFDocumentFactory from './src/pdf-document/PDFDocumentFactory';
-import { PDFDictionary, PDFName } from './src/pdf-objects';
-import { PDFContentStream } from './src/pdf-structures';
+import PDFDocumentFactory from './src/core/pdf-document/PDFDocumentFactory';
+import { PDFDictionary, PDFName } from './src/core/pdf-objects';
+import { PDFContentStream } from './src/core/pdf-structures';
 
 import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
 
@@ -15,7 +15,7 @@ const files = {
   AST_SCI_DATA_TABLES: '/Users/user/Documents/ast_sci_data_tables_sample.pdf',
   MOVE_CRM_WEB_SERV: '/Users/user/Documents/moveCRM_Webservices.pdf',
 };
-const inFile = files.BOL(6);
+const inFile = files.PDF_SPEC;
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -24,7 +24,7 @@ const pdfDoc = PDFDocumentFactory.load(bytes);
 const pages = pdfDoc.getPages();
 console.log(`Pages: ${pages.length}`);
 const page1 = pages[0];
-console.log(`Content Streams: ${page1.getContentStreams().length}`);
+console.log(`Page 1 Content Streams: ${page1.getContentStreams().length}`);
 
 const editPdf = () => {
   const page1Resources = page1.get('Resources');
