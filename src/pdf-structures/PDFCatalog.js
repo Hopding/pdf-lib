@@ -35,7 +35,7 @@ class PDFCatalog extends PDFDictionary {
     'NeedsRendering',
   ]);
 
-  static fromObject = (object): PDFCatalog =>
+  static from = (object: PDFDictionary): PDFCatalog =>
     new PDFCatalog(object, PDFCatalog.validKeys);
 
   getPageTree = (): PDFPageTree =>

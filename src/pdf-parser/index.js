@@ -70,24 +70,9 @@ class PDFParser {
     this.arrays.push(array);
   };
 
-  handleDict = (dictObj: Object) => {
-    let dict;
-    switch (dictObj.Type) {
-      case PDFName.from('Catalog'):
-        dict = PDFCatalog.fromObject(dictObj);
-        break;
-      case PDFName.from('Pages'):
-        dict = PDFPageTree.fromObject(dictObj);
-        break;
-      case PDFName.from('Page'):
-        dict = PDFPage.fromObject(this.pdfDoc, dictObj);
-        break;
-      default:
-        dict = PDFDictionary.from(dictObj);
-    }
-
+  handleDict = (dict: PDFDictionary) => {
+    if (dict.is(PDFPage)) dict.setPdfDocument(this.pdfDoc);
     this.dictionaries.push(dict);
-    return dict;
   };
 
   handleObjectStream = ({ objects }: PDFObjectStream) => {
@@ -103,7 +88,9 @@ class PDFParser {
 
   handleIndirectObj = (indirectObj: PDFIndirectObject) => {
     this.indirectObjects.set(indirectObj.getReference(), indirectObj);
-    if (indirectObj.pdfObject.is(PDFCatalog)) this.catalog = indirectObj;
+    if (indirectObj.pdfObject.is(PDFCatalog)) {
+      this.catalog = indirectObj;
+    }
 
     this.parsedPdf.indirectObjects.set(indirectObj.getReference(), indirectObj);
   };

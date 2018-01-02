@@ -1,11 +1,12 @@
 /* @flow */
+import { PDFDocument, PDFContentStream } from '.';
 import {
   PDFDictionary,
   PDFStream,
   PDFArray,
   PDFIndirectObject,
 } from '../pdf-objects';
-import { PDFDocument, PDFContentStream } from '.';
+import { validate, isInstance } from '../utils/validate';
 
 class PDFPage extends PDFDictionary {
   pdfDocument: PDFDocument;
@@ -43,13 +44,13 @@ class PDFPage extends PDFDictionary {
     'VP',
   ]);
 
-  constructor(pdfDocument: PDFDocument, ...args) {
-    super(...args);
-    this.pdfDocument = pdfDocument;
-  }
+  static from = (object: PDFDictionary) => new PDFPage(object);
 
-  static fromObject = (pdfDocument, object): PDFPage =>
-    new PDFPage(pdfDocument, object, PDFPage.validKeys);
+  setPdfDocument = (doc: PDFDocument) => {
+    validate(doc, isInstance(PDFDocument), 'PDFPage.doc must be PDFDocument');
+    this.pdfDocument = doc;
+    return this;
+  };
 
   getContentStreams = (): Array<PDFStream> => {
     const contents = this.get('Contents');

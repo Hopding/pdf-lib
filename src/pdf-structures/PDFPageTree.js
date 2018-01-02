@@ -1,11 +1,10 @@
 /* @flow */
-import { PDFIndirectObject, PDFDictionary, PDFArray } from '../pdf-objects';
-import { PDFPage } from '.';
+import { PDFIndirectObject, PDFDictionary } from '../pdf-objects';
 
 class PDFPageTree extends PDFDictionary {
   static validKeys = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
 
-  static fromObject = (object): PDFPageTree =>
+  static from = (object: PDFDictionary): PDFPageTree =>
     new PDFPageTree(object, PDFPageTree.validKeys);
 
   getKids = () => {

@@ -45,7 +45,12 @@ const editPdf = () => {
   const stream = new PDFContentStream()
     .beginText()
     .setFont('F1', 50)
-    .moveText(0, 50)
+    .moveText(0, 750)
+    .showText('TESTING TESTING TESTING')
+    .endText()
+    .beginText()
+    .setFont('F1', 50)
+    .moveText(0, 500)
     .showText('TESTING TESTING TESTING')
     .endText();
   page1.addContentStream(stream);

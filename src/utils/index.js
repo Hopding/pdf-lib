@@ -12,6 +12,8 @@ export const error = (msg: string) => {
 
 export const isInt = num => num % 1 === 0;
 
+export const isString = (val): %checks => typeof val === 'string';
+
 export const and = (...predicates: ((any) => boolean)[]) => (
   ...values: any[]
 ) => predicates.every(predicate => predicate(...values));
@@ -33,8 +35,6 @@ export const charCode = charStr => {
 };
 
 export const charFromCode = (code: number) => String.fromCharCode(code);
-
-export const isString = val => typeof val === 'string';
 
 export const isObject = val =>
   Object.prototype.toString.call(val) === '[object Object]';

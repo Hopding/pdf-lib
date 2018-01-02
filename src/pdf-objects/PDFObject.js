@@ -1,7 +1,7 @@
 /* @flow */
 
 class PDFObject {
-  is = (obj: any) => this instanceof obj;
+  is = <T>(obj: T) => this instanceof obj;
 
   toString = (): string => {
     throw new Error(
