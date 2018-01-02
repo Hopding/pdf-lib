@@ -1,9 +1,9 @@
 import fs from 'fs';
-import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
-import PDFParser from './src/pdf-parser';
-import parseDict from './src/pdf-parser/parseDict';
+import PDFDocumentFactory from './src/pdf-document/PDFDocumentFactory';
 import { PDFDictionary, PDFName } from './src/pdf-objects';
 import { PDFContentStream } from './src/pdf-structures';
+
+import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
 
 const files = {
   BOL: n => `/Users/user/Desktop/bols/bol${n || ''}.pdf`,
@@ -19,8 +19,7 @@ const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
-const parser = new PDFParser();
-const pdfDoc = parser.parse(bytes);
+const pdfDoc = PDFDocumentFactory.load(bytes);
 
 const pages = pdfDoc.getPages();
 console.log(`Pages: ${pages.length}`);
@@ -57,6 +56,5 @@ const editPdf = () => {
 };
 
 editPdf();
-// console.log(page1.getContentStreams().length);
 
 fs.writeFileSync(outFile, pdfDoc.toBytes());

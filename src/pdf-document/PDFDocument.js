@@ -6,7 +6,13 @@ import {
   PDFObject,
   PDFNumber,
 } from '../pdf-objects';
-import { PDFCatalog, PDFHeader, PDFPage, PDFXRef, PDFTrailer } from '.';
+import {
+  PDFCatalog,
+  PDFHeader,
+  PDFPage,
+  PDFXRef,
+  PDFTrailer,
+} from '../pdf-structures';
 import { arrayToString } from '../utils';
 
 class PDFDocument {
@@ -23,9 +29,9 @@ class PDFDocument {
   setIndirectObjects = (indirectObjects: Array<PDFIndirectObject>) => {
     this.indirectObjects = indirectObjects;
     this.sortIndirectObjects();
-    this.maxReferenceNumber = _.last(this.indirectObjects)
-      .getReference()
-      .objectNumber;
+    this.maxReferenceNumber = _.last(
+      this.indirectObjects,
+    ).getReference().objectNumber;
     return this;
   };
 

@@ -25,3 +25,4 @@
 * Remove "is" method on PDFObject as it is fakeable
 * Update "parseDict" so multiple PDFNames are not being created!
 * Probably remove the "validKeys" stuff from PDFDictionaries
+* Make sure PDFDocument validates existence of its catalog

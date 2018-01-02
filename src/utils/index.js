@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+export type Predicate<A, B> = (A, B) => boolean;
+
 export const writeToDebugFile = (data, postfix = 0) => {
   // eslint-disable-next-line
   const fs = require('fs');
@@ -14,11 +16,10 @@ export const isInt = num => num % 1 === 0;
 
 export const isString = (val): %checks => typeof val === 'string';
 
-export const and = (...predicates: ((any) => boolean)[]) => (
-  ...values: any[]
-) => predicates.every(predicate => predicate(...values));
+export const and = (...predicates: Predicate<any>[]) => (...values: any[]) =>
+  predicates.every(predicate => predicate(...values));
 
-export const or = (...predicates: ((any) => boolean)[]) => (...values: any[]) =>
+export const or = (...predicates: Predicate<any>[]) => (...values: any[]) =>
   predicates.find(predicate => predicate(...values));
 
 export const toBoolean = (boolStr: string) => {
@@ -111,4 +112,15 @@ export const arrayFindIndexOf = (arr, predicate, startFrom = 0) => {
   }
 
   return currIdx;
+};
+
+/* eslint-disable no-restricted-syntax */
+export const findInMap = <K, V>(
+  map: Map<K, V>,
+  predicate: Predicate<V, K>,
+): ?V => {
+  for (const [key, val] of map) {
+    if (predicate(val, key)) return val;
+  }
+  return null;
 };

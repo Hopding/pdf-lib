@@ -2,7 +2,7 @@
 import { PDFXRef } from '../pdf-structures';
 import { arrayToString, trimArray } from '../utils';
 
-import type { ParseHandlers } from '.';
+import type { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an string as input. Repeatedly applies a regex to the input that matches

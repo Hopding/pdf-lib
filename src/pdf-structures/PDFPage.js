@@ -1,5 +1,6 @@
 /* @flow */
-import { PDFDocument, PDFContentStream } from '.';
+import { PDFContentStream } from '.';
+import PDFDocument from '../pdf-document/PDFDocument';
 import {
   PDFDictionary,
   PDFStream,
