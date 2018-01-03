@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { validate } from '../utils/validate';
 
 export type Predicate<A, B> = (A, B) => boolean;
 
@@ -21,6 +22,9 @@ export const and = (...predicates: Predicate<any>[]) => (...values: any[]) =>
 
 export const or = (...predicates: Predicate<any>[]) => (...values: any[]) =>
   predicates.find(predicate => predicate(...values));
+
+export const not = (predicate: Predicate<any>) => (...values: any[]) =>
+  !predicate(...values);
 
 export const toBoolean = (boolStr: string) => {
   if (boolStr === 'true') return true;
@@ -87,6 +91,12 @@ export const arraysAreEqual = (arr1, arr2) => {
 };
 
 export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
+  validate(
+    startFrom,
+    and(_.isNumber, not(_.isNaN)),
+    `startFrom must be a number, found: "${startFrom}"`,
+  );
+
   const targetArr = targetStr.split('').map(c => c.charCodeAt(0));
   let currIdx = startFrom;
 
@@ -96,7 +106,7 @@ export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
       targetArr,
     )
   ) {
-    currIdx++;
+    currIdx += 1;
     if (currIdx >= arr.length) return undefined;
   }
 

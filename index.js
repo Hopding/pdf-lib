@@ -15,7 +15,7 @@ const files = {
   AST_SCI_DATA_TABLES: '/Users/user/Documents/ast_sci_data_tables_sample.pdf',
   MOVE_CRM_WEB_SERV: '/Users/user/Documents/moveCRM_Webservices.pdf',
 };
-const inFile = files.PDF_SPEC;
+const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -26,13 +26,13 @@ console.log(`Pages: ${pages.length}`);
 const page1 = pages[0];
 console.log(`Page 1 Content Streams: ${page1.getContentStreams().length}`);
 
-const editPdf = () => {
-  const page1Resources = page1.get('Resources');
-  const page1Font = page1Resources.pdfObject
-    ? page1Resources.pdfObject.get('Font')
-    : page1Resources.get('Font');
+const editPage = page => {
+  const pageResources = page.get('Resources');
+  const pageFont = pageResources.pdfObject
+    ? pageResources.pdfObject.get('Font')
+    : pageResources.get('Font');
 
-  page1Font.set(
+  pageFont.set(
     'F1',
     PDFDictionary.from({
       Type: PDFName.from('Font'),
@@ -52,9 +52,9 @@ const editPdf = () => {
     .moveText(0, 500)
     .showText('TESTING TESTING TESTING')
     .endText();
-  page1.addContentStream(stream);
+  page.addContentStream(stream);
 };
 
-editPdf();
+// pages.forEach(page => editPage(page));
 
 fs.writeFileSync(outFile, pdfDoc.toBytes());

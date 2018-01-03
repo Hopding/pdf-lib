@@ -12,7 +12,9 @@ class PDFDocumentFactory {
     const pdfDoc = new PDFDocument();
     const pdfParser = new PDFParser();
 
+    console.time('ParsePDF');
     const parsedPdf = pdfParser.parse(data);
+    console.timeEnd('ParsePDF');
     PDFDocumentFactory.normalize(parsedPdf);
 
     parsedPdf.dictionaries.forEach(dict => {
