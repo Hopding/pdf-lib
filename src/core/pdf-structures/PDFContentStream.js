@@ -1,6 +1,5 @@
 /* @flow */
 import { PDFStream, PDFNumber } from '../pdf-objects';
-import { PDFTextObject } from '.';
 
 class PDFContentStream extends PDFStream {
   addLine = (str: string) => {

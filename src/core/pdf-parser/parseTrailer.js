@@ -1,7 +1,13 @@
 /* @flow */
 import { PDFDictionary } from '../pdf-objects';
 import { PDFTrailer } from '../pdf-structures';
-import { arrayToString, trimArray, arrayIndexOf, charCode } from '../../utils';
+import {
+  error,
+  arrayToString,
+  trimArray,
+  arrayIndexOf,
+  charCode,
+} from '../../utils';
 import parseDict from './parseDict';
 import parseNumber from './parseNumber';
 
@@ -36,11 +42,15 @@ const parseTrailer = (
 
   // Parse the dictionary string into a PDFDictionary
   const dictBytes = new Uint8Array(dictStr.split('').map(charCode));
-  const [dict] = parseDict(dictBytes, parseHandlers);
+  const [dict] =
+    parseDict(dictBytes, parseHandlers) ||
+    error('Failed to parse trailer dictionary');
 
   // Parse the xref offset string value into a PDFNumber
   const offsetBytes = new Uint8Array(lastXRefOffsetStr.split('').map(charCode));
-  const [lastXRefOffset] = parseNumber(offsetBytes, parseHandlers);
+  const [lastXRefOffset] =
+    parseNumber(offsetBytes, parseHandlers) ||
+    error('Failed to parse lastXRefOffset of trailer');
 
   const trailer = PDFTrailer.from(lastXRefOffset.number, dict);
   if (parseHandlers.onParseTrailer) parseHandlers.onParseTrailer(trailer);
@@ -70,7 +80,9 @@ const parseMalformattedTrailer = (
 
   // Parse the xref offset string value into a PDFNumber
   const offsetBytes = new Uint8Array(lastXRefOffsetStr.split('').map(charCode));
-  const [lastXRefOffset] = parseNumber(offsetBytes, parseHandlers);
+  const [lastXRefOffset] =
+    parseNumber(offsetBytes, parseHandlers) ||
+    error('Failed to parse lastXRefOffset of trailer');
 
   const trailer = PDFTrailer.from(
     lastXRefOffset.number,

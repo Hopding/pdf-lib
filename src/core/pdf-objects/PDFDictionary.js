@@ -79,7 +79,7 @@ class PDFDictionary extends PDFObject {
   };
 
   dereference = (
-    indirectObjects: Map<PDFIndirectReference, PDFIndirectObject>,
+    indirectObjects: Map<PDFIndirectReference, PDFIndirectObject<*>>,
   ) => {
     const failures = [];
     this.filter(isInstance(PDFIndirectReference)).forEach(([key, val]) => {

@@ -8,7 +8,12 @@ import { parseTrailer, parseMalformattedTrailer } from './parseTrailer';
 // import removeComments from './removeComments';
 import { error } from '../../utils';
 
-const parseBodySection = (input, parseHandlers) => {
+import type { ParseHandlers } from './PDFParser';
+
+const parseBodySection = (
+  input: Uint8Array,
+  parseHandlers: ParseHandlers,
+): Uint8Array => {
   let remainder = input;
   while (true) {
     const result = parseIndirectObj(remainder, parseHandlers);
@@ -18,7 +23,10 @@ const parseBodySection = (input, parseHandlers) => {
   return remainder;
 };
 
-const parseFooterSection = (input, parseHandlers) => {
+const parseFooterSection = (
+  input: Uint8Array,
+  parseHandlers: ParseHandlers,
+): ?Uint8Array => {
   let remainder = input;
 
   // Try to parse the XRef table (some PDFs omit the XRef table)
@@ -36,7 +44,10 @@ const parseFooterSection = (input, parseHandlers) => {
   return remainder;
 };
 
-const parseDocument = (input, parseHandlers) => {
+const parseDocument = (
+  input: Uint8Array,
+  parseHandlers: ParseHandlers,
+): void => {
   console.log('parsing document');
 
   // TODO: Figure out way to clean comments without stream content messing it up

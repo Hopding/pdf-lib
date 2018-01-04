@@ -34,7 +34,9 @@ class PDFDocument {
     return this;
   };
 
-  createIndirectObject = (pdfObject: PDFObject): PDFIndirectObject => {
+  createIndirectObject = <T: $Subtype<PDFObject>>(
+    pdfObject: T,
+  ): PDFIndirectObject<T> => {
     if (!(pdfObject instanceof PDFObject)) {
       throw new Error('Can only create indirect objects for PDFObjects');
     }

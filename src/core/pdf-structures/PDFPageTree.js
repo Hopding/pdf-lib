@@ -1,5 +1,6 @@
 /* @flow */
 import { PDFIndirectObject, PDFDictionary } from '../pdf-objects';
+import { PDFPage } from '.';
 
 class PDFPageTree extends PDFDictionary {
   static validKeys = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
@@ -13,7 +14,9 @@ class PDFPageTree extends PDFDictionary {
     let kidsArr = kids;
     if (kids instanceof PDFIndirectObject) kidsArr = kids.pdfObject;
 
-    return kidsArr.map((elem: PDFIndirectObject) => elem.pdfObject);
+    return kidsArr.map(
+      (elem: PDFIndirectObject<PDFPageTree | PDFPage>) => elem.pdfObject,
+    );
   };
 
   traverse = (visit: Function) => {

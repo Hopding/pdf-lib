@@ -23,9 +23,8 @@ import {
 } from '../pdf-structures';
 import parseDocument from './parseDocument';
 
-import { error, findInMap } from '../../utils';
+import { error } from '../../utils';
 
-import type { Predicate } from '../../utils';
 import type { PDFLinearization } from './parseLinearization';
 
 export type ParseHandlers = {
