@@ -1,5 +1,6 @@
 import { writeToDebugFile, arrayToString } from '../../utils';
 import parseHeader from './parseHeader';
+import parseLinearization from './parseLinearization';
 import parseIndirectObj from './parseIndirectObj';
 import parseXRefTable from './parseXRefTable';
 import { parseTrailer, parseMalformattedTrailer } from './parseTrailer';
@@ -16,20 +17,12 @@ const parseDocument = (input, parseHandlers) => {
 
   // If document is linearized, we'll need to parse the linearization
   // dictionary and First-Page XRef table next...
-  let remainder;
+  let linRemainder;
 
-  const [linDict, linRemainder] = parseIndirectObj(r1, parseHandlers);
-  const firstPageXRefMatch = parseXRefTable(linRemainder, parseHandlers);
-  if (firstPageXRefMatch) {
-    const [firstPageXRef, xrefRemainder] = firstPageXRefMatch;
-    const [firstPageTrailer, trailerRemainder] = parseTrailer(
-      xrefRemainder,
-      parseHandlers,
-    );
-    remainder = trailerRemainder;
-  }
+  const linearizationMatch = parseLinearization(r1, parseHandlers);
+  if (linearizationMatch) [, linRemainder] = linearizationMatch;
 
-  remainder = remainder || r1;
+  let remainder = linRemainder || r1;
   // let remainder = r1;
   while (true) {
     const result = parseIndirectObj(remainder, parseHandlers);

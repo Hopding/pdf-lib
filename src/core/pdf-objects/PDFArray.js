@@ -53,15 +53,18 @@ class PDFArray extends PDFObject {
   map = (...args: any) => this.array.map(...args);
 
   dereference = (
-    indirectObjects: Map<PDFIndirectReference, PDFIndirectObject>,
+    indirectObjects: Map<PDFIndirectReference, PDFIndirectObject<*>>,
   ) => {
+    const failures = [];
     this.array.forEach((val, idx) => {
       if (val instanceof PDFIndirectReference) {
         const obj = indirectObjects.get(val);
-        if (!obj) error(`Failed to dereference: ${val.toString()}`);
+        // if (!obj) error(`Failed to dereference: ${val.toString()}`);
+        if (!obj) failures.push(['ARRAY_KEY', val.toString()]);
         else this.array[idx] = obj;
       }
     });
+    return failures;
   };
 
   bytesSize = () =>

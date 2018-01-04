@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "babel-node index.js",
-    "test": "babel-node index.js > test.pdf && open test.pdf",
+    "test": "babel-node __tests__/index.js",
     "build": "babel . -d dist --ignore=\"node_modules\"",
     "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc src/* --fix"
   },
@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "dedent": "^0.7.0",
+    "file": "^0.2.2",
     "lodash": "^4.17.4",
     "pako": "^1.0.6"
   }

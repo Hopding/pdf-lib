@@ -4,9 +4,6 @@ node_modules
 # Error logs
 yarn-error.log
 
-# Testing Files
-*.pdf
-
 # Misc
 .DS_Store
 debug*

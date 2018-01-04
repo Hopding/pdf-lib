@@ -81,16 +81,26 @@ class PDFDictionary extends PDFObject {
   dereference = (
     indirectObjects: Map<PDFIndirectReference, PDFIndirectObject>,
   ) => {
+    const failures = [];
     this.filter(isInstance(PDFIndirectReference)).forEach(([key, val]) => {
       const indirectObj = indirectObjects.get(val);
       if (indirectObj) this.set(key, indirectObj);
       else {
         const msg = `Failed to dereference: (${key.toString()}, ${val})`;
         // For an unknown reason, '/Obj' values somtimes fail to dereference...
-        if (key === PDFName.from('Obj')) console.warn(msg);
-        else error(msg);
+        // if (
+        //   [
+        //     PDFName.from('Obj'),
+        //     PDFName.from('Annots'),
+        //     PDFName.from('Info'),
+        //   ].includes(key)
+        // ) {
+        //   console.warn(msg);
+        // } else error(msg);
+        failures.push([key.toString(), val.toString()]);
       }
     });
+    return failures;
   };
 
   toString = () => {

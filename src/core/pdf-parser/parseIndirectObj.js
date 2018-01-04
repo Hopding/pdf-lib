@@ -29,7 +29,7 @@ If not, null is returned.
 const parseIndirectObj = (
   input: Uint8Array,
   parseHandlers: ParseHandlers = {},
-): ?[PDFIndirectObject, Uint8Array] => {
+): ?[PDFIndirectObject<*>, Uint8Array] => {
   const trimmed = trimArray(input);
   const indirectObjRegex = /^(\d+) (\d+) obj/;
 

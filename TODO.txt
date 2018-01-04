@@ -4,7 +4,9 @@
 * Handle parsing PDFs with appended updates
 * Add in "early stops" to parsers (like checking if first char is a "<", for hex strings) to avoid excessive work.
 * Use "Length" dict entry when parsing streams
-* (Maybe) Speed up parser by created a function that looks at the next input character to guess what PDF Object is next in the input bytes.
+* (Maybe) Speed up parser by created a function that looks at the next input character to guess what PDF Object is next in the input bytes. (Will need to be able to access xref table because "Length" entries can be indirect references)
+* Avoid parsing dicts twice (in case of parsing for stream before dict)
+* Add credits file for the testing PDFs!
 
 # Tests:
 * Make test for dictionaries like:
@@ -16,6 +18,8 @@
 * Make sure parsed streams don't include the leading/trailing EOL markers
 * Make sure xref tables with multiple EOL chars can be parsed:
   '0 851\r\n0000000000 65535 f\r\n0000229614 00000 n\r\n0000229916 00000 n\r\n0000230276 00000 n\r\n0000239589 00000 n\r\n0000260433 00000 n\r\n0000260685 00000 n\r\n0000261106 00000 n\r\n0000261398 00000 n\r\n0000261443 00000 n\r\n0000268136 00000 n\r\n0000268451 00000 n\r\n0000268766 00000 n\r\n0000269022 00000 n\r\n0000269283 00000 n\r\n0000269565 00000 n\r\n0000269845 00000 n\r\n0000270123 00000 n\r\n'
+* Make sure parseName can handle names consisting of single forward slash:
+  '/ /AS /Off /FT /Btn /Type /Annot >>'...
 
 # Bugs
 * Figure out why the "2 0 R" object reference fails to be resolved in bol2.pdf
@@ -26,3 +30,4 @@
 * Update "parseDict" so multiple PDFNames are not being created!
 * Probably remove the "validKeys" stuff from PDFDictionaries
 * Make sure PDFDocument validates existence of its catalog
+* Clean up "parseDocument" function

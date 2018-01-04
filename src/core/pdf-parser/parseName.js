@@ -20,7 +20,7 @@ const parseName = (
   { onParseName }: ParseHandlers = {},
 ): ?[PDFName, Uint8Array] => {
   const trimmed = trimArray(input);
-  const nameRegex = /^\/([^ \n\r\][<>(/]+)/;
+  const nameRegex = /^\/([^ \n\r\][<>(/]*)/;
 
   // Search for first character that isn't part of a name
   let idx = 1; // Skip the leading '/'

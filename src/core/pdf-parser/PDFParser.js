@@ -1,4 +1,6 @@
 /* @flow */
+import _ from 'lodash';
+
 import {
   PDFBoolean,
   PDFArray,
@@ -24,17 +26,7 @@ import parseDocument from './parseDocument';
 import { error, findInMap } from '../../utils';
 
 import type { Predicate } from '../../utils';
-
-export type ParsedPDF = {
-  header: PDFHeader,
-  catalog: PDFCatalog,
-  indirectObjects: Map<PDFIndirectReference, PDFIndirectObject>,
-  arrays: PDFArray[],
-  dictionaries: PDFDictionary[],
-  xRefTables: PDFXRef.Table[],
-  trailers: PDFTrailer[],
-  findObject: (Predicate<PDFIndirectObject>) => ?PDFIndirectObject,
-};
+import type { PDFLinearization } from './parseLinearization';
 
 export type ParseHandlers = {
   onParseBool?: PDFBoolean => any,
@@ -48,22 +40,49 @@ export type ParseHandlers = {
   onParseStream?: PDFStream => any,
   onParseObjectStream?: PDFObjectStream => any,
   onParseIndirectRef?: PDFIndirectReference => any,
-  onParseIndirectObj?: PDFIndirectObject => any,
+  onParseIndirectObj?: (PDFIndirectObject<*>) => any,
   onParseHeader?: PDFHeader => any,
   onParseXRefTable?: PDFXRef.Table => any,
   onParseTrailer?: PDFTrailer => any,
+  onParseLinearization?: PDFLinearization => any,
 };
 
-let activelyParsing = false;
+export type ParsedPDF = {
+  arrays: PDFArray[],
+  dictionaries: PDFDictionary[],
+  original: {
+    header: PDFHeader,
+    linearization: ?PDFLinearization,
+    body: Map<PDFIndirectReference, PDFIndirectObject<*>>,
+    xRefTable: PDFXRef.Table,
+    trailer: PDFTrailer,
+  },
+  updates: {
+    body: Map<PDFIndirectReference, PDFIndirectObject<*>>,
+    xRefTable?: PDFXRef.Table,
+    trailer: PDFTrailer,
+  }[],
+};
 
 class PDFParser {
-  header: PDFHeader = null;
-  catalog: PDFCatalog = null;
-  indirectObjects: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
+  activelyParsing = false;
+
   arrays: PDFArray[] = [];
   dictionaries: PDFDictionary[] = [];
-  xRefTables: PDFXRef.Table[] = [];
-  trailers: PDFTrailer[] = [];
+  catalog: PDFCatalog = null;
+
+  header: PDFHeader = null;
+  body: Map<PDFIndirectReference, PDFIndirectObject<*>> = new Map();
+  xRefTable: PDFXRef.Table = null;
+  trailer: PDFTrailer = null;
+
+  linearization: ?PDFLinearization = null;
+
+  updates: {
+    body: Map<PDFIndirectReference, PDFIndirectObject<*>>,
+    xRefTable: PDFXRef.Table,
+    trailer: PDFTrailer,
+  }[] = [];
 
   parseHandlers: ParseHandlers;
 
@@ -76,6 +95,7 @@ class PDFParser {
       onParseHeader: this.handleHeader,
       onParseXRefTable: this.handleXRefTable,
       onParseTrailer: this.handleTrailer,
+      onParseLinearization: this.handleLinearization,
     };
   }
 
@@ -89,12 +109,12 @@ class PDFParser {
 
   handleObjectStream = ({ objects }: PDFObjectStream) => {
     objects.forEach(indirectObj => {
-      this.indirectObjects.set(indirectObj.getReference(), indirectObj);
+      this.body.set(indirectObj.getReference(), indirectObj);
     });
   };
 
-  handleIndirectObj = (indirectObj: PDFIndirectObject) => {
-    this.indirectObjects.set(indirectObj.getReference(), indirectObj);
+  handleIndirectObj = (indirectObj: PDFIndirectObject<*>) => {
+    this.body.set(indirectObj.getReference(), indirectObj);
 
     if (indirectObj.pdfObject.is(PDFCatalog)) this.catalog = indirectObj;
   };
@@ -104,39 +124,52 @@ class PDFParser {
   };
 
   handleXRefTable = (xRefTable: PDFXRef.Table) => {
-    this.xRefTables.push(xRefTable);
+    if (!this.trailer) this.xRefTable = xRefTable;
+    else _.last(this.updates).xRefTable = xRefTable;
   };
 
   handleTrailer = (trailer: PDFTrailer) => {
-    this.trailers.push(trailer);
+    if (!this.trailer) this.trailer = trailer;
+    else _.last(this.updates).trailer = trailer;
+  };
+
+  handleLinearization = (linearization: PDFLinearization) => {
+    this.linearization = linearization;
   };
 
   parse = (bytes: Uint8Array): ParsedPDF => {
-    if (activelyParsing) error('Cannot parse documents concurrently');
-    activelyParsing = true;
+    if (this.activelyParsing) error('Cannot parse documents concurrently');
+    this.activelyParsing = true;
 
-    this.header = null;
-    this.catalog = null;
-    this.indirectObjects = new Map();
     this.arrays = [];
     this.dictionaries = [];
-    this.xRefTables = [];
-    this.trailers = [];
+    this.catalog = null;
+    this.header = null;
+    this.body = new Map();
+    this.xRefTable = null;
+    this.trailer = null;
+    this.linearization = null;
+    this.updates = [];
 
-    parseDocument(bytes, this.parseHandlers);
-    activelyParsing = false;
+    try {
+      parseDocument(bytes, this.parseHandlers);
+      this.activelyParsing = false;
+    } catch (e) {
+      this.activelyParsing = false;
+      throw e;
+    }
 
     return {
-      header: this.header,
-      catalog: this.catalog,
-      indirectObjects: this.indirectObjects,
       arrays: this.arrays,
       dictionaries: this.dictionaries,
-      xRefTables: this.xRefTables,
-      trailers: this.trailers,
-      findObject(predicate) {
-        return findInMap(this.indirectObjects, predicate);
+      original: {
+        header: this.header,
+        linearization: this.linearization,
+        body: this.body,
+        xRefTable: this.xRefTable,
+        trailer: this.trailer,
       },
+      updates: this.updates,
     };
   };
 }

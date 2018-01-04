@@ -13,12 +13,11 @@ import {
   PDFXRef,
   PDFTrailer,
 } from '../pdf-structures';
-import { arrayToString } from '../../utils';
 
 class PDFDocument {
   header: PDFHeader = new PDFHeader(1, 6);
   catalog: PDFCatalog;
-  indirectObjects: Array<PDFIndirectObject> = [];
+  indirectObjects: Array<PDFIndirectObject<*>> = [];
   maxReferenceNumber: number;
 
   setCatalog = (catalog: PDFObject) => {
@@ -26,7 +25,7 @@ class PDFDocument {
     return this;
   };
 
-  setIndirectObjects = (indirectObjects: Array<PDFIndirectObject>) => {
+  setIndirectObjects = (indirectObjects: Array<PDFIndirectObject<*>>) => {
     this.indirectObjects = indirectObjects;
     this.sortIndirectObjects();
     this.maxReferenceNumber = _.last(
@@ -49,10 +48,12 @@ class PDFDocument {
   };
 
   getPages = () => {
+    console.time('PDFDoc.getPages()');
     const pages = [];
     this.catalog.pdfObject.getPageTree().traverse(node => {
       if (node instanceof PDFPage) pages.push(node);
     });
+    console.timeEnd('PDFDoc.getPages()');
     return pages;
   };
 
@@ -114,6 +115,7 @@ class PDFDocument {
   };
 
   toBytes = () => {
+    console.time('PDFDoc.toBytes()');
     const xRefOffset =
       this.header.bytesSize() +
       _(this.indirectObjects)
@@ -132,6 +134,7 @@ class PDFDocument {
     });
     remaining = xRefTable.copyBytesInto(remaining);
     remaining = trailer.copyBytesInto(remaining);
+    console.timeEnd('PDFDoc.toBytes()');
     return buffer;
   };
 }

@@ -7,9 +7,10 @@ import { validate, isInstance } from '../../utils/validate';
 import PDFObject from './PDFObject';
 import PDFIndirectReference from './PDFIndirectReference';
 
-class PDFIndirectObject extends PDFObject {
+// 55 errors
+class PDFIndirectObject<T: $Subtype<PDFObject> = PDFObject> extends PDFObject {
   reference: PDFIndirectReference;
-  pdfObject: $Subtype<PDFObject>;
+  pdfObject: T;
 
   constructor(pdfObject: $Subtype<PDFObject>) {
     super();
@@ -21,7 +22,7 @@ class PDFIndirectObject extends PDFObject {
     this.pdfObject = pdfObject;
   }
 
-  static of = (pdfObject: $Subtype<PDFObject>) =>
+  static of = <A: $Subtype<PDFObject>>(pdfObject: A): PDFIndirectObject<A> =>
     new PDFIndirectObject(pdfObject);
 
   setReferenceNumbers = (objectNumber: number, generationNumber: number) => {

@@ -14,8 +14,10 @@ const files = {
   CMP_SIMPLE_TABLE: '/Users/user/Documents/cmp_simple_table.pdf',
   AST_SCI_DATA_TABLES: '/Users/user/Documents/ast_sci_data_tables_sample.pdf',
   MOVE_CRM_WEB_SERV: '/Users/user/Documents/moveCRM_Webservices.pdf',
+  ANOTHER_LINEARIZED:
+    '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/dc/inst/dc_ins_2210.pdf',
 };
-const inFile = files.BOL(6);
+const inFile = files.ANOTHER_LINEARIZED;
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 

@@ -1,7 +1,12 @@
 /* @flow */
 import { PDFDictionary, PDFName } from '../pdf-objects';
-import { PDFCatalog, PDFPageTree, PDFPage } from '../pdf-structures';
-import { error, arrayToString, trimArray } from '../../utils';
+import {
+  PDFCatalog,
+  PDFPageTree,
+  PDFPage,
+  PDFLinearizationParams,
+} from '../pdf-structures';
+import { error, arrayToString, trimArray, writeToDebugFile } from '../../utils';
 import { validate, isIdentity } from '../../utils/validate';
 
 import parseNull from './parseNull';
@@ -17,6 +22,7 @@ import type { ParseHandlers } from './PDFParser';
 
 /* eslint-disable prettier/prettier */
 const typeDict = (dict: PDFDictionary) => {
+  if (dict.get('Linearized')) return PDFLinearizationParams.from(dict);
   switch (dict.get('Type')) {
     case PDFName.from('Catalog'): return PDFCatalog.from(dict);
     case PDFName.from('Pages'):   return PDFPageTree.from(dict);
