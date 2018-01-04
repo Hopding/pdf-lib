@@ -109,14 +109,23 @@ class PDFParser {
 
   handleObjectStream = ({ objects }: PDFObjectStream) => {
     objects.forEach(indirectObj => {
-      this.body.set(indirectObj.getReference(), indirectObj);
+      if (this.updates.length > 0) {
+        _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
+      } else {
+        this.body.set(indirectObj.getReference(), indirectObj);
+      }
     });
   };
 
   handleIndirectObj = (indirectObj: PDFIndirectObject<*>) => {
-    this.body.set(indirectObj.getReference(), indirectObj);
-
-    if (indirectObj.pdfObject.is(PDFCatalog)) this.catalog = indirectObj;
+    if (indirectObj.pdfObject.is(PDFCatalog)) {
+      console.log('Found catalog!');
+    }
+    if (this.updates.length > 0) {
+      _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
+    } else {
+      this.body.set(indirectObj.getReference(), indirectObj);
+    }
   };
 
   handleHeader = (header: PDFHeader) => {
@@ -131,6 +140,8 @@ class PDFParser {
   handleTrailer = (trailer: PDFTrailer) => {
     if (!this.trailer) this.trailer = trailer;
     else _.last(this.updates).trailer = trailer;
+
+    this.updates.push({ body: new Map(), xRefTable: null, trailer: null });
   };
 
   handleLinearization = (linearization: PDFLinearization) => {
@@ -169,7 +180,7 @@ class PDFParser {
         xRefTable: this.xRefTable,
         trailer: this.trailer,
       },
-      updates: this.updates,
+      updates: _.initial(this.updates),
     };
   };
 }

@@ -16,8 +16,9 @@ const files = {
   MOVE_CRM_WEB_SERV: '/Users/user/Documents/moveCRM_Webservices.pdf',
   ANOTHER_LINEARIZED:
     '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/dc/inst/dc_ins_2210.pdf',
+  UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
-const inFile = files.ANOTHER_LINEARIZED;
+const inFile = files.UPDATED;
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 

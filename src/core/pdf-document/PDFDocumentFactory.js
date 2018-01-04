@@ -16,7 +16,7 @@ class PDFDocumentFactory {
     console.time('ParsePDF');
     const parsedPdf = pdfParser.parse(data);
     console.timeEnd('ParsePDF');
-    console.log(parsedPdf.original.linearization);
+    console.log('updates.length:', parsedPdf.updates.length);
     PDFDocumentFactory.normalize(parsedPdf);
 
     const catalog = findInMap(parsedPdf.original.body, obj =>
