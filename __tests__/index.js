@@ -59,6 +59,12 @@ const testLoadPdf = filePath => {
 };
 
 const testAllPdfs = () => {
+  const exclude = [
+    // This one has a data compression issue, it seems
+    '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/misc/i26_crash_18277.pdf',
+    // Don't bother since pdf-lib doesn't support encrypted docs yet
+    '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/misc/i43_encrypted.pdf',
+  ];
   const allPdfs = [];
   file.walkSync(testPdfsDir, (dirPath, dirs, files) => {
     files.forEach(fileName => allPdfs.push(`${dirPath}/${fileName}`));
@@ -67,7 +73,9 @@ const testAllPdfs = () => {
   const successes = [];
   const errors = [];
   for (const pdf of allPdfs) {
-    if (pdf.substring(pdf.length - 4) !== '.pdf') continue;
+    if (pdf.substring(pdf.length - 4) !== '.pdf' || exclude.includes(pdf)) {
+      continue;
+    }
     console.log(`Parsing file: "${pdf}"`);
     const [success, error] = testLoadPdf(pdf);
     if (success) successes.push(success);
@@ -89,7 +97,6 @@ console.log(`Total attempts: ${total}`);
 console.log(`Success Rate: ${successes.length / total}`);
 console.log(`Failure Rate: ${errors.length / total}`);
 
-// const typeCount = {};
 const drFailures = {};
 errors.forEach(error => {
   if (error.dereferenceFailures) {
@@ -101,11 +108,6 @@ errors.forEach(error => {
         else drFailures[key] += 1;
       });
   }
-  // if (error.message && error.message.includes('dereference')) {
-  // const [type] = error.message.match(/\(([^]*,)/);
-  // if (!typeCount[type]) typeCount[type] = 1;
-  // else typeCount[type] += 1;
-  // }
 });
 
 console.log(

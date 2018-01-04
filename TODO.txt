@@ -1,12 +1,11 @@
 # Features
 * Support stream decompression for non FlateEncoded streams
-* Remove parseHandlers, just return PDFObjects
-* Handle parsing PDFs with appended updates
 * Add in "early stops" to parsers (like checking if first char is a "<", for hex strings) to avoid excessive work.
 * Use "Length" dict entry when parsing streams
 * (Maybe) Speed up parser by created a function that looks at the next input character to guess what PDF Object is next in the input bytes. (Will need to be able to access xref table because "Length" entries can be indirect references)
 * Avoid parsing dicts twice (in case of parsing for stream before dict)
 * Add credits file for the testing PDFs!
+* Use XRef tables to parse the file on the fly instead of brute-force parsing it all in one go
 
 # Tests:
 * Make test for dictionaries like:
@@ -24,10 +23,19 @@
 # Bugs
 * Figure out why the "2 0 R" object reference fails to be resolved in bol2.pdf
 * Look into why pdfDoc.toBytes().length and pdfDoc.toBytesEfficient().length are different sizes... (some of this code was removed in commit: c508f73103021317580b641a6f895737e4e6e1b5)
-* MAKE SURE OBJECT STREAM PDFStreams DON'T STICK AROUND SINCE WE'VE ALREADY EXTRACTED THEIR DATA
 * Update "parseTrailer" to handle files w/o "xref" and "trailer" keywords, as they are _not_ malformatted, but are to be expected in 1.5+ PDFs
-* Remove "is" method on PDFObject as it is fakeable
-* Update "parseDict" so multiple PDFNames are not being created!
-* Probably remove the "validKeys" stuff from PDFDictionaries
+* Maybe remove the "validKeys" stuff from PDFDictionaries?
 * Make sure PDFDocument validates existence of its catalog
 * Clean up "parseDocument" function
+* Adding "TESTING" (using following non-embedded font) to "/Users/user/Desktop/pdf-lib/test-pdfs/pdf/ef/inst/ef_ins_1040.pdf"
+  messes up the text within the "Caution" sections:
+  ```
+  pageFont.set(
+    'F1',
+    PDFDictionary.from({
+      Type: PDFName.from('Font'),
+      Subtype: PDFName.from('Type1'),
+      BaseFont: PDFName.from('Times-Roman'),
+    }),
+  );
+  ```

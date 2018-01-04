@@ -39,19 +39,23 @@ const parseLinearization = (
   const [xref, remaining2] = xrefMatch;
 
   const trailerMatch =
-    parseTrailer(remaining2) ||
-    parseMalformattedTrailer(remaining2) ||
-    error(
+    parseTrailer(remaining2) || parseMalformattedTrailer(remaining2);
+
+  // Per the PDF spec, a trailer should always be present - but some PDFs in the
+  // wild are missing them anyways
+  if (!trailerMatch) {
+    console.warn(
       'Found Linearization param dict and cross reference index, but no associated trailer.',
     );
+  }
 
-  const [trailer, remaining3] = trailerMatch;
+  const [trailer, remaining3] = trailerMatch || [];
 
   const linearization = { paramDict, xref, trailer };
   if (parseHandlers.onParseLinearization) {
     parseHandlers.onParseLinearization(linearization);
   }
-  return [linearization, remaining3];
+  return [linearization, remaining3 || remaining2];
 };
 
 export default parseLinearization;

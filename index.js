@@ -5,6 +5,11 @@ import { PDFContentStream } from './src/core/pdf-structures';
 
 import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
 
+/*
+Adding "TESTING" to "/Users/user/Desktop/pdf-lib/test-pdfs/pdf/ef/inst/ef_ins_1040.pdf"
+messes up the text within the "Caution" sections...
+*/
+
 const files = {
   BOL: n => `/Users/user/Desktop/bols/bol${n || ''}.pdf`,
   MINIMAL: '/Users/user/Desktop/pdf-lib/test-pdfs/minimal.pdf',
@@ -18,7 +23,8 @@ const files = {
     '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/dc/inst/dc_ins_2210.pdf',
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
-const inFile = files.UPDATED;
+const inFile =
+  '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/ef/inst/ef_ins_1040.pdf';
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 

@@ -38,7 +38,13 @@ class PDFDocumentFactory {
     dictionaries,
     arrays,
     original: { body },
+    updates,
   }: ParsedPDF) => {
+    // Update body with most recent version of each object
+    updates.forEach(({ body: updateBody }) => {
+      updateBody.forEach((obj, ref) => body.set(ref, obj));
+    });
+
     // Replace references to PDFIndirectReferences with PDFIndirectObjects
     const failures = [
       ...dictionaries.map(dict => dict.dereference(body)),

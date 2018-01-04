@@ -84,7 +84,7 @@ class PDFDictionary extends PDFObject {
     const failures = [];
     this.filter(isInstance(PDFIndirectReference)).forEach(([key, val]) => {
       const indirectObj = indirectObjects.get(val);
-      if (indirectObj) this.set(key, indirectObj);
+      if (indirectObj) this.set(key, indirectObj, false);
       else {
         const msg = `Failed to dereference: (${key.toString()}, ${val})`;
         // For an unknown reason, '/Obj' values somtimes fail to dereference...
