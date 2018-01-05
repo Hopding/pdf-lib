@@ -1,6 +1,11 @@
 /* @flow */
 import { PDFHeader } from '../pdf-structures';
-import { arrayToString, trimArray, arrayCharAt, arrayIndexOf } from '../../utils';
+import {
+  arrayToString,
+  trimArray,
+  arrayCharAt,
+  arrayIndexOf,
+} from '../../utils';
 
 import type { ParseHandlers } from './PDFParser';
 

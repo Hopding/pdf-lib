@@ -10,6 +10,14 @@ import { error } from '../../utils';
 
 import type { ParseHandlers } from './PDFParser';
 
+/**
+Accepts an array of bytes as input. Parses indirect objects from the input bytes
+until an xref table of trailer is found. The "onParseIndirectObj" parse
+handler is called with each indirect object that is parsed.
+
+Returns a subarray of the input bytes with the bytes making up the parsed
+indirect objects removed.
+*/
 const parseBodySection = (
   input: Uint8Array,
   parseHandlers: ParseHandlers,
@@ -23,6 +31,15 @@ const parseBodySection = (
   return remainder;
 };
 
+/**
+Accepts an array of bytes as input. Checks to see if the first characters in the
+input make up an xref table followed by a trailer, or just a trailer. The
+"onParseXRefTable" and "onParseTrailer" parseHandlers will be called with the
+parsed objects.
+
+Returns a subarray of the input bytes with the bytes making up the parsed
+objects removed.
+*/
 const parseFooterSection = (
   input: Uint8Array,
   parseHandlers: ParseHandlers,
@@ -44,24 +61,34 @@ const parseFooterSection = (
   return remainder;
 };
 
+/**
+Accepts an array of bytes comprising a PDF document as input. Parses all the
+objects in the file in a sequential fashion, beginning with the header and
+ending with the last trailer. The XRef tables/streams in the input are not
+used to locate and parse objects as needed. Rather, the whole document is
+parsed and stored in memory at once.
+*/
 const parseDocument = (
   input: Uint8Array,
   parseHandlers: ParseHandlers,
 ): void => {
   console.log('parsing document');
 
-  // TODO: Figure out way to clean comments without stream content messing it up
+  // TODO: Figure out way to clean comments without messing stream content up
   // const cleaned = removeComments(input);
 
+  // Parse the document header
   const cleaned = input;
   let [, remainder] =
     parseHeader(cleaned, parseHandlers) || error('PDF is missing a header');
 
   // If document is linearized, we'll need to parse the linearization
-  // dictionary and First-Page XRef table next...
+  // dictionary and First-Page XRef table/stream next...
   const linearizationMatch = parseLinearization(remainder, parseHandlers);
   if (linearizationMatch) [, remainder] = linearizationMatch;
 
+  // Parse each body of the document and its corresponding footer.
+  // (if document does not have update sections, loop will only occur once)
   while (remainder) {
     remainder = parseBodySection(remainder, parseHandlers);
     remainder = parseFooterSection(remainder, parseHandlers);

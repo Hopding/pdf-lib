@@ -12,22 +12,38 @@ import type { ParseHandlers } from './PDFParser';
 export type PDFLinearization = {
   paramDict: PDFIndirectObject<PDFLinearizationParams>,
   xref: PDFXRef.Table | PDFIndirectObject<PDFStream>,
-  trailer: PDFTrailer,
+  trailer: ?PDFTrailer,
 };
 
+/**
+Accepts an array of bytes as input. Checks to see if the first characters in the
+trimmed input make up a PDF Linearization Param Dict, followed by an xref table
+or stream, and finally a trailer.
+
+If so, returns a tuple containing (1) an object representing those three objects
+and (2) a subarray of the input with the characters making up the parsed objects
+removed. The "onParseDict" parse handler will be called with the linearization
+param dict. The "onParseLinearization" parse handler will also be called with
+objects representing the three parsed linearization objects.
+
+If not, null is returned.
+*/
 const parseLinearization = (
   input: Uint8Array,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFLinearization, Uint8Array] => {
   const trimmed = trimArray(input);
 
+  // Try to parse a dictionary from the input
   const paramDictMatch = parseIndirectObj(trimmed, parseHandlers);
   if (!paramDictMatch) return null;
 
+  // Make sure it is a Linearization Param Dictionary
   const [paramDict, remaining1] = paramDictMatch;
   if (!paramDict.pdfObject.is(PDFLinearizationParams)) return null;
 
-  // Now a cross reference stream or xref table
+  // TODO: Do the parseHandlers really need to be passed to parseIndirectObj?
+  // Next we should find a cross reference stream or xref table
   const xrefMatch =
     parseXRefTable(remaining1) ||
     parseIndirectObj(remaining1, parseHandlers) ||

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import fs from 'fs';
 import PDFDocumentFactory from './src/core/pdf-document/PDFDocumentFactory';
 import { PDFDictionary, PDFName } from './src/core/pdf-objects';

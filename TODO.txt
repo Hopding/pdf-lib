@@ -39,3 +39,4 @@
     }),
   );
   ```
+* !!When parsing PDFs with update sections, I don't think the PDFDocumentFactory.normalize function will respect object deletions, as it simply picks up the most recent version of each object...!!

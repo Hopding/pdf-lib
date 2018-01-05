@@ -57,12 +57,14 @@ export const mergeUint8Arrays = (...arrs) => {
   return newArray;
 };
 
+/* eslint-disable no-param-reassign */
 export const addStringToBuffer = (str: string, buffer: Uint8Array) => {
-  for (let i = 0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i += 1) {
     buffer[i] = str.charCodeAt(i);
   }
   return buffer.subarray(str.length);
 };
+/* eslint-enable no-param-reassign */
 
 export const charCodes = str => str.split('').map(c => c.charCodeAt(0));
 
@@ -78,13 +80,13 @@ export const arrayCharAt = (arr, idx) => String.fromCharCode(arr[idx]);
 
 export const trimArray = arr => {
   let idx = 0;
-  while (String.fromCharCode(arr[idx]).match(/^[\ \n\r]/)) idx++;
+  while (String.fromCharCode(arr[idx]).match(/^[ \n\r]/)) idx += 1;
   return arr.subarray(idx);
 };
 
 export const arraysAreEqual = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
-  for (let i = 0; i < arr1.length; i++) {
+  for (let i = 0; i < arr1.length; i += 1) {
     if (arr1[i] !== arr2[i]) return false;
   }
   return true;

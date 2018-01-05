@@ -6,7 +6,7 @@ import {
   PDFPage,
   PDFLinearizationParams,
 } from '../pdf-structures';
-import { error, arrayToString, trimArray, writeToDebugFile } from '../../utils';
+import { error, arrayToString, trimArray } from '../../utils';
 import { validate, isIdentity } from '../../utils/validate';
 
 import parseNull from './parseNull';
