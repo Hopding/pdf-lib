@@ -27,3 +27,6 @@ export const doesMatch = (regex: RegExp) => (value: string) =>
   !!value.match(regex);
 
 export const isNumber = (n: any) => and(_.isNumber, not(_.isNaN))(n);
+
+export const isInRange = (lower: number, upper: number) => (value: any) =>
+  _.inRange(value, lower, upper);

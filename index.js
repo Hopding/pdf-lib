@@ -38,7 +38,7 @@ const page1 = pages[0];
 console.log(`Page 1 Content Streams: ${page1.getContentStreams().length}`);
 
 const editPage = page => {
-  const { m, l, S, w, d, re, g, c, b, B } = PDFOperators;
+  const { m, l, S, w, d, re, g, c, b, B, RG, rg } = PDFOperators;
   const contentStream = PDFContentStream.of(
     // Draw black line segment
     m.of(50, 50),
@@ -53,13 +53,13 @@ const editPage = page => {
     d.of([], 0),
     w.of(1),
     // Draw a rectangle with a 1-unit red border, filled with light blue.
-    // RG.of(1.0, 0.0, 0.0),
-    // rg.of(0.5, 0.75, 1.0),
+    RG.of(1.0, 0.0, 0.0),
+    rg.of(0.5, 0.75, 1.0),
     re.of(200, 300, 50, 75),
     B.operator,
     // Draw a curve filled with gray and with a colored border.
-    // RG.of(0.5, 0.1, 0.2),
-    // g.of(0.7),
+    RG.of(0.5, 0.1, 0.2),
+    g.of(0.7),
     m.of(300, 300),
     c.of(300, 400, 400, 400, 400, 300),
     b.operator,

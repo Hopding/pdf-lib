@@ -1,6 +1,12 @@
 /* @flow */
-import WAsterisk from './clipping-path/W-asterisk';
-import W from './clipping-path/W';
+import clippingPathOps from './clipping-path';
+
+import { CS, cs } from './color/CSOps';
+import { SC, sc } from './color/SCOps';
+import { SCN, scn } from './color/SCNOps';
+import { G, g } from './color/GOps';
+import { RG, rg } from './color/RGOps';
+import { K, k } from './color/KOps';
 
 import QOps from './graphics-state/QOps';
 import cm from './graphics-state/cm';
@@ -19,23 +25,22 @@ import re from './path-construction/re';
 import v from './path-construction/v';
 import y from './path-construction/y';
 
-// import lowerBAsterisk from './path-painting/lower-b-asterisk';
-// import lowerB from './path-painting/lower-b';
-// import lowerFAsterisk from './path-painting/lower-f-asterisk';
-// import lowerF from './path-painting/lower-f';
-// import s from './path-painting/lower-s';
-// import n from './path-painting/n';
-// import upperBAsterisk from './path-painting/upper-B-asterisk';
-// import upperB from './path-painting/upper-B';
-// import F from './path-painting/upper-F';
-// import S from './path-painting/upper-S';
 import pathPaintingOps from './path-painting';
 
 const PDFOperators = {
-  W: {
-    ...W,
-    asterisk: WAsterisk,
-  },
+  ...clippingPathOps,
+  CS,
+  cs,
+  SC,
+  sc,
+  SCN,
+  scn,
+  G,
+  g,
+  RG,
+  rg,
+  K,
+  k,
   ...QOps,
   cm,
   w,
@@ -43,6 +48,7 @@ const PDFOperators = {
   d,
   ri,
   i,
+  gs,
   c,
   h,
   l,

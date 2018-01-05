@@ -36,7 +36,7 @@ class PDFOperator {
         );
       }
 
-      // static operator = new Singleton(ENFORCER);
+      static operator: Singleton;
 
       toString = () => `${op}\n`;
 
@@ -45,6 +45,7 @@ class PDFOperator {
       copyBytesInto = (buffer: Uint8Array): Uint8Array =>
         addStringToBuffer(this.toString(), buffer);
     };
+
     Singleton.operator = new Singleton(ENFORCER);
 
     return Singleton;

@@ -10,7 +10,7 @@ Append a cubic Bézier curve to the current path. The curve shall extend from t
 current point to the point (x3, y3), using (x1, y1) and (x3, y3) as the Bézier
 control points. The new current point shall be (x3, y3).
 */
-class c extends PDFOperator {
+class y extends PDFOperator {
   x1: number;
   y1: number;
   x3: number;
@@ -21,7 +21,7 @@ class c extends PDFOperator {
     validateArr(
       [x1, y1, x3, y3],
       isNumber,
-      'c operator args "x1 y1 x3 y3" must all be numbers.',
+      'y operator args "x1 y1 x3 y3" must all be numbers.',
     );
     this.x1 = x1;
     this.y1 = y1;
@@ -30,9 +30,9 @@ class c extends PDFOperator {
   }
 
   static of = (x1: number, y1: number, x3: number, y3: number) =>
-    new c(x1, y1, x3, y3);
+    new y(x1, y1, x3, y3);
 
-  toString = () => `${this.x1} ${this.y1} ${this.x3} ${this.y3} c\n`;
+  toString = (): string => `${this.x1} ${this.y1} ${this.x3} ${this.y3} y\n`;
 
   bytesSize = () => this.toString().length;
 
@@ -40,4 +40,4 @@ class c extends PDFOperator {
     addStringToBuffer(this.toString(), buffer);
 }
 
-export default c;
+export default y;
