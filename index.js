@@ -3,6 +3,7 @@ import fs from 'fs';
 import PDFDocumentFactory from './src/core/pdf-document/PDFDocumentFactory';
 import { PDFDictionary, PDFName } from './src/core/pdf-objects';
 import { PDFContentStream } from './src/core/pdf-structures';
+import PDFOperators from './src/core/pdf-operators';
 
 import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
 
@@ -24,8 +25,8 @@ const files = {
     '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/dc/inst/dc_ins_2210.pdf',
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
-const inFile =
-  '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/ef/inst/ef_ins_1040.pdf';
+
+const inFile = files.BOL(1);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -37,34 +38,44 @@ const page1 = pages[0];
 console.log(`Page 1 Content Streams: ${page1.getContentStreams().length}`);
 
 const editPage = page => {
-  const pageResources = page.get('Resources');
-  const pageFont = pageResources.pdfObject
-    ? pageResources.pdfObject.get('Font')
-    : pageResources.get('Font');
-
-  pageFont.set(
-    'F1',
-    PDFDictionary.from({
-      Type: PDFName.from('Font'),
-      Subtype: PDFName.from('Type1'),
-      BaseFont: PDFName.from('Times-Roman'),
-    }),
+  const { m, l, S } = PDFOperators;
+  const contentStream = PDFContentStream.of(
+    m.of('foo', 50),
+    l.of(500, 500),
+    S.operator,
   );
-
-  const stream = new PDFContentStream()
-    .beginText()
-    .setFont('F1', 50)
-    .moveText(0, 750)
-    .showText('TESTING TESTING TESTING')
-    .endText()
-    .beginText()
-    .setFont('F1', 50)
-    .moveText(0, 500)
-    .showText('TESTING TESTING TESTING')
-    .endText();
-  page.addContentStream(stream);
+  page.addContentStream(contentStream);
 };
 
-// pages.forEach(page => editPage(page));
+// const editPage = page => {
+//   const pageResources = page.get('Resources');
+//   const pageFont = pageResources.pdfObject
+//     ? pageResources.pdfObject.get('Font')
+//     : pageResources.get('Font');
+//
+//   pageFont.set(
+//     'F1',
+//     PDFDictionary.from({
+//       Type: PDFName.from('Font'),
+//       Subtype: PDFName.from('Type1'),
+//       BaseFont: PDFName.from('Times-Roman'),
+//     }),
+//   );
+//
+//   const stream = new PDFContentStream()
+//     .beginText()
+//     .setFont('F1', 50)
+//     .moveText(0, 750)
+//     .showText('TESTING TESTING TESTING')
+//     .endText()
+//     .beginText()
+//     .setFont('F1', 50)
+//     .moveText(0, 500)
+//     .showText('TESTING TESTING TESTING')
+//     .endText();
+//   page.addContentStream(stream);
+// };
+
+pages.forEach(page => editPage(page));
 
 fs.writeFileSync(outFile, pdfDoc.toBytes());

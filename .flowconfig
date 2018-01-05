@@ -6,3 +6,6 @@
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$SuppressFlow
+
+[version]
+^0.62.0

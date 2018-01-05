@@ -1,4 +1,6 @@
 /* @flow */
+import _ from 'lodash';
+import { and, not } from '.';
 
 export const validate = <T>(value: T, predicate: T => boolean, msg: string) => {
   if (!predicate(value)) throw new Error(msg);
@@ -23,3 +25,5 @@ export const isNotIdentity = <T>(requiredValue: T) => (value: any) =>
 
 export const doesMatch = (regex: RegExp) => (value: string) =>
   !!value.match(regex);
+
+export const isNumber = (n: any) => and(_.isNumber, not(_.isNaN))(n);

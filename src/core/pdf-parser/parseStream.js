@@ -1,5 +1,5 @@
 /* @flow */
-import { PDFStream, PDFName, PDFDictionary } from '../pdf-objects';
+import { PDFRawStream, PDFName, PDFDictionary } from '../pdf-objects';
 import { PDFObjectStream } from '../pdf-structures';
 import parseDict from './parseDict';
 import decodeStream from './encoding/decodeStream';
@@ -75,7 +75,7 @@ If not, null is returned.
 export default (
   input: Uint8Array,
   parseHandlers: ParseHandlers = {},
-): ?[PDFStream | PDFObjectStream, Uint8Array] => {
+): ?[PDFRawStream | PDFObjectStream, Uint8Array] => {
   // Parse the input bytes into the stream dictionary and content bytes
   const res = parseStream(input, parseHandlers);
   if (!res) return null;
@@ -96,7 +96,7 @@ export default (
   }
 
   // Otherwise, return a PDFStream without parsing the content bytes
-  const stream = PDFStream.from(dict, contents);
+  const stream = PDFRawStream.from(dict, contents);
   if (parseHandlers.onParseStream) parseHandlers.onParseStream(stream);
   return [stream, remaining];
 };

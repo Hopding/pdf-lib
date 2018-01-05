@@ -5,6 +5,7 @@ import {
   PDFDictionary,
   PDFStream,
   PDFArray,
+  PDFRawStream,
   PDFIndirectObject,
 } from '../pdf-objects';
 import { validate, isInstance } from '../../utils/validate';
@@ -53,7 +54,7 @@ class PDFPage extends PDFDictionary {
     return this;
   };
 
-  getContentStreams = (): Array<PDFStream> => {
+  getContentStreams = (): Array<PDFRawStream | PDFContentStream> => {
     const contents = this.get('Contents');
 
     // Could be either a PDFStream or PDFArray reference
