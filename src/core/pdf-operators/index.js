@@ -1,4 +1,7 @@
 /* @flow */
+import WAsterisk from './clipping-path/W-asterisk';
+import W from './clipping-path/W';
+
 import c from './path-construction/c';
 import h from './path-construction/h';
 import l from './path-construction/l';
@@ -19,6 +22,10 @@ import F from './path-painting/upper-F';
 import S from './path-painting/upper-S';
 
 const PDFOperators = {
+  W: {
+    ...W,
+    asterisk: WAsterisk,
+  },
   c,
   h,
   l,
