@@ -14,7 +14,7 @@ import {
   PDFTrailer,
   PDFPageTree,
 } from '../pdf-structures';
-import { validate, isInstance, isIdentity } from '../../utils/validate';
+import { error, validate, isInstance, isIdentity } from '../../utils/validate';
 
 class PDFDocument {
   header: PDFHeader = new PDFHeader(1, 6);
@@ -75,13 +75,72 @@ class PDFDocument {
       _.last(pageTree.findMatches(kid => kid.is(PDFPageTree))) || pageTree;
 
     // TODO: HANDLE CASE OF 'Count' BEING AN INDIRECT REFERENCE
-    lastPageTree.get('Count').number += 1;
     lastPageTree.ascend((parent: PDFIndirectObject<PDFPageTree>) => {
       parent.pdfObject.get('Count').number += 1;
     });
 
-    lastPageTree.get('Kids').object.push(this.createIndirectObject(page));
-    page.set('Parent', this.findIndirectObjectFor(lastPageTree).getReference());
+    lastPageTree.addPage(this.createIndirectObject(page));
+    page.set('Parent', this.findIndirectObjectFor(lastPageTree));
+    return this;
+  };
+
+  // TODO: Validate idx and don't allow removal of last page...
+  removePage = (idx: number) => {
+    validate(
+      idx,
+      _.isNumber,
+      'PDFDocument.removePage() required argument to be of type Number',
+    );
+
+    // Remove from page pageTree
+    const pages = this.catalog.pdfObject
+      .getPageTree()
+      .findMatches(kid => kid.is(PDFPage));
+    const page = pages[idx];
+    if (!page) error(`No page with idx: ${idx}`);
+    const pageParent = page.get('Parent').pdfObject;
+    pageParent.ascend((parent: PDFIndirectObject<PDFPageTree>) => {
+      parent.pdfObject.get('Count').number -= 1;
+    });
+    pageParent.removePage(page);
+
+    // Remove indirect object
+
+    return this;
+  };
+
+  // Validate that "idx" is in required range
+  insertPage = (idx: number, page: PDFPage) => {
+    validate(
+      idx,
+      _.isNumber,
+      'PDFDocument.removePage() idx argument to be of type Number',
+    );
+    validate(
+      page,
+      isInstance(PDFPage),
+      'PDFDocument.insertPage() page argument must be of type PDFPage',
+    );
+
+    // Remove from page pageTree
+    const pages = this.catalog.pdfObject
+      .getPageTree()
+      .findMatches(kid => kid.is(PDFPage));
+    const existingPage = pages[idx];
+    if (!existingPage) error(`No page with idx: ${idx}`);
+    const pageParent = existingPage.get('Parent').pdfObject;
+    pageParent.ascend((parent: PDFIndirectObject<PDFPageTree>) => {
+      console.log(
+        `Changing: ${parent.pdfObject.get('Count')
+          .number} to ${parent.pdfObject.get('Count').number + 1}`,
+      );
+      parent.pdfObject.get('Count').number += 1;
+    });
+    pageParent.insertPage(idx, this.createIndirectObject(page));
+    page.set('Parent', this.findIndirectObjectFor(pageParent));
+
+    // Remove indirect object
+
     return this;
   };
 

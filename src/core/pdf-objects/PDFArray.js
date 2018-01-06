@@ -51,6 +51,7 @@ class PDFArray extends PDFObject {
 
   forEach = (...args: any) => this.array.forEach(...args);
   map = (...args: any) => this.array.map(...args);
+  splice = (...args: any) => this.array.splice(...args);
 
   dereference = (
     indirectObjects: Map<PDFIndirectReference, PDFIndirectObject<*>>,

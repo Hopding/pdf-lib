@@ -26,7 +26,7 @@ const files = {
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
 
-const inFile = files.BOL(7);
+const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -73,8 +73,12 @@ const contentStream = createDrawing();
 pages.forEach(page => page.addContentStream(contentStream));
 
 const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
+const newPage2 = PDFPage.create([400, 400]).addContentStream(contentStream);
 
 pdfDoc.addPage(newPage);
+pdfDoc.insertPage(0, newPage2);
+// pdfDoc.removePage(0);
+// pdfDoc.removePage(0);
 
 fs.writeFileSync(outFile, pdfDoc.toBytes());
 
