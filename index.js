@@ -57,7 +57,9 @@ const editPage = page => {
     rg.of(0.5, 0.75, 1.0),
     re.of(200, 300, 50, 75),
     B.operator,
-    // Draw a curve filled with gray and with a colored border.
+  );
+  // Draw a curve filled with gray and with a colored border.
+  contentStream.operators.push(
     RG.of(0.5, 0.1, 0.2),
     g.of(0.7),
     m.of(300, 300),

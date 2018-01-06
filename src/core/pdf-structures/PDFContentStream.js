@@ -3,9 +3,10 @@
 /* eslint-disable getter-return */
 import _ from 'lodash';
 
-import { PDFStream, PDFNumber } from '../pdf-objects';
 import PDFOperator from '../pdf-operators/PDFOperator';
+import { PDFStream, PDFNumber } from '../pdf-objects';
 import { addStringToBuffer } from '../../utils';
+import { typedArrayProxy } from '../../utils/proxies';
 import { validateArr, isInstance } from '../../utils/validate';
 
 class PDFContentStream extends PDFStream {
@@ -13,14 +14,16 @@ class PDFContentStream extends PDFStream {
 
   constructor(...operators: PDFOperator[]) {
     super();
-    validateArr(
-      operators,
-      isInstance(PDFOperator),
-      'PDFContentStream can only be constructed from an array of PDFOperator',
-    );
-    this.operators = operators;
+    PDFContentStream.validateOperators(operators);
 
-    // TODO: This should be set on every mutation to the operators array...
+    this.operators = typedArrayProxy(operators, PDFOperator, {
+      set: {
+        length: () => {
+          this.dictionary.get('Length').number = this.operatorsBytesSize();
+        },
+      },
+    });
+
     this.dictionary.set(
       'Length',
       PDFNumber.fromNumber(this.operatorsBytesSize()),
@@ -30,8 +33,16 @@ class PDFContentStream extends PDFStream {
   static of = (...operators: PDFOperator[]) =>
     new PDFContentStream(...operators);
 
+  static validateOperators = (elements: any[]) =>
+    validateArr(
+      elements,
+      isInstance(PDFOperator),
+      'only PDFOperators can be pushed to a PDFContentStream',
+    );
+
   operatorsBytesSize = () =>
     _(this.operators)
+      .filter(Boolean)
       .map(op => op.bytesSize())
       .sum();
 
@@ -47,10 +58,12 @@ class PDFContentStream extends PDFStream {
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
 
-    remaining = this.operators.reduce(
-      (remBytes: Uint8Array, op: PDFOperator) => op.copyBytesInto(remBytes),
-      remaining,
-    );
+    remaining = this.operators
+      .filter(Boolean)
+      .reduce(
+        (remBytes: Uint8Array, op: PDFOperator) => op.copyBytesInto(remBytes),
+        remaining,
+      );
 
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;

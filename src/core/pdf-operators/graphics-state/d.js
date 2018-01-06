@@ -1,5 +1,6 @@
 /* @flow */
 /* eslint-disable new-cap */
+import _ from 'lodash';
 import PDFOperator from '../PDFOperator';
 
 import { addStringToBuffer } from '../../../utils';
@@ -32,8 +33,10 @@ class d extends PDFOperator {
     new d(dashArray, dashPhase);
 
   toString = (): string =>
-    `[${String(this.dashArray[0])} ${String(this.dashArray[1])}] ` +
-    `${this.dashPhase} d\n`;
+    _.isNil(this.dashArray[0]) && _.isNil(this.dashArray[1])
+      ? `[] ${this.dashPhase} d\n`
+      : `[${String(this.dashArray[0])} ${String(this.dashArray[1])}] ` +
+        `${this.dashPhase} d\n`;
 
   bytesSize = (): number => this.toString().length;
 
