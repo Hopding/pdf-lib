@@ -26,7 +26,7 @@ const files = {
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
 
-const inFile = files.BOL(6);
+const inFile = files.BOL(2);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -66,7 +66,7 @@ const editPage = page => {
     c.of(300, 400, 400, 400, 400, 300),
     b.operator,
   );
-  page.addContentStream(contentStream);
+  page.addContentStream(pdfDoc.createIndirectObject(contentStream));
 };
 
 // const editPage = page => {

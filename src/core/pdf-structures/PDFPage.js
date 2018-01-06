@@ -1,104 +1,92 @@
 /* @flow */
 import { PDFContentStream } from '.';
-import PDFDocument from '../pdf-document/PDFDocument';
 import {
   PDFDictionary,
-  PDFStream,
   PDFArray,
   PDFRawStream,
   PDFIndirectObject,
 } from '../pdf-objects';
 import { validate, isInstance } from '../../utils/validate';
 
+const VALID_KEYS = Object.freeze([
+  'Type',
+  'Parent',
+  'LastModified',
+  'Resources',
+  'MediaBox',
+  'CropBox',
+  'BleedBox',
+  'TrimBox',
+  'ArtBox',
+  'BoxColorInfo',
+  'Contents',
+  'Rotate',
+  'Group',
+  'Thumb',
+  'B',
+  'Dur',
+  'Trans',
+  'Annots',
+  'AA',
+  'Metadata',
+  'PieceInfo',
+  'StructParents',
+  'ID',
+  'PZ',
+  'SeparationInfo',
+  'Tabs',
+  'TemplateInstantiated',
+  'PresSteps',
+  'UserUnit',
+  'VP',
+]);
+
 class PDFPage extends PDFDictionary {
-  pdfDocument: PDFDocument;
-
-  static validKeys = Object.freeze([
-    'Type',
-    'Parent',
-    'LastModified',
-    'Resources',
-    'MediaBox',
-    'CropBox',
-    'BleedBox',
-    'TrimBox',
-    'ArtBox',
-    'BoxColorInfo',
-    'Contents',
-    'Rotate',
-    'Group',
-    'Thumb',
-    'B',
-    'Dur',
-    'Trans',
-    'Annots',
-    'AA',
-    'Metadata',
-    'PieceInfo',
-    'StructParents',
-    'ID',
-    'PZ',
-    'SeparationInfo',
-    'Tabs',
-    'TemplateInstantiated',
-    'PresSteps',
-    'UserUnit',
-    'VP',
-  ]);
-
   static from = (object: PDFDictionary) => new PDFPage(object);
 
-  setPdfDocument = (doc: PDFDocument) => {
-    validate(doc, isInstance(PDFDocument), 'PDFPage.doc must be PDFDocument');
-    this.pdfDocument = doc;
-    return this;
-  };
+  static validKeys = VALID_KEYS;
 
+  /**
+  There are three possibilities, the page can:
+    (1) have no "Contents"
+    (2) have an array of indirect objects as its "Contents"
+    (3) have a standalone indirect object as its "Contents"
+  */
   get contentStreams(): Array<PDFRawStream | PDFContentStream> {
-    if (!this.get('Contents')) return [];
+    let streams;
+    if (!this.get('Contents')) streams = [];
     const contents = this.get('Contents').object;
-    return contents.is(PDFArray) ? contents.array : [contents];
+    streams = contents.is(PDFArray) ? contents.array : [contents];
+    return Object.freeze(streams.slice());
   }
 
-  // get contentStreams(): Array<PDFRawStream | PDFContentStream> {
-  // contentStreams = (): Array<PDFRawStream | PDFContentStream> => {
-  //   const contents = this.get('Contents');
-  //
-  //   // Could be either a PDFStream or PDFArray reference
-  //   if (contents instanceof PDFIndirectObject) {
-  //     if (contents.pdfObject instanceof PDFStream) {
-  //       return [contents.pdfObject];
-  //     } else if (contents.pdfObject instanceof PDFArray) {
-  //       return contents.pdfObject.array;
-  //     }
-  //   } else if (contents instanceof PDFArray) {
-  //     return contents.array;
-  //   }
-  //
-  //   // This page has no "Contents"
-  //   return [];
-  // };
-
-  addContentStream = (contentStream: PDFContentStream) => {
-    if (!(contentStream instanceof PDFContentStream)) {
-      throw new Error('Argument must be instance of PDFContentStreams');
-    }
-    const indirectObject = this.pdfDocument.createIndirectObject(contentStream);
-
-    const contents = this.get('Contents');
-
-    // Could be either a PDFStream or PDFArray reference
-    if (contents instanceof PDFIndirectObject) {
-      if (contents.pdfObject instanceof PDFStream) {
-        this.set('Contents', PDFArray.fromArray([contents, indirectObject]));
-      } else if (contents.pdfObject instanceof PDFArray) {
-        contents.pdfObject.push(indirectObject);
+  /** Convert "Contents" to array if it exists and is not already */
+  normalizeContents = () => {
+    if (this.get('Contents')) {
+      const contents = this.get('Contents');
+      if (!contents.object.is(PDFArray)) {
+        this.set('Contents', PDFArray.fromArray([contents]));
       }
-    } else if (contents instanceof PDFArray) {
-      contents.push(indirectObject);
+    }
+  };
+
+  addContentStream = (contentStream: PDFIndirectObject<PDFContentStream>) => {
+    validate(
+      contentStream,
+      isInstance(PDFIndirectObject),
+      '"contentStream" must be of type PDFIndirectObject<PDFContentStream>',
+    );
+    validate(
+      contentStream.pdfObject,
+      isInstance(PDFContentStream),
+      '"contentStream" must be of type PDFIndirectObject<PDFContentStream>',
+    );
+
+    this.normalizeContents();
+    if (!this.get('Contents')) {
+      this.set('Contents', PDFArray.fromArray([contentStream]));
     } else {
-      // Page currently has no "Contents"
-      this.set('Contents', indirectObject);
+      this.get('Contents').object.push(contentStream);
     }
   };
 }

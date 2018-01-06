@@ -17,10 +17,10 @@ class PDFContentStream extends PDFStream {
     PDFContentStream.validateOperators(operators);
 
     this.operators = typedArrayProxy(operators, PDFOperator, {
-      set: {
-        length: () => {
+      set: property => {
+        if (_.isNumber(Number(property))) {
           this.dictionary.get('Length').number = this.operatorsBytesSize();
-        },
+        }
       },
     });
 

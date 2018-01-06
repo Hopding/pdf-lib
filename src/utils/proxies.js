@@ -22,7 +22,7 @@ export const typedArrayProxy = <T>(obj: any, type: T, config: Object = {}) => {
           `Typed Array Proxy elements must be of type ${type.name}`,
         );
       }
-      if (config.set && config.set[property]) config.set[property](value);
+      if (config.set) config.set(property, value);
       target[property] = value;
       return true;
     },

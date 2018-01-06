@@ -2,7 +2,7 @@
 import PDFDocument from './PDFDocument';
 
 import { PDFName, PDFStream } from '../pdf-objects';
-import { PDFCatalog, PDFObjectStream, PDFPage } from '../pdf-structures';
+import { PDFCatalog, PDFObjectStream } from '../pdf-structures';
 import PDFParser from '../pdf-parser/PDFParser';
 import { findInMap } from '../../utils';
 
@@ -22,10 +22,6 @@ class PDFDocumentFactory {
     const catalog = findInMap(parsedPdf.original.body, obj =>
       obj.pdfObject.is(PDFCatalog),
     );
-
-    parsedPdf.dictionaries.forEach(dict => {
-      if (dict instanceof PDFPage) dict.setPdfDocument(pdfDoc);
-    });
 
     pdfDoc
       .setCatalog(catalog)
