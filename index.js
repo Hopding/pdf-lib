@@ -26,7 +26,7 @@ const files = {
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
 
-const inFile = files.BOL(1);
+const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -35,7 +35,7 @@ const pdfDoc = PDFDocumentFactory.load(bytes);
 const pages = pdfDoc.getPages();
 console.log(`Pages: ${pages.length}`);
 const page1 = pages[0];
-console.log(`Page 1 Content Streams: ${page1.getContentStreams().length}`);
+console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
 
 const editPage = page => {
   const { m, l, S, w, d, re, g, c, b, B, RG, rg } = PDFOperators;

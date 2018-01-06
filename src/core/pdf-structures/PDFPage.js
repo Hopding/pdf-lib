@@ -54,23 +54,30 @@ class PDFPage extends PDFDictionary {
     return this;
   };
 
-  getContentStreams = (): Array<PDFRawStream | PDFContentStream> => {
-    const contents = this.get('Contents');
+  get contentStreams(): Array<PDFRawStream | PDFContentStream> {
+    if (!this.get('Contents')) return [];
+    const contents = this.get('Contents').object;
+    return contents.is(PDFArray) ? contents.array : [contents];
+  }
 
-    // Could be either a PDFStream or PDFArray reference
-    if (contents instanceof PDFIndirectObject) {
-      if (contents.pdfObject instanceof PDFStream) {
-        return [contents.pdfObject];
-      } else if (contents.pdfObject instanceof PDFArray) {
-        return contents.pdfObject.array;
-      }
-    } else if (contents instanceof PDFArray) {
-      return contents.array;
-    }
-
-    // This page has no "Contents"
-    return [];
-  };
+  // get contentStreams(): Array<PDFRawStream | PDFContentStream> {
+  // contentStreams = (): Array<PDFRawStream | PDFContentStream> => {
+  //   const contents = this.get('Contents');
+  //
+  //   // Could be either a PDFStream or PDFArray reference
+  //   if (contents instanceof PDFIndirectObject) {
+  //     if (contents.pdfObject instanceof PDFStream) {
+  //       return [contents.pdfObject];
+  //     } else if (contents.pdfObject instanceof PDFArray) {
+  //       return contents.pdfObject.array;
+  //     }
+  //   } else if (contents instanceof PDFArray) {
+  //     return contents.array;
+  //   }
+  //
+  //   // This page has no "Contents"
+  //   return [];
+  // };
 
   addContentStream = (contentStream: PDFContentStream) => {
     if (!(contentStream instanceof PDFContentStream)) {
