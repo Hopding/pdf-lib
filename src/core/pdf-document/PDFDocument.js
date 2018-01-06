@@ -14,7 +14,7 @@ import {
   PDFTrailer,
   PDFPageTree,
 } from '../pdf-structures';
-import { validate, isInstance } from '../../utils/validate';
+import { validate, isInstance, isIdentity } from '../../utils/validate';
 
 class PDFDocument {
   header: PDFHeader = new PDFHeader(1, 6);
@@ -73,8 +73,13 @@ class PDFDocument {
     const pageTree = this.catalog.pdfObject.getPageTree();
     const lastPageTree =
       _.last(pageTree.findMatches(kid => kid.is(PDFPageTree))) || pageTree;
-    // HANDLE CASE OF 'Count' BEING AN INDIRECT REFERENCE
+
+    // TODO: HANDLE CASE OF 'Count' BEING AN INDIRECT REFERENCE
     lastPageTree.get('Count').number += 1;
+    lastPageTree.ascend((parent: PDFIndirectObject<PDFPageTree>) => {
+      parent.pdfObject.get('Count').number += 1;
+    });
+
     lastPageTree.get('Kids').object.push(this.createIndirectObject(page));
     page.set('Parent', this.findIndirectObjectFor(lastPageTree).getReference());
     return this;

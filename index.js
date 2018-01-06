@@ -26,7 +26,7 @@ const files = {
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
 
-const inFile = files.BOL(1);
+const inFile = files.BOL(7);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -69,6 +69,15 @@ const createDrawing = () => {
   return pdfDoc.createIndirectObject(contentStream);
 };
 
+const contentStream = createDrawing();
+pages.forEach(page => page.addContentStream(contentStream));
+
+const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
+
+pdfDoc.addPage(newPage);
+
+fs.writeFileSync(outFile, pdfDoc.toBytes());
+
 // const editPage = page => {
 //   const pageResources = page.get('Resources');
 //   const pageFont = pageResources.pdfObject
@@ -97,13 +106,3 @@ const createDrawing = () => {
 //     .endText();
 //   page.addContentStream(stream);
 // };
-
-const contentStream = createDrawing();
-pages.forEach(page => page.addContentStream(contentStream));
-
-const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
-
-// BOL(2) has dereference issue - so be sure to try it on that!
-pdfDoc.addPage(newPage);
-
-fs.writeFileSync(outFile, pdfDoc.toBytes());

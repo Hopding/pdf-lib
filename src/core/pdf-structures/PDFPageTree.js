@@ -24,7 +24,6 @@ class PDFPageTree extends PDFDictionary {
     const matches = [];
     this.traverse(kid => {
       if (predicate(kid)) matches.push(kid);
-      console.log(`Matching against: ${kid.constructor.name}`);
     });
     return Object.freeze(matches);
   };
@@ -45,6 +44,16 @@ class PDFPageTree extends PDFDictionary {
       if (kid.is(PDFPageTree)) kid.traverse(visit);
     });
     return this;
+  };
+
+  // ascend = (lookup: (PDFIndirectObject<Kid>) => Kid) => {
+  //   if (!this.get('Parent')) return;
+  //   lookup(this.get('Parent')).ascend(lookup);
+  // };
+  ascend = (visit: Kid => Kid) => {
+    if (!this.get('Parent')) return;
+    visit(this.get('Parent'));
+    this.get('Parent').pdfObject.ascend(visit);
   };
 }
 
