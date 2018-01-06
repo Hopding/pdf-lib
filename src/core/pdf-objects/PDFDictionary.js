@@ -11,7 +11,7 @@ class PDFDictionary extends PDFObject {
   validKeys: ?Array<string>;
 
   constructor(
-    object: ?{ [string]: PDFObject } | PDFDictionary,
+    object: { [string]: PDFObject } | PDFDictionary,
     validKeys: ?(string[]),
   ) {
     super();

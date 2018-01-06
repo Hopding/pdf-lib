@@ -12,7 +12,9 @@ import {
   PDFPage,
   PDFXRef,
   PDFTrailer,
+  PDFPageTree,
 } from '../pdf-structures';
+import { validate, isInstance } from '../../utils/validate';
 
 class PDFDocument {
   header: PDFHeader = new PDFHeader(1, 6);
@@ -49,6 +51,9 @@ class PDFDocument {
     return indirectObject;
   };
 
+  findIndirectObjectFor = (obj: PDFObject) =>
+    this.indirectObjects.find(({ pdfObject }) => pdfObject === obj);
+
   getPages = () => {
     console.time('PDFDoc.getPages()');
     const pages = [];
@@ -57,6 +62,22 @@ class PDFDocument {
     });
     console.timeEnd('PDFDoc.getPages()');
     return pages;
+  };
+
+  addPage = (page: PDFPage) => {
+    validate(
+      page,
+      isInstance(PDFPage),
+      'PDFDocument.addPage() required argument to be of type PDFPage',
+    );
+    const pageTree = this.catalog.pdfObject.getPageTree();
+    const lastPageTree =
+      _.last(pageTree.findMatches(kid => kid.is(PDFPageTree))) || pageTree;
+    // HANDLE CASE OF 'Count' BEING AN INDIRECT REFERENCE
+    lastPageTree.get('Count').number += 1;
+    lastPageTree.get('Kids').object.push(this.createIndirectObject(page));
+    page.set('Parent', this.findIndirectObjectFor(lastPageTree).getReference());
+    return this;
   };
 
   sortIndirectObjects = () => {

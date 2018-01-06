@@ -2,7 +2,7 @@
 import fs from 'fs';
 import PDFDocumentFactory from './src/core/pdf-document/PDFDocumentFactory';
 import { PDFDictionary, PDFName } from './src/core/pdf-objects';
-import { PDFContentStream } from './src/core/pdf-structures';
+import { PDFContentStream, PDFPage } from './src/core/pdf-structures';
 import PDFOperators from './src/core/pdf-operators';
 
 import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
@@ -26,7 +26,7 @@ const files = {
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
 
-const inFile = files.BOL(2);
+const inFile = files.BOL(1);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -37,7 +37,7 @@ console.log(`Pages: ${pages.length}`);
 const page1 = pages[0];
 console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
 
-const editPage = page => {
+const createDrawing = () => {
   const { m, l, S, w, d, re, g, c, b, B, RG, rg } = PDFOperators;
   const contentStream = PDFContentStream.of(
     // Draw black line segment
@@ -66,7 +66,7 @@ const editPage = page => {
     c.of(300, 400, 400, 400, 400, 300),
     b.operator,
   );
-  page.addContentStream(pdfDoc.createIndirectObject(contentStream));
+  return pdfDoc.createIndirectObject(contentStream);
 };
 
 // const editPage = page => {
@@ -98,6 +98,12 @@ const editPage = page => {
 //   page.addContentStream(stream);
 // };
 
-pages.forEach(page => editPage(page));
+const contentStream = createDrawing();
+pages.forEach(page => page.addContentStream(contentStream));
+
+const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
+
+// BOL(2) has dereference issue - so be sure to try it on that!
+pdfDoc.addPage(newPage);
 
 fs.writeFileSync(outFile, pdfDoc.toBytes());

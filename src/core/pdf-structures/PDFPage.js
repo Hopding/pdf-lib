@@ -1,12 +1,21 @@
 /* @flow */
+import _ from 'lodash';
 import { PDFContentStream } from '.';
 import {
   PDFDictionary,
   PDFArray,
+  PDFName,
+  PDFNumber,
   PDFRawStream,
   PDFIndirectObject,
 } from '../pdf-objects';
-import { validate, isInstance } from '../../utils/validate';
+import {
+  validate,
+  validateArr,
+  isInstance,
+  isIdentity,
+  optional,
+} from '../../utils/validate';
 
 const VALID_KEYS = Object.freeze([
   'Type',
@@ -42,7 +51,30 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFPage extends PDFDictionary {
-  static from = (object: PDFDictionary) => new PDFPage(object);
+  static create = (size: [number, number], resources?: PDFDictionary) => {
+    validate(size.length, isIdentity(2), 'size tuple must have two elements');
+    validateArr(size, _.isNumber, 'size tuple entries must be Numbers.');
+    validate(
+      resources,
+      optional(isInstance(PDFDictionary)),
+      'resources must be a PDFDictionary',
+    );
+
+    const mediaBox = [0, 0, size[0], size[1]];
+    const page = new PDFPage(
+      {
+        Type: PDFName.from('Page'),
+        // TODO: Convert this to use PDFRectangle
+        MediaBox: PDFArray.fromArray(mediaBox.map(PDFNumber.fromNumber)),
+      },
+      PDFPage.validKeys,
+    );
+    if (resources) page.set('Resources', resources);
+    return page;
+  };
+
+  static from = (object: PDFDictionary) =>
+    new PDFPage(object, PDFPage.validKeys);
 
   static validKeys = VALID_KEYS;
 
@@ -88,6 +120,8 @@ class PDFPage extends PDFDictionary {
     } else {
       this.get('Contents').object.push(contentStream);
     }
+
+    return this;
   };
 }
 

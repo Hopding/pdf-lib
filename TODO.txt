@@ -7,6 +7,7 @@
 * Add credits file for the testing PDFs!
 * Use XRef tables to parse the file on the fly instead of brute-force parsing it all in one go
 * Set validation limits on pdf operator classes
+* Create PDFRectangle structure!
 
 # Tests:
 * Make test for dictionaries like:

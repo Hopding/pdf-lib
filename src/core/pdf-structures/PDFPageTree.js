@@ -1,6 +1,14 @@
 /* @flow */
-import { PDFIndirectObject, PDFDictionary } from '../pdf-objects';
+/* eslint-disable prefer-destructuring */
+import _ from 'lodash';
+
+import { PDFDictionary, PDFIndirectObject } from '../pdf-objects';
 import { PDFPage } from '.';
+import { validate, isIndirectObjectOf } from '../../utils/validate';
+
+import type { Predicate } from '../../utils';
+
+export type Kid = PDFPageTree | PDFPage;
 
 class PDFPageTree extends PDFDictionary {
   static validKeys = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
@@ -8,21 +16,33 @@ class PDFPageTree extends PDFDictionary {
   static from = (object: PDFDictionary): PDFPageTree =>
     new PDFPageTree(object, PDFPageTree.validKeys);
 
-  getKids = () => {
-    const kids = this.get('Kids');
+  get kids(): Kid[] {
+    return Object.freeze(this.get('Kids').object.map(kid => kid.pdfObject));
+  }
 
-    let kidsArr = kids;
-    if (kids instanceof PDFIndirectObject) kidsArr = kids.pdfObject;
-
-    return kidsArr.map(
-      (elem: PDFIndirectObject<PDFPageTree | PDFPage>) => elem.pdfObject,
-    );
+  findMatches = (predicate: Predicate<Kid>) => {
+    const matches = [];
+    this.traverse(kid => {
+      if (predicate(kid)) matches.push(kid);
+      console.log(`Matching against: ${kid.constructor.name}`);
+    });
+    return Object.freeze(matches);
   };
 
-  traverse = (visit: Function) => {
-    this.getKids().forEach(kid => {
+  addPage = (page: PDFIndirectObject<PDFPage>) => {
+    validate(
+      page,
+      isIndirectObjectOf(PDFPage),
+      'PDFPageTree.addPage() required argument to be of type PDFIndirectObject<PDFPage>',
+    );
+    this.get('Kids').object.push(page);
+    return this;
+  };
+
+  traverse = (visit: Kid => any) => {
+    this.kids.forEach(kid => {
       visit(kid);
-      if (kid instanceof PDFPageTree) kid.traverse(visit);
+      if (kid.is(PDFPageTree)) kid.traverse(visit);
     });
     return this;
   };
