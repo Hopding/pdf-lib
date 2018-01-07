@@ -7,7 +7,6 @@ import {
   PDFObject,
 } from '../pdf-objects';
 import { PDFObjectStream } from '../pdf-structures';
-import parseDict from './parseDict';
 import decodeStream from './encoding/decodeStream';
 import parseObjectStream from './parseObjectStream';
 import { error, arrayIndexOf, arrayToString, trimArray } from '../../utils';
@@ -15,27 +14,23 @@ import { error, arrayIndexOf, arrayToString, trimArray } from '../../utils';
 import type { ParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Dictionary, followed by a PDF Stream.
+Accepts an array of bytes and a PDFDictionary as input. Checks to see if the
+first characters in the trimmed input make up a PDF Stream.
 
-If so, the dictionary is parsed and the content of the stream is extracted into
-a subarray. These values (and a subarray of the input with the bytes making up
-the dictionary and string removed) are returned.
+If so, the content of the stream is extracted into a subarray. A tuple
+containing this subarray and a subarray of the input with the bytes making
+up the content removed is returned.
 
 If not, null is returned.
 */
 const parseStream = (
   input: Uint8Array,
+  dict: PDFDictionary,
   parseHandlers: ParseHandlers = {},
   lookup?: PDFIndirectReference => PDFObject,
-): ?[PDFDictionary, Uint8Array, Uint8Array] => {
-  // Parse the stream dictionary
-  const parsedDict = parseDict(input, parseHandlers);
-  if (!parsedDict) return null;
-  const [dict, r] = parsedDict;
-
+): ?[Uint8Array, Uint8Array] => {
   // Check that the next bytes comprise the beginning of a stream
-  const trimmed = trimArray(r);
+  const trimmed = trimArray(input);
   let startstreamIdx;
   if (arrayToString(trimmed, 0, 7) === 'stream\n') startstreamIdx = 7;
   else if (arrayToString(trimmed, 0, 8) === 'stream\r\n') startstreamIdx = 8;
@@ -72,12 +67,12 @@ const parseStream = (
     error('Invalid Stream!');
   }
 
-  return [dict, contents, trimmed.subarray(endstreamIdx + 10)];
+  return [contents, trimmed.subarray(endstreamIdx + 10)];
 };
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Stream.
+Accepts an array of bytes and a PDFDictionary as input. Checks to see if the
+first characters in the trimmed input make up a PDF Stream.
 
 If so, returns a tuple containing (1) a PDFObjectStream if it is an
 Object Stream, otherwise a PDFStream and (2) a subarray of the input wih the
@@ -89,13 +84,14 @@ If not, null is returned.
 */
 export default (
   input: Uint8Array,
+  dict: PDFDictionary,
   parseHandlers: ParseHandlers = {},
   lookup?: PDFIndirectReference => PDFObject,
 ): ?[PDFRawStream | PDFObjectStream, Uint8Array] => {
   // Parse the input bytes into the stream dictionary and content bytes
-  const res = parseStream(input, parseHandlers, lookup);
+  const res = parseStream(input, dict, parseHandlers, lookup);
   if (!res) return null;
-  const [dict, contents, remaining] = res;
+  const [contents, remaining] = res;
 
   // If it's an Object Stream, parse it and return the indirect objects it contains
   if (dict.get('Type') === PDFName.from('ObjStm')) {

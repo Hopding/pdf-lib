@@ -77,9 +77,9 @@ const createDrawing = () => {
 //
 // pdfDoc.addPage(newPage);
 // pdfDoc.insertPage(0, newPage2);
-// pdfDoc.removePage(0);
-// pdfDoc.removePage(0);
-
+// // pdfDoc.removePage(0);
+// // pdfDoc.removePage(0);
+//
 // fs.writeFileSync(outFile, pdfDoc.toBytes());
 
 // const editPage = page => {

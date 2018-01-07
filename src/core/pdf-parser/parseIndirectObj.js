@@ -13,9 +13,8 @@ import parseHexString from './parseHexString';
 import parseName from './parseName';
 import parseBool from './parseBool';
 import parseNumber from './parseNumber';
-import parseDict from './parseDict';
 import parseArray from './parseArray';
-import parseStream from './parseStream';
+import parseDictOrStream from './parseDictOrStream';
 
 import type { ParseHandlers } from './PDFParser';
 
@@ -54,8 +53,7 @@ const parseIndirectObj = (
 
   // Try to parse the object bytes
   const [contentObj, r] =
-    parseStream(content, parseHandlers, lookup) ||
-    parseDict(content, parseHandlers) ||
+    parseDictOrStream(content, parseHandlers) ||
     parseArray(content, parseHandlers) ||
     parseName(content, parseHandlers) ||
     parseString(content, parseHandlers) ||

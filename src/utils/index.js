@@ -71,9 +71,11 @@ export const charCodes = str => str.split('').map(c => c.charCodeAt(0));
 export const arrayToString = (arr, startAt = 0, stopAt) => {
   const stopIdx =
     stopAt === undefined || stopAt >= arr.length ? arr.length : stopAt;
-  return Array.from(arr.subarray(startAt, stopIdx))
-    .map(n => String.fromCharCode(n))
-    .join('');
+  let str = '';
+  for (let i = startAt; i < stopIdx; i += 1) {
+    str += charFromCode(arr[i]);
+  }
+  return str;
 };
 
 export const arrayCharAt = (arr, idx) => String.fromCharCode(arr[idx]);
@@ -101,11 +103,11 @@ export const arraysAreEqual = (
 };
 
 export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
-  validate(
-    startFrom,
-    and(_.isNumber, not(_.isNaN)),
-    `startFrom must be a number, found: "${startFrom}"`,
-  );
+  // validate(
+  //   startFrom,
+  //   and(_.isNumber, not(_.isNaN)),
+  //   `startFrom must be a number, found: "${startFrom}"`,
+  // );
 
   const targetArr = targetStr.split('').map(c => c.charCodeAt(0));
   let currIdx = startFrom;
@@ -128,11 +130,11 @@ export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
 };
 
 export const arrayIndexOfReverse = (arr, targetStr, startFrom) => {
-  validate(
-    startFrom,
-    and(_.isNumber, not(_.isNaN)),
-    `startFrom must be a number, found: "${startFrom}"`,
-  );
+  // validate(
+  //   startFrom,
+  //   and(_.isNumber, not(_.isNaN)),
+  //   `startFrom must be a number, found: "${startFrom}"`,
+  // );
 
   const targetArr = targetStr.split('').map(c => c.charCodeAt(0));
   let currIdx = startFrom;
