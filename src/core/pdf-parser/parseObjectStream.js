@@ -93,15 +93,15 @@ const parseObjectStream = (
     const subarray = input.subarray(firstObjOffset + byteOffset);
 
     const [pdfObject] =
-      parseNull(subarray, parseHandlers) ||
-      parseIndirectRef(subarray, parseHandlers) ||
-      parseString(subarray, parseHandlers) ||
-      parseHexString(subarray, parseHandlers) ||
-      parseName(subarray, parseHandlers) ||
-      parseBool(subarray, parseHandlers) ||
-      parseNumber(subarray, parseHandlers) ||
-      parseArray(subarray, parseHandlers) ||
       parseDict(subarray, parseHandlers) ||
+      parseArray(subarray, parseHandlers) ||
+      parseName(subarray, parseHandlers) ||
+      parseString(subarray, parseHandlers) ||
+      parseIndirectRef(subarray, parseHandlers) ||
+      parseNumber(subarray, parseHandlers) ||
+      parseHexString(subarray, parseHandlers) ||
+      parseBool(subarray, parseHandlers) ||
+      parseNull(subarray, parseHandlers) ||
       error('Failed to parse object in Object Stream');
 
     return PDFIndirectObject.of(pdfObject).setReferenceNumbers(objNum, 0);

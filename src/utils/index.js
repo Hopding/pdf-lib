@@ -84,10 +84,18 @@ export const trimArray = arr => {
   return arr.subarray(idx);
 };
 
-export const arraysAreEqual = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) return false;
-  for (let i = 0; i < arr1.length; i += 1) {
-    if (arr1[i] !== arr2[i]) return false;
+export const arraysAreEqual = (
+  arr1,
+  arr1Start,
+  arr1Stop,
+  arr2,
+  arr2Start,
+  arr2Stop,
+) => {
+  const arr1Length = arr1Stop - arr1Start;
+  if (arr1Length !== arr2Stop - arr2Start) return false;
+  for (let i = 0; i < arr1Length; i += 1) {
+    if (arr1[arr1Start + i] !== arr2[arr2Start + i]) return false;
   }
   return true;
 };
@@ -104,8 +112,12 @@ export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
 
   while (
     !arraysAreEqual(
-      arr.subarray(currIdx, currIdx + targetStr.length),
+      arr,
+      currIdx,
+      currIdx + targetStr.length,
       targetArr,
+      0,
+      targetArr.length,
     )
   ) {
     currIdx += 1;
@@ -127,8 +139,12 @@ export const arrayIndexOfReverse = (arr, targetStr, startFrom) => {
 
   while (
     !arraysAreEqual(
-      arr.subarray(currIdx, currIdx + targetStr.length),
+      arr,
+      currIdx,
+      currIdx + targetStr.length,
       targetArr,
+      0,
+      targetArr.length,
     )
   ) {
     currIdx -= 1;

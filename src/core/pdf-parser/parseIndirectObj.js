@@ -54,16 +54,16 @@ const parseIndirectObj = (
 
   // Try to parse the object bytes
   const [contentObj, r] =
-    parseNull(content, parseHandlers) ||
     parseStream(content, parseHandlers, lookup) ||
-    parseIndirectRef(content, parseHandlers) ||
-    parseString(content, parseHandlers) ||
-    parseHexString(content, parseHandlers) ||
-    parseName(content, parseHandlers) ||
-    parseBool(content, parseHandlers) ||
-    parseNumber(content, parseHandlers) ||
-    parseArray(content, parseHandlers) ||
     parseDict(content, parseHandlers) ||
+    parseArray(content, parseHandlers) ||
+    parseName(content, parseHandlers) ||
+    parseString(content, parseHandlers) ||
+    parseIndirectRef(content, parseHandlers) ||
+    parseNumber(content, parseHandlers) ||
+    parseHexString(content, parseHandlers) ||
+    parseBool(content, parseHandlers) ||
+    parseNull(content, parseHandlers) ||
     error('Failed to parse object contents');
 
   if (trimArray(r).length > 0) error('Incorrectly parsed object contents');

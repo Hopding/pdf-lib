@@ -43,15 +43,15 @@ const parseArray = (
   while (arrayCharAt(trimArray(remainder), 0) !== ']') {
     // Parse the value for this element
     const [pdfObject, r] =
-      parseNull(remainder, parseHandlers) ||
-      parseIndirectRef(remainder, parseHandlers) ||
-      parseString(remainder, parseHandlers) ||
-      parseHexString(remainder, parseHandlers) ||
       parseName(remainder, parseHandlers) ||
-      parseBool(remainder, parseHandlers) ||
-      parseNumber(remainder, parseHandlers) ||
-      parseArray(remainder, parseHandlers) ||
       parseDict(remainder, parseHandlers) ||
+      parseArray(remainder, parseHandlers) ||
+      parseString(remainder, parseHandlers) ||
+      parseIndirectRef(remainder, parseHandlers) ||
+      parseNumber(remainder, parseHandlers) ||
+      parseHexString(remainder, parseHandlers) ||
+      parseBool(remainder, parseHandlers) ||
+      parseNull(remainder, parseHandlers) ||
       error('Failed to parse array element');
 
     pdfArray.push(pdfObject);
