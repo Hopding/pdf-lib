@@ -1,5 +1,11 @@
 /* @flow */
-import { PDFRawStream, PDFName, PDFDictionary } from '../pdf-objects';
+import {
+  PDFRawStream,
+  PDFName,
+  PDFDictionary,
+  PDFIndirectReference,
+  PDFObject,
+} from '../pdf-objects';
 import { PDFObjectStream } from '../pdf-structures';
 import parseDict from './parseDict';
 import decodeStream from './encoding/decodeStream';
@@ -21,6 +27,7 @@ If not, null is returned.
 const parseStream = (
   input: Uint8Array,
   parseHandlers: ParseHandlers = {},
+  lookup?: PDFIndirectReference => PDFObject,
 ): ?[PDFDictionary, Uint8Array, Uint8Array] => {
   // Parse the stream dictionary
   const parsedDict = parseDict(input, parseHandlers);
@@ -38,11 +45,19 @@ const parseStream = (
   TODO: Make this more efficient by using the "Length" entry of the stream
   dictionary to jump to the end of the stream, instead of traversing each byte.
   */
-  // Locate the end of the stream
-  const endstreamIdx =
-    arrayIndexOf(trimmed, '\nendstream') ||
-    arrayIndexOf(trimmed, '\rendstream');
-  if (!endstreamIdx && endstreamIdx !== 0) error('Invalid Stream!');
+  let endstreamIdx;
+  if (lookup) {
+    let Length =
+      dict.get('Length') || error('Stream dict missing "Length" entry');
+    if (Length.is(PDFIndirectReference)) Length = lookup(Length);
+    endstreamIdx = startstreamIdx + Length.number;
+  } else {
+    // Locate the end of the stream
+    endstreamIdx =
+      arrayIndexOf(trimmed, '\nendstream') ||
+      arrayIndexOf(trimmed, '\rendstream');
+    if (!endstreamIdx && endstreamIdx !== 0) error('Invalid Stream!');
+  }
 
   /*
   TODO: See if it makes sense to .slice() the stream contents, even though this
@@ -75,9 +90,10 @@ If not, null is returned.
 export default (
   input: Uint8Array,
   parseHandlers: ParseHandlers = {},
+  lookup?: PDFIndirectReference => PDFObject,
 ): ?[PDFRawStream | PDFObjectStream, Uint8Array] => {
   // Parse the input bytes into the stream dictionary and content bytes
-  const res = parseStream(input, parseHandlers);
+  const res = parseStream(input, parseHandlers, lookup);
   if (!res) return null;
   const [dict, contents, remaining] = res;
 

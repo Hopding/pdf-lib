@@ -1,10 +1,11 @@
 /* @flow */
 /* eslint-disable no-constant-condition */
+import { PDFIndirectReference, PDFObject } from '../pdf-objects';
 import parseHeader from './parseHeader';
 import parseLinearization from './parseLinearization';
 import parseIndirectObj from './parseIndirectObj';
 import parseXRefTable from './parseXRefTable';
-import { parseTrailer, parseMalformattedTrailer } from './parseTrailer';
+import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 // import removeComments from './removeComments';
 import { error } from '../../utils';
 
@@ -21,10 +22,11 @@ indirect objects removed.
 const parseBodySection = (
   input: Uint8Array,
   parseHandlers: ParseHandlers,
+  lookup?: PDFIndirectReference => PDFObject,
 ): Uint8Array => {
   let remainder = input;
   while (true) {
-    const result = parseIndirectObj(remainder, parseHandlers);
+    const result = parseIndirectObj(remainder, parseHandlers, lookup);
     if (!result) break;
     [, remainder] = result;
   }
@@ -54,7 +56,7 @@ const parseFooterSection = (
   // malformatted documents are missing the dictionary.
   const parsedTrailer =
     parseTrailer(remainder, parseHandlers) ||
-    parseMalformattedTrailer(remainder, parseHandlers);
+    parseTrailerWithoutDict(remainder, parseHandlers);
   if (!parsedTrailer) return null;
 
   [, remainder] = parsedTrailer;
@@ -71,6 +73,7 @@ parsed and stored in memory at once.
 const parseDocument = (
   input: Uint8Array,
   parseHandlers: ParseHandlers,
+  lookup?: PDFIndirectReference => PDFObject,
 ): void => {
   console.log('parsing document');
 
@@ -90,7 +93,7 @@ const parseDocument = (
   // Parse each body of the document and its corresponding footer.
   // (if document does not have update sections, loop will only occur once)
   while (remainder) {
-    remainder = parseBodySection(remainder, parseHandlers);
+    remainder = parseBodySection(remainder, parseHandlers, lookup);
     remainder = parseFooterSection(remainder, parseHandlers);
   }
 

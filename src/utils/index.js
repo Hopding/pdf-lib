@@ -115,6 +115,29 @@ export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
   return currIdx;
 };
 
+export const arrayIndexOfReverse = (arr, targetStr, startFrom) => {
+  validate(
+    startFrom,
+    and(_.isNumber, not(_.isNaN)),
+    `startFrom must be a number, found: "${startFrom}"`,
+  );
+
+  const targetArr = targetStr.split('').map(c => c.charCodeAt(0));
+  let currIdx = startFrom;
+
+  while (
+    !arraysAreEqual(
+      arr.subarray(currIdx, currIdx + targetStr.length),
+      targetArr,
+    )
+  ) {
+    currIdx -= 1;
+    if (currIdx === -1) return undefined;
+  }
+
+  return currIdx;
+};
+
 export const arrayFindIndexOf = (arr, predicate, startFrom = 0) => {
   let currIdx = startFrom;
 

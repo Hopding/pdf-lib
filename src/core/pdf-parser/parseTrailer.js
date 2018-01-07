@@ -64,7 +64,7 @@ Specifically, the "trailer" keyword and the trailer's dictionary are not parsed.
 Documents that have such a trailer do not meet the official specification, but
 they do appear in the wild sometimes. This function allows us to handle them.
 */
-const parseMalformattedTrailer = (
+const parseTrailerWithoutDict = (
   input: Uint8Array,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFTrailer, Uint8Array] => {
@@ -92,4 +92,4 @@ const parseMalformattedTrailer = (
   return [trailer, trimmed.subarray(fullMatch.length)];
 };
 
-export { parseTrailer, parseMalformattedTrailer };
+export { parseTrailer, parseTrailerWithoutDict };

@@ -26,16 +26,16 @@ const files = {
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
 
-const inFile = files.BOL(6);
+const inFile = files.PDF_SPEC;
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
 const pdfDoc = PDFDocumentFactory.load(bytes);
 
-const pages = pdfDoc.getPages();
-console.log(`Pages: ${pages.length}`);
-const page1 = pages[0];
-console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
+// const pages = pdfDoc.getPages();
+// console.log(`Pages: ${pages.length}`);
+// const page1 = pages[0];
+// console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
 
 const createDrawing = () => {
   const { m, l, S, w, d, re, g, c, b, B, RG, rg } = PDFOperators;
@@ -69,18 +69,18 @@ const createDrawing = () => {
   return pdfDoc.createIndirectObject(contentStream);
 };
 
-const contentStream = createDrawing();
-pages.forEach(page => page.addContentStream(contentStream));
-
-const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
-const newPage2 = PDFPage.create([400, 400]).addContentStream(contentStream);
-
-pdfDoc.addPage(newPage);
-pdfDoc.insertPage(0, newPage2);
+// const contentStream = createDrawing();
+// pages.forEach(page => page.addContentStream(contentStream));
+//
+// const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
+// const newPage2 = PDFPage.create([400, 400]).addContentStream(contentStream);
+//
+// pdfDoc.addPage(newPage);
+// pdfDoc.insertPage(0, newPage2);
 // pdfDoc.removePage(0);
 // pdfDoc.removePage(0);
 
-fs.writeFileSync(outFile, pdfDoc.toBytes());
+// fs.writeFileSync(outFile, pdfDoc.toBytes());
 
 // const editPage = page => {
 //   const pageResources = page.get('Resources');

@@ -1,5 +1,9 @@
 /* @flow */
-import { PDFIndirectObject } from '../pdf-objects';
+import {
+  PDFIndirectObject,
+  PDFIndirectReference,
+  PDFObject,
+} from '../pdf-objects';
 import { error, arrayIndexOf, trimArray, arrayToString } from '../../utils';
 
 import parseNull from './parseNull';
@@ -29,6 +33,7 @@ If not, null is returned.
 const parseIndirectObj = (
   input: Uint8Array,
   parseHandlers: ParseHandlers = {},
+  lookup?: PDFIndirectReference => PDFObject,
 ): ?[PDFIndirectObject<*>, Uint8Array] => {
   const trimmed = trimArray(input);
   const indirectObjRegex = /^(\d+) (\d+) obj/;
@@ -50,7 +55,7 @@ const parseIndirectObj = (
   // Try to parse the object bytes
   const [contentObj, r] =
     parseNull(content, parseHandlers) ||
-    parseStream(content, parseHandlers) ||
+    parseStream(content, parseHandlers, lookup) ||
     parseIndirectRef(content, parseHandlers) ||
     parseString(content, parseHandlers) ||
     parseHexString(content, parseHandlers) ||

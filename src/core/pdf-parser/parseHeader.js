@@ -45,7 +45,7 @@ const parseHeader = (
     returnArray = withoutVersion.subarray(nextNewline);
   }
 
-  const pdfHeader = PDFHeader.from(Number(major), Number(minor));
+  const pdfHeader = PDFHeader.forVersion(Number(major), Number(minor));
   if (onParseHeader) onParseHeader(pdfHeader);
   return [pdfHeader, returnArray];
 };

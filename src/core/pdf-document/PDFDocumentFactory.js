@@ -1,5 +1,6 @@
 /* @flow */
 import PDFDocument from './PDFDocument';
+import PDFObjectIndex from './PDFObjectIndex';
 
 import { PDFName, PDFStream } from '../pdf-objects';
 import { PDFCatalog, PDFObjectStream } from '../pdf-structures';
@@ -9,23 +10,38 @@ import { findInMap } from '../../utils';
 import type { ParsedPDF } from '../pdf-parser/PDFParser';
 
 class PDFDocumentFactory {
+  static update = (data: Uint8Array): PDFDocument => {
+    const pdfDoc = new PDFDocument();
+    const index = PDFObjectIndex.for(data);
+
+    pdfDoc.index = index;
+    pdfDoc.catalog = index.lookup(index.trailer.dictionary.get('Root'));
+
+    return pdfDoc;
+  };
+
   static load = (data: Uint8Array): PDFDocument => {
     const pdfDoc = new PDFDocument();
     const pdfParser = new PDFParser();
+    const index = PDFObjectIndex.for(data);
 
     console.time('ParsePDF');
-    const parsedPdf = pdfParser.parse(data);
+    const parsedPdf = pdfParser.parse(data, index.lookup);
     console.timeEnd('ParsePDF');
-    console.log('updates.length:', parsedPdf.updates.length);
-    PDFDocumentFactory.normalize(parsedPdf);
 
-    const catalog = findInMap(parsedPdf.original.body, obj =>
-      obj.pdfObject.is(PDFCatalog),
-    );
-
-    pdfDoc
-      .setCatalog(catalog)
-      .setIndirectObjects(Array.from(parsedPdf.original.body.values()));
+    // console.time('Normalize');
+    // PDFDocumentFactory.normalize(parsedPdf);
+    // console.timeEnd('Normalize');
+    //
+    // console.time('Finding Catalog');
+    // const catalog = findInMap(parsedPdf.original.body, obj =>
+    //   obj.pdfObject.is(PDFCatalog),
+    // );
+    // console.timeEnd('Finding Catalog');
+    //
+    // pdfDoc
+    //   .setCatalog(catalog)
+    //   .setIndirectObjects(Array.from(parsedPdf.original.body.values()));
 
     return pdfDoc;
   };

@@ -7,3 +7,7 @@ yarn-error.log
 # Misc
 .DS_Store
 debug*
+
+# Profiling
+isolate-0x102801600-v8.log
+profile-res.txt

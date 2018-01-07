@@ -17,7 +17,7 @@ import {
 import { error, validate, isInstance, isIdentity } from '../../utils/validate';
 
 class PDFDocument {
-  header: PDFHeader = new PDFHeader(1, 6);
+  header: PDFHeader = PDFHeader.forVersion(1, 6);
   catalog: PDFCatalog;
   indirectObjects: Array<PDFIndirectObject<*>> = [];
   maxReferenceNumber: number;

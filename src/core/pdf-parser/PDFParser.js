@@ -2,6 +2,7 @@
 import _ from 'lodash';
 
 import {
+  PDFObject,
   PDFBoolean,
   PDFArray,
   PDFDictionary,
@@ -147,7 +148,10 @@ class PDFParser {
     this.linearization = linearization;
   };
 
-  parse = (bytes: Uint8Array): ParsedPDF => {
+  parse = (
+    bytes: Uint8Array,
+    lookup?: PDFIndirectReference => PDFObject,
+  ): ParsedPDF => {
     if (this.activelyParsing) error('Cannot parse documents concurrently');
     this.activelyParsing = true;
 

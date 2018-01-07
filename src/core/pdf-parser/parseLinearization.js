@@ -5,7 +5,7 @@ import { error, trimArray } from '../../utils';
 
 import parseXRefTable from './parseXRefTable';
 import parseIndirectObj from './parseIndirectObj';
-import { parseTrailer, parseMalformattedTrailer } from './parseTrailer';
+import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 
 import type { ParseHandlers } from './PDFParser';
 
@@ -54,7 +54,7 @@ const parseLinearization = (
   const [xref, remaining2] = xrefMatch;
 
   const trailerMatch =
-    parseTrailer(remaining2) || parseMalformattedTrailer(remaining2);
+    parseTrailer(remaining2) || parseTrailerWithoutDict(remaining2);
 
   // Per the PDF spec, a trailer should always be present - but some PDFs in the
   // wild are missing them anyways

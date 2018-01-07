@@ -15,7 +15,8 @@ class PDFHeader {
     this.minor = minor;
   }
 
-  static from = (major: number, minor: number) => new PDFHeader(major, minor);
+  static forVersion = (major: number, minor: number) =>
+    new PDFHeader(major, minor);
 
   toString = () => `
     %PDF-${this.major}.${this.minor}
