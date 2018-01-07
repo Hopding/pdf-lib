@@ -29,19 +29,19 @@ class PDFDocumentFactory {
     const parsedPdf = pdfParser.parse(data, index.lookup);
     console.timeEnd('ParsePDF');
 
-    // console.time('Normalize');
-    // PDFDocumentFactory.normalize(parsedPdf);
-    // console.timeEnd('Normalize');
-    //
-    // console.time('Finding Catalog');
-    // const catalog = findInMap(parsedPdf.original.body, obj =>
-    //   obj.pdfObject.is(PDFCatalog),
-    // );
-    // console.timeEnd('Finding Catalog');
-    //
-    // pdfDoc
-    //   .setCatalog(catalog)
-    //   .setIndirectObjects(Array.from(parsedPdf.original.body.values()));
+    console.time('Normalize');
+    PDFDocumentFactory.normalize(parsedPdf);
+    console.timeEnd('Normalize');
+
+    console.time('Finding Catalog');
+    const catalog = findInMap(parsedPdf.original.body, obj =>
+      obj.pdfObject.is(PDFCatalog),
+    );
+    console.timeEnd('Finding Catalog');
+
+    pdfDoc
+      .setCatalog(catalog)
+      .setIndirectObjects(Array.from(parsedPdf.original.body.values()));
 
     return pdfDoc;
   };
