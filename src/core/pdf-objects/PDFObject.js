@@ -1,12 +1,7 @@
 /* @flow */
-import { PDFIndirectObject } from '.';
 
 class PDFObject {
   is = <T>(obj: T) => this instanceof obj;
-
-  get object() {
-    return this.is(PDFIndirectObject) ? this.pdfObject : this;
-  }
 
   toString = (): string => {
     throw new Error(

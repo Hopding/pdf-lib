@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import dedent from 'dedent';
 
-import { PDFIndirectReference } from '../pdf-objects';
 import { addStringToBuffer } from '../../utils';
 import { validate, validateArr, isInstance } from '../../utils/validate';
 
@@ -66,25 +65,6 @@ export class Subsection {
     return this;
   };
 
-  // Object references whose offsets are contained in this subsection
-  get activeObjectOffsets(): [PDFIndirectReference, number] {
-    // $SuppressFlow
-    return this.entries
-      .map(
-        ({ offset, generationNum, isInUse }, idx) =>
-          isInUse
-            ? [
-                PDFIndirectReference.forNumbers(
-                  this.firstObjNum + idx,
-                  generationNum,
-                ),
-                offset,
-              ]
-            : null,
-      )
-      .filter(Boolean);
-  }
-
   toString = () =>
     dedent(`
     ${this.firstObjNum} ${this.entries.length}
@@ -117,10 +97,6 @@ class Table {
     this.subsections.push(subsection);
     return this;
   };
-
-  get activeObjectOffsets(): PDFIndirectReference[] {
-    return _.flatMap(this.subsections, ss => ss.activeObjectOffsets);
-  }
 
   toString = () =>
     `${dedent(`

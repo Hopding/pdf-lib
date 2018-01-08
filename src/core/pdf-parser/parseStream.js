@@ -1,11 +1,5 @@
 /* @flow */
-import {
-  PDFRawStream,
-  PDFName,
-  PDFDictionary,
-  PDFIndirectReference,
-  PDFObject,
-} from '../pdf-objects';
+import { PDFRawStream, PDFName, PDFDictionary } from '../pdf-objects';
 import { PDFObjectStream } from '../pdf-structures';
 import decodeStream from './encoding/decodeStream';
 import parseObjectStream from './parseObjectStream';

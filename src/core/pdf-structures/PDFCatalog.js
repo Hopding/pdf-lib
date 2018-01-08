@@ -37,9 +37,6 @@ class PDFCatalog extends PDFDictionary {
 
   static from = (object: PDFDictionary): PDFCatalog =>
     new PDFCatalog(object, PDFCatalog.validKeys);
-
-  getPageTree = (): PDFPageTree =>
-    (this.get('Pages'): PDFIndirectObject).pdfObject;
 }
 
 export default PDFCatalog;

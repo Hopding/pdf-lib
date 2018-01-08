@@ -118,9 +118,6 @@ class PDFParser {
   };
 
   handleIndirectObj = (indirectObj: PDFIndirectObject<*>) => {
-    if (indirectObj.pdfObject.is(PDFCatalog)) {
-      console.log('Found catalog!');
-    }
     if (this.updates.length > 0) {
       _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
     } else {

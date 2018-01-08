@@ -19,7 +19,7 @@ class PDFDocumentWriter {
       sortedIndex.find(({ pdfObject }) => pdfObject.is(PDFCatalog)) ||
       error('Missing PDFCatalog');
 
-    const [table, tableOffset] = PDFXRefTableFactory.fromObjectIndex(
+    const [table, tableOffset] = PDFXRefTableFactory.forIndirectObjects(
       pdfDoc.header,
       sortedIndex,
     );
