@@ -1,23 +1,10 @@
 /* @flow */
-/* eslint-disable prefer-destructuring */
+/* eslint-disable prefer-destructuring, no-param-reassign */
 import _ from 'lodash';
 
-import {
-  PDFObject,
-  PDFDictionary,
-  PDFIndirectObject,
-  PDFIndirectReference,
-} from '../pdf-objects';
+import { PDFObject, PDFDictionary, PDFIndirectReference } from '../pdf-objects';
 import { PDFPage } from '.';
-import { not } from '../../utils';
-import {
-  validate,
-  isIndirectObjectOf,
-  isInstance,
-  isIdentity,
-} from '../../utils/validate';
-
-import type { Predicate } from '../../utils';
+import { validate, isInstance } from '../../utils/validate';
 
 export type Kid = PDFPageTree | PDFPage;
 
@@ -28,7 +15,7 @@ class PDFPageTree extends PDFDictionary {
     new PDFPageTree(object, PDFPageTree.validKeys);
 
   addPage = (
-    lookup: (PDFIndirectReference<Kid>) => PDFObject,
+    lookup: (PDFIndirectReference<Kid>) => PDFPageTree,
     page: PDFIndirectReference<PDFPage>,
   ) => {
     validate(
@@ -46,24 +33,23 @@ class PDFPageTree extends PDFDictionary {
     return this;
   };
 
-  // removePage = (page: PDFPage) => {
-  //   console.log(page);
-  //   validate(
-  //     page,
-  //     isInstance(PDFPage),
-  //     'PDFPageTree.removePage() required argument to be of type PDFPage',
-  //   );
-  //   const Kids = this.get('Kids').object;
-  //   Kids.array = Kids.array.filter(indirectObj =>
-  //     not(isIdentity(page))(indirectObj.pdfObject),
-  //   );
-  //   this.get('Count').number -= 1;
-  //   return this;
-  // };
-  //
+  removePage = (
+    lookup: (PDFIndirectReference<Kid>) => PDFPageTree,
+    idx: number,
+  ) => {
+    validate(idx, _.isNumber, '"idx" arg must be a Number');
+    this.get('Kids').array.splice(idx, 1);
+
+    this.get('Count').number -= 1;
+    this.ascend(lookup, parent => {
+      parent.get('Count').number -= 1;
+    });
+
+    return this;
+  };
 
   insertPage = (
-    lookup: (PDFIndirectReference<Kid>) => PDFObject,
+    lookup: (PDFIndirectReference<Kid>) => PDFPageTree,
     idx: number,
     page: PDFIndirectReference<PDFPage>,
   ) => {
@@ -108,7 +94,7 @@ class PDFPageTree extends PDFDictionary {
   };
 
   ascend = (
-    lookup: (PDFIndirectReference<Kid>) => PDFObject,
+    lookup: (PDFIndirectReference<Kid>) => PDFPageTree,
     visit: PDFPageTree => any,
   ) => {
     if (!this.get('Parent')) return;

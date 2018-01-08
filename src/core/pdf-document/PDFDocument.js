@@ -1,29 +1,16 @@
 /* @flow */
 import _ from 'lodash';
-import {
-  PDFDictionary,
-  PDFIndirectObject,
-  PDFIndirectReference,
-  PDFObject,
-  PDFNumber,
-} from '../pdf-objects';
-import {
-  PDFCatalog,
-  PDFHeader,
-  PDFPage,
-  PDFXRef,
-  PDFTrailer,
-  PDFPageTree,
-} from '../pdf-structures';
+import { PDFIndirectReference, PDFObject } from '../pdf-objects';
+import { PDFCatalog, PDFHeader, PDFPage, PDFPageTree } from '../pdf-structures';
 import { error, validate, isInstance, isIdentity } from '../../utils/validate';
 
 class PDFDocument {
   header: PDFHeader = PDFHeader.forVersion(1, 7);
   catalog: PDFCatalog;
-  index: Map<PDFIndirectReference, PDFObject>;
+  index: Map<PDFIndirectReference<*>, PDFObject>;
   maxObjNum: number = 0;
 
-  constructor(index: Map<PDFIndirectReference, PDFObject>) {
+  constructor(index: Map<PDFIndirectReference<*>, PDFObject>) {
     validate(
       index,
       isInstance(Map),
@@ -74,6 +61,33 @@ class PDFDocument {
 
     page.set('Parent', lastPageTreeRef);
     lastPageTree.addPage(this.lookup, this.register(page));
+    return this;
+  };
+
+  // TODO: Clean up unused objects when possible after removing page from tree
+  // TODO: Make sure "idx" is within required range
+  removePage = (idx: number) => {
+    validate(idx, _.isNumber, 'idx must be a number');
+    const pageTreeRef = this.catalog.get('Pages');
+    const pageTree = this.catalog.getPageTree(this.lookup);
+
+    // TODO: Use a "stop" callback to avoid unneccesarily traversing whole page tree...
+    let treeRef = pageTreeRef;
+    let pageCount = 0;
+    let kidNum = 0;
+    pageTree.traverse(this.lookup, (kid, ref) => {
+      if (pageCount !== idx) {
+        if (kid.is(PDFPageTree)) kidNum = 0;
+        if (kid.is(PDFPage)) {
+          pageCount += 1;
+          kidNum += 1;
+          if (pageCount === idx) treeRef = kid.get('Parent');
+        }
+      }
+    });
+
+    const tree: PDFPageTree = this.lookup(treeRef);
+    tree.removePage(this.lookup, kidNum);
     return this;
   };
 
