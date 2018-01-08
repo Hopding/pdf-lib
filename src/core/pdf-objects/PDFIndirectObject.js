@@ -36,6 +36,11 @@ class PDFIndirectObject<T: $Subtype<PDFObject> = PDFObject> extends PDFObject {
     return this;
   };
 
+  setReference = (reference: PDFIndirectReference) => {
+    this.reference = reference;
+    return this;
+  };
+
   getReference = () => this.reference;
   toReference = () => this.reference.toString();
 

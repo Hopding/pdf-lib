@@ -148,10 +148,7 @@ class PDFParser {
     this.linearization = linearization;
   };
 
-  parse = (
-    bytes: Uint8Array,
-    lookup?: PDFIndirectReference => PDFObject,
-  ): ParsedPDF => {
+  parse = (bytes: Uint8Array): ParsedPDF => {
     if (this.activelyParsing) error('Cannot parse documents concurrently');
     this.activelyParsing = true;
 

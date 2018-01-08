@@ -7,6 +7,7 @@ import PDFObject from './PDFObject';
 const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
 const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();
 
+// TODO: Need to error out if obj or gen numbers are manually set!
 class PDFIndirectReference extends PDFObject {
   objectNumber: number;
   generationNumber: number;

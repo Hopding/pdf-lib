@@ -22,11 +22,10 @@ indirect objects removed.
 const parseBodySection = (
   input: Uint8Array,
   parseHandlers: ParseHandlers,
-  lookup?: PDFIndirectReference => PDFObject,
 ): Uint8Array => {
   let remainder = input;
   while (true) {
-    const result = parseIndirectObj(remainder, parseHandlers, lookup);
+    const result = parseIndirectObj(remainder, parseHandlers);
     if (!result) break;
     [, remainder] = result;
   }
@@ -73,7 +72,6 @@ parsed and stored in memory at once.
 const parseDocument = (
   input: Uint8Array,
   parseHandlers: ParseHandlers,
-  lookup?: PDFIndirectReference => PDFObject,
 ): void => {
   console.log('parsing document');
 
@@ -93,7 +91,7 @@ const parseDocument = (
   // Parse each body of the document and its corresponding footer.
   // (if document does not have update sections, loop will only occur once)
   while (remainder) {
-    remainder = parseBodySection(remainder, parseHandlers, lookup);
+    remainder = parseBodySection(remainder, parseHandlers);
     remainder = parseFooterSection(remainder, parseHandlers);
   }
 

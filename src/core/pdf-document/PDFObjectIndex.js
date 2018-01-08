@@ -22,7 +22,6 @@ class PDFObjectIndex {
     const parsedObjects: [XRef.Table, PDFTrailer][] = parser.parse(pdfBytes);
     this.trailer = _.last(_.last(parsedObjects));
 
-    console.log(parsedObjects.length);
     _(parsedObjects)
       .map(_.first)
       .flatMap(t => t.activeObjectOffsets)

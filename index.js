@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
 import fs from 'fs';
 import PDFDocumentFactory from './src/core/pdf-document/PDFDocumentFactory';
+import PDFDocumentWriter from './src/core/pdf-document/PDFDocumentWriter';
 import { PDFDictionary, PDFName } from './src/core/pdf-objects';
 import { PDFContentStream, PDFPage } from './src/core/pdf-structures';
+import PDFXRefTableFactory from './src/core/pdf-structures/factories/PDFXRefTableFactory';
 import PDFOperators from './src/core/pdf-operators';
 
 import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
@@ -30,12 +32,13 @@ const inFile = files.PDF_SPEC;
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
+console.time('PDFDocument');
 const pdfDoc = PDFDocumentFactory.load(bytes);
 
-const pages = pdfDoc.getPages();
-console.log(`Pages: ${pages.length}`);
-const page1 = pages[0];
-console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
+// const pages = pdfDoc.getPages();
+// console.log(`Pages: ${pages.length}`);
+// const page1 = pages[0];
+// console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
 
 const createDrawing = () => {
   const { m, l, S, w, d, re, g, c, b, B, RG, rg } = PDFOperators;
@@ -69,44 +72,19 @@ const createDrawing = () => {
   return pdfDoc.createIndirectObject(contentStream);
 };
 
-const contentStream = createDrawing();
-pages.forEach(page => page.addContentStream(contentStream));
-
-const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
-const newPage2 = PDFPage.create([400, 400]).addContentStream(contentStream);
-
-pdfDoc.addPage(newPage);
-pdfDoc.insertPage(0, newPage2);
+// const contentStream = createDrawing();
+// pages.forEach(page => page.addContentStream(contentStream));
+//
+// const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
+// const newPage2 = PDFPage.create([400, 400]).addContentStream(contentStream);
+//
+// pdfDoc.addPage(newPage);
+// pdfDoc.insertPage(0, newPage2);
 // pdfDoc.removePage(0);
 // pdfDoc.removePage(0);
 
-fs.writeFileSync(outFile, pdfDoc.toBytes());
-
-// const editPage = page => {
-//   const pageResources = page.get('Resources');
-//   const pageFont = pageResources.pdfObject
-//     ? pageResources.pdfObject.get('Font')
-//     : pageResources.get('Font');
-//
-//   pageFont.set(
-//     'F1',
-//     PDFDictionary.from({
-//       Type: PDFName.from('Font'),
-//       Subtype: PDFName.from('Type1'),
-//       BaseFont: PDFName.from('Times-Roman'),
-//     }),
-//   );
-//
-//   const stream = new PDFContentStream()
-//     .beginText()
-//     .setFont('F1', 50)
-//     .moveText(0, 750)
-//     .showText('TESTING TESTING TESTING')
-//     .endText()
-//     .beginText()
-//     .setFont('F1', 50)
-//     .moveText(0, 500)
-//     .showText('TESTING TESTING TESTING')
-//     .endText();
-//   page.addContentStream(stream);
-// };
+console.time('saveToBytes');
+const savedBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
+console.timeEnd('saveToBytes');
+console.timeEnd('PDFDocument');
+fs.writeFileSync(outFile, savedBytes);

@@ -9,6 +9,7 @@
 * Use XRef tables to parse the file on the fly instead of brute-force parsing it all in one go
 * Set validation limits on pdf operator classes
 * Create PDFRectangle structure!
+* Remove all old dereference-reliant code...
 
 # Tests:
 * Make test for dictionaries like:

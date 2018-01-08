@@ -27,7 +27,6 @@ const parseStream = (
   input: Uint8Array,
   dict: PDFDictionary,
   parseHandlers: ParseHandlers = {},
-  lookup?: PDFIndirectReference => PDFObject,
 ): ?[Uint8Array, Uint8Array] => {
   // Check that the next bytes comprise the beginning of a stream
   const trimmed = trimArray(input);
@@ -40,19 +39,11 @@ const parseStream = (
   TODO: Make this more efficient by using the "Length" entry of the stream
   dictionary to jump to the end of the stream, instead of traversing each byte.
   */
-  let endstreamIdx;
-  if (lookup) {
-    let Length =
-      dict.get('Length') || error('Stream dict missing "Length" entry');
-    if (Length.is(PDFIndirectReference)) Length = lookup(Length);
-    endstreamIdx = startstreamIdx + Length.number;
-  } else {
-    // Locate the end of the stream
-    endstreamIdx =
-      arrayIndexOf(trimmed, '\nendstream') ||
-      arrayIndexOf(trimmed, '\rendstream');
-    if (!endstreamIdx && endstreamIdx !== 0) error('Invalid Stream!');
-  }
+  // Locate the end of the stream
+  const endstreamIdx =
+    arrayIndexOf(trimmed, '\nendstream') ||
+    arrayIndexOf(trimmed, '\rendstream');
+  if (!endstreamIdx && endstreamIdx !== 0) error('Invalid Stream!');
 
   /*
   TODO: See if it makes sense to .slice() the stream contents, even though this
@@ -86,10 +77,9 @@ export default (
   input: Uint8Array,
   dict: PDFDictionary,
   parseHandlers: ParseHandlers = {},
-  lookup?: PDFIndirectReference => PDFObject,
 ): ?[PDFRawStream | PDFObjectStream, Uint8Array] => {
   // Parse the input bytes into the stream dictionary and content bytes
-  const res = parseStream(input, dict, parseHandlers, lookup);
+  const res = parseStream(input, dict, parseHandlers);
   if (!res) return null;
   const [contents, remaining] = res;
 
