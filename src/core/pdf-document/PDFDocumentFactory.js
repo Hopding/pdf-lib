@@ -1,6 +1,5 @@
 /* @flow */
 import PDFDocument from './PDFDocument';
-import PDFObjectIndex from './PDFObjectIndex';
 
 import { PDFObject, PDFName, PDFStream } from '../pdf-objects';
 import { PDFIndirectReference, PDFObjectStream } from '../pdf-structures';
