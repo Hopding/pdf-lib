@@ -36,14 +36,33 @@ class PDFDocument {
     this.index = index;
   }
 
-  static fromIndex = (index: Map<PDFIndirectReference, PDFObject>) =>
+  static fromIndex = (index: Map<PDFIndirectReference<*>, PDFObject>) =>
     new PDFDocument(index);
 
-  register = (object: PDFObject): PDFIndirectReference => {
+  lookup = (ref: PDFIndirectReference<*>) => this.index.get(ref);
+
+  register = <T: PDFObject>(object: T): PDFIndirectReference<T> => {
+    validate(object, isInstance(PDFObject), 'object must be a PDFObject');
     this.maxObjNum += 1;
     const ref = PDFIndirectReference.forNumbers(this.maxObjNum, 0);
     this.index.set(ref, object);
     return ref;
+  };
+
+  addPage = (page: PDFPage) => {
+    validate(page, isInstance(PDFPage), 'page must be a PDFPage');
+    const pageTree = this.catalog.getPageTree(this.lookup);
+    let lastPageTree = pageTree;
+    let lastPageTreeRef = this.catalog.get('Pages');
+    pageTree.traverseRight(this.lookup, (kid, ref) => {
+      if (kid.is(PDFPageTree)) {
+        lastPageTree = kid;
+        lastPageTreeRef = ref;
+      }
+    });
+    page.set('Parent', lastPageTreeRef);
+    lastPageTree.addPage(this.lookup, this.register(page));
+    return this;
   };
 }
 

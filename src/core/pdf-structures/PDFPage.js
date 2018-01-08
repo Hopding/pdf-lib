@@ -8,6 +8,7 @@ import {
   PDFNumber,
   PDFRawStream,
   PDFIndirectObject,
+  PDFIndirectReference,
 } from '../pdf-objects';
 import {
   validate,
@@ -93,6 +94,7 @@ class PDFPage extends PDFDictionary {
   }
 
   /** Convert "Contents" to array if it exists and is not already */
+  // TODO: See is this is inefficient...
   normalizeContents = () => {
     if (this.get('Contents')) {
       const contents = this.get('Contents');
@@ -102,17 +104,19 @@ class PDFPage extends PDFDictionary {
     }
   };
 
-  addContentStream = (contentStream: PDFIndirectObject<PDFContentStream>) => {
+  addContentStream = (
+    contentStream: PDFIndirectReference<PDFContentStream>,
+  ) => {
     validate(
       contentStream,
-      isInstance(PDFIndirectObject),
-      '"contentStream" must be of type PDFIndirectObject<PDFContentStream>',
+      isInstance(PDFIndirectReference),
+      '"contentStream" must be of type PDFIndirectReference<PDFContentStream>',
     );
-    validate(
-      contentStream.pdfObject,
-      isInstance(PDFContentStream),
-      '"contentStream" must be of type PDFIndirectObject<PDFContentStream>',
-    );
+    // validate(
+    //   contentStream.pdfObject,
+    //   isInstance(PDFContentStream),
+    //   '"contentStream" must be of type PDFIndirectObject<PDFContentStream>',
+    // );
 
     this.normalizeContents();
     if (!this.get('Contents')) {

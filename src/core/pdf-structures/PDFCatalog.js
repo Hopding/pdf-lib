@@ -1,6 +1,11 @@
 /* @flow */
 import PDFDictionary from '../pdf-objects/PDFDictionary';
-import { PDFIndirectObject, PDFPageTree } from '.';
+import {
+  PDFObject,
+  PDFIndirectReference,
+  PDFIndirectObject,
+  PDFPageTree,
+} from '.';
 
 class PDFCatalog extends PDFDictionary {
   static validKeys = Object.freeze([
@@ -37,6 +42,9 @@ class PDFCatalog extends PDFDictionary {
 
   static from = (object: PDFDictionary): PDFCatalog =>
     new PDFCatalog(object, PDFCatalog.validKeys);
+
+  getPageTree = (lookup: PDFIndirectReference => PDFObject): PDFPageTree =>
+    lookup(this.get('Pages'));
 }
 
 export default PDFCatalog;

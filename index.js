@@ -69,16 +69,18 @@ const createDrawing = () => {
     c.of(300, 400, 400, 400, 400, 300),
     b.operator,
   );
-  return pdfDoc.createIndirectObject(contentStream);
+  return pdfDoc.register(contentStream);
 };
 
-// const contentStream = createDrawing();
+const contentStream = createDrawing();
 // pages.forEach(page => page.addContentStream(contentStream));
 //
-// const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
+const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
 // const newPage2 = PDFPage.create([400, 400]).addContentStream(contentStream);
-//
-// pdfDoc.addPage(newPage);
+
+console.time('addPage');
+pdfDoc.addPage(newPage);
+console.timeEnd('addPage');
 // pdfDoc.insertPage(0, newPage2);
 // pdfDoc.removePage(0);
 // pdfDoc.removePage(0);
