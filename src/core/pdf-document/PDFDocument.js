@@ -39,7 +39,8 @@ class PDFDocument {
   static fromIndex = (index: Map<PDFIndirectReference<*>, PDFObject>) =>
     new PDFDocument(index);
 
-  lookup = (ref: PDFIndirectReference<*>) => this.index.get(ref);
+  lookup = (ref: PDFIndirectReference<*> | PDFObject) =>
+    ref.is(PDFIndirectReference) ? this.index.get(ref) : ref;
 
   register = <T: PDFObject>(object: T): PDFIndirectReference<T> => {
     validate(object, isInstance(PDFObject), 'object must be a PDFObject');
@@ -49,9 +50,19 @@ class PDFDocument {
     return ref;
   };
 
+  getPages = (): PDFPage[] => {
+    const pageTree = this.catalog.getPageTree(this.lookup);
+    const pages = [];
+    pageTree.traverse(this.lookup, kid => {
+      if (kid.is(PDFPage)) pages.push(kid);
+    });
+    return Object.freeze(pages);
+  };
+
   addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const pageTree = this.catalog.getPageTree(this.lookup);
+
     let lastPageTree = pageTree;
     let lastPageTreeRef = this.catalog.get('Pages');
     pageTree.traverseRight(this.lookup, (kid, ref) => {
@@ -60,8 +71,37 @@ class PDFDocument {
         lastPageTreeRef = ref;
       }
     });
+
     page.set('Parent', lastPageTreeRef);
     lastPageTree.addPage(this.lookup, this.register(page));
+    return this;
+  };
+
+  // TODO: Make sure "idx" is within required range
+  insertPage = (idx: number, page: PDFPage) => {
+    validate(idx, _.isNumber, 'idx must be a number');
+    validate(page, isInstance(PDFPage), 'page must be a PDFPage');
+    const pageTreeRef = this.catalog.get('Pages');
+    const pageTree = this.catalog.getPageTree(this.lookup);
+
+    // TODO: Use a "stop" callback to avoid unneccesarily traversing whole page tree...
+    let treeRef = pageTreeRef;
+    let pageCount = 0;
+    let kidNum = 0;
+    pageTree.traverse(this.lookup, (kid, ref) => {
+      if (pageCount !== idx) {
+        if (kid.is(PDFPageTree)) kidNum = 0;
+        if (kid.is(PDFPage)) {
+          pageCount += 1;
+          kidNum += 1;
+          if (pageCount === idx) treeRef = kid.get('Parent');
+        }
+      }
+    });
+
+    page.set('Parent', treeRef);
+    const tree: PDFPageTree = this.lookup(treeRef);
+    tree.insertPage(this.lookup, kidNum, this.register(page));
     return this;
   };
 }

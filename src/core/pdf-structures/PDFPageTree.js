@@ -27,14 +27,6 @@ class PDFPageTree extends PDFDictionary {
   static from = (object: PDFDictionary): PDFPageTree =>
     new PDFPageTree(object, PDFPageTree.validKeys);
 
-  // findMatches = (predicate: Predicate<Kid>) => {
-  //   const matches = [];
-  //   this.traverse(kid => {
-  //     if (predicate(kid)) matches.push(kid);
-  //   });
-  //   return Object.freeze(matches);
-  // };
-
   addPage = (
     lookup: (PDFIndirectReference<Kid>) => PDFObject,
     page: PDFIndirectReference<PDFPage>,
@@ -42,7 +34,7 @@ class PDFPageTree extends PDFDictionary {
     validate(
       page,
       isInstance(PDFIndirectReference),
-      'PDFPageTree.addPage() "page" arg must be of type PDFIndirectReference<PDFPage>',
+      '"page" arg must be of type PDFIndirectReference<PDFPage>',
     );
     this.get('Kids').array.push(page);
 
@@ -69,22 +61,29 @@ class PDFPageTree extends PDFDictionary {
   //   return this;
   // };
   //
-  // insertPage = (idx: number, page: PDFIndirectObject<PDFPage>) => {
-  //   validate(idx, _.isNumber, 'PDFPageTree.insertPage() idx must be a Number');
-  //   validate(
-  //     page,
-  //     isIndirectObjectOf(PDFPage),
-  //     'PDFPageTree.insertPage() required argument to be of type PDFIndirectObject<PDFPage>',
-  //   );
-  //   this.get('Kids').object.splice(idx, 0, page);
-  //   console.log(
-  //     `Changing: ${this.get('Count').number} to ${this.get('Count').number +
-  //       1}`,
-  //   );
-  //   this.get('Count').number += 1;
-  //   return this;
-  // };
 
+  insertPage = (
+    lookup: (PDFIndirectReference<Kid>) => PDFObject,
+    idx: number,
+    page: PDFIndirectReference<PDFPage>,
+  ) => {
+    validate(idx, _.isNumber, '"idx" arg must be a Number');
+    validate(
+      page,
+      isInstance(PDFIndirectReference),
+      '"page" arg must be of type PDFIndirectReference<PDFPage>',
+    );
+    this.get('Kids').array.splice(idx, 0, page);
+
+    this.get('Count').number += 1;
+    this.ascend(lookup, parent => {
+      parent.get('Count').number += 1;
+    });
+
+    return this;
+  };
+
+  // TODO: Pass a "stop" callback to allow "visit" to end traversal early
   traverse = (
     lookup: (PDFIndirectReference<Kid>) => PDFObject,
     visit: (Kid, PDFIndirectReference<Kid>) => any,

@@ -35,8 +35,8 @@ const bytes = fs.readFileSync(inFile);
 console.time('PDFDocument');
 const pdfDoc = PDFDocumentFactory.load(bytes);
 
-// const pages = pdfDoc.getPages();
-// console.log(`Pages: ${pages.length}`);
+const pages = pdfDoc.getPages();
+console.log(`Pages: ${pages.length}`);
 // const page1 = pages[0];
 // console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
 
@@ -73,15 +73,19 @@ const createDrawing = () => {
 };
 
 const contentStream = createDrawing();
-// pages.forEach(page => page.addContentStream(contentStream));
-//
-const newPage = PDFPage.create([500, 500]).addContentStream(contentStream);
-// const newPage2 = PDFPage.create([400, 400]).addContentStream(contentStream);
+pages.forEach(page => page.addContentStream(pdfDoc.lookup, contentStream));
 
-console.time('addPage');
+const newPage = PDFPage.create([500, 500]).addContentStream(
+  pdfDoc.lookup,
+  contentStream,
+);
+const newPage2 = PDFPage.create([400, 400]).addContentStream(
+  pdfDoc.lookup,
+  contentStream,
+);
+
 pdfDoc.addPage(newPage);
-console.timeEnd('addPage');
-// pdfDoc.insertPage(0, newPage2);
+pdfDoc.insertPage(2, newPage2);
 // pdfDoc.removePage(0);
 // pdfDoc.removePage(0);
 

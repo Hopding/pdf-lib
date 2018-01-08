@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import { PDFContentStream } from '.';
 import {
+  PDFObject,
   PDFDictionary,
   PDFArray,
   PDFName,
@@ -85,26 +86,29 @@ class PDFPage extends PDFDictionary {
     (2) have an array of indirect objects as its "Contents"
     (3) have a standalone indirect object as its "Contents"
   */
-  get contentStreams(): Array<PDFRawStream | PDFContentStream> {
-    let streams;
-    if (!this.get('Contents')) streams = [];
-    const contents = this.get('Contents').object;
-    streams = contents.is(PDFArray) ? contents.array : [contents];
-    return Object.freeze(streams.slice());
-  }
+  // get contentStreams(): Array<PDFRawStream | PDFContentStream> {
+  //   let streams;
+  //   if (!this.get('Contents')) streams = [];
+  //   const contents = this.get('Contents').object;
+  //   streams = contents.is(PDFArray) ? contents.array : [contents];
+  //   return Object.freeze(streams.slice());
+  // }
 
   /** Convert "Contents" to array if it exists and is not already */
   // TODO: See is this is inefficient...
-  normalizeContents = () => {
+  normalizeContents = (
+    lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
+  ) => {
     if (this.get('Contents')) {
-      const contents = this.get('Contents');
-      if (!contents.object.is(PDFArray)) {
-        this.set('Contents', PDFArray.fromArray([contents]));
+      const contents = lookup(this.get('Contents'));
+      if (!contents.is(PDFArray)) {
+        this.set('Contents', PDFArray.fromArray([this.get('Contents')]));
       }
     }
   };
 
   addContentStream = (
+    lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
     contentStream: PDFIndirectReference<PDFContentStream>,
   ) => {
     validate(
@@ -112,17 +116,12 @@ class PDFPage extends PDFDictionary {
       isInstance(PDFIndirectReference),
       '"contentStream" must be of type PDFIndirectReference<PDFContentStream>',
     );
-    // validate(
-    //   contentStream.pdfObject,
-    //   isInstance(PDFContentStream),
-    //   '"contentStream" must be of type PDFIndirectObject<PDFContentStream>',
-    // );
 
-    this.normalizeContents();
+    this.normalizeContents(lookup);
     if (!this.get('Contents')) {
       this.set('Contents', PDFArray.fromArray([contentStream]));
     } else {
-      this.get('Contents').object.push(contentStream);
+      lookup(this.get('Contents')).push(contentStream);
     }
 
     return this;

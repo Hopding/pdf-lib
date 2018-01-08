@@ -10,6 +10,7 @@
 * Set validation limits on pdf operator classes
 * Create PDFRectangle structure!
 * Remove all old dereference-reliant code...
+* Make "lookup" type
 
 # Tests:
 * Make test for dictionaries like:
