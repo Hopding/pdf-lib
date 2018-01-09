@@ -49,7 +49,7 @@ class c extends PDFOperator {
     y3: number,
   ) => new c(x1, y1, x2, y2, x3, y3);
 
-  toString = () =>
+  toString = (): string =>
     `${this.x1} ${this.y1} ${this.x2} ${this.y2} ${this.x3} ${this.y3} c\n`;
 
   bytesSize = () => this.toString().length;

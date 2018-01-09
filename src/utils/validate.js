@@ -40,3 +40,6 @@ export const isInRange = (lower: number, upper: number) => (value: any) =>
 export const isIndirectObjectOf = <T>(requiredClass: T) => (value: any) =>
   isInstance(PDFIndirectObject)(value) &&
   isInstance(requiredClass)(value.pdfObject);
+
+export const oneOf = <T>(...allowed: T[]) => (value: any) =>
+  allowed.some(a => a === value);

@@ -3,7 +3,7 @@
 import PDFOperator from '../PDFOperator';
 
 import { addStringToBuffer } from '../../../utils';
-import { validate, isNumber } from '../../../utils/validate';
+import { validate, oneOf } from '../../../utils/validate';
 
 /**
 Set the line cap style in the graphics state
@@ -13,7 +13,11 @@ class J extends PDFOperator {
 
   constructor(lineCap: number) {
     super();
-    validate(lineCap, isNumber, 'J operator arg "lineCap" must be a number.');
+    validate(
+      lineCap,
+      oneOf(0, 1, 2),
+      'J operator arg "lineCap" must be 0, 1, or 2.',
+    );
     this.lineCap = lineCap;
   }
 

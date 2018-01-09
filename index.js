@@ -28,7 +28,7 @@ const files = {
   UPDATED: '/Users/user/Desktop/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
 
-const inFile = files.UPDATED;
+const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
@@ -41,8 +41,10 @@ console.log(`Pages: ${pages.length}`);
 // console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
 
 const createDrawing = () => {
-  const { m, l, S, w, d, re, g, c, b, B, RG, rg } = PDFOperators;
+  const { J, j, m, l, S, w, d, re, g, c, b, B, RG, rg, ri, i } = PDFOperators;
   const contentStream = PDFContentStream.of(
+    i.of(100),
+    ri.of('AbsoluteColorimetric'),
     // Draw black line segment
     m.of(50, 50),
     l.of(500, 500),
@@ -85,8 +87,8 @@ const newPage2 = PDFPage.create([400, 400]).addContentStream(
 );
 
 pdfDoc.addPage(newPage);
-pdfDoc.insertPage(5, newPage2);
-pdfDoc.removePage(2);
+pdfDoc.insertPage(1, newPage2);
+pdfDoc.removePage(0);
 
 console.time('saveToBytes');
 const savedBytes = PDFDocumentWriter.saveToBytes(pdfDoc);

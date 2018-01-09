@@ -16,6 +16,8 @@ import d from './graphics-state/d';
 import ri from './graphics-state/ri';
 import i from './graphics-state/i';
 import gs from './graphics-state/gs';
+import J from './graphics-state/lineCap';
+import j from './graphics-state/lineJoin';
 
 import c from './path-construction/c';
 import h from './path-construction/h';
@@ -49,6 +51,8 @@ const PDFOperators = {
   ri,
   i,
   gs,
+  J,
+  j,
   c,
   h,
   l,

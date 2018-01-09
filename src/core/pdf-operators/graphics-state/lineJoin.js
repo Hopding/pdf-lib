@@ -3,7 +3,7 @@
 import PDFOperator from '../PDFOperator';
 
 import { addStringToBuffer } from '../../../utils';
-import { validate, isNumber } from '../../../utils/validate';
+import { validate, oneOf } from '../../../utils/validate';
 
 /**
 Set the line join style in the graphics state
@@ -13,7 +13,11 @@ class j extends PDFOperator {
 
   constructor(lineJoin: number) {
     super();
-    validate(lineJoin, isNumber, 'j operator arg "lineJoin" must be a number.');
+    validate(
+      lineJoin,
+      oneOf(0, 1, 2),
+      'j operator arg "lineJoin" must be 0, 1, or 2.',
+    );
     this.lineJoin = lineJoin;
   }
 

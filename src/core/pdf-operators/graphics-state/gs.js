@@ -1,9 +1,10 @@
 /* @flow */
 /* eslint-disable new-cap */
+import _ from 'lodash';
 import PDFOperator from '../PDFOperator';
 
 import { addStringToBuffer } from '../../../utils';
-import { validate, isNumber } from '../../../utils/validate';
+import { validate } from '../../../utils/validate';
 
 /**
 Set the specified parameters in the graphics state. dictName shall be the name
@@ -11,19 +12,20 @@ of a graphics state parameter dictionary in the ExtGState subdictionary of the
 current resource dictionary.
 */
 class gs extends PDFOperator {
-  dictName: number;
+  dictName: string;
 
-  constructor(dictName: number) {
+  // TODO: See if the "dictName" must be preceded by a "/" or not...
+  constructor(dictName: string) {
     super();
     validate(
       dictName,
-      isNumber,
-      'gs operator arg "dictName" must be a number.',
+      _.isString,
+      'gs operator arg "dictName" must be a string.',
     );
     this.dictName = dictName;
   }
 
-  static of = (dictName: number) => new gs(dictName);
+  static of = (dictName: string) => new gs(dictName);
 
   toString = (): string => `${this.dictName} gs\n`;
 

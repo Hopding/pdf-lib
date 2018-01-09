@@ -24,12 +24,9 @@ class PDFPageTree extends PDFDictionary {
       '"page" arg must be of type PDFIndirectReference<PDFPage>',
     );
     this.get('Kids').array.push(page);
-
-    this.get('Count').number += 1;
-    this.ascend(lookup, parent => {
-      parent.get('Count').number += 1;
+    this.ascend(lookup, pageTree => {
+      pageTree.get('Count').number += 1;
     });
-
     return this;
   };
 
@@ -39,12 +36,9 @@ class PDFPageTree extends PDFDictionary {
   ) => {
     validate(idx, _.isNumber, '"idx" arg must be a Number');
     this.get('Kids').array.splice(idx, 1);
-
-    this.get('Count').number -= 1;
-    this.ascend(lookup, parent => {
-      parent.get('Count').number -= 1;
+    this.ascend(lookup, pageTree => {
+      pageTree.get('Count').number -= 1;
     });
-
     return this;
   };
 
@@ -60,16 +54,14 @@ class PDFPageTree extends PDFDictionary {
       '"page" arg must be of type PDFIndirectReference<PDFPage>',
     );
     this.get('Kids').array.splice(idx, 0, page);
-
-    this.get('Count').number += 1;
-    this.ascend(lookup, parent => {
-      parent.get('Count').number += 1;
+    this.ascend(lookup, pageTree => {
+      pageTree.get('Count').number += 1;
     });
-
     return this;
   };
 
   // TODO: Pass a "stop" callback to allow "visit" to end traversal early
+  // TODO: Allow for optimized tree search given an index
   traverse = (
     lookup: (PDFIndirectReference<Kid>) => PDFObject,
     visit: (Kid, PDFIndirectReference<Kid>) => any,
@@ -96,11 +88,13 @@ class PDFPageTree extends PDFDictionary {
   ascend = (
     lookup: (PDFIndirectReference<Kid>) => PDFPageTree,
     visit: PDFPageTree => any,
+    visitSelf?: boolean = true,
   ) => {
+    if (visitSelf) visit(this);
     if (!this.get('Parent')) return;
     const parent: PDFPageTree = lookup(this.get('Parent'));
     visit(parent);
-    parent.ascend(lookup, visit);
+    parent.ascend(lookup, visit, false);
   };
 }
 

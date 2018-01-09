@@ -3,7 +3,7 @@
 import PDFOperator from '../PDFOperator';
 
 import { addStringToBuffer } from '../../../utils';
-import { validate, isNumber } from '../../../utils/validate';
+import { validate, isInRange } from '../../../utils/validate';
 
 /**
 Set the flatness tolerance in the graphics state. flatness is a number in the
@@ -15,7 +15,11 @@ class i extends PDFOperator {
 
   constructor(flatness: number) {
     super();
-    validate(flatness, isNumber, 'i operator arg "flatness" must be a number.');
+    validate(
+      flatness,
+      isInRange(0, 101),
+      'i operator arg "flatness" must be a number from 0 to 100.',
+    );
     this.flatness = flatness;
   }
 

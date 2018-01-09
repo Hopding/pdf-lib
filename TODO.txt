@@ -11,6 +11,7 @@
 * Create PDFRectangle structure!
 * Remove all old dereference-reliant code...
 * Make "lookup" type
+* Support creation of PDFs as opposed to editing them
 
 # Tests:
 * Make test for dictionaries like:
