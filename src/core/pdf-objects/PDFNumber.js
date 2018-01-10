@@ -2,8 +2,8 @@
 import _ from 'lodash';
 
 import PDFObject from './PDFObject';
-import { addStringToBuffer } from '../../utils';
-import { validate } from '../../utils/validate';
+import { addStringToBuffer } from 'utils';
+import { validate } from 'utils/validate';
 
 class PDFNumber extends PDFObject {
   number: number;

@@ -1,7 +1,7 @@
 /* @flow */
 import { PDFArray } from '../pdf-objects';
-import { error, trimArray, arrayCharAt } from '../../utils';
-import { validate, isIdentity } from '../../utils/validate';
+import { error, trimArray, arrayCharAt } from 'utils';
+import { validate, isIdentity } from 'utils/validate';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';

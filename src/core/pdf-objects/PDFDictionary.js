@@ -3,8 +3,8 @@ import _ from 'lodash';
 
 import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject, PDFName } from '.';
-import { or, error, addStringToBuffer, arrayToString } from '../../utils';
-import { validate, isInstance } from '../../utils/validate';
+import { or, error, addStringToBuffer, arrayToString } from 'utils';
+import { validate, isInstance } from 'utils/validate';
 
 class PDFDictionary extends PDFObject {
   map: Map<PDFName, any> = new Map();

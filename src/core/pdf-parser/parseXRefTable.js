@@ -1,6 +1,6 @@
 /* @flow */
 import { PDFXRef } from '../pdf-structures';
-import { arrayToString, trimArray } from '../../utils';
+import { arrayToString, trimArray } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
 

@@ -1,7 +1,7 @@
 /* @flow */
 import _ from 'lodash';
-import { addStringToBuffer, charCode } from '../../utils';
-import { validate } from '../../utils/validate';
+import { addStringToBuffer, charCode } from 'utils';
+import { validate } from 'utils/validate';
 
 class PDFHeader {
   major: number;

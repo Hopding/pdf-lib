@@ -2,8 +2,8 @@
 import _ from 'lodash';
 
 import PDFObject from './PDFObject';
-import { toBoolean, addStringToBuffer } from '../../utils';
-import { validate } from '../../utils/validate';
+import { toBoolean, addStringToBuffer } from 'utils';
+import { validate } from 'utils/validate';
 
 class PDFBoolean extends PDFObject {
   boolean: boolean;

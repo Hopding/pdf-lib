@@ -1,6 +1,6 @@
 /* @flow */
 import { PDFObject, PDFDictionary, PDFIndirectObject } from '../pdf-objects';
-import { validate, validateArr, isInstance } from '../../utils/validate';
+import { validate, validateArr, isInstance } from 'utils/validate';
 
 class PDFObjectStream extends PDFObject {
   dict: PDFDictionary;

@@ -1,7 +1,7 @@
 /* @flow */
 import _ from 'lodash';
-import { error, addStringToBuffer } from '../../utils';
-import { validate, validateArr, isInstance } from '../../utils/validate';
+import { error, addStringToBuffer } from 'utils';
+import { validate, validateArr, isInstance } from 'utils/validate';
 
 import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject } from '.';

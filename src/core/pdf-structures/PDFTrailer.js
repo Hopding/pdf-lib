@@ -1,8 +1,8 @@
 /* @flow */
 import dedent from 'dedent';
 import _ from 'lodash';
-import { addStringToBuffer } from '../../utils';
-import { validate, isInstance } from '../../utils/validate';
+import { addStringToBuffer } from 'utils';
+import { validate, isInstance } from 'utils/validate';
 
 import PDFDictionary from '../pdf-objects/PDFDictionary';
 

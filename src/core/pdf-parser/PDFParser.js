@@ -24,7 +24,7 @@ import {
 } from '../pdf-structures';
 import parseDocument from './parseDocument';
 
-import { error } from '../../utils';
+import { error } from 'utils';
 
 import type { PDFLinearization } from './parseLinearization';
 

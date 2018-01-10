@@ -4,7 +4,7 @@ import PDFDocument from './PDFDocument';
 import { PDFObject, PDFName, PDFStream } from '../pdf-objects';
 import { PDFIndirectReference, PDFObjectStream } from '../pdf-structures';
 import PDFParser from '../pdf-parser/PDFParser';
-import { findInMap } from '../../utils';
+import { findInMap } from 'utils';
 
 import type { ParsedPDF } from '../pdf-parser/PDFParser';
 

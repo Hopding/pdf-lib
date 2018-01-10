@@ -7,7 +7,7 @@ import parseIndirectObj from './parseIndirectObj';
 import parseXRefTable from './parseXRefTable';
 import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 // import removeComments from './removeComments';
-import { error } from '../../utils';
+import { error } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
 

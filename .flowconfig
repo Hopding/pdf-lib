@@ -5,6 +5,8 @@
 [libs]
 
 [options]
+module.system.node.resolve_dirname=src
+
 suppress_comment=\\(.\\|\n\\)*\\$SuppressFlow
 
 [version]

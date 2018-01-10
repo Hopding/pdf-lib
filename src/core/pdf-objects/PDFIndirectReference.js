@@ -1,7 +1,7 @@
 /* @flow */
 import _ from 'lodash';
-import { addStringToBuffer } from '../../utils';
-import { validate, isIdentity } from '../../utils/validate';
+import { addStringToBuffer } from 'utils';
+import { validate, isIdentity } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');

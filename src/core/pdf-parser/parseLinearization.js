@@ -1,7 +1,7 @@
 /* @flow */
 import { PDFStream, PDFIndirectObject } from '../pdf-objects';
 import { PDFTrailer, PDFLinearizationParams, PDFXRef } from '../pdf-structures';
-import { error, trimArray } from '../../utils';
+import { error, trimArray } from 'utils';
 
 import parseXRefTable from './parseXRefTable';
 import parseIndirectObj from './parseIndirectObj';

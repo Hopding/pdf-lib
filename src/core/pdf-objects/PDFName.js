@@ -2,8 +2,8 @@
 import _ from 'lodash';
 
 import PDFObject from './PDFObject';
-import { and, addStringToBuffer, charCode } from '../../utils';
-import { validate, isIdentity, isNotIdentity } from '../../utils/validate';
+import { and, addStringToBuffer, charCode } from 'utils';
+import { validate, isIdentity, isNotIdentity } from 'utils/validate';
 
 const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
 const pdfNamePool: Map<string, PDFName> = new Map();

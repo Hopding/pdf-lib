@@ -4,7 +4,7 @@ import {
   PDFIndirectReference,
   PDFObject,
 } from '../pdf-objects';
-import { error, arrayIndexOf, trimArray, arrayToString } from '../../utils';
+import { error, arrayIndexOf, trimArray, arrayToString } from 'utils';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';

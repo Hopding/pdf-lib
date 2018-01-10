@@ -5,7 +5,7 @@ import {
   trimArray,
   arrayCharAt,
   arrayIndexOf,
-} from '../../utils';
+} from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
 

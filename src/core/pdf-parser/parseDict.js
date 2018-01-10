@@ -6,8 +6,8 @@ import {
   PDFPage,
   PDFLinearizationParams,
 } from '../pdf-structures';
-import { error, arrayToString, trimArray } from '../../utils';
-import { validate, isIdentity } from '../../utils/validate';
+import { error, arrayToString, trimArray } from 'utils';
+import { validate, isIdentity } from 'utils/validate';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';

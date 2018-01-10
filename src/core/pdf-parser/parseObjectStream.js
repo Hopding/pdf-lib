@@ -1,7 +1,7 @@
 /* @flow */
 import { PDFDictionary, PDFIndirectObject, PDFNumber } from '../pdf-objects';
 import { PDFObjectStream } from '../pdf-structures';
-import { error, arrayToString, arrayFindIndexOf } from '../../utils';
+import { error, arrayToString, arrayFindIndexOf } from 'utils';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';

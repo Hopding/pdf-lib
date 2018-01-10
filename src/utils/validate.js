@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { and, not } from '.';
 import { PDFIndirectObject } from '../core/pdf-objects';
 
-import type { Predicate } from '../utils';
+import type { Predicate } from 'utils';
 
 export const validate = <T>(value: T, predicate: T => boolean, msg: string) => {
   if (!predicate(value)) throw new Error(msg);

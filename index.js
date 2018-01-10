@@ -41,10 +41,8 @@ console.log(`Pages: ${pages.length}`);
 // console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
 
 const createDrawing = () => {
-  const { J, j, m, l, S, w, d, re, g, c, b, B, RG, rg, ri, i } = PDFOperators;
+  const { J, j, m, l, S, w, d, re, g, c, b, B, RG, rg, ri, q } = PDFOperators;
   const contentStream = PDFContentStream.of(
-    i.of(100),
-    ri.of('AbsoluteColorimetric'),
     // Draw black line segment
     m.of(50, 50),
     l.of(500, 500),

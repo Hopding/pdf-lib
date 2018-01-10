@@ -1,6 +1,8 @@
 /* @flow */
-import { error, addStringToBuffer } from '../../utils';
-import { validate, isIdentity } from '../../utils/validate';
+import { error, addStringToBuffer } from 'utils';
+import { validate, isIdentity } from 'utils/validate';
+
+import type { Predicate } from 'utils';
 
 class PDFOperator {
   is = <T>(obj: T) => this instanceof obj;
@@ -14,7 +16,7 @@ class PDFOperator {
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     error(`copyBytesInto() is not implemented on ${this.constructor.name}`);
 
-  static createSingleton = (op: string) => {
+  static createSingletonOp = (op: string) => {
     const ENFORCER = Symbol(`${op}_ENFORCER`);
 
     const Singleton = class extends PDFOperator {

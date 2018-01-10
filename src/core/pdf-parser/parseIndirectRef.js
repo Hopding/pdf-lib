@@ -1,6 +1,6 @@
 /* @flow */
 import { PDFIndirectReference } from '../pdf-objects';
-import { arrayToString, arrayIndexOf, trimArray } from '../../utils';
+import { arrayToString, arrayIndexOf, trimArray } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
 

@@ -2,8 +2,8 @@
 import _ from 'lodash';
 import dedent from 'dedent';
 
-import { addStringToBuffer } from '../../utils';
-import { validate, validateArr, isInstance } from '../../utils/validate';
+import { addStringToBuffer } from 'utils';
+import { validate, validateArr, isInstance } from 'utils/validate';
 
 export class Entry {
   offset = null;

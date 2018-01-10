@@ -1,6 +1,6 @@
 /* @flow */
 import { PDFBoolean } from '../pdf-objects';
-import { arrayToString } from '../../utils';
+import { arrayToString } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
 

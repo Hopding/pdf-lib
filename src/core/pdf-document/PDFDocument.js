@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import { PDFIndirectReference, PDFObject } from '../pdf-objects';
 import { PDFCatalog, PDFHeader, PDFPage, PDFPageTree } from '../pdf-structures';
-import { error, validate, isInstance, isIdentity } from '../../utils/validate';
+import { error, validate, isInstance, isIdentity } from 'utils/validate';
 
 class PDFDocument {
   header: PDFHeader = PDFHeader.forVersion(1, 7);

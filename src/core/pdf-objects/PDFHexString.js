@@ -2,8 +2,8 @@
 import _ from 'lodash';
 
 import PDFObject from './PDFObject';
-import { addStringToBuffer } from '../../utils';
-import { validate, doesMatch } from '../../utils/validate';
+import { addStringToBuffer } from 'utils';
+import { validate, doesMatch } from 'utils/validate';
 
 const HEX_STRING_REGEX = /^[\dABCDEFabcdef]*/;
 

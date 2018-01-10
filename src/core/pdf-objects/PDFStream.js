@@ -1,7 +1,7 @@
 /* @flow */
 import { PDFObject, PDFDictionary } from '.';
-import { error } from '../../utils';
-import { validate, isInstance } from '../../utils/validate';
+import { error } from 'utils';
+import { validate, isInstance } from 'utils/validate';
 
 class PDFStream extends PDFObject {
   dictionary: PDFDictionary;

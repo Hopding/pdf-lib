@@ -3,7 +3,7 @@ import { PDFRawStream, PDFName, PDFDictionary } from '../pdf-objects';
 import { PDFObjectStream } from '../pdf-structures';
 import decodeStream from './encoding/decodeStream';
 import parseObjectStream from './parseObjectStream';
-import { error, arrayIndexOf, arrayToString, trimArray } from '../../utils';
+import { error, arrayIndexOf, arrayToString, trimArray } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
 

@@ -33,8 +33,10 @@
     "eslint-config-prettier": "^2.6.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-prettier": "^2.3.1",
+    "eslint-import-resolver-babel-module": "^4.0.0",
     "flow-bin": "^0.62.0",
-    "prettier": "^1.7.0"
+    "prettier": "^1.7.0",
+    "babel-plugin-module-resolver": "^3.0.0"
   },
   "dependencies": {
     "dedent": "^0.7.0",

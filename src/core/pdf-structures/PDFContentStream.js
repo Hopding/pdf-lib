@@ -5,9 +5,9 @@ import _ from 'lodash';
 
 import PDFOperator from '../pdf-operators/PDFOperator';
 import { PDFStream, PDFNumber } from '../pdf-objects';
-import { addStringToBuffer } from '../../utils';
+import { addStringToBuffer } from 'utils';
 import { typedArrayProxy } from '../../utils/proxies';
-import { validateArr, isInstance } from '../../utils/validate';
+import { validateArr, isInstance } from 'utils/validate';
 
 class PDFContentStream extends PDFStream {
   operators: PDFOperator[];

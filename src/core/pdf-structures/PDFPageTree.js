@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import { PDFObject, PDFDictionary, PDFIndirectReference } from '../pdf-objects';
 import { PDFPage } from '.';
-import { validate, isInstance } from '../../utils/validate';
+import { validate, isInstance } from 'utils/validate';
 
 export type Kid = PDFPageTree | PDFPage;
 

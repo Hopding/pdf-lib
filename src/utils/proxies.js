@@ -1,7 +1,7 @@
 /* xxxxxxxxxx@flow */
 import _ from 'lodash';
 
-import { validate, isInstance } from '../utils/validate';
+import { validate, isInstance } from 'utils/validate';
 
 const EMPTY_ARR = [];
 

@@ -7,7 +7,7 @@ import {
   trimArray,
   arrayIndexOf,
   charCode,
-} from '../../utils';
+} from 'utils';
 import parseDict from './parseDict';
 import parseNumber from './parseNumber';
 

@@ -17,7 +17,7 @@ import {
   isInstance,
   isIdentity,
   optional,
-} from '../../utils/validate';
+} from 'utils/validate';
 
 const VALID_KEYS = Object.freeze([
   'Type',

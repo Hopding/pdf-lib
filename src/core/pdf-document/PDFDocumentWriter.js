@@ -9,7 +9,7 @@ import {
   PDFDictionary,
   PDFNumber,
 } from '../pdf-objects';
-import { error } from '../../utils';
+import { error } from 'utils';
 
 class PDFDocumentWriter {
   static saveToBytes = (pdfDoc: PDFDocument): Uint8Array => {

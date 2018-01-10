@@ -1,5 +1,5 @@
 // import parseHeader from './parseHeader';
-// import { mergeUint8Arrays } from '../../utils';
+// import { mergeUint8Arrays } from 'utils';
 
 // const removeComments = (input) => {
 //   // Add newline to catch comments at end of file since it got trimmed off
