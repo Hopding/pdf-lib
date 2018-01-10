@@ -1,9 +1,10 @@
 /* @flow */
 import _ from 'lodash';
 
-import PDFObject from './PDFObject';
 import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
+
+import PDFObject from './PDFObject';
 
 class PDFNumber extends PDFObject {
   number: number;
@@ -17,7 +18,7 @@ class PDFNumber extends PDFObject {
   static fromNumber = (number: number) => new PDFNumber(number);
   static fromString = (numberStr: string) => new PDFNumber(Number(numberStr));
 
-  toString = () => this.number.toString();
+  toString = (): string => this.number.toString();
 
   bytesSize = () => this.toString().length;
 

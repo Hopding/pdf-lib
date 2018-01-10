@@ -1,9 +1,10 @@
 /* @flow */
 import _ from 'lodash';
-import { and, not } from '.';
-import { PDFIndirectObject } from '../core/pdf-objects';
 
 import type { Predicate } from 'utils';
+
+import { and, not } from '.';
+import { PDFIndirectObject } from '../core/pdf-objects';
 
 export const validate = <T>(value: T, predicate: T => boolean, msg: string) => {
   if (!predicate(value)) throw new Error(msg);

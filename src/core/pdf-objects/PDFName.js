@@ -42,7 +42,7 @@ class PDFName extends PDFObject {
     return pdfName;
   };
 
-  toString = () =>
+  toString = (): string =>
     `/${this.key}`
       .replace('#', '#23')
       .split('')

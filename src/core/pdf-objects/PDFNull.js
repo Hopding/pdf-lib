@@ -17,7 +17,7 @@ class PDFNull extends PDFObject {
 
   static instance = new PDFNull(PDF_NULL_ENFORCER);
 
-  toString = () => 'null';
+  toString = (): string => 'null';
 
   bytesSize = () => 4;
 

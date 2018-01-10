@@ -45,7 +45,7 @@ class PDFIndirectReference<T> extends PDFObject {
     return indirectRef;
   };
 
-  toString = () => `${this.objectNumber} ${this.generationNumber} R`;
+  toString = (): string => `${this.objectNumber} ${this.generationNumber} R`;
 
   bytesSize = () => this.toString().length;
 

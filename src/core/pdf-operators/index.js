@@ -29,6 +29,21 @@ import y from './graphics/path-construction/y';
 
 import pathPaintingOps from './graphics/path-painting';
 
+import TAsterisk from './text/text-positioning/T-asterisk';
+import { TD, Td } from './text/text-positioning/TDOps';
+import Tm from './text/text-positioning/Tm';
+
+import { SingleQuote, DoubleQuote } from './text/text-showing/QuoteOps';
+import { TJ, Tj } from './text/text-showing/TJOps';
+
+import Tc from './text/text-state/Tc';
+import Tf from './text/text-state/Tf';
+import TL from './text/text-state/TL';
+import Tr from './text/text-state/Tr';
+import Ts from './text/text-state/Ts';
+import Tw from './text/text-state/Tw';
+import Tz from './text/text-state/Tz';
+
 const PDFOperators = {
   ...clippingPathOps,
   CS,
@@ -61,6 +76,20 @@ const PDFOperators = {
   v,
   y,
   ...pathPaintingOps,
+  T: { asterisk: TAsterisk },
+  TD,
+  Td,
+  Tm,
+  quote: { single: SingleQuote, double: DoubleQuote },
+  TJ,
+  Tj,
+  Tc,
+  Tf,
+  TL,
+  Tr,
+  Ts,
+  Tw,
+  Tz,
 };
 
 export default PDFOperators;

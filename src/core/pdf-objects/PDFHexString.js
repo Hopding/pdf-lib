@@ -23,7 +23,7 @@ class PDFHexString extends PDFObject {
 
   static fromString = (string: string) => new PDFHexString(string);
 
-  toString = () => `<${this.string}>`;
+  toString = (): string => `<${this.string}>`;
 
   bytesSize = () => this.toString().length;
 

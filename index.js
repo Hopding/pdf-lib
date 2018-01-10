@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
 import fs from 'fs';
-import PDFDocumentFactory from './src/core/pdf-document/PDFDocumentFactory';
-import PDFDocumentWriter from './src/core/pdf-document/PDFDocumentWriter';
-import { PDFDictionary, PDFName } from './src/core/pdf-objects';
-import { PDFContentStream, PDFPage } from './src/core/pdf-structures';
-import PDFXRefTableFactory from './src/core/pdf-structures/factories/PDFXRefTableFactory';
-import PDFOperators from './src/core/pdf-operators';
+import PDFDocumentFactory from 'core/pdf-document/PDFDocumentFactory';
+import PDFDocumentWriter from 'core/pdf-document/PDFDocumentWriter';
+import { PDFDictionary, PDFName } from 'core/pdf-objects';
+import { PDFContentStream, PDFPage } from 'core/pdf-structures';
+import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
+import PDFOperators from 'core/pdf-operators';
+import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 
 import { arrayToString, charCodes, writeToDebugFile } from './src/utils';
 
@@ -41,7 +42,7 @@ console.log(`Pages: ${pages.length}`);
 // console.log(`Page 1 Content Streams: ${page1.contentStreams.length}`);
 
 const createDrawing = () => {
-  const { J, j, m, l, S, w, d, re, g, c, b, B, RG, rg, ri, q } = PDFOperators;
+  const { m, l, S, w, d, re, g, c, b, B, RG, rg } = PDFOperators;
   const contentStream = PDFContentStream.of(
     // Draw black line segment
     m.of(50, 50),
@@ -72,21 +73,52 @@ const createDrawing = () => {
   return pdfDoc.register(contentStream);
 };
 
-const contentStream = createDrawing();
-pages.forEach(page => page.addContentStream(pdfDoc.lookup, contentStream));
+const createText = () => {
+  const { Tf, Tj, Td, T, rg } = PDFOperators;
+  const contentStream = PDFContentStream.of(
+    PDFTextObject.of(
+      // Draw red colored text at x-y coordinates (50, 500)
+      rg.of(1.0, 0.0, 0.0),
+      Tf.of('/F9000', 75),
+      Td.of(50, 500),
+      Tj.of('This Is A Test...'),
+      // Draw dark-cyan colored text at x-y coordinates (50, 425)
+      Tf.of('/F9000', 50),
+      Td.of(0, -75),
+      rg.of(0.0, 0.5, 0.5),
+      Tj.of('This Is ALSO A Test...'),
+    ),
+  );
+  return pdfDoc.register(contentStream);
+};
 
-const newPage = PDFPage.create([500, 500]).addContentStream(
-  pdfDoc.lookup,
-  contentStream,
+const drawingStream = createDrawing();
+const textStream = createText();
+const F9000 = pdfDoc.register(
+  PDFDictionary.from({
+    Type: PDFName.from('Font'),
+    Subtype: PDFName.from('Type1'),
+    BaseFont: PDFName.from('Times-Roman'),
+  }),
 );
-const newPage2 = PDFPage.create([400, 400]).addContentStream(
-  pdfDoc.lookup,
-  contentStream,
-);
+
+pages.forEach(page => {
+  page
+    .addContentStreams(pdfDoc.lookup, drawingStream, textStream)
+    .addFontDictionary(pdfDoc.lookup, 'F9000', F9000);
+});
+
+const newPage = PDFPage.create([500, 500])
+  .addContentStreams(pdfDoc.lookup, drawingStream, textStream)
+  .addFontDictionary(pdfDoc.lookup, 'F9000', F9000);
+
+const newPage2 = PDFPage.create([400, 400])
+  .addContentStreams(pdfDoc.lookup, drawingStream, textStream)
+  .addFontDictionary(pdfDoc.lookup, 'F9000', F9000);
 
 pdfDoc.addPage(newPage);
 pdfDoc.insertPage(1, newPage2);
-pdfDoc.removePage(0);
+// pdfDoc.removePage(0);
 
 console.time('saveToBytes');
 const savedBytes = PDFDocumentWriter.saveToBytes(pdfDoc);

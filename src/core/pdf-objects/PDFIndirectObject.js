@@ -44,7 +44,7 @@ class PDFIndirectObject<T: $Subtype<PDFObject> = PDFObject> extends PDFObject {
   getReference = () => this.reference;
   toReference = () => this.reference.toString();
 
-  toString = () => {
+  toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);
     return arrayToString(buffer);

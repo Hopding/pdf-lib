@@ -16,7 +16,7 @@ class PDFString extends PDFObject {
 
   static fromString = (string: string) => new PDFString(string);
 
-  toString = () => `(${this.string})`;
+  toString = (): string => `(${this.string})`;
 
   bytesSize = () => this.toString().length;
 

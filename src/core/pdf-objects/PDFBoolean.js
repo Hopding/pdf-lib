@@ -21,7 +21,7 @@ class PDFBoolean extends PDFObject {
   static fromBool = (bool: boolean) => new PDFBoolean(bool);
   static fromString = (boolStr: string) => new PDFBoolean(toBoolean(boolStr));
 
-  toString = () => this.boolean.toString();
+  toString = (): string => this.boolean.toString();
   bytesSize = () => this.toString().length;
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);

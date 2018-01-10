@@ -30,7 +30,7 @@ export class Entry {
     return this;
   };
 
-  toString = () =>
+  toString = (): string =>
     `${_.padStart(String(this.offset), 10, '0')} ` +
     `${_.padStart(String(this.generationNum), 5, '0')} ` +
     `${this.isInUse ? 'n' : 'f'} \n`;
@@ -65,7 +65,7 @@ export class Subsection {
     return this;
   };
 
-  toString = () =>
+  toString = (): string =>
     dedent(`
     ${this.firstObjNum} ${this.entries.length}
     ${this.entries.map(String).join('')}
@@ -98,7 +98,7 @@ class Table {
     return this;
   };
 
-  toString = () =>
+  toString = (): string =>
     `${dedent(`
     xref
     ${this.subsections.map(String).join('\n')}

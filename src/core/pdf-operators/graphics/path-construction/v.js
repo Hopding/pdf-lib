@@ -32,7 +32,7 @@ class v extends PDFOperator {
   static of = (x2: number, y2: number, x3: number, y3: number) =>
     new v(x2, y2, x3, y3);
 
-  toString = () => `${this.x2} ${this.y2} ${this.x3} ${this.y3} c\n`;
+  toString = (): string => `${this.x2} ${this.y2} ${this.x3} ${this.y3} c\n`;
 
   bytesSize = () => this.toString().length;
 

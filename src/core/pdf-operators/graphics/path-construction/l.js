@@ -23,7 +23,7 @@ class l extends PDFOperator {
 
   static of = (x: number, y: number) => new l(x, y);
 
-  toString = () => `${this.x} ${this.y} l\n`;
+  toString = (): string => `${this.x} ${this.y} l\n`;
 
   bytesSize = () => this.toString().length;
 

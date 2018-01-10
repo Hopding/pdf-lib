@@ -1,16 +1,5 @@
 /* @flow */
 import _ from 'lodash';
-import { PDFContentStream } from '.';
-import {
-  PDFObject,
-  PDFDictionary,
-  PDFArray,
-  PDFName,
-  PDFNumber,
-  PDFRawStream,
-  PDFIndirectObject,
-  PDFIndirectReference,
-} from '../pdf-objects';
 import {
   validate,
   validateArr,
@@ -18,6 +7,15 @@ import {
   isIdentity,
   optional,
 } from 'utils/validate';
+import { PDFContentStream } from '.';
+import {
+  PDFObject,
+  PDFDictionary,
+  PDFArray,
+  PDFName,
+  PDFNumber,
+  PDFIndirectReference,
+} from '../pdf-objects';
 
 const VALID_KEYS = Object.freeze([
   'Type',
@@ -107,22 +105,50 @@ class PDFPage extends PDFDictionary {
     }
   };
 
-  addContentStream = (
+  normalizeResources = () => {
+    if (!this.get('Resources')) {
+      this.set('Resources', PDFDictionary.from());
+      this.get('Resources').set('Font', PDFDictionary.from());
+    }
+  };
+
+  addContentStreams = (
     lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
-    contentStream: PDFIndirectReference<PDFContentStream>,
+    ...contentStreams: PDFIndirectReference<PDFContentStream>[]
   ) => {
-    validate(
-      contentStream,
+    validateArr(
+      contentStreams,
       isInstance(PDFIndirectReference),
       '"contentStream" must be of type PDFIndirectReference<PDFContentStream>',
     );
 
     this.normalizeContents(lookup);
     if (!this.get('Contents')) {
-      this.set('Contents', PDFArray.fromArray([contentStream]));
+      this.set('Contents', PDFArray.fromArray(contentStreams));
     } else {
-      lookup(this.get('Contents')).push(contentStream);
+      const Contents: PDFArray = lookup(this.get('Contents'));
+      Contents.push(...contentStreams);
     }
+
+    return this;
+  };
+
+  addFontDictionary = (
+    lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
+    key: string, // TODO: Allow PDFName objects to be passed too
+    fontDict: PDFIndirectReference<PDFDictionary>, // Allow PDFDictionaries as well
+  ) => {
+    validate(key, _.isString, '"key" must be a string');
+    validate(
+      fontDict,
+      isInstance(PDFIndirectReference),
+      '"fontDict" must be an instance of PDFIndirectReference',
+    );
+
+    this.normalizeResources();
+    const Resources: PDFDictionary = lookup(this.get('Resources'));
+    const Font: PDFDictionary = lookup(Resources.get('Font'));
+    Font.set(key, fontDict);
 
     return this;
   };

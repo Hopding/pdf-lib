@@ -18,7 +18,7 @@ class PDFHeader {
   static forVersion = (major: number, minor: number) =>
     new PDFHeader(major, minor);
 
-  toString = () => `
+  toString = (): string => `
     %PDF-${this.major}.${this.minor}
     %<COMMENT_WITH_BINARY_CHARACTERS>
   `;

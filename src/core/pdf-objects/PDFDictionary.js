@@ -103,7 +103,7 @@ class PDFDictionary extends PDFObject {
     return failures;
   };
 
-  toString = () => {
+  toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);
     return arrayToString(buffer);

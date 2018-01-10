@@ -2,8 +2,6 @@
 import { error, addStringToBuffer } from 'utils';
 import { validate, isIdentity } from 'utils/validate';
 
-import type { Predicate } from 'utils';
-
 class PDFOperator {
   is = <T>(obj: T) => this instanceof obj;
 
@@ -31,7 +29,7 @@ class PDFOperator {
 
       static operator: Singleton;
 
-      toString = () => `${op}\n`;
+      toString = (): string => `${op}\n`;
 
       bytesSize = (): number => 2;
 

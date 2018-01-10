@@ -25,7 +25,7 @@ class PDFTrailer {
   static from = (offset: number, dictionary: PDFDictionary) =>
     new PDFTrailer(offset, dictionary);
 
-  toString = () => dedent`
+  toString = (): string => dedent`
     trailer
     ${this.dictionary}
     startxref

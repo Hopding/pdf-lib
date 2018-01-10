@@ -6,10 +6,10 @@ import { validate, validateArr, isInstance } from 'utils/validate';
 import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject } from '.';
 
-class PDFArray extends PDFObject {
-  array: Array<Object>;
+class PDFArray<T: PDFObject> extends PDFObject {
+  array: Array<T>;
 
-  constructor(array: Array<Object>) {
+  constructor(array: Array<T>) {
     super();
     validateArr(
       array,
@@ -19,16 +19,16 @@ class PDFArray extends PDFObject {
     this.array = array.slice();
   }
 
-  static fromArray = (array: Array<*>) => new PDFArray(array);
+  static fromArray = (array: Array<T>) => new PDFArray(array);
 
-  push = (val: any) => {
-    validate(
+  push = (...val: T[]) => {
+    validateArr(
       val,
       isInstance(PDFObject),
-      'PDFArray.set() requires values to be PDFObjects',
+      'PDFArray.push() requires arguments to be PDFObjects',
     );
 
-    this.array.push(val);
+    this.array.push(...val);
     return this;
   };
 
@@ -53,6 +53,7 @@ class PDFArray extends PDFObject {
   map = (...args: any) => this.array.map(...args);
   splice = (...args: any) => this.array.splice(...args);
 
+  // TODO: Remove this unused dereferencing code
   dereference = (
     indirectObjects: Map<PDFIndirectReference, PDFIndirectObject<*>>,
   ) => {
