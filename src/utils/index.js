@@ -177,3 +177,6 @@ export const findInMap = <K, V>(
   }
   return null;
 };
+
+export const setCharAt = (str, idx, newChar) =>
+  str.substring(0, idx) + newChar + str.substring(idx + 1);

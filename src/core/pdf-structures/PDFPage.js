@@ -112,6 +112,7 @@ class PDFPage extends PDFDictionary {
     }
   };
 
+  // TODO: Consider allowing *insertion* of content streams so order can be changed
   addContentStreams = (
     lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
     ...contentStreams: PDFIndirectReference<PDFContentStream>[]

@@ -33,6 +33,10 @@ const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
+const ubuntuFontFile =
+  '/Users/user/Desktop/ubuntu-font-family-0.83/Ubuntu-R.ttf';
+const ubuntuFontBytes = fs.readFileSync(ubuntuFontFile);
+
 console.time('PDFDocument');
 const pdfDoc = PDFDocumentFactory.load(bytes);
 
@@ -74,18 +78,23 @@ const createDrawing = () => {
 };
 
 const createText = () => {
-  const { Tf, Tj, Td, T, rg } = PDFOperators;
+  const { Tf, Tj, Td, Tr, T, RG, rg, w } = PDFOperators;
   const contentStream = PDFContentStream.of(
     PDFTextObject.of(
       // Draw red colored text at x-y coordinates (50, 500)
       rg.of(1.0, 0.0, 0.0),
-      Tf.of('/F9000', 75),
+      Tf.of('/Ubuntu-M', 50),
       Td.of(50, 500),
-      Tj.of('This Is A Test...'),
-      // Draw dark-cyan colored text at x-y coordinates (50, 425)
-      Tf.of('/F9000', 50),
+      Tj.of('This Is A Test Of The...'),
       Td.of(0, -75),
+      Tj.of('Embedded Ubuntu Font!'),
+      // Draw dark-cyan colored text at x-y coordinates (50, 425)
+      Tf.of('/F9001', 50),
+      Td.of(0, -75),
+      Tr.of(2),
+      w.of(2), // line width
       rg.of(0.0, 0.5, 0.5),
+      RG.of(1.0, 0.75, 1.0),
       Tj.of('This Is ALSO A Test...'),
     ),
   );
@@ -101,20 +110,37 @@ const F9000 = pdfDoc.register(
     BaseFont: PDFName.from('Times-Roman'),
   }),
 );
+const F9001 = pdfDoc.register(
+  PDFDictionary.from({
+    Type: PDFName.from('Font'),
+    Subtype: PDFName.from('Type1'),
+    BaseFont: PDFName.from('Helvetica'),
+  }),
+);
+
+const UbuntuM = pdfDoc.embedFont('Ubuntu-M', ubuntuFontBytes, {
+  Nonsymbolic: true,
+});
 
 pages.forEach(page => {
   page
     .addContentStreams(pdfDoc.lookup, drawingStream, textStream)
-    .addFontDictionary(pdfDoc.lookup, 'F9000', F9000);
+    .addFontDictionary(pdfDoc.lookup, 'F9000', F9000)
+    .addFontDictionary(pdfDoc.lookup, 'F9001', F9001)
+    .addFontDictionary(pdfDoc.lookup, 'Ubuntu-M', UbuntuM);
 });
 
 const newPage = PDFPage.create([500, 500])
   .addContentStreams(pdfDoc.lookup, drawingStream, textStream)
-  .addFontDictionary(pdfDoc.lookup, 'F9000', F9000);
+  .addFontDictionary(pdfDoc.lookup, 'F9000', F9000)
+  .addFontDictionary(pdfDoc.lookup, 'F9001', F9001)
+  .addFontDictionary(pdfDoc.lookup, 'Ubuntu-M', UbuntuM);
 
 const newPage2 = PDFPage.create([400, 400])
   .addContentStreams(pdfDoc.lookup, drawingStream, textStream)
-  .addFontDictionary(pdfDoc.lookup, 'F9000', F9000);
+  .addFontDictionary(pdfDoc.lookup, 'F9000', F9000)
+  .addFontDictionary(pdfDoc.lookup, 'F9001', F9001)
+  .addFontDictionary(pdfDoc.lookup, 'Ubuntu-M', UbuntuM);
 
 pdfDoc.addPage(newPage);
 pdfDoc.insertPage(1, newPage2);
