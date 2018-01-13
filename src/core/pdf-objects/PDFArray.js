@@ -1,6 +1,6 @@
 /* @flow */
 import _ from 'lodash';
-import { error, addStringToBuffer } from 'utils';
+import { error, addStringToBuffer, arrayToString } from 'utils';
 import { validate, validateArr, isInstance } from 'utils/validate';
 
 import PDFObject from './PDFObject';
@@ -67,6 +67,13 @@ class PDFArray<T: PDFObject> extends PDFObject {
       }
     });
     return failures;
+  };
+
+  toString = (): string => {
+    const bufferSize = this.bytesSize();
+    const buffer = new Uint8Array(bufferSize);
+    this.copyBytesInto(buffer);
+    return arrayToString(buffer);
   };
 
   bytesSize = () =>

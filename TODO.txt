@@ -1,5 +1,6 @@
 # Features
 ***** Add feature to bypass validations in prod builds! *****
+***** Validate locations of text objects and operators! *****
 * Support stream decompression for non FlateEncoded streams
 * Add in "early stops" to parsers (like checking if first char is a "<", for hex strings) to avoid excessive work.
 * Use "Length" dict entry when parsing streams
