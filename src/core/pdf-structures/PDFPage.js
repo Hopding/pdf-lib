@@ -158,7 +158,7 @@ class PDFPage extends PDFDictionary {
 
   addXObject = (
     lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
-    key: string, // TODO: Allow PDFName objects to be passed too
+    key: string,
     xObject: PDFIndirectReference<PDFStream>,
   ) => {
     validate(key, _.isString, '"key" must be a string');
