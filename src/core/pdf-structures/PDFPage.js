@@ -15,6 +15,7 @@ import {
   PDFName,
   PDFNumber,
   PDFIndirectReference,
+  PDFStream,
 } from '../pdf-objects';
 
 const VALID_KEYS = Object.freeze([
@@ -109,6 +110,7 @@ class PDFPage extends PDFDictionary {
     if (!this.get('Resources')) {
       this.set('Resources', PDFDictionary.from());
       this.get('Resources').set('Font', PDFDictionary.from());
+      this.get('Resources').set('XObject', PDFDictionary.from());
     }
   };
 
@@ -150,6 +152,26 @@ class PDFPage extends PDFDictionary {
     const Resources: PDFDictionary = lookup(this.get('Resources'));
     const Font: PDFDictionary = lookup(Resources.get('Font'));
     Font.set(key, fontDict);
+
+    return this;
+  };
+
+  addXObject = (
+    lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
+    key: string, // TODO: Allow PDFName objects to be passed too
+    xObject: PDFIndirectReference<PDFStream>,
+  ) => {
+    validate(key, _.isString, '"key" must be a string');
+    validate(
+      xObject,
+      isInstance(PDFIndirectReference),
+      '"xObject" must be an instance of PDFIndirectReference',
+    );
+
+    this.normalizeResources();
+    const Resources: PDFDictionary = lookup(this.get('Resources'));
+    const XObject: PDFDictionary = lookup(Resources.get('XObject'));
+    XObject.set(key, xObject);
 
     return this;
   };

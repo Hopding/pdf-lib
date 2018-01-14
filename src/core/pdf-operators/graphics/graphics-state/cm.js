@@ -3,7 +3,7 @@
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validateArr, isInRange } from 'utils/validate';
+import { validateArr, isNumber } from 'utils/validate';
 
 /**
 Modify the current transformation matrix (CTM) by concatenating the specified
@@ -29,7 +29,7 @@ class cm extends PDFOperator {
     super();
     validateArr(
       [a, b, c, d, e, f],
-      isInRange(0.0, 1.1),
+      isNumber,
       'cm operator args "a, b, c, d, e, f" must be all be numbers.',
     );
     this.a = a;

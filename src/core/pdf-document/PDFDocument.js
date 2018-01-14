@@ -1,7 +1,9 @@
 /* @flow */
 import _ from 'lodash';
 import fontkit from 'fontkit';
+import PNG from 'png-js';
 
+import PNGImage from 'core/PNGImage';
 import {
   PDFIndirectReference,
   PDFObject,
@@ -212,6 +214,15 @@ class PDFDocument {
         FontDescriptor: fontDescriptor,
       }),
     );
+  };
+
+  // TODO: This should be moved to some XObject class, probably
+  // TODO: Test this in the browser - might not work the same as in Node...
+  addImage = (
+    imageData: Uint8Array,
+  ): Promise<PDFIndirectReference<PDFRawStream>> => {
+    const pngImg = new PNGImage(imageData);
+    return pngImg.embed(this);
   };
 }
 

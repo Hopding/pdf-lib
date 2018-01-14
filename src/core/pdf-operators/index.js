@@ -44,6 +44,8 @@ import Ts from './text/text-state/Ts';
 import Tw from './text/text-state/Tw';
 import Tz from './text/text-state/Tz';
 
+import Do from './Do';
+
 const PDFOperators = {
   ...clippingPathOps,
   CS,
@@ -90,6 +92,7 @@ const PDFOperators = {
   Ts,
   Tw,
   Tz,
+  Do,
 };
 
 export default PDFOperators;

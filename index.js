@@ -37,6 +37,13 @@ const ubuntuFontFile =
   '/Users/user/Desktop/ubuntu-font-family-0.83/Ubuntu-R.ttf';
 const ubuntuFontBytes = fs.readFileSync(ubuntuFontFile);
 
+const pngImages = {
+  minions: fs.readFileSync('/Users/user/Pictures/minions.png'),
+  minionsNoAlpha: fs.readFileSync('/Users/user/Pictures/minions-no-alpha.png'),
+  greyscaleBird: fs.readFileSync('/Users/user/Pictures/greyscale-bird.png'),
+  smallMario: fs.readFileSync('/Users/user/Pictures/small-mario.png'),
+};
+
 console.time('PDFDocument');
 const pdfDoc = PDFDocumentFactory.load(bytes);
 
@@ -101,8 +108,44 @@ const createText = () => {
   return pdfDoc.register(contentStream);
 };
 
+const createPNGXObject = () => {
+  const { Do, cm, RG, rg, re, B, m, l, S, q, Q } = PDFOperators;
+  const contentStream = PDFContentStream.of(
+    // Draw a rectangle with a 1-unit red border, filled with light blue.
+    q.operator,
+    RG.of(1.0, 0.0, 0.0),
+    rg.of(0.5, 0.75, 1.0),
+    re.of(0, 0, 500, 500),
+    B.operator,
+    Q.operator,
+
+    q.operator,
+    cm.of(250, 0, 0, 250, 0, 0),
+    Do.of('/MinionsPNG'),
+    Q.operator,
+
+    q.operator,
+    cm.of(250, 0, 0, 250, 250, 0),
+    Do.of('/GreyscaleBirdPNG'),
+    Q.operator,
+
+    q.operator,
+    cm.of(250, 0, 0, 250, 0, 250),
+    Do.of('/SmallMarioPNG'),
+    Q.operator,
+
+    q.operator,
+    cm.of(250, 0, 0, 250, 250, 250),
+    Do.of('/MinionsNoAlphaPNG'),
+    Q.operator,
+  );
+  return pdfDoc.register(contentStream);
+};
+
 const drawingStream = createDrawing();
 const textStream = createText();
+const pngStream = createPNGXObject();
+
 const F9000 = pdfDoc.register(
   PDFDictionary.from({
     Type: PDFName.from('Font'),
@@ -122,6 +165,9 @@ const UbuntuM = pdfDoc.embedFont('Ubuntu-M', ubuntuFontBytes, {
   Nonsymbolic: true,
 });
 
+const firstPage = pages[0];
+firstPage.addContentStreams(pdfDoc.lookup, pngStream);
+
 pages.forEach(page => {
   page
     .addContentStreams(pdfDoc.lookup, drawingStream, textStream)
@@ -136,18 +182,43 @@ const newPage = PDFPage.create([500, 500])
   .addFontDictionary(pdfDoc.lookup, 'F9001', F9001)
   .addFontDictionary(pdfDoc.lookup, 'Ubuntu-M', UbuntuM);
 
-const newPage2 = PDFPage.create([400, 400])
-  .addContentStreams(pdfDoc.lookup, drawingStream, textStream)
+const newPage2 = PDFPage.create([500, 500])
+  .addContentStreams(pdfDoc.lookup, pngStream)
   .addFontDictionary(pdfDoc.lookup, 'F9000', F9000)
   .addFontDictionary(pdfDoc.lookup, 'F9001', F9001)
   .addFontDictionary(pdfDoc.lookup, 'Ubuntu-M', UbuntuM);
 
 pdfDoc.addPage(newPage);
-pdfDoc.insertPage(1, newPage2);
+pdfDoc.insertPage(0, newPage2);
 // pdfDoc.removePage(0);
 
-console.time('saveToBytes');
-const savedBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
-console.timeEnd('saveToBytes');
-console.timeEnd('PDFDocument');
-fs.writeFileSync(outFile, savedBytes);
+const saveFile = () => {
+  console.time('saveToBytes');
+  const savedBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
+  console.timeEnd('saveToBytes');
+  console.timeEnd('PDFDocument');
+  fs.writeFileSync(outFile, savedBytes);
+};
+
+pdfDoc
+  .addImage(pngImages.greyscaleBird)
+  .then(imageXObject => {
+    firstPage.addXObject(pdfDoc.lookup, 'GreyscaleBirdPNG', imageXObject);
+    newPage2.addXObject(pdfDoc.lookup, 'GreyscaleBirdPNG', imageXObject);
+    return pdfDoc.addImage(pngImages.minions);
+  })
+  .then(imageXObject => {
+    firstPage.addXObject(pdfDoc.lookup, 'MinionsPNG', imageXObject);
+    newPage2.addXObject(pdfDoc.lookup, 'MinionsPNG', imageXObject);
+    return pdfDoc.addImage(pngImages.minionsNoAlpha);
+  })
+  .then(imageXObject => {
+    firstPage.addXObject(pdfDoc.lookup, 'MinionsNoAlphaPNG', imageXObject);
+    newPage2.addXObject(pdfDoc.lookup, 'MinionsNoAlphaPNG', imageXObject);
+    return pdfDoc.addImage(pngImages.smallMario);
+  })
+  .then(imageXObject => {
+    firstPage.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
+    newPage2.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
+  })
+  .then(saveFile);
