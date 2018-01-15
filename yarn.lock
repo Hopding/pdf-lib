@@ -1342,9 +1342,9 @@ flow-bin@^0.62.0:
   version "0.62.0"
   resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.62.0.tgz#14bca669a6e3f95c0bc0c2d1eb55ec4e98cb1d83"
 
-fontkit@^1.6.0:
+"fontkit@git+https://github.com/Hopding/fontkit.git#e8ded75dd9cf2556ffe4dceccdd38ce22ceae362":
   version "1.7.7"
-  resolved "https://registry.yarnpkg.com/fontkit/-/fontkit-1.7.7.tgz#ebaf2d8f3fedf302ae3c64b4beeaddc247fcdbb1"
+  resolved "git+https://github.com/Hopding/fontkit.git#e8ded75dd9cf2556ffe4dceccdd38ce22ceae362"
   dependencies:
     babel-runtime "^6.11.6"
     brfs "^1.4.0"
@@ -1355,7 +1355,7 @@ fontkit@^1.6.0:
     dfa "^1.0.0"
     restructure "^0.5.3"
     tiny-inflate "^1.0.2"
-    unicode-properties "^1.0.0"
+    unicode-properties "git+https://github.com/Hopding/unicode-properties.git#cd7d0042f3df0851774b255ca5b4756b8f0011e8"
     unicode-trie "^0.3.0"
 
 for-in@^1.0.1:
@@ -2727,11 +2727,10 @@ uid-number@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/uid-number/-/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
 
-unicode-properties@^1.0.0:
+"unicode-properties@git+https://github.com/Hopding/unicode-properties.git#cd7d0042f3df0851774b255ca5b4756b8f0011e8":
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/unicode-properties/-/unicode-properties-1.1.0.tgz#7a96eef49f75682ea69d2315eec9ac43ffdf00c1"
+  resolved "git+https://github.com/Hopding/unicode-properties.git#cd7d0042f3df0851774b255ca5b4756b8f0011e8"
   dependencies:
-    brfs "^1.4.0"
     unicode-trie "^0.3.0"
 
 unicode-trie@^0.3.0:
