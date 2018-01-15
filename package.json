@@ -41,7 +41,7 @@
   "dependencies": {
     "dedent": "^0.7.0",
     "file": "^0.2.2",
-    "fontkit": "git+https://github.com/Hopding/fontkit.git#a7c7f47a10a8ae9237cf1353656b2dd8cc219df2",
+    "fontkit": "git+https://github.com/Hopding/fontkit.git#7fc465e46142673e34f5469701cfb01c9be55426",
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
     "png-js": "^0.1.1"
