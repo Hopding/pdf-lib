@@ -7,7 +7,7 @@
     "start": "babel-node index.js",
     "start2": "babel-node index2.js",
     "test": "babel-node __tests__/index.js",
-    "build": "babel . -d dist --ignore=\"node_modules\"",
+    "build": "babel src -d no-flow --ignore node_modules __tests__",
     "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc src/* --fix"
   },
   "repository": {

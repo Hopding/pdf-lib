@@ -164,6 +164,8 @@ class PDFDocument {
   };
 
   // TODO: validate args...
+  // TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
+  // to broaden support to other fonts.
   embedFont = (
     name: string,
     fontData: Uint8Array,
@@ -182,27 +184,42 @@ class PDFDocument {
     );
 
     const font = fontkit.create(fontData);
+    const scale = 1000 / font.unitsPerEm;
+
     const fontDescriptor = this.register(
       PDFDictionary.from({
         Type: PDFName.from('FontDescriptor'),
         FontName: PDFName.from(name),
         Flags: PDFNumber.fromNumber(fontFlags(flagOptions)),
         FontBBox: PDFArray.fromArray([
-          PDFNumber.fromNumber(font.bbox.minX),
-          PDFNumber.fromNumber(font.bbox.minY),
-          PDFNumber.fromNumber(font.bbox.maxX),
-          PDFNumber.fromNumber(font.bbox.maxY),
+          PDFNumber.fromNumber(font.bbox.minX * scale),
+          PDFNumber.fromNumber(font.bbox.minY * scale),
+          PDFNumber.fromNumber(font.bbox.maxX * scale),
+          PDFNumber.fromNumber(font.bbox.maxY * scale),
         ]),
         ItalicAngle: PDFNumber.fromNumber(font.italicAngle),
-        Ascent: PDFNumber.fromNumber(font.ascent),
-        Descent: PDFNumber.fromNumber(font.descent),
-        CapHeight: PDFNumber.fromNumber(font.capHeight),
-        XHeight: PDFNumber.fromNumber(font.xHeight),
+        Ascent: PDFNumber.fromNumber(font.ascent * scale),
+        Descent: PDFNumber.fromNumber(font.descent * scale),
+        CapHeight: PDFNumber.fromNumber(
+          (font.capHeight || font.ascent) * scale,
+        ),
+        XHeight: PDFNumber.fromNumber((font.xHeight || 0) * scale),
         // Not sure how to compute/find this, nor is anybody else really:
         // https://stackoverflow.com/questions/35485179/stemv-value-of-the-truetype-font
         StemV: PDFNumber.fromNumber(0),
         FontFile3: fontStream, // Use different key for TrueType
       }),
+    );
+
+    const Widths = PDFArray.fromArray(
+      _.range(0, 256)
+        .map(
+          code =>
+            font.characterSet.includes(code)
+              ? font.glyphForCodePoint(code).advanceWidth
+              : 0,
+        )
+        .map(PDFNumber.fromNumber),
     );
 
     return this.register(
@@ -211,6 +228,9 @@ class PDFDocument {
         // Handle the case of this actually being TrueType
         Subtype: PDFName.from('OpenType'),
         BaseFont: PDFName.from(name),
+        FirstChar: PDFNumber.fromNumber(0),
+        LastChar: PDFNumber.fromNumber(255),
+        Widths,
         FontDescriptor: fontDescriptor,
       }),
     );

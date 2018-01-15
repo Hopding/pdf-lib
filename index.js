@@ -33,8 +33,9 @@ const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
-const ubuntuFontFile =
-  '/Users/user/Desktop/ubuntu-font-family-0.83/Ubuntu-R.ttf';
+// const ubuntuFontFile =
+// '/Users/user/Desktop/ubuntu-font-family-0.83/Ubuntu-R.ttf';
+const ubuntuFontFile = '/Users/user/Desktop/cursivey-font.otf';
 const ubuntuFontBytes = fs.readFileSync(ubuntuFontFile);
 
 const pngImages = {

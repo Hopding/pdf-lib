@@ -75,6 +75,8 @@ var PDFDocument = function PDFDocument(index) {
 
 
 // TODO: validate args...
+// TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
+// to broaden support to other fonts.
 
 
 // TODO: This should be moved to some XObject class, probably
@@ -191,27 +193,36 @@ var _initialiseProps = function _initialiseProps() {
     }), fontData));
 
     var font = _fontkit2.default.create(fontData);
+    var scale = 1000 / font.unitsPerEm;
+
     var fontDescriptor = _this2.register(_pdfObjects.PDFDictionary.from({
       Type: _pdfObjects.PDFName.from('FontDescriptor'),
       FontName: _pdfObjects.PDFName.from(name),
       Flags: _pdfObjects.PDFNumber.fromNumber(fontFlags(flagOptions)),
-      FontBBox: _pdfObjects.PDFArray.fromArray([_pdfObjects.PDFNumber.fromNumber(font.bbox.minX), _pdfObjects.PDFNumber.fromNumber(font.bbox.minY), _pdfObjects.PDFNumber.fromNumber(font.bbox.maxX), _pdfObjects.PDFNumber.fromNumber(font.bbox.maxY)]),
+      FontBBox: _pdfObjects.PDFArray.fromArray([_pdfObjects.PDFNumber.fromNumber(font.bbox.minX * scale), _pdfObjects.PDFNumber.fromNumber(font.bbox.minY * scale), _pdfObjects.PDFNumber.fromNumber(font.bbox.maxX * scale), _pdfObjects.PDFNumber.fromNumber(font.bbox.maxY * scale)]),
       ItalicAngle: _pdfObjects.PDFNumber.fromNumber(font.italicAngle),
-      Ascent: _pdfObjects.PDFNumber.fromNumber(font.ascent),
-      Descent: _pdfObjects.PDFNumber.fromNumber(font.descent),
-      CapHeight: _pdfObjects.PDFNumber.fromNumber(font.capHeight),
-      XHeight: _pdfObjects.PDFNumber.fromNumber(font.xHeight),
+      Ascent: _pdfObjects.PDFNumber.fromNumber(font.ascent * scale),
+      Descent: _pdfObjects.PDFNumber.fromNumber(font.descent * scale),
+      CapHeight: _pdfObjects.PDFNumber.fromNumber((font.capHeight || font.ascent) * scale),
+      XHeight: _pdfObjects.PDFNumber.fromNumber((font.xHeight || 0) * scale),
       // Not sure how to compute/find this, nor is anybody else really:
       // https://stackoverflow.com/questions/35485179/stemv-value-of-the-truetype-font
       StemV: _pdfObjects.PDFNumber.fromNumber(0),
       FontFile3: fontStream // Use different key for TrueType
     }));
 
+    var Widths = _pdfObjects.PDFArray.fromArray(_lodash2.default.range(0, 256).map(function (code) {
+      return font.characterSet.includes(code) ? font.glyphForCodePoint(code).advanceWidth : 0;
+    }).map(_pdfObjects.PDFNumber.fromNumber));
+
     return _this2.register(_pdfObjects.PDFDictionary.from({
       Type: _pdfObjects.PDFName.from('Font'),
       // Handle the case of this actually being TrueType
       Subtype: _pdfObjects.PDFName.from('OpenType'),
       BaseFont: _pdfObjects.PDFName.from(name),
+      FirstChar: _pdfObjects.PDFNumber.fromNumber(0),
+      LastChar: _pdfObjects.PDFNumber.fromNumber(255),
+      Widths: Widths,
       FontDescriptor: fontDescriptor
     }));
   };
