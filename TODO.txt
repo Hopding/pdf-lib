@@ -1,7 +1,11 @@
 # Features
 ***** Add feature to bypass validations in prod builds! *****
 ***** Validate locations of text objects and operators! *****
-***** Make note of the dependency on "fontkit" and "unicode-properties" forks and suggest desire for better solution **** 
+***** Make note of the dependency on "fontkit" and "unicode-properties" forks and suggest desire for better solution ****
+
+***** Remove index.js files from fork repos and publish to NPM *****
+***** Update READMEs of fork repos with credits and workaround using browserify command *****
+
 * Support stream decompression for non FlateEncoded streams
 * Add in "early stops" to parsers (like checking if first char is a "<", for hex strings) to avoid excessive work.
 * Use "Length" dict entry when parsing streams
