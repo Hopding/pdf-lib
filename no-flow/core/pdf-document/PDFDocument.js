@@ -20,6 +20,10 @@ var _PNGImage = require('../PNGImage');
 
 var _PNGImage2 = _interopRequireDefault(_PNGImage);
 
+var _JPEGImage = require('../JPEGImage');
+
+var _JPEGImage2 = _interopRequireDefault(_JPEGImage);
+
 var _pdfObjects = require('../pdf-objects');
 
 var _pdfStructures = require('../pdf-structures');
@@ -230,6 +234,11 @@ var _initialiseProps = function _initialiseProps() {
   this.addImage = function (imageData) {
     var pngImg = new _PNGImage2.default(imageData);
     return pngImg.embed(_this2);
+  };
+
+  this.addJPG = function (imageData) {
+    var jpgImg = new _JPEGImage2.default(imageData.buffer);
+    return jpgImg.embed(_this2);
   };
 };
 

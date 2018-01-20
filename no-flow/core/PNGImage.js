@@ -26,51 +26,48 @@ var PNGImage = function PNGImage(data) {
   _classCallCheck(this, PNGImage);
 
   this.embed = function (document) {
-    return new Promise(function (resolve, reject) {
-      _this.document = document;
-      _this.xObjDict = _pdfObjects.PDFDictionary.from({
-        Type: _pdfObjects.PDFName.from('XObject'),
-        Subtype: _pdfObjects.PDFName.from('Image'),
-        BitsPerComponent: _pdfObjects.PDFNumber.fromNumber(_this.image.bits),
-        Width: _pdfObjects.PDFNumber.fromNumber(_this.width),
-        Height: _pdfObjects.PDFNumber.fromNumber(_this.height)
-      });
-
-      if (!_this.image.hasAlphaChannel) {
-        _this.xObjDict.set('Filter', _pdfObjects.PDFName.from('FlateDecode'));
-        var params = _pdfObjects.PDFDictionary.from({
-          Predictor: _pdfObjects.PDFNumber.fromNumber(15),
-          Colors: _pdfObjects.PDFNumber.fromNumber(_this.image.colors),
-          BitsPerComponent: _pdfObjects.PDFNumber.fromNumber(_this.image.bits),
-          Columns: _pdfObjects.PDFNumber.fromNumber(_this.width)
-        });
-        _this.xObjDict.set('DecodeParms', params);
-      }
-
-      if (_this.image.palette.length === 0) {
-        _this.xObjDict.set('ColorSpace', _pdfObjects.PDFName.from(_this.image.colorSpace));
-      } else {
-        var paletteStream = document.register(_pdfObjects.PDFRawStream.from(_pdfObjects.PDFDictionary.from({
-          Length: _pdfObjects.PDFNumber.fromNumber(_this.image.palette.length)
-        }), new Uint8Array(_this.image.palette)));
-        _this.xObjDict.set('ColorSpace', _pdfObjects.PDFArray.fromArray([_pdfObjects.PDFName.from('Indexed'), _pdfObjects.PDFName.from('DeviceRGB'), _pdfObjects.PDFNumber.fromNumber(_this.image.palette.length / 3 - 1), paletteStream]));
-      }
-
-      // TODO: HANDLE THE 'Filter' ENTRY IN THE XOBJECT DICT
-
-      // if (this.image.transparency.grayscale)
-      // if (this.image.transparency.rgb)
-      if (_this.image.transparency.indexed) {
-        _this.loadIndexedAlphaChannel(resolve);
-      } else if (_this.image.hasAlphaChannel) {
-        _this.splitAlphaChannel(resolve);
-      } else {
-        _this.finalize(resolve);
-      }
+    _this.document = document;
+    _this.xObjDict = _pdfObjects.PDFDictionary.from({
+      Type: _pdfObjects.PDFName.from('XObject'),
+      Subtype: _pdfObjects.PDFName.from('Image'),
+      BitsPerComponent: _pdfObjects.PDFNumber.fromNumber(_this.image.bits),
+      Width: _pdfObjects.PDFNumber.fromNumber(_this.width),
+      Height: _pdfObjects.PDFNumber.fromNumber(_this.height)
     });
+
+    if (!_this.image.hasAlphaChannel) {
+      _this.xObjDict.set('Filter', _pdfObjects.PDFName.from('FlateDecode'));
+      var params = _pdfObjects.PDFDictionary.from({
+        Predictor: _pdfObjects.PDFNumber.fromNumber(15),
+        Colors: _pdfObjects.PDFNumber.fromNumber(_this.image.colors),
+        BitsPerComponent: _pdfObjects.PDFNumber.fromNumber(_this.image.bits),
+        Columns: _pdfObjects.PDFNumber.fromNumber(_this.width)
+      });
+      _this.xObjDict.set('DecodeParms', params);
+    }
+
+    if (_this.image.palette.length === 0) {
+      _this.xObjDict.set('ColorSpace', _pdfObjects.PDFName.from(_this.image.colorSpace));
+    } else {
+      var paletteStream = document.register(_pdfObjects.PDFRawStream.from(_pdfObjects.PDFDictionary.from({
+        Length: _pdfObjects.PDFNumber.fromNumber(_this.image.palette.length)
+      }), new Uint8Array(_this.image.palette)));
+      _this.xObjDict.set('ColorSpace', _pdfObjects.PDFArray.fromArray([_pdfObjects.PDFName.from('Indexed'), _pdfObjects.PDFName.from('DeviceRGB'), _pdfObjects.PDFNumber.fromNumber(_this.image.palette.length / 3 - 1), paletteStream]));
+    }
+
+    // TODO: HANDLE THE 'Filter' ENTRY IN THE XOBJECT DICT
+
+    // if (this.image.transparency.grayscale)
+    // if (this.image.transparency.rgb)
+    if (_this.image.transparency.indexed) {
+      return _this.loadIndexedAlphaChannel();
+    } else if (_this.image.hasAlphaChannel) {
+      return _this.splitAlphaChannel();
+    }
+    return _this.finalize();
   };
 
-  this.finalize = function (resolve) {
+  this.finalize = function () {
     if (_this.alphaChannel) {
       var smaskStream = _this.document.register(_pdfObjects.PDFRawStream.from(_pdfObjects.PDFDictionary.from({
         Type: _pdfObjects.PDFName.from('XObject'),
@@ -88,37 +85,35 @@ var PNGImage = function PNGImage(data) {
 
     _this.xObjDict.set('Length', _pdfObjects.PDFNumber.fromNumber(_this.imgData.length));
     var xObj = _this.document.register(_pdfObjects.PDFRawStream.from(_this.xObjDict, _this.imgData));
-    resolve(xObj);
+    return xObj;
   };
 
-  this.splitAlphaChannel = function (resolve) {
-    _this.image.decodePixels(function (pixels) {
-      var colorByteSize = _this.image.colors * _this.image.bits / 8;
-      var pixelCount = _this.image.width * _this.image.height;
-      _this.imgData = new Uint8Array(pixelCount * colorByteSize);
-      _this.alphaChannel = new Uint8Array(pixelCount);
-      var i = 0;
-      var p = 0;
-      var a = 0;
-      while (i < pixels.length) {
-        _this.imgData[p++] = pixels[i++];
-        _this.imgData[p++] = pixels[i++];
-        _this.imgData[p++] = pixels[i++];
-        _this.alphaChannel[a++] = pixels[i++];
-      }
-      _this.finalize(resolve);
-    });
+  this.splitAlphaChannel = function () {
+    var pixels = _this.image.decodePixelsSync();
+    var colorByteSize = _this.image.colors * _this.image.bits / 8;
+    var pixelCount = _this.image.width * _this.image.height;
+    _this.imgData = new Uint8Array(pixelCount * colorByteSize);
+    _this.alphaChannel = new Uint8Array(pixelCount);
+    var i = 0;
+    var p = 0;
+    var a = 0;
+    while (i < pixels.length) {
+      _this.imgData[p++] = pixels[i++];
+      _this.imgData[p++] = pixels[i++];
+      _this.imgData[p++] = pixels[i++];
+      _this.alphaChannel[a++] = pixels[i++];
+    }
+    return _this.finalize();
   };
 
-  this.loadIndexedAlphaChannel = function (resolve) {
+  this.loadIndexedAlphaChannel = function () {
     var transparency = _this.image.transparency.indexed;
-    _this.image.decodePixels(function (pixels) {
-      _this.alphaChannel = new Uint8Array(_this.width * _this.height);
-      pixels.forEach(function (pixel, idx) {
-        _this.alphaChannel[idx] = transparency[pixel];
-      });
-      _this.finalize(resolve);
+    var pixels = _this.image.decodePixelsSync();
+    _this.alphaChannel = new Uint8Array(_this.width * _this.height);
+    pixels.forEach(function (pixel, idx) {
+      _this.alphaChannel[idx] = transparency[pixel];
     });
+    return _this.finalize();
   };
 
   this.image = new _pngJs2.default(data);
