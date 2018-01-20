@@ -43,6 +43,8 @@ const pngImages = {
   minionsNoAlpha: fs.readFileSync('/Users/user/Pictures/minions-no-alpha.png'),
   greyscaleBird: fs.readFileSync('/Users/user/Pictures/greyscale-bird.png'),
   smallMario: fs.readFileSync('/Users/user/Pictures/small-mario.png'),
+  catUnicorn: fs.readFileSync('/Users/user/Pictures/cat-riding-unicorn.jpg'),
+  // catUnicorn: fs.readFileSync('/Users/user/Pictures/mini.jpg'),
 };
 
 console.time('PDFDocument');
@@ -135,9 +137,14 @@ const createPNGXObject = () => {
     Do.of('/SmallMarioPNG'),
     Q.operator,
 
+    // q.operator,
+    // cm.of(250, 0, 0, 250, 250, 250),
+    // Do.of('/MinionsNoAlphaPNG'),
+    // Q.operator,
+
     q.operator,
-    cm.of(250, 0, 0, 250, 250, 250),
-    Do.of('/MinionsNoAlphaPNG'),
+    cm.of(250, 0, 0, 125, 250, 250),
+    Do.of('/CatUnicornJPG'),
     Q.operator,
   );
   return pdfDoc.register(contentStream);
@@ -221,5 +228,10 @@ pdfDoc
   .then(imageXObject => {
     firstPage.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
     newPage2.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
+  })
+  .then(() => {
+    const imageXObject = pdfDoc.addJPG(pngImages.catUnicorn);
+    firstPage.addXObject(pdfDoc.lookup, 'CatUnicornJPG', imageXObject);
+    newPage2.addXObject(pdfDoc.lookup, 'CatUnicornJPG', imageXObject);
   })
   .then(saveFile);

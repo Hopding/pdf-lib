@@ -4,6 +4,7 @@ import fontkit from 'fontkit';
 import PNG from 'png-js';
 
 import PNGImage from 'core/PNGImage';
+import JPEGImage from 'core/JPEGImage';
 import {
   PDFIndirectReference,
   PDFObject,
@@ -243,6 +244,11 @@ class PDFDocument {
   ): Promise<PDFIndirectReference<PDFRawStream>> => {
     const pngImg = new PNGImage(imageData);
     return pngImg.embed(this);
+  };
+
+  addJPG = (imageData: Uint8Array) => {
+    const jpgImg = new JPEGImage(imageData.buffer);
+    return jpgImg.embed(this);
   };
 }
 
