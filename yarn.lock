@@ -1342,9 +1342,9 @@ flow-bin@^0.62.0:
   version "0.62.0"
   resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.62.0.tgz#14bca669a6e3f95c0bc0c2d1eb55ec4e98cb1d83"
 
-"fontkit@git+https://github.com/Hopding/fontkit.git#99a35c7b0f0f6549d7727bcbc1ddabb7f9ca19bf":
+"fontkit@git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8":
   version "1.7.7"
-  resolved "git+https://github.com/Hopding/fontkit.git#99a35c7b0f0f6549d7727bcbc1ddabb7f9ca19bf"
+  resolved "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8"
   dependencies:
     babel-runtime "^6.11.6"
     brfs "^1.4.0"
@@ -1355,7 +1355,7 @@ flow-bin@^0.62.0:
     dfa "^1.0.0"
     restructure "^0.5.3"
     tiny-inflate "^1.0.2"
-    unicode-properties "git+https://github.com/Hopding/unicode-properties.git#2b6f4a08cb88a16f5dcee7ba33620db739679b14"
+    unicode-properties "git+https://github.com/Hopding/unicode-properties.git#9fd91fffd8a8a410d09b40fbec9c906607771bef"
     unicode-trie "^0.3.0"
 
 for-in@^1.0.1:
@@ -2148,9 +2148,11 @@ pluralize@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-7.0.0.tgz#298b89df8b93b0221dbf421ad2b1b1ea23fc6777"
 
-png-js@^0.1.1:
+"png-js@git+https://github.com/Hopding/png.js.git#325e9458f0cf6911bbeda7121900be7feccd1b1d":
   version "0.1.1"
-  resolved "https://registry.yarnpkg.com/png-js/-/png-js-0.1.1.tgz#1cc7c212303acabe74263ec3ac78009580242d93"
+  resolved "git+https://github.com/Hopding/png.js.git#325e9458f0cf6911bbeda7121900be7feccd1b1d"
+  dependencies:
+    pako "^1.0.6"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -2727,9 +2729,9 @@ uid-number@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/uid-number/-/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
 
-"unicode-properties@git+https://github.com/Hopding/unicode-properties.git#2b6f4a08cb88a16f5dcee7ba33620db739679b14":
+"unicode-properties@git+https://github.com/Hopding/unicode-properties.git#9fd91fffd8a8a410d09b40fbec9c906607771bef":
   version "1.1.0"
-  resolved "git+https://github.com/Hopding/unicode-properties.git#2b6f4a08cb88a16f5dcee7ba33620db739679b14"
+  resolved "git+https://github.com/Hopding/unicode-properties.git#9fd91fffd8a8a410d09b40fbec9c906607771bef"
   dependencies:
     unicode-trie "^0.3.0"
 

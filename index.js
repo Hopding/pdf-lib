@@ -137,15 +137,15 @@ const createPNGXObject = () => {
     Do.of('/SmallMarioPNG'),
     Q.operator,
 
-    // q.operator,
-    // cm.of(250, 0, 0, 250, 250, 250),
-    // Do.of('/MinionsNoAlphaPNG'),
-    // Q.operator,
-
     q.operator,
-    cm.of(250, 0, 0, 125, 250, 250),
-    Do.of('/CatUnicornJPG'),
+    cm.of(250, 0, 0, 250, 250, 250),
+    Do.of('/MinionsNoAlphaPNG'),
     Q.operator,
+
+    // q.operator,
+    // cm.of(250, 0, 0, 125, 250, 250),
+    // Do.of('/CatUnicornJPG'),
+    // Q.operator,
   );
   return pdfDoc.register(contentStream);
 };
@@ -208,30 +208,24 @@ const saveFile = () => {
   fs.writeFileSync(outFile, savedBytes);
 };
 
-pdfDoc
-  .addImage(pngImages.greyscaleBird)
-  .then(imageXObject => {
-    firstPage.addXObject(pdfDoc.lookup, 'GreyscaleBirdPNG', imageXObject);
-    newPage2.addXObject(pdfDoc.lookup, 'GreyscaleBirdPNG', imageXObject);
-    return pdfDoc.addImage(pngImages.minions);
-  })
-  .then(imageXObject => {
-    firstPage.addXObject(pdfDoc.lookup, 'MinionsPNG', imageXObject);
-    newPage2.addXObject(pdfDoc.lookup, 'MinionsPNG', imageXObject);
-    return pdfDoc.addImage(pngImages.minionsNoAlpha);
-  })
-  .then(imageXObject => {
-    firstPage.addXObject(pdfDoc.lookup, 'MinionsNoAlphaPNG', imageXObject);
-    newPage2.addXObject(pdfDoc.lookup, 'MinionsNoAlphaPNG', imageXObject);
-    return pdfDoc.addImage(pngImages.smallMario);
-  })
-  .then(imageXObject => {
-    firstPage.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
-    newPage2.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
-  })
-  .then(() => {
-    const imageXObject = pdfDoc.addJPG(pngImages.catUnicorn);
-    firstPage.addXObject(pdfDoc.lookup, 'CatUnicornJPG', imageXObject);
-    newPage2.addXObject(pdfDoc.lookup, 'CatUnicornJPG', imageXObject);
-  })
-  .then(saveFile);
+let imageXObject = pdfDoc.addImage(pngImages.greyscaleBird);
+firstPage.addXObject(pdfDoc.lookup, 'GreyscaleBirdPNG', imageXObject);
+newPage2.addXObject(pdfDoc.lookup, 'GreyscaleBirdPNG', imageXObject);
+
+imageXObject = pdfDoc.addImage(pngImages.minions);
+firstPage.addXObject(pdfDoc.lookup, 'MinionsPNG', imageXObject);
+newPage2.addXObject(pdfDoc.lookup, 'MinionsPNG', imageXObject);
+
+imageXObject = pdfDoc.addImage(pngImages.minionsNoAlpha);
+firstPage.addXObject(pdfDoc.lookup, 'MinionsNoAlphaPNG', imageXObject);
+newPage2.addXObject(pdfDoc.lookup, 'MinionsNoAlphaPNG', imageXObject);
+
+imageXObject = pdfDoc.addImage(pngImages.smallMario);
+firstPage.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
+newPage2.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
+
+imageXObject = pdfDoc.addJPG(pngImages.catUnicorn);
+firstPage.addXObject(pdfDoc.lookup, 'CatUnicornJPG', imageXObject);
+newPage2.addXObject(pdfDoc.lookup, 'CatUnicornJPG', imageXObject);
+
+saveFile();
