@@ -43,8 +43,11 @@ const pngImages = {
   minionsNoAlpha: fs.readFileSync('/Users/user/Pictures/minions-no-alpha.png'),
   greyscaleBird: fs.readFileSync('/Users/user/Pictures/greyscale-bird.png'),
   smallMario: fs.readFileSync('/Users/user/Pictures/small-mario.png'),
+};
+
+const jpgImages = {
   catUnicorn: fs.readFileSync('/Users/user/Pictures/cat-riding-unicorn.jpg'),
-  // catUnicorn: fs.readFileSync('/Users/user/Pictures/mini.jpg'),
+  minions: fs.readFileSync('/Users/user/Pictures/mini.jpg'),
 };
 
 console.time('PDFDocument');
@@ -137,15 +140,15 @@ const createPNGXObject = () => {
     Do.of('/SmallMarioPNG'),
     Q.operator,
 
-    q.operator,
-    cm.of(250, 0, 0, 250, 250, 250),
-    Do.of('/MinionsNoAlphaPNG'),
-    Q.operator,
-
     // q.operator,
-    // cm.of(250, 0, 0, 125, 250, 250),
-    // Do.of('/CatUnicornJPG'),
+    // cm.of(250, 0, 0, 250, 250, 250),
+    // Do.of('/MinionsNoAlphaPNG'),
     // Q.operator,
+
+    q.operator,
+    cm.of(250, 0, 0, 125, 250, 250),
+    Do.of('/CatUnicornJPG'),
+    Q.operator,
   );
   return pdfDoc.register(contentStream);
 };
@@ -208,23 +211,23 @@ const saveFile = () => {
   fs.writeFileSync(outFile, savedBytes);
 };
 
-let imageXObject = pdfDoc.addImage(pngImages.greyscaleBird);
+let imageXObject = pdfDoc.addPNG(pngImages.greyscaleBird);
 firstPage.addXObject(pdfDoc.lookup, 'GreyscaleBirdPNG', imageXObject);
 newPage2.addXObject(pdfDoc.lookup, 'GreyscaleBirdPNG', imageXObject);
 
-imageXObject = pdfDoc.addImage(pngImages.minions);
+imageXObject = pdfDoc.addPNG(pngImages.minions);
 firstPage.addXObject(pdfDoc.lookup, 'MinionsPNG', imageXObject);
 newPage2.addXObject(pdfDoc.lookup, 'MinionsPNG', imageXObject);
 
-imageXObject = pdfDoc.addImage(pngImages.minionsNoAlpha);
+imageXObject = pdfDoc.addPNG(pngImages.minionsNoAlpha);
 firstPage.addXObject(pdfDoc.lookup, 'MinionsNoAlphaPNG', imageXObject);
 newPage2.addXObject(pdfDoc.lookup, 'MinionsNoAlphaPNG', imageXObject);
 
-imageXObject = pdfDoc.addImage(pngImages.smallMario);
+imageXObject = pdfDoc.addPNG(pngImages.smallMario);
 firstPage.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
 newPage2.addXObject(pdfDoc.lookup, 'SmallMarioPNG', imageXObject);
 
-imageXObject = pdfDoc.addJPG(pngImages.catUnicorn);
+imageXObject = pdfDoc.addJPG(jpgImages.catUnicorn);
 firstPage.addXObject(pdfDoc.lookup, 'CatUnicornJPG', imageXObject);
 newPage2.addXObject(pdfDoc.lookup, 'CatUnicornJPG', imageXObject);
 

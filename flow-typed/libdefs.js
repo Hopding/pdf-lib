@@ -1,6 +1,15 @@
 declare module 'lodash' {
   declare var exports: any;
 }
+declare module 'pako' {
+  declare var exports: any;
+}
+declare module 'fontkit' {
+  declare var exports: any;
+}
+declare module 'buffer/' {
+  declare var exports: any;
+}
 
 /*
 This typing may not be totally complete or accurate, please see:
@@ -31,10 +40,14 @@ declare module 'png-js' {
     read(bytes: Array<number>): Array<number>;
     readUInt32(): number;
     readUInt16(): number;
-    decodePixels(data: Array<number>): Uint8Array;
+
+    decodePixels((Uint8Array) => any): void;
+    decodePixelsSync(): Uint8Array;
     decodePalette(): Uint8Array;
+
     copyToImageData(imageData: Uint8Array, pixels: Uint8Array): void;
     decode((Uint8Array) => any): void;
+    decodeSync(): Uint8Array;
   }
   declare export default typeof PNG
 }

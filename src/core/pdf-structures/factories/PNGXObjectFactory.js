@@ -1,6 +1,6 @@
-/* xxxxxxxxxxxxxxxxxxxx@flow */
-/* eslint-disable no-plusplus */
+/* @flow */
 import PNG from 'png-js';
+import pako from 'pako';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import {
@@ -9,18 +9,51 @@ import {
   PDFArray,
   PDFNumber,
   PDFRawStream,
+  PDFIndirectReference,
 } from 'core/pdf-objects';
+import { validate, isInstance } from 'utils/validate';
 
-class PNGImage {
+const { Buffer } = require('buffer/');
+
+/**
+A note of thanks to the developers of https://github.com/devongovett/pdfkit, as
+this class borrows heavily from:
+https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
+*/
+class PNGXObjectFactory {
+  image: PNG;
+  width: number;
+  height: number;
+  imgData: Uint8Array;
+  alphaChannel: Uint8Array;
+
+  xObjDict: PDFDictionary;
+  document: PDFDocument;
+
   constructor(data: Uint8Array) {
-    this.image = new PNG(data);
+    validate(
+      data,
+      isInstance(Uint8Array),
+      '"data" must be an instance of Uint8Array',
+    );
+
+    // This has to work in browser & Node JS environments. And, unfortunately,
+    // the "png.js" package makes use of Node "Buffer" objects, instead of
+    // standard JS typed arrays, so for now we'll just use the "buffer" package
+    // to convert the "data" to a "Buffer" object that "png.js" can work with.
+    const dataBuffer = Buffer.from(data);
+
+    this.image = new PNG(dataBuffer);
     this.width = this.image.width;
     this.height = this.image.height;
     this.imgData = this.image.imgData;
-    this.xObjDict = null;
   }
 
-  embed = (document: PDFDocument) => {
+  static for = (data: Uint8Array) => new PNGXObjectFactory(data);
+
+  embedImageIn = (
+    document: PDFDocument,
+  ): PDFIndirectReference<PDFRawStream> => {
     this.document = document;
     this.xObjDict = PDFDictionary.from({
       Type: PDFName.from('XObject'),
@@ -28,10 +61,10 @@ class PNGImage {
       BitsPerComponent: PDFNumber.fromNumber(this.image.bits),
       Width: PDFNumber.fromNumber(this.width),
       Height: PDFNumber.fromNumber(this.height),
+      Filter: PDFName.from('FlateDecode'),
     });
 
     if (!this.image.hasAlphaChannel) {
-      this.xObjDict.set('Filter', PDFName.from('FlateDecode'));
       const params = PDFDictionary.from({
         Predictor: PDFNumber.fromNumber(15),
         Colors: PDFNumber.fromNumber(this.image.colors),
@@ -63,38 +96,38 @@ class PNGImage {
       );
     }
 
-    // TODO: HANDLE THE 'Filter' ENTRY IN THE XOBJECT DICT
-
+    // TODO: Handle the following two transparency types. They don't seem to be
+    // fully handled in https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
     // if (this.image.transparency.grayscale)
     // if (this.image.transparency.rgb)
-    if (this.image.transparency.indexed) {
-      return this.loadIndexedAlphaChannel();
-    } else if (this.image.hasAlphaChannel) {
-      return this.splitAlphaChannel();
-    }
-    return this.finalize();
+
+    /* eslint-disable prettier/prettier */
+    return (
+        this.image.transparency.indexed ? this.loadIndexedAlphaChannel()
+      : this.image.hasAlphaChannel      ? this.splitAlphaChannel()
+      : this.finalize()
+    );
+    /* eslint-enable prettier/prettier */
   };
 
   finalize = () => {
     if (this.alphaChannel) {
+      const alphaStreamDict = PDFDictionary.from({
+        Type: PDFName.from('XObject'),
+        Subtype: PDFName.from('Image'),
+        Height: PDFNumber.fromNumber(this.height),
+        Width: PDFNumber.fromNumber(this.width),
+        BitsPerComponent: PDFNumber.fromNumber(8),
+        Filter: PDFName.from('FlateDecode'),
+        ColorSpace: PDFName.from('DeviceGray'),
+        Decode: PDFArray.fromArray([
+          PDFNumber.fromNumber(0),
+          PDFNumber.fromNumber(1),
+        ]),
+        Length: PDFNumber.fromNumber(this.alphaChannel.length),
+      });
       const smaskStream = this.document.register(
-        PDFRawStream.from(
-          PDFDictionary.from({
-            Type: PDFName.from('XObject'),
-            Subtype: PDFName.from('Image'),
-            Height: PDFNumber.fromNumber(this.height),
-            Width: PDFNumber.fromNumber(this.width),
-            BitsPerComponent: PDFNumber.fromNumber(8),
-            // Filter: PDFName.from('FlateDecode'),
-            ColorSpace: PDFName.from('DeviceGray'),
-            Decode: PDFArray.fromArray([
-              PDFNumber.fromNumber(0),
-              PDFNumber.fromNumber(1),
-            ]),
-            Length: PDFNumber.fromNumber(this.alphaChannel.length),
-          }),
-          this.alphaChannel,
-        ),
+        PDFRawStream.from(alphaStreamDict, pako.deflate(this.alphaChannel)),
       );
       this.xObjDict.set('SMask', smaskStream);
     }
@@ -121,6 +154,7 @@ class PNGImage {
       this.imgData[p++] = pixels[i++];
       this.alphaChannel[a++] = pixels[i++];
     }
+    this.imgData = pako.deflate(this.imgData);
     return this.finalize();
   };
 
@@ -135,4 +169,4 @@ class PNGImage {
   };
 }
 
-export default PNGImage;
+export default PNGXObjectFactory;

@@ -1,10 +1,9 @@
 /* @flow */
 import _ from 'lodash';
 import fontkit from 'fontkit';
-import PNG from 'png-js';
 
-import PNGImage from 'core/PNGImage';
-import JPEGImage from 'core/JPEGImage';
+import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
+import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
 import {
   PDFIndirectReference,
   PDFObject,
@@ -237,18 +236,14 @@ class PDFDocument {
     );
   };
 
-  // TODO: This should be moved to some XObject class, probably
-  // TODO: Test this in the browser - might not work the same as in Node...
-  addImage = (
-    imageData: Uint8Array,
-  ): Promise<PDFIndirectReference<PDFRawStream>> => {
-    const pngImg = new PNGImage(imageData);
-    return pngImg.embed(this);
+  addPNG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+    const pngFactory = PNGXObjectFactory.for(imageData);
+    return pngFactory.embedImageIn(this);
   };
 
-  addJPG = (imageData: Uint8Array) => {
-    const jpgImg = new JPEGImage(imageData.buffer);
-    return jpgImg.embed(this);
+  addJPG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+    const jpgFactory = JPEGXObjectFactory.for(imageData);
+    return jpgFactory.embedImageIn(this);
   };
 }
 

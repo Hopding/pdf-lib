@@ -39,6 +39,7 @@
     "prettier": "^1.7.0"
   },
   "dependencies": {
+    "buffer": "^5.0.8",
     "dedent": "^0.7.0",
     "file": "^0.2.2",
     "fontkit": "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8",

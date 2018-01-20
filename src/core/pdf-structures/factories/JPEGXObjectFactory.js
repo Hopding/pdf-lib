@@ -1,5 +1,4 @@
-/* xxxxx@flow */
-/* eslint-disable no-plusplus */
+/* @flow */
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import {
   PDFDictionary,
@@ -7,6 +6,7 @@ import {
   PDFArray,
   PDFNumber,
   PDFRawStream,
+  PDFIndirectReference,
 } from 'core/pdf-objects';
 import { error } from 'utils';
 
@@ -28,10 +28,17 @@ const MARKERS = [
   0xffcf,
 ];
 
-class JPEGImage {
-  constructor(buffer: ArrayBuffer) {
-    this.imgData = new Uint8Array(buffer);
-    const dataView = new DataView(buffer);
+/**
+A note of thanks to the developers of https://github.com/devongovett/pdfkit, as
+this class borrows heavily from:
+https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
+*/
+class JPEGXObjectFactory {
+  imgData: Uint8Array;
+
+  constructor(data: Uint8Array) {
+    this.imgData = data;
+    const dataView = new DataView(data.buffer);
     if (dataView.getUint16(0) !== 0xffd8) error('SOI not found in JPEG');
 
     let pos = 2;
@@ -62,7 +69,11 @@ class JPEGImage {
     this.colorSpace = channelMap[channels] || error('Unknown JPEG channel.');
   }
 
-  embed = (document: PDFDocument) => {
+  static for = (data: Uint8Array) => new JPEGXObjectFactory(data);
+
+  embedImageIn = (
+    document: PDFDocument,
+  ): PDFIndirectReference<PDFRawStream> => {
     const xObjDict = PDFDictionary.from({
       Type: PDFName.from('XObject'),
       Subtype: PDFName.from('Image'),
@@ -98,4 +109,4 @@ class JPEGImage {
   };
 }
 
-export default JPEGImage;
+export default JPEGXObjectFactory;

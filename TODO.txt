@@ -1,13 +1,17 @@
 Before 0.1.0 release:
-* Add TrueType font support.
 * Cleanup the current image and font embedding code (use "Buffer" object internally)
+* Add TrueType font support.
+* Support CREATION of new PDFs via PDFDocumentFactory
 * Add some unit and integration tests
 * Document the current (low-level) API in a simple README
 * Write some scripts/commands to handle the code building and release process.
+* Add LICENSE!!!
 
 # Features
+***** Export image dimensions from PNG and JPEG image factories *****
 ***** Add feature to bypass validations in prod builds! *****
 ***** Validate locations of text objects and operators! *****
+***** Figure out how to publish flow types in NPM package *****
 ***** Make note of the dependency on "fontkit" and "unicode-properties" forks and suggest desire for better solution ****
 ***** Encode characters passed to "Tj" as code point hex codes, not string literals *****
 ***** Add credits for PNGImage and JPEGImage and font embedding *****
