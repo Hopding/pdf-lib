@@ -85,9 +85,7 @@ var PNGImage = function PNGImage(data) {
       }), _this.alphaChannel));
       _this.xObjDict.set('SMask', smaskStream);
     }
-    // if (this.imgData === this.image.imgData) {
-    //   this.xObjDict.set('Filter', PDFName.from('FlateDecode'));
-    // }
+
     _this.xObjDict.set('Length', _pdfObjects.PDFNumber.fromNumber(_this.imgData.length));
     var xObj = _this.document.register(_pdfObjects.PDFRawStream.from(_this.xObjDict, _this.imgData));
     resolve(xObj);
@@ -116,15 +114,9 @@ var PNGImage = function PNGImage(data) {
     var transparency = _this.image.transparency.indexed;
     _this.image.decodePixels(function (pixels) {
       _this.alphaChannel = new Uint8Array(_this.width * _this.height);
-      // pixels.forEach((pixel, idx) => {
-      // this.alphaChannel[idx] = transparency[pixel];
-      // });
-      // this.finalize();
-
-      var i = 0;
-      for (var j = 0; j < pixels.length; j++) {
-        _this.alphaChannel[i++] = transparency[pixels[j]];
-      }
+      pixels.forEach(function (pixel, idx) {
+        _this.alphaChannel[idx] = transparency[pixel];
+      });
       _this.finalize(resolve);
     });
   };
