@@ -100,9 +100,7 @@ class PNGImage {
       );
       this.xObjDict.set('SMask', smaskStream);
     }
-    // if (this.imgData === this.image.imgData) {
-    //   this.xObjDict.set('Filter', PDFName.from('FlateDecode'));
-    // }
+
     this.xObjDict.set('Length', PDFNumber.fromNumber(this.imgData.length));
     const xObj = this.document.register(
       PDFRawStream.from(this.xObjDict, this.imgData),
@@ -133,15 +131,9 @@ class PNGImage {
     const transparency = this.image.transparency.indexed;
     this.image.decodePixels(pixels => {
       this.alphaChannel = new Uint8Array(this.width * this.height);
-      // pixels.forEach((pixel, idx) => {
-      // this.alphaChannel[idx] = transparency[pixel];
-      // });
-      // this.finalize();
-
-      let i = 0;
-      for (let j = 0; j < pixels.length; j++) {
-        this.alphaChannel[i++] = transparency[pixels[j]];
-      }
+      pixels.forEach((pixel, idx) => {
+        this.alphaChannel[idx] = transparency[pixel];
+      });
       this.finalize(resolve);
     });
   };
