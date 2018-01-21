@@ -1,6 +1,4 @@
 Before 0.1.0 release:
-* Cleanup the current image and font embedding code (use "Buffer" object internally)
-* Add TrueType font support.
 * Support CREATION of new PDFs via PDFDocumentFactory
 * Add some unit and integration tests
 * Document the current (low-level) API in a simple README
