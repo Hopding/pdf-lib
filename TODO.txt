@@ -6,6 +6,7 @@ Before 0.1.0 release:
 * Add LICENSE!!!
 
 # Features
+***** Create static "cm" members for operations like scaling, and translating *****
 ***** Export image dimensions from PNG and JPEG image factories *****
 ***** Add feature to bypass validations in prod builds! *****
 ***** Validate locations of text objects and operators! *****

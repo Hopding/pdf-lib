@@ -1,14 +1,35 @@
 /* @flow */
-import PDFDocument from './PDFDocument';
+import PDFDocument from 'core/pdf-document/PDFDocument';
 
-import { PDFObject, PDFName, PDFStream } from '../pdf-objects';
-import { PDFIndirectReference, PDFObjectStream } from '../pdf-structures';
-import PDFParser from '../pdf-parser/PDFParser';
-import { findInMap } from 'utils';
+import {
+  PDFObject,
+  PDFIndirectReference,
+  PDFName,
+  PDFStream,
+  PDFArray,
+} from 'core/pdf-objects';
+import { PDFCatalog, PDFPageTree, PDFObjectStream } from 'core/pdf-structures';
+import PDFParser from 'core/pdf-parser/PDFParser';
 
 import type { ParsedPDF } from '../pdf-parser/PDFParser';
 
 class PDFDocumentFactory {
+  static create = (): PDFDocument => {
+    const index: Map<PDFIndirectReference, PDFObject> = new Map();
+    const refs = {
+      catalog: PDFIndirectReference.forNumbers(1, 0),
+      pageTree: PDFIndirectReference.forNumbers(2, 0),
+    };
+
+    const catalog = PDFCatalog.create(refs.pageTree);
+    const pageTree = PDFPageTree.createRootNode(PDFArray.fromArray([]));
+
+    index.set(refs.catalog, catalog);
+    index.set(refs.pageTree, pageTree);
+
+    return PDFDocument.fromIndex(index);
+  };
+
   static load = (data: Uint8Array): PDFDocument => {
     const pdfParser = new PDFParser();
 

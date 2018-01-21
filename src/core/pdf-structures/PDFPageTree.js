@@ -2,17 +2,35 @@
 /* eslint-disable prefer-destructuring, no-param-reassign */
 import _ from 'lodash';
 
-import { PDFObject, PDFDictionary, PDFIndirectReference } from '../pdf-objects';
-import { PDFPage } from '.';
+import {
+  PDFName,
+  PDFNumber,
+  PDFObject,
+  PDFArray,
+  PDFDictionary,
+  PDFIndirectReference,
+} from 'core/pdf-objects';
+import { PDFPage } from 'core/pdf-structures';
 import { validate, isInstance } from 'utils/validate';
 
 export type Kid = PDFPageTree | PDFPage;
 
+const VALID_KEYS = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
+
 class PDFPageTree extends PDFDictionary {
-  static validKeys = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
+  static createRootNode = (
+    kids: PDFArray<PDFIndirectReference<Kid>>,
+  ): PDFPageTree => {
+    validate(kids, isInstance(PDFArray), '"kids" must be a PDFArray');
+    return PDFPageTree.from({
+      Type: PDFName.from('Pages'),
+      Kids: kids,
+      Count: PDFNumber.fromNumber(kids.array.length),
+    });
+  };
 
   static from = (object: PDFDictionary): PDFPageTree =>
-    new PDFPageTree(object, PDFPageTree.validKeys);
+    new PDFPageTree(object, VALID_KEYS);
 
   addPage = (
     lookup: (PDFIndirectReference<Kid>) => PDFPageTree,
@@ -66,6 +84,8 @@ class PDFPageTree extends PDFDictionary {
     lookup: (PDFIndirectReference<Kid>) => PDFObject,
     visit: (Kid, PDFIndirectReference<Kid>) => any,
   ) => {
+    if (this.get('Kids').array.length === 0) return this;
+
     this.get('Kids').forEach(kidRef => {
       const kid: Kid = lookup(kidRef);
       visit(kid, kidRef);
@@ -78,6 +98,8 @@ class PDFPageTree extends PDFDictionary {
     lookup: (PDFIndirectReference<Kid>) => PDFObject,
     visit: (Kid, PDFIndirectReference<Kid>) => any,
   ) => {
+    if (this.get('Kids').array.length === 0) return this;
+
     const lastKidRef = _.last(this.get('Kids').array);
     const lastKid: Kid = lookup(lastKidRef);
     visit(lastKid, lastKidRef);

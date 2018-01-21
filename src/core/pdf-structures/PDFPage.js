@@ -123,6 +123,7 @@ class PDFPage extends PDFDictionary {
     lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
     ...contentStreams: PDFIndirectReference<PDFContentStream>[]
   ) => {
+    validate(lookup, _.isFunction, '"lookup" must be a function');
     validateArr(
       contentStreams,
       isInstance(PDFIndirectReference),
