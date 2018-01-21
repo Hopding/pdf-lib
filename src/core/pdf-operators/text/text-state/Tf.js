@@ -19,8 +19,6 @@ class Tf extends PDFOperator {
 
   constructor(font: string, size: number) {
     super();
-    console.log(`FONT: ${font}`);
-    console.log(`SIZE: ${size}`);
     validate(font, _.isString, 'Tf operator arg "font" must be a string.');
     validate(size, isNumber, 'Tf operator arg "size" must be a number.');
     this.font = font;

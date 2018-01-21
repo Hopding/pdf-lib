@@ -1,13 +1,13 @@
 /* @flow */
 /* eslint-disable no-constant-condition */
-import { PDFIndirectReference, PDFObject } from '../pdf-objects';
+import { error } from 'utils';
+
 import parseHeader from './parseHeader';
 import parseLinearization from './parseLinearization';
 import parseIndirectObj from './parseIndirectObj';
 import parseXRefTable from './parseXRefTable';
 import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 // import removeComments from './removeComments';
-import { error } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
 
@@ -73,8 +73,6 @@ const parseDocument = (
   input: Uint8Array,
   parseHandlers: ParseHandlers,
 ): void => {
-  console.log('parsing document');
-
   // TODO: Figure out way to clean comments without messing stream content up
   // const cleaned = removeComments(input);
 
@@ -94,8 +92,6 @@ const parseDocument = (
     remainder = parseBodySection(remainder, parseHandlers);
     remainder = parseFooterSection(remainder, parseHandlers);
   }
-
-  console.log('done');
 };
 
 export default parseDocument;
