@@ -8,7 +8,9 @@ var _PDFDictionary2 = require('../pdf-objects/PDFDictionary');
 
 var _PDFDictionary3 = _interopRequireDefault(_PDFDictionary2);
 
-var _ = require('.');
+var _pdfObjects = require('../pdf-objects');
+
+var _validate = require('../../utils/validate');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17,6 +19,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var VALID_KEYS = Object.freeze(['Type', 'Version', 'Extensions', 'Pages', 'PageLabels', 'Names', 'Dests', 'ViewerPreferences', 'PageLayout', 'PageMode', 'Outlines', 'Threads', 'OpenAction', 'AA', 'URI', 'AcroForm', 'Metadata', 'StructTreeRoot', 'MarkInfo', 'Lang', 'SpiderInfo', 'OutputIntents', 'PieceInfo', 'OCProperties', 'Perms', 'Legal', 'Requirements', 'Collection', 'NeedsRendering']);
 
 var PDFCatalog = function (_PDFDictionary) {
   _inherits(PDFCatalog, _PDFDictionary);
@@ -40,10 +44,16 @@ var PDFCatalog = function (_PDFDictionary) {
   return PDFCatalog;
 }(_PDFDictionary3.default);
 
-PDFCatalog.validKeys = Object.freeze(['Type', 'Version', 'Extensions', 'Pages', 'PageLabels', 'Names', 'Dests', 'ViewerPreferences', 'PageLayout', 'PageMode', 'Outlines', 'Threads', 'OpenAction', 'AA', 'URI', 'AcroForm', 'Metadata', 'StructTreeRoot', 'MarkInfo', 'Lang', 'SpiderInfo', 'OutputIntents', 'PieceInfo', 'OCProperties', 'Perms', 'Legal', 'Requirements', 'Collection', 'NeedsRendering']);
+PDFCatalog.create = function (pageTree) {
+  (0, _validate.validate)(pageTree, (0, _validate.isInstance)(_pdfObjects.PDFIndirectReference), '"pageTree" must be an indirect reference');
+  return new PDFCatalog({
+    Type: _pdfObjects.PDFName.from('Catalog'),
+    Pages: pageTree
+  });
+};
 
 PDFCatalog.from = function (object) {
-  return new PDFCatalog(object, PDFCatalog.validKeys);
+  return new PDFCatalog(object, VALID_KEYS);
 };
 
 exports.default = PDFCatalog;

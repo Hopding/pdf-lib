@@ -16,14 +16,28 @@ var _PDFParser = require('../pdf-parser/PDFParser');
 
 var _PDFParser2 = _interopRequireDefault(_PDFParser);
 
-var _utils = require('../../utils');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var PDFDocumentFactory = function PDFDocumentFactory() {
   _classCallCheck(this, PDFDocumentFactory);
+};
+
+PDFDocumentFactory.create = function () {
+  var index = new Map();
+  var refs = {
+    catalog: _pdfObjects.PDFIndirectReference.forNumbers(1, 0),
+    pageTree: _pdfObjects.PDFIndirectReference.forNumbers(2, 0)
+  };
+
+  var catalog = _pdfStructures.PDFCatalog.create(refs.pageTree);
+  var pageTree = _pdfStructures.PDFPageTree.createRootNode(_pdfObjects.PDFArray.fromArray([]));
+
+  index.set(refs.catalog, catalog);
+  index.set(refs.pageTree, pageTree);
+
+  return _PDFDocument2.default.fromIndex(index);
 };
 
 PDFDocumentFactory.load = function (data) {

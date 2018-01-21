@@ -43,8 +43,6 @@ var Tf = function (_PDFOperator) {
 
     _initialiseProps.call(_this);
 
-    console.log('FONT: ' + font);
-    console.log('SIZE: ' + size);
     (0, _validate.validate)(font, _lodash2.default.isString, 'Tf operator arg "font" must be a string.');
     (0, _validate.validate)(size, _validate.isNumber, 'Tf operator arg "size" must be a number.');
     _this.font = font;

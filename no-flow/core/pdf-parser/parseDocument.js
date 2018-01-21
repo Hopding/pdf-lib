@@ -7,10 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 /* eslint-disable no-constant-condition */
 
-// import removeComments from './removeComments';
 
-
-var _pdfObjects = require('../pdf-objects');
+var _utils = require('../../utils');
 
 var _parseHeader = require('./parseHeader');
 
@@ -30,8 +28,6 @@ var _parseXRefTable2 = _interopRequireDefault(_parseXRefTable);
 
 var _parseTrailer = require('./parseTrailer');
 
-var _utils = require('../../utils');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -42,6 +38,9 @@ handler is called with each indirect object that is parsed.
 Returns a subarray of the input bytes with the bytes making up the parsed
 indirect objects removed.
 */
+
+// import removeComments from './removeComments';
+
 var parseBodySection = function parseBodySection(input, parseHandlers) {
   var remainder = input;
   while (true) {
@@ -95,8 +94,6 @@ used to locate and parse objects as needed. Rather, the whole document is
 parsed and stored in memory at once.
 */
 var parseDocument = function parseDocument(input, parseHandlers) {
-  console.log('parsing document');
-
   // TODO: Figure out way to clean comments without messing stream content up
   // const cleaned = removeComments(input);
 
@@ -124,8 +121,6 @@ var parseDocument = function parseDocument(input, parseHandlers) {
     remainder = parseBodySection(remainder, parseHandlers);
     remainder = parseFooterSection(remainder, parseHandlers);
   }
-
-  console.log('done');
 };
 
 exports.default = parseDocument;

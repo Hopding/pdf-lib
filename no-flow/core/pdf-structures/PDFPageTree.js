@@ -10,7 +10,7 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 var _pdfObjects = require('../pdf-objects');
 
-var _2 = require('.');
+var _index = require('./index');
 
 var _validate = require('../../utils/validate');
 
@@ -23,6 +23,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 /* eslint-disable prefer-destructuring, no-param-reassign */
 
+
+var VALID_KEYS = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
 
 var PDFPageTree = function (_PDFDictionary) {
   _inherits(PDFPageTree, _PDFDictionary);
@@ -61,6 +63,8 @@ var PDFPageTree = function (_PDFDictionary) {
       });
       return _this;
     }, _this.traverse = function (lookup, visit) {
+      if (_this.get('Kids').array.length === 0) return _this;
+
       _this.get('Kids').forEach(function (kidRef) {
         var kid = lookup(kidRef);
         visit(kid, kidRef);
@@ -68,6 +72,8 @@ var PDFPageTree = function (_PDFDictionary) {
       });
       return _this;
     }, _this.traverseRight = function (lookup, visit) {
+      if (_this.get('Kids').array.length === 0) return _this;
+
       var lastKidRef = _lodash2.default.last(_this.get('Kids').array);
       var lastKid = lookup(lastKidRef);
       visit(lastKid, lastKidRef);
@@ -91,10 +97,17 @@ var PDFPageTree = function (_PDFDictionary) {
   return PDFPageTree;
 }(_pdfObjects.PDFDictionary);
 
-PDFPageTree.validKeys = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
+PDFPageTree.createRootNode = function (kids) {
+  (0, _validate.validate)(kids, (0, _validate.isInstance)(_pdfObjects.PDFArray), '"kids" must be a PDFArray');
+  return PDFPageTree.from({
+    Type: _pdfObjects.PDFName.from('Pages'),
+    Kids: kids,
+    Count: _pdfObjects.PDFNumber.fromNumber(kids.array.length)
+  });
+};
 
 PDFPageTree.from = function (object) {
-  return new PDFPageTree(object, PDFPageTree.validKeys);
+  return new PDFPageTree(object, VALID_KEYS);
 };
 
 exports.default = PDFPageTree;

@@ -65,6 +65,7 @@ var PDFPage = function (_PDFDictionary) {
         contentStreams[_key2 - 1] = arguments[_key2];
       }
 
+      (0, _validate.validate)(lookup, _lodash2.default.isFunction, '"lookup" must be a function');
       (0, _validate.validateArr)(contentStreams, (0, _validate.isInstance)(_pdfObjects.PDFIndirectReference), '"contentStream" must be of type PDFIndirectReference<PDFContentStream>');
 
       _this.normalizeContents(lookup);
