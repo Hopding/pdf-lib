@@ -8,53 +8,27 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _fontkit = require('fontkit');
-
-var _fontkit2 = _interopRequireDefault(_fontkit);
-
-var _pngJs = require('png-js');
-
-var _pngJs2 = _interopRequireDefault(_pngJs);
-
-var _PNGImage = require('../PNGImage');
-
-var _PNGImage2 = _interopRequireDefault(_PNGImage);
-
-var _JPEGImage = require('../JPEGImage');
-
-var _JPEGImage2 = _interopRequireDefault(_JPEGImage);
-
 var _pdfObjects = require('../pdf-objects');
 
 var _pdfStructures = require('../pdf-structures');
 
-var _utils = require('../../utils');
+var _PNGXObjectFactory = require('../pdf-structures/factories/PNGXObjectFactory');
+
+var _PNGXObjectFactory2 = _interopRequireDefault(_PNGXObjectFactory);
+
+var _JPEGXObjectFactory = require('../pdf-structures/factories/JPEGXObjectFactory');
+
+var _JPEGXObjectFactory2 = _interopRequireDefault(_JPEGXObjectFactory);
+
+var _PDFFontFactory = require('../pdf-structures/factories/PDFFontFactory');
+
+var _PDFFontFactory2 = _interopRequireDefault(_PDFFontFactory);
 
 var _validate = require('../../utils/validate');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var unsigned32Bit = '00000000000000000000000000000000';
-
-/* eslint-disable prettier/prettier */
-// Doing this by bit-twiddling a string and then parsing gets around JavaScript
-// converting the results of bit-shifting ops back into 64-bit integers.
-var fontFlags = function fontFlags(options) {
-  var flags = unsigned32Bit;
-  if (options.FixedPitch) flags = (0, _utils.setCharAt)(flags, 32 - 1, '1');
-  if (options.Serif) flags = (0, _utils.setCharAt)(flags, 32 - 2, '1');
-  if (options.Symbolic) flags = (0, _utils.setCharAt)(flags, 32 - 3, '1');
-  if (options.Script) flags = (0, _utils.setCharAt)(flags, 32 - 4, '1');
-  if (options.Nonsymbolic) flags = (0, _utils.setCharAt)(flags, 32 - 6, '1');
-  if (options.Italic) flags = (0, _utils.setCharAt)(flags, 32 - 7, '1');
-  if (options.AllCap) flags = (0, _utils.setCharAt)(flags, 32 - 17, '1');
-  if (options.SmallCap) flags = (0, _utils.setCharAt)(flags, 32 - 18, '1');
-  if (options.ForceBold) flags = (0, _utils.setCharAt)(flags, 32 - 19, '1');
-  return parseInt(flags, 2);
-};
-/* eslint-enable prettier/prettier */
 
 var PDFDocument = function PDFDocument(index) {
   var _this = this;
@@ -76,15 +50,6 @@ var PDFDocument = function PDFDocument(index) {
 
 
 // TODO: Make sure "idx" is within required range
-
-
-// TODO: validate args...
-// TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
-// to broaden support to other fonts.
-
-
-// TODO: This should be moved to some XObject class, probably
-// TODO: Test this in the browser - might not work the same as in Node...
 ;
 
 PDFDocument.fromIndex = function (index) {
@@ -189,56 +154,18 @@ var _initialiseProps = function _initialiseProps() {
   };
 
   this.embedFont = function (name, fontData, flagOptions) {
-    // TODO: Use diff header and stuff if is TrueType, not OpenType
-    var fontStream = _this2.register(_pdfObjects.PDFRawStream.from(_pdfObjects.PDFDictionary.from({
-      Subtype: _pdfObjects.PDFName.from('OpenType'),
-      Length: _pdfObjects.PDFNumber.fromNumber(fontData.length)
-      // TODO: Length1 might be required for TrueType fonts?
-    }), fontData));
-
-    var font = _fontkit2.default.create(fontData);
-    var scale = 1000 / font.unitsPerEm;
-
-    var fontDescriptor = _this2.register(_pdfObjects.PDFDictionary.from({
-      Type: _pdfObjects.PDFName.from('FontDescriptor'),
-      FontName: _pdfObjects.PDFName.from(name),
-      Flags: _pdfObjects.PDFNumber.fromNumber(fontFlags(flagOptions)),
-      FontBBox: _pdfObjects.PDFArray.fromArray([_pdfObjects.PDFNumber.fromNumber(font.bbox.minX * scale), _pdfObjects.PDFNumber.fromNumber(font.bbox.minY * scale), _pdfObjects.PDFNumber.fromNumber(font.bbox.maxX * scale), _pdfObjects.PDFNumber.fromNumber(font.bbox.maxY * scale)]),
-      ItalicAngle: _pdfObjects.PDFNumber.fromNumber(font.italicAngle),
-      Ascent: _pdfObjects.PDFNumber.fromNumber(font.ascent * scale),
-      Descent: _pdfObjects.PDFNumber.fromNumber(font.descent * scale),
-      CapHeight: _pdfObjects.PDFNumber.fromNumber((font.capHeight || font.ascent) * scale),
-      XHeight: _pdfObjects.PDFNumber.fromNumber((font.xHeight || 0) * scale),
-      // Not sure how to compute/find this, nor is anybody else really:
-      // https://stackoverflow.com/questions/35485179/stemv-value-of-the-truetype-font
-      StemV: _pdfObjects.PDFNumber.fromNumber(0),
-      FontFile3: fontStream // Use different key for TrueType
-    }));
-
-    var Widths = _pdfObjects.PDFArray.fromArray(_lodash2.default.range(0, 256).map(function (code) {
-      return font.characterSet.includes(code) ? font.glyphForCodePoint(code).advanceWidth : 0;
-    }).map(_pdfObjects.PDFNumber.fromNumber));
-
-    return _this2.register(_pdfObjects.PDFDictionary.from({
-      Type: _pdfObjects.PDFName.from('Font'),
-      // Handle the case of this actually being TrueType
-      Subtype: _pdfObjects.PDFName.from('OpenType'),
-      BaseFont: _pdfObjects.PDFName.from(name),
-      FirstChar: _pdfObjects.PDFNumber.fromNumber(0),
-      LastChar: _pdfObjects.PDFNumber.fromNumber(255),
-      Widths: Widths,
-      FontDescriptor: fontDescriptor
-    }));
+    var fontFactory = _PDFFontFactory2.default.for(name, fontData, flagOptions);
+    return fontFactory.embedFontIn(_this2);
   };
 
-  this.addImage = function (imageData) {
-    var pngImg = new _PNGImage2.default(imageData);
-    return pngImg.embed(_this2);
+  this.addPNG = function (imageData) {
+    var pngFactory = _PNGXObjectFactory2.default.for(imageData);
+    return pngFactory.embedImageIn(_this2);
   };
 
   this.addJPG = function (imageData) {
-    var jpgImg = new _JPEGImage2.default(imageData.buffer);
-    return jpgImg.embed(_this2);
+    var jpgFactory = _JPEGXObjectFactory2.default.for(imageData);
+    return jpgFactory.embedImageIn(_this2);
   };
 };
 
