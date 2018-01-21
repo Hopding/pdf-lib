@@ -106,11 +106,15 @@ class PDFPage extends PDFDictionary {
     }
   };
 
-  normalizeResources = () => {
-    if (!this.get('Resources')) {
-      this.set('Resources', PDFDictionary.from());
-      this.get('Resources').set('Font', PDFDictionary.from());
-      this.get('Resources').set('XObject', PDFDictionary.from());
+  normalizeResources = (lookup, { Font, XObject }) => {
+    if (!this.get('Resources')) this.set('Resources', PDFDictionary.from());
+
+    const Resources = lookup(this.get('Resources'));
+    if (Font && !Resources.get('Font')) {
+      Resources.set('Font', PDFDictionary.from());
+    }
+    if (XObject && !Resources.get('XObject')) {
+      Resources.set('XObject', PDFDictionary.from());
     }
   };
 
@@ -148,7 +152,7 @@ class PDFPage extends PDFDictionary {
       '"fontDict" must be an instance of PDFIndirectReference',
     );
 
-    this.normalizeResources();
+    this.normalizeResources(lookup, { Font: true });
     const Resources: PDFDictionary = lookup(this.get('Resources'));
     const Font: PDFDictionary = lookup(Resources.get('Font'));
     Font.set(key, fontDict);
@@ -168,7 +172,7 @@ class PDFPage extends PDFDictionary {
       '"xObject" must be an instance of PDFIndirectReference',
     );
 
-    this.normalizeResources();
+    this.normalizeResources(lookup, { XObject: true });
     const Resources: PDFDictionary = lookup(this.get('Resources'));
     const XObject: PDFDictionary = lookup(Resources.get('XObject'));
     XObject.set(key, xObject);

@@ -33,14 +33,13 @@ const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 
-const ubuntuFontFile =
-  '/Users/user/Desktop/ubuntu-font-family-0.83/Ubuntu-R.ttf';
-// const ubuntuFontFile = '/Users/user/Desktop/cursivey-font.otf';
-// const ubuntuFontFile = '/Users/user/Desktop/elegant-font.otf';
-// const ubuntuFontFile = '/Users/user/Desktop/candles_font_83/Candles_.TTF';
-// const ubuntuFontFile = '/Users/user/Desktop/candles_font_83/Candles Chrome.ttf';
+const ubuntuFontFile = '/Users/user/Desktop/fonts/ubuntu/Ubuntu-R.ttf';
+// const ubuntuFontFile = '/Users/user/Desktop/fonts/cursivey-font.otf';
+// const ubuntuFontFile = '/Users/user/Desktop/fonts/elegant-font.otf';
+// const ubuntuFontFile = '/Users/user/Desktop/fonts/candles/Candles_.TTF';
+// const ubuntuFontFile = '/Users/user/Desktop/fonts/candles/Candles Chrome.ttf';
 // const ubuntuFontFile =
-// '/Users/user/Desktop/fantasque-sans-mono/FantasqueSansMono-Regular.ttf';
+// '/Users/user/Desktop/fonts/fantasque/FantasqueSansMono-Regular.ttf';
 const ubuntuFontBytes = fs.readFileSync(ubuntuFontFile);
 
 const pngImages = {

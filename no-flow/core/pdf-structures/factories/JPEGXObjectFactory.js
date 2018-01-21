@@ -12,6 +12,8 @@ var _pdfObjects = require('../../pdf-objects');
 
 var _utils = require('../../../utils');
 
+var _validate = require('../../../utils/validate');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28,6 +30,8 @@ var JPEGXObjectFactory = function JPEGXObjectFactory(data) {
   _classCallCheck(this, JPEGXObjectFactory);
 
   _initialiseProps.call(this);
+
+  (0, _validate.validate)(data, (0, _validate.isInstance)(Uint8Array), '"data" must be a Uint8Array');
 
   this.imgData = data;
   var dataView = new DataView(data.buffer);

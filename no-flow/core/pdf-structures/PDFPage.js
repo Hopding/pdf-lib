@@ -47,11 +47,18 @@ var PDFPage = function (_PDFDictionary) {
           _this.set('Contents', _pdfObjects.PDFArray.fromArray([_this.get('Contents')]));
         }
       }
-    }, _this.normalizeResources = function () {
-      if (!_this.get('Resources')) {
-        _this.set('Resources', _pdfObjects.PDFDictionary.from());
-        _this.get('Resources').set('Font', _pdfObjects.PDFDictionary.from());
-        _this.get('Resources').set('XObject', _pdfObjects.PDFDictionary.from());
+    }, _this.normalizeResources = function (lookup, _ref2) {
+      var Font = _ref2.Font,
+          XObject = _ref2.XObject;
+
+      if (!_this.get('Resources')) _this.set('Resources', _pdfObjects.PDFDictionary.from());
+
+      var Resources = lookup(_this.get('Resources'));
+      if (Font && !Resources.get('Font')) {
+        Resources.set('Font', _pdfObjects.PDFDictionary.from());
+      }
+      if (XObject && !Resources.get('XObject')) {
+        Resources.set('XObject', _pdfObjects.PDFDictionary.from());
       }
     }, _this.addContentStreams = function (lookup) {
       for (var _len2 = arguments.length, contentStreams = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
@@ -74,7 +81,7 @@ var PDFPage = function (_PDFDictionary) {
       (0, _validate.validate)(key, _lodash2.default.isString, '"key" must be a string');
       (0, _validate.validate)(fontDict, (0, _validate.isInstance)(_pdfObjects.PDFIndirectReference), '"fontDict" must be an instance of PDFIndirectReference');
 
-      _this.normalizeResources();
+      _this.normalizeResources(lookup, { Font: true });
       var Resources = lookup(_this.get('Resources'));
       var Font = lookup(Resources.get('Font'));
       Font.set(key, fontDict);
@@ -84,7 +91,7 @@ var PDFPage = function (_PDFDictionary) {
       (0, _validate.validate)(key, _lodash2.default.isString, '"key" must be a string');
       (0, _validate.validate)(xObject, (0, _validate.isInstance)(_pdfObjects.PDFIndirectReference), '"xObject" must be an instance of PDFIndirectReference');
 
-      _this.normalizeResources();
+      _this.normalizeResources(lookup, { XObject: true });
       var Resources = lookup(_this.get('Resources'));
       var XObject = lookup(Resources.get('XObject'));
       XObject.set(key, xObject);

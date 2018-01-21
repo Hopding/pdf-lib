@@ -9,6 +9,7 @@ import {
   PDFIndirectReference,
 } from 'core/pdf-objects';
 import { error } from 'utils';
+import { validate, isInstance } from 'utils/validate';
 
 const MARKERS = [
   0xffc0,
@@ -41,6 +42,8 @@ class JPEGXObjectFactory {
   colorSpace: 'DeviceGray' | 'DeviceRGB' | 'DeviceCYMK';
 
   constructor(data: Uint8Array) {
+    validate(data, isInstance(Uint8Array), '"data" must be a Uint8Array');
+
     this.imgData = data;
     const dataView = new DataView(data.buffer);
     if (dataView.getUint16(0) !== 0xffd8) error('SOI not found in JPEG');
