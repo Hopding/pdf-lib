@@ -39,7 +39,7 @@ class PNGXObjectFactory {
 
     // This has to work in browser & Node JS environments. And, unfortunately,
     // the "png.js" package makes use of Node "Buffer" objects, instead of
-    // standard JS typed arrays, so for now we'll just use the "buffer" package
+    // standard JS typed arrays. So, for now we'll just use the "buffer" package
     // to convert the "data" to a "Buffer" object that "png.js" can work with.
     const dataBuffer = Buffer.from(data);
 

@@ -35,6 +35,10 @@ https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01f
 */
 class JPEGXObjectFactory {
   imgData: Uint8Array;
+  bits: number;
+  width: number;
+  height: number;
+  colorSpace: 'DeviceGray' | 'DeviceRGB' | 'DeviceCYMK';
 
   constructor(data: Uint8Array) {
     this.imgData = data;

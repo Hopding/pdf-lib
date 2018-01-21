@@ -36,6 +36,11 @@ const bytes = fs.readFileSync(inFile);
 const ubuntuFontFile =
   '/Users/user/Desktop/ubuntu-font-family-0.83/Ubuntu-R.ttf';
 // const ubuntuFontFile = '/Users/user/Desktop/cursivey-font.otf';
+// const ubuntuFontFile = '/Users/user/Desktop/elegant-font.otf';
+// const ubuntuFontFile = '/Users/user/Desktop/candles_font_83/Candles_.TTF';
+// const ubuntuFontFile = '/Users/user/Desktop/candles_font_83/Candles Chrome.ttf';
+// const ubuntuFontFile =
+// '/Users/user/Desktop/fantasque-sans-mono/FantasqueSansMono-Regular.ttf';
 const ubuntuFontBytes = fs.readFileSync(ubuntuFontFile);
 
 const pngImages = {

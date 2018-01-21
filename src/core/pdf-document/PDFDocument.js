@@ -1,52 +1,24 @@
 /* @flow */
 import _ from 'lodash';
-import fontkit from 'fontkit';
 
-import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
-import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
 import {
   PDFIndirectReference,
   PDFObject,
   PDFDictionary,
-  PDFName,
-  PDFNumber,
-  PDFArray,
   PDFRawStream,
-} from '../pdf-objects';
-import { PDFCatalog, PDFHeader, PDFPage, PDFPageTree } from '../pdf-structures';
-import { setCharAt } from 'utils';
-import { error, validate, isInstance, isIdentity } from 'utils/validate';
+} from 'core/pdf-objects';
+import {
+  PDFCatalog,
+  PDFHeader,
+  PDFPage,
+  PDFPageTree,
+} from 'core/pdf-structures';
+import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
+import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
+import PDFFontFactory from 'core/pdf-structures/factories/PDFFontFactory';
+import { validate, isInstance } from 'utils/validate';
 
-const unsigned32Bit = '00000000000000000000000000000000';
-
-type FontFlagOptions = {
-  FixedPitch?: boolean,
-  Serif?: boolean,
-  Symbolic?: boolean,
-  Script?: boolean,
-  Nonsymbolic?: boolean,
-  Italic?: boolean,
-  AllCap?: boolean,
-  SmallCap?: boolean,
-  ForceBold?: boolean,
-};
-/* eslint-disable prettier/prettier */
-// Doing this by bit-twiddling a string and then parsing gets around JavaScript
-// converting the results of bit-shifting ops back into 64-bit integers.
-const fontFlags = (options: FontFlagOptions) => {
-  let flags = unsigned32Bit;
-  if (options.FixedPitch)  flags = setCharAt(flags, 32 - 1, '1');
-  if (options.Serif)       flags = setCharAt(flags, 32 - 2, '1');
-  if (options.Symbolic)    flags = setCharAt(flags, 32 - 3, '1');
-  if (options.Script)      flags = setCharAt(flags, 32 - 4, '1');
-  if (options.Nonsymbolic) flags = setCharAt(flags, 32 - 6, '1');
-  if (options.Italic)      flags = setCharAt(flags, 32 - 7, '1');
-  if (options.AllCap)      flags = setCharAt(flags, 32 - 17, '1');
-  if (options.SmallCap)    flags = setCharAt(flags, 32 - 18, '1');
-  if (options.ForceBold)   flags = setCharAt(flags, 32 - 19, '1');
-  return parseInt(flags, 2);
-};
-/* eslint-enable prettier/prettier */
+import type { FontFlagOptions } from 'core/pdf-structures/factories/PDFFontFactory';
 
 class PDFDocument {
   header: PDFHeader = PDFHeader.forVersion(1, 7);
@@ -163,77 +135,13 @@ class PDFDocument {
     return this;
   };
 
-  // TODO: validate args...
-  // TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
-  // to broaden support to other fonts.
   embedFont = (
     name: string,
     fontData: Uint8Array,
     flagOptions: FontFlagOptions,
   ): PDFIndirectReference<PDFDictionary> => {
-    // TODO: Use diff header and stuff if is TrueType, not OpenType
-    const fontStream = this.register(
-      PDFRawStream.from(
-        PDFDictionary.from({
-          Subtype: PDFName.from('OpenType'),
-          Length: PDFNumber.fromNumber(fontData.length),
-          // TODO: Length1 might be required for TrueType fonts?
-        }),
-        fontData,
-      ),
-    );
-
-    const font = fontkit.create(fontData);
-    const scale = 1000 / font.unitsPerEm;
-
-    const fontDescriptor = this.register(
-      PDFDictionary.from({
-        Type: PDFName.from('FontDescriptor'),
-        FontName: PDFName.from(name),
-        Flags: PDFNumber.fromNumber(fontFlags(flagOptions)),
-        FontBBox: PDFArray.fromArray([
-          PDFNumber.fromNumber(font.bbox.minX * scale),
-          PDFNumber.fromNumber(font.bbox.minY * scale),
-          PDFNumber.fromNumber(font.bbox.maxX * scale),
-          PDFNumber.fromNumber(font.bbox.maxY * scale),
-        ]),
-        ItalicAngle: PDFNumber.fromNumber(font.italicAngle),
-        Ascent: PDFNumber.fromNumber(font.ascent * scale),
-        Descent: PDFNumber.fromNumber(font.descent * scale),
-        CapHeight: PDFNumber.fromNumber(
-          (font.capHeight || font.ascent) * scale,
-        ),
-        XHeight: PDFNumber.fromNumber((font.xHeight || 0) * scale),
-        // Not sure how to compute/find this, nor is anybody else really:
-        // https://stackoverflow.com/questions/35485179/stemv-value-of-the-truetype-font
-        StemV: PDFNumber.fromNumber(0),
-        FontFile3: fontStream, // Use different key for TrueType
-      }),
-    );
-
-    const Widths = PDFArray.fromArray(
-      _.range(0, 256)
-        .map(
-          code =>
-            font.characterSet.includes(code)
-              ? font.glyphForCodePoint(code).advanceWidth
-              : 0,
-        )
-        .map(PDFNumber.fromNumber),
-    );
-
-    return this.register(
-      PDFDictionary.from({
-        Type: PDFName.from('Font'),
-        // Handle the case of this actually being TrueType
-        Subtype: PDFName.from('OpenType'),
-        BaseFont: PDFName.from(name),
-        FirstChar: PDFNumber.fromNumber(0),
-        LastChar: PDFNumber.fromNumber(255),
-        Widths,
-        FontDescriptor: fontDescriptor,
-      }),
-    );
+    const fontFactory = PDFFontFactory.for(name, fontData, flagOptions);
+    return fontFactory.embedFontIn(this);
   };
 
   addPNG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
