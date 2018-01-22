@@ -1,5 +1,6 @@
 /* @flow */
 import _ from 'lodash';
+import pako from 'pako';
 import fontkit from 'fontkit';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
@@ -107,12 +108,13 @@ class PDFFontFactory {
     const fontStreamDict = PDFDictionary.from(
       {
         Subtype: PDFName.from('OpenType'),
+        Filter: PDFName.from('FlateDecode'),
         Length: PDFNumber.fromNumber(this.fontData.length),
       },
       pdfDoc.index.lookup,
     );
     const fontStream = pdfDoc.register(
-      PDFRawStream.from(fontStreamDict, this.fontData),
+      PDFRawStream.from(fontStreamDict, pako.deflate(this.fontData)),
     );
 
     const {
