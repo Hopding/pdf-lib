@@ -1,5 +1,5 @@
 /* @flow */
-import { PDFHexString } from '../pdf-objects';
+import { PDFHexString } from 'core/pdf-objects';
 import { arrayToString, trimArray, charFromCode } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';

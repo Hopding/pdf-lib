@@ -1,5 +1,5 @@
 /* @flow */
-import { PDFIndirectReference } from '../pdf-objects';
+import { PDFIndirectReference } from 'core/pdf-objects';
 import { arrayToString, arrayIndexOf, trimArray } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
@@ -18,7 +18,7 @@ If not, null is returned.
 const parseIndirectRef = (
   input: Uint8Array,
   { onParseIndirectRef }: ParseHandlers = {},
-): ?[PDFIndirectReference, Uint8Array] => {
+): ?[PDFIndirectReference<*>, Uint8Array] => {
   const trimmed = trimArray(input);
   const indirectRefRegex = /^(\d+) (\d+) R/;
 

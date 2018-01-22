@@ -6,7 +6,7 @@ import { validate, validateArr, isInstance } from 'utils/validate';
 import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
 
 import PDFObject from './PDFObject';
-import { PDFIndirectReference, PDFIndirectObject } from '.';
+import { PDFIndirectObject } from '.';
 
 class PDFArray<T: PDFObject> extends PDFObject {
   array: Array<T>;
@@ -59,22 +59,6 @@ class PDFArray<T: PDFObject> extends PDFObject {
   map = (...args: any) => this.array.map(...args);
   splice = (...args: any) => this.array.splice(...args);
 
-  // TODO: Remove this unused dereferencing code
-  dereference = (
-    indirectObjects: Map<PDFIndirectReference, PDFIndirectObject<*>>,
-  ) => {
-    const failures = [];
-    this.array.forEach((val, idx) => {
-      if (val instanceof PDFIndirectReference) {
-        const obj = indirectObjects.get(val);
-        // if (!obj) error(`Failed to dereference: ${val.toString()}`);
-        if (!obj) failures.push(['ARRAY_KEY', val.toString()]);
-        else this.array[idx] = obj;
-      }
-    });
-    return failures;
-  };
-
   toString = (): string => {
     const bufferSize = this.bytesSize();
     const buffer = new Uint8Array(bufferSize);
@@ -97,9 +81,9 @@ class PDFArray<T: PDFObject> extends PDFObject {
     let remaining = addStringToBuffer('[ ', buffer);
 
     this.array.forEach((e, idx) => {
-      if (e.is(PDFIndirectObject)) {
+      if (e instanceof PDFIndirectObject) {
         remaining = addStringToBuffer(e.toReference(), remaining);
-      } else if (e.is(PDFObject)) {
+      } else if (e instanceof PDFObject) {
         remaining = e.copyBytesInto(remaining);
       } else {
         error(`Not a PDFObject: ${e.constructor.name}`);

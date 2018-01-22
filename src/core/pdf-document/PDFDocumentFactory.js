@@ -62,7 +62,7 @@ class PDFDocumentFactory {
     const shouldKeep = (object: PDFObject) =>
       !object.is(PDFObjectStream) &&
       !(
-        object.is(PDFStream) &&
+        object instanceof PDFStream &&
         object.dictionary.get('Type') === PDFName.from('XRef')
       );
 

@@ -1,7 +1,8 @@
 /* @flow */
-import PDFObject from './PDFObject';
 import { addStringToBuffer } from 'utils';
 import { validate, isIdentity } from 'utils/validate';
+
+import PDFObject from './PDFObject';
 
 const PDF_NULL_ENFORCER = Symbol('PDF_NULL_ENFORCER');
 

@@ -1,10 +1,11 @@
 /* @flow */
 import { PDFObject, PDFIndirectReference } from 'core/pdf-objects';
+import { error } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
 export type PDFObjectLookup = (
   PDFIndirectReference<*> | PDFObject,
-) => ?PDFObject;
+) => PDFObject;
 
 class PDFObjectIndex {
   index: Map<PDFIndirectReference<*>, PDFObject> = new Map();
@@ -22,8 +23,10 @@ class PDFObjectIndex {
     return this;
   };
 
-  lookup = (ref: PDFIndirectReference<*> | PDFObject): ?PDFObject =>
-    ref instanceof PDFIndirectReference ? this.index.get(ref) : ref;
+  lookup = (ref: PDFIndirectReference<*> | PDFObject): PDFObject =>
+    ref instanceof PDFIndirectReference
+      ? this.index.get(ref) || error(`Failed to lookup ref: ${ref.toString()}`)
+      : ref;
 }
 
 export default PDFObjectIndex;

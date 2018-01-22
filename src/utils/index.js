@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { validate } from 'utils/validate';
 
 export type Predicate<A, B> = (A, B) => boolean;
 

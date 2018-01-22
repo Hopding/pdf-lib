@@ -1,5 +1,5 @@
 /* @flow */
-import { PDFName } from '../pdf-objects';
+import { PDFName } from 'core/pdf-objects';
 import { arrayToString, trimArray } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';

@@ -1,9 +1,10 @@
 /* @flow */
 import _ from 'lodash';
 
-import PDFObject from './PDFObject';
 import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
+
+import PDFObject from './PDFObject';
 
 class PDFString extends PDFObject {
   string: string;

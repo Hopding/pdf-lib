@@ -25,8 +25,11 @@ export class Tj extends PDFOperator {
       or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
       'Tj operator arg "string" must be one of: PDFString, PDFHexString, String',
     );
+    // TODO: Fix these suppressions...
     if (_.isString(string)) {
+      // $SuppressFlow
       this.string = PDFString.fromString(string);
+      // $SuppressFlow
     } else this.string = string;
   }
 
@@ -68,11 +71,21 @@ export class TJ extends PDFOperator {
       ),
       'TJ operator arg "array" elements must be one of: PDFString, PDFHexString, PDFNumber, String, Number',
     );
-    this.array = array.map(elem => {
-      if (_.isString(elem)) return PDFString.fromString(elem);
-      else if (_.isNumber(elem)) return PDFNumber.fromNumber(elem);
-      return elem;
-    });
+
+    // TODO: Fix all of these suppressions...
+    // $SuppressFlow
+    this.array = PDFArray.fromArray(
+      // $SuppressFlow
+      array.map(elem => {
+        // $SuppressFlow
+        if (_.isString(elem)) return PDFString.fromString(elem);
+        else if (_.isNumber(elem)) {
+          // $SuppressFlow
+          return PDFNumber.fromNumber(elem);
+        }
+        return elem;
+      }),
+    );
   }
 
   static of = (array: (PDFString | PDFHexString | string | number)[]) =>

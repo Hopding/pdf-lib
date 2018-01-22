@@ -50,7 +50,7 @@ class PDFDocumentWriter {
     return buffer;
   };
 
-  static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
+  static sortIndex = (index: Map<PDFIndirectReference<*>, PDFObject>) => {
     const indexArr: PDFIndirectObject<*>[] = [];
     index.forEach((object, ref) =>
       indexArr.push(PDFIndirectObject.of(object).setReference(ref)),

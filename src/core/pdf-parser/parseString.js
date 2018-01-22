@@ -1,5 +1,5 @@
 /* @flow */
-import { PDFString } from '../pdf-objects';
+import { PDFString } from 'core/pdf-objects';
 import { arrayToString, trimArray, arrayCharAt } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';

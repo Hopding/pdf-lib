@@ -4,7 +4,7 @@ import _ from 'lodash';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, validateArr, isNumber } from 'utils/validate';
+import { validate, isNumber } from 'utils/validate';
 
 /**
 Set the line dash pattern in the graphics state
@@ -15,10 +15,15 @@ class d extends PDFOperator {
 
   constructor(dashArray: [?number, ?number], dashPhase: number) {
     super();
-    validateArr(
-      dashArray,
+    validate(
+      dashArray[0],
       isNumber,
-      'd operator arg "dashArray" must be composed of numbers.',
+      'elements of "dashArray" must be numbers.',
+    );
+    validate(
+      dashArray[1],
+      isNumber,
+      'elements of "dashArray" must be numbers.',
     );
     validate(
       dashPhase,

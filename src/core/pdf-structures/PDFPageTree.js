@@ -40,13 +40,21 @@ class PDFPageTree extends PDFDictionary {
     return new PDFPageTree(dict.map, dict.lookup, VALID_KEYS);
   };
 
+  get Kids(): PDFArray<Kid> {
+    return this.lookup(this.get('Kids'));
+  }
+
+  get Parent(): ?PDFPageTree {
+    return this.lookup(this.get('Parent'));
+  }
+
   addPage = (page: PDFIndirectReference<PDFPage>) => {
     validate(
       page,
       isInstance(PDFIndirectReference),
       '"page" arg must be of type PDFIndirectReference<PDFPage>',
     );
-    this.get('Kids').array.push(page);
+    this.Kids.array.push(page);
     this.ascend(pageTree => {
       pageTree.get('Count').number += 1;
     });
@@ -55,7 +63,7 @@ class PDFPageTree extends PDFDictionary {
 
   removePage = (idx: number) => {
     validate(idx, _.isNumber, '"idx" arg must be a Number');
-    this.get('Kids').array.splice(idx, 1);
+    this.Kids.array.splice(idx, 1);
     this.ascend(pageTree => {
       pageTree.get('Count').number -= 1;
     });
@@ -69,7 +77,7 @@ class PDFPageTree extends PDFDictionary {
       isInstance(PDFIndirectReference),
       '"page" arg must be of type PDFIndirectReference<PDFPage>',
     );
-    this.get('Kids').array.splice(idx, 0, page);
+    this.Kids.array.splice(idx, 0, page);
     this.ascend(pageTree => {
       pageTree.get('Count').number += 1;
     });
@@ -79,9 +87,9 @@ class PDFPageTree extends PDFDictionary {
   // TODO: Pass a "stop" callback to allow "visit" to end traversal early
   // TODO: Allow for optimized tree search given an index
   traverse = (visit: (Kid, PDFIndirectReference<Kid>) => any) => {
-    if (this.get('Kids').array.length === 0) return this;
+    if (this.Kids.array.length === 0) return this;
 
-    this.get('Kids').forEach(kidRef => {
+    this.Kids.forEach(kidRef => {
       const kid: Kid = this.lookup(kidRef);
       visit(kid, kidRef);
       if (kid.is(PDFPageTree)) kid.traverse(visit);
@@ -90,9 +98,9 @@ class PDFPageTree extends PDFDictionary {
   };
 
   traverseRight = (visit: (Kid, PDFIndirectReference<Kid>) => any) => {
-    if (this.get('Kids').array.length === 0) return this;
+    if (this.Kids.array.length === 0) return this;
 
-    const lastKidRef = _.last(this.get('Kids').array);
+    const lastKidRef = _.last(this.Kids.array);
     const lastKid: Kid = this.lookup(lastKidRef);
     visit(lastKid, lastKidRef);
     if (lastKid.is(PDFPageTree)) lastKid.traverseRight(visit);
@@ -101,10 +109,11 @@ class PDFPageTree extends PDFDictionary {
 
   ascend = (visit: PDFPageTree => any, visitSelf?: boolean = true) => {
     if (visitSelf) visit(this);
-    if (!this.get('Parent')) return;
-    const parent: PDFPageTree = this.lookup(this.get('Parent'));
-    visit(parent);
-    parent.ascend(visit, false);
+    if (!this.Parent) return;
+    // if (!this.get('Parent')) return;
+    // const parent: PDFPageTree = this.lookup(this.get('Parent'));
+    visit(this.Parent);
+    this.Parent.ascend(visit, false);
   };
 }
 

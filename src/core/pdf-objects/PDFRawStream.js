@@ -1,7 +1,8 @@
 /* @flow */
-import { PDFStream, PDFDictionary } from '.';
 import { addStringToBuffer } from 'utils';
 import { validate, isInstance } from 'utils/validate';
+
+import { PDFStream, PDFDictionary } from '.';
 
 class PDFRawStream extends PDFStream {
   content: Uint8Array;

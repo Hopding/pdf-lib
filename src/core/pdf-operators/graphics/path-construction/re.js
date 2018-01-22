@@ -38,7 +38,8 @@ class re extends PDFOperator {
   static of = (x: number, y: number, width: number, height: number) =>
     new re(x, y, width, height);
 
-  toString = (): string => `${this.x} ${this.y} ${this.width} ${this.height} re\n`;
+  toString = (): string =>
+    `${this.x} ${this.y} ${this.width} ${this.height} re\n`;
 
   bytesSize = (): number => this.toString().length;
 

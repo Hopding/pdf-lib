@@ -23,8 +23,11 @@ export class SingleQuote extends PDFOperator {
       or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
       '\' operator arg "string" must be one of: PDFString, PDFHexString, String',
     );
+    // TODO: Fix these suppressions
     if (_.isString(string)) {
+      // $SuppressFlow
       this.string = PDFString.fromString(string);
+      // $SuppressFlow
     } else this.string = string;
   }
 
@@ -66,8 +69,11 @@ export class DoubleQuote extends PDFOperator {
       or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
       '" operator arg "string" must be one of: PDFString, PDFHexString, String',
     );
+    // TODO: Fix these suppressions...
     if (_.isString(string)) {
+      // $SuppressFlow
       this.string = PDFString.fromString(string);
+      // $SuppressFlow
     } else this.string = string;
   }
 
@@ -75,7 +81,7 @@ export class DoubleQuote extends PDFOperator {
     aw: number,
     ac: number,
     string: PDFString | PDFHexString | string,
-  ) => new DoubleQuote(string);
+  ) => new DoubleQuote(aw, ac, string);
 
   toString = (): string =>
     `${this.aw} ${this.ac} ${this.string.toString()} "\n`;

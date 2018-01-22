@@ -19,7 +19,7 @@ class PDFContentStream extends PDFStream {
     this.operators = typedArrayProxy(operators, PDFOperator, {
       set: property => {
         if (_.isNumber(Number(property))) {
-          this.dictionary.get('Length').number = this.operatorsBytesSize();
+          this.Length.number = this.operatorsBytesSize();
         }
       },
     });
@@ -30,8 +30,8 @@ class PDFContentStream extends PDFStream {
     );
   }
 
-  static of = (...operators: PDFOperator[]) =>
-    new PDFContentStream(...operators);
+  static of = (dict: PDFDictionary, ...operators: PDFOperator[]) =>
+    new PDFContentStream(dict, ...operators);
 
   static validateOperators = (elements: any[]) =>
     validateArr(
@@ -39,6 +39,11 @@ class PDFContentStream extends PDFStream {
       isInstance(PDFOperator),
       'only PDFOperators can be pushed to a PDFContentStream',
     );
+
+  get Length(): PDFNumber {
+    const Length = this.dictionary.get('Length');
+    return this.dictionary.lookup(Length);
+  }
 
   operatorsBytesSize = () =>
     _(this.operators)

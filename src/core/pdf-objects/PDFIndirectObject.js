@@ -9,7 +9,7 @@ import PDFIndirectReference from './PDFIndirectReference';
 
 // 55 errors
 class PDFIndirectObject<T: $Subtype<PDFObject> = PDFObject> extends PDFObject {
-  reference: PDFIndirectReference;
+  reference: PDFIndirectReference<T>;
   pdfObject: T;
 
   constructor(pdfObject: $Subtype<PDFObject>) {
@@ -36,7 +36,7 @@ class PDFIndirectObject<T: $Subtype<PDFObject> = PDFObject> extends PDFObject {
     return this;
   };
 
-  setReference = (reference: PDFIndirectReference) => {
+  setReference = (reference: PDFIndirectReference<T>) => {
     this.reference = reference;
     return this;
   };

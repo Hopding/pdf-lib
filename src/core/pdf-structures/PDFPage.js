@@ -60,7 +60,8 @@ class PDFPage extends PDFDictionary {
     resources?: PDFDictionary,
   ) => {
     validate(size.length, isIdentity(2), 'size tuple must have two elements');
-    validateArr(size, _.isNumber, 'size tuple entries must be Numbers.');
+    validate(size[0], _.isNumber, 'size tuple entries must be Numbers.');
+    validate(size[1], _.isNumber, 'size tuple entries must be Numbers.');
     validate(
       resources,
       optional(isInstance(PDFDictionary)),
@@ -91,6 +92,10 @@ class PDFPage extends PDFDictionary {
 
   static validKeys = VALID_KEYS;
 
+  get Resources(): PDFDictionary {
+    return this.lookup(this.get('Resources'));
+  }
+
   /**
   There are three possibilities, the page can:
     (1) have no "Contents"
@@ -108,18 +113,22 @@ class PDFPage extends PDFDictionary {
   /** Convert "Contents" to array if it exists and is not already */
   // TODO: See is this is inefficient...
   normalizeContents = () => {
-    if (this.get('Contents')) {
-      const contents: PDFObject = this.lookup(this.get('Contents'));
+    const Contents = this.get('Contents');
+    if (Contents) {
+      const contents: PDFObject = this.lookup(Contents);
       if (!contents.is(PDFArray)) {
-        this.set(
-          'Contents',
-          PDFArray.fromArray([this.get('Contents')], this.lookup),
-        );
+        this.set('Contents', PDFArray.fromArray([Contents], this.lookup));
       }
     }
   };
 
-  normalizeResources = ({ Font, XObject }) => {
+  normalizeResources = ({
+    Font,
+    XObject,
+  }: {
+    Font?: boolean,
+    XObject?: boolean,
+  }) => {
     if (!this.get('Resources')) {
       this.set('Resources', PDFDictionary.from(new Map(), this.lookup));
     }
@@ -182,7 +191,8 @@ class PDFPage extends PDFDictionary {
     );
 
     this.normalizeResources({ XObject: true });
-    const Resources: PDFDictionary = this.lookup(this.get('Resources'));
+    // const Resources: PDFDictionary = this.lookup(this.get('Resources'));
+    const { Resources } = this;
     const XObject: PDFDictionary = this.lookup(Resources.get('XObject'));
     XObject.set(key, xObject);
 

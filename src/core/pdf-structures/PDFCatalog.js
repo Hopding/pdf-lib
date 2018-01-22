@@ -1,11 +1,7 @@
 /* @flow */
 import PDFDictionary from 'core/pdf-objects/PDFDictionary';
-import {
-  PDFName,
-  PDFObject,
-  PDFIndirectReference,
-  PDFPageTree,
-} from 'core/pdf-objects';
+import { PDFName, PDFObject, PDFIndirectReference } from 'core/pdf-objects';
+import { PDFPageTree } from 'core/pdf-structures';
 import { validate, isInstance } from 'utils/validate';
 
 import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
@@ -72,7 +68,8 @@ class PDFCatalog extends PDFDictionary {
   };
 
   get Pages(): PDFPageTree {
-    return this.lookup(this.get('Pages'));
+    const Pages = this.get('Pages');
+    return this.lookup(Pages);
   }
 }
 

@@ -2,7 +2,6 @@
 import _ from 'lodash';
 
 import {
-  PDFObject,
   PDFBoolean,
   PDFArray,
   PDFDictionary,

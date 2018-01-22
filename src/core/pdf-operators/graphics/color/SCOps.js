@@ -3,7 +3,7 @@
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validateArr, isNumber } from 'utils/validate';
+import { validate, isNumber } from 'utils/validate';
 
 /**
 Set the colour to use for stroking operations in a device, CIE-based
@@ -19,11 +19,14 @@ required (n = 3).
 For DeviceCMYK, four operands shall be required (n = 4).
 */
 export class SC extends PDFOperator {
-  c: number[];
+  c: [number, ?number, ?number, ?number];
 
   constructor(...c: [number, ?number, ?number, ?number]) {
     super();
-    validateArr(c, isNumber, 'SC operator args "c" must be a number.');
+    validate(c[0], isNumber, 'SC operator args "c" must be a number.');
+    validate(c[1], isNumber, 'SC operator args "c" must be a number.');
+    validate(c[2], isNumber, 'SC operator args "c" must be a number.');
+    validate(c[3], isNumber, 'SC operator args "c" must be a number.');
     this.c = c;
   }
 
@@ -41,11 +44,14 @@ export class SC extends PDFOperator {
 Same as SC but used for nonstroking operations.
 */
 export class sc extends PDFOperator {
-  c: number[];
+  c: [number, ?number, ?number, ?number];
 
   constructor(...c: [number, ?number, ?number, ?number]) {
     super();
-    validateArr(c, isNumber, 'sc operator args "c" must be a number.');
+    validate(c[0], isNumber, 'SC operator args "c" must be a number.');
+    validate(c[1], isNumber, 'SC operator args "c" must be a number.');
+    validate(c[2], isNumber, 'SC operator args "c" must be a number.');
+    validate(c[3], isNumber, 'SC operator args "c" must be a number.');
     this.c = c;
   }
 
