@@ -38,7 +38,7 @@ const files = {
   UPDATED: '/Users/user/github/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf',
 };
 
-const inFile = files.PDF_SPEC;
+const inFile = files.BOL(6);
 const outFile = '/Users/user/Desktop/modified.pdf';
 const bytes = fs.readFileSync(inFile);
 

@@ -1,6 +1,5 @@
 /* @flow */
 import _ from 'lodash';
-import dedent from 'dedent';
 
 import { addStringToBuffer } from 'utils';
 import { validate, validateArr, isInstance } from 'utils/validate';
@@ -66,10 +65,8 @@ export class Subsection {
   };
 
   toString = (): string =>
-    dedent(`
-    ${this.firstObjNum} ${this.entries.length}
-    ${this.entries.map(String).join('')}
-  `);
+    `${this.firstObjNum} ${this.entries.length}\n` +
+    `${this.entries.map(String).join('')}\n`;
 
   bytesSize = () =>
     `${this.firstObjNum} ${this.entries.length}\n`.length +
@@ -98,11 +95,7 @@ class Table {
     return this;
   };
 
-  toString = (): string =>
-    `${dedent(`
-    xref
-    ${this.subsections.map(String).join('\n')}
-  `)}\n`;
+  toString = (): string => `xref\n${this.subsections.map(String).join('\n')}\n`;
 
   bytesSize = () =>
     5 + // "xref\n"

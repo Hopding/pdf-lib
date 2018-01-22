@@ -1,5 +1,4 @@
 /* @flow */
-import dedent from 'dedent';
 import _ from 'lodash';
 import { addStringToBuffer } from 'utils';
 import { validate, isInstance } from 'utils/validate';
@@ -25,13 +24,12 @@ class PDFTrailer {
   static from = (offset: number, dictionary: PDFDictionary) =>
     new PDFTrailer(offset, dictionary);
 
-  toString = (): string => dedent`
-    trailer
-    ${this.dictionary}
-    startxref
-    ${this.offset}
-    %%EOF
-  `;
+  toString = (): string =>
+    `trailer\n` +
+    `${this.dictionary.toString()}\n` +
+    `startxref\n` +
+    `${this.offset}\n` +
+    `%%EOF\n`;
 
   bytesSize = () =>
     8 + // "trailer\n"
