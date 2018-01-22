@@ -1,19 +1,19 @@
 /* @flow */
-import PDFDocument from './PDFDocument';
-import PDFXRefTableFactory from '../pdf-structures/factories/PDFXRefTableFactory';
-import { PDFTrailer, PDFCatalog } from '../pdf-structures';
+import PDFDocument from 'core/pdf-document/PDFDocument';
+import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
+import { PDFTrailer, PDFCatalog } from 'core/pdf-structures';
 import {
   PDFObject,
   PDFIndirectReference,
   PDFIndirectObject,
   PDFDictionary,
   PDFNumber,
-} from '../pdf-objects';
+} from 'core/pdf-objects';
 import { error } from 'utils';
 
 class PDFDocumentWriter {
   static saveToBytes = (pdfDoc: PDFDocument): Uint8Array => {
-    const sortedIndex = PDFDocumentWriter.sortIndex(pdfDoc.index);
+    const sortedIndex = PDFDocumentWriter.sortIndex(pdfDoc.index.index);
 
     const { reference: catalogRef } =
       sortedIndex.find(({ pdfObject }) => pdfObject.is(PDFCatalog)) ||
@@ -26,11 +26,15 @@ class PDFDocumentWriter {
 
     const trailer = PDFTrailer.from(
       tableOffset,
-      PDFDictionary.from({
-        // TODO: is "+1" necessary here?
-        Size: PDFNumber.fromNumber(sortedIndex.length + 1),
-        Root: catalogRef,
-      }),
+      PDFDictionary.from(
+        {
+          // TODO: is "+1" necessary here?
+          Size: PDFNumber.fromNumber(sortedIndex.length + 1),
+          Root: catalogRef,
+        },
+        pdfDoc.index.lookup,
+      ),
+      pdfDoc.index.lookup,
     );
 
     const bufferSize = tableOffset + table.bytesSize() + trailer.bytesSize();

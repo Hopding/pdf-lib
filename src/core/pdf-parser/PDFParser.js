@@ -14,23 +14,26 @@ import {
   PDFNumber,
   PDFStream,
   PDFString,
-} from '../pdf-objects';
+} from 'core/pdf-objects';
 import {
   PDFCatalog,
   PDFHeader,
   PDFObjectStream,
   PDFTrailer,
   PDFXRef,
-} from '../pdf-structures';
-import parseDocument from './parseDocument';
-
+} from 'core/pdf-structures';
 import { error } from 'utils';
+import { validate } from 'utils/validate';
+
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+
+import parseDocument from './parseDocument';
 
 import type { PDFLinearization } from './parseLinearization';
 
 export type ParseHandlers = {
   onParseBool?: PDFBoolean => any,
-  onParseArray?: PDFArray => any,
+  onParseArray?: (PDFArray<*>) => any,
   onParseDict?: PDFDictionary => any,
   onParseHexString?: PDFHexString => any,
   onParseName?: PDFName => any,
@@ -39,7 +42,7 @@ export type ParseHandlers = {
   onParseString?: PDFString => any,
   onParseStream?: PDFStream => any,
   onParseObjectStream?: PDFObjectStream => any,
-  onParseIndirectRef?: PDFIndirectReference => any,
+  onParseIndirectRef?: (PDFIndirectReference<*>) => any,
   onParseIndirectObj?: (PDFIndirectObject<*>) => any,
   onParseHeader?: PDFHeader => any,
   onParseXRefTable?: PDFXRef.Table => any,
@@ -48,17 +51,17 @@ export type ParseHandlers = {
 };
 
 export type ParsedPDF = {
-  arrays: PDFArray[],
+  arrays: PDFArray<*>[],
   dictionaries: PDFDictionary[],
   original: {
     header: PDFHeader,
     linearization: ?PDFLinearization,
-    body: Map<PDFIndirectReference, PDFIndirectObject<*>>,
+    body: Map<PDFIndirectReference<*>, PDFIndirectObject<*>>,
     xRefTable: PDFXRef.Table,
     trailer: PDFTrailer,
   },
   updates: {
-    body: Map<PDFIndirectReference, PDFIndirectObject<*>>,
+    body: Map<PDFIndirectReference<*>, PDFIndirectObject<*>>,
     xRefTable?: PDFXRef.Table,
     trailer: PDFTrailer,
   }[],
@@ -67,19 +70,19 @@ export type ParsedPDF = {
 class PDFParser {
   activelyParsing = false;
 
-  arrays: PDFArray[] = [];
+  arrays: PDFArray<*>[] = [];
   dictionaries: PDFDictionary[] = [];
   catalog: PDFCatalog = null;
 
   header: PDFHeader = null;
-  body: Map<PDFIndirectReference, PDFIndirectObject<*>> = new Map();
+  body: Map<PDFIndirectReference<*>, PDFIndirectObject<*>> = new Map();
   xRefTable: PDFXRef.Table = null;
   trailer: PDFTrailer = null;
 
   linearization: ?PDFLinearization = null;
 
   updates: {
-    body: Map<PDFIndirectReference, PDFIndirectObject<*>>,
+    body: Map<PDFIndirectReference<*>, PDFIndirectObject<*>>,
     xRefTable: PDFXRef.Table,
     trailer: PDFTrailer,
   }[] = [];
@@ -99,7 +102,7 @@ class PDFParser {
     };
   }
 
-  handleArray = (array: PDFArray) => {
+  handleArray = (array: PDFArray<*>) => {
     this.arrays.push(array);
   };
 
@@ -145,7 +148,9 @@ class PDFParser {
     this.linearization = linearization;
   };
 
-  parse = (bytes: Uint8Array): ParsedPDF => {
+  parse = (bytes: Uint8Array, lookup: PDFObjectLookup): ParsedPDF => {
+    validate(lookup, _.isFunction, '"lookup" must be a Function');
+
     if (this.activelyParsing) error('Cannot parse documents concurrently');
     this.activelyParsing = true;
 
@@ -160,7 +165,7 @@ class PDFParser {
     this.updates = [];
 
     try {
-      parseDocument(bytes, this.parseHandlers);
+      parseDocument(bytes, lookup, this.parseHandlers);
       this.activelyParsing = false;
     } catch (e) {
       this.activelyParsing = false;

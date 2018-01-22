@@ -1,4 +1,5 @@
 Before 0.1.0 release:
+* Make sure all streams (e.g. images and fonts) are being flate *encoded*.
 * Add some unit and integration tests
 * Document the current (low-level) API in a simple README
 * Write some scripts/commands to handle the code building and release process.
@@ -30,6 +31,9 @@ Before 0.1.0 release:
 * Remove all old dereference-reliant code...
 * Make "lookup" type
 * Support creation of PDFs as opposed to editing them
+* Support annotations & links
+* Support Acroform manipulation
+* Support document outlines
 
 # Tests:
 * Make test for dictionaries like:

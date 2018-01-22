@@ -3,17 +3,17 @@
 /* eslint-disable getter-return */
 import _ from 'lodash';
 
-import PDFOperator from '../pdf-operators/PDFOperator';
-import { PDFStream, PDFNumber } from '../pdf-objects';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
+import { PDFDictionary, PDFStream, PDFNumber } from 'core/pdf-objects';
 import { addStringToBuffer } from 'utils';
-import { typedArrayProxy } from '../../utils/proxies';
+import { typedArrayProxy } from 'utils/proxies';
 import { validateArr, isInstance } from 'utils/validate';
 
 class PDFContentStream extends PDFStream {
   operators: PDFOperator[];
 
-  constructor(...operators: PDFOperator[]) {
-    super();
+  constructor(dictionary: PDFDictionary, ...operators: PDFOperator[]) {
+    super(dictionary);
     PDFContentStream.validateOperators(operators);
 
     this.operators = typedArrayProxy(operators, PDFOperator, {

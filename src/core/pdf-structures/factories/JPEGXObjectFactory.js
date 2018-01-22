@@ -81,15 +81,18 @@ class JPEGXObjectFactory {
   embedImageIn = (
     document: PDFDocument,
   ): PDFIndirectReference<PDFRawStream> => {
-    const xObjDict = PDFDictionary.from({
-      Type: PDFName.from('XObject'),
-      Subtype: PDFName.from('Image'),
-      BitsPerComponent: PDFNumber.fromNumber(this.bits),
-      Width: PDFNumber.fromNumber(this.width),
-      Height: PDFNumber.fromNumber(this.height),
-      ColorSpace: PDFName.from(this.colorSpace),
-      Filter: PDFName.from('DCTDecode'),
-    });
+    const xObjDict = PDFDictionary.from(
+      {
+        Type: PDFName.from('XObject'),
+        Subtype: PDFName.from('Image'),
+        BitsPerComponent: PDFNumber.fromNumber(this.bits),
+        Width: PDFNumber.fromNumber(this.width),
+        Height: PDFNumber.fromNumber(this.height),
+        ColorSpace: PDFName.from(this.colorSpace),
+        Filter: PDFName.from('DCTDecode'),
+      },
+      document.index.lookup,
+    );
 
     // Add extra decode params for CMYK images. By swapping the
     // min and max values from the default, we invert the colors. See
@@ -97,16 +100,19 @@ class JPEGXObjectFactory {
     if (this.colorSpace === 'DeviceCYMK') {
       xObjDict.set(
         'Decode',
-        PDFArray.fromArray([
-          PDFNumber.fromNumber(1.0),
-          PDFNumber.fromNumber(0.0),
-          PDFNumber.fromNumber(1.0),
-          PDFNumber.fromNumber(0.0),
-          PDFNumber.fromNumber(1.0),
-          PDFNumber.fromNumber(0.0),
-          PDFNumber.fromNumber(1.0),
-          PDFNumber.fromNumber(0.0),
-        ]),
+        PDFArray.fromArray(
+          [
+            PDFNumber.fromNumber(1.0),
+            PDFNumber.fromNumber(0.0),
+            PDFNumber.fromNumber(1.0),
+            PDFNumber.fromNumber(0.0),
+            PDFNumber.fromNumber(1.0),
+            PDFNumber.fromNumber(0.0),
+            PDFNumber.fromNumber(1.0),
+            PDFNumber.fromNumber(0.0),
+          ],
+          document.index.lookup,
+        ),
       );
     }
 

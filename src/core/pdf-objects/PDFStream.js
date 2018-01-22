@@ -1,12 +1,12 @@
 /* @flow */
-import { PDFObject, PDFDictionary } from '.';
+import { PDFObject, PDFDictionary } from 'core/pdf-objects';
 import { error } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
 class PDFStream extends PDFObject {
   dictionary: PDFDictionary;
 
-  constructor(dictionary?: PDFDictionary = new PDFDictionary()) {
+  constructor(dictionary: PDFDictionary) {
     super();
     validate(
       dictionary,

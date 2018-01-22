@@ -8,6 +8,8 @@ import {
 } from 'core/pdf-objects';
 import { validate, isInstance } from 'utils/validate';
 
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+
 const VALID_KEYS = Object.freeze([
   'Type',
   'Version',
@@ -41,23 +43,37 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFCatalog extends PDFDictionary {
-  static create = (pageTree: PDFIndirectReference<PDFPageTree>): PDFCatalog => {
+  static create = (
+    pageTree: PDFIndirectReference<PDFPageTree>,
+    lookup: PDFObjectLookup,
+  ): PDFCatalog => {
     validate(
       pageTree,
       isInstance(PDFIndirectReference),
       '"pageTree" must be an indirect reference',
     );
-    return new PDFCatalog({
-      Type: PDFName.from('Catalog'),
-      Pages: pageTree,
-    });
+    return new PDFCatalog(
+      {
+        Type: PDFName.from('Catalog'),
+        Pages: pageTree,
+      },
+      lookup,
+    );
   };
 
-  static from = (object: { [string]: PDFObject } | PDFDictionary): PDFCatalog =>
-    new PDFCatalog(object, VALID_KEYS);
+  static fromObject = (
+    object: { [string]: PDFObject },
+    lookup: PDFObjectLookup,
+  ): PDFCatalog => new PDFCatalog(object, lookup, VALID_KEYS);
 
-  getPageTree = (lookup: PDFIndirectReference => PDFObject): PDFPageTree =>
-    lookup(this.get('Pages'));
+  static fromDict = (dict: PDFDictionary) => {
+    validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
+    return new PDFCatalog(dict.map, dict.lookup, VALID_KEYS);
+  };
+
+  get Pages(): PDFPageTree {
+    return this.lookup(this.get('Pages'));
+  }
 }
 
 export default PDFCatalog;

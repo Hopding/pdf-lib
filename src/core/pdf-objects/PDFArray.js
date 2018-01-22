@@ -3,23 +3,29 @@ import _ from 'lodash';
 import { error, addStringToBuffer, arrayToString } from 'utils';
 import { validate, validateArr, isInstance } from 'utils/validate';
 
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+
 import PDFObject from './PDFObject';
 import { PDFIndirectReference, PDFIndirectObject } from '.';
 
 class PDFArray<T: PDFObject> extends PDFObject {
   array: Array<T>;
+  lookup: PDFObjectLookup;
 
-  constructor(array: Array<T>) {
+  constructor(array: Array<T>, lookup: PDFObjectLookup) {
     super();
     validateArr(
       array,
       isInstance(PDFObject),
       'Cannot construct PDFArray from array whose elements are not PDFObjects',
     );
-    this.array = array.slice();
+    validate(lookup, _.isFunction, '"lookup" must be a function');
+    this.array = array;
+    this.lookup = lookup;
   }
 
-  static fromArray = (array: Array<T>) => new PDFArray(array);
+  static fromArray = (array: Array<T>, lookup: PDFObjectLookup) =>
+    new PDFArray(array, lookup);
 
   push = (...val: T[]) => {
     validateArr(

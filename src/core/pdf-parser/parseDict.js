@@ -1,13 +1,15 @@
 /* @flow */
-import { PDFDictionary, PDFName } from '../pdf-objects';
+import { PDFDictionary, PDFName } from 'core/pdf-objects';
 import {
   PDFCatalog,
   PDFPageTree,
   PDFPage,
   PDFLinearizationParams,
-} from '../pdf-structures';
+} from 'core/pdf-structures';
 import { error, arrayToString, trimArray } from 'utils';
 import { validate, isIdentity } from 'utils/validate';
+
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';
@@ -22,11 +24,11 @@ import type { ParseHandlers } from './PDFParser';
 
 /* eslint-disable prettier/prettier */
 const typeDict = (dict: PDFDictionary) => {
-  if (dict.get('Linearized')) return PDFLinearizationParams.from(dict);
+  if (dict.get('Linearized')) return PDFLinearizationParams.fromDict(dict);
   switch (dict.get('Type')) {
-    case PDFName.from('Catalog'): return PDFCatalog.from(dict);
-    case PDFName.from('Pages'):   return PDFPageTree.from(dict);
-    case PDFName.from('Page'):    return PDFPage.from(dict);
+    case PDFName.from('Catalog'): return PDFCatalog.fromDict(dict);
+    case PDFName.from('Pages'):   return PDFPageTree.fromDict(dict);
+    case PDFName.from('Page'):    return PDFPage.fromDict(dict);
     default:                      return dict;
   }
 };
@@ -50,11 +52,12 @@ values will be PDFObjects.
 */
 const parseDict = (
   input: Uint8Array,
+  lookup: PDFObjectLookup,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFDictionary, Uint8Array] => {
   const trimmed = trimArray(input);
   if (arrayToString(trimmed, 0, 2) !== '<<') return null;
-  const pdfDict = PDFDictionary.from();
+  const pdfDict = PDFDictionary.from(new Map(), lookup);
 
   // Recursively parse each entry in the dictionary
   let remainder = trimArray(trimmed.subarray(2));
@@ -68,8 +71,8 @@ const parseDict = (
     // Parse the value for this entry
     const [pdfObject, r2] =
       parseName(remainder, parseHandlers) ||
-      parseDict(remainder, parseHandlers) ||
-      parseArray(remainder, parseHandlers) ||
+      parseDict(remainder, lookup, parseHandlers) ||
+      parseArray(remainder, lookup, parseHandlers) ||
       parseString(remainder, parseHandlers) ||
       parseIndirectRef(remainder, parseHandlers) ||
       parseNumber(remainder, parseHandlers) ||

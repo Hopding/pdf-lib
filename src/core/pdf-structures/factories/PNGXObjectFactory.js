@@ -55,22 +55,28 @@ class PNGXObjectFactory {
     document: PDFDocument,
   ): PDFIndirectReference<PDFRawStream> => {
     this.document = document;
-    this.xObjDict = PDFDictionary.from({
-      Type: PDFName.from('XObject'),
-      Subtype: PDFName.from('Image'),
-      BitsPerComponent: PDFNumber.fromNumber(this.image.bits),
-      Width: PDFNumber.fromNumber(this.width),
-      Height: PDFNumber.fromNumber(this.height),
-      Filter: PDFName.from('FlateDecode'),
-    });
+    this.xObjDict = PDFDictionary.from(
+      {
+        Type: PDFName.from('XObject'),
+        Subtype: PDFName.from('Image'),
+        BitsPerComponent: PDFNumber.fromNumber(this.image.bits),
+        Width: PDFNumber.fromNumber(this.width),
+        Height: PDFNumber.fromNumber(this.height),
+        Filter: PDFName.from('FlateDecode'),
+      },
+      document.index.lookup,
+    );
 
     if (!this.image.hasAlphaChannel) {
-      const params = PDFDictionary.from({
-        Predictor: PDFNumber.fromNumber(15),
-        Colors: PDFNumber.fromNumber(this.image.colors),
-        BitsPerComponent: PDFNumber.fromNumber(this.image.bits),
-        Columns: PDFNumber.fromNumber(this.width),
-      });
+      const params = PDFDictionary.from(
+        {
+          Predictor: PDFNumber.fromNumber(15),
+          Colors: PDFNumber.fromNumber(this.image.colors),
+          BitsPerComponent: PDFNumber.fromNumber(this.image.bits),
+          Columns: PDFNumber.fromNumber(this.width),
+        },
+        document.index.lookup,
+      );
       this.xObjDict.set('DecodeParms', params);
     }
 
@@ -79,20 +85,26 @@ class PNGXObjectFactory {
     } else {
       const paletteStream = document.register(
         PDFRawStream.from(
-          PDFDictionary.from({
-            Length: PDFNumber.fromNumber(this.image.palette.length),
-          }),
+          PDFDictionary.from(
+            {
+              Length: PDFNumber.fromNumber(this.image.palette.length),
+            },
+            document.index.lookup,
+          ),
           new Uint8Array(this.image.palette),
         ),
       );
       this.xObjDict.set(
         'ColorSpace',
-        PDFArray.fromArray([
-          PDFName.from('Indexed'),
-          PDFName.from('DeviceRGB'),
-          PDFNumber.fromNumber(this.image.palette.length / 3 - 1),
-          paletteStream,
-        ]),
+        PDFArray.fromArray(
+          [
+            PDFName.from('Indexed'),
+            PDFName.from('DeviceRGB'),
+            PDFNumber.fromNumber(this.image.palette.length / 3 - 1),
+            paletteStream,
+          ],
+          document.index.lookup,
+        ),
       );
     }
 
@@ -112,20 +124,23 @@ class PNGXObjectFactory {
 
   finalize = () => {
     if (this.alphaChannel) {
-      const alphaStreamDict = PDFDictionary.from({
-        Type: PDFName.from('XObject'),
-        Subtype: PDFName.from('Image'),
-        Height: PDFNumber.fromNumber(this.height),
-        Width: PDFNumber.fromNumber(this.width),
-        BitsPerComponent: PDFNumber.fromNumber(8),
-        Filter: PDFName.from('FlateDecode'),
-        ColorSpace: PDFName.from('DeviceGray'),
-        Decode: PDFArray.fromArray([
-          PDFNumber.fromNumber(0),
-          PDFNumber.fromNumber(1),
-        ]),
-        Length: PDFNumber.fromNumber(this.alphaChannel.length),
-      });
+      const alphaStreamDict = PDFDictionary.from(
+        {
+          Type: PDFName.from('XObject'),
+          Subtype: PDFName.from('Image'),
+          Height: PDFNumber.fromNumber(this.height),
+          Width: PDFNumber.fromNumber(this.width),
+          BitsPerComponent: PDFNumber.fromNumber(8),
+          Filter: PDFName.from('FlateDecode'),
+          ColorSpace: PDFName.from('DeviceGray'),
+          Decode: PDFArray.fromArray(
+            [PDFNumber.fromNumber(0), PDFNumber.fromNumber(1)],
+            this.document.index.lookup,
+          ),
+          Length: PDFNumber.fromNumber(this.alphaChannel.length),
+        },
+        this.document.index.lookup,
+      );
       const smaskStream = this.document.register(
         PDFRawStream.from(alphaStreamDict, pako.deflate(this.alphaChannel)),
       );

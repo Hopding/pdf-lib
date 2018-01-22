@@ -1,6 +1,7 @@
 /* @flow */
 import _ from 'lodash';
 
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import {
   PDFIndirectReference,
   PDFObject,
@@ -16,6 +17,7 @@ import {
 import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
 import PDFFontFactory from 'core/pdf-structures/factories/PDFFontFactory';
+import { error } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
 import type { FontFlagOptions } from 'core/pdf-structures/factories/PDFFontFactory';
@@ -23,27 +25,24 @@ import type { FontFlagOptions } from 'core/pdf-structures/factories/PDFFontFacto
 class PDFDocument {
   header: PDFHeader = PDFHeader.forVersion(1, 7);
   catalog: PDFCatalog;
-  index: Map<PDFIndirectReference<*>, PDFObject>;
+  index: PDFObjectIndex;
   maxObjNum: number = 0;
 
-  constructor(index: Map<PDFIndirectReference<*>, PDFObject>) {
+  constructor(index: PDFObjectIndex) {
     validate(
       index,
-      isInstance(Map),
-      'index must be a Map<PDFIndirectReference, PDFObject>',
+      isInstance(PDFObjectIndex),
+      '"index" must be a PDFObjectIndex object',
     );
-    index.forEach((obj, ref) => {
+    index.index.forEach((obj, ref) => {
       if (obj.is(PDFCatalog)) this.catalog = obj;
       if (ref.objectNumber > this.maxObjNum) this.maxObjNum = ref.objectNumber;
     });
     this.index = index;
+    if (!this.catalog) error('"index" does not contain a PDFCatalog object');
   }
 
-  static fromIndex = (index: Map<PDFIndirectReference<*>, PDFObject>) =>
-    new PDFDocument(index);
-
-  lookup = (ref: PDFIndirectReference<*> | PDFObject) =>
-    ref.is(PDFIndirectReference) ? this.index.get(ref) : ref;
+  static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
 
   register = <T: PDFObject>(object: T): PDFIndirectReference<T> => {
     validate(object, isInstance(PDFObject), 'object must be a PDFObject');
@@ -54,21 +53,23 @@ class PDFDocument {
   };
 
   getPages = (): PDFPage[] => {
-    const pageTree = this.catalog.getPageTree(this.lookup);
     const pages = [];
-    pageTree.traverse(this.lookup, kid => {
+    this.catalog.Pages.traverse(kid => {
       if (kid.is(PDFPage)) pages.push(kid);
     });
     return Object.freeze(pages);
   };
 
+  createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
+    PDFPage.create(this.index.lookup, size, resources);
+
   addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
-    const pageTree = this.catalog.getPageTree(this.lookup);
+    const { Pages } = this.catalog;
 
-    let lastPageTree = pageTree;
+    let lastPageTree = Pages;
     let lastPageTreeRef = this.catalog.get('Pages');
-    pageTree.traverseRight(this.lookup, (kid, ref) => {
+    Pages.traverseRight((kid, ref) => {
       if (kid.is(PDFPageTree)) {
         lastPageTree = kid;
         lastPageTreeRef = ref;
@@ -76,7 +77,7 @@ class PDFDocument {
     });
 
     page.set('Parent', lastPageTreeRef);
-    lastPageTree.addPage(this.lookup, this.register(page));
+    lastPageTree.addPage(this.register(page));
     return this;
   };
 
@@ -85,13 +86,12 @@ class PDFDocument {
   removePage = (idx: number) => {
     validate(idx, _.isNumber, 'idx must be a number');
     const pageTreeRef = this.catalog.get('Pages');
-    const pageTree = this.catalog.getPageTree(this.lookup);
 
     // TODO: Use a "stop" callback to avoid unneccesarily traversing whole page tree...
     let treeRef = pageTreeRef;
     let pageCount = 0;
     let kidNum = 0;
-    pageTree.traverse(this.lookup, (kid, ref) => {
+    this.catalog.Pages.traverse((kid, ref) => {
       if (pageCount !== idx) {
         if (kid.is(PDFPageTree)) kidNum = 0;
         if (kid.is(PDFPage)) {
@@ -102,8 +102,8 @@ class PDFDocument {
       }
     });
 
-    const tree: PDFPageTree = this.lookup(treeRef);
-    tree.removePage(this.lookup, kidNum);
+    const tree: PDFPageTree = this.index.lookup(treeRef);
+    tree.removePage(kidNum);
     return this;
   };
 
@@ -112,13 +112,12 @@ class PDFDocument {
     validate(idx, _.isNumber, 'idx must be a number');
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const pageTreeRef = this.catalog.get('Pages');
-    const pageTree = this.catalog.getPageTree(this.lookup);
 
     // TODO: Use a "stop" callback to avoid unneccesarily traversing whole page tree...
     let treeRef = pageTreeRef;
     let pageCount = 0;
     let kidNum = 0;
-    pageTree.traverse(this.lookup, (kid, ref) => {
+    this.catalog.Pages.traverse((kid, ref) => {
       if (pageCount !== idx) {
         if (kid.is(PDFPageTree)) kidNum = 0;
         if (kid.is(PDFPage)) {
@@ -130,8 +129,8 @@ class PDFDocument {
     });
 
     page.set('Parent', treeRef);
-    const tree: PDFPageTree = this.lookup(treeRef);
-    tree.insertPage(this.lookup, kidNum, this.register(page));
+    const tree: PDFPageTree = this.index.lookup(treeRef);
+    tree.insertPage(kidNum, this.register(page));
     return this;
   };
 

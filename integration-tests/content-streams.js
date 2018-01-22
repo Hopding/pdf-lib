@@ -1,12 +1,14 @@
 import PDFOperators from 'core/pdf-operators';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { PDFContentStream } from 'core/pdf-structures';
+import { PDFDictionary } from 'core/pdf-objects';
 
 const { Q, q, cm, m, l, S, w, d, re, g, c, b, B, RG, rg, Do } = PDFOperators;
 const { Tf, Tj, Td, Tr } = PDFOperators;
 
-export const createSpecGraphic = (x = 0, y = 0, scale = 1) =>
+export const createSpecGraphic = (lookup, x = 0, y = 0, scale = 1) =>
   PDFContentStream.of(
+    PDFDictionary.from(new Map(), lookup),
     Q.operator,
     cm.of(scale, 0, 0, scale, x, y),
 
@@ -40,8 +42,14 @@ export const createSpecGraphic = (x = 0, y = 0, scale = 1) =>
     q.operator,
   );
 
-export const createTextGraphic = (fontOneName, fontTwoName, fontThreeName) =>
+export const createTextGraphic = (
+  lookup,
+  fontOneName,
+  fontTwoName,
+  fontThreeName,
+) =>
   PDFContentStream.of(
+    PDFDictionary.from(new Map(), lookup),
     PDFTextObject.of(
       // Draw red colored text at x-y coordinates (50, 500)
       rg.of(1.0, 0.0, 0.0),
@@ -66,12 +74,14 @@ export const createTextGraphic = (fontOneName, fontTwoName, fontThreeName) =>
   );
 
 export const createImageGraphic = (
+  lookup,
   firstImgName,
   secondImgName,
   thirdImgName,
   fourthImgName,
 ) =>
   PDFContentStream.of(
+    PDFDictionary.from(new Map(), lookup),
     // Draw a rectangle with a 1-unit red border, filled with light blue.
     q.operator,
     RG.of(1.0, 0.0, 0.0),

@@ -1,13 +1,10 @@
 /* @flow */
-import { PDFDictionary } from '../pdf-objects';
-import { PDFTrailer } from '../pdf-structures';
-import {
-  error,
-  arrayToString,
-  trimArray,
-  arrayIndexOf,
-  charCode,
-} from 'utils';
+import { PDFDictionary } from 'core/pdf-objects';
+import { PDFTrailer } from 'core/pdf-structures';
+import { error, arrayToString, trimArray, arrayIndexOf, charCode } from 'utils';
+
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+
 import parseDict from './parseDict';
 import parseNumber from './parseNumber';
 
@@ -28,6 +25,7 @@ If not, null is returned.
 */
 const parseTrailer = (
   input: Uint8Array,
+  lookup: PDFObjectLookup,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFTrailer, Uint8Array] => {
   const trimmed = trimArray(input);
@@ -43,7 +41,7 @@ const parseTrailer = (
   // Parse the dictionary string into a PDFDictionary
   const dictBytes = new Uint8Array(dictStr.split('').map(charCode));
   const [dict] =
-    parseDict(dictBytes, parseHandlers) ||
+    parseDict(dictBytes, lookup, parseHandlers) ||
     error('Failed to parse trailer dictionary');
 
   // Parse the xref offset string value into a PDFNumber
@@ -66,6 +64,7 @@ they do appear in the wild sometimes. This function allows us to handle them.
 */
 const parseTrailerWithoutDict = (
   input: Uint8Array,
+  lookup: PDFObjectLookup,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFTrailer, Uint8Array] => {
   const trimmed = trimArray(input);
@@ -86,7 +85,7 @@ const parseTrailerWithoutDict = (
 
   const trailer = PDFTrailer.from(
     lastXRefOffset.number,
-    PDFDictionary.from({}),
+    PDFDictionary.from(new Map(), lookup),
   );
   if (parseHandlers.onParseTrailer) parseHandlers.onParseTrailer(trailer);
   return [trailer, trimmed.subarray(fullMatch.length)];

@@ -1,39 +1,51 @@
 /* @flow */
 import _ from 'lodash';
 
-import PDFObject from './PDFObject';
-import { PDFIndirectReference, PDFIndirectObject, PDFName } from '.';
-import { or, error, addStringToBuffer, arrayToString } from 'utils';
+import {
+  PDFIndirectReference,
+  PDFIndirectObject,
+  PDFName,
+} from 'core/pdf-objects';
+import { or, and, not, error, addStringToBuffer, arrayToString } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+
+import PDFObject from './PDFObject';
+
 class PDFDictionary extends PDFObject {
-  map: Map<PDFName, any> = new Map();
+  map: Map<PDFName, any>;
+  lookup: PDFObjectLookup;
   validKeys: ?Array<string>;
 
   constructor(
-    object: { [string]: PDFObject } | PDFDictionary,
+    object?: { [string]: PDFObject } | Map<PDFName, any>,
+    lookup: PDFObjectLookup,
     validKeys: ?(string[]),
   ) {
     super();
     validate(
       object,
-      or(_.isObject, _.isNil, isInstance(PDFDictionary)),
-      'PDFDictionary can only be constructed from an Object, nil, or a PDFDictionary',
+      and(not(_.isNil), or(_.isObject, isInstance(Map))),
+      'PDFDictionary can only be constructed from an Object or a Map',
     );
+    validate(lookup, _.isFunction, '"lookup" must be a function');
 
+    this.lookup = lookup;
     this.validKeys = validKeys;
 
-    if (!object) return;
-
-    if (object instanceof PDFDictionary) {
-      this.map = object.map;
+    if (object instanceof Map) {
+      this.map = object;
     } else {
+      this.map = new Map();
       _(object).forEach((val, key) => this.set(key, val, false));
     }
   }
 
-  static from = (object: { [string]: PDFObject } | PDFDictionary) =>
-    new PDFDictionary(object);
+  static from = (
+    object: { [string]: PDFObject } | PDFDictionary,
+    lookup: PDFObjectLookup,
+  ) => new PDFDictionary(object, lookup);
 
   filter = (predicate: (PDFObject, PDFName) => boolean) =>
     Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key));

@@ -1,7 +1,9 @@
 /* @flow */
-import { PDFDictionary, PDFIndirectObject, PDFNumber } from '../pdf-objects';
-import { PDFObjectStream } from '../pdf-structures';
+import { PDFDictionary, PDFIndirectObject, PDFNumber } from 'core/pdf-objects';
+import { PDFObjectStream } from 'core/pdf-structures';
 import { error, arrayToString, arrayFindIndexOf } from 'utils';
+
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';
@@ -78,6 +80,7 @@ called with the PDFObjectStream.
 const parseObjectStream = (
   dict: PDFDictionary,
   input: Uint8Array,
+  lookup: PDFObjectLookup,
   parseHandlers: ParseHandlers = {},
 ): PDFObjectStream => {
   // Parse the pairs of integers from start of input bytes
@@ -93,8 +96,8 @@ const parseObjectStream = (
     const subarray = input.subarray(firstObjOffset + byteOffset);
 
     const [pdfObject] =
-      parseDict(subarray, parseHandlers) ||
-      parseArray(subarray, parseHandlers) ||
+      parseDict(subarray, lookup, parseHandlers) ||
+      parseArray(subarray, lookup, parseHandlers) ||
       parseName(subarray, parseHandlers) ||
       parseString(subarray, parseHandlers) ||
       parseIndirectRef(subarray, parseHandlers) ||

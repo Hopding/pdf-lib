@@ -7,7 +7,7 @@ import {
   isIdentity,
   optional,
 } from 'utils/validate';
-import { PDFContentStream } from '.';
+import { PDFContentStream } from 'core/pdf-structures';
 import {
   PDFObject,
   PDFDictionary,
@@ -16,7 +16,9 @@ import {
   PDFNumber,
   PDFIndirectReference,
   PDFStream,
-} from '../pdf-objects';
+} from 'core/pdf-objects';
+
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
 
 const VALID_KEYS = Object.freeze([
   'Type',
@@ -52,7 +54,11 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFPage extends PDFDictionary {
-  static create = (size: [number, number], resources?: PDFDictionary) => {
+  static create = (
+    lookup: PDFObjectLookup,
+    size: [number, number],
+    resources?: PDFDictionary,
+  ) => {
     validate(size.length, isIdentity(2), 'size tuple must have two elements');
     validateArr(size, _.isNumber, 'size tuple entries must be Numbers.');
     validate(
@@ -66,16 +72,22 @@ class PDFPage extends PDFDictionary {
       {
         Type: PDFName.from('Page'),
         // TODO: Convert this to use PDFRectangle
-        MediaBox: PDFArray.fromArray(mediaBox.map(PDFNumber.fromNumber)),
+        MediaBox: PDFArray.fromArray(
+          mediaBox.map(PDFNumber.fromNumber),
+          lookup,
+        ),
       },
+      lookup,
       PDFPage.validKeys,
     );
     if (resources) page.set('Resources', resources);
     return page;
   };
 
-  static from = (object: PDFDictionary) =>
-    new PDFPage(object, PDFPage.validKeys);
+  static fromDict = (dict: PDFDictionary) => {
+    validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
+    return new PDFPage(dict.map, dict.lookup, PDFPage.validKeys);
+  };
 
   static validKeys = VALID_KEYS;
 
@@ -95,46 +107,47 @@ class PDFPage extends PDFDictionary {
 
   /** Convert "Contents" to array if it exists and is not already */
   // TODO: See is this is inefficient...
-  normalizeContents = (
-    lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
-  ) => {
+  normalizeContents = () => {
     if (this.get('Contents')) {
-      const contents = lookup(this.get('Contents'));
+      const contents: PDFObject = this.lookup(this.get('Contents'));
       if (!contents.is(PDFArray)) {
-        this.set('Contents', PDFArray.fromArray([this.get('Contents')]));
+        this.set(
+          'Contents',
+          PDFArray.fromArray([this.get('Contents')], this.lookup),
+        );
       }
     }
   };
 
-  normalizeResources = (lookup, { Font, XObject }) => {
-    if (!this.get('Resources')) this.set('Resources', PDFDictionary.from());
+  normalizeResources = ({ Font, XObject }) => {
+    if (!this.get('Resources')) {
+      this.set('Resources', PDFDictionary.from(new Map(), this.lookup));
+    }
 
-    const Resources = lookup(this.get('Resources'));
+    const Resources = this.lookup(this.get('Resources'));
     if (Font && !Resources.get('Font')) {
-      Resources.set('Font', PDFDictionary.from());
+      Resources.set('Font', PDFDictionary.from(new Map(), this.lookup));
     }
     if (XObject && !Resources.get('XObject')) {
-      Resources.set('XObject', PDFDictionary.from());
+      Resources.set('XObject', PDFDictionary.from(new Map(), this.lookup));
     }
   };
 
   // TODO: Consider allowing *insertion* of content streams so order can be changed
   addContentStreams = (
-    lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
     ...contentStreams: PDFIndirectReference<PDFContentStream>[]
   ) => {
-    validate(lookup, _.isFunction, '"lookup" must be a function');
     validateArr(
       contentStreams,
       isInstance(PDFIndirectReference),
       '"contentStream" must be of type PDFIndirectReference<PDFContentStream>',
     );
 
-    this.normalizeContents(lookup);
+    this.normalizeContents();
     if (!this.get('Contents')) {
-      this.set('Contents', PDFArray.fromArray(contentStreams));
+      this.set('Contents', PDFArray.fromArray(contentStreams, this.lookup));
     } else {
-      const Contents: PDFArray = lookup(this.get('Contents'));
+      const Contents: PDFArray = this.lookup(this.get('Contents'));
       Contents.push(...contentStreams);
     }
 
@@ -142,7 +155,6 @@ class PDFPage extends PDFDictionary {
   };
 
   addFontDictionary = (
-    lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
     key: string, // TODO: Allow PDFName objects to be passed too
     fontDict: PDFIndirectReference<PDFDictionary>, // Allow PDFDictionaries as well
   ) => {
@@ -153,19 +165,15 @@ class PDFPage extends PDFDictionary {
       '"fontDict" must be an instance of PDFIndirectReference',
     );
 
-    this.normalizeResources(lookup, { Font: true });
-    const Resources: PDFDictionary = lookup(this.get('Resources'));
-    const Font: PDFDictionary = lookup(Resources.get('Font'));
+    this.normalizeResources({ Font: true });
+    const Resources: PDFDictionary = this.lookup(this.get('Resources'));
+    const Font: PDFDictionary = this.lookup(Resources.get('Font'));
     Font.set(key, fontDict);
 
     return this;
   };
 
-  addXObject = (
-    lookup: (PDFIndirectReference<*> | PDFObject) => PDFObject,
-    key: string,
-    xObject: PDFIndirectReference<PDFStream>,
-  ) => {
+  addXObject = (key: string, xObject: PDFIndirectReference<PDFStream>) => {
     validate(key, _.isString, '"key" must be a string');
     validate(
       xObject,
@@ -173,9 +181,9 @@ class PDFPage extends PDFDictionary {
       '"xObject" must be an instance of PDFIndirectReference',
     );
 
-    this.normalizeResources(lookup, { XObject: true });
-    const Resources: PDFDictionary = lookup(this.get('Resources'));
-    const XObject: PDFDictionary = lookup(Resources.get('XObject'));
+    this.normalizeResources({ XObject: true });
+    const Resources: PDFDictionary = this.lookup(this.get('Resources'));
+    const XObject: PDFDictionary = this.lookup(Resources.get('XObject'));
     XObject.set(key, xObject);
 
     return this;

@@ -1,6 +1,6 @@
 /* @flow */
 import PDFDocument from 'core/pdf-document/PDFDocument';
-
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import {
   PDFObject,
   PDFIndirectReference,
@@ -11,18 +11,21 @@ import {
 import { PDFCatalog, PDFPageTree, PDFObjectStream } from 'core/pdf-structures';
 import PDFParser from 'core/pdf-parser/PDFParser';
 
-import type { ParsedPDF } from '../pdf-parser/PDFParser';
+import type { ParsedPDF } from 'core/pdf-parser/PDFParser';
 
 class PDFDocumentFactory {
   static create = (): PDFDocument => {
-    const index: Map<PDFIndirectReference, PDFObject> = new Map();
+    const index = PDFObjectIndex.create();
     const refs = {
       catalog: PDFIndirectReference.forNumbers(1, 0),
       pageTree: PDFIndirectReference.forNumbers(2, 0),
     };
 
-    const catalog = PDFCatalog.create(refs.pageTree);
-    const pageTree = PDFPageTree.createRootNode(PDFArray.fromArray([]));
+    const catalog = PDFCatalog.create(refs.pageTree, index.lookup);
+    const pageTree = PDFPageTree.createRootNode(
+      PDFArray.fromArray([], index.lookup),
+      index.lookup,
+    );
 
     index.set(refs.catalog, catalog);
     index.set(refs.pageTree, pageTree);
@@ -31,15 +34,15 @@ class PDFDocumentFactory {
   };
 
   static load = (data: Uint8Array): PDFDocument => {
+    const index = PDFObjectIndex.create();
     const pdfParser = new PDFParser();
 
     console.time('ParsePDF');
-    const parsedPdf = pdfParser.parse(data);
+    const parsedPdf = pdfParser.parse(data, index.lookup);
     console.timeEnd('ParsePDF');
 
-    console.time('Normalize');
-    const index = PDFDocumentFactory.normalize(parsedPdf);
-    console.timeEnd('Normalize');
+    const indexMap = PDFDocumentFactory.normalize(parsedPdf);
+    index.index = indexMap;
 
     return PDFDocument.fromIndex(index);
   };
@@ -50,8 +53,8 @@ class PDFDocumentFactory {
     arrays,
     original: { body },
     updates,
-  }: ParsedPDF): Map<PDFIndirectReference, PDFObject> => {
-    const index: Map<PDFIndirectReference, PDFObject> = new Map();
+  }: ParsedPDF): Map<PDFIndirectReference<*>, PDFObject> => {
+    const index: Map<PDFIndirectReference<*>, PDFObject> = new Map();
 
     // Remove Object Streams and Cross Reference Streams, because we've already
     // parsed the Object Streams into PDFIndirectObjects, and will just write

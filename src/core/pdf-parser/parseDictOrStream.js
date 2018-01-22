@@ -1,5 +1,7 @@
 /* @flow */
-import { PDFDictionary, PDFStream } from '../pdf-objects';
+import { PDFDictionary, PDFStream } from 'core/pdf-objects';
+
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
 
 import parseStream from './parseStream';
 import parseDict from './parseDict';
@@ -20,15 +22,16 @@ If no PDFDictionary is found at all, null is returned.
 */
 const parseDictOrStream = (
   input: Uint8Array,
+  lookup: PDFObjectLookup,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFDictionary | PDFStream, Uint8Array] => {
   // Attempt to parse a dictionary
-  const dictMatch = parseDict(input, parseHandlers);
+  const dictMatch = parseDict(input, lookup, parseHandlers);
   if (!dictMatch) return null;
   const [dict, r] = dictMatch;
 
   // Attempt to parse a stream next
-  const streamMatch = parseStream(r, dict, parseHandlers);
+  const streamMatch = parseStream(r, dict, lookup, parseHandlers);
 
   // Return stream if one was parsed, otherwise return the dictionary
   if (streamMatch) return streamMatch;

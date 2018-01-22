@@ -8,7 +8,8 @@
     "start2": "babel-node index2.js",
     "build": "babel src -d no-flow --ignore node_modules __tests__",
     "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc src/* --fix",
-    "test:integration:creation": "babel-node integration-tests/creation/test1.js"
+    "test:integration:creation": "babel-node integration-tests/creation/test1.js",
+    "test:integration:editing": "babel-node integration-tests/editing/test1.js"
   },
   "repository": {
     "type": "git",

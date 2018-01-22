@@ -1,9 +1,12 @@
 /* @flow */
-import { PDFRawStream, PDFName, PDFDictionary } from '../pdf-objects';
-import { PDFObjectStream } from '../pdf-structures';
+import { PDFRawStream, PDFName, PDFDictionary } from 'core/pdf-objects';
+import { PDFObjectStream } from 'core/pdf-structures';
+import { error, arrayIndexOf, arrayToString, trimArray } from 'utils';
+
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+
 import decodeStream from './encoding/decodeStream';
 import parseObjectStream from './parseObjectStream';
-import { error, arrayIndexOf, arrayToString, trimArray } from 'utils';
 
 import type { ParseHandlers } from './PDFParser';
 
@@ -70,6 +73,7 @@ If not, null is returned.
 export default (
   input: Uint8Array,
   dict: PDFDictionary,
+  lookup: PDFObjectLookup,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFRawStream | PDFObjectStream, Uint8Array] => {
   // Parse the input bytes into the stream dictionary and content bytes
@@ -84,7 +88,12 @@ export default (
     }
 
     const decoded = decodeStream(dict, contents);
-    const objectStream = parseObjectStream(dict, decoded, parseHandlers);
+    const objectStream = parseObjectStream(
+      dict,
+      decoded,
+      lookup,
+      parseHandlers,
+    );
     if (parseHandlers.onParseObjectStream) {
       parseHandlers.onParseObjectStream(objectStream);
     }

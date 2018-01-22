@@ -14,6 +14,8 @@ import {
 import { setCharAt } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
+import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+
 const { Buffer } = require('buffer/');
 
 const unsigned32Bit = '00000000000000000000000000000000';
@@ -63,7 +65,7 @@ class PDFFontFactory {
   scale: number;
   fontName: string;
   fontData: Uint8Array;
-  fontDescriptor: PDFDictionary;
+  flagOptions: FontFlagOptions;
 
   constructor(
     name: string,
@@ -86,37 +88,9 @@ class PDFFontFactory {
 
     this.fontName = name;
     this.fontData = fontData;
+    this.flagOptions = flagOptions;
     this.font = fontkit.create(dataBuffer);
     this.scale = 1000 / this.font.unitsPerEm;
-
-    const {
-      italicAngle,
-      ascent,
-      descent,
-      capHeight,
-      xHeight,
-      bbox,
-    } = this.font;
-
-    this.fontDescriptor = PDFDictionary.from({
-      Type: PDFName.from('FontDescriptor'),
-      FontName: PDFName.from(name),
-      Flags: PDFNumber.fromNumber(fontFlags(flagOptions)),
-      FontBBox: PDFArray.fromArray([
-        PDFNumber.fromNumber(bbox.minX * this.scale),
-        PDFNumber.fromNumber(bbox.minY * this.scale),
-        PDFNumber.fromNumber(bbox.maxX * this.scale),
-        PDFNumber.fromNumber(bbox.maxY * this.scale),
-      ]),
-      ItalicAngle: PDFNumber.fromNumber(italicAngle),
-      Ascent: PDFNumber.fromNumber(ascent * this.scale),
-      Descent: PDFNumber.fromNumber(descent * this.scale),
-      CapHeight: PDFNumber.fromNumber((capHeight || ascent) * this.scale),
-      XHeight: PDFNumber.fromNumber((xHeight || 0) * this.scale),
-      // Not sure how to compute/find this, nor is anybody else really:
-      // https://stackoverflow.com/questions/35485179/stemv-value-of-the-truetype-font
-      StemV: PDFNumber.fromNumber(0),
-    });
   }
 
   static for = (
@@ -130,34 +104,75 @@ class PDFFontFactory {
   to broaden support to other fonts.
   */
   embedFontIn = (pdfDoc: PDFDocument): PDFIndirectReference<PDFDictionary> => {
-    const fontStreamDict = PDFDictionary.from({
-      Subtype: PDFName.from('OpenType'),
-      Length: PDFNumber.fromNumber(this.fontData.length),
-    });
+    const fontStreamDict = PDFDictionary.from(
+      {
+        Subtype: PDFName.from('OpenType'),
+        Length: PDFNumber.fromNumber(this.fontData.length),
+      },
+      pdfDoc.index.lookup,
+    );
     const fontStream = pdfDoc.register(
       PDFRawStream.from(fontStreamDict, this.fontData),
     );
 
-    this.fontDescriptor.set('FontFile3', fontStream);
+    const {
+      italicAngle,
+      ascent,
+      descent,
+      capHeight,
+      xHeight,
+      bbox,
+    } = this.font;
+
+    const fontDescriptor = PDFDictionary.from(
+      {
+        Type: PDFName.from('FontDescriptor'),
+        FontName: PDFName.from(this.fontName),
+        Flags: PDFNumber.fromNumber(fontFlags(this.flagOptions)),
+        FontBBox: PDFArray.fromArray(
+          [
+            PDFNumber.fromNumber(bbox.minX * this.scale),
+            PDFNumber.fromNumber(bbox.minY * this.scale),
+            PDFNumber.fromNumber(bbox.maxX * this.scale),
+            PDFNumber.fromNumber(bbox.maxY * this.scale),
+          ],
+          pdfDoc.index.lookup,
+        ),
+        ItalicAngle: PDFNumber.fromNumber(italicAngle),
+        Ascent: PDFNumber.fromNumber(ascent * this.scale),
+        Descent: PDFNumber.fromNumber(descent * this.scale),
+        CapHeight: PDFNumber.fromNumber((capHeight || ascent) * this.scale),
+        XHeight: PDFNumber.fromNumber((xHeight || 0) * this.scale),
+        // Not sure how to compute/find this, nor is anybody else really:
+        // https://stackoverflow.com/questions/35485179/stemv-value-of-the-truetype-font
+        StemV: PDFNumber.fromNumber(0),
+        FontFile3: fontStream,
+      },
+      pdfDoc.index.lookup,
+    );
 
     return pdfDoc.register(
-      PDFDictionary.from({
-        Type: PDFName.from('Font'),
-        Subtype: PDFName.from('OpenType'),
-        BaseFont: PDFName.from(this.fontName),
-        FirstChar: PDFNumber.fromNumber(0),
-        LastChar: PDFNumber.fromNumber(255),
-        Widths: this.getWidths(),
-        FontDescriptor: pdfDoc.register(this.fontDescriptor),
-      }),
+      PDFDictionary.from(
+        {
+          Type: PDFName.from('Font'),
+          Subtype: PDFName.from('OpenType'),
+          BaseFont: PDFName.from(this.fontName),
+          FirstChar: PDFNumber.fromNumber(0),
+          LastChar: PDFNumber.fromNumber(255),
+          Widths: this.getWidths(pdfDoc.index.lookup),
+          FontDescriptor: pdfDoc.register(fontDescriptor),
+        },
+        pdfDoc.index.lookup,
+      ),
     );
   };
 
-  getWidths = () =>
+  getWidths = (lookup: PDFObjectLookup) =>
     PDFArray.fromArray(
       _.range(0, 256)
         .map(this.getCodePointWidth)
         .map(PDFNumber.fromNumber),
+      lookup,
     );
 
   getCodePointWidth = (code: number) =>
