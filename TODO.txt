@@ -1,3 +1,9 @@
+&&& Try passing entire PDFObjectIndex instead of just its "lookup" function
+&&& to see if that gets around the Flow errors in parsing functions
+
+&&& Try defining "lookupMaybe" function to handle cases where null or
+&&& undefined might be returned.
+
 Before 0.1.0 release:
 * Add some unit and integration tests
 * Document the current (low-level) API in a simple README

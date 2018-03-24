@@ -24,7 +24,8 @@
     "import/no-named-as-default": "off"
   },
   "globals": {
-    "$Subtype": true
+    "$Subtype": true,
+    "Class": true
   },
   "plugins": [
     "prettier"
