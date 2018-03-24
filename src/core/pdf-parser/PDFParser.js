@@ -22,7 +22,7 @@ import {
   PDFXRef,
 } from 'core/pdf-structures';
 import { error } from 'utils';
-import { validate } from 'utils/validate';
+import { validate, isInstance } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -148,7 +148,7 @@ class PDFParser {
   };
 
   parse = (bytes: Uint8Array, index: PDFObjectIndex): ParsedPDF => {
-    validate(index, _.isFunction, '"index" must be a Function');
+    validate(index, isInstance(PDFObjectIndex), '"index" must be an instance of PDFObjectIndex');
 
     if (this.activelyParsing) error('Cannot parse documents concurrently');
     this.activelyParsing = true;

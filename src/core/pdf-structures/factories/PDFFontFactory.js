@@ -169,12 +169,12 @@ class PDFFontFactory {
     );
   };
 
-  getWidths = (lookup: PDFObjectIndex) =>
+  getWidths = (index: PDFObjectIndex) =>
     PDFArray.fromArray(
       _.range(0, 256)
         .map(this.getCodePointWidth)
         .map(PDFNumber.fromNumber),
-      lookup,
+      index,
     );
 
   getCodePointWidth = (code: number) =>

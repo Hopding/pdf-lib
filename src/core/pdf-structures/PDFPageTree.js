@@ -25,7 +25,7 @@ class PDFPageTree extends PDFDictionary {
     index: PDFObjectIndex,
   ): PDFPageTree => {
     validate(kids, isInstance(PDFArray), '"kids" must be a PDFArray');
-    validate(index, _.isFunction, '"index" must be a function');
+    validate(index, isInstance(PDFObjectIndex), '"index" must be an instance of PDFObjectIndex');
     return new PDFPageTree(
       {
         Type: PDFName.from('Pages'),

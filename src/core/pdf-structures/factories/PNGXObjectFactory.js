@@ -64,7 +64,7 @@ class PNGXObjectFactory {
         Height: PDFNumber.fromNumber(this.height),
         Filter: PDFName.from('FlateDecode'),
       },
-      document.index.lookup,
+      document.index,
     );
 
     if (!this.image.hasAlphaChannel) {
@@ -75,7 +75,7 @@ class PNGXObjectFactory {
           BitsPerComponent: PDFNumber.fromNumber(this.image.bits),
           Columns: PDFNumber.fromNumber(this.width),
         },
-        document.index.lookup,
+        document.index,
       );
       this.xObjDict.set('DecodeParms', params);
     }
@@ -89,7 +89,7 @@ class PNGXObjectFactory {
             {
               Length: PDFNumber.fromNumber(this.image.palette.length),
             },
-            document.index.lookup,
+            document.index,
           ),
           new Uint8Array(this.image.palette),
         ),
@@ -103,7 +103,7 @@ class PNGXObjectFactory {
             PDFNumber.fromNumber(this.image.palette.length / 3 - 1),
             paletteStream,
           ],
-          document.index.lookup,
+          document.index,
         ),
       );
     }
@@ -135,11 +135,11 @@ class PNGXObjectFactory {
           ColorSpace: PDFName.from('DeviceGray'),
           Decode: PDFArray.fromArray(
             [PDFNumber.fromNumber(0), PDFNumber.fromNumber(1)],
-            this.document.index.lookup,
+            this.document.index,
           ),
           Length: PDFNumber.fromNumber(this.alphaChannel.length),
         },
-        this.document.index.lookup,
+        this.document.index,
       );
       const smaskStream = this.document.register(
         PDFRawStream.from(alphaStreamDict, pako.deflate(this.alphaChannel)),

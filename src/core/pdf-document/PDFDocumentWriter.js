@@ -32,9 +32,9 @@ class PDFDocumentWriter {
           Size: PDFNumber.fromNumber(sortedIndex.length + 1),
           Root: catalogRef,
         },
-        pdfDoc.index.lookup,
+        pdfDoc.index,
       ),
-      pdfDoc.index.lookup,
+      pdfDoc.index,
     );
 
     const bufferSize = tableOffset + table.bytesSize() + trailer.bytesSize();

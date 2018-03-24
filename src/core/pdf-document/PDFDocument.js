@@ -61,7 +61,7 @@ class PDFDocument {
   };
 
   createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
-    PDFPage.create(this.index.lookup, size, resources);
+    PDFPage.create(this.index, size, resources);
 
   addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');

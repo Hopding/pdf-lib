@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
-import { addStringToBuffer } from 'utils';
+import { addStringToBuffer, or } from 'utils';
 import { validate, isNumber } from 'utils/validate';
 
 /**
@@ -17,17 +17,17 @@ class d extends PDFOperator {
     super();
     validate(
       dashArray[0],
-      isNumber,
+      or(isNumber, _.isNil),
       'elements of "dashArray" must be numbers.',
     );
     validate(
       dashArray[1],
-      isNumber,
+      or(isNumber, _.isNil),
       'elements of "dashArray" must be numbers.',
     );
     validate(
       dashPhase,
-      isNumber,
+      or(isNumber, _.isNil),
       'd operator arg "dashPhase" must be a number.',
     );
     this.dashArray = dashArray;

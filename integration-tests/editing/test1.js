@@ -53,7 +53,7 @@ const FontTimesRoman = pdfDoc.register(
       Subtype: PDFName.from('Type1'),
       BaseFont: PDFName.from('Times-Roman'),
     },
-    pdfDoc.index.lookup,
+    pdfDoc.index,
   ),
 );
 const FontOne = pdfDoc.embedFont('FontOne', fonts.ubuntu, {
@@ -75,14 +75,14 @@ const catUnicornJPG = pdfDoc.addJPG(jpgImages.catUnicorn);
 const minionsJPG = pdfDoc.addJPG(jpgImages.minions);
 
 const specGraphic = pdfDoc.register(
-  createSpecGraphic(pdfDoc.index.lookup, 50, 50, 0.75),
+  createSpecGraphic(pdfDoc.index, 50, 50, 0.75),
 );
 const textGraphic = pdfDoc.register(
-  createTextGraphic(pdfDoc.index.lookup, '/FontOne', '/FontTwo', '/FontThree'),
+  createTextGraphic(pdfDoc.index, '/FontOne', '/FontTwo', '/FontThree'),
 );
 const imageGraphic = pdfDoc.register(
   createImageGraphic(
-    pdfDoc.index.lookup,
+    pdfDoc.index,
     '/SmallMarioPNG',
     '/CatUnicornJPG',
     '/MinionsPNG',

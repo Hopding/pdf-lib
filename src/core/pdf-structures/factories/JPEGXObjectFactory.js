@@ -91,7 +91,7 @@ class JPEGXObjectFactory {
         ColorSpace: PDFName.from(this.colorSpace),
         Filter: PDFName.from('DCTDecode'),
       },
-      document.index.lookup,
+      document.index,
     );
 
     // Add extra decode params for CMYK images. By swapping the
@@ -111,7 +111,7 @@ class JPEGXObjectFactory {
             PDFNumber.fromNumber(1.0),
             PDFNumber.fromNumber(0.0),
           ],
-          document.index.lookup,
+          document.index,
         ),
       );
     }

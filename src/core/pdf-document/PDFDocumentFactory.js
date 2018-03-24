@@ -21,10 +21,10 @@ class PDFDocumentFactory {
       pageTree: PDFIndirectReference.forNumbers(2, 0),
     };
 
-    const catalog = PDFCatalog.create(refs.pageTree, index.lookup);
+    const catalog = PDFCatalog.create(refs.pageTree, index);
     const pageTree = PDFPageTree.createRootNode(
-      PDFArray.fromArray([], index.lookup),
-      index.lookup,
+      PDFArray.fromArray([], index),
+      index,
     );
 
     index.set(refs.catalog, catalog);
@@ -38,7 +38,7 @@ class PDFDocumentFactory {
     const pdfParser = new PDFParser();
 
     console.time('ParsePDF');
-    const parsedPdf = pdfParser.parse(data, index.lookup);
+    const parsedPdf = pdfParser.parse(data, index);
     console.timeEnd('ParsePDF');
 
     const indexMap = PDFDocumentFactory.normalize(parsedPdf);
