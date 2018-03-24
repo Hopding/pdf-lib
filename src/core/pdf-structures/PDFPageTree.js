@@ -57,9 +57,7 @@ class PDFPageTree extends PDFDictionary {
     );
     this.getKids().array.push(page);
     this.ascend(pageTree => {
-      const Count = pageTree.get('Count');
-      if (!Count) throw new Error('Missing PDFDictionary entry: "Count".');
-      Count.number += 1;
+      pageTree.get('Count').number += 1;
     });
     return this;
   };
@@ -68,9 +66,7 @@ class PDFPageTree extends PDFDictionary {
     validate(idx, _.isNumber, '"idx" arg must be a Number');
     this.getKids().array.splice(idx, 1);
     this.ascend(pageTree => {
-      const Count = pageTree.get('Count');
-      if (!Count) throw new Error('Missing PDFDictionary entry: "Count".');
-      Count.number -= 1;
+      pageTree.get('Count').number -= 1;
     });
     return this;
   };
@@ -84,9 +80,7 @@ class PDFPageTree extends PDFDictionary {
     );
     this.getKids().array.splice(idx, 0, page);
     this.ascend(pageTree => {
-      const Count = pageTree.get('Count');
-      if (!Count) throw new Error('Missing PDFDictionary entry: "Count".');
-      Count.number += 1;
+      pageTree.get('Count').number += 1;
     });
     return this;
   };
