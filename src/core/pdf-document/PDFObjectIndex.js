@@ -3,19 +3,6 @@ import { PDFObject, PDFIndirectReference } from 'core/pdf-objects';
 import { error } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
-// export type PDFObjectLookup = (
-// PDFIndirectReference<*> | PDFObject,
-// ) => PDFObject;
-
-export type PDFObjectLookup = (
-  PDFIndirectReference<*> | PDFObject | void,
-) => PDFObject | null | undefined;
-
-// export type PDFObjectLookup = <T>(
-// PDFIndirectReference<*> | PDFObject | void,
-// type: Class<T>,
-// ) => T;
-
 class PDFObjectIndex {
   index: Map<PDFIndirectReference<*>, PDFObject> = new Map();
 
@@ -37,11 +24,13 @@ class PDFObjectIndex {
   //     ? this.index.get(ref) || error(`Failed to lookup ref: ${ref.toString()}`)
   //     : ref;
 
-  lookup = (ref: PDFIndirectReference<*> | PDFObject | void) => {
-    if (!ref) return null;
-    return ref instanceof PDFIndirectReference
-      ? this.index.get(ref) || error(`Failed to lookup ref: ${ref.toString()}`)
-      : ref;
+  lookup = (ref: PDFIndirectReference<*> | PDFObject): PDFObject => {
+    if (ref instanceof PDFIndirectReference) {
+      return (
+        this.index.get(ref) || error(`Failed to lookup ref: ${ref.toString()}`)
+      );
+    }
+    return ref;
   };
 }
 

@@ -3,7 +3,7 @@ import { PDFArray } from 'core/pdf-objects';
 import { error, trimArray, arrayCharAt } from 'utils';
 import { validate, isIdentity } from 'utils/validate';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';
@@ -33,13 +33,13 @@ parsed. The returned PDFArray's elements will be composed of PDFObjects.
 */
 const parseArray = (
   input: Uint8Array,
-  lookup: PDFObjectLookup,
+  index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFArray<*>, Uint8Array] => {
   // Make sure it is possible for this to be an array.
   const trimmed = trimArray(input);
   if (arrayCharAt(trimmed, 0) !== '[') return null;
-  const pdfArray = PDFArray.fromArray([], lookup);
+  const pdfArray = PDFArray.fromArray([], index);
 
   // Recursively parse each element of the array
   let remainder = trimmed.subarray(1); // Remove the '['
@@ -47,8 +47,8 @@ const parseArray = (
     // Parse the value for this element
     const [pdfObject, r] =
       parseName(remainder, parseHandlers) ||
-      parseDict(remainder, lookup, parseHandlers) ||
-      parseArray(remainder, lookup, parseHandlers) ||
+      parseDict(remainder, index, parseHandlers) ||
+      parseArray(remainder, index, parseHandlers) ||
       parseString(remainder, parseHandlers) ||
       parseIndirectRef(remainder, parseHandlers) ||
       parseNumber(remainder, parseHandlers) ||

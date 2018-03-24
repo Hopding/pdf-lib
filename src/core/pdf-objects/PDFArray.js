@@ -3,29 +3,33 @@ import _ from 'lodash';
 import { error, addStringToBuffer, arrayToString } from 'utils';
 import { validate, validateArr, isInstance } from 'utils/validate';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import PDFObject from './PDFObject';
 import { PDFIndirectObject } from '.';
 
-class PDFArray<T: PDFObject> extends PDFObject {
+class PDFArray<T: $Subtype<PDFObject>> extends PDFObject {
   array: Array<T>;
-  lookup: PDFObjectLookup;
+  index: PDFObjectIndex;
 
-  constructor(array: Array<T>, lookup: PDFObjectLookup) {
+  constructor(array: Array<T>, index: PDFObjectIndex) {
     super();
     validateArr(
       array,
       isInstance(PDFObject),
       'Cannot construct PDFArray from array whose elements are not PDFObjects',
     );
-    validate(lookup, _.isFunction, '"lookup" must be a function');
+    validate(
+      index,
+      isInstance(PDFObjectIndex),
+      '"index" must be a an instance of PDFObjectIndex',
+    );
     this.array = array;
-    this.lookup = lookup;
+    this.index = index;
   }
 
-  static fromArray = (array: Array<T>, lookup: PDFObjectLookup) =>
-    new PDFArray(array, lookup);
+  static fromArray = (array: Array<T>, index: PDFObjectIndex) =>
+    new PDFArray(array, index);
 
   push = (...val: T[]) => {
     validateArr(

@@ -15,7 +15,7 @@ import {
 import { setCharAt } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 const { Buffer } = require('buffer/');
 
@@ -111,7 +111,7 @@ class PDFFontFactory {
         Filter: PDFName.from('FlateDecode'),
         Length: PDFNumber.fromNumber(this.fontData.length),
       },
-      pdfDoc.index.lookup,
+      pdfDoc.index,
     );
     const fontStream = pdfDoc.register(
       PDFRawStream.from(fontStreamDict, pako.deflate(this.fontData)),
@@ -138,7 +138,7 @@ class PDFFontFactory {
             PDFNumber.fromNumber(bbox.maxX * this.scale),
             PDFNumber.fromNumber(bbox.maxY * this.scale),
           ],
-          pdfDoc.index.lookup,
+          pdfDoc.index,
         ),
         ItalicAngle: PDFNumber.fromNumber(italicAngle),
         Ascent: PDFNumber.fromNumber(ascent * this.scale),
@@ -150,7 +150,7 @@ class PDFFontFactory {
         StemV: PDFNumber.fromNumber(0),
         FontFile3: fontStream,
       },
-      pdfDoc.index.lookup,
+      pdfDoc.index,
     );
 
     return pdfDoc.register(
@@ -161,15 +161,15 @@ class PDFFontFactory {
           BaseFont: PDFName.from(this.fontName),
           FirstChar: PDFNumber.fromNumber(0),
           LastChar: PDFNumber.fromNumber(255),
-          Widths: this.getWidths(pdfDoc.index.lookup),
+          Widths: this.getWidths(pdfDoc.index),
           FontDescriptor: pdfDoc.register(fontDescriptor),
         },
-        pdfDoc.index.lookup,
+        pdfDoc.index,
       ),
     );
   };
 
-  getWidths = (lookup: PDFObjectLookup) =>
+  getWidths = (lookup: PDFObjectIndex) =>
     PDFArray.fromArray(
       _.range(0, 256)
         .map(this.getCodePointWidth)

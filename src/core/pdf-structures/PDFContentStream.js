@@ -42,7 +42,7 @@ class PDFContentStream extends PDFStream {
 
   get Length(): PDFNumber {
     const Length = this.dictionary.get('Length');
-    return this.dictionary.lookup(Length);
+    return this.dictionary.index.lookup(Length);
   }
 
   operatorsBytesSize = () =>

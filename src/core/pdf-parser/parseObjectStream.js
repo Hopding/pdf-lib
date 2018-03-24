@@ -3,7 +3,7 @@ import { PDFDictionary, PDFIndirectObject, PDFNumber } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
 import { error, arrayToString, arrayFindIndexOf } from 'utils';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';
@@ -80,15 +80,16 @@ called with the PDFObjectStream.
 const parseObjectStream = (
   dict: PDFDictionary,
   input: Uint8Array,
-  lookup: PDFObjectLookup,
+  index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
 ): PDFObjectStream => {
   // Parse the pairs of integers from start of input bytes
   const objData = parseObjData(dict, input);
 
   // Extract the value of the "First" entry in the dict
-  const First =
+  const First: PDFNumber =
     dict.get('First') || error('Object stream dict must have "First" entry');
+  if (!First) error('Missing PDFDictionary entry "First".');
   const firstObjOffset = First.number;
 
   // Map each pair of integers to a PDFIndirectObject
@@ -96,8 +97,8 @@ const parseObjectStream = (
     const subarray = input.subarray(firstObjOffset + byteOffset);
 
     const [pdfObject] =
-      parseDict(subarray, lookup, parseHandlers) ||
-      parseArray(subarray, lookup, parseHandlers) ||
+      parseDict(subarray, index, parseHandlers) ||
+      parseArray(subarray, index, parseHandlers) ||
       parseName(subarray, parseHandlers) ||
       parseString(subarray, parseHandlers) ||
       parseIndirectRef(subarray, parseHandlers) ||

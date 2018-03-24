@@ -3,7 +3,7 @@ import { PDFRawStream, PDFName, PDFDictionary } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
 import { error, arrayIndexOf, arrayToString, trimArray } from 'utils';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import decodeStream from './encoding/decodeStream';
 import parseObjectStream from './parseObjectStream';
@@ -73,7 +73,7 @@ If not, null is returned.
 export default (
   input: Uint8Array,
   dict: PDFDictionary,
-  lookup: PDFObjectLookup,
+  index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFRawStream | PDFObjectStream, Uint8Array] => {
   // Parse the input bytes into the stream dictionary and content bytes
@@ -85,17 +85,12 @@ export default (
   if (dict.get('Type') === PDFName.from('ObjStm')) {
     if (dict.get('Filter') !== PDFName.from('FlateDecode')) {
       error(
-        `Cannot decode "${dict.get('Filter') || 'undefined'}" Object Streams`,
+        `Cannot decode "${String(dict.get('Filter')) || 'undefined'}" Object Streams`,
       );
     }
 
     const decoded = decodeStream(dict, contents);
-    const objectStream = parseObjectStream(
-      dict,
-      decoded,
-      lookup,
-      parseHandlers,
-    );
+    const objectStream = parseObjectStream(dict, decoded, index, parseHandlers);
     if (parseHandlers.onParseObjectStream) {
       parseHandlers.onParseObjectStream(objectStream);
     }

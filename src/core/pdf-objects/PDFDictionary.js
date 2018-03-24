@@ -5,18 +5,18 @@ import { PDFIndirectObject, PDFName } from 'core/pdf-objects';
 import { or, and, not, error, addStringToBuffer, arrayToString } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import PDFObject from './PDFObject';
 
 class PDFDictionary extends PDFObject {
   map: Map<PDFName, any>;
-  lookup: PDFObjectLookup;
+  index: PDFObjectIndex;
   validKeys: ?Array<string>;
 
   constructor(
     object?: { [string]: PDFObject } | Map<PDFName, any>,
-    lookup: PDFObjectLookup,
+    index: PDFObjectIndex,
     validKeys: ?(string[]),
   ) {
     super();
@@ -25,9 +25,13 @@ class PDFDictionary extends PDFObject {
       and(not(_.isNil), or(_.isObject, isInstance(Map))),
       'PDFDictionary can only be constructed from an Object or a Map',
     );
-    validate(lookup, _.isFunction, '"lookup" must be a function');
+    validate(
+      index,
+      isInstance(PDFObjectIndex),
+      '"index" must be an instance of PDFObjectIndex',
+    );
 
-    this.lookup = lookup;
+    this.index = index;
     this.validKeys = validKeys;
 
     if (object instanceof Map) {
@@ -40,8 +44,8 @@ class PDFDictionary extends PDFObject {
 
   static from = (
     object: { [string]: PDFObject } | PDFDictionary,
-    lookup: PDFObjectLookup,
-  ) => new PDFDictionary(object, lookup);
+    index: PDFObjectIndex,
+  ) => new PDFDictionary(object, index);
 
   filter = (predicate: (PDFObject, PDFName) => boolean) =>
     Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key));
@@ -75,7 +79,7 @@ class PDFDictionary extends PDFObject {
     return this;
   };
 
-  get = (key: string | PDFName) => {
+  get = (key: string | PDFName): ?$Subtype<PDFObject> => {
     validate(
       key,
       or(_.isString, isInstance(PDFName)),

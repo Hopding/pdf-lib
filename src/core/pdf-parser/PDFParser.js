@@ -24,7 +24,7 @@ import {
 import { error } from 'utils';
 import { validate } from 'utils/validate';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseDocument from './parseDocument';
 
@@ -147,8 +147,8 @@ class PDFParser {
     this.linearization = linearization;
   };
 
-  parse = (bytes: Uint8Array, lookup: PDFObjectLookup): ParsedPDF => {
-    validate(lookup, _.isFunction, '"lookup" must be a Function');
+  parse = (bytes: Uint8Array, index: PDFObjectIndex): ParsedPDF => {
+    validate(index, _.isFunction, '"index" must be a Function');
 
     if (this.activelyParsing) error('Cannot parse documents concurrently');
     this.activelyParsing = true;
@@ -164,7 +164,7 @@ class PDFParser {
     this.updates = [];
 
     try {
-      parseDocument(bytes, lookup, this.parseHandlers);
+      parseDocument(bytes, index, this.parseHandlers);
       this.activelyParsing = false;
     } catch (e) {
       this.activelyParsing = false;

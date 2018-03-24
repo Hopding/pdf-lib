@@ -9,7 +9,7 @@ class PDFLinearizationParams extends PDFDictionary {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFLinearizationParams(
       dict.map,
-      dict.lookup,
+      dict.index,
       PDFLinearizationParams.validKeys,
     );
   };

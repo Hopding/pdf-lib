@@ -9,7 +9,7 @@ import {
 import { error, arrayToString, trimArray } from 'utils';
 import { validate, isIdentity } from 'utils/validate';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseNull from './parseNull';
 import parseIndirectRef from './parseIndirectRef';
@@ -52,12 +52,12 @@ values will be PDFObjects.
 */
 const parseDict = (
   input: Uint8Array,
-  lookup: PDFObjectLookup,
+  index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFDictionary, Uint8Array] => {
   const trimmed = trimArray(input);
   if (arrayToString(trimmed, 0, 2) !== '<<') return null;
-  const pdfDict = PDFDictionary.from(new Map(), lookup);
+  const pdfDict = PDFDictionary.from(new Map(), index);
 
   // Recursively parse each entry in the dictionary
   let remainder = trimArray(trimmed.subarray(2));
@@ -71,8 +71,8 @@ const parseDict = (
     // Parse the value for this entry
     const [pdfObject, r2] =
       parseName(remainder, parseHandlers) ||
-      parseDict(remainder, lookup, parseHandlers) ||
-      parseArray(remainder, lookup, parseHandlers) ||
+      parseDict(remainder, index, parseHandlers) ||
+      parseArray(remainder, index, parseHandlers) ||
       parseString(remainder, parseHandlers) ||
       parseIndirectRef(remainder, parseHandlers) ||
       parseNumber(remainder, parseHandlers) ||

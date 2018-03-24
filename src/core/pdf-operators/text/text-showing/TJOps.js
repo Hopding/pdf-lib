@@ -35,7 +35,7 @@ export class Tj extends PDFOperator {
 
   static of = (string: PDFString | PDFHexString | string) => new Tj(string);
 
-  toString = (): string => `${this.string.toString()} Tj\n`;
+  toString = () => this.string.toString() + ' Tj\n';
 
   bytesSize = () => this.toString().length;
 
@@ -83,6 +83,7 @@ export class TJ extends PDFOperator {
           // $SuppressFlow
           return PDFNumber.fromNumber(elem);
         }
+          // $SuppressFlow
         return elem;
       }),
     );

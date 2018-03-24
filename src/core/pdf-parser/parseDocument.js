@@ -2,7 +2,7 @@
 /* eslint-disable no-constant-condition */
 import { error } from 'utils';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseHeader from './parseHeader';
 import parseLinearization from './parseLinearization';
@@ -23,12 +23,12 @@ indirect objects removed.
 */
 const parseBodySection = (
   input: Uint8Array,
-  lookup: PDFObjectLookup,
+  index: PDFObjectIndex,
   parseHandlers: ParseHandlers,
 ): Uint8Array => {
   let remainder = input;
   while (true) {
-    const result = parseIndirectObj(remainder, lookup, parseHandlers);
+    const result = parseIndirectObj(remainder, index, parseHandlers);
     if (!result) break;
     [, remainder] = result;
   }
@@ -46,7 +46,7 @@ objects removed.
 */
 const parseFooterSection = (
   input: Uint8Array,
-  lookup: PDFObjectLookup,
+  index: PDFObjectIndex,
   parseHandlers: ParseHandlers,
 ): ?Uint8Array => {
   let remainder = input;
@@ -58,8 +58,8 @@ const parseFooterSection = (
   // Try to parse the trailer with and without dictionary, because some
   // malformatted documents are missing the dictionary.
   const parsedTrailer =
-    parseTrailer(remainder, lookup, parseHandlers) ||
-    parseTrailerWithoutDict(remainder, lookup, parseHandlers);
+    parseTrailer(remainder, index, parseHandlers) ||
+    parseTrailerWithoutDict(remainder, index, parseHandlers);
   if (!parsedTrailer) return null;
 
   [, remainder] = parsedTrailer;
@@ -75,7 +75,7 @@ parsed and stored in memory at once.
 */
 const parseDocument = (
   input: Uint8Array,
-  lookup: PDFObjectLookup,
+  index: PDFObjectIndex,
   parseHandlers: ParseHandlers,
 ): void => {
   // TODO: Figure out way to clean comments without messing stream content up
@@ -90,7 +90,7 @@ const parseDocument = (
   // dictionary and First-Page XRef table/stream next...
   const linearizationMatch = parseLinearization(
     remainder,
-    lookup,
+    index,
     parseHandlers,
   );
   if (linearizationMatch) [, remainder] = linearizationMatch;
@@ -98,8 +98,8 @@ const parseDocument = (
   // Parse each body of the document and its corresponding footer.
   // (if document does not have update sections, loop will only occur once)
   while (remainder) {
-    remainder = parseBodySection(remainder, lookup, parseHandlers);
-    remainder = parseFooterSection(remainder, lookup, parseHandlers);
+    remainder = parseBodySection(remainder, index, parseHandlers);
+    remainder = parseFooterSection(remainder, index, parseHandlers);
   }
 };
 

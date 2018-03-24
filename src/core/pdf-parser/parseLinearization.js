@@ -7,7 +7,7 @@ import {
 } from 'core/pdf-structures';
 import { error, trimArray } from 'utils';
 
-import type { PDFObjectLookup } from 'core/pdf-document/PDFObjectIndex';
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseXRefTable from './parseXRefTable';
 import parseIndirectObj from './parseIndirectObj';
@@ -36,13 +36,13 @@ If not, null is returned.
 */
 const parseLinearization = (
   input: Uint8Array,
-  lookup: PDFObjectLookup,
+  index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
 ): ?[PDFLinearization, Uint8Array] => {
   const trimmed = trimArray(input);
 
   // Try to parse a dictionary from the input
-  const paramDictMatch = parseIndirectObj(trimmed, lookup, parseHandlers);
+  const paramDictMatch = parseIndirectObj(trimmed, index, parseHandlers);
   if (!paramDictMatch) return null;
 
   // Make sure it is a Linearization Param Dictionary
@@ -53,7 +53,7 @@ const parseLinearization = (
   // Next we should find a cross reference stream or xref table
   const xrefMatch =
     parseXRefTable(remaining1) ||
-    parseIndirectObj(remaining1, lookup, parseHandlers) ||
+    parseIndirectObj(remaining1, index, parseHandlers) ||
     error(
       'Found Linearization param dict but no first page xref table or stream.',
     );
@@ -61,8 +61,8 @@ const parseLinearization = (
   const [xref, remaining2] = xrefMatch;
 
   const trailerMatch =
-    parseTrailer(remaining2, lookup) ||
-    parseTrailerWithoutDict(remaining2, lookup);
+    parseTrailer(remaining2, index) ||
+    parseTrailerWithoutDict(remaining2, index);
 
   // Per the PDF spec, a trailer should always be present - but some PDFs in the
   // wild are missing them anyways
