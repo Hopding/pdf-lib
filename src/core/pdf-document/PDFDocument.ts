@@ -1,4 +1,3 @@
-/* @flow */
 import _ from 'lodash';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
@@ -16,11 +15,9 @@ import {
 } from 'core/pdf-structures';
 import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
-import PDFFontFactory from 'core/pdf-structures/factories/PDFFontFactory';
+import PDFFontFactory, { FontFlagOptions } from 'core/pdf-structures/factories/PDFFontFactory';
 import { error } from 'utils';
 import { validate, isInstance } from 'utils/validate';
-
-import type { FontFlagOptions } from 'core/pdf-structures/factories/PDFFontFactory';
 
 class PDFDocument {
   header: PDFHeader = PDFHeader.forVersion(1, 7);
@@ -44,7 +41,7 @@ class PDFDocument {
 
   static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
 
-  register = <T: PDFObject>(object: T): PDFIndirectReference<T> => {
+  register = <T extends PDFObject>(object: T): PDFIndirectReference<T> => {
     validate(object, isInstance(PDFObject), 'object must be a PDFObject');
     this.maxObjNum += 1;
     const ref = PDFIndirectReference.forNumbers(this.maxObjNum, 0);
@@ -57,7 +54,7 @@ class PDFDocument {
     this.catalog.Pages.traverse(kid => {
       if (kid.is(PDFPage)) pages.push(kid);
     });
-    return Object.freeze(pages);
+    return pages;
   };
 
   createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>

@@ -2,7 +2,7 @@
 import { PDFHeader } from 'core/pdf-structures';
 import { arrayToString, trimArray, arrayCharAt, arrayIndexOf } from 'utils';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -18,7 +18,7 @@ If not, null is returned.
 const parseHeader = (
   input: Uint8Array,
   { onParseHeader }: ParseHandlers = {},
-): ?[PDFHeader, Uint8Array] => {
+): [PDFHeader, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const fileHeaderRegex = /^%PDF-(\d+)\.(\d+)/;
 

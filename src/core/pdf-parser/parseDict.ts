@@ -20,7 +20,7 @@ import parseBool from './parseBool';
 import parseNumber from './parseNumber';
 import parseArray from './parseArray';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /* eslint-disable prettier/prettier */
 const typeDict = (dict: PDFDictionary) => {

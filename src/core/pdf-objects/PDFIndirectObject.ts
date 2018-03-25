@@ -8,11 +8,11 @@ import PDFObject from './PDFObject';
 import PDFIndirectReference from './PDFIndirectReference';
 
 // 55 errors
-class PDFIndirectObject<T: $Subtype<PDFObject> = PDFObject> extends PDFObject {
+class PDFIndirectObject<T extends PDFObject> extends PDFObject {
   reference: PDFIndirectReference<T>;
   pdfObject: T;
 
-  constructor(pdfObject: $Subtype<PDFObject>) {
+  constructor(pdfObject: PDFObject) {
     super();
     validate(
       pdfObject,
@@ -22,7 +22,7 @@ class PDFIndirectObject<T: $Subtype<PDFObject> = PDFObject> extends PDFObject {
     this.pdfObject = pdfObject;
   }
 
-  static of = <A: $Subtype<PDFObject>>(pdfObject: A): PDFIndirectObject<A> =>
+  static of = <A extends PDFObject>(pdfObject: A): PDFIndirectObject<A> =>
     new PDFIndirectObject(pdfObject);
 
   setReferenceNumbers = (objectNumber: number, generationNumber: number) => {

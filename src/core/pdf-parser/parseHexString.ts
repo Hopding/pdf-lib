@@ -2,7 +2,7 @@
 import { PDFHexString } from 'core/pdf-objects';
 import { arrayToString, trimArray, charFromCode } from 'utils';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -18,7 +18,7 @@ If not, null is returned.
 const parseHexString = (
   input: Uint8Array,
   { onParseHexString }: ParseHandlers = {},
-): ?[PDFHexString, Uint8Array] => {
+): [PDFHexString, Uint8Array] | void => {
   const hexStringRegex = /^<([\dABCDEFabcdef]*)>/;
   const trimmed = trimArray(input);
 

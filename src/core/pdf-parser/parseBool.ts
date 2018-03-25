@@ -1,8 +1,7 @@
-/* @flow */
 import { PDFBoolean } from 'core/pdf-objects';
 import { arrayToString } from 'utils';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the trimmed input make up a PDF Boolean.

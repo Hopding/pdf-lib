@@ -2,7 +2,7 @@
 import { PDFName } from 'core/pdf-objects';
 import { arrayToString, trimArray } from 'utils';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -18,7 +18,7 @@ If not, null is returned.
 const parseName = (
   input: Uint8Array,
   { onParseName }: ParseHandlers = {},
-): ?[PDFName, Uint8Array] => {
+): [PDFName, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const nameRegex = /^\/([^ \n\r\][<>(/]*)/;
 

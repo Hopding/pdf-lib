@@ -28,25 +28,27 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseDocument from './parseDocument';
 
-import type { PDFLinearization } from './parseLinearization';
+import { PDFLinearization } from './parseLinearization';
 
-export type ParseHandlers = {
-  onParseBool?: PDFBoolean => any,
-  onParseArray?: (PDFArray<*>) => any,
-  onParseDict?: PDFDictionary => any,
-  onParseHexString?: PDFHexString => any,
-  onParseName?: PDFName => any,
-  onParseNull?: PDFNull => any,
-  onParseNumber?: PDFNumber => any,
-  onParseString?: PDFString => any,
-  onParseStream?: PDFStream => any,
-  onParseObjectStream?: PDFObjectStream => any,
-  onParseIndirectRef?: (PDFIndirectReference<*>) => any,
-  onParseIndirectObj?: (PDFIndirectObject<*>) => any,
-  onParseHeader?: PDFHeader => any,
-  onParseXRefTable?: PDFXRef.Table => any,
-  onParseTrailer?: PDFTrailer => any,
-  onParseLinearization?: PDFLinearization => any,
+const XRefTable = PDFXRef.Table;
+
+export interface ParseHandlers {
+  onParseBool?: (PDFBoolean) => any;
+  onParseArray?: (PDFArray) => any;
+  onParseDict?: (PDFDictionary) => any;
+  onParseHexString?: (PDFHexString) => any;
+  onParseName?: (PDFName) => any;
+  onParseNull?: (PDFNull) => any;
+  onParseNumber?: (PDFNumber) => any;
+  onParseString?: (PDFString) => any;
+  onParseStream?: (PDFStream) => any;
+  onParseObjectStream?: (PDFObjectStream) => any;
+  onParseIndirectRef?: (PDFIndirectReference) => any;
+  onParseIndirectObj?: (PDFIndirectObject) => any;
+  onParseHeader?: (PDFHeader) => any;
+  onParseXRefTable?: (XRefTable) => any;
+  onParseTrailer?: (PDFTrailer) => any;
+  onParseLinearization?: (PDFLinearization) => any;
 };
 
 export type ParsedPDF = {

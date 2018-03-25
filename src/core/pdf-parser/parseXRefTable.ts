@@ -2,7 +2,7 @@
 import { PDFXRef } from 'core/pdf-structures';
 import { arrayToString, trimArray } from 'utils';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an string as input. Repeatedly applies a regex to the input that matches
@@ -12,7 +12,7 @@ If entries are found, then an array of PDFXRef.Entry will be returned.
 
 If not, null is returned.
 */
-const parseEntries = (input: string): ?PDFXRef.Entry => {
+const parseEntries = (input: string): PDFXRef.Entry | void => {
   const trimmed = input.trim();
   const entryRegex = /^(\d{10}) (\d{5}) (n|f)/;
 

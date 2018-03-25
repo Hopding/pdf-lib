@@ -6,7 +6,7 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import parseStream from './parseStream';
 import parseDict from './parseDict';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the

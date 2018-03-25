@@ -2,7 +2,7 @@
 import { PDFNumber } from 'core/pdf-objects';
 import { arrayToString, trimArray } from 'utils';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -18,7 +18,7 @@ If not, null is returned.
 const parseNumber = (
   input: Uint8Array,
   { onParseNumber }: ParseHandlers = {},
-): ?[PDFNumber, Uint8Array] => {
+): [PDFNumber, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const numRegex = /^(((\+{1}|-{1})?\d+(\.\d+)?)|((\+{1}|-{1})?\.\d+))/;
 

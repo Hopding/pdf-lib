@@ -12,7 +12,10 @@
       "*": [
         "node_modules/*",
         "src/types/*",
-      ]
+      ],
+      "core/*": ["src/core/*"],
+      "utils/*": ["src/utils/*"],
+      "utils": ["src/utils/index.ts"]
     }
   },
   "include": [

@@ -1,4 +1,3 @@
-/* @flow */
 /* eslint-disable no-constant-condition */
 import { error } from 'utils';
 
@@ -11,7 +10,7 @@ import parseXRefTable from './parseXRefTable';
 import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 // import removeComments from './removeComments';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Parses indirect objects from the input bytes
@@ -48,7 +47,7 @@ const parseFooterSection = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers,
-): ?Uint8Array => {
+): Uint8Array | void => {
   let remainder = input;
 
   // Try to parse the XRef table (some PDFs omit the XRef table)

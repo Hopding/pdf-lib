@@ -13,12 +13,12 @@ import parseXRefTable from './parseXRefTable';
 import parseIndirectObj from './parseIndirectObj';
 import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 export type PDFLinearization = {
   paramDict: PDFIndirectObject<PDFLinearizationParams>,
   xref: PDFXRef.Table | PDFIndirectObject<PDFStream>,
-  trailer: ?PDFTrailer,
+  trailer: PDFTrailer,
 };
 
 /**
@@ -38,7 +38,7 @@ const parseLinearization = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): ?[PDFLinearization, Uint8Array] => {
+): [PDFLinearization, Uint8Array] | void => {
   const trimmed = trimArray(input);
 
   // Try to parse a dictionary from the input

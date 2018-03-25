@@ -8,7 +8,7 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import PDFObject from './PDFObject';
 import { PDFIndirectObject } from '.';
 
-class PDFArray<T: $Subtype<PDFObject>> extends PDFObject {
+class PDFArray<T extends PDFObject> extends PDFObject {
   array: Array<T>;
   index: PDFObjectIndex;
 

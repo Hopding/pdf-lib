@@ -1,4 +1,3 @@
-/* @flow */
 /* eslint-disable prefer-destructuring, no-param-reassign */
 import _ from 'lodash';
 
@@ -87,7 +86,7 @@ class PDFPageTree extends PDFDictionary {
 
   // TODO: Pass a "stop" callback to allow "visit" to end traversal early
   // TODO: Allow for optimized tree search given an index
-  traverse = (visit: (Kid, PDFIndirectReference<Kid>) => any) => {
+  traverse = (visit: (k: Kid, r: PDFIndirectReference<Kid>) => any) => {
     if (this.getKids().array.length === 0) return this;
 
     this.getKids().forEach(kidRef => {
@@ -98,7 +97,7 @@ class PDFPageTree extends PDFDictionary {
     return this;
   };
 
-  traverseRight = (visit: (Kid, PDFIndirectReference<Kid>) => any) => {
+  traverseRight = (visit: (k: Kid, r: PDFIndirectReference<Kid>) => any) => {
     if (this.getKids().array.length === 0) return this;
 
     const lastKidRef = _.last(this.getKids().array);
@@ -108,7 +107,7 @@ class PDFPageTree extends PDFDictionary {
     return this;
   };
 
-  ascend = (visit: PDFPageTree => any, visitSelf?: boolean = true) => {
+  ascend = (visit: (t: PDFPageTree) => any, visitSelf?: boolean = true) => {
     if (visitSelf) visit(this);
     const Parent = this.getParent();
     if (!Parent) return;

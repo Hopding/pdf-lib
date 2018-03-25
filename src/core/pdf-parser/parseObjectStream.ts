@@ -15,7 +15,7 @@ import parseNumber from './parseNumber';
 import parseDict from './parseDict';
 import parseArray from './parseArray';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts a PDFDictionary and an array of bytes as input. The PDFDictionary should

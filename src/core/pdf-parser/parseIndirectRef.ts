@@ -2,7 +2,7 @@
 import { PDFIndirectReference } from 'core/pdf-objects';
 import { arrayToString, arrayIndexOf, trimArray } from 'utils';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -18,7 +18,7 @@ If not, null is returned.
 const parseIndirectRef = (
   input: Uint8Array,
   { onParseIndirectRef }: ParseHandlers = {},
-): ?[PDFIndirectReference<*>, Uint8Array] => {
+): [PDFIndirectReference<*>, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const indirectRefRegex = /^(\d+) (\d+) R/;
 

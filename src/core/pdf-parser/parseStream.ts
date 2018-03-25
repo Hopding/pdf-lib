@@ -8,7 +8,7 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import decodeStream from './encoding/decodeStream';
 import parseObjectStream from './parseObjectStream';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes and a PDFDictionary as input. Checks to see if the
@@ -24,7 +24,7 @@ const parseStream = (
   input: Uint8Array,
   dict: PDFDictionary,
   parseHandlers: ParseHandlers = {},
-): ?[Uint8Array, Uint8Array] => {
+): [Uint8Array, Uint8Array] | void => {
   // Check that the next bytes comprise the beginning of a stream
   const trimmed = trimArray(input);
   let startstreamIdx;

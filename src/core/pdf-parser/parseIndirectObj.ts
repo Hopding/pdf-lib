@@ -1,4 +1,3 @@
-/* @flow */
 import { PDFIndirectObject } from 'core/pdf-objects';
 import { error, arrayIndexOf, trimArray, arrayToString } from 'utils';
 
@@ -14,7 +13,7 @@ import parseNumber from './parseNumber';
 import parseArray from './parseArray';
 import parseDictOrStream from './parseDictOrStream';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -31,7 +30,7 @@ const parseIndirectObj = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): ?[PDFIndirectObject<*>, Uint8Array] => {
+): [PDFIndirectObject<*>, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const indirectObjRegex = /^(\d+) (\d+) obj/;
 

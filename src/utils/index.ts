@@ -1,6 +1,12 @@
 import _ from 'lodash';
 
-export type Predicate<A, B> = (A, B) => boolean;
+export interface Predicate<A, B = true> {
+  (a: A, b: B): boolean;
+}
+
+export interface ArrayPredicate<A> {
+  (...a: A[]): boolean;
+}
 
 export const writeToDebugFile = (data, postfix = 0) => {
   // eslint-disable-next-line
@@ -14,15 +20,15 @@ export const error = (msg: string) => {
 
 export const isInt = num => num % 1 === 0;
 
-export const isString = (val): %checks => typeof val === 'string';
+export const isString = (val) => typeof val === 'string';
 
-export const and = (...predicates: Predicate<any>[]) => (...values: any[]) =>
+export const and = (...predicates: ArrayPredicate<any>[]) => (...values: any[]) =>
   predicates.every(predicate => predicate(...values));
 
-export const or = (...predicates: Predicate<any>[]) => (...values: any[]) =>
-  predicates.find(predicate => predicate(...values));
+export const or = (...predicates: ArrayPredicate<any>[]) => (...values: any[]) =>
+  predicates.some(predicate => predicate(...values));
 
-export const not = (predicate: Predicate<any>) => (...values: any[]) =>
+export const not = (predicate: ArrayPredicate<any>) => (...values: any[]) =>
   !predicate(...values);
 
 export const toBoolean = (boolStr: string) => {
@@ -170,7 +176,7 @@ export const arrayFindIndexOf = (arr, predicate, startFrom = 0) => {
 export const findInMap = <K, V>(
   map: Map<K, V>,
   predicate: Predicate<V, K>,
-): ?V => {
+): V | void => {
   for (const [key, val] of map) {
     if (predicate(val, key)) return val;
   }

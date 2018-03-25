@@ -2,7 +2,7 @@
 import { PDFString } from 'core/pdf-objects';
 import { arrayToString, trimArray, arrayCharAt } from 'utils';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -18,7 +18,7 @@ If not, returns null.
 const parseString = (
   input: Uint8Array,
   { onParseString }: ParseHandlers = {},
-): ?[PDFString, Uint8Array] => {
+): [PDFString, Uint8Array] | void => {
   const trimmed = trimArray(input);
   if (arrayCharAt(trimmed, 0) !== '(') return null;
 

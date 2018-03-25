@@ -9,9 +9,7 @@ import {
   PDFArray,
 } from 'core/pdf-objects';
 import { PDFCatalog, PDFPageTree, PDFObjectStream } from 'core/pdf-structures';
-import PDFParser from 'core/pdf-parser/PDFParser';
-
-import type { ParsedPDF } from 'core/pdf-parser/PDFParser';
+import PDFParser, { ParsedPDF } from 'core/pdf-parser/PDFParser';
 
 class PDFDocumentFactory {
   static create = (): PDFDocument => {

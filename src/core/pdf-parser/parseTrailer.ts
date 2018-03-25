@@ -8,7 +8,7 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import parseDict from './parseDict';
 import parseNumber from './parseNumber';
 
-import type { ParseHandlers } from './PDFParser';
+import { ParseHandlers } from './PDFParser';
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -27,7 +27,7 @@ const parseTrailer = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): ?[PDFTrailer, Uint8Array] => {
+): [PDFTrailer, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const trailerRegex = /^trailer[\n|\r| ]*([^]+)startxref[\n|\r| ]+?(\d+)[\n|\r| ]+?%%EOF/;
 
