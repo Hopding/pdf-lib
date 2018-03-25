@@ -4,7 +4,10 @@
   "description": "Library for creating and modifying PDF files in JavaScript",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --notify --no-coverage --watch",
+    "test:ci": "jest --no-coverage",
+    "test:coverage": "jest",
+    "coverage-report": "open coverage/lcov-report/index.html",
     "build": "gulp build",
     "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
     "test:integration:creation": "gulp build && node ./dist/integration-tests/creation/test1.js",
@@ -14,7 +17,17 @@
     "type": "git",
     "url": "git+https://github.com/Hopding/pdf-lib.git"
   },
-  "keywords": ["pdf-lib", "pdf", "document", "create", "modify", "creation", "modification", "edit", "editing"],
+  "keywords": [
+    "pdf-lib",
+    "pdf",
+    "document",
+    "create",
+    "modify",
+    "creation",
+    "modification",
+    "edit",
+    "editing"
+  ],
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -29,7 +42,7 @@
     "png-js": "git+https://github.com/Hopding/png.js.git#c6f0917865029d39c039a143d600a81ff84eadac"
   },
   "devDependencies": {
-    "typescript": "^2.7.2",
+    "@types/jest": "^22.2.2",
     "@types/lodash": "^4.14.106",
     "@types/node": "^9.6.0",
     "@types/pako": "^1.0.0",
@@ -39,11 +52,15 @@
     "gulp-babel": "^7.0.1",
     "gulp-typescript": "^4.0.1",
     "jest": "^22.4.3",
+    "jest-junit": "^3.6.0",
+    "prettier": "^1.11.1",
     "ts-jest": "^22.4.2",
     "tslint": "^5.9.1",
-    "prettier": "^1.11.1"
+    "typescript": "^2.7.2"
   },
   "jest": {
+    "collectCoverage": true,
+    "testResultsProcessor": "./node_modules/jest-junit",
     "transform": {
       "^.+$": "ts-jest"
     },
@@ -58,5 +75,8 @@
       "json",
       "node"
     ]
+  },
+  "jest-junit": {
+    "output": "./coverage/junit.xml"
   }
 }
