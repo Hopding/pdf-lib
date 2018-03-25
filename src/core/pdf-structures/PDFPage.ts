@@ -145,7 +145,7 @@ class PDFPage extends PDFDictionary {
 
   // TODO: Consider allowing *insertion* of content streams so order can be changed
   public addContentStreams = (
-    ...contentStreams: Array<PDFIndirectReference<PDFContentStream>>,
+    ...contentStreams: Array<PDFIndirectReference<PDFContentStream>>
   ) => {
     validateArr(
       contentStreams,

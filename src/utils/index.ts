@@ -19,11 +19,11 @@ export const isInt = (num: number) => num % 1 === 0;
 export const isString = (val: any) => typeof val === 'string';
 
 export const and = (...predicates: Array<ArrayPredicate<any>>) => (
-  ...values: any[],
+  ...values: any[]
 ) => predicates.every((predicate) => predicate(...values));
 
 export const or = (...predicates: Array<ArrayPredicate<any>>) => (
-  ...values: any[],
+  ...values: any[]
 ) => predicates.some((predicate) => predicate(...values));
 
 export const not = (predicate: ArrayPredicate<any>) => (...values: any[]) =>

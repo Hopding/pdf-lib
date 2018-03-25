@@ -6,6 +6,10 @@
     "no-console": false,
     "object-literal-sort-keys": false,
     "quotemark": [true, "single"],
-    "semicolon": [true, "always", "ignore-bound-class-methods"]
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "trailing-comma": [true, {
+      "multiline": { "functions": "ignore" },
+      "esSpecCompliant": true
+    }]
   }
 }

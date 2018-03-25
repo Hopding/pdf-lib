@@ -1,3 +1,4 @@
+/* tslint:disable:ban-types */
 import _ from 'lodash';
 
 import { Predicate } from 'utils';
