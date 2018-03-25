@@ -53,4 +53,18 @@ describe(`parseString`, () => {
     const res2 = parseString(input2);
     expect(res2).toBeNull();
   });
+
+  it(`respects escaped parenthesis`, () => {
+    const input = typedArrayFor('(FOO\\(BAR)');
+    const res = parseString(input);
+    expect(res).toEqual([expect.any(PDFString), expect.any(Uint8Array)]);
+    expect(res[0].string).toEqual('FOO\\(BAR');
+    expect(res[1]).toEqual(typedArrayFor(''));
+  });
+
+  it(`respects escaped backslashes`, () => {
+    const input = typedArrayFor('(FOO\\\\(BAR)');
+    const res = parseString(input);
+    expect(res).toBeNull();
+  });
 });
