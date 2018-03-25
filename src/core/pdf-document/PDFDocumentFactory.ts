@@ -60,7 +60,7 @@ class PDFDocumentFactory {
       !(object instanceof PDFObjectStream) &&
       !(
         object instanceof PDFStream &&
-        object.dictionary.get('Type') === PDFName.from('XRef')
+        object.dictionary.getMaybe('Type') === PDFName.from('XRef')
       );
 
     // Initialize index with objects in the original body

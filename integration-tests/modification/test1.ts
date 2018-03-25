@@ -25,7 +25,7 @@ messes up the text within the "Caution" sections...
 */
 
 const files = {
-  BOL: n => `/Users/user/Desktop/bols/bol${n || ''}.pdf`,
+  BOL: (n: number) => `/Users/user/Desktop/bols/bol${n || ''}.pdf`,
   MINIMAL: '/Users/user/github/pdf-lib/test-pdfs/minimal.pdf',
   PDF_SPEC: '/Users/user/Documents/PDF32000_2008.pdf',
   CMP_SIMPLE_TABLE_DECOMPRESS:

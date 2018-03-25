@@ -23,8 +23,8 @@ import { ParseHandlers } from './PDFParser';
 
 /* eslint-disable prettier/prettier */
 const typeDict = (dict: PDFDictionary) => {
-  if (dict.get('Linearized')) return PDFLinearizationParams.fromDict(dict);
-  switch (dict.get('Type')) {
+  if (dict.getMaybe('Linearized')) return PDFLinearizationParams.fromDict(dict);
+  switch (dict.getMaybe('Type')) {
     case PDFName.from('Catalog'): return PDFCatalog.fromDict(dict);
     case PDFName.from('Pages'):   return PDFPageTree.fromDict(dict);
     case PDFName.from('Page'):    return PDFPage.fromDict(dict);

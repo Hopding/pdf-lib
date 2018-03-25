@@ -4,13 +4,10 @@
   "description": "Library for creating and editing PDF files in JavaScript",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node index.js",
-    "start2": "babel-node index2.js",
     "build": "gulp build",
-    "bts": "tsc",
     "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc src/* --fix",
-    "test:integration:creation": "babel-node integration-tests/creation/test1.js",
-    "test:integration:editing": "babel-node integration-tests/editing/test1.js"
+    "test:integration:creation": "gulp build && node ./dist/integration-tests/creation/test1.js",
+    "test:integration:modification": "gulp build && node ./dist/integration-tests/modification/test1.js"
   },
   "repository": {
     "type": "git",
@@ -26,26 +23,20 @@
     "@types/lodash": "^4.14.106",
     "@types/node": "^9.6.0",
     "@types/pako": "^1.0.0",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.0",
-    "babel-plugin-module-resolver": "^3.0.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-module-resolver": "^3.1.1",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-flow": "^6.23.0",
     "eslint": "^4.7.2",
     "eslint-config-airbnb-base": "^12.0.0",
     "eslint-config-prettier": "^2.6.0",
     "eslint-import-resolver-babel-module": "^4.0.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-prettier": "^2.3.1",
-    "flow-bin": "^0.62.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",
     "gulp-typescript": "^4.0.1",
+    "jest": "^22.4.3",
     "prettier": "^1.7.0",
+    "ts-jest": "^22.4.2",
     "typescript": "^2.7.2"
   },
   "dependencies": {
@@ -55,5 +46,19 @@
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
     "png-js": "git+https://github.com/Hopding/png.js.git#c6f0917865029d39c039a143d600a81ff84eadac"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }
