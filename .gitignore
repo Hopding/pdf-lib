@@ -4,6 +4,9 @@ node_modules
 # Build Dir
 dist
 
+# Test Coverage Data
+coverage
+
 # Error logs
 yarn-error.log
 
