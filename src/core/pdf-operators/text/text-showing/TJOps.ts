@@ -32,7 +32,8 @@ export class Tj extends PDFOperator {
     } else this.string = string;
   }
 
-  public static of = (string: PDFString | PDFHexString | string) => new Tj(string);
+  public static of = (string: PDFString | PDFHexString | string) =>
+    new Tj(string)
 
   public toString = () => this.string.toString() + ' Tj\n';
 
@@ -80,8 +81,9 @@ export class TJ extends PDFOperator {
     );
   }
 
-  public static of = (array: Array<PDFString | PDFHexString | string | number>) =>
-    new TJ(array)
+  public static of = (
+    array: Array<PDFString | PDFHexString | string | number>,
+  ) => new TJ(array)
 
   public bytesSize = () => this.array.bytesSize() + 4; // "...<array> TJ\n"
 

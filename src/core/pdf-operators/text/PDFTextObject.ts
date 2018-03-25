@@ -16,7 +16,8 @@ class PDFTextObject extends PDFOperator {
     this.operators = operators;
   }
 
-  public static of = (...operators: PDFOperator[]) => new PDFTextObject(...operators);
+  public static of = (...operators: PDFOperator[]) =>
+    new PDFTextObject(...operators)
 
   public static validateOperators = (elements: any[]) =>
     validateArr(

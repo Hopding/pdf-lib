@@ -20,10 +20,14 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     this.pdfObject = pdfObject;
   }
 
-  public static of = <A extends PDFObject>(pdfObject: A): PDFIndirectObject<A> =>
-    new PDFIndirectObject(pdfObject)
+  public static of = <A extends PDFObject>(
+    pdfObject: A,
+  ): PDFIndirectObject<A> => new PDFIndirectObject(pdfObject)
 
-  public setReferenceNumbers = (objectNumber: number, generationNumber: number) => {
+  public setReferenceNumbers = (
+    objectNumber: number,
+    generationNumber: number,
+  ) => {
     validate(objectNumber, _.isNumber, 'objectNumber must be a Number');
     validate(generationNumber, _.isNumber, 'generationNumber must be a Number');
 

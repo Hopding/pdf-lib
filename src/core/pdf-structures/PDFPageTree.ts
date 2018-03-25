@@ -98,7 +98,9 @@ class PDFPageTree extends PDFDictionary {
 
   // TODO: Pass a "stop" callback to allow "visit" to end traversal early
   // TODO: Allow for optimized tree search given an index
-  public traverse = (visit: (k: Kid, r: Kid | PDFIndirectReference<Kid>) => any) => {
+  public traverse = (
+    visit: (k: Kid, r: Kid | PDFIndirectReference<Kid>) => any,
+  ) => {
     if (this.Kids.array.length === 0) return this;
 
     this.Kids.forEach((kidRef) => {

@@ -94,7 +94,8 @@ export class Table {
     return this;
   }
 
-  public toString = (): string => `xref\n${this.subsections.map(String).join('\n')}\n`;
+  public toString = (): string =>
+    `xref\n${this.subsections.map(String).join('\n')}\n`
 
   public bytesSize = () =>
     5 + // "xref\n"

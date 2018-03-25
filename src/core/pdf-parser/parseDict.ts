@@ -21,21 +21,17 @@ import parseString from './parseString';
 
 import { ParseHandlers } from './PDFParser';
 
-/* eslint-disable prettier/prettier */
+/* tslint:disable */
 const typeDict = (dict: PDFDictionary) => {
   if (dict.getMaybe('Linearized')) return PDFLinearizationParams.fromDict(dict);
   switch (dict.getMaybe('Type')) {
-    case PDFName.from('Catalog'):
-      return PDFCatalog.fromDict(dict);
-    case PDFName.from('Pages'):
-      return PDFPageTree.fromDict(dict);
-    case PDFName.from('Page'):
-      return PDFPage.fromDict(dict);
-    default:
-      return dict;
+    case PDFName.from('Catalog'): return PDFCatalog.fromDict(dict);
+    case PDFName.from('Pages'):   return PDFPageTree.fromDict(dict);
+    case PDFName.from('Page'):    return PDFPage.fromDict(dict);
+    default:                      return dict;
   }
 };
-/* eslint-enable prettier/prettier */
+/* tslint:enable */
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the

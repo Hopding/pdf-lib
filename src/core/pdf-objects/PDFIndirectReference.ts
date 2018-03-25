@@ -30,7 +30,10 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
     this.generationNumber = generationNumber;
   }
 
-  public static forNumbers = (objectNumber: number, generationNumber: number) => {
+  public static forNumbers = (
+    objectNumber: number,
+    generationNumber: number,
+  ) => {
     const key = `${objectNumber} ${generationNumber}`;
     let indirectRef = pdfIndirectRefPool.get(key);
     if (!indirectRef) {
@@ -44,7 +47,8 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
     return indirectRef;
   }
 
-  public toString = (): string => `${this.objectNumber} ${this.generationNumber} R`;
+  public toString = (): string =>
+    `${this.objectNumber} ${this.generationNumber} R`
 
   public bytesSize = () => this.toString().length;
 

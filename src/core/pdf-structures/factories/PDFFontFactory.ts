@@ -103,7 +103,9 @@ class PDFFontFactory {
   TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
   to broaden support to other fonts.
   */
-  public embedFontIn = (pdfDoc: PDFDocument): PDFIndirectReference<PDFDictionary> => {
+  public embedFontIn = (
+    pdfDoc: PDFDocument,
+  ): PDFIndirectReference<PDFDictionary> => {
     const fontStreamDict = PDFDictionary.from(
       {
         Subtype: PDFName.from('OpenType'),

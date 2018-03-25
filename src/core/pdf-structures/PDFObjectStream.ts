@@ -20,8 +20,10 @@ class PDFObjectStream extends PDFObject {
     this.objects = objects;
   }
 
-  public static from = (dictionary: PDFDictionary, objects: PDFIndirectObject[]) =>
-    new PDFObjectStream(dictionary, objects)
+  public static from = (
+    dictionary: PDFDictionary,
+    objects: PDFIndirectObject[],
+  ) => new PDFObjectStream(dictionary, objects)
 }
 
 export default PDFObjectStream;

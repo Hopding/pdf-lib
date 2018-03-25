@@ -44,7 +44,8 @@ export class K extends PDFOperator {
     this.k = k;
   }
 
-  public static of = (c: number, m: number, y: number, k: number) => new K(c, m, y, k);
+  public static of = (c: number, m: number, y: number, k: number) =>
+    new K(c, m, y, k)
 
   public toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} K\n`;
 

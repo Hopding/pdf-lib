@@ -19,7 +19,8 @@ class PDFBoolean extends PDFObject {
   }
 
   public static fromBool = (bool: boolean) => new PDFBoolean(bool);
-  public static fromString = (boolStr: string) => new PDFBoolean(toBoolean(boolStr));
+  public static fromString = (boolStr: string) =>
+    new PDFBoolean(toBoolean(boolStr))
 
   public toString = (): string => this.boolean.toString();
   public bytesSize = () => this.toString().length;

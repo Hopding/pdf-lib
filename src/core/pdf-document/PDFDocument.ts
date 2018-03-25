@@ -43,7 +43,9 @@ class PDFDocument {
 
   public static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
 
-  public register = <T extends PDFObject>(object: T): PDFIndirectReference<T> => {
+  public register = <T extends PDFObject>(
+    object: T,
+  ): PDFIndirectReference<T> => {
     validate(object, isInstance(PDFObject), 'object must be a PDFObject');
     this.maxObjNum += 1;
     const ref = PDFIndirectReference.forNumbers(this.maxObjNum, 0);
@@ -59,8 +61,10 @@ class PDFDocument {
     return pages;
   }
 
-  public createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
-    PDFPage.create(this.index, size, resources)
+  public createPage = (
+    size: [number, number],
+    resources?: PDFDictionary,
+  ): PDFPage => PDFPage.create(this.index, size, resources)
 
   public addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
@@ -142,12 +146,16 @@ class PDFDocument {
     return fontFactory.embedFontIn(this);
   }
 
-  public addPNG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+  public addPNG = (
+    imageData: Uint8Array,
+  ): PDFIndirectReference<PDFRawStream> => {
     const pngFactory = PNGXObjectFactory.for(imageData);
     return pngFactory.embedImageIn(this);
   }
 
-  public addJPG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+  public addJPG = (
+    imageData: Uint8Array,
+  ): PDFIndirectReference<PDFRawStream> => {
     const jpgFactory = JPEGXObjectFactory.for(imageData);
     return jpgFactory.embedImageIn(this);
   }

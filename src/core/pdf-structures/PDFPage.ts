@@ -181,7 +181,10 @@ class PDFPage extends PDFDictionary {
     return this;
   }
 
-  public addXObject = (key: string, xObject: PDFIndirectReference<PDFStream>) => {
+  public addXObject = (
+    key: string,
+    xObject: PDFIndirectReference<PDFStream>,
+  ) => {
     validate(key, _.isString, '"key" must be a string');
     validate(
       xObject,
