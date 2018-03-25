@@ -112,11 +112,12 @@ class PNGXObjectFactory {
     // if (this.image.transparency.grayscale)
     // if (this.image.transparency.rgb)
 
-    /* eslint-disable prettier/prettier */
-    return this.image.transparency.indexed
-      ? this.loadIndexedAlphaChannel()
-      : this.image.hasAlphaChannel ? this.splitAlphaChannel() : this.finalize();
-    /* eslint-enable prettier/prettier */
+    // prettier-ignore
+    return (
+        this.image.transparency.indexed ? this.loadIndexedAlphaChannel()
+      : this.image.hasAlphaChannel      ? this.splitAlphaChannel()
+      : this.finalize()
+    );
   }
 
   public finalize = () => {

@@ -21,9 +21,9 @@ import parseString from './parseString';
 
 import { ParseHandlers } from './PDFParser';
 
-/* tslint:disable */
 const typeDict = (dict: PDFDictionary) => {
   if (dict.getMaybe('Linearized')) return PDFLinearizationParams.fromDict(dict);
+  // prettier-ignore
   switch (dict.getMaybe('Type')) {
     case PDFName.from('Catalog'): return PDFCatalog.fromDict(dict);
     case PDFName.from('Pages'):   return PDFPageTree.fromDict(dict);
@@ -31,7 +31,6 @@ const typeDict = (dict: PDFDictionary) => {
     default:                      return dict;
   }
 };
-/* tslint:enable */
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the

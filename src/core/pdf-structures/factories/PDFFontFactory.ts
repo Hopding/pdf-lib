@@ -32,25 +32,24 @@ export interface FontFlagOptions {
   ForceBold?: boolean;
 }
 
-/* eslint-disable prettier/prettier */
 /*
 Doing this by bit-twiddling a string, and then parsing it, gets around
 JavaScript converting the results of bit-shifting ops back into 64-bit integers.
 */
+// prettier-ignore
 const fontFlags = (options: FontFlagOptions) => {
   let flags = unsigned32Bit;
-  if (options.FixedPitch) flags = setCharAt(flags, 32 - 1, '1');
-  if (options.Serif) flags = setCharAt(flags, 32 - 2, '1');
-  if (options.Symbolic) flags = setCharAt(flags, 32 - 3, '1');
-  if (options.Script) flags = setCharAt(flags, 32 - 4, '1');
+  if (options.FixedPitch)  flags = setCharAt(flags, 32 - 1, '1');
+  if (options.Serif)       flags = setCharAt(flags, 32 - 2, '1');
+  if (options.Symbolic)    flags = setCharAt(flags, 32 - 3, '1');
+  if (options.Script)      flags = setCharAt(flags, 32 - 4, '1');
   if (options.Nonsymbolic) flags = setCharAt(flags, 32 - 6, '1');
-  if (options.Italic) flags = setCharAt(flags, 32 - 7, '1');
-  if (options.AllCap) flags = setCharAt(flags, 32 - 17, '1');
-  if (options.SmallCap) flags = setCharAt(flags, 32 - 18, '1');
-  if (options.ForceBold) flags = setCharAt(flags, 32 - 19, '1');
+  if (options.Italic)      flags = setCharAt(flags, 32 - 7, '1');
+  if (options.AllCap)      flags = setCharAt(flags, 32 - 17, '1');
+  if (options.SmallCap)    flags = setCharAt(flags, 32 - 18, '1');
+  if (options.ForceBold)   flags = setCharAt(flags, 32 - 19, '1');
   return parseInt(flags, 2);
 };
-/* eslint-enable prettier/prettier */
 
 /**
 This Factory supports TrueType and OpenType fonts. Note that the apparent
