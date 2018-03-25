@@ -7,9 +7,8 @@ import PDFIndirectReference from './PDFIndirectReference';
 import PDFObject from './PDFObject';
 
 class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
-  static of = <A extends PDFObject>(
-    pdfObject: A,
-  ): PDFIndirectObject<A> => new PDFIndirectObject(pdfObject);
+  static of = <A extends PDFObject>(pdfObject: A): PDFIndirectObject<A> =>
+    new PDFIndirectObject(pdfObject);
 
   reference: PDFIndirectReference<T>;
   pdfObject: T;
@@ -24,10 +23,7 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     this.pdfObject = pdfObject;
   }
 
-  setReferenceNumbers = (
-    objectNumber: number,
-    generationNumber: number,
-  ) => {
+  setReferenceNumbers = (objectNumber: number, generationNumber: number) => {
     validate(objectNumber, _.isNumber, 'objectNumber must be a Number');
     validate(generationNumber, _.isNumber, 'generationNumber must be a Number');
 

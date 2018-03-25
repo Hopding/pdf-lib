@@ -43,9 +43,7 @@ class PDFDocument {
     if (!this.catalog) error('"index" does not contain a PDFCatalog object');
   }
 
-  register = <T extends PDFObject>(
-    object: T,
-  ): PDFIndirectReference<T> => {
+  register = <T extends PDFObject>(object: T): PDFIndirectReference<T> => {
     validate(object, isInstance(PDFObject), 'object must be a PDFObject');
     this.maxObjNum += 1;
     const ref = PDFIndirectReference.forNumbers(this.maxObjNum, 0);
@@ -61,10 +59,8 @@ class PDFDocument {
     return pages;
   };
 
-  createPage = (
-    size: [number, number],
-    resources?: PDFDictionary,
-  ): PDFPage => PDFPage.create(this.index, size, resources);
+  createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
+    PDFPage.create(this.index, size, resources);
 
   addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
@@ -146,16 +142,12 @@ class PDFDocument {
     return fontFactory.embedFontIn(this);
   };
 
-  addPNG = (
-    imageData: Uint8Array,
-  ): PDFIndirectReference<PDFRawStream> => {
+  addPNG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
     const pngFactory = PNGXObjectFactory.for(imageData);
     return pngFactory.embedImageIn(this);
   };
 
-  addJPG = (
-    imageData: Uint8Array,
-  ): PDFIndirectReference<PDFRawStream> => {
+  addJPG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
     const jpgFactory = JPEGXObjectFactory.for(imageData);
     return jpgFactory.embedImageIn(this);
   };

@@ -11,8 +11,7 @@ import { isInRange, isNumber, validate } from 'utils/validate';
  * of this operator is affected by the overprint mode.
  */
 export class K extends PDFOperator {
-  static of = (c: number, m: number, y: number, k: number) =>
-    new K(c, m, y, k);
+  static of = (c: number, m: number, y: number, k: number) => new K(c, m, y, k);
 
   c: number;
   y: number;

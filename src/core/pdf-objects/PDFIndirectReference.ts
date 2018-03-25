@@ -9,10 +9,7 @@ const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();
 // TODO: Need to error out if obj or gen numbers are manually set!
 // eslint-disable-next-line no-unused-vars
 class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
-  static forNumbers = (
-    objectNumber: number,
-    generationNumber: number,
-  ) => {
+  static forNumbers = (objectNumber: number, generationNumber: number) => {
     const key = `${objectNumber} ${generationNumber}`;
     let indirectRef = pdfIndirectRefPool.get(key);
     if (!indirectRef) {
@@ -47,8 +44,7 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
     this.generationNumber = generationNumber;
   }
 
-  toString = (): string =>
-    `${this.objectNumber} ${this.generationNumber} R`;
+  toString = (): string => `${this.objectNumber} ${this.generationNumber} R`;
 
   bytesSize = () => this.toString().length;
 

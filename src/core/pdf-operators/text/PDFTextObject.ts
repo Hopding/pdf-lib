@@ -8,8 +8,7 @@ import { isInstance, validateArr } from 'utils/validate';
 
 // TODO: Validate that only valid text operators are passed to this object.
 class PDFTextObject extends PDFOperator {
-  static of = (...operators: PDFOperator[]) =>
-    new PDFTextObject(...operators);
+  static of = (...operators: PDFOperator[]) => new PDFTextObject(...operators);
 
   static validateOperators = (elements: any[]) =>
     validateArr(

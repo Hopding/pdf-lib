@@ -55,9 +55,8 @@ export class Tj extends PDFOperator {
  * of passing offsets to TJ.
  */
 export class TJ extends PDFOperator {
-  static of = (
-    array: Array<PDFString | PDFHexString | string | number>,
-  ) => new TJ(array);
+  static of = (array: Array<PDFString | PDFHexString | string | number>) =>
+    new TJ(array);
 
   array: PDFArray<PDFString | PDFHexString | PDFNumber>;
 

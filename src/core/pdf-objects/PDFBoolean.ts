@@ -7,8 +7,7 @@ import PDFObject from './PDFObject';
 
 class PDFBoolean extends PDFObject {
   static fromBool = (bool: boolean) => new PDFBoolean(bool);
-  static fromString = (boolStr: string) =>
-    new PDFBoolean(toBoolean(boolStr));
+  static fromString = (boolStr: string) => new PDFBoolean(toBoolean(boolStr));
 
   boolean: boolean;
 

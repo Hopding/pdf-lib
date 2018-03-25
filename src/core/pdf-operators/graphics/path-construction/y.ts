@@ -31,8 +31,7 @@ class y extends PDFOperator {
     this.y3 = y3;
   }
 
-  toString = (): string =>
-    `${this.x1} ${this.y1} ${this.x3} ${this.y3} y\n`;
+  toString = (): string => `${this.x1} ${this.y1} ${this.x3} ${this.y3} y\n`;
 
   bytesSize = () => this.toString().length;
 

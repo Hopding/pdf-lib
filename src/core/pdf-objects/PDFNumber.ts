@@ -7,8 +7,7 @@ import PDFObject from './PDFObject';
 
 class PDFNumber extends PDFObject {
   static fromNumber = (num: number) => new PDFNumber(num);
-  static fromString = (numberStr: string) =>
-    new PDFNumber(Number(numberStr));
+  static fromString = (numberStr: string) => new PDFNumber(Number(numberStr));
 
   number: number;
 

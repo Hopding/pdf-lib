@@ -13,8 +13,7 @@ import { isInstance, isNumber, validate } from 'utils/validate';
  * string Tj
  */
 export class SingleQuote extends PDFOperator {
-  static of = (str: PDFString | PDFHexString | string) =>
-    new SingleQuote(str);
+  static of = (str: PDFString | PDFHexString | string) => new SingleQuote(str);
 
   string: PDFString | PDFHexString;
 
