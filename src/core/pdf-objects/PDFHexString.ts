@@ -1,15 +1,14 @@
-
 import _ from 'lodash';
 
 import { addStringToBuffer } from 'utils';
-import { validate, doesMatch } from 'utils/validate';
+import { doesMatch, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
 
 const HEX_STRING_REGEX = /^[\dABCDEFabcdef]*/;
 
 class PDFHexString extends PDFObject {
-  string: string;
+  public string: string;
 
   constructor(string: string) {
     super();
@@ -22,14 +21,14 @@ class PDFHexString extends PDFObject {
     this.string = string;
   }
 
-  static fromString = (string: string) => new PDFHexString(string);
+  public static fromString = (string: string) => new PDFHexString(string);
 
-  toString = (): string => `<${this.string}>`;
+  public toString = (): string => `<${this.string}>`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default PDFHexString;

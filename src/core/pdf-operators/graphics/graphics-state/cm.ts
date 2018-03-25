@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validateArr, isNumber } from 'utils/validate';
+import { isNumber, validateArr } from 'utils/validate';
 
 /**
 Modify the current transformation matrix (CTM) by concatenating the specified
@@ -11,12 +10,12 @@ matrix. Although the operands specify a matrix, they shall be written as six
 separate numbers, not as an array.
 */
 class cm extends PDFOperator {
-  a: number;
-  b: number;
-  c: number;
-  d: number;
-  e: number;
-  f: number;
+  public a: number;
+  public b: number;
+  public c: number;
+  public d: number;
+  public e: number;
+  public f: number;
 
   constructor(
     a: number,
@@ -40,22 +39,22 @@ class cm extends PDFOperator {
     this.f = f;
   }
 
-  static of = (
+  public static of = (
     a: number,
     b: number,
     c: number,
     d: number,
     e: number,
     f: number,
-  ) => new cm(a, b, c, d, e, f);
+  ) => new cm(a, b, c, d, e, f)
 
-  toString = (): string =>
-    `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} cm\n`;
+  public toString = (): string =>
+    `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} cm\n`
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default cm;

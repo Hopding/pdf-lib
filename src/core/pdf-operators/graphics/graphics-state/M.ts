@@ -1,15 +1,14 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the miter limit in the graphics state
 */
 class M extends PDFOperator {
-  miterLimit: number;
+  public miterLimit: number;
 
   constructor(miterLimit: number) {
     super();
@@ -21,14 +20,14 @@ class M extends PDFOperator {
     this.miterLimit = miterLimit;
   }
 
-  static of = (miterLimit: number) => new M(miterLimit);
+  public static of = (miterLimit: number) => new M(miterLimit);
 
-  toString = (): string => `${this.miterLimit} M\n`;
+  public toString = (): string => `${this.miterLimit} M\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default M;

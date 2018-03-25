@@ -1,7 +1,6 @@
-
 import _ from 'lodash';
 import { addStringToBuffer } from 'utils';
-import { validate, isIdentity } from 'utils/validate';
+import { isIdentity, validate } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
@@ -10,8 +9,8 @@ const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();
 // TODO: Need to error out if obj or gen numbers are manually set!
 // eslint-disable-next-line no-unused-vars
 class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
-  objectNumber: number;
-  generationNumber: number;
+  public objectNumber: number;
+  public generationNumber: number;
 
   constructor(
     enforcer: Symbol,
@@ -31,7 +30,7 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
     this.generationNumber = generationNumber;
   }
 
-  static forNumbers = (objectNumber: number, generationNumber: number) => {
+  public static forNumbers = (objectNumber: number, generationNumber: number) => {
     const key = `${objectNumber} ${generationNumber}`;
     let indirectRef = pdfIndirectRefPool.get(key);
     if (!indirectRef) {
@@ -43,14 +42,14 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
       pdfIndirectRefPool.set(key, indirectRef);
     }
     return indirectRef;
-  };
+  }
 
-  toString = (): string => `${this.objectNumber} ${this.generationNumber} R`;
+  public toString = (): string => `${this.objectNumber} ${this.generationNumber} R`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default PDFIndirectReference;

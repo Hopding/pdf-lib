@@ -1,8 +1,7 @@
-
 import _ from 'lodash';
 
-import { and, addStringToBuffer, charCode } from 'utils';
-import { validate, isIdentity, isNotIdentity } from 'utils/validate';
+import { addStringToBuffer, and, charCode } from 'utils';
+import { isIdentity, isNotIdentity, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
 
@@ -10,7 +9,7 @@ const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
 const pdfNamePool: Map<string, PDFName> = new Map();
 
 class PDFName extends PDFObject {
-  key: string;
+  public key: string;
 
   constructor(enforcer: Symbol, key: string) {
     super();
@@ -27,10 +26,10 @@ class PDFName extends PDFObject {
     this.key = key;
   }
 
-  static isRegularChar = (char: string) =>
-    charCode(char) >= charCode('!') && charCode(char) <= charCode('~');
+  public static isRegularChar = (char: string) =>
+    charCode(char) >= charCode('!') && charCode(char) <= charCode('~')
 
-  static from = (str: string): PDFName => {
+  public static from = (str: string): PDFName => {
     validate(str, _.isString, 'PDFName.from() requires string as argument');
     let pdfName = pdfNamePool.get(str);
     if (!pdfName) {
@@ -38,24 +37,24 @@ class PDFName extends PDFObject {
       pdfNamePool.set(str, pdfName);
     }
     return pdfName;
-  };
+  }
 
-  toString = (): string =>
+  public toString = (): string =>
     `/${this.key}`
       .replace('#', '#23')
       .split('')
       .map(
-        char =>
+        (char) =>
           PDFName.isRegularChar(char)
             ? char
             : `#${charCode(char).toString(16)}`,
       )
-      .join('');
+      .join('')
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default PDFName;

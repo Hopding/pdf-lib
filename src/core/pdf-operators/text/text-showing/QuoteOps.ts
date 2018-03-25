@@ -1,11 +1,10 @@
-
 /* eslint-disable new-cap */
-import _ from 'lodash';
+import { PDFHexString, PDFString } from 'core/pdf-objects/index';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import { PDFString, PDFHexString } from 'core/pdf-objects/index';
+import _ from 'lodash';
 
-import { or, addStringToBuffer } from 'utils';
-import { validate, isInstance, isNumber } from 'utils/validate';
+import { addStringToBuffer, or } from 'utils';
+import { isInstance, isNumber, validate } from 'utils/validate';
 
 /**
 Move to the next line and show a text string.
@@ -14,7 +13,7 @@ T*
 string Tj
 */
 export class SingleQuote extends PDFOperator {
-  string: PDFString | PDFHexString;
+  public string: PDFString | PDFHexString;
 
   constructor(string: PDFString | PDFHexString | string) {
     super();
@@ -31,15 +30,15 @@ export class SingleQuote extends PDFOperator {
     } else this.string = string;
   }
 
-  static of = (string: PDFString | PDFHexString | string) =>
-    new SingleQuote(string);
+  public static of = (string: PDFString | PDFHexString | string) =>
+    new SingleQuote(string)
 
-  toString = (): string => `${this.string.toString()} '\n`;
+  public toString = (): string => `${this.string.toString()} '\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
@@ -52,9 +51,9 @@ ac Tc
 string '
 */
 export class DoubleQuote extends PDFOperator {
-  aw: number;
-  ac: number;
-  string: PDFString | PDFHexString;
+  public aw: number;
+  public ac: number;
+  public string: PDFString | PDFHexString;
 
   constructor(
     aw: number,
@@ -77,17 +76,17 @@ export class DoubleQuote extends PDFOperator {
     } else this.string = string;
   }
 
-  static of = (
+  public static of = (
     aw: number,
     ac: number,
     string: PDFString | PDFHexString | string,
-  ) => new DoubleQuote(aw, ac, string);
+  ) => new DoubleQuote(aw, ac, string)
 
-  toString = (): string =>
-    `${this.aw} ${this.ac} ${this.string.toString()} "\n`;
+  public toString = (): string =>
+    `${this.aw} ${this.ac} ${this.string.toString()} "\n`
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }

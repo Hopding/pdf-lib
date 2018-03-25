@@ -1,6 +1,5 @@
-
 import { PDFString } from 'core/pdf-objects';
-import { arrayToString, trimArray, arrayCharAt } from 'utils';
+import { arrayCharAt, arrayToString, trimArray } from 'utils';
 
 import { ParseHandlers } from './PDFParser';
 

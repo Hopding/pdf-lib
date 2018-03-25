@@ -1,18 +1,17 @@
-
 import { PDFArray } from 'core/pdf-objects';
-import { error, trimArray, arrayCharAt } from 'utils';
-import { validate, isIdentity } from 'utils/validate';
+import { arrayCharAt, error, trimArray } from 'utils';
+import { isIdentity, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-import parseNull from './parseNull';
-import parseIndirectRef from './parseIndirectRef';
-import parseString from './parseString';
-import parseHexString from './parseHexString';
-import parseName from './parseName';
 import parseBool from './parseBool';
-import parseNumber from './parseNumber';
 import parseDict from './parseDict';
+import parseHexString from './parseHexString';
+import parseIndirectRef from './parseIndirectRef';
+import parseName from './parseName';
+import parseNull from './parseNull';
+import parseNumber from './parseNumber';
+import parseString from './parseString';
 
 import { ParseHandlers } from './PDFParser';
 

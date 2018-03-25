@@ -1,15 +1,14 @@
-
 import _ from 'lodash';
 
 import { addStringToBuffer, arrayToString } from 'utils';
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
-import PDFObject from './PDFObject';
 import PDFIndirectReference from './PDFIndirectReference';
+import PDFObject from './PDFObject';
 
 class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
-  reference: PDFIndirectReference<T>;
-  pdfObject: T;
+  public reference: PDFIndirectReference<T>;
+  public pdfObject: T;
 
   constructor(pdfObject: T) {
     super();
@@ -21,10 +20,10 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     this.pdfObject = pdfObject;
   }
 
-  static of = <A extends PDFObject>(pdfObject: A): PDFIndirectObject<A> =>
-    new PDFIndirectObject(pdfObject);
+  public static of = <A extends PDFObject>(pdfObject: A): PDFIndirectObject<A> =>
+    new PDFIndirectObject(pdfObject)
 
-  setReferenceNumbers = (objectNumber: number, generationNumber: number) => {
+  public setReferenceNumbers = (objectNumber: number, generationNumber: number) => {
     validate(objectNumber, _.isNumber, 'objectNumber must be a Number');
     validate(generationNumber, _.isNumber, 'generationNumber must be a Number');
 
@@ -33,29 +32,29 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
       generationNumber,
     );
     return this;
-  };
+  }
 
-  setReference = (reference: PDFIndirectReference<T>) => {
+  public setReference = (reference: PDFIndirectReference<T>) => {
     this.reference = reference;
     return this;
-  };
+  }
 
-  getReference = () => this.reference;
-  toReference = () => this.reference.toString();
+  public getReference = () => this.reference;
+  public toReference = () => this.reference.toString();
 
-  toString = (): string => {
+  public toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);
     return arrayToString(buffer);
-  };
+  }
 
-  bytesSize = () =>
+  public bytesSize = () =>
     `${this.reference.objectNumber} ${this.reference.generationNumber} obj\n`
       .length +
     this.pdfObject.bytesSize() +
-    9; // "\nendobj\n\n"
+    9 // "\nendobj\n\n"
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer(
       `${this.reference.objectNumber} ${this.reference.generationNumber} obj\n`,
       buffer,
@@ -63,7 +62,7 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     remaining = this.pdfObject.copyBytesInto(remaining);
     remaining = addStringToBuffer('\nendobj\n\n', remaining);
     return remaining;
-  };
+  }
 }
 
 export default PDFIndirectObject;

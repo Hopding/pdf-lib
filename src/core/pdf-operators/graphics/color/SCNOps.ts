@@ -1,10 +1,9 @@
-
 /* eslint-disable new-cap */
-import _ from 'lodash';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
+import _ from 'lodash';
 
-import { and, not, addStringToBuffer } from 'utils';
-import { validateArr, validate, isNumber } from 'utils/validate';
+import { addStringToBuffer, and, not } from 'utils';
+import { isNumber, validate, validateArr } from 'utils/validate';
 
 /**
 Same as SC but also supports Pattern, Separation, DeviceN and ICCBased colour
@@ -22,8 +21,8 @@ shall be component values specifying a colour in the pattern’s underlying colo
 space. For other types of patterns, these operands shall not be specified.
 */
 export class SCN extends PDFOperator {
-  c: number[];
-  name: string;
+  public c: number[];
+  public name: string;
 
   constructor(c: number[], name?: string) {
     super();
@@ -37,23 +36,23 @@ export class SCN extends PDFOperator {
     this.name = name;
   }
 
-  static of = (c: number[], name?: string) => new SCN(c, name);
+  public static of = (c: number[], name?: string) => new SCN(c, name);
 
-  toString = (): string =>
-    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} SCN\n`;
+  public toString = (): string =>
+    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} SCN\n`
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
 Same as SCN but used for nonstroking operations.
 */
 export class scn extends PDFOperator {
-  c: number[];
-  name: string;
+  public c: number[];
+  public name: string;
 
   constructor(c: number[], name?: string) {
     super();
@@ -67,13 +66,13 @@ export class scn extends PDFOperator {
     this.name = name;
   }
 
-  static of = (c: number[], name?: string) => new scn(c, name);
+  public static of = (c: number[], name?: string) => new scn(c, name);
 
-  toString = (): string =>
-    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} scn\n`;
+  public toString = (): string =>
+    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} scn\n`
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }

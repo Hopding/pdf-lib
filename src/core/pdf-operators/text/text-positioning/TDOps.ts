@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Move to the start of the next line, offset from the start of the current line by
@@ -14,8 +13,8 @@ T_m = T_lm = |0   1   0| × T_lm
              |t_x t_y 1|
 */
 export class Td extends PDFOperator {
-  tx: number;
-  ty: number;
+  public tx: number;
+  public ty: number;
 
   constructor(tx: number, ty: number) {
     super();
@@ -25,14 +24,14 @@ export class Td extends PDFOperator {
     this.ty = ty;
   }
 
-  static of = (tx: number, ty: number) => new Td(tx, ty);
+  public static of = (tx: number, ty: number) => new Td(tx, ty);
 
-  toString = (): string => `${this.tx} ${this.ty} Td\n`;
+  public toString = (): string => `${this.tx} ${this.ty} Td\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
@@ -43,8 +42,8 @@ text state. This operator shall have the same effect as this code:
 tx ty Td
 */
 export class TD extends PDFOperator {
-  tx: number;
-  ty: number;
+  public tx: number;
+  public ty: number;
 
   constructor(tx: number, ty: number) {
     super();
@@ -54,12 +53,12 @@ export class TD extends PDFOperator {
     this.ty = ty;
   }
 
-  static of = (tx: number, ty: number) => new TD(tx, ty);
+  public static of = (tx: number, ty: number) => new TD(tx, ty);
 
-  toString = (): string => `${this.tx} ${this.ty} TD\n`;
+  public toString = (): string => `${this.tx} ${this.ty} TD\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }

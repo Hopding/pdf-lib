@@ -1,8 +1,7 @@
-
+import { PDFIndirectReference, PDFName, PDFObject } from 'core/pdf-objects';
 import PDFDictionary from 'core/pdf-objects/PDFDictionary';
-import { PDFName, PDFObject, PDFIndirectReference } from 'core/pdf-objects';
 import { PDFPageTree } from 'core/pdf-structures';
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -39,7 +38,7 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFCatalog extends PDFDictionary {
-  static create = (
+  public static create = (
     pageTree: PDFIndirectReference<PDFPageTree>,
     index: PDFObjectIndex,
   ): PDFCatalog => {
@@ -55,17 +54,17 @@ class PDFCatalog extends PDFDictionary {
       },
       index,
     );
-  };
+  }
 
-  static fromObject = (
+  public static fromObject = (
     object: { [key: string]: PDFObject },
     index: PDFObjectIndex,
-  ): PDFCatalog => new PDFCatalog(object, index, VALID_KEYS);
+  ): PDFCatalog => new PDFCatalog(object, index, VALID_KEYS)
 
-  static fromDict = (dict: PDFDictionary) => {
+  public static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFCatalog(dict.map, dict.index, VALID_KEYS);
-  };
+  }
 
   get Pages() {
     const Pages = this.get('Pages');

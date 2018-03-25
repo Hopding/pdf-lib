@@ -1,23 +1,23 @@
 import { PDFDictionary, PDFName } from 'core/pdf-objects';
 import {
   PDFCatalog,
-  PDFPageTree,
-  PDFPage,
   PDFLinearizationParams,
+  PDFPage,
+  PDFPageTree,
 } from 'core/pdf-structures';
-import { error, arrayToString, trimArray } from 'utils';
-import { validate, isIdentity } from 'utils/validate';
+import { arrayToString, error, trimArray } from 'utils';
+import { isIdentity, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-import parseNull from './parseNull';
-import parseIndirectRef from './parseIndirectRef';
-import parseString from './parseString';
-import parseHexString from './parseHexString';
-import parseName from './parseName';
-import parseBool from './parseBool';
-import parseNumber from './parseNumber';
 import parseArray from './parseArray';
+import parseBool from './parseBool';
+import parseHexString from './parseHexString';
+import parseIndirectRef from './parseIndirectRef';
+import parseName from './parseName';
+import parseNull from './parseNull';
+import parseNumber from './parseNumber';
+import parseString from './parseString';
 
 import { ParseHandlers } from './PDFParser';
 
@@ -25,10 +25,14 @@ import { ParseHandlers } from './PDFParser';
 const typeDict = (dict: PDFDictionary) => {
   if (dict.getMaybe('Linearized')) return PDFLinearizationParams.fromDict(dict);
   switch (dict.getMaybe('Type')) {
-    case PDFName.from('Catalog'): return PDFCatalog.fromDict(dict);
-    case PDFName.from('Pages'):   return PDFPageTree.fromDict(dict);
-    case PDFName.from('Page'):    return PDFPage.fromDict(dict);
-    default:                      return dict;
+    case PDFName.from('Catalog'):
+      return PDFCatalog.fromDict(dict);
+    case PDFName.from('Pages'):
+      return PDFPageTree.fromDict(dict);
+    case PDFName.from('Page'):
+      return PDFPage.fromDict(dict);
+    default:
+      return dict;
   }
 };
 /* eslint-enable prettier/prettier */

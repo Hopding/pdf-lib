@@ -1,19 +1,18 @@
-
+import fontkit from 'fontkit';
 import _ from 'lodash';
 import pako from 'pako';
-import fontkit from 'fontkit';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import {
-  PDFDictionary,
-  PDFRawStream,
-  PDFNumber,
-  PDFName,
   PDFArray,
+  PDFDictionary,
   PDFIndirectReference,
+  PDFName,
+  PDFNumber,
+  PDFRawStream,
 } from 'core/pdf-objects';
 import { setCharAt } from 'utils';
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -21,17 +20,17 @@ const { Buffer } = require('buffer/');
 
 const unsigned32Bit = '00000000000000000000000000000000';
 
-export type FontFlagOptions = {
-  FixedPitch?: boolean,
-  Serif?: boolean,
-  Symbolic?: boolean,
-  Script?: boolean,
-  Nonsymbolic?: boolean,
-  Italic?: boolean,
-  AllCap?: boolean,
-  SmallCap?: boolean,
-  ForceBold?: boolean,
-};
+export interface FontFlagOptions {
+  FixedPitch?: boolean;
+  Serif?: boolean;
+  Symbolic?: boolean;
+  Script?: boolean;
+  Nonsymbolic?: boolean;
+  Italic?: boolean;
+  AllCap?: boolean;
+  SmallCap?: boolean;
+  ForceBold?: boolean;
+}
 
 /* eslint-disable prettier/prettier */
 /*
@@ -40,15 +39,15 @@ JavaScript converting the results of bit-shifting ops back into 64-bit integers.
 */
 const fontFlags = (options: FontFlagOptions) => {
   let flags = unsigned32Bit;
-  if (options.FixedPitch)  flags = setCharAt(flags, 32 - 1, '1');
-  if (options.Serif)       flags = setCharAt(flags, 32 - 2, '1');
-  if (options.Symbolic)    flags = setCharAt(flags, 32 - 3, '1');
-  if (options.Script)      flags = setCharAt(flags, 32 - 4, '1');
+  if (options.FixedPitch) flags = setCharAt(flags, 32 - 1, '1');
+  if (options.Serif) flags = setCharAt(flags, 32 - 2, '1');
+  if (options.Symbolic) flags = setCharAt(flags, 32 - 3, '1');
+  if (options.Script) flags = setCharAt(flags, 32 - 4, '1');
   if (options.Nonsymbolic) flags = setCharAt(flags, 32 - 6, '1');
-  if (options.Italic)      flags = setCharAt(flags, 32 - 7, '1');
-  if (options.AllCap)      flags = setCharAt(flags, 32 - 17, '1');
-  if (options.SmallCap)    flags = setCharAt(flags, 32 - 18, '1');
-  if (options.ForceBold)   flags = setCharAt(flags, 32 - 19, '1');
+  if (options.Italic) flags = setCharAt(flags, 32 - 7, '1');
+  if (options.AllCap) flags = setCharAt(flags, 32 - 17, '1');
+  if (options.SmallCap) flags = setCharAt(flags, 32 - 18, '1');
+  if (options.ForceBold) flags = setCharAt(flags, 32 - 19, '1');
   return parseInt(flags, 2);
 };
 /* eslint-enable prettier/prettier */
@@ -62,11 +61,11 @@ this class borrows heavily from:
 https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/font/embedded.coffee
 */
 class PDFFontFactory {
-  font: any;
-  scale: number;
-  fontName: string;
-  fontData: Uint8Array;
-  flagOptions: FontFlagOptions;
+  public font: any;
+  public scale: number;
+  public fontName: string;
+  public fontData: Uint8Array;
+  public flagOptions: FontFlagOptions;
 
   constructor(
     name: string,
@@ -94,17 +93,17 @@ class PDFFontFactory {
     this.scale = 1000 / this.font.unitsPerEm;
   }
 
-  static for = (
+  public static for = (
     name: string,
     fontData: Uint8Array,
     flagOptions: FontFlagOptions,
-  ) => new PDFFontFactory(name, fontData, flagOptions);
+  ) => new PDFFontFactory(name, fontData, flagOptions)
 
   /*
   TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
   to broaden support to other fonts.
   */
-  embedFontIn = (pdfDoc: PDFDocument): PDFIndirectReference<PDFDictionary> => {
+  public embedFontIn = (pdfDoc: PDFDocument): PDFIndirectReference<PDFDictionary> => {
     const fontStreamDict = PDFDictionary.from(
       {
         Subtype: PDFName.from('OpenType'),
@@ -167,20 +166,20 @@ class PDFFontFactory {
         pdfDoc.index,
       ),
     );
-  };
+  }
 
-  getWidths = (index: PDFObjectIndex) =>
+  public getWidths = (index: PDFObjectIndex) =>
     PDFArray.fromArray(
       _.range(0, 256)
         .map(this.getCodePointWidth)
         .map(PDFNumber.fromNumber),
       index,
-    );
+    )
 
-  getCodePointWidth = (code: number) =>
+  public getCodePointWidth = (code: number) =>
     this.font.characterSet.includes(code)
       ? this.font.glyphForCodePoint(code).advanceWidth * this.scale
-      : 0;
+      : 0
 }
 
 export default PDFFontFactory;

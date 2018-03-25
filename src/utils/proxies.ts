@@ -1,17 +1,21 @@
 import _ from 'lodash';
 
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
 const EMPTY_ARR = [] as any[];
 
 interface TypedArrayProxyConfig {
-  methods?: Function[],
-  set?: (k: string | number | symbol, v: any) => void,
-  get?: (k: string | number | symbol) => any,
+  methods?: Function[];
+  set?: (k: string | number | symbol, v: any) => void;
+  get?: (k: string | number | symbol) => any;
 }
 
 // TODO: See if this can be refined/simplified at all...
-export const typedArrayProxy = <T extends Function>(obj: any, type: T, config: TypedArrayProxyConfig = {}) => {
+export const typedArrayProxy = <T extends Function>(
+  obj: any,
+  type: T,
+  config: TypedArrayProxyConfig = {},
+) => {
   _(config.methods).forEach((val: Function, key) => {
     obj[key] = new Proxy(obj[key], {
       apply: (target, thisArg, elements) =>

@@ -1,10 +1,9 @@
-
 /* eslint-disable new-cap */
-import _ from 'lodash';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
+import _ from 'lodash';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the text font, Tf, to font and the text font size, Tfs, to size. font shall
@@ -14,8 +13,8 @@ initial value for either font or size; they shall be specified explicitly by
 using Tf before any text is shown.
 */
 class Tf extends PDFOperator {
-  font: string; // TODO: Should this be a PDFName?
-  size: number;
+  public font: string; // TODO: Should this be a PDFName?
+  public size: number;
 
   constructor(font: string, size: number) {
     super();
@@ -25,14 +24,14 @@ class Tf extends PDFOperator {
     this.size = size;
   }
 
-  static of = (font: string, size: number) => new Tf(font, size);
+  public static of = (font: string, size: number) => new Tf(font, size);
 
-  toString = (): string => `${this.font} ${this.size} Tf\n`;
+  public toString = (): string => `${this.font} ${this.size} Tf\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default Tf;

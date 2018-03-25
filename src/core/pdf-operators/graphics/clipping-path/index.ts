@@ -1,4 +1,3 @@
-
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 export default {

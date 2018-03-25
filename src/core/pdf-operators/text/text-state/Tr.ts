@@ -1,16 +1,15 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the text rendering mode, Tmode, to render, which shall be an integer.
 Initial value: 0.
 */
 class Tr extends PDFOperator {
-  render: number;
+  public render: number;
 
   constructor(render: number) {
     super();
@@ -18,14 +17,14 @@ class Tr extends PDFOperator {
     this.render = render;
   }
 
-  static of = (render: number) => new Tr(render);
+  public static of = (render: number) => new Tr(render);
 
-  toString = (): string => `${this.render} Tr\n`;
+  public toString = (): string => `${this.render} Tr\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default Tr;

@@ -1,22 +1,21 @@
-
 /* eslint-disable new-cap */
-import _ from 'lodash';
-import PDFOperator from 'core/pdf-operators/PDFOperator';
 import {
-  PDFString,
+  PDFArray,
   PDFHexString,
   PDFNumber,
-  PDFArray,
+  PDFString,
 } from 'core/pdf-objects/index';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
+import _ from 'lodash';
 
-import { or, addStringToBuffer } from 'utils';
-import { validate, validateArr, isInstance, isNumber } from 'utils/validate';
+import { addStringToBuffer, or } from 'utils';
+import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
 
 /**
 Show a text string.
 */
 export class Tj extends PDFOperator {
-  string: PDFString | PDFHexString;
+  public string: PDFString | PDFHexString;
 
   constructor(string: PDFString | PDFHexString | string) {
     super();
@@ -33,14 +32,14 @@ export class Tj extends PDFOperator {
     } else this.string = string;
   }
 
-  static of = (string: PDFString | PDFHexString | string) => new Tj(string);
+  public static of = (string: PDFString | PDFHexString | string) => new Tj(string);
 
-  toString = () => this.string.toString() + ' Tj\n';
+  public toString = () => this.string.toString() + ' Tj\n';
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
@@ -56,9 +55,9 @@ the left or down by the given amount. Figure 46 shows an example of the effect
 of passing offsets to TJ.
 */
 export class TJ extends PDFOperator {
-  array: PDFArray<PDFString | PDFHexString | PDFNumber>;
+  public array: PDFArray<PDFString | PDFHexString | PDFNumber>;
 
-  constructor(array: (PDFString | PDFHexString | string | number)[]) {
+  constructor(array: Array<PDFString | PDFHexString | string | number>) {
     super();
     validateArr(
       array,
@@ -73,7 +72,7 @@ export class TJ extends PDFOperator {
     );
 
     this.array = PDFArray.fromArray(
-      array.map(elem => {
+      array.map((elem) => {
         if (_.isString(elem)) return PDFString.fromString(elem);
         else if (_.isNumber(elem)) return PDFNumber.fromNumber(elem);
         return elem;
@@ -81,14 +80,14 @@ export class TJ extends PDFOperator {
     );
   }
 
-  static of = (array: (PDFString | PDFHexString | string | number)[]) =>
-    new TJ(array);
+  public static of = (array: Array<PDFString | PDFHexString | string | number>) =>
+    new TJ(array)
 
-  bytesSize = () => this.array.bytesSize() + 4; // "...<array> TJ\n"
+  public bytesSize = () => this.array.bytesSize() + 4; // "...<array> TJ\n"
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = this.array.copyBytesInto(buffer);
     remaining = addStringToBuffer(' TJ\n', buffer);
     return remaining;
-  };
+  }
 }

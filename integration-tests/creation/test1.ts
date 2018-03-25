@@ -4,18 +4,18 @@ import _ from 'lodash';
 
 import PDFDocumentFactory from 'core/pdf-document/PDFDocumentFactory';
 import PDFDocumentWriter from 'core/pdf-document/PDFDocumentWriter';
-import PDFPage from 'core/pdf-structures/PDFPage';
+import { PDFDictionary, PDFName } from 'core/pdf-objects';
 import PDFOperators from 'core/pdf-operators/index';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
-import { PDFName, PDFDictionary } from 'core/pdf-objects';
+import PDFPage from 'core/pdf-structures/PDFPage';
 
 import {
+  createImageGraphic,
   createSpecGraphic,
   createTextGraphic,
-  createImageGraphic,
 } from '../content-streams';
 import fonts from '../fonts';
-import { pngImages, jpgImages } from '../images';
+import { jpgImages, pngImages } from '../images';
 
 const pdfDoc = PDFDocumentFactory.create();
 

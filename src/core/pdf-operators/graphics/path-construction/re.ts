@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Append a rectangle to the current path as a complete subpath, with lower-left
@@ -18,10 +17,10 @@ h
 ```
 */
 class re extends PDFOperator {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  public x: number;
+  public y: number;
+  public width: number;
+  public height: number;
 
   constructor(x: number, y: number, width: number, height: number) {
     super();
@@ -35,16 +34,16 @@ class re extends PDFOperator {
     this.height = height;
   }
 
-  static of = (x: number, y: number, width: number, height: number) =>
-    new re(x, y, width, height);
+  public static of = (x: number, y: number, width: number, height: number) =>
+    new re(x, y, width, height)
 
-  toString = (): string =>
-    `${this.x} ${this.y} ${this.width} ${this.height} re\n`;
+  public toString = (): string =>
+    `${this.x} ${this.y} ${this.width} ${this.height} re\n`
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default re;

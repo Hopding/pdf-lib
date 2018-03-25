@@ -1,15 +1,14 @@
-
 /* eslint-disable class-methods-use-this */
 /* eslint-disable getter-return */
 import _ from 'lodash';
 
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { addStringToBuffer } from 'utils';
-import { validateArr, isInstance } from 'utils/validate';
+import { isInstance, validateArr } from 'utils/validate';
 
 // TODO: Validate that only valid text operators are passed to this object.
 class PDFTextObject extends PDFOperator {
-  operators: PDFOperator[];
+  public operators: PDFOperator[];
 
   constructor(...operators: PDFOperator[]) {
     super();
@@ -17,27 +16,27 @@ class PDFTextObject extends PDFOperator {
     this.operators = operators;
   }
 
-  static of = (...operators: PDFOperator[]) => new PDFTextObject(...operators);
+  public static of = (...operators: PDFOperator[]) => new PDFTextObject(...operators);
 
-  static validateOperators = (elements: any[]) =>
+  public static validateOperators = (elements: any[]) =>
     validateArr(
       elements,
       isInstance(PDFOperator),
       'only PDFOperators can be pushed to a PDFTextObject',
-    );
+    )
 
-  operatorsBytesSize = () =>
+  public operatorsBytesSize = () =>
     _(this.operators)
       .filter(Boolean)
-      .map(op => op.bytesSize())
-      .sum();
+      .map((op) => op.bytesSize())
+      .sum()
 
-  bytesSize = () =>
+  public bytesSize = () =>
     3 + // "BT\n"
     this.operatorsBytesSize() +
-    3; // "ET\n"
+    3 // "ET\n"
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('BT\n', buffer);
 
     remaining = this.operators
@@ -49,7 +48,7 @@ class PDFTextObject extends PDFOperator {
 
     remaining = addStringToBuffer('ET\n', remaining);
     return remaining;
-  };
+  }
 }
 
 export default PDFTextObject;

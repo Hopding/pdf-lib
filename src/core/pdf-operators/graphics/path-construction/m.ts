@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Begin a new subpath by moving the current point to coordinates (x, y), omitting
@@ -12,8 +11,8 @@ current path was also m, the new m overrides it; no vestige of the previous m
 operation remains in the path.
 */
 class m extends PDFOperator {
-  x: number;
-  y: number;
+  public x: number;
+  public y: number;
 
   constructor(x: number, y: number) {
     super();
@@ -23,14 +22,14 @@ class m extends PDFOperator {
     this.y = y;
   }
 
-  static of = (x: number, y: number) => new m(x, y);
+  public static of = (x: number, y: number) => new m(x, y);
 
-  toString = (): string => `${this.x} ${this.y} m\n`;
+  public toString = (): string => `${this.x} ${this.y} m\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default m;

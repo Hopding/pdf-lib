@@ -1,4 +1,3 @@
-
 import _ from 'lodash';
 
 import { addStringToBuffer } from 'utils';
@@ -7,7 +6,7 @@ import { validate } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 class PDFNumber extends PDFObject {
-  number: number;
+  public number: number;
 
   constructor(number: number) {
     super();
@@ -15,15 +14,15 @@ class PDFNumber extends PDFObject {
     this.number = number;
   }
 
-  static fromNumber = (number: number) => new PDFNumber(number);
-  static fromString = (numberStr: string) => new PDFNumber(Number(numberStr));
+  public static fromNumber = (number: number) => new PDFNumber(number);
+  public static fromString = (numberStr: string) => new PDFNumber(Number(numberStr));
 
-  toString = (): string => this.number.toString();
+  public toString = (): string => this.number.toString();
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default PDFNumber;

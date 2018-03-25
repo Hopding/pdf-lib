@@ -1,6 +1,6 @@
-import { PDFRawStream, PDFName, PDFDictionary } from 'core/pdf-objects';
+import { PDFDictionary, PDFName, PDFRawStream } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
-import { error, arrayIndexOf, arrayToString, trimArray } from 'utils';
+import { arrayIndexOf, arrayToString, error, trimArray } from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -84,7 +84,8 @@ export default (
   if (dict.getMaybe('Type') === PDFName.from('ObjStm')) {
     if (dict.get('Filter') !== PDFName.from('FlateDecode')) {
       error(
-        `Cannot decode "${String(dict.get('Filter')) || 'undefined'}" Object Streams`,
+        `Cannot decode "${String(dict.get('Filter')) ||
+          'undefined'}" Object Streams`,
       );
     }
 

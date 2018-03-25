@@ -1,6 +1,5 @@
-
 import { PDFHeader } from 'core/pdf-structures';
-import { arrayToString, trimArray, arrayCharAt, arrayIndexOf } from 'utils';
+import { arrayCharAt, arrayIndexOf, arrayToString, trimArray } from 'utils';
 
 import { ParseHandlers } from './PDFParser';
 

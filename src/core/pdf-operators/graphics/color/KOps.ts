@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
-import { and, addStringToBuffer } from 'utils';
-import { validate, isNumber, isInRange } from 'utils/validate';
+import { addStringToBuffer, and } from 'utils';
+import { isInRange, isNumber, validate } from 'utils/validate';
 
 /**
 Set the stroking colour space to DeviceCMYK (or the DefaultCMYK colour space and
@@ -12,10 +11,10 @@ between 0.0 (zero concentration) and 1.0 (maximum concentration). The behaviour
 of this operator is affected by the overprint mode.
 */
 export class K extends PDFOperator {
-  c: number;
-  y: number;
-  m: number;
-  k: number;
+  public c: number;
+  public y: number;
+  public m: number;
+  public k: number;
 
   constructor(c: number, m: number, y: number, k: number) {
     super();
@@ -45,24 +44,24 @@ export class K extends PDFOperator {
     this.k = k;
   }
 
-  static of = (c: number, m: number, y: number, k: number) => new K(c, m, y, k);
+  public static of = (c: number, m: number, y: number, k: number) => new K(c, m, y, k);
 
-  toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} K\n`;
+  public toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} K\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
 Same as K but used for nonstroking operations.
 */
 export class k extends PDFOperator {
-  c: number;
-  y: number;
-  m: number;
-  k: number;
+  public c: number;
+  public y: number;
+  public m: number;
+  public k: number;
 
   constructor(c: number, m: number, y: number, key: number) {
     super();
@@ -92,13 +91,13 @@ export class k extends PDFOperator {
     this.k = key;
   }
 
-  static of = (c: number, m: number, y: number, key: number) =>
-    new k(c, m, y, key);
+  public static of = (c: number, m: number, y: number, key: number) =>
+    new k(c, m, y, key)
 
-  toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} k\n`;
+  public toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} k\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }

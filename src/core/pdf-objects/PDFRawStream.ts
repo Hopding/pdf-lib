@@ -1,11 +1,10 @@
-
 import { addStringToBuffer } from 'utils';
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
-import { PDFStream, PDFDictionary } from '.';
+import { PDFDictionary, PDFStream } from '.';
 
 class PDFRawStream extends PDFStream {
-  content: Uint8Array;
+  public content: Uint8Array;
 
   constructor(dictionary: PDFDictionary, content: Uint8Array) {
     super(dictionary);
@@ -17,17 +16,17 @@ class PDFRawStream extends PDFStream {
     this.content = content;
   }
 
-  static from = (dictionary: PDFDictionary, content: Uint8Array) =>
-    new PDFRawStream(dictionary, content);
+  public static from = (dictionary: PDFDictionary, content: Uint8Array) =>
+    new PDFRawStream(dictionary, content)
 
-  bytesSize = () =>
+  public bytesSize = () =>
     this.dictionary.bytesSize() +
     1 + // "\n"
     7 + // "stream\n"
     this.content.length +
-    10; // "\nendstream"
+    10 // "\nendstream"
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     this.validateDictionary();
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
@@ -37,7 +36,7 @@ class PDFRawStream extends PDFStream {
 
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
-  };
+  }
 }
 
 export default PDFRawStream;

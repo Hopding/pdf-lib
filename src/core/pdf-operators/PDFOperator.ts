@@ -1,18 +1,17 @@
-
-import { error, addStringToBuffer } from 'utils';
-import { validate, isIdentity } from 'utils/validate';
+import { addStringToBuffer, error } from 'utils';
+import { isIdentity, validate } from 'utils/validate';
 
 class PDFOperator {
-  toString = (): string =>
-    error(`toString() is not implemented on ${this.constructor.name}`);
+  public toString = (): string =>
+    error(`toString() is not implemented on ${this.constructor.name}`)
 
-  bytesSize = (): number =>
-    error(`bytesSize() is not implemented on ${this.constructor.name}`);
+  public bytesSize = (): number =>
+    error(`bytesSize() is not implemented on ${this.constructor.name}`)
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    error(`copyBytesInto() is not implemented on ${this.constructor.name}`);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    error(`copyBytesInto() is not implemented on ${this.constructor.name}`)
 
-  static createSingletonOp = (op: string) => {
+  public static createSingletonOp = (op: string) => {
     const ENFORCER = Symbol(`${op}_ENFORCER`);
 
     class Singleton extends PDFOperator {
@@ -25,20 +24,20 @@ class PDFOperator {
         );
       }
 
-      static operator: Singleton;
+      public static operator: Singleton;
 
-      toString = (): string => `${op}\n`;
+      public toString = (): string => `${op}\n`;
 
-      bytesSize = (): number => 2;
+      public bytesSize = (): number => 2;
 
-      copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-        addStringToBuffer(this.toString(), buffer);
-    };
+      public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+        addStringToBuffer(this.toString(), buffer)
+    }
 
     Singleton.operator = new Singleton(ENFORCER);
 
     return Singleton;
-  };
+  }
 }
 
 export default PDFOperator;

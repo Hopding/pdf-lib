@@ -3,8 +3,8 @@ import { PDFDictionary, PDFStream } from 'core/pdf-objects';
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import { PDFObjectStream } from 'core/pdf-structures';
 
-import parseStream from './parseStream';
 import parseDict from './parseDict';
+import parseStream from './parseStream';
 
 import { ParseHandlers } from './PDFParser';
 

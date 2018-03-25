@@ -1,23 +1,22 @@
-
 import clippingPathOps from './graphics/clipping-path';
 
 import { CS, cs } from './graphics/color/CSOps';
-import { SC, sc } from './graphics/color/SCOps';
-import { SCN, scn } from './graphics/color/SCNOps';
 import { G, g } from './graphics/color/GOps';
-import { RG, rg } from './graphics/color/RGOps';
 import { K, k } from './graphics/color/KOps';
+import { RG, rg } from './graphics/color/RGOps';
+import { SCN, scn } from './graphics/color/SCNOps';
+import { SC, sc } from './graphics/color/SCOps';
 
-import QOps from './graphics/graphics-state/QOps';
 import cm from './graphics/graphics-state/cm';
-import w from './graphics/graphics-state/w';
-import M from './graphics/graphics-state/M';
 import d from './graphics/graphics-state/d';
-import ri from './graphics/graphics-state/ri';
-import i from './graphics/graphics-state/i';
 import gs from './graphics/graphics-state/gs';
+import i from './graphics/graphics-state/i';
 import J from './graphics/graphics-state/lineCap';
 import j from './graphics/graphics-state/lineJoin';
+import M from './graphics/graphics-state/M';
+import QOps from './graphics/graphics-state/QOps';
+import ri from './graphics/graphics-state/ri';
+import w from './graphics/graphics-state/w';
 
 import c from './graphics/path-construction/c';
 import h from './graphics/path-construction/h';
@@ -33,7 +32,7 @@ import TAsterisk from './text/text-positioning/T-asterisk';
 import { TD, Td } from './text/text-positioning/TDOps';
 import Tm from './text/text-positioning/Tm';
 
-import { SingleQuote, DoubleQuote } from './text/text-showing/QuoteOps';
+import { DoubleQuote, SingleQuote } from './text/text-showing/QuoteOps';
 import { TJ, Tj } from './text/text-showing/TJOps';
 
 import Tc from './text/text-state/Tc';

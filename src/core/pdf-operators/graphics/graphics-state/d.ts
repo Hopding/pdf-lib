@@ -1,17 +1,16 @@
-
 /* eslint-disable new-cap */
-import _ from 'lodash';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
+import _ from 'lodash';
 
 import { addStringToBuffer, or } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the line dash pattern in the graphics state
 */
 class d extends PDFOperator {
-  dashArray: [number, number];
-  dashPhase: number;
+  public dashArray: [number, number];
+  public dashPhase: number;
 
   constructor(dashArray: [number, number], dashPhase: number) {
     super();
@@ -34,19 +33,19 @@ class d extends PDFOperator {
     this.dashPhase = dashPhase;
   }
 
-  static of = (dashArray: [number, number], dashPhase: number) =>
-    new d(dashArray, dashPhase);
+  public static of = (dashArray: [number, number], dashPhase: number) =>
+    new d(dashArray, dashPhase)
 
-  toString = (): string =>
+  public toString = (): string =>
     _.isNil(this.dashArray[0]) && _.isNil(this.dashArray[1])
       ? `[] ${this.dashPhase} d\n`
       : `[${String(this.dashArray[0])} ${String(this.dashArray[1])}] ` +
-        `${this.dashPhase} d\n`;
+        `${this.dashPhase} d\n`
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default d;

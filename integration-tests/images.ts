@@ -10,7 +10,7 @@ export const pngImages = _.mapValues(
     greyscaleBird: `${imagesDir}/greyscale-bird.png`,
     smallMario: `${imagesDir}/small-mario.png`,
   },
-  filePath => fs.readFileSync(filePath),
+  (filePath) => fs.readFileSync(filePath),
 );
 
 export const jpgImages = _.mapValues(
@@ -18,5 +18,5 @@ export const jpgImages = _.mapValues(
     catUnicorn: `${imagesDir}/cat-riding-unicorn.jpg`,
     minions: `${imagesDir}/mini.jpg`,
   },
-  filePath => fs.readFileSync(filePath),
+  (filePath) => fs.readFileSync(filePath),
 );

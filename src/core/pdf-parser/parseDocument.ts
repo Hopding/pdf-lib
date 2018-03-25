@@ -4,10 +4,10 @@ import { error } from 'utils';
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseHeader from './parseHeader';
-import parseLinearization from './parseLinearization';
 import parseIndirectObj from './parseIndirectObj';
-import parseXRefTable from './parseXRefTable';
+import parseLinearization from './parseLinearization';
 import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
+import parseXRefTable from './parseXRefTable';
 // import removeComments from './removeComments';
 
 import { ParseHandlers } from './PDFParser';

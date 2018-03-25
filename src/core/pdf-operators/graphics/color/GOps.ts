@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
-import { and, addStringToBuffer } from 'utils';
-import { validate, isNumber, isInRange } from 'utils/validate';
+import { addStringToBuffer, and } from 'utils';
+import { isInRange, isNumber, validate } from 'utils/validate';
 
 /**
 Set the stroking colour space to DeviceGray (or the DefaultGray colour space)
@@ -11,7 +10,7 @@ and set the gray level to use for stroking operations. gray shall be a number
 between 0.0 (black) and 1.0 (white).
 */
 export class G extends PDFOperator {
-  gray: number;
+  public gray: number;
 
   constructor(gray: number) {
     super();
@@ -23,21 +22,21 @@ export class G extends PDFOperator {
     this.gray = gray;
   }
 
-  static of = (gray: number) => new G(gray);
+  public static of = (gray: number) => new G(gray);
 
-  toString = (): string => `${this.gray} G\n`;
+  public toString = (): string => `${this.gray} G\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
 Same as G but used for nonstroking operations.
 */
 export class g extends PDFOperator {
-  gray: number;
+  public gray: number;
 
   constructor(gray: number) {
     super();
@@ -45,12 +44,12 @@ export class g extends PDFOperator {
     this.gray = gray;
   }
 
-  static of = (gray: number) => new g(gray);
+  public static of = (gray: number) => new g(gray);
 
-  toString = (): string => `${this.gray} g\n`;
+  public toString = (): string => `${this.gray} g\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }

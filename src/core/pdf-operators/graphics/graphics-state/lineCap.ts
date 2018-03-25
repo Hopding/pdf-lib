@@ -1,15 +1,14 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, oneOf } from 'utils/validate';
+import { oneOf, validate } from 'utils/validate';
 
 /**
 Set the line cap style in the graphics state
 */
 class J extends PDFOperator {
-  lineCap: number;
+  public lineCap: number;
 
   constructor(lineCap: number) {
     super();
@@ -21,14 +20,14 @@ class J extends PDFOperator {
     this.lineCap = lineCap;
   }
 
-  static of = (lineCap: number) => new J(lineCap);
+  public static of = (lineCap: number) => new J(lineCap);
 
-  toString = (): string => `${this.lineCap} J\n`;
+  public toString = (): string => `${this.lineCap} J\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default J;

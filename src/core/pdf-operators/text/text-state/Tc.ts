@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the character spacing, Tc, to charSpace, which shall be a number expressed
@@ -11,7 +10,7 @@ in unscaled text space units. Character spacing shall be
 used by the Tj, TJ, and ' operators. Initial value: 0.
 */
 class Tc extends PDFOperator {
-  charSpace: number;
+  public charSpace: number;
 
   constructor(charSpace: number) {
     super();
@@ -23,14 +22,14 @@ class Tc extends PDFOperator {
     this.charSpace = charSpace;
   }
 
-  static of = (charSpace: number) => new Tc(charSpace);
+  public static of = (charSpace: number) => new Tc(charSpace);
 
-  toString = (): string => `${this.charSpace} Tc\n`;
+  public toString = (): string => `${this.charSpace} Tc\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default Tc;

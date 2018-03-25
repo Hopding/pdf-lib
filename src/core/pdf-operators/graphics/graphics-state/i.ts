@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isInRange } from 'utils/validate';
+import { isInRange, validate } from 'utils/validate';
 
 /**
 Set the flatness tolerance in the graphics state. flatness is a number in the
@@ -11,7 +10,7 @@ range 0 to 100; a value of 0 shall specify the output device’s default flatnes
 tolerance.
 */
 class i extends PDFOperator {
-  flatness: number;
+  public flatness: number;
 
   constructor(flatness: number) {
     super();
@@ -23,14 +22,14 @@ class i extends PDFOperator {
     this.flatness = flatness;
   }
 
-  static of = (flatness: number) => new i(flatness);
+  public static of = (flatness: number) => new i(flatness);
 
-  toString = (): string => `${this.flatness} i\n`;
+  public toString = (): string => `${this.flatness} i\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default i;

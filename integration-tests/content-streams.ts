@@ -1,13 +1,18 @@
+import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
+import { PDFDictionary } from 'core/pdf-objects';
 import PDFOperators from 'core/pdf-operators';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { PDFContentStream } from 'core/pdf-structures';
-import { PDFDictionary } from 'core/pdf-objects';
-import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 const { Q, q, cm, m, l, S, w, d, re, g, c, b, B, RG, rg, Do } = PDFOperators;
 const { Tf, Tj, Td, Tr } = PDFOperators;
 
-export const createSpecGraphic = (index: PDFObjectIndex, x = 0, y = 0, scale = 1) =>
+export const createSpecGraphic = (
+  index: PDFObjectIndex,
+  x = 0,
+  y = 0,
+  scale = 1,
+) =>
   PDFContentStream.of(
     PDFDictionary.from(new Map(), index),
     Q.operator,

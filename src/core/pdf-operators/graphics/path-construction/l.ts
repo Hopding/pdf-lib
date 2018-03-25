@@ -1,17 +1,16 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 (lowercase L) Append a straight line segment from the current point to the
 point (x, y). The new current point shall be (x, y).
 */
 class l extends PDFOperator {
-  x: number;
-  y: number;
+  public x: number;
+  public y: number;
 
   constructor(x: number, y: number) {
     super();
@@ -21,14 +20,14 @@ class l extends PDFOperator {
     this.y = y;
   }
 
-  static of = (x: number, y: number) => new l(x, y);
+  public static of = (x: number, y: number) => new l(x, y);
 
-  toString = (): string => `${this.x} ${this.y} l\n`;
+  public toString = (): string => `${this.x} ${this.y} l\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default l;

@@ -1,17 +1,16 @@
-
-import PNG from 'png-js';
 import pako from 'pako';
+import PNG from 'png-js';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import {
-  PDFDictionary,
-  PDFName,
   PDFArray,
+  PDFDictionary,
+  PDFIndirectReference,
+  PDFName,
   PDFNumber,
   PDFRawStream,
-  PDFIndirectReference,
 } from 'core/pdf-objects';
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
 const { Buffer } = require('buffer/');
 
@@ -21,14 +20,14 @@ this class borrows heavily from:
 https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
 */
 class PNGXObjectFactory {
-  image: PNG;
-  width: number;
-  height: number;
-  imgData: Uint8Array;
-  alphaChannel: Uint8Array;
+  public image: PNG;
+  public width: number;
+  public height: number;
+  public imgData: Uint8Array;
+  public alphaChannel: Uint8Array;
 
-  xObjDict: PDFDictionary;
-  document: PDFDocument;
+  public xObjDict: PDFDictionary;
+  public document: PDFDocument;
 
   constructor(data: Uint8Array) {
     validate(
@@ -49,9 +48,9 @@ class PNGXObjectFactory {
     this.imgData = this.image.imgData;
   }
 
-  static for = (data: Uint8Array) => new PNGXObjectFactory(data);
+  public static for = (data: Uint8Array) => new PNGXObjectFactory(data);
 
-  embedImageIn = (
+  public embedImageIn = (
     document: PDFDocument,
   ): PDFIndirectReference<PDFRawStream> => {
     this.document = document;
@@ -114,15 +113,13 @@ class PNGXObjectFactory {
     // if (this.image.transparency.rgb)
 
     /* eslint-disable prettier/prettier */
-    return (
-        this.image.transparency.indexed ? this.loadIndexedAlphaChannel()
-      : this.image.hasAlphaChannel      ? this.splitAlphaChannel()
-      : this.finalize()
-    );
+    return this.image.transparency.indexed
+      ? this.loadIndexedAlphaChannel()
+      : this.image.hasAlphaChannel ? this.splitAlphaChannel() : this.finalize();
     /* eslint-enable prettier/prettier */
-  };
+  }
 
-  finalize = () => {
+  public finalize = () => {
     if (this.alphaChannel) {
       const alphaStreamDict = PDFDictionary.from(
         {
@@ -152,9 +149,9 @@ class PNGXObjectFactory {
       PDFRawStream.from(this.xObjDict, this.imgData),
     );
     return xObj;
-  };
+  }
 
-  splitAlphaChannel = () => {
+  public splitAlphaChannel = () => {
     const pixels = this.image.decodePixelsSync();
     const colorByteSize = this.image.colors * this.image.bits / 8;
     const pixelCount = this.image.width * this.image.height;
@@ -171,9 +168,9 @@ class PNGXObjectFactory {
     }
     this.imgData = pako.deflate(this.imgData);
     return this.finalize();
-  };
+  }
 
-  loadIndexedAlphaChannel = () => {
+  public loadIndexedAlphaChannel = () => {
     const transparency = this.image.transparency.indexed;
     const pixels = this.image.decodePixelsSync();
     this.alphaChannel = new Uint8Array(this.width * this.height);
@@ -181,7 +178,7 @@ class PNGXObjectFactory {
       this.alphaChannel[idx] = transparency[pixel];
     });
     return this.finalize();
-  };
+  }
 }
 
 export default PNGXObjectFactory;

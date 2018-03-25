@@ -1,19 +1,18 @@
-
 import { PDFDictionary, PDFIndirectObject, PDFNumber } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
-import { error, arrayToString, arrayFindIndexOf } from 'utils';
+import { arrayFindIndexOf, arrayToString, error } from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-import parseNull from './parseNull';
-import parseIndirectRef from './parseIndirectRef';
-import parseString from './parseString';
-import parseHexString from './parseHexString';
-import parseName from './parseName';
-import parseBool from './parseBool';
-import parseNumber from './parseNumber';
-import parseDict from './parseDict';
 import parseArray from './parseArray';
+import parseBool from './parseBool';
+import parseDict from './parseDict';
+import parseHexString from './parseHexString';
+import parseIndirectRef from './parseIndirectRef';
+import parseName from './parseName';
+import parseNull from './parseNull';
+import parseNumber from './parseNumber';
+import parseString from './parseString';
 
 import { ParseHandlers } from './PDFParser';
 
@@ -30,7 +29,7 @@ Returns an array of objects representing the parsed integer pairs.
 const parseObjData = (
   dict: PDFDictionary,
   input: Uint8Array,
-): { objNum: number, byteOffset: number }[] => {
+): Array<{ objNum: number; byteOffset: number }> => {
   // Extract the value of the "N" entry from the dict
   const numObjects = (dict.get('N') as PDFNumber).number;
 
@@ -39,8 +38,9 @@ const parseObjData = (
 
   // Find the first non-numeric character (not including EOLs and spaces) in the
   // input bytes
-  const firstNonNumIdx = arrayFindIndexOf(input, charByte =>
-    !!String.fromCharCode(charByte).match(/[^\d\n\r ]/),
+  const firstNonNumIdx = arrayFindIndexOf(
+    input,
+    (charByte) => !!String.fromCharCode(charByte).match(/[^\d\n\r ]/),
   );
 
   // Convert the input bytes to a string, up to the first non-numeric character
@@ -48,7 +48,7 @@ const parseObjData = (
 
   // Repeatedly apply the integer pair regex to the input string to build up an
   // array of the parsed integer pairs
-  const objData: { objNum: number, byteOffset: number }[] = [];
+  const objData: Array<{ objNum: number; byteOffset: number }> = [];
   let i = 0;
   let remaining = objDatumsStr;
   while (i < numObjects) {

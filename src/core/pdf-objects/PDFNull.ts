@@ -1,6 +1,5 @@
-
 import { addStringToBuffer } from 'utils';
-import { validate, isIdentity } from 'utils/validate';
+import { isIdentity, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
 
@@ -16,14 +15,14 @@ class PDFNull extends PDFObject {
     );
   }
 
-  static instance = new PDFNull(PDF_NULL_ENFORCER);
+  public static instance = new PDFNull(PDF_NULL_ENFORCER);
 
-  toString = (): string => 'null';
+  public toString = (): string => 'null';
 
-  bytesSize = () => 4;
+  public bytesSize = () => 4;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer('null', buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer('null', buffer)
 }
 
 export default PDFNull;

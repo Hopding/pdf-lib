@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validateArr, isNumber } from 'utils/validate';
+import { isNumber, validateArr } from 'utils/validate';
 
 /**
 Set the text matrix, Tm, and the text line matrix, T_lm:
@@ -17,12 +16,12 @@ specified by the operands shall not be concatenated onto the current text
 matrix, but shall replace it.
 */
 class Tm extends PDFOperator {
-  a: number;
-  b: number;
-  c: number;
-  d: number;
-  e: number;
-  f: number;
+  public a: number;
+  public b: number;
+  public c: number;
+  public d: number;
+  public e: number;
+  public f: number;
 
   constructor(
     a: number,
@@ -46,22 +45,22 @@ class Tm extends PDFOperator {
     this.f = f;
   }
 
-  static of = (
+  public static of = (
     a: number,
     b: number,
     c: number,
     d: number,
     e: number,
     f: number,
-  ) => new Tm(a, b, c, d, e, f);
+  ) => new Tm(a, b, c, d, e, f)
 
-  toString = (): string =>
-    `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} Tm\n`;
+  public toString = (): string =>
+    `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} Tm\n`
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default Tm;

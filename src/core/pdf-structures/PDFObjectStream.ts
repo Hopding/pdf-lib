@@ -1,10 +1,9 @@
-
-import { PDFObject, PDFDictionary, PDFIndirectObject } from 'core/pdf-objects';
-import { validate, validateArr, isInstance } from 'utils/validate';
+import { PDFDictionary, PDFIndirectObject, PDFObject } from 'core/pdf-objects';
+import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFObjectStream extends PDFObject {
-  dict: PDFDictionary;
-  objects: PDFIndirectObject[];
+  public dict: PDFDictionary;
+  public objects: PDFIndirectObject[];
 
   constructor(dictionary: PDFDictionary, objects: PDFIndirectObject[]) {
     super();
@@ -21,8 +20,8 @@ class PDFObjectStream extends PDFObject {
     this.objects = objects;
   }
 
-  static from = (dictionary: PDFDictionary, objects: PDFIndirectObject[]) =>
-    new PDFObjectStream(dictionary, objects);
+  public static from = (dictionary: PDFDictionary, objects: PDFIndirectObject[]) =>
+    new PDFObjectStream(dictionary, objects)
 }
 
 export default PDFObjectStream;

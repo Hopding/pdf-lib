@@ -1,15 +1,14 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the line width in the graphics state
 */
 class w extends PDFOperator {
-  lineWidth: number;
+  public lineWidth: number;
 
   constructor(lineWidth: number) {
     super();
@@ -21,14 +20,14 @@ class w extends PDFOperator {
     this.lineWidth = lineWidth;
   }
 
-  static of = (lineWidth: number) => new w(lineWidth);
+  public static of = (lineWidth: number) => new w(lineWidth);
 
-  toString = (): string => `${this.lineWidth} w\n`;
+  public toString = (): string => `${this.lineWidth} w\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default w;

@@ -1,7 +1,6 @@
-
 /* eslint-disable new-cap */
-import _ from 'lodash';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
+import _ from 'lodash';
 
 import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
@@ -39,7 +38,7 @@ In a Pattern colour space, the initial colour shall be a pattern object that
 causes nothing to be painted.
 */
 export class CS extends PDFOperator {
-  name: string;
+  public name: string;
 
   constructor(name: string) {
     super();
@@ -47,21 +46,21 @@ export class CS extends PDFOperator {
     this.name = name;
   }
 
-  static of = (name: string) => new CS(name);
+  public static of = (name: string) => new CS(name);
 
-  toString = (): string => `${this.name} CS\n`;
+  public toString = (): string => `${this.name} CS\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
 Same as CS but used for nonstroking operations.
 */
 export class cs extends PDFOperator {
-  name: string;
+  public name: string;
 
   constructor(name: string) {
     super();
@@ -69,12 +68,12 @@ export class cs extends PDFOperator {
     this.name = name;
   }
 
-  static of = (name: string) => new cs(name);
+  public static of = (name: string) => new cs(name);
 
-  toString = (): string => `${this.name} cs\n`;
+  public toString = (): string => `${this.name} cs\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }

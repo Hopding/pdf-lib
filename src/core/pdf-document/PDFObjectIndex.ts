@@ -1,14 +1,13 @@
-
-import { PDFObject, PDFIndirectReference } from 'core/pdf-objects';
+import { PDFIndirectReference, PDFObject } from 'core/pdf-objects';
 import { error } from 'utils';
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
 class PDFObjectIndex {
-  index: Map<PDFIndirectReference, PDFObject> = new Map();
+  public index: Map<PDFIndirectReference, PDFObject> = new Map();
 
-  static create = () => new PDFObjectIndex();
+  public static create = () => new PDFObjectIndex();
 
-  set = (key: PDFIndirectReference, val: PDFObject) => {
+  public set = (key: PDFIndirectReference, val: PDFObject) => {
     validate(
       key,
       isInstance(PDFIndirectReference),
@@ -17,16 +16,18 @@ class PDFObjectIndex {
     validate(val, isInstance(PDFObject), '"val" must be a PDFObject');
     this.index.set(key, val);
     return this;
-  };
+  }
 
-  lookupMaybe = (ref: PDFIndirectReference | PDFObject | void): PDFObject | void => {
+  public lookupMaybe = (
+    ref: PDFIndirectReference | PDFObject | void,
+  ): PDFObject | void => {
     if (ref instanceof PDFIndirectReference) return this.index.get(ref);
     return ref;
-  };
+  }
 
-  lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
-    return this.lookupMaybe(ref) || error(`Failed to lookup ref: ${ref}}`)
-  };
+  public lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
+    return this.lookupMaybe(ref) || error(`Failed to lookup ref: ${ref}}`);
+  }
 }
 
 export default PDFObjectIndex;

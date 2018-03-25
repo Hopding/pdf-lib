@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, oneOf } from 'utils/validate';
+import { oneOf, validate } from 'utils/validate';
 
 type RenderingIntents =
   | 'AbsoluteColorimetric'
@@ -20,7 +19,7 @@ must be one of the following values:
  * Perceptual
 */
 class ri extends PDFOperator {
-  intent: RenderingIntents;
+  public intent: RenderingIntents;
 
   constructor(intent: RenderingIntents) {
     super();
@@ -38,14 +37,14 @@ class ri extends PDFOperator {
     this.intent = intent;
   }
 
-  static of = (intent: RenderingIntents) => new ri(intent);
+  public static of = (intent: RenderingIntents) => new ri(intent);
 
-  toString = (): string => `${this.intent} ri\n`;
+  public toString = (): string => `${this.intent} ri\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default ri;

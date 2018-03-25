@@ -1,18 +1,17 @@
-
 import PDFDocument from 'core/pdf-document/PDFDocument';
-import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
-import { PDFTrailer, PDFCatalog } from 'core/pdf-structures';
 import {
-  PDFObject,
-  PDFIndirectReference,
-  PDFIndirectObject,
   PDFDictionary,
+  PDFIndirectObject,
+  PDFIndirectReference,
   PDFNumber,
+  PDFObject,
 } from 'core/pdf-objects';
+import { PDFCatalog, PDFTrailer } from 'core/pdf-structures';
+import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
 import { error } from 'utils';
 
 class PDFDocumentWriter {
-  static saveToBytes = (pdfDoc: PDFDocument): Uint8Array => {
+  public static saveToBytes = (pdfDoc: PDFDocument): Uint8Array => {
     const sortedIndex = PDFDocumentWriter.sortIndex(pdfDoc.index.index);
 
     const { reference: catalogRef } =
@@ -40,16 +39,16 @@ class PDFDocumentWriter {
     const buffer = new Uint8Array(bufferSize);
 
     let remaining = pdfDoc.header.copyBytesInto(buffer);
-    sortedIndex.forEach(indirectObj => {
+    sortedIndex.forEach((indirectObj) => {
       remaining = indirectObj.copyBytesInto(remaining);
     });
     remaining = table.copyBytesInto(remaining);
     remaining = trailer.copyBytesInto(remaining);
 
     return buffer;
-  };
+  }
 
-  static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
+  public static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
     const indexArr: PDFIndirectObject[] = [];
     index.forEach((object, ref) =>
       indexArr.push(PDFIndirectObject.of(object).setReference(ref)),
@@ -58,7 +57,7 @@ class PDFDocumentWriter {
       ({ reference: a }, { reference: b }) => a.objectNumber - b.objectNumber,
     );
     return indexArr;
-  };
+  }
 }
 
 export default PDFDocumentWriter;

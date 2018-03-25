@@ -1,18 +1,17 @@
-
 import _ from 'lodash';
 
 import { PDFIndirectObject, PDFName } from 'core/pdf-objects';
-import { or, and, not, error, addStringToBuffer, arrayToString } from 'utils';
-import { validate, isInstance } from 'utils/validate';
+import { addStringToBuffer, and, arrayToString, error, not, or } from 'utils';
+import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import PDFObject from './PDFObject';
 
 class PDFDictionary extends PDFObject {
-  map: Map<PDFName, any>;
-  index: PDFObjectIndex;
-  validKeys: ReadonlyArray<string>;
+  public map: Map<PDFName, any>;
+  public index: PDFObjectIndex;
+  public validKeys: ReadonlyArray<string>;
 
   constructor(
     object?: { [key: string]: PDFObject } | Map<PDFName, any>,
@@ -42,19 +41,15 @@ class PDFDictionary extends PDFObject {
     }
   }
 
-  static from = (
+  public static from = (
     object: { [key: string]: PDFObject } | Map<PDFName, any>,
     index: PDFObjectIndex,
-  ) => new PDFDictionary(object, index);
+  ) => new PDFDictionary(object, index)
 
-  filter = (predicate: (o: PDFObject, n: PDFName) => boolean) =>
-    Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key));
+  public filter = (predicate: (o: PDFObject, n: PDFName) => boolean) =>
+    Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key))
 
-  set = (
-    key: string | PDFName,
-    val: PDFObject,
-    validateKeys = true,
-  ) => {
+  public set = (key: string | PDFName, val: PDFObject, validateKeys = true) => {
     validate(
       key,
       or(_.isString, isInstance(PDFName)),
@@ -77,9 +72,9 @@ class PDFDictionary extends PDFObject {
     this.map.set(keyName, val);
 
     return this;
-  };
+  }
 
-  getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
+  public getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
     validate(
       key,
       or(_.isString, isInstance(PDFName)),
@@ -88,19 +83,19 @@ class PDFDictionary extends PDFObject {
 
     const keyName = key instanceof PDFName ? key : PDFName.from(key);
     return this.map.get(keyName);
-  };
+  }
 
-  get = <T extends PDFObject>(key: string | PDFName): T => {
+  public get = <T extends PDFObject>(key: string | PDFName): T => {
     return this.getMaybe(key) || error(`Missing PDFDictionary entry "${key}".`);
-  };
+  }
 
-  toString = (): string => {
+  public toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);
     return arrayToString(buffer);
-  };
+  }
 
-  bytesSize = () =>
+  public bytesSize = () =>
     3 + // "<<\n"
     _(Array.from(this.map.entries()))
       .map(([key, val]) => {
@@ -113,9 +108,9 @@ class PDFDictionary extends PDFObject {
         throw new Error(`Not a PDFObject: ${val.constructor.name}`);
       })
       .sum() +
-    2; // ">>"
+    2 // ">>"
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('<<\n', buffer);
     this.map.forEach((val, key) => {
       remaining = addStringToBuffer(`${key.toString()} `, remaining);
@@ -130,7 +125,7 @@ class PDFDictionary extends PDFObject {
     });
     remaining = addStringToBuffer('>>', remaining);
     return remaining;
-  };
+  }
 }
 
 export default PDFDictionary;

@@ -1,10 +1,9 @@
-
-import { PDFObject, PDFDictionary } from 'core/pdf-objects';
+import { PDFDictionary, PDFObject } from 'core/pdf-objects';
 import { error } from 'utils';
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
 class PDFStream extends PDFObject {
-  dictionary: PDFDictionary;
+  public dictionary: PDFDictionary;
 
   constructor(dictionary: PDFDictionary) {
     super();
@@ -16,11 +15,11 @@ class PDFStream extends PDFObject {
     this.dictionary = dictionary;
   }
 
-  validateDictionary = () => {
+  public validateDictionary = () => {
     if (!this.dictionary.get('Length')) {
       error('"Length" is a required field for PDFStream dictionaries');
     }
-  };
+  }
 }
 
 export default PDFStream;

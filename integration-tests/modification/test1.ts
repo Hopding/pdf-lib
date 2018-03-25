@@ -4,20 +4,20 @@ import fs from 'fs';
 import PDFDocumentFactory from 'core/pdf-document/PDFDocumentFactory';
 import PDFDocumentWriter from 'core/pdf-document/PDFDocumentWriter';
 import { PDFDictionary, PDFName } from 'core/pdf-objects';
-import { PDFContentStream, PDFPage } from 'core/pdf-structures';
-import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
 import PDFOperators from 'core/pdf-operators';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
+import { PDFContentStream, PDFPage } from 'core/pdf-structures';
+import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
 
 import { arrayToString, charCodes, writeToDebugFile } from 'utils';
 
 import {
+  createImageGraphic,
   createSpecGraphic,
   createTextGraphic,
-  createImageGraphic,
 } from '../content-streams';
 import fonts from '../fonts';
-import { pngImages, jpgImages } from '../images';
+import { jpgImages, pngImages } from '../images';
 
 /*
 Adding "TESTING" to "/Users/user/Desktop/pdf-lib/test-pdfs/pdf/ef/inst/ef_ins_1040.pdf"
@@ -98,7 +98,7 @@ firstPage
   .addXObject('CatUnicornJPG', catUnicornJPG)
   .addContentStreams(imageGraphic);
 
-pages.forEach(page => {
+pages.forEach((page) => {
   page
     .addFontDictionary('FontOne', FontOne)
     .addFontDictionary('FontTwo', FontTwo)

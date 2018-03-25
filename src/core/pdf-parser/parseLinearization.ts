@@ -1,25 +1,24 @@
-
-import { PDFStream, PDFIndirectObject } from 'core/pdf-objects';
+import { PDFIndirectObject, PDFStream } from 'core/pdf-objects';
 import {
-  PDFTrailer,
   PDFLinearizationParams,
+  PDFTrailer,
   PDFXRef,
 } from 'core/pdf-structures';
 import { error, trimArray } from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-import parseXRefTable from './parseXRefTable';
 import parseIndirectObj from './parseIndirectObj';
 import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
+import parseXRefTable from './parseXRefTable';
 
 import { ParseHandlers } from './PDFParser';
 
-export type PDFLinearization = {
-  paramDict: PDFIndirectObject<PDFLinearizationParams>,
-  xref: typeof PDFXRef.Table | PDFIndirectObject<PDFStream>,
-  trailer: PDFTrailer,
-};
+export interface PDFLinearization {
+  paramDict: PDFIndirectObject<PDFLinearizationParams>;
+  xref: typeof PDFXRef.Table | PDFIndirectObject<PDFStream>;
+  trailer: PDFTrailer;
+}
 
 /**
 Accepts an array of bytes as input. Checks to see if the first characters in the
@@ -46,7 +45,10 @@ const parseLinearization = (
   if (!paramDictMatch) return null;
 
   // Make sure it is a Linearization Param Dictionary
-  const [paramDict, remaining1] = paramDictMatch as [PDFIndirectObject<PDFLinearizationParams>, Uint8Array];
+  const [paramDict, remaining1] = paramDictMatch as [
+    PDFIndirectObject<PDFLinearizationParams>,
+    Uint8Array
+  ];
   if (!(paramDict.pdfObject instanceof PDFLinearizationParams)) return null;
 
   // TODO: Do the parseHandlers really need to be passed to parseIndirectObj?
@@ -58,7 +60,10 @@ const parseLinearization = (
       'Found Linearization param dict but no first page xref table or stream.',
     );
 
-  const [xref, remaining2] = xrefMatch as [typeof PDFXRef.Table | PDFIndirectObject<PDFStream>, Uint8Array];
+  const [xref, remaining2] = xrefMatch as [
+    typeof PDFXRef.Table | PDFIndirectObject<PDFStream>,
+    Uint8Array
+  ];
 
   const trailerMatch =
     parseTrailer(remaining2, index) ||

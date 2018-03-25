@@ -1,16 +1,15 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the text rise, Tsise, to rise, which shall be a number expressed in unscaled
 text space units. Initial value: 0.
 */
 class Ts extends PDFOperator {
-  rise: number;
+  public rise: number;
 
   constructor(rise: number) {
     super();
@@ -18,14 +17,14 @@ class Ts extends PDFOperator {
     this.rise = rise;
   }
 
-  static of = (rise: number) => new Ts(rise);
+  public static of = (rise: number) => new Ts(rise);
 
-  toString = (): string => `${this.rise} Ts\n`;
+  public toString = (): string => `${this.rise} Ts\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default Ts;

@@ -1,6 +1,6 @@
 import { PDFDictionary } from 'core/pdf-objects';
 import { PDFTrailer } from 'core/pdf-structures';
-import { error, arrayToString, trimArray, arrayIndexOf, charCode } from 'utils';
+import { arrayIndexOf, arrayToString, charCode, error, trimArray } from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 

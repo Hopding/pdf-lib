@@ -1,22 +1,21 @@
-
-import _ from 'lodash';
 import {
-  validate,
-  validateArr,
-  isInstance,
-  isIdentity,
-  optional,
-} from 'utils/validate';
-import { PDFContentStream } from 'core/pdf-structures';
-import {
-  PDFObject,
-  PDFDictionary,
   PDFArray,
+  PDFDictionary,
+  PDFIndirectReference,
   PDFName,
   PDFNumber,
-  PDFIndirectReference,
+  PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
+import { PDFContentStream } from 'core/pdf-structures';
+import _ from 'lodash';
+import {
+  isIdentity,
+  isInstance,
+  optional,
+  validate,
+  validateArr,
+} from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -54,7 +53,7 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFPage extends PDFDictionary {
-  static create = (
+  public static create = (
     index: PDFObjectIndex,
     size: [number, number],
     resources?: PDFDictionary,
@@ -80,21 +79,23 @@ class PDFPage extends PDFDictionary {
     );
     if (resources) page.set('Resources', resources);
     return page;
-  };
+  }
 
-  static fromDict = (dict: PDFDictionary) => {
+  public static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFPage(dict.map, dict.index, PDFPage.validKeys);
-  };
+  }
 
-  static validKeys = VALID_KEYS;
+  public static validKeys = VALID_KEYS;
 
   get Resources() {
     return this.index.lookup(this.get('Resources')) as PDFDictionary;
   }
 
   get Contents() {
-    return this.index.lookup(this.get('Contents')) as PDFArray<PDFContentStream | PDFIndirectReference<PDFContentStream>>;
+    return this.index.lookup(this.get('Contents')) as PDFArray<
+      PDFContentStream | PDFIndirectReference<PDFContentStream>
+    >;
   }
 
   /**
@@ -113,7 +114,7 @@ class PDFPage extends PDFDictionary {
 
   /** Convert "Contents" to array if it exists and is not already */
   // TODO: See is this is inefficient...
-  normalizeContents = () => {
+  public normalizeContents = () => {
     const Contents = this.getMaybe('Contents');
     if (Contents) {
       const contents: PDFObject = this.index.lookup(Contents);
@@ -121,14 +122,14 @@ class PDFPage extends PDFDictionary {
         this.set('Contents', PDFArray.fromArray([Contents], this.index));
       }
     }
-  };
+  }
 
-  normalizeResources = ({
+  public normalizeResources = ({
     Font,
     XObject,
   }: {
-    Font?: boolean,
-    XObject?: boolean,
+    Font?: boolean;
+    XObject?: boolean;
   }) => {
     if (!this.getMaybe('Resources')) {
       this.set('Resources', PDFDictionary.from(new Map(), this.index));
@@ -140,11 +141,11 @@ class PDFPage extends PDFDictionary {
     if (XObject && !this.Resources.getMaybe('XObject')) {
       this.Resources.set('XObject', PDFDictionary.from(new Map(), this.index));
     }
-  };
+  }
 
   // TODO: Consider allowing *insertion* of content streams so order can be changed
-  addContentStreams = (
-    ...contentStreams: PDFIndirectReference<PDFContentStream>[]
+  public addContentStreams = (
+    ...contentStreams: Array<PDFIndirectReference<PDFContentStream>>,
   ) => {
     validateArr(
       contentStreams,
@@ -160,9 +161,9 @@ class PDFPage extends PDFDictionary {
     }
 
     return this;
-  };
+  }
 
-  addFontDictionary = (
+  public addFontDictionary = (
     key: string, // TODO: Allow PDFName objects to be passed too
     fontDict: PDFIndirectReference<PDFDictionary>, // Allow PDFDictionaries as well
   ) => {
@@ -178,9 +179,9 @@ class PDFPage extends PDFDictionary {
     Font.set(key, fontDict);
 
     return this;
-  };
+  }
 
-  addXObject = (key: string, xObject: PDFIndirectReference<PDFStream>) => {
+  public addXObject = (key: string, xObject: PDFIndirectReference<PDFStream>) => {
     validate(key, _.isString, '"key" must be a string');
     validate(
       xObject,
@@ -189,11 +190,13 @@ class PDFPage extends PDFDictionary {
     );
 
     this.normalizeResources({ XObject: true });
-    const XObject = this.index.lookup(this.Resources.get('XObject')) as PDFDictionary;
+    const XObject = this.index.lookup(
+      this.Resources.get('XObject'),
+    ) as PDFDictionary;
     XObject.set(key, xObject);
 
     return this;
-  };
+  }
 }
 
 export default PDFPage;

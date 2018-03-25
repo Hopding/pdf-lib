@@ -1,4 +1,4 @@
-import { Table, Entry, Subsection } from 'core/pdf-structures/PDFXRef';
+import { Entry, Subsection, Table } from 'core/pdf-structures/PDFXRef';
 import { arrayToString, trimArray } from 'utils';
 
 import { ParseHandlers } from './PDFParser';
@@ -11,7 +11,7 @@ If entries are found, then an array of Entry will be returned.
 
 If not, null is returned.
 */
-const parseEntries = (input: string): Array<Entry> | void => {
+const parseEntries = (input: string): Entry[] | void => {
   const trimmed = input.trim();
   const entryRegex = /^(\d{10}) (\d{5}) (n|f)/;
 
@@ -24,8 +24,7 @@ const parseEntries = (input: string): Array<Entry> | void => {
     const [fullMatch, offset, genNum, isInUse] = result;
 
     entriesArr.push(
-      Entry
-        .create()
+      Entry.create()
         .setOffset(Number(offset))
         .setGenerationNum(Number(genNum))
         .setIsInUse(isInUse === 'n'),
@@ -44,7 +43,7 @@ If subsections are found, then an array of Subsection will be returned.
 
 If not, null is returned.
 */
-const parseSubsections = (input: string): Array<Subsection> | void=> {
+const parseSubsections = (input: string): Subsection[] | void => {
   const trimmed = input.trim();
   const sectionsRegex = /^(\d+) (\d+)((\n|\r| )*(\d{10} \d{5} (n|f)(\n|\r| )*)+)/;
 

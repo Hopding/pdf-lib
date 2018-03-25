@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
-import { and, addStringToBuffer } from 'utils';
-import { validate, isNumber, isInRange } from 'utils/validate';
+import { addStringToBuffer, and } from 'utils';
+import { isInRange, isNumber, validate } from 'utils/validate';
 
 /**
 Set the stroking colour space to DeviceRGB (or the DefaultRGB colour space) and
@@ -11,9 +10,9 @@ set the colour to use for stroking operations. Each operand shall be a number
 between 0.0 (minimum intensity) and 1.0 (maximum intensity).
 */
 export class RG extends PDFOperator {
-  r: number;
-  g: number;
-  b: number;
+  public r: number;
+  public g: number;
+  public b: number;
 
   constructor(r: number, g: number, b: number) {
     super();
@@ -37,23 +36,23 @@ export class RG extends PDFOperator {
     this.b = b;
   }
 
-  static of = (r: number, g: number, b: number) => new RG(r, g, b);
+  public static of = (r: number, g: number, b: number) => new RG(r, g, b);
 
-  toString = (): string => `${this.r} ${this.g} ${this.b} RG\n`;
+  public toString = (): string => `${this.r} ${this.g} ${this.b} RG\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
 Same as RG but used for nonstroking operations.
 */
 export class rg extends PDFOperator {
-  r: number;
-  g: number;
-  b: number;
+  public r: number;
+  public g: number;
+  public b: number;
 
   constructor(r: number, g: number, b: number) {
     super();
@@ -77,12 +76,12 @@ export class rg extends PDFOperator {
     this.b = b;
   }
 
-  static of = (r: number, g: number, b: number) => new rg(r, g, b);
+  public static of = (r: number, g: number, b: number) => new rg(r, g, b);
 
-  toString = (): string => `${this.r} ${this.g} ${this.b} rg\n`;
+  public toString = (): string => `${this.r} ${this.g} ${this.b} rg\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }

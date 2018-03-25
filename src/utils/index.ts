@@ -1,12 +1,8 @@
 import _ from 'lodash';
 
-export interface Predicate<A, B = true> {
-  (a: A, b?: B): boolean;
-}
+export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
 
-export interface ArrayPredicate<A> {
-  (...a: A[]): boolean;
-}
+export type ArrayPredicate<A> = (...a: A[]) => boolean;
 
 export const writeToDebugFile = (data: any, postfix = 0) => {
   // eslint-disable-next-line
@@ -22,11 +18,13 @@ export const isInt = (num: number) => num % 1 === 0;
 
 export const isString = (val: any) => typeof val === 'string';
 
-export const and = (...predicates: ArrayPredicate<any>[]) => (...values: any[]) =>
-  predicates.every(predicate => predicate(...values));
+export const and = (...predicates: Array<ArrayPredicate<any>>) => (
+  ...values: any[],
+) => predicates.every((predicate) => predicate(...values));
 
-export const or = (...predicates: ArrayPredicate<any>[]) => (...values: any[]) =>
-  predicates.some(predicate => predicate(...values));
+export const or = (...predicates: Array<ArrayPredicate<any>>) => (
+  ...values: any[],
+) => predicates.some((predicate) => predicate(...values));
 
 export const not = (predicate: ArrayPredicate<any>) => (...values: any[]) =>
   !predicate(...values);
@@ -47,11 +45,11 @@ export const charCode = (charStr: string) => {
 export const charFromCode = (code: number) => String.fromCharCode(code);
 
 export const mergeUint8Arrays = (...arrs: Uint8Array[]) => {
-  const totalLength = _.sum(arrs.map(a => a.length));
+  const totalLength = _.sum(arrs.map((a) => a.length));
   const newArray = new Uint8Array(totalLength);
 
   let offset = 0;
-  arrs.forEach(a => {
+  arrs.forEach((a) => {
     newArray.set(a, offset);
     offset += a.length;
   });
@@ -68,9 +66,14 @@ export const addStringToBuffer = (str: string, buffer: Uint8Array) => {
 };
 /* eslint-enable no-param-reassign */
 
-export const charCodes = (str: string) => str.split('').map(c => c.charCodeAt(0));
+export const charCodes = (str: string) =>
+  str.split('').map((c) => c.charCodeAt(0));
 
-export const arrayToString = (arr: Uint8Array, startAt = 0, stopAt?: number) => {
+export const arrayToString = (
+  arr: Uint8Array,
+  startAt = 0,
+  stopAt?: number,
+) => {
   const stopIdx =
     stopAt === undefined || stopAt >= arr.length ? arr.length : stopAt;
   let str = '';
@@ -80,7 +83,8 @@ export const arrayToString = (arr: Uint8Array, startAt = 0, stopAt?: number) => 
   return str;
 };
 
-export const arrayCharAt = (arr: Uint8Array | any[], idx: number) => String.fromCharCode(arr[idx]);
+export const arrayCharAt = (arr: Uint8Array | any[], idx: number) =>
+  String.fromCharCode(arr[idx]);
 
 export const trimArray = (arr: Uint8Array) => {
   let idx = 0;
@@ -104,14 +108,18 @@ export const arraysAreEqual = (
   return true;
 };
 
-export const arrayIndexOf = (arr: any[] | Uint8Array, targetStr: string, startFrom = 0) => {
+export const arrayIndexOf = (
+  arr: any[] | Uint8Array,
+  targetStr: string,
+  startFrom = 0,
+) => {
   // validate(
   //   startFrom,
   //   and(_.isNumber, not(_.isNaN)),
   //   `startFrom must be a number, found: "${startFrom}"`,
   // );
 
-  const targetArr = targetStr.split('').map(c => c.charCodeAt(0));
+  const targetArr = targetStr.split('').map((c) => c.charCodeAt(0));
   let currIdx = startFrom;
 
   while (
@@ -131,14 +139,18 @@ export const arrayIndexOf = (arr: any[] | Uint8Array, targetStr: string, startFr
   return currIdx;
 };
 
-export const arrayIndexOfReverse = (arr: any[], targetStr: string, startFrom: number) => {
+export const arrayIndexOfReverse = (
+  arr: any[],
+  targetStr: string,
+  startFrom: number,
+) => {
   // validate(
   //   startFrom,
   //   and(_.isNumber, not(_.isNaN)),
   //   `startFrom must be a number, found: "${startFrom}"`,
   // );
 
-  const targetArr = targetStr.split('').map(c => c.charCodeAt(0));
+  const targetArr = targetStr.split('').map((c) => c.charCodeAt(0));
   let currIdx = startFrom;
 
   while (
@@ -158,7 +170,11 @@ export const arrayIndexOfReverse = (arr: any[], targetStr: string, startFrom: nu
   return currIdx;
 };
 
-export const arrayFindIndexOf = (arr: Uint8Array, predicate: (a: any) => boolean, startFrom = 0) => {
+export const arrayFindIndexOf = (
+  arr: Uint8Array,
+  predicate: (a: any) => boolean,
+  startFrom = 0,
+) => {
   let currIdx = startFrom;
 
   while (!predicate(arr.subarray(currIdx, currIdx + 1)[0])) {

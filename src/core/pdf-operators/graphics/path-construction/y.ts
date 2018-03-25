@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validateArr, isNumber } from 'utils/validate';
+import { isNumber, validateArr } from 'utils/validate';
 
 /**
 Append a cubic Bézier curve to the current path. The curve shall extend from the
@@ -11,10 +10,10 @@ current point to the point (x3, y3), using (x1, y1) and (x3, y3) as the Bézier
 control points. The new current point shall be (x3, y3).
 */
 class y extends PDFOperator {
-  x1: number;
-  y1: number;
-  x3: number;
-  y3: number;
+  public x1: number;
+  public y1: number;
+  public x3: number;
+  public y3: number;
 
   constructor(x1: number, y1: number, x3: number, y3: number) {
     super();
@@ -29,15 +28,15 @@ class y extends PDFOperator {
     this.y3 = y3;
   }
 
-  static of = (x1: number, y1: number, x3: number, y3: number) =>
-    new y(x1, y1, x3, y3);
+  public static of = (x1: number, y1: number, x3: number, y3: number) =>
+    new y(x1, y1, x3, y3)
 
-  toString = (): string => `${this.x1} ${this.y1} ${this.x3} ${this.y3} y\n`;
+  public toString = (): string => `${this.x1} ${this.y1} ${this.x3} ${this.y3} y\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default y;

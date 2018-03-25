@@ -1,6 +1,5 @@
-
 import { PDFIndirectReference } from 'core/pdf-objects';
-import { arrayToString, arrayIndexOf, trimArray } from 'utils';
+import { arrayIndexOf, arrayToString, trimArray } from 'utils';
 
 import { ParseHandlers } from './PDFParser';
 

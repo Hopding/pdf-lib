@@ -1,18 +1,17 @@
-
 import _ from 'lodash';
-import { error, addStringToBuffer, arrayToString } from 'utils';
-import { validate, validateArr, isInstance } from 'utils/validate';
+import { addStringToBuffer, arrayToString, error } from 'utils';
+import { isInstance, validate, validateArr } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-import PDFObject from './PDFObject';
 import { PDFIndirectObject } from '.';
+import PDFObject from './PDFObject';
 
 class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
-  array: Array<T>;
-  index: PDFObjectIndex;
+  public array: T[];
+  public index: PDFObjectIndex;
 
-  constructor(array: Array<T>, index: PDFObjectIndex) {
+  constructor(array: T[], index: PDFObjectIndex) {
     super();
     validateArr(
       array,
@@ -28,10 +27,12 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     this.index = index;
   }
 
-  static fromArray = <A extends PDFObject>(array: Array<A>, index?: PDFObjectIndex) =>
-    new PDFArray(array, index);
+  public static fromArray = <A extends PDFObject>(
+    array: A[],
+    index?: PDFObjectIndex,
+  ) => new PDFArray(array, index)
 
-  push = (...val: T[]) => {
+  public push = (...val: T[]) => {
     validateArr(
       val,
       isInstance(PDFObject),
@@ -40,9 +41,9 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
 
     this.array.push(...val);
     return this;
-  };
+  }
 
-  set = (idx: number, val: any) => {
+  public set = (idx: number, val: any) => {
     validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
     validate(
       val,
@@ -52,36 +53,39 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
 
     this.array[idx] = val;
     return this;
-  };
+  }
 
-  get = (idx: number) => {
+  public get = (idx: number) => {
     validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
     return this.array[idx];
-  };
+  }
 
-  forEach = (fn: (value: T, index: number, array: T[]) => void) => this.array.forEach(fn);
-  map = <U>(fn: (value: T, index: number, array: T[]) => U) => this.array.map(fn);
-  splice = (start: number, deleteCount?: number) => this.array.splice(start, deleteCount);
+  public forEach = (fn: (value: T, index: number, array: T[]) => void) =>
+    this.array.forEach(fn)
+  public map = <U>(fn: (value: T, index: number, array: T[]) => U) =>
+    this.array.map(fn)
+  public splice = (start: number, deleteCount?: number) =>
+    this.array.splice(start, deleteCount)
 
-  toString = (): string => {
+  public toString = (): string => {
     const bufferSize = this.bytesSize();
     const buffer = new Uint8Array(bufferSize);
     this.copyBytesInto(buffer);
     return arrayToString(buffer);
-  };
+  }
 
-  bytesSize = () =>
+  public bytesSize = () =>
     2 + // "[ "
     _(this.array)
-      .map(e => {
+      .map((e) => {
         if (e instanceof PDFIndirectObject) return e.toReference().length + 1;
         else if (e instanceof PDFObject) return e.bytesSize() + 1;
         return error(`Not a PDFObject: ${e}`);
       })
       .sum() +
-    1; // "]";
+    1 // "]";
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('[ ', buffer);
 
     this.array.forEach((e, idx) => {
@@ -97,7 +101,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
 
     remaining = addStringToBuffer(']', remaining);
     return remaining;
-  };
+  }
 }
 
 export default PDFArray;

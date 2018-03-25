@@ -2,9 +2,9 @@ import _ from 'lodash';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import {
+  PDFDictionary,
   PDFIndirectReference,
   PDFObject,
-  PDFDictionary,
   PDFRawStream,
 } from 'core/pdf-objects';
 import {
@@ -13,17 +13,19 @@ import {
   PDFPage,
   PDFPageTree,
 } from 'core/pdf-structures';
-import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
-import PDFFontFactory, { FontFlagOptions } from 'core/pdf-structures/factories/PDFFontFactory';
+import PDFFontFactory, {
+  FontFlagOptions,
+} from 'core/pdf-structures/factories/PDFFontFactory';
+import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import { error } from 'utils';
-import { validate, isInstance } from 'utils/validate';
+import { isInstance, validate } from 'utils/validate';
 
 class PDFDocument {
-  header: PDFHeader = PDFHeader.forVersion(1, 7);
-  catalog: PDFCatalog;
-  index: PDFObjectIndex;
-  maxObjNum: number = 0;
+  public header: PDFHeader = PDFHeader.forVersion(1, 7);
+  public catalog: PDFCatalog;
+  public index: PDFObjectIndex;
+  public maxObjNum: number = 0;
 
   constructor(index: PDFObjectIndex) {
     validate(
@@ -39,28 +41,28 @@ class PDFDocument {
     if (!this.catalog) error('"index" does not contain a PDFCatalog object');
   }
 
-  static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
+  public static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
 
-  register = <T extends PDFObject>(object: T): PDFIndirectReference<T> => {
+  public register = <T extends PDFObject>(object: T): PDFIndirectReference<T> => {
     validate(object, isInstance(PDFObject), 'object must be a PDFObject');
     this.maxObjNum += 1;
     const ref = PDFIndirectReference.forNumbers(this.maxObjNum, 0);
     this.index.set(ref, object);
     return ref;
-  };
+  }
 
-  getPages = (): PDFPage[] => {
+  public getPages = (): PDFPage[] => {
     const pages = [] as PDFPage[];
-    this.catalog.Pages.traverse(kid => {
+    this.catalog.Pages.traverse((kid) => {
       if (kid instanceof PDFPage) pages.push(kid);
     });
     return pages;
-  };
+  }
 
-  createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
-    PDFPage.create(this.index, size, resources);
+  public createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
+    PDFPage.create(this.index, size, resources)
 
-  addPage = (page: PDFPage) => {
+  public addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const { Pages } = this.catalog;
 
@@ -76,11 +78,11 @@ class PDFDocument {
     page.set('Parent', lastPageTreeRef);
     lastPageTree.addPage(this.register(page));
     return this;
-  };
+  }
 
   // TODO: Clean up unused objects when possible after removing page from tree
   // TODO: Make sure "idx" is within required range
-  removePage = (idx: number) => {
+  public removePage = (idx: number) => {
     validate(idx, _.isNumber, 'idx must be a number');
     const pageTreeRef = this.catalog.get('Pages');
 
@@ -102,10 +104,10 @@ class PDFDocument {
     const tree = this.index.lookup(treeRef) as PDFPageTree;
     tree.removePage(kidNum);
     return this;
-  };
+  }
 
   // TODO: Make sure "idx" is within required range
-  insertPage = (idx: number, page: PDFPage) => {
+  public insertPage = (idx: number, page: PDFPage) => {
     validate(idx, _.isNumber, 'idx must be a number');
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const pageTreeRef = this.catalog.get('Pages');
@@ -129,26 +131,26 @@ class PDFDocument {
     const tree = this.index.lookup(treeRef) as PDFPageTree;
     tree.insertPage(kidNum, this.register(page));
     return this;
-  };
+  }
 
-  embedFont = (
+  public embedFont = (
     name: string,
     fontData: Uint8Array,
     flagOptions: FontFlagOptions,
   ): PDFIndirectReference<PDFDictionary> => {
     const fontFactory = PDFFontFactory.for(name, fontData, flagOptions);
     return fontFactory.embedFontIn(this);
-  };
+  }
 
-  addPNG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+  public addPNG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
     const pngFactory = PNGXObjectFactory.for(imageData);
     return pngFactory.embedImageIn(this);
-  };
+  }
 
-  addJPG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+  public addJPG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
     const jpgFactory = JPEGXObjectFactory.for(imageData);
     return jpgFactory.embedImageIn(this);
-  };
+  }
 }
 
 export default PDFDocument;

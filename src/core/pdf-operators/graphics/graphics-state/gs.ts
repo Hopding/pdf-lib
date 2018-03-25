@@ -1,7 +1,6 @@
-
 /* eslint-disable new-cap */
-import _ from 'lodash';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
+import _ from 'lodash';
 
 import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
@@ -12,7 +11,7 @@ of a graphics state parameter dictionary in the ExtGState subdictionary of the
 current resource dictionary.
 */
 class gs extends PDFOperator {
-  dictName: string;
+  public dictName: string;
 
   // TODO: See if the "dictName" must be preceded by a "/" or not...
   constructor(dictName: string) {
@@ -25,14 +24,14 @@ class gs extends PDFOperator {
     this.dictName = dictName;
   }
 
-  static of = (dictName: string) => new gs(dictName);
+  public static of = (dictName: string) => new gs(dictName);
 
-  toString = (): string => `${this.dictName} gs\n`;
+  public toString = (): string => `${this.dictName} gs\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default gs;

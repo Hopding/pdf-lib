@@ -1,4 +1,3 @@
-
 import { PDFNumber } from 'core/pdf-objects';
 import { arrayToString, trimArray } from 'utils';
 

@@ -1,16 +1,15 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the horizontal scaling, Th, to (scale ÷ 100). scale shall be a number
 specifying the percentage of the normal width. Initial value: 100 (normal width).
 */
 class Tz extends PDFOperator {
-  scale: number;
+  public scale: number;
 
   constructor(scale: number) {
     super();
@@ -18,14 +17,14 @@ class Tz extends PDFOperator {
     this.scale = scale;
   }
 
-  static of = (scale: number) => new Tz(scale);
+  public static of = (scale: number) => new Tz(scale);
 
-  toString = (): string => `${this.scale} Tz\n`;
+  public toString = (): string => `${this.scale} Tz\n`;
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 export default Tz;

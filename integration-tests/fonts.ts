@@ -11,7 +11,7 @@ const fontsBytes = _.mapValues(
     candles_chrome: `${fontsDir}/candles/Candles Chrome.ttf`,
     fantasque: `${fontsDir}/fantasque/FantasqueSansMono-Regular.ttf`,
   },
-  filePath => fs.readFileSync(filePath),
+  (filePath) => fs.readFileSync(filePath),
 );
 
 export default fontsBytes;

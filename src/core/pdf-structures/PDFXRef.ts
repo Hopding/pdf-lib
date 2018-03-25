@@ -1,47 +1,46 @@
-
 import _ from 'lodash';
 
 import { addStringToBuffer } from 'utils';
-import { validate, validateArr, isInstance } from 'utils/validate';
+import { isInstance, validate, validateArr } from 'utils/validate';
 
 export class Entry {
-  offset: number = null;
-  generationNum: number = null;
-  isInUse: boolean = null;
+  public offset: number = null;
+  public generationNum: number = null;
+  public isInUse: boolean = null;
 
-  static create = () => new Entry();
+  public static create = () => new Entry();
 
-  setOffset = (offset: number) => {
+  public setOffset = (offset: number) => {
     validate(offset, _.isNumber, 'offset must be a number');
     this.offset = offset;
     return this;
-  };
+  }
 
-  setGenerationNum = (generationNum: number) => {
+  public setGenerationNum = (generationNum: number) => {
     validate(generationNum, _.isNumber, 'generationNum must be a number');
     this.generationNum = generationNum;
     return this;
-  };
+  }
 
-  setIsInUse = (isInUse: boolean) => {
+  public setIsInUse = (isInUse: boolean) => {
     validate(isInUse, _.isBoolean, 'isInUse must be a boolean');
     this.isInUse = isInUse;
     return this;
-  };
+  }
 
-  toString = (): string =>
+  public toString = (): string =>
     `${_.padStart(String(this.offset), 10, '0')} ` +
     `${_.padStart(String(this.generationNum), 5, '0')} ` +
-    `${this.isInUse ? 'n' : 'f'} \n`;
+    `${this.isInUse ? 'n' : 'f'} \n`
 
-  bytesSize = () => this.toString().length;
+  public bytesSize = () => this.toString().length;
 }
 
 export class Subsection {
-  entries: Entry[] = [];
-  firstObjNum: number;
+  public entries: Entry[] = [];
+  public firstObjNum: number;
 
-  static from = (entries: Entry[]) => {
+  public static from = (entries: Entry[]) => {
     validateArr(
       entries,
       isInstance(Entry),
@@ -51,34 +50,34 @@ export class Subsection {
     const subsection = new Subsection();
     subsection.entries = entries;
     return subsection;
-  };
+  }
 
-  addEntry = (entry: Entry) => {
+  public addEntry = (entry: Entry) => {
     this.entries.push(entry);
     return this;
-  };
+  }
 
-  setFirstObjNum = (firstObjNum: number) => {
+  public setFirstObjNum = (firstObjNum: number) => {
     validate(firstObjNum, _.isNumber, 'firstObjNum must be a number');
     this.firstObjNum = firstObjNum;
     return this;
-  };
+  }
 
-  toString = (): string =>
+  public toString = (): string =>
     `${this.firstObjNum} ${this.entries.length}\n` +
-    `${this.entries.map(String).join('')}\n`;
+    `${this.entries.map(String).join('')}\n`
 
-  bytesSize = () =>
+  public bytesSize = () =>
     `${this.firstObjNum} ${this.entries.length}\n`.length +
     _(this.entries)
-      .map(e => e.bytesSize())
-      .sum();
+      .map((e) => e.bytesSize())
+      .sum()
 }
 
 export class Table {
-  subsections: Subsection[] = [];
+  public subsections: Subsection[] = [];
 
-  static from = (subsections: Subsection[]) => {
+  public static from = (subsections: Subsection[]) => {
     validateArr(
       subsections,
       isInstance(Subsection),
@@ -88,28 +87,28 @@ export class Table {
     const table = new Table();
     table.subsections = subsections;
     return table;
-  };
+  }
 
-  addSubsection = (subsection: Subsection) => {
+  public addSubsection = (subsection: Subsection) => {
     this.subsections.push(subsection);
     return this;
-  };
+  }
 
-  toString = (): string => `xref\n${this.subsections.map(String).join('\n')}\n`;
+  public toString = (): string => `xref\n${this.subsections.map(String).join('\n')}\n`;
 
-  bytesSize = () =>
+  public bytesSize = () =>
     5 + // "xref\n"
     _(this.subsections)
-      .map(ss => ss.bytesSize() + 1)
-      .sum();
+      .map((ss) => ss.bytesSize() + 1)
+      .sum()
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('xref\n', buffer);
-    this.subsections.map(String).forEach(subsectionStr => {
+    this.subsections.map(String).forEach((subsectionStr) => {
       remaining = addStringToBuffer(`${subsectionStr}\n`, remaining);
     });
     return remaining;
-  };
+  }
 }
 
 const PDFXRef = {

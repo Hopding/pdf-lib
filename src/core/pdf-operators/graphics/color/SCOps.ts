@@ -1,9 +1,8 @@
-
 /* eslint-disable new-cap */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
-import { validate, isNumber } from 'utils/validate';
+import { isNumber, validate } from 'utils/validate';
 
 /**
 Set the colour to use for stroking operations in a device, CIE-based
@@ -19,7 +18,7 @@ required (n = 3).
 For DeviceCMYK, four operands shall be required (n = 4).
 */
 export class SC extends PDFOperator {
-  c: [number, number, number, number];
+  public c: [number, number, number, number];
 
   constructor(...c: number[]) {
     super();
@@ -30,21 +29,21 @@ export class SC extends PDFOperator {
     this.c = c as [number, number, number, number];
   }
 
-  static of = (...c: number[]) => new SC(...c);
+  public static of = (...c: number[]) => new SC(...c);
 
-  toString = (): string => `${this.c.join(' ')} SC\n`;
+  public toString = (): string => `${this.c.join(' ')} SC\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
 
 /**
 Same as SC but used for nonstroking operations.
 */
 export class sc extends PDFOperator {
-  c: [number, number, number, number];
+  public c: [number, number, number, number];
 
   constructor(...c: number[]) {
     super();
@@ -55,12 +54,12 @@ export class sc extends PDFOperator {
     this.c = c as [number, number, number, number];
   }
 
-  static of = (...c: number[]) => new sc(...c);
+  public static of = (...c: number[]) => new sc(...c);
 
-  toString = (): string => `${this.c.join(' ')} sc\n`;
+  public toString = (): string => `${this.c.join(' ')} sc\n`;
 
-  bytesSize = (): number => this.toString().length;
+  public bytesSize = (): number => this.toString().length;
 
-  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer);
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(this.toString(), buffer)
 }
