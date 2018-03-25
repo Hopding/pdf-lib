@@ -2,12 +2,12 @@
 import fs from 'fs';
 import _ from 'lodash';
 
-import PDFDocumentFactory from 'core/pdf-document/PDFDocumentFactory';
-import PDFDocumentWriter from 'core/pdf-document/PDFDocumentWriter';
-import PDFPage from 'core/pdf-structures/PDFPage';
-import PDFOperators from 'core/pdf-operators/index';
-import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
-import { PDFName, PDFDictionary } from 'core/pdf-objects';
+import PDFDocumentFactory from '../../dist/src/core/pdf-document/PDFDocumentFactory';
+import PDFDocumentWriter from '../../dist/src/core/pdf-document/PDFDocumentWriter';
+import PDFPage from '../../dist/src/core/pdf-structures/PDFPage';
+import PDFOperators from '../../dist/src/core/pdf-operators/index';
+import PDFTextObject from '../../dist/src/core/pdf-operators/text/PDFTextObject';
+import { PDFName, PDFDictionary } from '../../dist/src/core/pdf-objects';
 
 import {
   createSpecGraphic,

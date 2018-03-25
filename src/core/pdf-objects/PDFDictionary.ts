@@ -79,7 +79,7 @@ class PDFDictionary extends PDFObject {
     return this;
   };
 
-  get = <T extends PDFObject>(key: string | PDFName): T => {
+  getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
     validate(
       key,
       or(_.isString, isInstance(PDFName)),
@@ -87,7 +87,11 @@ class PDFDictionary extends PDFObject {
     );
 
     const keyName = key instanceof PDFName ? key : PDFName.from(key);
-    return this.map.get(keyName) || error(`Missing PDFDictionary entry "${String(key)}".`);
+    return this.map.get(keyName);
+  };
+
+  get = <T extends PDFObject>(key: string | PDFName): T => {
+    return this.getMaybe(key) || error(`Missing PDFDictionary entry "${key}".`);
   };
 
   toString = (): string => {

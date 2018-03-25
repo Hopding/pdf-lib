@@ -114,7 +114,7 @@ class PDFPage extends PDFDictionary {
   /** Convert "Contents" to array if it exists and is not already */
   // TODO: See is this is inefficient...
   normalizeContents = () => {
-    const Contents = this.get('Contents');
+    const Contents = this.getMaybe('Contents');
     if (Contents) {
       const contents: PDFObject = this.index.lookup(Contents);
       if (!(contents instanceof PDFArray)) {
@@ -130,14 +130,14 @@ class PDFPage extends PDFDictionary {
     Font?: boolean,
     XObject?: boolean,
   }) => {
-    if (!this.get('Resources')) {
+    if (!this.getMaybe('Resources')) {
       this.set('Resources', PDFDictionary.from(new Map(), this.index));
     }
 
-    if (Font && !this.Resources.get('Font')) {
+    if (Font && !this.Resources.getMaybe('Font')) {
       this.Resources.set('Font', PDFDictionary.from(new Map(), this.index));
     }
-    if (XObject && !this.Resources.get('XObject')) {
+    if (XObject && !this.Resources.getMaybe('XObject')) {
       this.Resources.set('XObject', PDFDictionary.from(new Map(), this.index));
     }
   };
@@ -153,7 +153,7 @@ class PDFPage extends PDFDictionary {
     );
 
     this.normalizeContents();
-    if (!this.get('Contents')) {
+    if (!this.getMaybe('Contents')) {
       this.set('Contents', PDFArray.fromArray(contentStreams, this.index));
     } else {
       this.Contents.push(...contentStreams);

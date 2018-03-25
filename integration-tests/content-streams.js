@@ -1,7 +1,7 @@
-import PDFOperators from 'core/pdf-operators';
-import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
-import { PDFContentStream } from 'core/pdf-structures';
-import { PDFDictionary } from 'core/pdf-objects';
+import PDFOperators from '../dist/src/core/pdf-operators';
+import PDFTextObject from '../dist/src/core/pdf-operators/text/PDFTextObject';
+import { PDFContentStream } from '../dist/src/core/pdf-structures';
+import { PDFDictionary } from '../dist/src/core/pdf-objects';
 
 const { Q, q, cm, m, l, S, w, d, re, g, c, b, B, RG, rg, Do } = PDFOperators;
 const { Tf, Tj, Td, Tr } = PDFOperators;

@@ -19,13 +19,13 @@ class PDFObjectIndex {
     return this;
   };
 
-  lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
-    if (ref instanceof PDFIndirectReference) {
-      return (
-        this.index.get(ref) || error(`Failed to lookup ref: ${ref}}`)
-      );
-    }
+  lookupMaybe = (ref: PDFIndirectReference | PDFObject | void): PDFObject | void => {
+    if (ref instanceof PDFIndirectReference) return this.index.get(ref);
     return ref;
+  };
+
+  lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
+    return this.lookupMaybe(ref) || error(`Failed to lookup ref: ${ref}}`)
   };
 }
 

@@ -45,11 +45,11 @@ class PDFPageTree extends PDFDictionary {
   }
 
   get Parent() {
-    return this.index.lookup(this.get('Parent')) as PDFPageTree | void;
+    return this.index.lookupMaybe(this.getMaybe('Parent')) as PDFPageTree | void;
   }
 
   get Count() {
-    return this.get('Parent') as PDFNumber;
+    return this.get('Count') as PDFNumber;
   }
 
   addPage = (page: PDFIndirectReference<PDFPage>) => {
