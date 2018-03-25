@@ -22,7 +22,7 @@ describe(`parseString`, () => {
       onParseString: jest.fn(),
     };
     const input = typedArrayFor('(FOOBAR)');
-    const res = parseString(input, parseHandlers);
+    parseString(input, parseHandlers);
     expect(parseHandlers.onParseString).toHaveBeenCalledWith(
       expect.any(PDFString),
     );
