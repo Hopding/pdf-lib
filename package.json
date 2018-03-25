@@ -4,6 +4,7 @@
   "description": "Library for creating and editing PDF files in JavaScript",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "build": "gulp build",
     "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc src/* --fix",
     "test:integration:creation": "gulp build && node ./dist/integration-tests/creation/test1.js",
@@ -19,6 +20,14 @@
     "url": "https://github.com/Hopding/pdf-lib/issues"
   },
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
+  "dependencies": {
+    "buffer": "^5.0.8",
+    "file": "^0.2.2",
+    "fontkit": "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8",
+    "lodash": "^4.17.4",
+    "pako": "^1.0.6",
+    "png-js": "git+https://github.com/Hopding/png.js.git#c6f0917865029d39c039a143d600a81ff84eadac"
+  },
   "devDependencies": {
     "@types/lodash": "^4.14.106",
     "@types/node": "^9.6.0",
@@ -39,24 +48,18 @@
     "ts-jest": "^22.4.2",
     "typescript": "^2.7.2"
   },
-  "dependencies": {
-    "buffer": "^5.0.8",
-    "file": "^0.2.2",
-    "fontkit": "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8",
-    "lodash": "^4.17.4",
-    "pako": "^1.0.6",
-    "png-js": "git+https://github.com/Hopding/png.js.git#c6f0917865029d39c039a143d600a81ff84eadac"
-  },
   "jest": {
     "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+$": "ts-jest"
     },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))$",
+    "testPathIgnorePatterns": [
+      "<rootDir>/integration-tests/",
+      "<rootDir>/node_modules/"
+    ],
     "moduleFileExtensions": [
       "ts",
-      "tsx",
       "js",
-      "jsx",
       "json",
       "node"
     ]
