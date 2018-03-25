@@ -21,9 +21,9 @@ import parseString from './parseString';
 
 import { ParseHandlers } from './PDFParser';
 
+// prettier-ignore
 const typeDict = (dict: PDFDictionary) => {
   if (dict.getMaybe('Linearized')) return PDFLinearizationParams.fromDict(dict);
-  // prettier-ignore
   switch (dict.getMaybe('Type')) {
     case PDFName.from('Catalog'): return PDFCatalog.fromDict(dict);
     case PDFName.from('Pages'):   return PDFPageTree.fromDict(dict);
