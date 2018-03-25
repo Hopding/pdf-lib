@@ -1,6 +1,6 @@
 import { PDFBoolean } from 'core/pdf-objects';
 import parseBool from 'core/pdf-parser/parseBool';
-import {} from 'jest';
+// import {} from 'jest';
 import { charCodes } from 'utils';
 
 describe(`parseBool`, () => {
