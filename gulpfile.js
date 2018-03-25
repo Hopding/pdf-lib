@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const babel = require('gulp-babel');
-const exec = require('gulp-exec');
+const { execSync } = require('child_process');
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -27,17 +27,4 @@ gulp.task('build', () =>
     .pipe(tsProject())
     .js.pipe(babel(babelrc))
     .pipe(gulp.dest('dist')),
-);
-
-gulp.task('lint', () =>
-  exec(`
-    yarn prettier 
-      --config ./.prettierrc.json 
-      --loglevel error 
-      --write \"{src,integration-tests,__tests__}/**/*.ts\" 
-    && 
-    tslint 
-      --project ./tsconfig.json 
-      --fix
-  `),
 );
