@@ -59,7 +59,17 @@
     "typescript": "^2.7.2"
   },
   "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "./tsconfig.json"
+      }
+    },
     "collectCoverage": true,
+    "moduleNameMapper": {
+      "^core/(.*)": "<rootDir>/src/core/$1",
+      "^utils/(.*)": "<rootDir>/src/utils/$1",
+      "^utils": "<rootDir>/src/utils/index.ts"
+    },
     "testResultsProcessor": "./node_modules/jest-junit",
     "transform": {
       "^.+$": "ts-jest"

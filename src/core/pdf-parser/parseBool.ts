@@ -8,7 +8,7 @@ import { IParseHandlers } from './PDFParser';
  * the trimmed input make up a PDF Boolean.
  *
  * If so, returns a tuple containing (1) an object representing the parsed
- * PDF Header and (2) a subarray of the input with the characters making up the
+ * PDF Boolean and (2) a subarray of the input with the characters making up the
  * parsed header removed. The "onParseBool" parse handler will also be called
  * with the PDFBoolean object.
  *
