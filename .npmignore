@@ -1,0 +1,11 @@
+__tests__
+integration-tests
+src
+test-pdfs
+.gitignore
+.prettierrc.json
+gulpfile.js
+index.ts
+TODO.txt
+tsconfig.json
+tslint.json
