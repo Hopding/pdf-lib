@@ -3,9 +3,9 @@ import { error } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 class PDFObjectIndex {
-  public index: Map<PDFIndirectReference, PDFObject> = new Map();
-
   public static create = () => new PDFObjectIndex();
+
+  public index: Map<PDFIndirectReference, PDFObject> = new Map();
 
   public set = (key: PDFIndirectReference, val: PDFObject) => {
     validate(

@@ -5,11 +5,13 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the text leading, Tl, to leading, which shall be a number expressed in
-unleadingd text space units. Text leading shall be used only by the T*, ', and "
-operators. Initial value: 0.
-*/
+ * Set the text leading, Tl, to leading, which shall be a number expressed in
+ * unleading text space units. Text leading shall be used only by the T*, ', and "
+ * operators. Initial value: 0.
+ */
 class TL extends PDFOperator {
+  public static of = (leading: number) => new TL(leading);
+
   public leading: number;
 
   constructor(leading: number) {
@@ -17,8 +19,6 @@ class TL extends PDFOperator {
     validate(leading, isNumber, 'TL operator arg "leading" must be a number.');
     this.leading = leading;
   }
-
-  public static of = (leading: number) => new TL(leading);
 
   public toString = (): string => `${this.leading} TL\n`;
 

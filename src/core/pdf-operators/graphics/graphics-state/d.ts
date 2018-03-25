@@ -1,4 +1,4 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
 
@@ -6,9 +6,12 @@ import { addStringToBuffer, or } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the line dash pattern in the graphics state
-*/
+ * Set the line dash pattern in the graphics state
+ */
 class d extends PDFOperator {
+  public static of = (dashArray: [number, number], dashPhase: number) =>
+    new d(dashArray, dashPhase)
+
   public dashArray: [number, number];
   public dashPhase: number;
 
@@ -32,9 +35,6 @@ class d extends PDFOperator {
     this.dashArray = dashArray;
     this.dashPhase = dashPhase;
   }
-
-  public static of = (dashArray: [number, number], dashPhase: number) =>
-    new d(dashArray, dashPhase)
 
   public toString = (): string =>
     _.isNil(this.dashArray[0]) && _.isNil(this.dashArray[1])

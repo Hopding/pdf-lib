@@ -1,15 +1,17 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
 import { isInRange, validate } from 'utils/validate';
 
 /**
-Set the flatness tolerance in the graphics state. flatness is a number in the
-range 0 to 100; a value of 0 shall specify the output device’s default flatness
-tolerance.
-*/
+ * Set the flatness tolerance in the graphics state. flatness is a number in the
+ * range 0 to 100; a value of 0 shall specify the output device’s default flatness
+ * tolerance.
+ */
 class i extends PDFOperator {
+  public static of = (flatness: number) => new i(flatness);
+
   public flatness: number;
 
   constructor(flatness: number) {
@@ -21,8 +23,6 @@ class i extends PDFOperator {
     );
     this.flatness = flatness;
   }
-
-  public static of = (flatness: number) => new i(flatness);
 
   public toString = (): string => `${this.flatness} i\n`;
 

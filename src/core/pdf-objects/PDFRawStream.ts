@@ -4,6 +4,9 @@ import { isInstance, validate } from 'utils/validate';
 import { PDFDictionary, PDFStream } from '.';
 
 class PDFRawStream extends PDFStream {
+  public static from = (dictionary: PDFDictionary, content: Uint8Array) =>
+    new PDFRawStream(dictionary, content)
+
   public content: Uint8Array;
 
   constructor(dictionary: PDFDictionary, content: Uint8Array) {
@@ -15,9 +18,6 @@ class PDFRawStream extends PDFStream {
     );
     this.content = content;
   }
-
-  public static from = (dictionary: PDFDictionary, content: Uint8Array) =>
-    new PDFRawStream(dictionary, content)
 
   public bytesSize = () =>
     this.dictionary.bytesSize() +

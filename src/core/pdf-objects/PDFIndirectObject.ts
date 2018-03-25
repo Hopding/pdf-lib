@@ -7,6 +7,10 @@ import PDFIndirectReference from './PDFIndirectReference';
 import PDFObject from './PDFObject';
 
 class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
+  public static of = <A extends PDFObject>(
+    pdfObject: A,
+  ): PDFIndirectObject<A> => new PDFIndirectObject(pdfObject)
+
   public reference: PDFIndirectReference<T>;
   public pdfObject: T;
 
@@ -19,10 +23,6 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     );
     this.pdfObject = pdfObject;
   }
-
-  public static of = <A extends PDFObject>(
-    pdfObject: A,
-  ): PDFIndirectObject<A> => new PDFIndirectObject(pdfObject)
 
   public setReferenceNumbers = (
     objectNumber: number,

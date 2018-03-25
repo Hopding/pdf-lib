@@ -1,15 +1,24 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
 import { isNumber, validateArr } from 'utils/validate';
 
 /**
-Modify the current transformation matrix (CTM) by concatenating the specified
-matrix. Although the operands specify a matrix, they shall be written as six
-separate numbers, not as an array.
-*/
+ * Modify the current transformation matrix (CTM) by concatenating the specified
+ * matrix. Although the operands specify a matrix, they shall be written as six
+ * separate numbers, not as an array.
+ */
 class cm extends PDFOperator {
+  public static of = (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+  ) => new cm(a, b, c, d, e, f)
+
   public a: number;
   public b: number;
   public c: number;
@@ -38,15 +47,6 @@ class cm extends PDFOperator {
     this.e = e;
     this.f = f;
   }
-
-  public static of = (
-    a: number,
-    b: number,
-    c: number,
-    d: number,
-    e: number,
-    f: number,
-  ) => new cm(a, b, c, d, e, f)
 
   public toString = (): string =>
     `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} cm\n`

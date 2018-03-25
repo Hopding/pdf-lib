@@ -9,6 +9,11 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import PDFObject from './PDFObject';
 
 class PDFDictionary extends PDFObject {
+  public static from = (
+    object: { [key: string]: PDFObject } | Map<PDFName, any>,
+    index: PDFObjectIndex,
+  ) => new PDFDictionary(object, index)
+
   public map: Map<PDFName, any>;
   public index: PDFObjectIndex;
   public validKeys: ReadonlyArray<string>;
@@ -40,11 +45,6 @@ class PDFDictionary extends PDFObject {
       _(object).forEach((val, key) => this.set(key, val, false));
     }
   }
-
-  public static from = (
-    object: { [key: string]: PDFObject } | Map<PDFName, any>,
-    index: PDFObjectIndex,
-  ) => new PDFDictionary(object, index)
 
   public filter = (predicate: (o: PDFObject, n: PDFName) => boolean) =>
     Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key))

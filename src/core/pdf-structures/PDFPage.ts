@@ -53,6 +53,8 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFPage extends PDFDictionary {
+  public static validKeys = VALID_KEYS;
+
   public static create = (
     index: PDFObjectIndex,
     size: [number, number],
@@ -86,8 +88,6 @@ class PDFPage extends PDFDictionary {
     return new PDFPage(dict.map, dict.index, PDFPage.validKeys);
   }
 
-  public static validKeys = VALID_KEYS;
-
   get Resources() {
     return this.index.lookup(this.get('Resources')) as PDFDictionary;
   }
@@ -98,7 +98,7 @@ class PDFPage extends PDFDictionary {
     >;
   }
 
-  /**
+  /*
   There are three possibilities, the page can:
     (1) have no "Contents"
     (2) have an array of indirect objects as its "Contents"

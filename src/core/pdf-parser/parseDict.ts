@@ -33,21 +33,21 @@ const typeDict = (dict: PDFDictionary) => {
 };
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Dictionary.
-
-If so, returns a tuple containing (1) an object representing the parsed
-PDFDictionary and (2) a subarray of the input with the characters making up the
-parsed header removed. The "onParseDict" parse handler will also be called with
-the PDFDictionary object.
-
-If not, null is returned.
-
-Note that the entries of the PDF Dictionary are recursively parsed, so the
-appropriate parse handlers will be called when each entry of the dictionary is
-parsed. The returned PDFDictionary's keys will be PDFName objects, and its
-values will be PDFObjects.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in
+ * the trimmed input make up a PDF Dictionary.
+ *
+ * If so, returns a tuple containing (1) an object representing the parsed
+ * PDFDictionary and (2) a subarray of the input with the characters making up
+ * the parsed header removed. The "onParseDict" parse handler will also be
+ * called with the PDFDictionary object.
+ *
+ * If not, null is returned.
+ *
+ * Note that the entries of the PDF Dictionary are recursively parsed, so the
+ * appropriate parse handlers will be called when each entry of the dictionary
+ * is parsed. The returned PDFDictionary's keys will be PDFName objects, and its
+ * values will be PDFObjects.
+ */
 const parseDict = (
   input: Uint8Array,
   index: PDFObjectIndex,

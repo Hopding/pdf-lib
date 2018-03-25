@@ -5,11 +5,13 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the character spacing, Tc, to charSpace, which shall be a number expressed
-in unscaled text space units. Character spacing shall be
-used by the Tj, TJ, and ' operators. Initial value: 0.
-*/
+ * Set the character spacing, Tc, to charSpace, which shall be a number expressed
+ * in unscaled text space units. Character spacing shall be
+ * used by the Tj, TJ, and ' operators. Initial value: 0.
+ */
 class Tc extends PDFOperator {
+  public static of = (charSpace: number) => new Tc(charSpace);
+
   public charSpace: number;
 
   constructor(charSpace: number) {
@@ -21,8 +23,6 @@ class Tc extends PDFOperator {
     );
     this.charSpace = charSpace;
   }
-
-  public static of = (charSpace: number) => new Tc(charSpace);
 
   public toString = (): string => `${this.charSpace} Tc\n`;
 

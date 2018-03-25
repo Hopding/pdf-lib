@@ -1,4 +1,4 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import {
   PDFArray,
   PDFHexString,
@@ -12,28 +12,27 @@ import { addStringToBuffer, or } from 'utils';
 import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
 
 /**
-Show a text string.
-*/
+ * Show a text string.
+ */
 export class Tj extends PDFOperator {
+  public static of = (str: PDFString | PDFHexString | string) => new Tj(str);
+
   public string: PDFString | PDFHexString;
 
-  constructor(string: PDFString | PDFHexString | string) {
+  constructor(str: PDFString | PDFHexString | string) {
     super();
     validate(
-      string,
+      str,
       or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
       'Tj operator arg "string" must be one of: PDFString, PDFHexString, String',
     );
     // TODO: Fix these suppressions...
-    if (_.isString(string)) {
+    if (_.isString(str)) {
       // $SuppressFlow
-      this.string = PDFString.fromString(string);
+      this.string = PDFString.fromString(str);
       // $SuppressFlow
-    } else this.string = string;
+    } else this.string = str;
   }
-
-  public static of = (string: PDFString | PDFHexString | string) =>
-    new Tj(string)
 
   public toString = () => this.string.toString() + ' Tj\n';
 
@@ -44,18 +43,22 @@ export class Tj extends PDFOperator {
 }
 
 /**
-Show one or more text strings, allowing individual glyph positioning.
-Each element of array shall be either a string or a number. If the element is a
-string, this operator shall show the string. If it is a number, the operator
-shall adjust the text position by that amount; that is, it shall translate the
-text matrix, Tm. The number shall be expressed in thousandths of a unit of text
-space. This amount shall be subtracted from the current horizontal or vertical
-coordinate, depending on the writing mode. In the default coordinate system, a
-positive adjustment has the effect of moving the next glyph painted either to
-the left or down by the given amount. Figure 46 shows an example of the effect
-of passing offsets to TJ.
-*/
+ * Show one or more text strings, allowing individual glyph positioning.
+ * Each element of array shall be either a string or a number. If the element is a
+ * string, this operator shall show the string. If it is a number, the operator
+ * shall adjust the text position by that amount; that is, it shall translate the
+ * text matrix, Tm. The number shall be expressed in thousandths of a unit of text
+ * space. This amount shall be subtracted from the current horizontal or vertical
+ * coordinate, depending on the writing mode. In the default coordinate system, a
+ * positive adjustment has the effect of moving the next glyph painted either to
+ * the left or down by the given amount. Figure 46 shows an example of the effect
+ * of passing offsets to TJ.
+ */
 export class TJ extends PDFOperator {
+  public static of = (
+    array: Array<PDFString | PDFHexString | string | number>,
+  ) => new TJ(array)
+
   public array: PDFArray<PDFString | PDFHexString | PDFNumber>;
 
   constructor(array: Array<PDFString | PDFHexString | string | number>) {
@@ -80,10 +83,6 @@ export class TJ extends PDFOperator {
       }),
     );
   }
-
-  public static of = (
-    array: Array<PDFString | PDFHexString | string | number>,
-  ) => new TJ(array)
 
   public bytesSize = () => this.array.bytesSize() + 4; // "...<array> TJ\n"
 

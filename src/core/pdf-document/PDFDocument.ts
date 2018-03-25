@@ -15,13 +15,15 @@ import {
 } from 'core/pdf-structures';
 import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
 import PDFFontFactory, {
-  FontFlagOptions,
+  IFontFlagOptions,
 } from 'core/pdf-structures/factories/PDFFontFactory';
 import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import { error } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 class PDFDocument {
+  public static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
+
   public header: PDFHeader = PDFHeader.forVersion(1, 7);
   public catalog: PDFCatalog;
   public index: PDFObjectIndex;
@@ -40,8 +42,6 @@ class PDFDocument {
     this.index = index;
     if (!this.catalog) error('"index" does not contain a PDFCatalog object');
   }
-
-  public static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
 
   public register = <T extends PDFObject>(
     object: T,
@@ -140,7 +140,7 @@ class PDFDocument {
   public embedFont = (
     name: string,
     fontData: Uint8Array,
-    flagOptions: FontFlagOptions,
+    flagOptions: IFontFlagOptions,
   ): PDFIndirectReference<PDFDictionary> => {
     const fontFactory = PDFFontFactory.for(name, fontData, flagOptions);
     return fontFactory.embedFontIn(this);

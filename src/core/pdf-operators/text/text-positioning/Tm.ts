@@ -5,17 +5,26 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validateArr } from 'utils/validate';
 
 /**
-Set the text matrix, Tm, and the text line matrix, T_lm:
-             |a b 0|
-T_m = T_lm = |c d 0|
-             |e f 1|
-The operands shall all be numbers, and the initial value for Tm and Tlm shall be
-the identity matrix, [1 0 0 1 0 0]. Although the operands specify a matrix, they
-shall be passed to Tm as six separate numbers, not as an array. The matrix
-specified by the operands shall not be concatenated onto the current text
-matrix, but shall replace it.
-*/
+ * Set the text matrix, Tm, and the text line matrix, T_lm:
+ *              |a b 0|
+ * T_m = T_lm = |c d 0|
+ *              |e f 1|
+ * The operands shall all be numbers, and the initial value for Tm and Tlm shall be
+ * the identity matrix, [1 0 0 1 0 0]. Although the operands specify a matrix, they
+ * shall be passed to Tm as six separate numbers, not as an array. The matrix
+ * specified by the operands shall not be concatenated onto the current text
+ * matrix, but shall replace it.
+ */
 class Tm extends PDFOperator {
+  public static of = (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+  ) => new Tm(a, b, c, d, e, f)
+
   public a: number;
   public b: number;
   public c: number;
@@ -44,15 +53,6 @@ class Tm extends PDFOperator {
     this.e = e;
     this.f = f;
   }
-
-  public static of = (
-    a: number,
-    b: number,
-    c: number,
-    d: number,
-    e: number,
-    f: number,
-  ) => new Tm(a, b, c, d, e, f)
 
   public toString = (): string =>
     `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} Tm\n`

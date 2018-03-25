@@ -6,15 +6,15 @@ import { validate } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 class PDFString extends PDFObject {
+  public static fromString = (str: string) => new PDFString(str);
+
   public string: string;
 
-  constructor(string: string) {
+  constructor(str: string) {
     super();
-    validate(string, _.isString, 'Can only construct PDFStrings from Strings');
-    this.string = string;
+    validate(str, _.isString, 'Can only construct PDFStrings from Strings');
+    this.string = str;
   }
-
-  public static fromString = (string: string) => new PDFString(string);
 
   public toString = (): string => `(${this.string})`;
 

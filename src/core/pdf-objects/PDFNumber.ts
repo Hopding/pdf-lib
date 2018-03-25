@@ -6,17 +6,17 @@ import { validate } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 class PDFNumber extends PDFObject {
-  public number: number;
-
-  constructor(number: number) {
-    super();
-    validate(number, _.isNumber, 'Can only construct PDFNumbers from Numbers');
-    this.number = number;
-  }
-
-  public static fromNumber = (number: number) => new PDFNumber(number);
+  public static fromNumber = (num: number) => new PDFNumber(num);
   public static fromString = (numberStr: string) =>
     new PDFNumber(Number(numberStr))
+
+  public number: number;
+
+  constructor(num: number) {
+    super();
+    validate(num, _.isNumber, 'Can only construct PDFNumbers from Numbers');
+    this.number = num;
+  }
 
   public toString = (): string => this.number.toString();
 

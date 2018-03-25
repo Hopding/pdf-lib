@@ -12,14 +12,17 @@ import {
 } from 'core/pdf-objects';
 import { isInstance, validate } from 'utils/validate';
 
+// tslint:disable-next-line
 const { Buffer } = require('buffer/');
 
 /**
-A note of thanks to the developers of https://github.com/devongovett/pdfkit, as
-this class borrows heavily from:
-https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
-*/
+ * A note of thanks to the developers of https://github.com/devongovett/pdfkit,
+ * as this class borrows heavily from:
+ * https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
+ */
 class PNGXObjectFactory {
+  public static for = (data: Uint8Array) => new PNGXObjectFactory(data);
+
   public image: PNG;
   public width: number;
   public height: number;
@@ -47,8 +50,6 @@ class PNGXObjectFactory {
     this.height = this.image.height;
     this.imgData = this.image.imgData;
   }
-
-  public static for = (data: Uint8Array) => new PNGXObjectFactory(data);
 
   public embedImageIn = (
     document: PDFDocument,
@@ -108,7 +109,9 @@ class PNGXObjectFactory {
     }
 
     // TODO: Handle the following two transparency types. They don't seem to be
-    // fully handled in https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
+    // fully handled in:
+    // https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
+
     // if (this.image.transparency.grayscale)
     // if (this.image.transparency.rgb)
 

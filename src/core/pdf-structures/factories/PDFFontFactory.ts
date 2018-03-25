@@ -16,11 +16,12 @@ import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
+// tslint:disable-next-line
 const { Buffer } = require('buffer/');
 
 const unsigned32Bit = '00000000000000000000000000000000';
 
-export interface FontFlagOptions {
+export interface IFontFlagOptions {
   FixedPitch?: boolean;
   Serif?: boolean;
   Symbolic?: boolean;
@@ -37,7 +38,7 @@ Doing this by bit-twiddling a string, and then parsing it, gets around
 JavaScript converting the results of bit-shifting ops back into 64-bit integers.
 */
 // prettier-ignore
-const fontFlags = (options: FontFlagOptions) => {
+const fontFlags = (options: IFontFlagOptions) => {
   let flags = unsigned32Bit;
   if (options.FixedPitch)  flags = setCharAt(flags, 32 - 1, '1');
   if (options.Serif)       flags = setCharAt(flags, 32 - 2, '1');
@@ -52,24 +53,31 @@ const fontFlags = (options: FontFlagOptions) => {
 };
 
 /**
-This Factory supports TrueType and OpenType fonts. Note that the apparent
-hardcoding of values for OpenType fonts does not actually affect TrueType fonts.
-
-A note of thanks to the developers of https://github.com/devongovett/pdfkit, as
-this class borrows heavily from:
-https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/font/embedded.coffee
-*/
+ * This Factory supports TrueType and OpenType fonts. Note that the apparent
+ * hardcoding of values for OpenType fonts does not actually affect TrueType
+ * fonts.
+ *
+ * A note of thanks to the developers of https://github.com/devongovett/pdfkit,
+ * as this class borrows heavily from:
+ * https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/font/embedded.coffee
+ */
 class PDFFontFactory {
+  public static for = (
+    name: string,
+    fontData: Uint8Array,
+    flagOptions: IFontFlagOptions,
+  ) => new PDFFontFactory(name, fontData, flagOptions)
+
   public font: any;
   public scale: number;
   public fontName: string;
   public fontData: Uint8Array;
-  public flagOptions: FontFlagOptions;
+  public flagOptions: IFontFlagOptions;
 
   constructor(
     name: string,
     fontData: Uint8Array,
-    flagOptions: FontFlagOptions,
+    flagOptions: IFontFlagOptions,
   ) {
     validate(name, _.isString, '"name" must be a string');
     validate(
@@ -91,12 +99,6 @@ class PDFFontFactory {
     this.font = fontkit.create(dataBuffer);
     this.scale = 1000 / this.font.unitsPerEm;
   }
-
-  public static for = (
-    name: string,
-    fontData: Uint8Array,
-    flagOptions: FontFlagOptions,
-  ) => new PDFFontFactory(name, fontData, flagOptions)
 
   /*
   TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need

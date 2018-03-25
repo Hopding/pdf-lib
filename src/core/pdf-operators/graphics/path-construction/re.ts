@@ -1,22 +1,25 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Append a rectangle to the current path as a complete subpath, with lower-left
-corner (x, y) and dimensions width and height in user space. The operation
-`x y width height re` is equivalent to
-```
-x y m
-(x + width) y l
-(x + width) (y + height) l
-x (y + height) l
-h
-```
-*/
+ * Append a rectangle to the current path as a complete subpath, with lower-left
+ * corner (x, y) and dimensions width and height in user space. The operation
+ * `x y width height re` is equivalent to
+ * ```
+ * x y m
+ * (x + width) y l
+ * (x + width) (y + height) l
+ * x (y + height) l
+ * h
+ * ```
+ */
 class re extends PDFOperator {
+  public static of = (x: number, y: number, width: number, height: number) =>
+    new re(x, y, width, height)
+
   public x: number;
   public y: number;
   public width: number;
@@ -33,9 +36,6 @@ class re extends PDFOperator {
     this.width = width;
     this.height = height;
   }
-
-  public static of = (x: number, y: number, width: number, height: number) =>
-    new re(x, y, width, height)
 
   public toString = (): string =>
     `${this.x} ${this.y} ${this.width} ${this.height} re\n`

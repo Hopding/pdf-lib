@@ -1,21 +1,15 @@
+/* tslint:disable:max-classes-per-file */
 import { addStringToBuffer, error } from 'utils';
 import { isIdentity, validate } from 'utils/validate';
 
 class PDFOperator {
-  public toString = (): string =>
-    error(`toString() is not implemented on ${this.constructor.name}`)
-
-  public bytesSize = (): number =>
-    error(`bytesSize() is not implemented on ${this.constructor.name}`)
-
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    error(`copyBytesInto() is not implemented on ${this.constructor.name}`)
-
   public static createSingletonOp = (op: string) => {
     const ENFORCER = Symbol(`${op}_ENFORCER`);
 
     class Singleton extends PDFOperator {
-      constructor(enforcer: Symbol) {
+      public static operator: Singleton;
+
+      constructor(enforcer: symbol) {
         super();
         validate(
           enforcer,
@@ -23,8 +17,6 @@ class PDFOperator {
           `Cannot instantiate PDFOperator.${op} - use "${op}.operator" instead`,
         );
       }
-
-      public static operator: Singleton;
 
       public toString = (): string => `${op}\n`;
 
@@ -38,6 +30,15 @@ class PDFOperator {
 
     return Singleton;
   }
+
+  public toString = (): string =>
+    error(`toString() is not implemented on ${this.constructor.name}`)
+
+  public bytesSize = (): number =>
+    error(`bytesSize() is not implemented on ${this.constructor.name}`)
+
+  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    error(`copyBytesInto() is not implemented on ${this.constructor.name}`)
 }
 
 export default PDFOperator;

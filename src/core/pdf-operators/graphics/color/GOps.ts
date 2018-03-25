@@ -1,15 +1,17 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer, and } from 'utils';
 import { isInRange, isNumber, validate } from 'utils/validate';
 
 /**
-Set the stroking colour space to DeviceGray (or the DefaultGray colour space)
-and set the gray level to use for stroking operations. gray shall be a number
-between 0.0 (black) and 1.0 (white).
-*/
+ * Set the stroking colour space to DeviceGray (or the DefaultGray colour space)
+ * and set the gray level to use for stroking operations. gray shall be a number
+ * between 0.0 (black) and 1.0 (white).
+ */
 export class G extends PDFOperator {
+  public static of = (gray: number) => new G(gray);
+
   public gray: number;
 
   constructor(gray: number) {
@@ -22,8 +24,6 @@ export class G extends PDFOperator {
     this.gray = gray;
   }
 
-  public static of = (gray: number) => new G(gray);
-
   public toString = (): string => `${this.gray} G\n`;
 
   public bytesSize = (): number => this.toString().length;
@@ -33,9 +33,11 @@ export class G extends PDFOperator {
 }
 
 /**
-Same as G but used for nonstroking operations.
-*/
+ * Same as G but used for nonstroking operations.
+ */
 export class g extends PDFOperator {
+  public static of = (gray: number) => new g(gray);
+
   public gray: number;
 
   constructor(gray: number) {
@@ -43,8 +45,6 @@ export class g extends PDFOperator {
     validate(gray, isNumber, 'g operator arg "gray" must be a number.');
     this.gray = gray;
   }
-
-  public static of = (gray: number) => new g(gray);
 
   public toString = (): string => `${this.gray} g\n`;
 

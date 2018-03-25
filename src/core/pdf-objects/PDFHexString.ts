@@ -8,20 +8,20 @@ import PDFObject from './PDFObject';
 const HEX_STRING_REGEX = /^[\dABCDEFabcdef]*/;
 
 class PDFHexString extends PDFObject {
+  public static fromString = (str: string) => new PDFHexString(str);
+
   public string: string;
 
-  constructor(string: string) {
+  constructor(str: string) {
     super();
-    validate(string, _.isString, 'PDFHexString.string must be a String');
+    validate(str, _.isString, 'PDFHexString.string must be a String');
     validate(
-      string,
+      str,
       doesMatch(HEX_STRING_REGEX),
-      `Invalid characters in hex string: "${string}"`,
+      `Invalid characters in hex string: "${str}"`,
     );
-    this.string = string;
+    this.string = str;
   }
-
-  public static fromString = (string: string) => new PDFHexString(string);
 
   public toString = (): string => `<${this.string}>`;
 

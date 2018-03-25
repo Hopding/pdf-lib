@@ -6,13 +6,15 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the text font, Tf, to font and the text font size, Tfs, to size. font shall
-be the name of a font resource in the Font subdictionary of the current resource
-dictionary; size shall be a number representing a scale factor. There is no
-initial value for either font or size; they shall be specified explicitly by
-using Tf before any text is shown.
-*/
+ * Set the text font, Tf, to font and the text font size, Tfs, to size. font shall
+ * be the name of a font resource in the Font subdictionary of the current resource
+ * dictionary; size shall be a number representing a scale factor. There is no
+ * initial value for either font or size; they shall be specified explicitly by
+ * using Tf before any text is shown.
+ */
 class Tf extends PDFOperator {
+  public static of = (font: string, size: number) => new Tf(font, size);
+
   public font: string; // TODO: Should this be a PDFName?
   public size: number;
 
@@ -23,8 +25,6 @@ class Tf extends PDFOperator {
     this.font = font;
     this.size = size;
   }
-
-  public static of = (font: string, size: number) => new Tf(font, size);
 
   public toString = (): string => `${this.font} ${this.size} Tf\n`;
 

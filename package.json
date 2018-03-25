@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "gulp build",
-    "lint": "yarn prettier --config ./prettier.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
+    "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
     "test:integration:creation": "gulp build && node ./dist/integration-tests/creation/test1.js",
     "test:integration:modification": "gulp build && node ./dist/integration-tests/modification/test1.js"
   },

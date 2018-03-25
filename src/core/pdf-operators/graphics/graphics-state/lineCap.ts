@@ -5,9 +5,11 @@ import { addStringToBuffer } from 'utils';
 import { oneOf, validate } from 'utils/validate';
 
 /**
-Set the line cap style in the graphics state
-*/
+ * Set the line cap style in the graphics state
+ */
 class J extends PDFOperator {
+  public static of = (lineCap: number) => new J(lineCap);
+
   public lineCap: number;
 
   constructor(lineCap: number) {
@@ -19,8 +21,6 @@ class J extends PDFOperator {
     );
     this.lineCap = lineCap;
   }
-
-  public static of = (lineCap: number) => new J(lineCap);
 
   public toString = (): string => `${this.lineCap} J\n`;
 

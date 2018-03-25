@@ -1,13 +1,15 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
 import { oneOf, validate } from 'utils/validate';
 
 /**
-Set the line join style in the graphics state
-*/
+ * Set the line join style in the graphics state
+ */
 class j extends PDFOperator {
+  public static of = (lineJoin: number) => new j(lineJoin);
+
   public lineJoin: number;
 
   constructor(lineJoin: number) {
@@ -19,8 +21,6 @@ class j extends PDFOperator {
     );
     this.lineJoin = lineJoin;
   }
-
-  public static of = (lineJoin: number) => new j(lineJoin);
 
   public toString = (): string => `${this.lineJoin} j\n`;
 

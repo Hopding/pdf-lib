@@ -29,11 +29,13 @@ const MARKERS = [
 ];
 
 /**
-A note of thanks to the developers of https://github.com/devongovett/pdfkit, as
-this class borrows heavily from:
-https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
-*/
+ * A note of thanks to the developers of https://github.com/devongovett/pdfkit,
+ * as this class borrows heavily from:
+ * https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
+ */
 class JPEGXObjectFactory {
+  public static for = (data: Uint8Array) => new JPEGXObjectFactory(data);
+
   public imgData: Uint8Array;
   public bits: number;
   public width: number;
@@ -74,8 +76,6 @@ class JPEGXObjectFactory {
     const channels = dataView.getUint8(pos++) as 1 | 3 | 4;
     this.colorSpace = channelMap[channels] || error('Unknown JPEG channel.');
   }
-
-  public static for = (data: Uint8Array) => new JPEGXObjectFactory(data);
 
   public embedImageIn = (
     document: PDFDocument,

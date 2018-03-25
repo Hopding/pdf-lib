@@ -1,14 +1,16 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-(lowercase L) Append a straight line segment from the current point to the
-point (x, y). The new current point shall be (x, y).
-*/
+ * (lowercase L) Append a straight line segment from the current point to the
+ * point (x, y). The new current point shall be (x, y).
+ */
 class l extends PDFOperator {
+  public static of = (x: number, y: number) => new l(x, y);
+
   public x: number;
   public y: number;
 
@@ -19,8 +21,6 @@ class l extends PDFOperator {
     this.x = x;
     this.y = y;
   }
-
-  public static of = (x: number, y: number) => new l(x, y);
 
   public toString = (): string => `${this.x} ${this.y} l\n`;
 

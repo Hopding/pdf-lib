@@ -1,15 +1,17 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer, and } from 'utils';
 import { isInRange, isNumber, validate } from 'utils/validate';
 
 /**
-Set the stroking colour space to DeviceRGB (or the DefaultRGB colour space) and
-set the colour to use for stroking operations. Each operand shall be a number
-between 0.0 (minimum intensity) and 1.0 (maximum intensity).
-*/
+ * Set the stroking colour space to DeviceRGB (or the DefaultRGB colour space) and
+ * set the colour to use for stroking operations. Each operand shall be a number
+ * between 0.0 (minimum intensity) and 1.0 (maximum intensity).
+ */
 export class RG extends PDFOperator {
+  public static of = (r: number, g: number, b: number) => new RG(r, g, b);
+
   public r: number;
   public g: number;
   public b: number;
@@ -36,8 +38,6 @@ export class RG extends PDFOperator {
     this.b = b;
   }
 
-  public static of = (r: number, g: number, b: number) => new RG(r, g, b);
-
   public toString = (): string => `${this.r} ${this.g} ${this.b} RG\n`;
 
   public bytesSize = (): number => this.toString().length;
@@ -47,9 +47,11 @@ export class RG extends PDFOperator {
 }
 
 /**
-Same as RG but used for nonstroking operations.
-*/
+ * Same as RG but used for nonstroking operations.
+ */
 export class rg extends PDFOperator {
+  public static of = (r: number, g: number, b: number) => new rg(r, g, b);
+
   public r: number;
   public g: number;
   public b: number;
@@ -75,8 +77,6 @@ export class rg extends PDFOperator {
     this.g = g;
     this.b = b;
   }
-
-  public static of = (r: number, g: number, b: number) => new rg(r, g, b);
 
   public toString = (): string => `${this.r} ${this.g} ${this.b} rg\n`;
 

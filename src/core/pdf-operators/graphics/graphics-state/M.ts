@@ -5,9 +5,11 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the miter limit in the graphics state
-*/
+ * Set the miter limit in the graphics state
+ */
 class M extends PDFOperator {
+  public static of = (miterLimit: number) => new M(miterLimit);
+
   public miterLimit: number;
 
   constructor(miterLimit: number) {
@@ -19,8 +21,6 @@ class M extends PDFOperator {
     );
     this.miterLimit = miterLimit;
   }
-
-  public static of = (miterLimit: number) => new M(miterLimit);
 
   public toString = (): string => `${this.miterLimit} M\n`;
 

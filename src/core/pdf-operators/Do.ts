@@ -6,9 +6,11 @@ import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
 
 /**
-Draws the XObject with the given name in the current Page's Resource dictionary.
-*/
+ * Draws the XObject with the given name in the current Page's Resource dictionary.
+ */
 class Do extends PDFOperator {
+  public static of = (name: string) => new Do(name);
+
   public name: string;
 
   // TODO: See if the "name" must be preceded by a "/" or not...
@@ -17,8 +19,6 @@ class Do extends PDFOperator {
     validate(name, _.isString, 'Do operator arg "name" must be a string.');
     this.name = name;
   }
-
-  public static of = (name: string) => new Do(name);
 
   public toString = (): string => `${this.name} Do\n`;
 

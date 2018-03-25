@@ -1,4 +1,4 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
@@ -11,14 +11,16 @@ type RenderingIntents =
   | 'Perceptual';
 
 /**
-Set the colour rendering intent in the graphics state. The rendering intent
-must be one of the following values:
- * AbsoluteColorimetric
- * RelativeColorimetric
- * Saturation
- * Perceptual
-*/
+ * Set the colour rendering intent in the graphics state. The rendering intent
+ * must be one of the following values:
+ *  - AbsoluteColorimetric
+ *  - RelativeColorimetric
+ *  - Saturation
+ *  - Perceptual
+ */
 class ri extends PDFOperator {
+  public static of = (intent: RenderingIntents) => new ri(intent);
+
   public intent: RenderingIntents;
 
   constructor(intent: RenderingIntents) {
@@ -36,8 +38,6 @@ class ri extends PDFOperator {
     );
     this.intent = intent;
   }
-
-  public static of = (intent: RenderingIntents) => new ri(intent);
 
   public toString = (): string => `${this.intent} ri\n`;
 

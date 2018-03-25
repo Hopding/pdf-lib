@@ -8,6 +8,11 @@ import { PDFIndirectObject } from '.';
 import PDFObject from './PDFObject';
 
 class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
+  public static fromArray = <A extends PDFObject>(
+    array: A[],
+    index?: PDFObjectIndex,
+  ) => new PDFArray(array, index)
+
   public array: T[];
   public index: PDFObjectIndex;
 
@@ -26,11 +31,6 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     this.array = array;
     this.index = index;
   }
-
-  public static fromArray = <A extends PDFObject>(
-    array: A[],
-    index?: PDFObjectIndex,
-  ) => new PDFArray(array, index)
 
   public push = (...val: T[]) => {
     validateArr(

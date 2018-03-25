@@ -1,16 +1,19 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name no-shadowed-variable */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer, and } from 'utils';
 import { isInRange, isNumber, validate } from 'utils/validate';
 
 /**
-Set the stroking colour space to DeviceCMYK (or the DefaultCMYK colour space and
-set the colour to use for stroking operations. Each operand shall be a number
-between 0.0 (zero concentration) and 1.0 (maximum concentration). The behaviour
-of this operator is affected by the overprint mode.
-*/
+ * Set the stroking colour space to DeviceCMYK (or the DefaultCMYK colour space and
+ * set the colour to use for stroking operations. Each operand shall be a number
+ * between 0.0 (zero concentration) and 1.0 (maximum concentration). The behaviour
+ * of this operator is affected by the overprint mode.
+ */
 export class K extends PDFOperator {
+  public static of = (c: number, m: number, y: number, k: number) =>
+    new K(c, m, y, k)
+
   public c: number;
   public y: number;
   public m: number;
@@ -44,9 +47,6 @@ export class K extends PDFOperator {
     this.k = k;
   }
 
-  public static of = (c: number, m: number, y: number, k: number) =>
-    new K(c, m, y, k)
-
   public toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} K\n`;
 
   public bytesSize = (): number => this.toString().length;
@@ -56,9 +56,12 @@ export class K extends PDFOperator {
 }
 
 /**
-Same as K but used for nonstroking operations.
-*/
+ * Same as K but used for nonstroking operations.
+ */
 export class k extends PDFOperator {
+  public static of = (c: number, m: number, y: number, key: number) =>
+    new k(c, m, y, key)
+
   public c: number;
   public y: number;
   public m: number;
@@ -91,9 +94,6 @@ export class k extends PDFOperator {
     this.y = y;
     this.k = key;
   }
-
-  public static of = (c: number, m: number, y: number, key: number) =>
-    new k(c, m, y, key)
 
   public toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} k\n`;
 

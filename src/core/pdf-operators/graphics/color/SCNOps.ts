@@ -1,4 +1,4 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
 
@@ -6,21 +6,23 @@ import { addStringToBuffer, and, not } from 'utils';
 import { isNumber, validate, validateArr } from 'utils/validate';
 
 /**
-Same as SC but also supports Pattern, Separation, DeviceN and ICCBased colour
-spaces.
-
-If the current stroking colour space is a Separation, DeviceN, or ICCBased
-colour space, the operands c1...cn shall be numbers. The number of operands and
-their interpretation depends on the colour space.
-
-If the current stroking colour space is a Pattern colour space, name shall be
-the name of an entry in the Pattern subdictionary of the current resource
-dictionary. For an uncoloured tiling pattern
-(PatternType = 1 and PaintType = 2), c1...cn
-shall be component values specifying a colour in the pattern’s underlying colour
-space. For other types of patterns, these operands shall not be specified.
-*/
+ * Same as SC but also supports Pattern, Separation, DeviceN and ICCBased colour
+ * spaces.
+ *
+ * If the current stroking colour space is a Separation, DeviceN, or ICCBased
+ * colour space, the operands c1...cn shall be numbers. The number of operands and
+ * their interpretation depends on the colour space.
+ *
+ * If the current stroking colour space is a Pattern colour space, name shall be
+ * the name of an entry in the Pattern subdictionary of the current resource
+ * dictionary. For an uncoloured tiling pattern
+ * (PatternType = 1 and PaintType = 2), c1...cn
+ * shall be component values specifying a colour in the pattern’s underlying colour
+ * space. For other types of patterns, these operands shall not be specified.
+ */
 export class SCN extends PDFOperator {
+  public static of = (c: number[], name?: string) => new SCN(c, name);
+
   public c: number[];
   public name: string;
 
@@ -36,8 +38,6 @@ export class SCN extends PDFOperator {
     this.name = name;
   }
 
-  public static of = (c: number[], name?: string) => new SCN(c, name);
-
   public toString = (): string =>
     `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} SCN\n`
 
@@ -48,9 +48,11 @@ export class SCN extends PDFOperator {
 }
 
 /**
-Same as SCN but used for nonstroking operations.
-*/
+ * Same as SCN but used for nonstroking operations.
+ */
 export class scn extends PDFOperator {
+  public static of = (c: number[], name?: string) => new scn(c, name);
+
   public c: number[];
   public name: string;
 
@@ -65,8 +67,6 @@ export class scn extends PDFOperator {
     this.c = c;
     this.name = name;
   }
-
-  public static of = (c: number[], name?: string) => new scn(c, name);
 
   public toString = (): string =>
     `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} scn\n`

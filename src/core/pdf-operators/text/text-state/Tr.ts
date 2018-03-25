@@ -5,10 +5,12 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the text rendering mode, Tmode, to render, which shall be an integer.
-Initial value: 0.
-*/
+ * Set the text rendering mode, Tmode, to render, which shall be an integer.
+ * Initial value: 0.
+ */
 class Tr extends PDFOperator {
+  public static of = (render: number) => new Tr(render);
+
   public render: number;
 
   constructor(render: number) {
@@ -16,8 +18,6 @@ class Tr extends PDFOperator {
     validate(render, isNumber, 'Tr operator arg "render" must be a number.');
     this.render = render;
   }
-
-  public static of = (render: number) => new Tr(render);
 
   public toString = (): string => `${this.render} Tr\n`;
 

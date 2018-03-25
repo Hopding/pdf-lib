@@ -1,13 +1,15 @@
-/* eslint-disable new-cap */
+/* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the line width in the graphics state
-*/
+ * Set the line width in the graphics state
+ */
 class w extends PDFOperator {
+  public static of = (lineWidth: number) => new w(lineWidth);
+
   public lineWidth: number;
 
   constructor(lineWidth: number) {
@@ -19,8 +21,6 @@ class w extends PDFOperator {
     );
     this.lineWidth = lineWidth;
   }
-
-  public static of = (lineWidth: number) => new w(lineWidth);
 
   public toString = (): string => `${this.lineWidth} w\n`;
 

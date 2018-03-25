@@ -9,9 +9,21 @@ const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
 const pdfNamePool: Map<string, PDFName> = new Map();
 
 class PDFName extends PDFObject {
+  public static isRegularChar = (char: string) =>
+    charCode(char) >= charCode('!') && charCode(char) <= charCode('~')
+
+  public static from = (str: string): PDFName => {
+    validate(str, _.isString, 'PDFName.from() requires string as argument');
+    let pdfName = pdfNamePool.get(str);
+    if (!pdfName) {
+      pdfName = new PDFName(pdfNameEnforcer, str);
+      pdfNamePool.set(str, pdfName);
+    }
+    return pdfName;
+  }
   public key: string;
 
-  constructor(enforcer: Symbol, key: string) {
+  constructor(enforcer: symbol, key: string) {
     super();
     validate(
       enforcer,
@@ -24,19 +36,6 @@ class PDFName extends PDFObject {
       'PDF Name objects may not begin with a space character.',
     );
     this.key = key;
-  }
-
-  public static isRegularChar = (char: string) =>
-    charCode(char) >= charCode('!') && charCode(char) <= charCode('~')
-
-  public static from = (str: string): PDFName => {
-    validate(str, _.isString, 'PDFName.from() requires string as argument');
-    let pdfName = pdfNamePool.get(str);
-    if (!pdfName) {
-      pdfName = new PDFName(pdfNameEnforcer, str);
-      pdfNamePool.set(str, pdfName);
-    }
-    return pdfName;
   }
 
   public toString = (): string =>

@@ -5,10 +5,12 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the text rise, Tsise, to rise, which shall be a number expressed in unscaled
-text space units. Initial value: 0.
-*/
+ * Set the text rise, Tsise, to rise, which shall be a number expressed in unscaled
+ * text space units. Initial value: 0.
+ */
 class Ts extends PDFOperator {
+  public static of = (rise: number) => new Ts(rise);
+
   public rise: number;
 
   constructor(rise: number) {
@@ -16,8 +18,6 @@ class Ts extends PDFOperator {
     validate(rise, isNumber, 'Ts operator arg "rise" must be a number.');
     this.rise = rise;
   }
-
-  public static of = (rise: number) => new Ts(rise);
 
   public toString = (): string => `${this.rise} Ts\n`;
 

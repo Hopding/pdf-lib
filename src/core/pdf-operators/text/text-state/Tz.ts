@@ -5,10 +5,12 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
-Set the horizontal scaling, Th, to (scale ÷ 100). scale shall be a number
-specifying the percentage of the normal width. Initial value: 100 (normal width).
-*/
+ * Set the horizontal scaling, Th, to (scale ÷ 100). scale shall be a number
+ * specifying the percentage of the normal width. Initial value: 100 (normal width).
+ */
 class Tz extends PDFOperator {
+  public static of = (scale: number) => new Tz(scale);
+
   public scale: number;
 
   constructor(scale: number) {
@@ -16,8 +18,6 @@ class Tz extends PDFOperator {
     validate(scale, isNumber, 'Tz operator arg "scale" must be a number.');
     this.scale = scale;
   }
-
-  public static of = (scale: number) => new Tz(scale);
 
   public toString = (): string => `${this.scale} Tz\n`;
 

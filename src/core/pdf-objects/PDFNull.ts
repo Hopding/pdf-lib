@@ -6,7 +6,9 @@ import PDFObject from './PDFObject';
 const PDF_NULL_ENFORCER = Symbol('PDF_NULL_ENFORCER');
 
 class PDFNull extends PDFObject {
-  constructor(enforcer: Symbol) {
+  public static instance = new PDFNull(PDF_NULL_ENFORCER);
+
+  constructor(enforcer: symbol) {
     super();
     validate(
       enforcer,
@@ -14,8 +16,6 @@ class PDFNull extends PDFObject {
       'Cannot create new PDFNull objects - use PDFNull.instance',
     );
   }
-
-  public static instance = new PDFNull(PDF_NULL_ENFORCER);
 
   public toString = (): string => 'null';
 
