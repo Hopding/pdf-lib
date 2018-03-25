@@ -1,16 +1,17 @@
 /* @flow */
 import { PDFIndirectObject } from '../../pdf-objects';
-import { PDFHeader, PDFXRef } from '..';
+import { PDFHeader } from '..';
+import { Table, Subsection, Entry } from '../PDFXRef';
 
 class PDFXRefTableFactory {
   static forIndirectObjects = (
     header: PDFHeader,
-    sortedIndex: PDFIndirectObject<*>[],
-  ): [PDFXRef.Table, number] => {
-    const table = new PDFXRef.Table();
-    let subsection = new PDFXRef.Subsection().setFirstObjNum(0);
+    sortedIndex: PDFIndirectObject[],
+  ): [Table, number] => {
+    const table = new Table();
+    let subsection = new Subsection().setFirstObjNum(0);
     subsection.addEntry(
-      PDFXRef.Entry
+      Entry
         .create()
         .setOffset(0)
         .setGenerationNum(65535)
@@ -24,14 +25,14 @@ class PDFXRefTableFactory {
       const { reference } = indirectObj;
       const { reference: prevReference } = sortedIndex[idx - 1] || indirectObj;
       if (reference.objectNumber - prevReference.objectNumber > 1) {
-        subsection = new PDFXRef.Subsection().setFirstObjNum(
+        subsection = new Subsection().setFirstObjNum(
           indirectObj.reference.objectNumber,
         );
         table.addSubsection(subsection);
       }
 
       subsection.addEntry(
-        PDFXRef.Entry
+        Entry
           .create()
           .setOffset(offset)
           .setGenerationNum(0)

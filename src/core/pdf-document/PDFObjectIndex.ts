@@ -4,11 +4,11 @@ import { error } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
 class PDFObjectIndex {
-  index: Map<PDFIndirectReference<*>, PDFObject> = new Map();
+  index: Map<PDFIndirectReference, PDFObject> = new Map();
 
   static create = () => new PDFObjectIndex();
 
-  set = (key: PDFIndirectReference<*>, val: PDFObject) => {
+  set = (key: PDFIndirectReference, val: PDFObject) => {
     validate(
       key,
       isInstance(PDFIndirectReference),
@@ -19,10 +19,10 @@ class PDFObjectIndex {
     return this;
   };
 
-  lookup = (ref: PDFIndirectReference<*> | PDFObject): PDFObject => {
+  lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
     if (ref instanceof PDFIndirectReference) {
       return (
-        this.index.get(ref) || error(`Failed to lookup ref: ${String(ref)}`)
+        this.index.get(ref) || error(`Failed to lookup ref: ${ref}}`)
       );
     }
     return ref;

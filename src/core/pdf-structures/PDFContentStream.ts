@@ -40,9 +40,9 @@ class PDFContentStream extends PDFStream {
       'only PDFOperators can be pushed to a PDFContentStream',
     );
 
-  get Length(): PDFNumber {
+  get Length() {
     const Length = this.dictionary.get('Length');
-    return this.dictionary.index.lookup(Length);
+    return this.dictionary.index.lookup(Length) as PDFNumber;
   }
 
   operatorsBytesSize = () =>

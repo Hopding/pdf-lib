@@ -4,9 +4,9 @@ import { validate, validateArr, isInstance } from 'utils/validate';
 
 class PDFObjectStream extends PDFObject {
   dict: PDFDictionary;
-  objects: PDFIndirectObject<*>[];
+  objects: PDFIndirectObject[];
 
-  constructor(dictionary: PDFDictionary, objects: PDFIndirectObject<*>[]) {
+  constructor(dictionary: PDFDictionary, objects: PDFIndirectObject[]) {
     super();
     validate(
       dictionary,
@@ -21,7 +21,7 @@ class PDFObjectStream extends PDFObject {
     this.objects = objects;
   }
 
-  static from = (dictionary: PDFDictionary, objects: PDFIndirectObject<*>[]) =>
+  static from = (dictionary: PDFDictionary, objects: PDFIndirectObject[]) =>
     new PDFObjectStream(dictionary, objects);
 }
 

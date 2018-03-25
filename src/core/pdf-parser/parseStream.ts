@@ -1,4 +1,3 @@
-/* @flow */
 import { PDFRawStream, PDFName, PDFDictionary } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
 import { error, arrayIndexOf, arrayToString, trimArray } from 'utils';
@@ -75,7 +74,7 @@ export default (
   dict: PDFDictionary,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): ?[PDFRawStream | PDFObjectStream, Uint8Array] => {
+): [PDFRawStream | PDFObjectStream, Uint8Array] | void => {
   // Parse the input bytes into the stream dictionary and content bytes
   const res = parseStream(input, dict, parseHandlers);
   if (!res) return null;

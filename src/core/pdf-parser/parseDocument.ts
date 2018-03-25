@@ -82,7 +82,8 @@ const parseDocument = (
 
   // Parse the document header
   const cleaned = input;
-  let [, remainder] =
+  let remainder: Uint8Array | void;
+  [, remainder] =
     parseHeader(cleaned, parseHandlers) || error('PDF is missing a header');
 
   // If document is linearized, we'll need to parse the linearization

@@ -16,7 +16,7 @@ class PDFDocumentWriter {
     const sortedIndex = PDFDocumentWriter.sortIndex(pdfDoc.index.index);
 
     const { reference: catalogRef } =
-      sortedIndex.find(({ pdfObject }) => pdfObject.is(PDFCatalog)) ||
+      sortedIndex.find(({ pdfObject }) => pdfObject instanceof PDFCatalog) ||
       error('Missing PDFCatalog');
 
     const [table, tableOffset] = PDFXRefTableFactory.forIndirectObjects(
@@ -34,7 +34,6 @@ class PDFDocumentWriter {
         },
         pdfDoc.index,
       ),
-      pdfDoc.index,
     );
 
     const bufferSize = tableOffset + table.bytesSize() + trailer.bytesSize();
@@ -50,8 +49,8 @@ class PDFDocumentWriter {
     return buffer;
   };
 
-  static sortIndex = (index: Map<PDFIndirectReference<*>, PDFObject>) => {
-    const indexArr: PDFIndirectObject<*>[] = [];
+  static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
+    const indexArr: PDFIndirectObject[] = [];
     index.forEach((object, ref) =>
       indexArr.push(PDFIndirectObject.of(object).setReference(ref)),
     );

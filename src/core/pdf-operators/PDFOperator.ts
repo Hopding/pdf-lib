@@ -3,8 +3,6 @@ import { error, addStringToBuffer } from 'utils';
 import { validate, isIdentity } from 'utils/validate';
 
 class PDFOperator {
-  is = <T>(obj: T) => this instanceof obj;
-
   toString = (): string =>
     error(`toString() is not implemented on ${this.constructor.name}`);
 
@@ -17,7 +15,7 @@ class PDFOperator {
   static createSingletonOp = (op: string) => {
     const ENFORCER = Symbol(`${op}_ENFORCER`);
 
-    const Singleton = class extends PDFOperator {
+    class Singleton extends PDFOperator {
       constructor(enforcer: Symbol) {
         super();
         validate(

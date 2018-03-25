@@ -1,4 +1,3 @@
-/* @flow */
 import { PDFDictionary, PDFName } from 'core/pdf-objects';
 import {
   PDFCatalog,
@@ -54,7 +53,7 @@ const parseDict = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): ?[PDFDictionary, Uint8Array] => {
+): [PDFDictionary, Uint8Array] | void => {
   const trimmed = trimArray(input);
   if (arrayToString(trimmed, 0, 2) !== '<<') return null;
   const pdfDict = PDFDictionary.from(new Map(), index);

@@ -10,10 +10,10 @@ import { validate, isNumber } from 'utils/validate';
 Set the line dash pattern in the graphics state
 */
 class d extends PDFOperator {
-  dashArray: [?number, ?number];
+  dashArray: [number, number];
   dashPhase: number;
 
-  constructor(dashArray: [?number, ?number], dashPhase: number) {
+  constructor(dashArray: [number, number], dashPhase: number) {
     super();
     validate(
       dashArray[0],
@@ -34,7 +34,7 @@ class d extends PDFOperator {
     this.dashPhase = dashPhase;
   }
 
-  static of = (dashArray: [?number, ?number], dashPhase: number) =>
+  static of = (dashArray: [number, number], dashPhase: number) =>
     new d(dashArray, dashPhase);
 
   toString = (): string =>

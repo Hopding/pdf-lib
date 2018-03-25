@@ -12,12 +12,12 @@ import PDFObject from './PDFObject';
 class PDFDictionary extends PDFObject {
   map: Map<PDFName, any>;
   index: PDFObjectIndex;
-  validKeys: ?Array<string>;
+  validKeys: ReadonlyArray<string>;
 
   constructor(
-    object?: { [string]: PDFObject } | Map<PDFName, any>,
-    index: PDFObjectIndex,
-    validKeys: ?(string[]),
+    object?: { [key: string]: PDFObject } | Map<PDFName, any>,
+    index?: PDFObjectIndex,
+    validKeys?: ReadonlyArray<string>,
   ) {
     super();
     validate(
@@ -43,17 +43,17 @@ class PDFDictionary extends PDFObject {
   }
 
   static from = (
-    object: { [string]: PDFObject } | PDFDictionary,
+    object: { [key: string]: PDFObject } | Map<PDFName, any>,
     index: PDFObjectIndex,
   ) => new PDFDictionary(object, index);
 
-  filter = (predicate: (PDFObject, PDFName) => boolean) =>
+  filter = (predicate: (o: PDFObject, n: PDFName) => boolean) =>
     Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key));
 
   set = (
     key: string | PDFName,
     val: PDFObject,
-    validateKeys: ?boolean = true,
+    validateKeys = true,
   ) => {
     validate(
       key,
@@ -79,7 +79,7 @@ class PDFDictionary extends PDFObject {
     return this;
   };
 
-  get = (key: string | PDFName): $Subtype<PDFObject> => {
+  get = <T extends PDFObject>(key: string | PDFName): T => {
     validate(
       key,
       or(_.isString, isInstance(PDFName)),

@@ -8,7 +8,7 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import PDFObject from './PDFObject';
 import { PDFIndirectObject } from '.';
 
-class PDFArray<T extends PDFObject> extends PDFObject {
+class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
   array: Array<T>;
   index: PDFObjectIndex;
 
@@ -28,7 +28,7 @@ class PDFArray<T extends PDFObject> extends PDFObject {
     this.index = index;
   }
 
-  static fromArray = (array: Array<T>, index: PDFObjectIndex) =>
+  static fromArray = <A extends PDFObject>(array: Array<A>, index?: PDFObjectIndex) =>
     new PDFArray(array, index);
 
   push = (...val: T[]) => {
@@ -59,9 +59,9 @@ class PDFArray<T extends PDFObject> extends PDFObject {
     return this.array[idx];
   };
 
-  forEach = (...args: any) => this.array.forEach(...args);
-  map = (...args: any) => this.array.map(...args);
-  splice = (...args: any) => this.array.splice(...args);
+  forEach = (fn: (value: T, index: number, array: T[]) => void) => this.array.forEach(fn);
+  map = <U>(fn: (value: T, index: number, array: T[]) => U) => this.array.map(fn);
+  splice = (start: number, deleteCount?: number) => this.array.splice(start, deleteCount);
 
   toString = (): string => {
     const bufferSize = this.bytesSize();
@@ -74,9 +74,9 @@ class PDFArray<T extends PDFObject> extends PDFObject {
     2 + // "[ "
     _(this.array)
       .map(e => {
-        if (e.is(PDFIndirectObject)) return e.toReference().length + 1;
-        else if (e.is(PDFObject)) return e.bytesSize() + 1;
-        return error(`Not a PDFObject: ${e.constructor.name}`);
+        if (e instanceof PDFIndirectObject) return e.toReference().length + 1;
+        else if (e instanceof PDFObject) return e.bytesSize() + 1;
+        return error(`Not a PDFObject: ${e}`);
       })
       .sum() +
     1; // "]";
@@ -90,7 +90,7 @@ class PDFArray<T extends PDFObject> extends PDFObject {
       } else if (e instanceof PDFObject) {
         remaining = e.copyBytesInto(remaining);
       } else {
-        error(`Not a PDFObject: ${e.constructor.name}`);
+        error(`Not a PDFObject: ${e}`);
       }
       remaining = addStringToBuffer(' ', remaining);
     });

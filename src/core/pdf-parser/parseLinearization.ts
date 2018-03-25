@@ -17,7 +17,7 @@ import { ParseHandlers } from './PDFParser';
 
 export type PDFLinearization = {
   paramDict: PDFIndirectObject<PDFLinearizationParams>,
-  xref: PDFXRef.Table | PDFIndirectObject<PDFStream>,
+  xref: typeof PDFXRef.Table | PDFIndirectObject<PDFStream>,
   trailer: PDFTrailer,
 };
 
@@ -46,8 +46,8 @@ const parseLinearization = (
   if (!paramDictMatch) return null;
 
   // Make sure it is a Linearization Param Dictionary
-  const [paramDict, remaining1] = paramDictMatch;
-  if (!paramDict.pdfObject.is(PDFLinearizationParams)) return null;
+  const [paramDict, remaining1] = paramDictMatch as [PDFIndirectObject<PDFLinearizationParams>, Uint8Array];
+  if (!(paramDict.pdfObject instanceof PDFLinearizationParams)) return null;
 
   // TODO: Do the parseHandlers really need to be passed to parseIndirectObj?
   // Next we should find a cross reference stream or xref table
@@ -58,7 +58,7 @@ const parseLinearization = (
       'Found Linearization param dict but no first page xref table or stream.',
     );
 
-  const [xref, remaining2] = xrefMatch;
+  const [xref, remaining2] = xrefMatch as [typeof PDFXRef.Table | PDFIndirectObject<PDFStream>, Uint8Array];
 
   const trailerMatch =
     parseTrailer(remaining2, index) ||
@@ -72,7 +72,7 @@ const parseLinearization = (
     );
   }
 
-  const [trailer, remaining3] = trailerMatch || [];
+  const [trailer, remaining3] = trailerMatch || [null, new Uint8Array()];
 
   const linearization = { paramDict, xref, trailer };
   if (parseHandlers.onParseLinearization) {

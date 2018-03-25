@@ -30,7 +30,7 @@ const parseIndirectObj = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): [PDFIndirectObject<*>, Uint8Array] | void => {
+): [PDFIndirectObject, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const indirectObjRegex = /^(\d+) (\d+) obj/;
 

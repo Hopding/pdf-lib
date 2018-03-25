@@ -5,11 +5,11 @@ import { validate, isIdentity } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
-const pdfIndirectRefPool: Map<string, PDFIndirectReference<*>> = new Map();
+const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();
 
 // TODO: Need to error out if obj or gen numbers are manually set!
 // eslint-disable-next-line no-unused-vars
-class PDFIndirectReference<T> extends PDFObject {
+class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
   objectNumber: number;
   generationNumber: number;
 

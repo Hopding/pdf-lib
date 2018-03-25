@@ -19,18 +19,18 @@ required (n = 3).
 For DeviceCMYK, four operands shall be required (n = 4).
 */
 export class SC extends PDFOperator {
-  c: [number, ?number, ?number, ?number];
+  c: [number, number, number, number];
 
-  constructor(...c: [number, ?number, ?number, ?number]) {
+  constructor(...c: number[]) {
     super();
     validate(c[0], isNumber, 'SC operator args "c" must be a number.');
     validate(c[1], isNumber, 'SC operator args "c" must be a number.');
     validate(c[2], isNumber, 'SC operator args "c" must be a number.');
     validate(c[3], isNumber, 'SC operator args "c" must be a number.');
-    this.c = c;
+    this.c = c as [number, number, number, number];
   }
 
-  static of = (...c: [number, ?number, ?number, ?number]) => new SC(...c);
+  static of = (...c: number[]) => new SC(...c);
 
   toString = (): string => `${this.c.join(' ')} SC\n`;
 
@@ -44,18 +44,18 @@ export class SC extends PDFOperator {
 Same as SC but used for nonstroking operations.
 */
 export class sc extends PDFOperator {
-  c: [number, ?number, ?number, ?number];
+  c: [number, number, number, number];
 
-  constructor(...c: [number, ?number, ?number, ?number]) {
+  constructor(...c: number[]) {
     super();
     validate(c[0], isNumber, 'SC operator args "c" must be a number.');
     validate(c[1], isNumber, 'SC operator args "c" must be a number.');
     validate(c[2], isNumber, 'SC operator args "c" must be a number.');
     validate(c[3], isNumber, 'SC operator args "c" must be a number.');
-    this.c = c;
+    this.c = c as [number, number, number, number];
   }
 
-  static of = (...c: [number, ?number, ?number, ?number]) => new sc(...c);
+  static of = (...c: number[]) => new sc(...c);
 
   toString = (): string => `${this.c.join(' ')} sc\n`;
 

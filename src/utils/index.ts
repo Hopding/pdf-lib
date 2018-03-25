@@ -1,14 +1,14 @@
 import _ from 'lodash';
 
 export interface Predicate<A, B = true> {
-  (a: A, b: B): boolean;
+  (a: A, b?: B): boolean;
 }
 
 export interface ArrayPredicate<A> {
   (...a: A[]): boolean;
 }
 
-export const writeToDebugFile = (data, postfix = 0) => {
+export const writeToDebugFile = (data: any, postfix = 0) => {
   // eslint-disable-next-line
   const fs = require('fs');
   fs.writeFileSync(`/Users/user/Desktop/pdf-lib/debug${postfix}`, data);
@@ -18,9 +18,9 @@ export const error = (msg: string) => {
   throw new Error(msg);
 };
 
-export const isInt = num => num % 1 === 0;
+export const isInt = (num: number) => num % 1 === 0;
 
-export const isString = (val) => typeof val === 'string';
+export const isString = (val: any) => typeof val === 'string';
 
 export const and = (...predicates: ArrayPredicate<any>[]) => (...values: any[]) =>
   predicates.every(predicate => predicate(...values));
@@ -37,7 +37,7 @@ export const toBoolean = (boolStr: string) => {
   throw new Error(`"${boolStr}" cannot be converted to a boolean`);
 };
 
-export const charCode = charStr => {
+export const charCode = (charStr: string) => {
   if (charStr.length !== 1) {
     throw new Error('"char" must be exactly one character long');
   }
@@ -46,10 +46,7 @@ export const charCode = charStr => {
 
 export const charFromCode = (code: number) => String.fromCharCode(code);
 
-export const isObject = val =>
-  Object.prototype.toString.call(val) === '[object Object]';
-
-export const mergeUint8Arrays = (...arrs) => {
+export const mergeUint8Arrays = (...arrs: Uint8Array[]) => {
   const totalLength = _.sum(arrs.map(a => a.length));
   const newArray = new Uint8Array(totalLength);
 
@@ -71,9 +68,9 @@ export const addStringToBuffer = (str: string, buffer: Uint8Array) => {
 };
 /* eslint-enable no-param-reassign */
 
-export const charCodes = str => str.split('').map(c => c.charCodeAt(0));
+export const charCodes = (str: string) => str.split('').map(c => c.charCodeAt(0));
 
-export const arrayToString = (arr, startAt = 0, stopAt) => {
+export const arrayToString = (arr: Uint8Array, startAt = 0, stopAt?: number) => {
   const stopIdx =
     stopAt === undefined || stopAt >= arr.length ? arr.length : stopAt;
   let str = '';
@@ -83,21 +80,21 @@ export const arrayToString = (arr, startAt = 0, stopAt) => {
   return str;
 };
 
-export const arrayCharAt = (arr, idx) => String.fromCharCode(arr[idx]);
+export const arrayCharAt = (arr: Uint8Array | any[], idx: number) => String.fromCharCode(arr[idx]);
 
-export const trimArray = arr => {
+export const trimArray = (arr: Uint8Array) => {
   let idx = 0;
   while (String.fromCharCode(arr[idx]).match(/^[ \n\r]/)) idx += 1;
   return arr.subarray(idx);
 };
 
 export const arraysAreEqual = (
-  arr1,
-  arr1Start,
-  arr1Stop,
-  arr2,
-  arr2Start,
-  arr2Stop,
+  arr1: any[] | Uint8Array,
+  arr1Start: number,
+  arr1Stop: number,
+  arr2: any[] | Uint8Array,
+  arr2Start: number,
+  arr2Stop: number,
 ) => {
   const arr1Length = arr1Stop - arr1Start;
   if (arr1Length !== arr2Stop - arr2Start) return false;
@@ -107,7 +104,7 @@ export const arraysAreEqual = (
   return true;
 };
 
-export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
+export const arrayIndexOf = (arr: any[] | Uint8Array, targetStr: string, startFrom = 0) => {
   // validate(
   //   startFrom,
   //   and(_.isNumber, not(_.isNaN)),
@@ -134,7 +131,7 @@ export const arrayIndexOf = (arr, targetStr, startFrom = 0) => {
   return currIdx;
 };
 
-export const arrayIndexOfReverse = (arr, targetStr, startFrom) => {
+export const arrayIndexOfReverse = (arr: any[], targetStr: string, startFrom: number) => {
   // validate(
   //   startFrom,
   //   and(_.isNumber, not(_.isNaN)),
@@ -161,7 +158,7 @@ export const arrayIndexOfReverse = (arr, targetStr, startFrom) => {
   return currIdx;
 };
 
-export const arrayFindIndexOf = (arr, predicate, startFrom = 0) => {
+export const arrayFindIndexOf = (arr: Uint8Array, predicate: (a: any) => boolean, startFrom = 0) => {
   let currIdx = startFrom;
 
   while (!predicate(arr.subarray(currIdx, currIdx + 1)[0])) {
@@ -183,5 +180,5 @@ export const findInMap = <K, V>(
   return null;
 };
 
-export const setCharAt = (str, idx, newChar) =>
+export const setCharAt = (str: string, idx: number, newChar: string) =>
   str.substring(0, idx) + newChar + str.substring(idx + 1);

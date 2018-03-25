@@ -1,4 +1,3 @@
-/* @flow */
 import { PDFDictionary } from 'core/pdf-objects';
 import { PDFTrailer } from 'core/pdf-structures';
 import { error, arrayToString, trimArray, arrayIndexOf, charCode } from 'utils';
@@ -66,7 +65,7 @@ const parseTrailerWithoutDict = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): ?[PDFTrailer, Uint8Array] => {
+): [PDFTrailer, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const trailerRegex = /^startxref[\n|\r| ]+?(\d+)[\n|\r| ]+?%%EOF/;
 

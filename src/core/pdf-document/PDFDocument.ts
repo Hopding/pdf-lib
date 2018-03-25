@@ -32,7 +32,7 @@ class PDFDocument {
       '"index" must be a PDFObjectIndex object',
     );
     index.index.forEach((obj, ref) => {
-      if (obj.is(PDFCatalog)) this.catalog = obj;
+      if (obj instanceof PDFCatalog) this.catalog = obj;
       if (ref.objectNumber > this.maxObjNum) this.maxObjNum = ref.objectNumber;
     });
     this.index = index;
@@ -50,9 +50,9 @@ class PDFDocument {
   };
 
   getPages = (): PDFPage[] => {
-    const pages = [];
+    const pages = [] as PDFPage[];
     this.catalog.Pages.traverse(kid => {
-      if (kid.is(PDFPage)) pages.push(kid);
+      if (kid instanceof PDFPage) pages.push(kid);
     });
     return pages;
   };
@@ -67,7 +67,7 @@ class PDFDocument {
     let lastPageTree = Pages;
     let lastPageTreeRef = this.catalog.get('Pages');
     Pages.traverseRight((kid, ref) => {
-      if (kid.is(PDFPageTree)) {
+      if (kid instanceof PDFPageTree) {
         lastPageTree = kid;
         lastPageTreeRef = ref;
       }
@@ -90,8 +90,8 @@ class PDFDocument {
     let kidNum = 0;
     this.catalog.Pages.traverse((kid, ref) => {
       if (pageCount !== idx) {
-        if (kid.is(PDFPageTree)) kidNum = 0;
-        if (kid.is(PDFPage)) {
+        if (kid instanceof PDFPageTree) kidNum = 0;
+        if (kid instanceof PDFPage) {
           pageCount += 1;
           kidNum += 1;
           if (pageCount === idx) treeRef = kid.get('Parent');
@@ -99,7 +99,7 @@ class PDFDocument {
       }
     });
 
-    const tree: PDFPageTree = this.index.lookup(treeRef);
+    const tree = this.index.lookup(treeRef) as PDFPageTree;
     tree.removePage(kidNum);
     return this;
   };
@@ -116,8 +116,8 @@ class PDFDocument {
     let kidNum = 0;
     this.catalog.Pages.traverse((kid, ref) => {
       if (pageCount !== idx) {
-        if (kid.is(PDFPageTree)) kidNum = 0;
-        if (kid.is(PDFPage)) {
+        if (kid instanceof PDFPageTree) kidNum = 0;
+        if (kid instanceof PDFPage) {
           pageCount += 1;
           kidNum += 1;
           if (pageCount === idx) treeRef = kid.get('Parent');
@@ -126,7 +126,7 @@ class PDFDocument {
     });
 
     page.set('Parent', treeRef);
-    const tree: PDFPageTree = this.index.lookup(treeRef);
+    const tree = this.index.lookup(treeRef) as PDFPageTree;
     tree.insertPage(kidNum, this.register(page));
     return this;
   };

@@ -32,9 +32,7 @@ const parseObjData = (
   input: Uint8Array,
 ): { objNum: number, byteOffset: number }[] => {
   // Extract the value of the "N" entry from the dict
-  const N: PDFNumber =
-    dict.get('N') || error('Object stream dict must have "N" entry');
-  const numObjects = N.number;
+  const numObjects = (dict.get('N') as PDFNumber).number;
 
   // Regex representing a pair of integers
   const objDatumRegex = /^ *(\d+) *(\d+) */;
@@ -42,7 +40,7 @@ const parseObjData = (
   // Find the first non-numeric character (not including EOLs and spaces) in the
   // input bytes
   const firstNonNumIdx = arrayFindIndexOf(input, charByte =>
-    String.fromCharCode(charByte).match(/[^\d\n\r ]/),
+    !!String.fromCharCode(charByte).match(/[^\d\n\r ]/),
   );
 
   // Convert the input bytes to a string, up to the first non-numeric character

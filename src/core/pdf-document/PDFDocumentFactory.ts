@@ -51,14 +51,14 @@ class PDFDocumentFactory {
     arrays,
     original: { body },
     updates,
-  }: ParsedPDF): Map<PDFIndirectReference<*>, PDFObject> => {
-    const index: Map<PDFIndirectReference<*>, PDFObject> = new Map();
+  }: ParsedPDF): Map<PDFIndirectReference, PDFObject> => {
+    const index: Map<PDFIndirectReference, PDFObject> = new Map();
 
     // Remove Object Streams and Cross Reference Streams, because we've already
     // parsed the Object Streams into PDFIndirectObjects, and will just write
     // them as such and use normal xref tables to reference them.
     const shouldKeep = (object: PDFObject) =>
-      !object.is(PDFObjectStream) &&
+      !(object instanceof PDFObjectStream) &&
       !(
         object instanceof PDFStream &&
         object.dictionary.get('Type') === PDFName.from('XRef')

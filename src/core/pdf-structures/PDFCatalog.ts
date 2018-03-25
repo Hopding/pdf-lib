@@ -58,7 +58,7 @@ class PDFCatalog extends PDFDictionary {
   };
 
   static fromObject = (
-    object: { [string]: PDFObject },
+    object: { [key: string]: PDFObject },
     index: PDFObjectIndex,
   ): PDFCatalog => new PDFCatalog(object, index, VALID_KEYS);
 
@@ -67,9 +67,9 @@ class PDFCatalog extends PDFDictionary {
     return new PDFCatalog(dict.map, dict.index, VALID_KEYS);
   };
 
-  get Pages(): PDFPageTree {
+  get Pages() {
     const Pages = this.get('Pages');
-    return this.index.lookup(Pages);
+    return this.index.lookup(Pages) as PDFPageTree;
   }
 }
 

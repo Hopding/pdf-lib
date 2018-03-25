@@ -1,7 +1,7 @@
-/* @flow */
 import { PDFDictionary, PDFStream } from 'core/pdf-objects';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
+import { PDFObjectStream } from 'core/pdf-structures';
 
 import parseStream from './parseStream';
 import parseDict from './parseDict';
@@ -24,7 +24,7 @@ const parseDictOrStream = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): ?[PDFDictionary | PDFStream, Uint8Array] => {
+): [PDFDictionary | PDFStream | PDFObjectStream, Uint8Array] | void => {
   // Attempt to parse a dictionary
   const dictMatch = parseDict(input, index, parseHandlers);
   if (!dictMatch) return null;

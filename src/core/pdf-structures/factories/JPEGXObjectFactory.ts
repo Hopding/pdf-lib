@@ -68,11 +68,11 @@ class JPEGXObjectFactory {
     pos += 2;
 
     const channelMap = {
-      '1': 'DeviceGray',
-      '3': 'DeviceRGB',
-      '4': 'DeviceCYMK',
+      '1': 'DeviceGray' as 'DeviceGray',
+      '3': 'DeviceRGB' as 'DeviceRGB',
+      '4': 'DeviceCYMK' as 'DeviceCYMK',
     };
-    const channels = dataView.getUint8(pos++);
+    const channels = dataView.getUint8(pos++) as 1 | 3 | 4;
     this.colorSpace = channelMap[channels] || error('Unknown JPEG channel.');
   }
 

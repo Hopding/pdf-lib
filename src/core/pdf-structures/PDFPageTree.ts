@@ -40,12 +40,16 @@ class PDFPageTree extends PDFDictionary {
     return new PDFPageTree(dict.map, dict.index, VALID_KEYS);
   };
 
-  getKids(): PDFArray<Kid> {
-    return this.index.lookup(this.get('Kids'));
+  get Kids() {
+    return this.index.lookup(this.get('Kids')) as PDFArray<Kid | PDFIndirectReference<Kid>>;
   }
 
-  getParent(): ?PDFPageTree {
-    return this.index.lookup(this.get('Parent'));
+  get Parent() {
+    return this.index.lookup(this.get('Parent')) as PDFPageTree | void;
+  }
+
+  get Count() {
+    return this.get('Parent') as PDFNumber;
   }
 
   addPage = (page: PDFIndirectReference<PDFPage>) => {
@@ -54,18 +58,18 @@ class PDFPageTree extends PDFDictionary {
       isInstance(PDFIndirectReference),
       '"page" arg must be of type PDFIndirectReference<PDFPage>',
     );
-    this.getKids().array.push(page);
+    this.Kids.array.push(page);
     this.ascend(pageTree => {
-      pageTree.get('Count').number += 1;
+      pageTree.Count.number += 1;
     });
     return this;
   };
 
   removePage = (idx: number) => {
     validate(idx, _.isNumber, '"idx" arg must be a Number');
-    this.getKids().array.splice(idx, 1);
+    this.Kids.array.splice(idx, 1);
     this.ascend(pageTree => {
-      pageTree.get('Count').number -= 1;
+      pageTree.Count.number -= 1;
     });
     return this;
   };
@@ -77,39 +81,39 @@ class PDFPageTree extends PDFDictionary {
       isInstance(PDFIndirectReference),
       '"page" arg must be of type PDFIndirectReference<PDFPage>',
     );
-    this.getKids().array.splice(idx, 0, page);
+    this.Kids.array.splice(idx, 0, page);
     this.ascend(pageTree => {
-      pageTree.get('Count').number += 1;
+      pageTree.Count.number += 1;
     });
     return this;
   };
 
   // TODO: Pass a "stop" callback to allow "visit" to end traversal early
   // TODO: Allow for optimized tree search given an index
-  traverse = (visit: (k: Kid, r: PDFIndirectReference<Kid>) => any) => {
-    if (this.getKids().array.length === 0) return this;
+  traverse = (visit: (k: Kid, r: Kid | PDFIndirectReference<Kid>) => any) => {
+    if (this.Kids.array.length === 0) return this;
 
-    this.getKids().forEach(kidRef => {
-      const kid: Kid = this.index.lookup(kidRef);
+    this.Kids.forEach(kidRef => {
+      const kid = this.index.lookup(kidRef) as Kid;
       visit(kid, kidRef);
-      if (kid.is(PDFPageTree)) kid.traverse(visit);
+      if (kid instanceof PDFPageTree) kid.traverse(visit);
     });
     return this;
   };
 
-  traverseRight = (visit: (k: Kid, r: PDFIndirectReference<Kid>) => any) => {
-    if (this.getKids().array.length === 0) return this;
+  traverseRight = (visit: (k: Kid, r: Kid | PDFIndirectReference<Kid>) => any) => {
+    if (this.Kids.array.length === 0) return this;
 
-    const lastKidRef = _.last(this.getKids().array);
-    const lastKid: Kid = this.index.lookup(lastKidRef);
+    const lastKidRef = _.last(this.Kids.array);
+    const lastKid = this.index.lookup(lastKidRef) as Kid;
     visit(lastKid, lastKidRef);
-    if (lastKid.is(PDFPageTree)) lastKid.traverseRight(visit);
+    if (lastKid instanceof PDFPageTree) lastKid.traverseRight(visit);
     return this;
   };
 
-  ascend = (visit: (t: PDFPageTree) => any, visitSelf?: boolean = true) => {
+  ascend = (visit: (t: PDFPageTree) => any, visitSelf = true) => {
     if (visitSelf) visit(this);
-    const Parent = this.getParent();
+    const Parent = this.Parent;
     if (!Parent) return;
     visit(Parent);
     Parent.ascend(visit, false);

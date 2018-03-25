@@ -13,7 +13,7 @@ If not, null is returned.
 const parseBool = (
   input: Uint8Array,
   { onParseBool }: ParseHandlers = {},
-): ?[PDFBoolean, Uint8Array] => {
+): [PDFBoolean, Uint8Array] | void => {
   const boolRegex = /^(?:[\n|\r| ]*)(true|false)((?= |\]|\n|\r))?/;
 
   // Search for first character that isn't part of a boolean

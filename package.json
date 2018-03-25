@@ -7,7 +7,7 @@
     "start": "babel-node index.js",
     "start2": "babel-node index2.js",
     "build": "babel src -d no-flow --ignore node_modules __tests__",
-    "bts": "tsc --project ./.tsconfig.json",
+    "bts": "tsc",
     "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc src/* --fix",
     "test:integration:creation": "babel-node integration-tests/creation/test1.js",
     "test:integration:editing": "babel-node integration-tests/editing/test1.js"
@@ -24,6 +24,8 @@
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "devDependencies": {
     "@types/lodash": "^4.14.106",
+    "@types/node": "^9.6.0",
+    "@types/pako": "^1.0.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",

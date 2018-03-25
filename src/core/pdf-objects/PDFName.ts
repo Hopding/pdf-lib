@@ -32,9 +32,6 @@ class PDFName extends PDFObject {
 
   static from = (str: string): PDFName => {
     validate(str, _.isString, 'PDFName.from() requires string as argument');
-
-    if (str.charCodeAt(0) === '/') console.log(`str: "${str.charCodeAt(0)}"`);
-
     let pdfName = pdfNamePool.get(str);
     if (!pdfName) {
       pdfName = new PDFName(pdfNameEnforcer, str);

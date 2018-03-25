@@ -7,12 +7,11 @@ import { validate, isInstance } from 'utils/validate';
 import PDFObject from './PDFObject';
 import PDFIndirectReference from './PDFIndirectReference';
 
-// 55 errors
-class PDFIndirectObject<T extends PDFObject> extends PDFObject {
+class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
   reference: PDFIndirectReference<T>;
   pdfObject: T;
 
-  constructor(pdfObject: PDFObject) {
+  constructor(pdfObject: T) {
     super();
     validate(
       pdfObject,

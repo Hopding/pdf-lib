@@ -89,8 +89,12 @@ class PDFPage extends PDFDictionary {
 
   static validKeys = VALID_KEYS;
 
-  get Resources(): PDFDictionary {
-    return this.index.lookup(this.get('Resources'));
+  get Resources() {
+    return this.index.lookup(this.get('Resources')) as PDFDictionary;
+  }
+
+  get Contents() {
+    return this.index.lookup(this.get('Contents')) as PDFArray<PDFContentStream | PDFIndirectReference<PDFContentStream>>;
   }
 
   /**
@@ -113,7 +117,7 @@ class PDFPage extends PDFDictionary {
     const Contents = this.get('Contents');
     if (Contents) {
       const contents: PDFObject = this.index.lookup(Contents);
-      if (!contents.is(PDFArray)) {
+      if (!(contents instanceof PDFArray)) {
         this.set('Contents', PDFArray.fromArray([Contents], this.index));
       }
     }
@@ -130,12 +134,11 @@ class PDFPage extends PDFDictionary {
       this.set('Resources', PDFDictionary.from(new Map(), this.index));
     }
 
-    const Resources = this.index.lookup(this.get('Resources'));
-    if (Font && !Resources.get('Font')) {
-      Resources.set('Font', PDFDictionary.from(new Map(), this.index));
+    if (Font && !this.Resources.get('Font')) {
+      this.Resources.set('Font', PDFDictionary.from(new Map(), this.index));
     }
-    if (XObject && !Resources.get('XObject')) {
-      Resources.set('XObject', PDFDictionary.from(new Map(), this.index));
+    if (XObject && !this.Resources.get('XObject')) {
+      this.Resources.set('XObject', PDFDictionary.from(new Map(), this.index));
     }
   };
 
@@ -153,8 +156,7 @@ class PDFPage extends PDFDictionary {
     if (!this.get('Contents')) {
       this.set('Contents', PDFArray.fromArray(contentStreams, this.index));
     } else {
-      const Contents: PDFArray<PDFContentStream> = this.index.lookup(this.get('Contents'));
-      Contents.push(...contentStreams);
+      this.Contents.push(...contentStreams);
     }
 
     return this;
@@ -172,8 +174,7 @@ class PDFPage extends PDFDictionary {
     );
 
     this.normalizeResources({ Font: true });
-    const Resources: PDFDictionary = this.index.lookup(this.get('Resources'));
-    const Font: PDFDictionary = this.index.lookup(Resources.get('Font'));
+    const Font = this.index.lookup(this.Resources.get('Font')) as PDFDictionary;
     Font.set(key, fontDict);
 
     return this;
@@ -188,9 +189,7 @@ class PDFPage extends PDFDictionary {
     );
 
     this.normalizeResources({ XObject: true });
-    // const Resources: PDFDictionary = this.index.lookup(this.get('Resources'));
-    const { Resources } = this;
-    const XObject: PDFDictionary = this.index.lookup(Resources.get('XObject'));
+    const XObject = this.index.lookup(this.Resources.get('XObject')) as PDFDictionary;
     XObject.set(key, xObject);
 
     return this;

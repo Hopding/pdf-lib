@@ -3,6 +3,8 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "target": "es6",
+    "lib": ["es2017"],
+    "types": ["node"],
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,

@@ -1,5 +1,4 @@
-/* @flow */
-import { PDFXRef } from 'core/pdf-structures';
+import { Table, Entry, Subsection } from 'core/pdf-structures/PDFXRef';
 import { arrayToString, trimArray } from 'utils';
 
 import { ParseHandlers } from './PDFParser';
@@ -8,11 +7,11 @@ import { ParseHandlers } from './PDFParser';
 Accepts an string as input. Repeatedly applies a regex to the input that matches
 against entries of PDF Cross Reference Table subsections.
 
-If entries are found, then an array of PDFXRef.Entry will be returned.
+If entries are found, then an array of Entry will be returned.
 
 If not, null is returned.
 */
-const parseEntries = (input: string): PDFXRef.Entry | void => {
+const parseEntries = (input: string): Array<Entry> | void => {
   const trimmed = input.trim();
   const entryRegex = /^(\d{10}) (\d{5}) (n|f)/;
 
@@ -25,7 +24,7 @@ const parseEntries = (input: string): PDFXRef.Entry | void => {
     const [fullMatch, offset, genNum, isInUse] = result;
 
     entriesArr.push(
-      PDFXRef.Entry
+      Entry
         .create()
         .setOffset(Number(offset))
         .setGenerationNum(Number(genNum))
@@ -41,11 +40,11 @@ const parseEntries = (input: string): PDFXRef.Entry | void => {
 Accepts an string as input. Repeatedly applies a regex to the input that matches
 against subsections of PDF Cross Reference Tables.
 
-If subsections are found, then an array of PDFXRef.Subsection will be returned.
+If subsections are found, then an array of Subsection will be returned.
 
 If not, null is returned.
 */
-const parseSubsections = (input: string): ?(PDFXRef.Subsection[]) => {
+const parseSubsections = (input: string): Array<Subsection> | void=> {
   const trimmed = input.trim();
   const sectionsRegex = /^(\d+) (\d+)((\n|\r| )*(\d{10} \d{5} (n|f)(\n|\r| )*)+)/;
 
@@ -61,7 +60,7 @@ const parseSubsections = (input: string): ?(PDFXRef.Subsection[]) => {
     if (!entries) return null;
 
     sectionsArr.push(
-      PDFXRef.Subsection.from(entries).setFirstObjNum(Number(firstObjNum)),
+      Subsection.from(entries).setFirstObjNum(Number(firstObjNum)),
     );
     remainder = remainder.substring(fullMatch.length).trim();
   }
@@ -76,14 +75,14 @@ trimmed input make up a PDF Cross Reference Table.
 If so, returns a tuple containing (1) an object representing the parsed PDF
 Cross Reference Table and (2) a subarray of the input with the characters making
 up the parsed cross reference table removed. The "onParseXRefTable" parse
-handler will also be called with the PDFXRef.Table object.
+handler will also be called with the Table object.
 
 If not, null is returned.
 */
 const parseXRefTable = (
   input: Uint8Array,
   { onParseXRefTable }: ParseHandlers = {},
-): ?[PDFXRef.Table, Uint8Array] => {
+): [Table, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const xRefTableRegex = /^xref[\n|\r| ]*([\d|\n|\r| |f|n]+)/;
 
@@ -100,7 +99,7 @@ const parseXRefTable = (
   const subsections = parseSubsections(contents);
   if (!subsections) return null;
 
-  const xRefTable = PDFXRef.Table.from(subsections);
+  const xRefTable = Table.from(subsections);
   if (onParseXRefTable) onParseXRefTable(xRefTable);
 
   return [xRefTable, trimmed.subarray(fullMatch.length)];

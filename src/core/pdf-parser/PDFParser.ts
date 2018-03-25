@@ -19,8 +19,8 @@ import {
   PDFHeader,
   PDFObjectStream,
   PDFTrailer,
-  PDFXRef,
 } from 'core/pdf-structures';
+import { Table as PDFXRefTable } from 'core/pdf-structures/PDFXRef';
 import { error } from 'utils';
 import { validate, isInstance } from 'utils/validate';
 
@@ -30,40 +30,38 @@ import parseDocument from './parseDocument';
 
 import { PDFLinearization } from './parseLinearization';
 
-const XRefTable = PDFXRef.Table;
-
 export interface ParseHandlers {
-  onParseBool?: (PDFBoolean) => any;
-  onParseArray?: (PDFArray) => any;
-  onParseDict?: (PDFDictionary) => any;
-  onParseHexString?: (PDFHexString) => any;
-  onParseName?: (PDFName) => any;
-  onParseNull?: (PDFNull) => any;
-  onParseNumber?: (PDFNumber) => any;
-  onParseString?: (PDFString) => any;
-  onParseStream?: (PDFStream) => any;
-  onParseObjectStream?: (PDFObjectStream) => any;
-  onParseIndirectRef?: (PDFIndirectReference) => any;
-  onParseIndirectObj?: (PDFIndirectObject) => any;
-  onParseHeader?: (PDFHeader) => any;
-  onParseXRefTable?: (XRefTable) => any;
-  onParseTrailer?: (PDFTrailer) => any;
-  onParseLinearization?: (PDFLinearization) => any;
+  onParseBool?: (p: PDFBoolean) => any;
+  onParseArray?: (p: PDFArray) => any;
+  onParseDict?: (p: PDFDictionary) => any;
+  onParseHexString?: (p: PDFHexString) => any;
+  onParseName?: (p: PDFName) => any;
+  onParseNull?: (p: PDFNull) => any;
+  onParseNumber?: (p: PDFNumber) => any;
+  onParseString?: (p: PDFString) => any;
+  onParseStream?: (p: PDFStream) => any;
+  onParseObjectStream?: (p: PDFObjectStream) => any;
+  onParseIndirectRef?: (p: PDFIndirectReference) => any;
+  onParseIndirectObj?: (p: PDFIndirectObject) => any;
+  onParseHeader?: (p: PDFHeader) => any;
+  onParseXRefTable?: (p: PDFXRefTable) => any;
+  onParseTrailer?: (p: PDFTrailer) => any;
+  onParseLinearization?: (p: PDFLinearization) => any;
 };
 
 export type ParsedPDF = {
-  arrays: PDFArray<*>[],
+  arrays: PDFArray[],
   dictionaries: PDFDictionary[],
   original: {
     header: PDFHeader,
-    linearization: ?PDFLinearization,
-    body: Map<PDFIndirectReference<*>, PDFIndirectObject<*>>,
-    xRefTable: PDFXRef.Table,
+    linearization: PDFLinearization,
+    body: Map<PDFIndirectReference, PDFIndirectObject>,
+    xRefTable: PDFXRefTable,
     trailer: PDFTrailer,
   },
   updates: {
-    body: Map<PDFIndirectReference<*>, PDFIndirectObject<*>>,
-    xRefTable?: PDFXRef.Table,
+    body: Map<PDFIndirectReference, PDFIndirectObject>,
+    xRefTable?: PDFXRefTable,
     trailer: PDFTrailer,
   }[],
 };
@@ -71,20 +69,20 @@ export type ParsedPDF = {
 class PDFParser {
   activelyParsing = false;
 
-  arrays: PDFArray<*>[] = [];
+  arrays: PDFArray[] = [];
   dictionaries: PDFDictionary[] = [];
   catalog: PDFCatalog = null;
 
   header: PDFHeader = null;
-  body: Map<PDFIndirectReference<*>, PDFIndirectObject<*>> = new Map();
-  xRefTable: PDFXRef.Table = null;
+  body: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
+  xRefTable: PDFXRefTable = null;
   trailer: PDFTrailer = null;
 
-  linearization: ?PDFLinearization = null;
+  linearization: PDFLinearization = null;
 
   updates: {
-    body: Map<PDFIndirectReference<*>, PDFIndirectObject<*>>,
-    xRefTable: PDFXRef.Table,
+    body: Map<PDFIndirectReference, PDFIndirectObject>,
+    xRefTable: PDFXRefTable,
     trailer: PDFTrailer,
   }[] = [];
 
@@ -103,7 +101,7 @@ class PDFParser {
     };
   }
 
-  handleArray = (array: PDFArray<*>) => {
+  handleArray = (array: PDFArray) => {
     this.arrays.push(array);
   };
 
@@ -121,7 +119,7 @@ class PDFParser {
     });
   };
 
-  handleIndirectObj = (indirectObj: PDFIndirectObject<*>) => {
+  handleIndirectObj = (indirectObj: PDFIndirectObject) => {
     if (this.updates.length > 0) {
       _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
     } else {
@@ -133,7 +131,7 @@ class PDFParser {
     this.header = header;
   };
 
-  handleXRefTable = (xRefTable: PDFXRef.Table) => {
+  handleXRefTable = (xRefTable: PDFXRefTable) => {
     if (!this.trailer) this.xRefTable = xRefTable;
     else _.last(this.updates).xRefTable = xRefTable;
   };

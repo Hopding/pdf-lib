@@ -23,7 +23,7 @@ space. For other types of patterns, these operands shall not be specified.
 */
 export class SCN extends PDFOperator {
   c: number[];
-  name: ?string;
+  name: string;
 
   constructor(c: number[], name?: string) {
     super();
@@ -53,7 +53,7 @@ Same as SCN but used for nonstroking operations.
 */
 export class scn extends PDFOperator {
   c: number[];
-  name: ?string;
+  name: string;
 
   constructor(c: number[], name?: string) {
     super();

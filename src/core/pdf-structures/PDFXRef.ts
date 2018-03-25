@@ -5,9 +5,9 @@ import { addStringToBuffer } from 'utils';
 import { validate, validateArr, isInstance } from 'utils/validate';
 
 export class Entry {
-  offset = null;
-  generationNum = null;
-  isInUse = null;
+  offset: number = null;
+  generationNum: number = null;
+  isInUse: boolean = null;
 
   static create = () => new Entry();
 
@@ -75,7 +75,7 @@ export class Subsection {
       .sum();
 }
 
-class Table {
+export class Table {
   subsections: Subsection[] = [];
 
   static from = (subsections: Subsection[]) => {

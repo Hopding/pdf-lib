@@ -35,7 +35,7 @@ const parseArray = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: ParseHandlers = {},
-): [PDFArray<*>, Uint8Array] | undefined => {
+): [PDFArray, Uint8Array] | undefined => {
   // Make sure it is possible for this to be an array.
   const trimmed = trimArray(input);
   if (arrayCharAt(trimmed, 0) !== '[') return null;

@@ -72,18 +72,10 @@ export class TJ extends PDFOperator {
       'TJ operator arg "array" elements must be one of: PDFString, PDFHexString, PDFNumber, String, Number',
     );
 
-    // TODO: Fix all of these suppressions...
-    // $SuppressFlow
     this.array = PDFArray.fromArray(
-      // $SuppressFlow
       array.map(elem => {
-        // $SuppressFlow
         if (_.isString(elem)) return PDFString.fromString(elem);
-        else if (_.isNumber(elem)) {
-          // $SuppressFlow
-          return PDFNumber.fromNumber(elem);
-        }
-          // $SuppressFlow
+        else if (_.isNumber(elem)) return PDFNumber.fromNumber(elem);
         return elem;
       }),
     );
@@ -96,7 +88,7 @@ export class TJ extends PDFOperator {
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = this.array.copyBytesInto(buffer);
-    remaining = addStringToBuffer(' TJ\n');
+    remaining = addStringToBuffer(' TJ\n', buffer);
     return remaining;
   };
 }

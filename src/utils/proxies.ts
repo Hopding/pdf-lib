@@ -1,15 +1,21 @@
-/* xxxxxxxxxx@flow */
 import _ from 'lodash';
 
 import { validate, isInstance } from 'utils/validate';
 
-const EMPTY_ARR = [];
+const EMPTY_ARR = [] as any[];
 
-export const typedArrayProxy = <T>(obj: any, type: T, config: Object = {}) => {
-  _(config.methods).forEach((val, key) => {
+interface TypedArrayProxyConfig {
+  methods?: Function[],
+  set?: (k: string | number | symbol, v: any) => void,
+  get?: (k: string | number | symbol) => any,
+}
+
+// TODO: See if this can be refined/simplified at all...
+export const typedArrayProxy = <T extends Function>(obj: any, type: T, config: TypedArrayProxyConfig = {}) => {
+  _(config.methods).forEach((val: Function, key) => {
     obj[key] = new Proxy(obj[key], {
       apply: (target, thisArg, elements) =>
-        val(args => target.apply(thisArg, args), elements),
+        val((args: any) => target.apply(thisArg, args), elements),
     });
   });
 
@@ -27,8 +33,8 @@ export const typedArrayProxy = <T>(obj: any, type: T, config: Object = {}) => {
       return true;
     },
     get: (target, property, receiver) => {
-      if (config.get && config.get[property]) {
-        return config.get[property](target[property]);
+      if (config.get && config.get(property)) {
+        return config.get(property)(target[property]);
       }
       return target[property];
     },

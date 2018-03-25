@@ -18,7 +18,7 @@ If not, null is returned.
 const parseIndirectRef = (
   input: Uint8Array,
   { onParseIndirectRef }: ParseHandlers = {},
-): [PDFIndirectReference<*>, Uint8Array] | void => {
+): [PDFIndirectReference, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const indirectRefRegex = /^(\d+) (\d+) R/;
 
