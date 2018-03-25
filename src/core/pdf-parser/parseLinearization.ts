@@ -12,32 +12,32 @@ import parseIndirectObj from './parseIndirectObj';
 import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 import parseXRefTable from './parseXRefTable';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
-export interface PDFLinearization {
+export interface IPDFLinearization {
   paramDict: PDFIndirectObject<PDFLinearizationParams>;
   xref: typeof PDFXRef.Table | PDFIndirectObject<PDFStream>;
   trailer: PDFTrailer;
 }
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Linearization Param Dict, followed by an xref table
-or stream, and finally a trailer.
-
-If so, returns a tuple containing (1) an object representing those three objects
-and (2) a subarray of the input with the characters making up the parsed objects
-removed. The "onParseDict" parse handler will be called with the linearization
-param dict. The "onParseLinearization" parse handler will also be called with
-objects representing the three parsed linearization objects.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in the
+ * trimmed input make up a PDF Linearization Param Dict, followed by an xref table
+ * or stream, and finally a trailer.
+ *
+ * If so, returns a tuple containing (1) an object representing those three objects
+ * and (2) a subarray of the input with the characters making up the parsed objects
+ * removed. The "onParseDict" parse handler will be called with the linearization
+ * param dict. The "onParseLinearization" parse handler will also be called with
+ * objects representing the three parsed linearization objects.
+ *
+ * If not, null is returned.
+ */
 const parseLinearization = (
   input: Uint8Array,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
-): [PDFLinearization, Uint8Array] | void => {
+  parseHandlers: IParseHandlers = {},
+): [IPDFLinearization, Uint8Array] | void => {
   const trimmed = trimArray(input);
 
   // Try to parse a dictionary from the input

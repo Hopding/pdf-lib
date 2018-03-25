@@ -24,7 +24,7 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
       pdfIndirectRefPool.set(key, indirectRef);
     }
     return indirectRef;
-  }
+  };
 
   public objectNumber: number;
   public generationNumber: number;
@@ -48,12 +48,12 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
   }
 
   public toString = (): string =>
-    `${this.objectNumber} ${this.generationNumber} R`
+    `${this.objectNumber} ${this.generationNumber} R`;
 
   public bytesSize = () => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default PDFIndirectReference;

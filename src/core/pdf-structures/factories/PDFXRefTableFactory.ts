@@ -39,7 +39,7 @@ class PDFXRefTableFactory {
     });
 
     return [table, offset];
-  }
+  };
 }
 
 export default PDFXRefTableFactory;

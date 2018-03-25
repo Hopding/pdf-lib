@@ -5,6 +5,7 @@
     "max-line-length": false,
     "no-console": false,
     "object-literal-sort-keys": false,
-    "quotemark": [true, "single"]
+    "quotemark": [true, "single"],
+    "semicolon": [true, "always", "ignore-bound-class-methods"]
   }
 }

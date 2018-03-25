@@ -1,22 +1,22 @@
 import { PDFIndirectReference } from 'core/pdf-objects';
 import { arrayIndexOf, arrayToString, trimArray } from 'utils';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Indirect Reference.
-
-If so, returns a tuple containing (1) an object representing the parsed PDF
-Indirect Reference and (2) a subarray of the input with the characters making up
-the parsed indirect reference removed. The "onParseIndirectRef" parse handler
-will also be called with the PDFIndirectReference.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in the
+ * trimmed input make up a PDF Indirect Reference.
+ *
+ * If so, returns a tuple containing (1) an object representing the parsed PDF
+ * Indirect Reference and (2) a subarray of the input with the characters making up
+ * the parsed indirect reference removed. The "onParseIndirectRef" parse handler
+ * will also be called with the PDFIndirectReference.
+ *
+ * If not, null is returned.
+ */
 const parseIndirectRef = (
   input: Uint8Array,
-  { onParseIndirectRef }: ParseHandlers = {},
+  { onParseIndirectRef }: IParseHandlers = {},
 ): [PDFIndirectReference, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const indirectRefRegex = /^(\d+) (\d+) R/;

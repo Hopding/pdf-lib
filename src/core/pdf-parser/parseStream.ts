@@ -7,22 +7,22 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import decodeStream from './encoding/decodeStream';
 import parseObjectStream from './parseObjectStream';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes and a PDFDictionary as input. Checks to see if the
-first characters in the trimmed input make up a PDF Stream.
-
-If so, the content of the stream is extracted into a subarray. A tuple
-containing this subarray and a subarray of the input with the bytes making
-up the content removed is returned.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes and a PDFDictionary as input. Checks to see if the
+ * first characters in the trimmed input make up a PDF Stream.
+ *
+ * If so, the content of the stream is extracted into a subarray. A tuple
+ * containing this subarray and a subarray of the input with the bytes making
+ * up the content removed is returned.
+ *
+ * If not, null is returned.
+ */
 const parseStream = (
   input: Uint8Array,
   dict: PDFDictionary,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): [Uint8Array, Uint8Array] | void => {
   // Check that the next bytes comprise the beginning of a stream
   const trimmed = trimArray(input);
@@ -58,22 +58,22 @@ const parseStream = (
 };
 
 /**
-Accepts an array of bytes and a PDFDictionary as input. Checks to see if the
-first characters in the trimmed input make up a PDF Stream.
-
-If so, returns a tuple containing (1) a PDFObjectStream if it is an
-Object Stream, otherwise a PDFStream and (2) a subarray of the input wih the
-characters making up the parsed stream removed. The "onParseObjectStream" will
-be called with the PDFObjectStream if it is an Object Stream. Otherwise
-the "onParseStream" parse hander will be called.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes and a PDFDictionary as input. Checks to see if the
+ * first characters in the trimmed input make up a PDF Stream.
+ *
+ * If so, returns a tuple containing (1) a PDFObjectStream if it is an
+ * Object Stream, otherwise a PDFStream and (2) a subarray of the input wih the
+ * characters making up the parsed stream removed. The "onParseObjectStream" will
+ * be called with the PDFObjectStream if it is an Object Stream. Otherwise
+ * the "onParseStream" parse hander will be called.
+ *
+ * If not, null is returned.
+ */
 export default (
   input: Uint8Array,
   dict: PDFDictionary,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): [PDFRawStream | PDFObjectStream, Uint8Array] | void => {
   // Parse the input bytes into the stream dictionary and content bytes
   const res = parseStream(input, dict, parseHandlers);

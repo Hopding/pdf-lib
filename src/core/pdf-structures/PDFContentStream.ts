@@ -9,6 +9,16 @@ import { typedArrayProxy } from 'utils/proxies';
 import { isInstance, validateArr } from 'utils/validate';
 
 class PDFContentStream extends PDFStream {
+  public static of = (dict: PDFDictionary, ...operators: PDFOperator[]) =>
+    new PDFContentStream(dict, ...operators);
+
+  public static validateOperators = (elements: any[]) =>
+    validateArr(
+      elements,
+      isInstance(PDFOperator),
+      'only PDFOperators can be pushed to a PDFContentStream',
+    );
+
   public operators: PDFOperator[];
 
   constructor(dictionary: PDFDictionary, ...operators: PDFOperator[]) {
@@ -29,16 +39,6 @@ class PDFContentStream extends PDFStream {
     );
   }
 
-  public static of = (dict: PDFDictionary, ...operators: PDFOperator[]) =>
-    new PDFContentStream(dict, ...operators)
-
-  public static validateOperators = (elements: any[]) =>
-    validateArr(
-      elements,
-      isInstance(PDFOperator),
-      'only PDFOperators can be pushed to a PDFContentStream',
-    )
-
   get Length() {
     const Length = this.dictionary.get('Length');
     return this.dictionary.index.lookup(Length) as PDFNumber;
@@ -48,14 +48,14 @@ class PDFContentStream extends PDFStream {
     _(this.operators)
       .filter(Boolean)
       .map((op) => op.bytesSize())
-      .sum()
+      .sum();
 
   public bytesSize = () =>
     this.dictionary.bytesSize() +
     1 + // "\n"
     7 + // "stream\n"
     this.operatorsBytesSize() +
-    10 // \nendstream
+    10; // \nendstream
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     this.validateDictionary();
@@ -71,7 +71,7 @@ class PDFContentStream extends PDFStream {
 
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
-  }
+  };
 }
 
 export default PDFContentStream;

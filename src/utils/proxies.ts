@@ -1,10 +1,11 @@
+/* tslint:disable:ban-types */
 import _ from 'lodash';
 
 import { isInstance, validate } from 'utils/validate';
 
 const EMPTY_ARR = [] as any[];
 
-interface TypedArrayProxyConfig {
+interface ITypedArrayProxyConfig {
   methods?: Function[];
   set?: (k: string | number | symbol, v: any) => void;
   get?: (k: string | number | symbol) => any;
@@ -14,7 +15,7 @@ interface TypedArrayProxyConfig {
 export const typedArrayProxy = <T extends Function>(
   obj: any,
   type: T,
-  config: TypedArrayProxyConfig = {},
+  config: ITypedArrayProxyConfig = {},
 ) => {
   _(config.methods).forEach((val: Function, key) => {
     obj[key] = new Proxy(obj[key], {

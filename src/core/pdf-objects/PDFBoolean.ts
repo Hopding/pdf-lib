@@ -8,7 +8,7 @@ import PDFObject from './PDFObject';
 class PDFBoolean extends PDFObject {
   public static fromBool = (bool: boolean) => new PDFBoolean(bool);
   public static fromString = (boolStr: string) =>
-    new PDFBoolean(toBoolean(boolStr))
+    new PDFBoolean(toBoolean(boolStr));
 
   public boolean: boolean;
 
@@ -21,7 +21,7 @@ class PDFBoolean extends PDFObject {
   public toString = (): string => this.boolean.toString();
   public bytesSize = () => this.toString().length;
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default PDFBoolean;

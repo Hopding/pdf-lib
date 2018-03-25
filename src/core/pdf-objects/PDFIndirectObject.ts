@@ -9,7 +9,7 @@ import PDFObject from './PDFObject';
 class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
   public static of = <A extends PDFObject>(
     pdfObject: A,
-  ): PDFIndirectObject<A> => new PDFIndirectObject(pdfObject)
+  ): PDFIndirectObject<A> => new PDFIndirectObject(pdfObject);
 
   public reference: PDFIndirectReference<T>;
   public pdfObject: T;
@@ -36,12 +36,12 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
       generationNumber,
     );
     return this;
-  }
+  };
 
   public setReference = (reference: PDFIndirectReference<T>) => {
     this.reference = reference;
     return this;
-  }
+  };
 
   public getReference = () => this.reference;
   public toReference = () => this.reference.toString();
@@ -50,13 +50,13 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);
     return arrayToString(buffer);
-  }
+  };
 
   public bytesSize = () =>
     `${this.reference.objectNumber} ${this.reference.generationNumber} obj\n`
       .length +
     this.pdfObject.bytesSize() +
-    9 // "\nendobj\n\n"
+    9; // "\nendobj\n\n"
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer(
@@ -66,7 +66,7 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     remaining = this.pdfObject.copyBytesInto(remaining);
     remaining = addStringToBuffer('\nendobj\n\n', remaining);
     return remaining;
-  }
+  };
 }
 
 export default PDFIndirectObject;

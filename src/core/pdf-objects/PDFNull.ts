@@ -22,7 +22,7 @@ class PDFNull extends PDFObject {
   public bytesSize = () => 4;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer('null', buffer)
+    addStringToBuffer('null', buffer);
 }
 
 export default PDFNull;

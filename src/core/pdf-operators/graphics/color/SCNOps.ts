@@ -39,12 +39,12 @@ export class SCN extends PDFOperator {
   }
 
   public toString = (): string =>
-    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} SCN\n`
+    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} SCN\n`;
 
   public bytesSize = (): number => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 /**
@@ -69,10 +69,10 @@ export class scn extends PDFOperator {
   }
 
   public toString = (): string =>
-    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} scn\n`
+    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} scn\n`;
 
   public bytesSize = (): number => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }

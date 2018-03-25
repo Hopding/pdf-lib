@@ -27,9 +27,9 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import parseDocument from './parseDocument';
 
-import { PDFLinearization } from './parseLinearization';
+import { IPDFLinearization } from './parseLinearization';
 
-export interface ParseHandlers {
+export interface IParseHandlers {
   onParseBool?: (p: PDFBoolean) => any;
   onParseArray?: (p: PDFArray) => any;
   onParseDict?: (p: PDFDictionary) => any;
@@ -45,15 +45,15 @@ export interface ParseHandlers {
   onParseHeader?: (p: PDFHeader) => any;
   onParseXRefTable?: (p: PDFXRefTable) => any;
   onParseTrailer?: (p: PDFTrailer) => any;
-  onParseLinearization?: (p: PDFLinearization) => any;
+  onParseLinearization?: (p: IPDFLinearization) => any;
 }
 
-export interface ParsedPDF {
+export interface IParsedPDF {
   arrays: PDFArray[];
   dictionaries: PDFDictionary[];
   original: {
     header: PDFHeader;
-    linearization: PDFLinearization;
+    linearization: IPDFLinearization;
     body: Map<PDFIndirectReference, PDFIndirectObject>;
     xRefTable: PDFXRefTable;
     trailer: PDFTrailer;
@@ -77,7 +77,7 @@ class PDFParser {
   public xRefTable: PDFXRefTable = null;
   public trailer: PDFTrailer = null;
 
-  public linearization: PDFLinearization = null;
+  public linearization: IPDFLinearization = null;
 
   public updates: Array<{
     body: Map<PDFIndirectReference, PDFIndirectObject>;
@@ -85,7 +85,7 @@ class PDFParser {
     trailer: PDFTrailer;
   }> = [];
 
-  public parseHandlers: ParseHandlers;
+  public parseHandlers: IParseHandlers;
 
   constructor() {
     this.parseHandlers = {
@@ -102,11 +102,11 @@ class PDFParser {
 
   public handleArray = (array: PDFArray) => {
     this.arrays.push(array);
-  }
+  };
 
   public handleDict = (dict: PDFDictionary) => {
     this.dictionaries.push(dict);
-  }
+  };
 
   public handleObjectStream = ({ objects }: PDFObjectStream) => {
     objects.forEach((indirectObj) => {
@@ -116,7 +116,7 @@ class PDFParser {
         this.body.set(indirectObj.getReference(), indirectObj);
       }
     });
-  }
+  };
 
   public handleIndirectObj = (indirectObj: PDFIndirectObject) => {
     if (this.updates.length > 0) {
@@ -124,29 +124,29 @@ class PDFParser {
     } else {
       this.body.set(indirectObj.getReference(), indirectObj);
     }
-  }
+  };
 
   public handleHeader = (header: PDFHeader) => {
     this.header = header;
-  }
+  };
 
   public handleXRefTable = (xRefTable: PDFXRefTable) => {
     if (!this.trailer) this.xRefTable = xRefTable;
     else _.last(this.updates).xRefTable = xRefTable;
-  }
+  };
 
   public handleTrailer = (trailer: PDFTrailer) => {
     if (!this.trailer) this.trailer = trailer;
     else _.last(this.updates).trailer = trailer;
 
     this.updates.push({ body: new Map(), xRefTable: null, trailer: null });
-  }
+  };
 
-  public handleLinearization = (linearization: PDFLinearization) => {
+  public handleLinearization = (linearization: IPDFLinearization) => {
     this.linearization = linearization;
-  }
+  };
 
-  public parse = (bytes: Uint8Array, index: PDFObjectIndex): ParsedPDF => {
+  public parse = (bytes: Uint8Array, index: PDFObjectIndex): IParsedPDF => {
     validate(
       index,
       isInstance(PDFObjectIndex),
@@ -186,7 +186,7 @@ class PDFParser {
       },
       updates: _.initial(this.updates),
     };
-  }
+  };
 }
 
 export default PDFParser;

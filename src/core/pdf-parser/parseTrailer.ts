@@ -7,25 +7,25 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import parseDict from './parseDict';
 import parseNumber from './parseNumber';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Trailer.
-
-If so, returns a tuple containing (1) an object representing the parsed PDF
-Trailer and (2) a subarray of the input with the characters making up the parsed
-trailer removed. The "onParseTrailer" parse handler will be called with the
-PDFTrailer object. The "onParseDict" parse handler will be called with the
-dictionary of the PDFTrailer, and the "onParseNumber" parse handler will be
-called with the "lastXRefOffset" of the PDFTrailer.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in the
+ * trimmed input make up a PDF Trailer.
+ *
+ * If so, returns a tuple containing (1) an object representing the parsed PDF
+ * Trailer and (2) a subarray of the input with the characters making up the parsed
+ * trailer removed. The "onParseTrailer" parse handler will be called with the
+ * PDFTrailer object. The "onParseDict" parse handler will be called with the
+ * dictionary of the PDFTrailer, and the "onParseNumber" parse handler will be
+ * called with the "lastXRefOffset" of the PDFTrailer.
+ *
+ * If not, null is returned.
+ */
 const parseTrailer = (
   input: Uint8Array,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): [PDFTrailer, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const trailerRegex = /^trailer[\n|\r| ]*([^]+)startxref[\n|\r| ]+?(\d+)[\n|\r| ]+?%%EOF/;
@@ -55,16 +55,16 @@ const parseTrailer = (
 };
 
 /**
-Same as "parseTrailer" function, except does not look for the complete trailer.
-Specifically, the "trailer" keyword and the trailer's dictionary are not parsed.
-
-Documents that have such a trailer do not meet the official specification, but
-they do appear in the wild sometimes. This function allows us to handle them.
-*/
+ * Same as "parseTrailer" function, except does not look for the complete trailer.
+ * Specifically, the "trailer" keyword and the trailer's dictionary are not parsed.
+ *
+ * Documents that have such a trailer do not meet the official specification, but
+ * they do appear in the wild sometimes. This function allows us to handle them.
+ */
 const parseTrailerWithoutDict = (
   input: Uint8Array,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): [PDFTrailer, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const trailerRegex = /^startxref[\n|\r| ]+?(\d+)[\n|\r| ]+?%%EOF/;

@@ -13,27 +13,27 @@ import parseNull from './parseNull';
 import parseNumber from './parseNumber';
 import parseString from './parseString';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Array.
-
-If so, returns a tuple containing (1) an object representing the parsed PDFArray
-and (2) a subarray of the input with the characters making up the parsed header
-removed. The "onParseArray" parse handler will also be called with the PDFArray
-object.
-
-If not, null is returned.
-
-Note that the elements of the PDF Array are recursively parsed, so the
-appropriate parse handlers will be called when each element of the array is
-parsed. The returned PDFArray's elements will be composed of PDFObjects.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in the
+ * trimmed input make up a PDF Array.
+ *
+ * If so, returns a tuple containing (1) an object representing the parsed PDFArray
+ * and (2) a subarray of the input with the characters making up the parsed header
+ * removed. The "onParseArray" parse handler will also be called with the PDFArray
+ * object.
+ *
+ * If not, null is returned.
+ *
+ * Note that the elements of the PDF Array are recursively parsed, so the
+ * appropriate parse handlers will be called when each element of the array is
+ * parsed. The returned PDFArray's elements will be composed of PDFObjects.
+ */
 const parseArray = (
   input: Uint8Array,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): [PDFArray, Uint8Array] | undefined => {
   // Make sure it is possible for this to be an array.
   const trimmed = trimArray(input);

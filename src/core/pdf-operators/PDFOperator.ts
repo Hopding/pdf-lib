@@ -23,22 +23,22 @@ class PDFOperator {
       public bytesSize = (): number => 2;
 
       public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-        addStringToBuffer(this.toString(), buffer)
+        addStringToBuffer(this.toString(), buffer);
     }
 
     Singleton.operator = new Singleton(ENFORCER);
 
     return Singleton;
-  }
+  };
 
   public toString = (): string =>
-    error(`toString() is not implemented on ${this.constructor.name}`)
+    error(`toString() is not implemented on ${this.constructor.name}`);
 
   public bytesSize = (): number =>
-    error(`bytesSize() is not implemented on ${this.constructor.name}`)
+    error(`bytesSize() is not implemented on ${this.constructor.name}`);
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    error(`copyBytesInto() is not implemented on ${this.constructor.name}`)
+    error(`copyBytesInto() is not implemented on ${this.constructor.name}`);
 }
 
 export default PDFOperator;

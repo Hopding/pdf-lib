@@ -11,7 +11,7 @@ import { isNumber, validateArr } from 'utils/validate';
  */
 class y extends PDFOperator {
   public static of = (x1: number, y1: number, x3: number, y3: number) =>
-    new y(x1, y1, x3, y3)
+    new y(x1, y1, x3, y3);
 
   public x1: number;
   public y1: number;
@@ -32,12 +32,12 @@ class y extends PDFOperator {
   }
 
   public toString = (): string =>
-    `${this.x1} ${this.y1} ${this.x3} ${this.y3} y\n`
+    `${this.x1} ${this.y1} ${this.x3} ${this.y3} y\n`;
 
   public bytesSize = () => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default y;

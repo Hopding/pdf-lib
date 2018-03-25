@@ -5,6 +5,9 @@ import { isInstance, validate } from 'utils/validate';
 import PDFDictionary from '../pdf-objects/PDFDictionary';
 
 class PDFTrailer {
+  public static from = (offset: number, dictionary: PDFDictionary) =>
+    new PDFTrailer(offset, dictionary);
+
   public offset: number;
   public dictionary: PDFDictionary;
 
@@ -20,15 +23,12 @@ class PDFTrailer {
     this.dictionary = dictionary;
   }
 
-  public static from = (offset: number, dictionary: PDFDictionary) =>
-    new PDFTrailer(offset, dictionary)
-
   public toString = (): string =>
     `trailer\n` +
     `${this.dictionary.toString()}\n` +
     `startxref\n` +
     `${this.offset}\n` +
-    `%%EOF\n`
+    `%%EOF\n`;
 
   public bytesSize = () =>
     8 + // "trailer\n"
@@ -37,7 +37,7 @@ class PDFTrailer {
     10 + // "startxref\n"
     String(this.offset).length +
     1 + // "\n"
-    5 // "%%EOF\n"
+    5; // "%%EOF\n"
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('trailer\n', buffer);
@@ -47,7 +47,7 @@ class PDFTrailer {
       remaining,
     );
     return remaining;
-  }
+  };
 }
 
 export default PDFTrailer;

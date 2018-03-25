@@ -121,7 +121,7 @@ class PNGXObjectFactory {
       : this.image.hasAlphaChannel      ? this.splitAlphaChannel()
       : this.finalize()
     );
-  }
+  };
 
   public finalize = () => {
     if (this.alphaChannel) {
@@ -153,7 +153,7 @@ class PNGXObjectFactory {
       PDFRawStream.from(this.xObjDict, this.imgData),
     );
     return xObj;
-  }
+  };
 
   public splitAlphaChannel = () => {
     const pixels = this.image.decodePixelsSync();
@@ -172,7 +172,7 @@ class PNGXObjectFactory {
     }
     this.imgData = pako.deflate(this.imgData);
     return this.finalize();
-  }
+  };
 
   public loadIndexedAlphaChannel = () => {
     const transparency = this.image.transparency.indexed;
@@ -182,7 +182,7 @@ class PNGXObjectFactory {
       this.alphaChannel[idx] = transparency[pixel];
     });
     return this.finalize();
-  }
+  };
 }
 
 export default PNGXObjectFactory;

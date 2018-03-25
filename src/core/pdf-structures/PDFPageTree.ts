@@ -37,12 +37,12 @@ class PDFPageTree extends PDFDictionary {
       },
       index,
     );
-  }
+  };
 
   public static fromDict = (dict: PDFDictionary): PDFPageTree => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFPageTree(dict.map, dict.index, VALID_KEYS);
-  }
+  };
 
   get Kids() {
     return this.index.lookup(this.get('Kids')) as PDFArray<
@@ -71,7 +71,7 @@ class PDFPageTree extends PDFDictionary {
       pageTree.Count.number += 1;
     });
     return this;
-  }
+  };
 
   public removePage = (idx: number) => {
     validate(idx, _.isNumber, '"idx" arg must be a Number');
@@ -80,7 +80,7 @@ class PDFPageTree extends PDFDictionary {
       pageTree.Count.number -= 1;
     });
     return this;
-  }
+  };
 
   public insertPage = (idx: number, page: PDFIndirectReference<PDFPage>) => {
     validate(idx, _.isNumber, '"idx" arg must be a Number');
@@ -94,7 +94,7 @@ class PDFPageTree extends PDFDictionary {
       pageTree.Count.number += 1;
     });
     return this;
-  }
+  };
 
   // TODO: Pass a "stop" callback to allow "visit" to end traversal early
   // TODO: Allow for optimized tree search given an index
@@ -109,7 +109,7 @@ class PDFPageTree extends PDFDictionary {
       if (kid instanceof PDFPageTree) kid.traverse(visit);
     });
     return this;
-  }
+  };
 
   public traverseRight = (
     visit: (k: Kid, r: Kid | PDFIndirectReference<Kid>) => any,
@@ -121,7 +121,7 @@ class PDFPageTree extends PDFDictionary {
     visit(lastKid, lastKidRef);
     if (lastKid instanceof PDFPageTree) lastKid.traverseRight(visit);
     return this;
-  }
+  };
 
   public ascend = (visit: (t: PDFPageTree) => any, visitSelf = true) => {
     if (visitSelf) visit(this);
@@ -129,7 +129,7 @@ class PDFPageTree extends PDFDictionary {
     if (!Parent) return;
     visit(Parent);
     Parent.ascend(visit, false);
-  }
+  };
 }
 
 export default PDFPageTree;

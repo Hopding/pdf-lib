@@ -39,7 +39,7 @@ export class Tj extends PDFOperator {
   public bytesSize = () => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 /**
@@ -57,7 +57,7 @@ export class Tj extends PDFOperator {
 export class TJ extends PDFOperator {
   public static of = (
     array: Array<PDFString | PDFHexString | string | number>,
-  ) => new TJ(array)
+  ) => new TJ(array);
 
   public array: PDFArray<PDFString | PDFHexString | PDFNumber>;
 
@@ -90,5 +90,5 @@ export class TJ extends PDFOperator {
     let remaining = this.array.copyBytesInto(buffer);
     remaining = addStringToBuffer(' TJ\n', buffer);
     return remaining;
-  }
+  };
 }

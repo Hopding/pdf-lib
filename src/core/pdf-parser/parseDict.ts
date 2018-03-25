@@ -19,7 +19,7 @@ import parseNull from './parseNull';
 import parseNumber from './parseNumber';
 import parseString from './parseString';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 // prettier-ignore
 const typeDict = (dict: PDFDictionary) => {
@@ -51,7 +51,7 @@ const typeDict = (dict: PDFDictionary) => {
 const parseDict = (
   input: Uint8Array,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): [PDFDictionary, Uint8Array] | void => {
   const trimmed = trimArray(input);
   if (arrayToString(trimmed, 0, 2) !== '<<') return null;

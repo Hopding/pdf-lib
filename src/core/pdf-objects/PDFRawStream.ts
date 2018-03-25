@@ -5,7 +5,7 @@ import { PDFDictionary, PDFStream } from '.';
 
 class PDFRawStream extends PDFStream {
   public static from = (dictionary: PDFDictionary, content: Uint8Array) =>
-    new PDFRawStream(dictionary, content)
+    new PDFRawStream(dictionary, content);
 
   public content: Uint8Array;
 
@@ -24,7 +24,7 @@ class PDFRawStream extends PDFStream {
     1 + // "\n"
     7 + // "stream\n"
     this.content.length +
-    10 // "\nendstream"
+    10; // "\nendstream"
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     this.validateDictionary();
@@ -36,7 +36,7 @@ class PDFRawStream extends PDFStream {
 
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
-  }
+  };
 }
 
 export default PDFRawStream;

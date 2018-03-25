@@ -12,7 +12,7 @@ class PDFDictionary extends PDFObject {
   public static from = (
     object: { [key: string]: PDFObject } | Map<PDFName, any>,
     index: PDFObjectIndex,
-  ) => new PDFDictionary(object, index)
+  ) => new PDFDictionary(object, index);
 
   public map: Map<PDFName, any>;
   public index: PDFObjectIndex;
@@ -47,7 +47,7 @@ class PDFDictionary extends PDFObject {
   }
 
   public filter = (predicate: (o: PDFObject, n: PDFName) => boolean) =>
-    Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key))
+    Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key));
 
   public set = (key: string | PDFName, val: PDFObject, validateKeys = true) => {
     validate(
@@ -72,7 +72,7 @@ class PDFDictionary extends PDFObject {
     this.map.set(keyName, val);
 
     return this;
-  }
+  };
 
   public getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
     validate(
@@ -83,17 +83,17 @@ class PDFDictionary extends PDFObject {
 
     const keyName = key instanceof PDFName ? key : PDFName.from(key);
     return this.map.get(keyName);
-  }
+  };
 
   public get = <T extends PDFObject>(key: string | PDFName): T => {
     return this.getMaybe(key) || error(`Missing PDFDictionary entry "${key}".`);
-  }
+  };
 
   public toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);
     return arrayToString(buffer);
-  }
+  };
 
   public bytesSize = () =>
     3 + // "<<\n"
@@ -108,7 +108,7 @@ class PDFDictionary extends PDFObject {
         throw new Error(`Not a PDFObject: ${val.constructor.name}`);
       })
       .sum() +
-    2 // ">>"
+    2; // ">>"
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('<<\n', buffer);
@@ -125,7 +125,7 @@ class PDFDictionary extends PDFObject {
     });
     remaining = addStringToBuffer('>>', remaining);
     return remaining;
-  }
+  };
 }
 
 export default PDFDictionary;

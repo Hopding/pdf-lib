@@ -19,7 +19,7 @@ class PDFStream extends PDFObject {
     if (!this.dictionary.get('Length')) {
       error('"Length" is a required field for PDFStream dictionaries');
     }
-  }
+  };
 }
 
 export default PDFStream;

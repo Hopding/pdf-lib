@@ -8,6 +8,16 @@ import { isInstance, validateArr } from 'utils/validate';
 
 // TODO: Validate that only valid text operators are passed to this object.
 class PDFTextObject extends PDFOperator {
+  public static of = (...operators: PDFOperator[]) =>
+    new PDFTextObject(...operators);
+
+  public static validateOperators = (elements: any[]) =>
+    validateArr(
+      elements,
+      isInstance(PDFOperator),
+      'only PDFOperators can be pushed to a PDFTextObject',
+    );
+
   public operators: PDFOperator[];
 
   constructor(...operators: PDFOperator[]) {
@@ -16,26 +26,16 @@ class PDFTextObject extends PDFOperator {
     this.operators = operators;
   }
 
-  public static of = (...operators: PDFOperator[]) =>
-    new PDFTextObject(...operators)
-
-  public static validateOperators = (elements: any[]) =>
-    validateArr(
-      elements,
-      isInstance(PDFOperator),
-      'only PDFOperators can be pushed to a PDFTextObject',
-    )
-
   public operatorsBytesSize = () =>
     _(this.operators)
       .filter(Boolean)
       .map((op) => op.bytesSize())
-      .sum()
+      .sum();
 
   public bytesSize = () =>
     3 + // "BT\n"
     this.operatorsBytesSize() +
-    3 // "ET\n"
+    3; // "ET\n"
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('BT\n', buffer);
@@ -49,7 +49,7 @@ class PDFTextObject extends PDFOperator {
 
     remaining = addStringToBuffer('ET\n', remaining);
     return remaining;
-  }
+  };
 }
 
 export default PDFTextObject;

@@ -1,18 +1,22 @@
 import { PDFBoolean } from 'core/pdf-objects';
 import { arrayToString } from 'utils';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the trimmed input make up a PDF Boolean.
-
-If so, returns a tuple containing (1) an object representing the parsed PDF Header and (2) a subarray of the input with the characters making up the parsed header removed. The "onParseBool" parse handler will also be called with the PDFBoolean object.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in
+ * the trimmed input make up a PDF Boolean.
+ *
+ * If so, returns a tuple containing (1) an object representing the parsed
+ * PDF Header and (2) a subarray of the input with the characters making up the
+ * parsed header removed. The "onParseBool" parse handler will also be called
+ * with the PDFBoolean object.
+ *
+ * If not, null is returned.
+ */
 const parseBool = (
   input: Uint8Array,
-  { onParseBool }: ParseHandlers = {},
+  { onParseBool }: IParseHandlers = {},
 ): [PDFBoolean, Uint8Array] | void => {
   const boolRegex = /^(?:[\n|\r| ]*)(true|false)((?= |\]|\n|\r))?/;
 

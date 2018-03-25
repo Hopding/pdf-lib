@@ -13,23 +13,23 @@ import parseNull from './parseNull';
 import parseNumber from './parseNumber';
 import parseString from './parseString';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Indirect Object.
-
-If so, returns a tuple containing (1) an object representing the parsed PDF
-Indirect Object and (2) a subarray of the input with the characters making up
-the parsed indirect object removed. The "onParseIndirectObj" parse handler will
-also be called with the PDFIndirectObject.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in the
+ * trimmed input make up a PDF Indirect Object.
+ *
+ * If so, returns a tuple containing (1) an object representing the parsed PDF
+ * Indirect Object and (2) a subarray of the input with the characters making up
+ * the parsed indirect object removed. The "onParseIndirectObj" parse handler will
+ * also be called with the PDFIndirectObject.
+ *
+ * If not, null is returned.
+ */
 const parseIndirectObj = (
   input: Uint8Array,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): [PDFIndirectObject, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const indirectObjRegex = /^(\d+) (\d+) obj/;

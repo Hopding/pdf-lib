@@ -51,7 +51,7 @@ class PDFDocument {
     const ref = PDFIndirectReference.forNumbers(this.maxObjNum, 0);
     this.index.set(ref, object);
     return ref;
-  }
+  };
 
   public getPages = (): PDFPage[] => {
     const pages = [] as PDFPage[];
@@ -59,12 +59,12 @@ class PDFDocument {
       if (kid instanceof PDFPage) pages.push(kid);
     });
     return pages;
-  }
+  };
 
   public createPage = (
     size: [number, number],
     resources?: PDFDictionary,
-  ): PDFPage => PDFPage.create(this.index, size, resources)
+  ): PDFPage => PDFPage.create(this.index, size, resources);
 
   public addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
@@ -82,7 +82,7 @@ class PDFDocument {
     page.set('Parent', lastPageTreeRef);
     lastPageTree.addPage(this.register(page));
     return this;
-  }
+  };
 
   // TODO: Clean up unused objects when possible after removing page from tree
   // TODO: Make sure "idx" is within required range
@@ -108,7 +108,7 @@ class PDFDocument {
     const tree = this.index.lookup(treeRef) as PDFPageTree;
     tree.removePage(kidNum);
     return this;
-  }
+  };
 
   // TODO: Make sure "idx" is within required range
   public insertPage = (idx: number, page: PDFPage) => {
@@ -135,7 +135,7 @@ class PDFDocument {
     const tree = this.index.lookup(treeRef) as PDFPageTree;
     tree.insertPage(kidNum, this.register(page));
     return this;
-  }
+  };
 
   public embedFont = (
     name: string,
@@ -144,21 +144,21 @@ class PDFDocument {
   ): PDFIndirectReference<PDFDictionary> => {
     const fontFactory = PDFFontFactory.for(name, fontData, flagOptions);
     return fontFactory.embedFontIn(this);
-  }
+  };
 
   public addPNG = (
     imageData: Uint8Array,
   ): PDFIndirectReference<PDFRawStream> => {
     const pngFactory = PNGXObjectFactory.for(imageData);
     return pngFactory.embedImageIn(this);
-  }
+  };
 
   public addJPG = (
     imageData: Uint8Array,
   ): PDFIndirectReference<PDFRawStream> => {
     const jpgFactory = JPEGXObjectFactory.for(imageData);
     return jpgFactory.embedImageIn(this);
-  }
+  };
 }
 
 export default PDFDocument;

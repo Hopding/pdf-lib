@@ -81,12 +81,12 @@ class PDFPage extends PDFDictionary {
     );
     if (resources) page.set('Resources', resources);
     return page;
-  }
+  };
 
   public static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFPage(dict.map, dict.index, PDFPage.validKeys);
-  }
+  };
 
   get Resources() {
     return this.index.lookup(this.get('Resources')) as PDFDictionary;
@@ -122,7 +122,7 @@ class PDFPage extends PDFDictionary {
         this.set('Contents', PDFArray.fromArray([Contents], this.index));
       }
     }
-  }
+  };
 
   public normalizeResources = ({
     Font,
@@ -141,7 +141,7 @@ class PDFPage extends PDFDictionary {
     if (XObject && !this.Resources.getMaybe('XObject')) {
       this.Resources.set('XObject', PDFDictionary.from(new Map(), this.index));
     }
-  }
+  };
 
   // TODO: Consider allowing *insertion* of content streams so order can be changed
   public addContentStreams = (
@@ -161,7 +161,7 @@ class PDFPage extends PDFDictionary {
     }
 
     return this;
-  }
+  };
 
   public addFontDictionary = (
     key: string, // TODO: Allow PDFName objects to be passed too
@@ -179,7 +179,7 @@ class PDFPage extends PDFDictionary {
     Font.set(key, fontDict);
 
     return this;
-  }
+  };
 
   public addXObject = (
     key: string,
@@ -199,7 +199,7 @@ class PDFPage extends PDFDictionary {
     XObject.set(key, xObject);
 
     return this;
-  }
+  };
 }
 
 export default PDFPage;

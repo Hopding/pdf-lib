@@ -18,7 +18,7 @@ import { isNumber, validate } from 'utils/validate';
  */
 class re extends PDFOperator {
   public static of = (x: number, y: number, width: number, height: number) =>
-    new re(x, y, width, height)
+    new re(x, y, width, height);
 
   public x: number;
   public y: number;
@@ -38,12 +38,12 @@ class re extends PDFOperator {
   }
 
   public toString = (): string =>
-    `${this.x} ${this.y} ${this.width} ${this.height} re\n`
+    `${this.x} ${this.y} ${this.width} ${this.height} re\n`;
 
   public bytesSize = (): number => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default re;

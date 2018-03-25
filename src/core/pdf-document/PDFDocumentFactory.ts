@@ -7,7 +7,7 @@ import {
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
-import PDFParser, { ParsedPDF } from 'core/pdf-parser/PDFParser';
+import PDFParser, { IParsedPDF } from 'core/pdf-parser/PDFParser';
 import { PDFCatalog, PDFObjectStream, PDFPageTree } from 'core/pdf-structures';
 
 class PDFDocumentFactory {
@@ -28,7 +28,7 @@ class PDFDocumentFactory {
     index.set(refs.pageTree, pageTree);
 
     return PDFDocument.fromIndex(index);
-  }
+  };
 
   public static load = (data: Uint8Array): PDFDocument => {
     const index = PDFObjectIndex.create();
@@ -42,7 +42,7 @@ class PDFDocumentFactory {
     index.index = indexMap;
 
     return PDFDocument.fromIndex(index);
-  }
+  };
 
   // TODO: Need to throw out objects with "free" obj numbers...
   public static normalize = ({
@@ -50,7 +50,7 @@ class PDFDocumentFactory {
     arrays,
     original: { body },
     updates,
-  }: ParsedPDF): Map<PDFIndirectReference, PDFObject> => {
+  }: IParsedPDF): Map<PDFIndirectReference, PDFObject> => {
     const index: Map<PDFIndirectReference, PDFObject> = new Map();
 
     // Remove Object Streams and Cross Reference Streams, because we've already
@@ -77,7 +77,7 @@ class PDFDocumentFactory {
     });
 
     return index;
-  }
+  };
 }
 
 export default PDFDocumentFactory;

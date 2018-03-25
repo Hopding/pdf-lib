@@ -11,7 +11,7 @@ class PDFLinearizationParams extends PDFDictionary {
       dict.index,
       PDFLinearizationParams.validKeys,
     );
-  }
+  };
 }
 
 export default PDFLinearizationParams;

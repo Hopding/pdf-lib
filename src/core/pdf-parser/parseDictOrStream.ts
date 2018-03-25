@@ -6,24 +6,24 @@ import { PDFObjectStream } from 'core/pdf-structures';
 import parseDict from './parseDict';
 import parseStream from './parseStream';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Dictionary. Then checks if the subsequent characters
-make up a PDF Stream.
-
-If a PDFDictionary is found, but no PDFStream, then the dictionary is returned.
-If a PDFStream is also found, then it is instead returned. The second argument
-of the returned tuple contains a subarray of the input with the characters
-making up the parsed object removed.
-
-If no PDFDictionary is found at all, null is returned.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in the
+ * trimmed input make up a PDF Dictionary. Then checks if the subsequent characters
+ * make up a PDF Stream.
+ *
+ * If a PDFDictionary is found, but no PDFStream, then the dictionary is returned.
+ * If a PDFStream is also found, then it is instead returned. The second argument
+ * of the returned tuple contains a subarray of the input with the characters
+ * making up the parsed object removed.
+ *
+ * If no PDFDictionary is found at all, null is returned.
+ */
 const parseDictOrStream = (
   input: Uint8Array,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): [PDFDictionary | PDFStream | PDFObjectStream, Uint8Array] | void => {
   // Attempt to parse a dictionary
   const dictMatch = parseDict(input, index, parseHandlers);

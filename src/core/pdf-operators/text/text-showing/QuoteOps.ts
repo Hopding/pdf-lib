@@ -14,7 +14,7 @@ import { isInstance, isNumber, validate } from 'utils/validate';
  */
 export class SingleQuote extends PDFOperator {
   public static of = (str: PDFString | PDFHexString | string) =>
-    new SingleQuote(str)
+    new SingleQuote(str);
 
   public string: PDFString | PDFHexString;
 
@@ -35,7 +35,7 @@ export class SingleQuote extends PDFOperator {
   public bytesSize = () => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 /**
@@ -52,7 +52,7 @@ export class DoubleQuote extends PDFOperator {
     aw: number,
     ac: number,
     str: PDFString | PDFHexString | string,
-  ) => new DoubleQuote(aw, ac, str)
+  ) => new DoubleQuote(aw, ac, str);
 
   public aw: number;
   public ac: number;
@@ -73,10 +73,10 @@ export class DoubleQuote extends PDFOperator {
   }
 
   public toString = (): string =>
-    `${this.aw} ${this.ac} ${this.string.toString()} "\n`
+    `${this.aw} ${this.ac} ${this.string.toString()} "\n`;
 
   public bytesSize = () => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }

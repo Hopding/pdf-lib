@@ -16,18 +16,18 @@ class PDFObjectIndex {
     validate(val, isInstance(PDFObject), '"val" must be a PDFObject');
     this.index.set(key, val);
     return this;
-  }
+  };
 
   public lookupMaybe = (
     ref: PDFIndirectReference | PDFObject | void,
   ): PDFObject | void => {
     if (ref instanceof PDFIndirectReference) return this.index.get(ref);
     return ref;
-  }
+  };
 
   public lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
     return this.lookupMaybe(ref) || error(`Failed to lookup ref: ${ref}}`);
-  }
+  };
 }
 
 export default PDFObjectIndex;

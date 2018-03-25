@@ -17,7 +17,7 @@ class cm extends PDFOperator {
     d: number,
     e: number,
     f: number,
-  ) => new cm(a, b, c, d, e, f)
+  ) => new cm(a, b, c, d, e, f);
 
   public a: number;
   public b: number;
@@ -49,12 +49,12 @@ class cm extends PDFOperator {
   }
 
   public toString = (): string =>
-    `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} cm\n`
+    `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} cm\n`;
 
   public bytesSize = (): number => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default cm;

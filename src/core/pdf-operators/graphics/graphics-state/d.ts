@@ -10,7 +10,7 @@ import { isNumber, validate } from 'utils/validate';
  */
 class d extends PDFOperator {
   public static of = (dashArray: [number, number], dashPhase: number) =>
-    new d(dashArray, dashPhase)
+    new d(dashArray, dashPhase);
 
   public dashArray: [number, number];
   public dashPhase: number;
@@ -40,12 +40,12 @@ class d extends PDFOperator {
     _.isNil(this.dashArray[0]) && _.isNil(this.dashArray[1])
       ? `[] ${this.dashPhase} d\n`
       : `[${String(this.dashArray[0])} ${String(this.dashArray[1])}] ` +
-        `${this.dashPhase} d\n`
+        `${this.dashPhase} d\n`;
 
   public bytesSize = (): number => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default d;

@@ -1,22 +1,22 @@
 import { PDFNumber } from 'core/pdf-objects';
 import { arrayToString, trimArray } from 'utils';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmped input make up a PDF Number.
-
-If so, returns a tuple containing (1) an object representing the parsed PDF
-Number and (2) a subarray of the input with the characters making up the parsed
-number removed. The "onParseNumber" parse handler will also be called with the
-PDFNumber object.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in the
+ * trimmped input make up a PDF Number.
+ *
+ * If so, returns a tuple containing (1) an object representing the parsed PDF
+ * Number and (2) a subarray of the input with the characters making up the parsed
+ * number removed. The "onParseNumber" parse handler will also be called with the
+ * PDFNumber object.
+ *
+ * If not, null is returned.
+ */
 const parseNumber = (
   input: Uint8Array,
-  { onParseNumber }: ParseHandlers = {},
+  { onParseNumber }: IParseHandlers = {},
 ): [PDFNumber, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const numRegex = /^(((\+{1}|-{1})?\d+(\.\d+)?)|((\+{1}|-{1})?\.\d+))/;

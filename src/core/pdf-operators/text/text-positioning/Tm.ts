@@ -23,7 +23,7 @@ class Tm extends PDFOperator {
     d: number,
     e: number,
     f: number,
-  ) => new Tm(a, b, c, d, e, f)
+  ) => new Tm(a, b, c, d, e, f);
 
   public a: number;
   public b: number;
@@ -55,12 +55,12 @@ class Tm extends PDFOperator {
   }
 
   public toString = (): string =>
-    `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} Tm\n`
+    `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} Tm\n`;
 
   public bytesSize = () => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default Tm;

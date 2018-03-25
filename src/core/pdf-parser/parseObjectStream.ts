@@ -14,18 +14,18 @@ import parseNull from './parseNull';
 import parseNumber from './parseNumber';
 import parseString from './parseString';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts a PDFDictionary and an array of bytes as input. The PDFDictionary should
-be a PDF Object Stream dictionary, and the array of bytes should be its content.
-
-Attempts to parse the pairs of integers at the start of the input bytes. Each
-pair describes one object within the Object Stream - its object number and byte
-offset within the stream, respectively.
-
-Returns an array of objects representing the parsed integer pairs.
-*/
+ * Accepts a PDFDictionary and an array of bytes as input. The PDFDictionary should
+ * be a PDF Object Stream dictionary, and the array of bytes should be its content.
+ *
+ * Attempts to parse the pairs of integers at the start of the input bytes. Each
+ * pair describes one object within the Object Stream - its object number and byte
+ * offset within the stream, respectively.
+ *
+ * Returns an array of objects representing the parsed integer pairs.
+ */
 const parseObjData = (
   dict: PDFDictionary,
   input: Uint8Array,
@@ -63,23 +63,23 @@ const parseObjData = (
 };
 
 /**
-Accepts an a PDFDictionary and an array of bytes as input. The PDFDictionary
-should be a PDF Object Stream dictionary, and the array of bytes should be its
-content. *The array of bytes is expected to have been decoded (based on the
-"Filter"s in the dictionary) prior to being passed to this function.*
-
-After parsing the integer pairs from the start of the input bytes, the objects
-themselves will be parsed from the remaining input bytes.
-
-An PDFObjectStream will be returned, representing the objects parsed
-from the Object Stream. The "onParseObjectStream" parse handler will also be
-called with the PDFObjectStream.
-*/
+ * Accepts an a PDFDictionary and an array of bytes as input. The PDFDictionary
+ * should be a PDF Object Stream dictionary, and the array of bytes should be its
+ * content. *The array of bytes is expected to have been decoded (based on the
+ * "Filter"s in the dictionary) prior to being passed to this function.*
+ *
+ * After parsing the integer pairs from the start of the input bytes, the objects
+ * themselves will be parsed from the remaining input bytes.
+ *
+ * An PDFObjectStream will be returned, representing the objects parsed
+ * from the Object Stream. The "onParseObjectStream" parse handler will also be
+ * called with the PDFObjectStream.
+ */
 const parseObjectStream = (
   dict: PDFDictionary,
   input: Uint8Array,
   index: PDFObjectIndex,
-  parseHandlers: ParseHandlers = {},
+  parseHandlers: IParseHandlers = {},
 ): PDFObjectStream => {
   // Parse the pairs of integers from start of input bytes
   const objData = parseObjData(dict, input);

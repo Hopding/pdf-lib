@@ -66,7 +66,7 @@ class PDFFontFactory {
     name: string,
     fontData: Uint8Array,
     flagOptions: IFontFlagOptions,
-  ) => new PDFFontFactory(name, fontData, flagOptions)
+  ) => new PDFFontFactory(name, fontData, flagOptions);
 
   public font: any;
   public scale: number;
@@ -169,7 +169,7 @@ class PDFFontFactory {
         pdfDoc.index,
       ),
     );
-  }
+  };
 
   public getWidths = (index: PDFObjectIndex) =>
     PDFArray.fromArray(
@@ -177,12 +177,12 @@ class PDFFontFactory {
         .map(this.getCodePointWidth)
         .map(PDFNumber.fromNumber),
       index,
-    )
+    );
 
   public getCodePointWidth = (code: number) =>
     this.font.characterSet.includes(code)
       ? this.font.glyphForCodePoint(code).advanceWidth * this.scale
-      : 0
+      : 0;
 }
 
 export default PDFFontFactory;

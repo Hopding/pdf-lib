@@ -3,6 +3,9 @@ import { addStringToBuffer, charCode } from 'utils';
 import { validate } from 'utils/validate';
 
 class PDFHeader {
+  public static forVersion = (major: number, minor: number) =>
+    new PDFHeader(major, minor);
+
   public major: number;
   public minor: number;
 
@@ -14,13 +17,10 @@ class PDFHeader {
     this.minor = minor;
   }
 
-  public static forVersion = (major: number, minor: number) =>
-    new PDFHeader(major, minor)
-
   public toString = (): string => `
     %PDF-${this.major}.${this.minor}
     %<COMMENT_WITH_BINARY_CHARACTERS>
-  `
+  `;
 
   public bytesSize = () => `%PDF-${this.major}.${this.minor}\n`.length + 6;
 
@@ -31,7 +31,7 @@ class PDFHeader {
     );
     remaining.set([charCode('%'), 130, 130, 130, 130, charCode('\n')], 0);
     return remaining.subarray(6);
-  }
+  };
 }
 
 export default PDFHeader;

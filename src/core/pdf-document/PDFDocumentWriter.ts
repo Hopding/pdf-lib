@@ -46,7 +46,7 @@ class PDFDocumentWriter {
     remaining = trailer.copyBytesInto(remaining);
 
     return buffer;
-  }
+  };
 
   public static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
     const indexArr: PDFIndirectObject[] = [];
@@ -57,7 +57,7 @@ class PDFDocumentWriter {
       ({ reference: a }, { reference: b }) => a.objectNumber - b.objectNumber,
     );
     return indexArr;
-  }
+  };
 }
 
 export default PDFDocumentWriter;

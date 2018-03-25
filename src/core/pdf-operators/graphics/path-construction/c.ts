@@ -17,7 +17,7 @@ class c extends PDFOperator {
     y2: number,
     x3: number,
     y3: number,
-  ) => new c(x1, y1, x2, y2, x3, y3)
+  ) => new c(x1, y1, x2, y2, x3, y3);
 
   public x1: number;
   public y1: number;
@@ -49,12 +49,12 @@ class c extends PDFOperator {
   }
 
   public toString = (): string =>
-    `${this.x1} ${this.y1} ${this.x2} ${this.y2} ${this.x3} ${this.y3} c\n`
+    `${this.x1} ${this.y1} ${this.x2} ${this.y2} ${this.x3} ${this.y3} c\n`;
 
   public bytesSize = () => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 export default c;

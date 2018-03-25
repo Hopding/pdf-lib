@@ -118,7 +118,7 @@ class JPEGXObjectFactory {
     xObjDict.set('Length', PDFNumber.fromNumber(this.imgData.length));
     const xObj = document.register(PDFRawStream.from(xObjDict, this.imgData));
     return xObj;
-  }
+  };
 }
 
 export default JPEGXObjectFactory;

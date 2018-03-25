@@ -12,7 +12,7 @@ import { isInRange, isNumber, validate } from 'utils/validate';
  */
 export class K extends PDFOperator {
   public static of = (c: number, m: number, y: number, k: number) =>
-    new K(c, m, y, k)
+    new K(c, m, y, k);
 
   public c: number;
   public y: number;
@@ -52,7 +52,7 @@ export class K extends PDFOperator {
   public bytesSize = (): number => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }
 
 /**
@@ -60,7 +60,7 @@ export class K extends PDFOperator {
  */
 export class k extends PDFOperator {
   public static of = (c: number, m: number, y: number, key: number) =>
-    new k(c, m, y, key)
+    new k(c, m, y, key);
 
   public c: number;
   public y: number;
@@ -100,5 +100,5 @@ export class k extends PDFOperator {
   public bytesSize = (): number => this.toString().length;
 
   public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
-    addStringToBuffer(this.toString(), buffer)
+    addStringToBuffer(this.toString(), buffer);
 }

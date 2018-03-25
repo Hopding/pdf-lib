@@ -54,17 +54,17 @@ class PDFCatalog extends PDFDictionary {
       },
       index,
     );
-  }
+  };
 
   public static fromObject = (
     object: { [key: string]: PDFObject },
     index: PDFObjectIndex,
-  ): PDFCatalog => new PDFCatalog(object, index, VALID_KEYS)
+  ): PDFCatalog => new PDFCatalog(object, index, VALID_KEYS);
 
   public static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFCatalog(dict.map, dict.index, VALID_KEYS);
-  }
+  };
 
   get Pages() {
     const Pages = this.get('Pages');

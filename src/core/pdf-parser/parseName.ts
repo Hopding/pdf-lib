@@ -1,22 +1,22 @@
 import { PDFName } from 'core/pdf-objects';
 import { arrayToString, trimArray } from 'utils';
 
-import { ParseHandlers } from './PDFParser';
+import { IParseHandlers } from './PDFParser';
 
 /**
-Accepts an array of bytes as input. Checks to see if the first characters in the
-trimmed input make up a PDF Name.
-
-If so, returns a tuple containing (1) an object representing the parsed PDF Name
-and (2) a subarray of the input with the characters making up the parsed name
-removed. The "onParseName" parse handler will also be called with the PDFName
-object.
-
-If not, null is returned.
-*/
+ * Accepts an array of bytes as input. Checks to see if the first characters in the
+ * trimmed input make up a PDF Name.
+ *
+ * If so, returns a tuple containing (1) an object representing the parsed PDF Name
+ * and (2) a subarray of the input with the characters making up the parsed name
+ * removed. The "onParseName" parse handler will also be called with the PDFName
+ * object.
+ *
+ * If not, null is returned.
+ */
 const parseName = (
   input: Uint8Array,
-  { onParseName }: ParseHandlers = {},
+  { onParseName }: IParseHandlers = {},
 ): [PDFName, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const nameRegex = /^\/([^ \n\r\][<>(/]*)/;
