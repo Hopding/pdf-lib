@@ -57,17 +57,17 @@ export const mergeUint8Arrays = (...arrs: Uint8Array[]) => {
   return newArray;
 };
 
-/* eslint-disable no-param-reassign */
 export const addStringToBuffer = (str: string, buffer: Uint8Array) => {
   for (let i = 0; i < str.length; i += 1) {
     buffer[i] = str.charCodeAt(i);
   }
   return buffer.subarray(str.length);
 };
-/* eslint-enable no-param-reassign */
 
 export const charCodes = (str: string) =>
   str.split('').map((c) => c.charCodeAt(0));
+
+export const typedArrayFor = (str: string) => new Uint8Array(charCodes(str));
 
 export const arrayToString = (
   arr: Uint8Array,
