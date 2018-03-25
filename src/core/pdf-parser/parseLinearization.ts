@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFStream, PDFIndirectObject } from 'core/pdf-objects';
 import {
   PDFTrailer,

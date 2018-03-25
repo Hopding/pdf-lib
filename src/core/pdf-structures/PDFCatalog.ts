@@ -1,4 +1,4 @@
-/* @flow */
+
 import PDFDictionary from 'core/pdf-objects/PDFDictionary';
 import { PDFName, PDFObject, PDFIndirectReference } from 'core/pdf-objects';
 import { PDFPageTree } from 'core/pdf-structures';

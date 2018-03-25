@@ -1,4 +1,3 @@
-/* @flow */
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import {

@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFDictionary } from 'core/pdf-objects';
 import { validate, isInstance } from 'utils/validate';
 

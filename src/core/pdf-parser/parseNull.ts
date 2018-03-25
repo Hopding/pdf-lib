@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFNull } from 'core/pdf-objects';
 import { arrayToString, trimArray } from 'utils';
 

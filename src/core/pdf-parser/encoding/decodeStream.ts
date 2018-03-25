@@ -1,4 +1,4 @@
-/* @flow */
+
 import pako from 'pako';
 import { PDFDictionary, PDFName, PDFArray } from '../../pdf-objects';
 

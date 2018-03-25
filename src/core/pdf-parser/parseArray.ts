@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFArray } from 'core/pdf-objects';
 import { error, trimArray, arrayCharAt } from 'utils';
 import { validate, isIdentity } from 'utils/validate';

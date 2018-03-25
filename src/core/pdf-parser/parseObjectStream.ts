@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFDictionary, PDFIndirectObject, PDFNumber } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
 import { error, arrayToString, arrayFindIndexOf } from 'utils';

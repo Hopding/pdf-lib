@@ -1,4 +1,4 @@
-/* @flow */
+
 /* eslint-disable new-cap */
 import _ from 'lodash';
 import PDFOperator from 'core/pdf-operators/PDFOperator';

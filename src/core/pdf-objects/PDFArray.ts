@@ -1,4 +1,4 @@
-/* @flow */
+
 import _ from 'lodash';
 import { error, addStringToBuffer, arrayToString } from 'utils';
 import { validate, validateArr, isInstance } from 'utils/validate';

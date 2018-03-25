@@ -1,4 +1,4 @@
-/* @flow */
+
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
 import { PDFTrailer, PDFCatalog } from 'core/pdf-structures';

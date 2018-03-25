@@ -1,4 +1,4 @@
-/* @flow */
+
 import clippingPathOps from './graphics/clipping-path';
 
 import { CS, cs } from './graphics/color/CSOps';

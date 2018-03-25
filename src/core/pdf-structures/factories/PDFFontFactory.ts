@@ -1,4 +1,4 @@
-/* @flow */
+
 import _ from 'lodash';
 import pako from 'pako';
 import fontkit from 'fontkit';

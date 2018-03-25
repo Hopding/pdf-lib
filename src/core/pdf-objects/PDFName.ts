@@ -1,4 +1,4 @@
-/* @flow */
+
 import _ from 'lodash';
 
 import { and, addStringToBuffer, charCode } from 'utils';

@@ -1,4 +1,4 @@
-/* @flow */
+
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 /**

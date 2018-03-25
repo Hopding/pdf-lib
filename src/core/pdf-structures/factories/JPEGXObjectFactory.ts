@@ -1,4 +1,4 @@
-/* @flow */
+
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import {
   PDFDictionary,

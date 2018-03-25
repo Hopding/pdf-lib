@@ -1,4 +1,4 @@
-/* @flow */
+
 import _ from 'lodash';
 
 import { Predicate } from 'utils';

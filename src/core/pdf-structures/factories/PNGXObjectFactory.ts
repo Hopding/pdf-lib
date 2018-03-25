@@ -1,4 +1,4 @@
-/* @flow */
+
 import PNG from 'png-js';
 import pako from 'pako';
 

@@ -1,4 +1,4 @@
-/* @flow */
+
 
 class PDFObject {
   toString = (): string => {

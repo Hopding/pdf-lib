@@ -1,4 +1,4 @@
-/* @flow */
+
 import { addStringToBuffer } from 'utils';
 import { validate, isIdentity } from 'utils/validate';
 

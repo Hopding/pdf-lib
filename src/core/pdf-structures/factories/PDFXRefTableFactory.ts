@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFIndirectObject } from '../../pdf-objects';
 import { PDFHeader } from '..';
 import { Table, Subsection, Entry } from '../PDFXRef';

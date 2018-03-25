@@ -1,4 +1,4 @@
-/* @flow */
+
 export { default as PDFArray } from './PDFArray';
 export { default as PDFBoolean } from './PDFBoolean';
 export { default as PDFDictionary } from './PDFDictionary';

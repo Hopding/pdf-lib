@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFIndirectReference } from 'core/pdf-objects';
 import { arrayToString, arrayIndexOf, trimArray } from 'utils';
 

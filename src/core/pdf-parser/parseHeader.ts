@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFHeader } from 'core/pdf-structures';
 import { arrayToString, trimArray, arrayCharAt, arrayIndexOf } from 'utils';
 

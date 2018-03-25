@@ -1,4 +1,4 @@
-/* @flow */
+
 import { PDFHexString } from 'core/pdf-objects';
 import { arrayToString, trimArray, charFromCode } from 'utils';
 
