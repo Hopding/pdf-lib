@@ -10,9 +10,9 @@ import { isNumber, validate } from 'utils/validate';
  * operators. Initial value: 0.
  */
 class Tw extends PDFOperator {
-  public static of = (wordSpace: number) => new Tw(wordSpace);
+  static of = (wordSpace: number) => new Tw(wordSpace);
 
-  public wordSpace: number;
+  wordSpace: number;
 
   constructor(wordSpace: number) {
     super();
@@ -24,11 +24,11 @@ class Tw extends PDFOperator {
     this.wordSpace = wordSpace;
   }
 
-  public toString = (): string => `${this.wordSpace} Tw\n`;
+  toString = (): string => `${this.wordSpace} Tw\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

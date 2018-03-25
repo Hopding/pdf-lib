@@ -9,9 +9,9 @@ import { isNumber, validate } from 'utils/validate';
  * specifying the percentage of the normal width. Initial value: 100 (normal width).
  */
 class Tz extends PDFOperator {
-  public static of = (scale: number) => new Tz(scale);
+  static of = (scale: number) => new Tz(scale);
 
-  public scale: number;
+  scale: number;
 
   constructor(scale: number) {
     super();
@@ -19,11 +19,11 @@ class Tz extends PDFOperator {
     this.scale = scale;
   }
 
-  public toString = (): string => `${this.scale} Tz\n`;
+  toString = (): string => `${this.scale} Tz\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

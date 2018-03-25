@@ -9,14 +9,14 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import PDFObject from './PDFObject';
 
 class PDFDictionary extends PDFObject {
-  public static from = (
+  static from = (
     object: { [key: string]: PDFObject } | Map<PDFName, any>,
     index: PDFObjectIndex,
   ) => new PDFDictionary(object, index);
 
-  public map: Map<PDFName, any>;
-  public index: PDFObjectIndex;
-  public validKeys: ReadonlyArray<string>;
+  map: Map<PDFName, any>;
+  index: PDFObjectIndex;
+  validKeys: ReadonlyArray<string>;
 
   constructor(
     object?: { [key: string]: PDFObject } | Map<PDFName, any>,
@@ -46,10 +46,10 @@ class PDFDictionary extends PDFObject {
     }
   }
 
-  public filter = (predicate: (o: PDFObject, n: PDFName) => boolean) =>
+  filter = (predicate: (o: PDFObject, n: PDFName) => boolean) =>
     Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key));
 
-  public set = (key: string | PDFName, val: PDFObject, validateKeys = true) => {
+  set = (key: string | PDFName, val: PDFObject, validateKeys = true) => {
     validate(
       key,
       or(_.isString, isInstance(PDFName)),
@@ -74,7 +74,7 @@ class PDFDictionary extends PDFObject {
     return this;
   };
 
-  public getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
+  getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
     validate(
       key,
       or(_.isString, isInstance(PDFName)),
@@ -85,17 +85,17 @@ class PDFDictionary extends PDFObject {
     return this.map.get(keyName);
   };
 
-  public get = <T extends PDFObject>(key: string | PDFName): T => {
+  get = <T extends PDFObject>(key: string | PDFName): T => {
     return this.getMaybe(key) || error(`Missing PDFDictionary entry "${key}".`);
   };
 
-  public toString = (): string => {
+  toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);
     return arrayToString(buffer);
   };
 
-  public bytesSize = () =>
+  bytesSize = () =>
     3 + // "<<\n"
     _(Array.from(this.map.entries()))
       .map(([key, val]) => {
@@ -110,7 +110,7 @@ class PDFDictionary extends PDFObject {
       .sum() +
     2; // ">>"
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('<<\n', buffer);
     this.map.forEach((val, key) => {
       remaining = addStringToBuffer(`${key.toString()} `, remaining);

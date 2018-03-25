@@ -10,11 +10,11 @@ import { isInRange, isNumber, validate } from 'utils/validate';
  * between 0.0 (minimum intensity) and 1.0 (maximum intensity).
  */
 export class RG extends PDFOperator {
-  public static of = (r: number, g: number, b: number) => new RG(r, g, b);
+  static of = (r: number, g: number, b: number) => new RG(r, g, b);
 
-  public r: number;
-  public g: number;
-  public b: number;
+  r: number;
+  g: number;
+  b: number;
 
   constructor(r: number, g: number, b: number) {
     super();
@@ -38,11 +38,11 @@ export class RG extends PDFOperator {
     this.b = b;
   }
 
-  public toString = (): string => `${this.r} ${this.g} ${this.b} RG\n`;
+  toString = (): string => `${this.r} ${this.g} ${this.b} RG\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 
@@ -50,11 +50,11 @@ export class RG extends PDFOperator {
  * Same as RG but used for nonstroking operations.
  */
 export class rg extends PDFOperator {
-  public static of = (r: number, g: number, b: number) => new rg(r, g, b);
+  static of = (r: number, g: number, b: number) => new rg(r, g, b);
 
-  public r: number;
-  public g: number;
-  public b: number;
+  r: number;
+  g: number;
+  b: number;
 
   constructor(r: number, g: number, b: number) {
     super();
@@ -78,10 +78,10 @@ export class rg extends PDFOperator {
     this.b = b;
   }
 
-  public toString = (): string => `${this.r} ${this.g} ${this.b} rg\n`;
+  toString = (): string => `${this.r} ${this.g} ${this.b} rg\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }

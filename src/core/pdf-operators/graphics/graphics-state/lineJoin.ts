@@ -8,9 +8,9 @@ import { oneOf, validate } from 'utils/validate';
  * Set the line join style in the graphics state
  */
 class j extends PDFOperator {
-  public static of = (lineJoin: number) => new j(lineJoin);
+  static of = (lineJoin: number) => new j(lineJoin);
 
-  public lineJoin: number;
+  lineJoin: number;
 
   constructor(lineJoin: number) {
     super();
@@ -22,11 +22,11 @@ class j extends PDFOperator {
     this.lineJoin = lineJoin;
   }
 
-  public toString = (): string => `${this.lineJoin} j\n`;
+  toString = (): string => `${this.lineJoin} j\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

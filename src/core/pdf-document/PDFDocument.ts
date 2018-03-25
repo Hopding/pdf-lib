@@ -22,12 +22,12 @@ import { error } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 class PDFDocument {
-  public static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
+  static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
 
-  public header: PDFHeader = PDFHeader.forVersion(1, 7);
-  public catalog: PDFCatalog;
-  public index: PDFObjectIndex;
-  public maxObjNum: number = 0;
+  header: PDFHeader = PDFHeader.forVersion(1, 7);
+  catalog: PDFCatalog;
+  index: PDFObjectIndex;
+  maxObjNum: number = 0;
 
   constructor(index: PDFObjectIndex) {
     validate(
@@ -43,7 +43,7 @@ class PDFDocument {
     if (!this.catalog) error('"index" does not contain a PDFCatalog object');
   }
 
-  public register = <T extends PDFObject>(
+  register = <T extends PDFObject>(
     object: T,
   ): PDFIndirectReference<T> => {
     validate(object, isInstance(PDFObject), 'object must be a PDFObject');
@@ -53,7 +53,7 @@ class PDFDocument {
     return ref;
   };
 
-  public getPages = (): PDFPage[] => {
+  getPages = (): PDFPage[] => {
     const pages = [] as PDFPage[];
     this.catalog.Pages.traverse((kid) => {
       if (kid instanceof PDFPage) pages.push(kid);
@@ -61,12 +61,12 @@ class PDFDocument {
     return pages;
   };
 
-  public createPage = (
+  createPage = (
     size: [number, number],
     resources?: PDFDictionary,
   ): PDFPage => PDFPage.create(this.index, size, resources);
 
-  public addPage = (page: PDFPage) => {
+  addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const { Pages } = this.catalog;
 
@@ -86,7 +86,7 @@ class PDFDocument {
 
   // TODO: Clean up unused objects when possible after removing page from tree
   // TODO: Make sure "idx" is within required range
-  public removePage = (idx: number) => {
+  removePage = (idx: number) => {
     validate(idx, _.isNumber, 'idx must be a number');
     const pageTreeRef = this.catalog.get('Pages');
 
@@ -111,7 +111,7 @@ class PDFDocument {
   };
 
   // TODO: Make sure "idx" is within required range
-  public insertPage = (idx: number, page: PDFPage) => {
+  insertPage = (idx: number, page: PDFPage) => {
     validate(idx, _.isNumber, 'idx must be a number');
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const pageTreeRef = this.catalog.get('Pages');
@@ -137,7 +137,7 @@ class PDFDocument {
     return this;
   };
 
-  public embedFont = (
+  embedFont = (
     name: string,
     fontData: Uint8Array,
     flagOptions: IFontFlagOptions,
@@ -146,14 +146,14 @@ class PDFDocument {
     return fontFactory.embedFontIn(this);
   };
 
-  public addPNG = (
+  addPNG = (
     imageData: Uint8Array,
   ): PDFIndirectReference<PDFRawStream> => {
     const pngFactory = PNGXObjectFactory.for(imageData);
     return pngFactory.embedImageIn(this);
   };
 
-  public addJPG = (
+  addJPG = (
     imageData: Uint8Array,
   ): PDFIndirectReference<PDFRawStream> => {
     const jpgFactory = JPEGXObjectFactory.for(imageData);

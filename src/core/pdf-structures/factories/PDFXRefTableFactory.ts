@@ -3,7 +3,7 @@ import { PDFIndirectObject } from '../../pdf-objects';
 import { Entry, Subsection, Table } from '../PDFXRef';
 
 class PDFXRefTableFactory {
-  public static forIndirectObjects = (
+  static forIndirectObjects = (
     header: PDFHeader,
     sortedIndex: PDFIndirectObject[],
   ): [Table, number] => {

@@ -3,7 +3,7 @@ import { error } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 class PDFStream extends PDFObject {
-  public dictionary: PDFDictionary;
+  dictionary: PDFDictionary;
 
   constructor(dictionary: PDFDictionary) {
     super();
@@ -15,7 +15,7 @@ class PDFStream extends PDFObject {
     this.dictionary = dictionary;
   }
 
-  public validateDictionary = () => {
+  validateDictionary = () => {
     if (!this.dictionary.get('Length')) {
       error('"Length" is a required field for PDFStream dictionaries');
     }

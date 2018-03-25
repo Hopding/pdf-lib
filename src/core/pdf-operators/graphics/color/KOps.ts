@@ -11,13 +11,13 @@ import { isInRange, isNumber, validate } from 'utils/validate';
  * of this operator is affected by the overprint mode.
  */
 export class K extends PDFOperator {
-  public static of = (c: number, m: number, y: number, k: number) =>
+  static of = (c: number, m: number, y: number, k: number) =>
     new K(c, m, y, k);
 
-  public c: number;
-  public y: number;
-  public m: number;
-  public k: number;
+  c: number;
+  y: number;
+  m: number;
+  k: number;
 
   constructor(c: number, m: number, y: number, k: number) {
     super();
@@ -47,11 +47,11 @@ export class K extends PDFOperator {
     this.k = k;
   }
 
-  public toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} K\n`;
+  toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} K\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 
@@ -59,13 +59,13 @@ export class K extends PDFOperator {
  * Same as K but used for nonstroking operations.
  */
 export class k extends PDFOperator {
-  public static of = (c: number, m: number, y: number, key: number) =>
+  static of = (c: number, m: number, y: number, key: number) =>
     new k(c, m, y, key);
 
-  public c: number;
-  public y: number;
-  public m: number;
-  public k: number;
+  c: number;
+  y: number;
+  m: number;
+  k: number;
 
   constructor(c: number, m: number, y: number, key: number) {
     super();
@@ -95,10 +95,10 @@ export class k extends PDFOperator {
     this.k = key;
   }
 
-  public toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} k\n`;
+  toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} k\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }

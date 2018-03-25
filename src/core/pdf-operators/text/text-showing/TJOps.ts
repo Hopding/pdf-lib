@@ -15,9 +15,9 @@ import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
  * Show a text string.
  */
 export class Tj extends PDFOperator {
-  public static of = (str: PDFString | PDFHexString | string) => new Tj(str);
+  static of = (str: PDFString | PDFHexString | string) => new Tj(str);
 
-  public string: PDFString | PDFHexString;
+  string: PDFString | PDFHexString;
 
   constructor(str: PDFString | PDFHexString | string) {
     super();
@@ -34,11 +34,11 @@ export class Tj extends PDFOperator {
     } else this.string = str;
   }
 
-  public toString = () => this.string.toString() + ' Tj\n';
+  toString = () => this.string.toString() + ' Tj\n';
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 
@@ -55,11 +55,11 @@ export class Tj extends PDFOperator {
  * of passing offsets to TJ.
  */
 export class TJ extends PDFOperator {
-  public static of = (
+  static of = (
     array: Array<PDFString | PDFHexString | string | number>,
   ) => new TJ(array);
 
-  public array: PDFArray<PDFString | PDFHexString | PDFNumber>;
+  array: PDFArray<PDFString | PDFHexString | PDFNumber>;
 
   constructor(array: Array<PDFString | PDFHexString | string | number>) {
     super();
@@ -84,9 +84,9 @@ export class TJ extends PDFOperator {
     );
   }
 
-  public bytesSize = () => this.array.bytesSize() + 4; // "...<array> TJ\n"
+  bytesSize = () => this.array.bytesSize() + 4; // "...<array> TJ\n"
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = this.array.copyBytesInto(buffer);
     remaining = addStringToBuffer(' TJ\n', buffer);
     return remaining;

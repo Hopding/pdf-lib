@@ -10,13 +10,13 @@ import { isNumber, validateArr } from 'utils/validate';
  * Bézier control points. The new current point shall be (x3, y3).
  */
 class v extends PDFOperator {
-  public static of = (x2: number, y2: number, x3: number, y3: number) =>
+  static of = (x2: number, y2: number, x3: number, y3: number) =>
     new v(x2, y2, x3, y3);
 
-  public x2: number;
-  public y2: number;
-  public x3: number;
-  public y3: number;
+  x2: number;
+  y2: number;
+  x3: number;
+  y3: number;
 
   constructor(x2: number, y2: number, x3: number, y3: number) {
     super();
@@ -31,12 +31,12 @@ class v extends PDFOperator {
     this.y3 = y3;
   }
 
-  public toString = (): string =>
+  toString = (): string =>
     `${this.x2} ${this.y2} ${this.x3} ${this.y3} c\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

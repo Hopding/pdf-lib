@@ -11,7 +11,7 @@ import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFacto
 import { error } from 'utils';
 
 class PDFDocumentWriter {
-  public static saveToBytes = (pdfDoc: PDFDocument): Uint8Array => {
+  static saveToBytes = (pdfDoc: PDFDocument): Uint8Array => {
     const sortedIndex = PDFDocumentWriter.sortIndex(pdfDoc.index.index);
 
     const { reference: catalogRef } =
@@ -48,7 +48,7 @@ class PDFDocumentWriter {
     return buffer;
   };
 
-  public static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
+  static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
     const indexArr: PDFIndirectObject[] = [];
     index.forEach((object, ref) =>
       indexArr.push(PDFIndirectObject.of(object).setReference(ref)),

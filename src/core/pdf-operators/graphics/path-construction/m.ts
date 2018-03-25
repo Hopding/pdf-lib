@@ -11,10 +11,10 @@ import { isNumber, validate } from 'utils/validate';
  * operation remains in the path.
  */
 class m extends PDFOperator {
-  public static of = (x: number, y: number) => new m(x, y);
+  static of = (x: number, y: number) => new m(x, y);
 
-  public x: number;
-  public y: number;
+  x: number;
+  y: number;
 
   constructor(x: number, y: number) {
     super();
@@ -24,11 +24,11 @@ class m extends PDFOperator {
     this.y = y;
   }
 
-  public toString = (): string => `${this.x} ${this.y} m\n`;
+  toString = (): string => `${this.x} ${this.y} m\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

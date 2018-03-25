@@ -3,11 +3,11 @@ import { addStringToBuffer, charCode } from 'utils';
 import { validate } from 'utils/validate';
 
 class PDFHeader {
-  public static forVersion = (major: number, minor: number) =>
+  static forVersion = (major: number, minor: number) =>
     new PDFHeader(major, minor);
 
-  public major: number;
-  public minor: number;
+  major: number;
+  minor: number;
 
   constructor(major: number, minor: number) {
     validate(major, _.isNumber, 'PDFHeader.major must be a Number');
@@ -17,14 +17,14 @@ class PDFHeader {
     this.minor = minor;
   }
 
-  public toString = (): string => `
+  toString = (): string => `
     %PDF-${this.major}.${this.minor}
     %<COMMENT_WITH_BINARY_CHARACTERS>
   `;
 
-  public bytesSize = () => `%PDF-${this.major}.${this.minor}\n`.length + 6;
+  bytesSize = () => `%PDF-${this.major}.${this.minor}\n`.length + 6;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     const remaining = addStringToBuffer(
       `%PDF-${this.major}.${this.minor}\n`,
       buffer,

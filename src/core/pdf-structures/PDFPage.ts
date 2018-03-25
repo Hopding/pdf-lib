@@ -53,9 +53,9 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFPage extends PDFDictionary {
-  public static validKeys = VALID_KEYS;
+  static validKeys = VALID_KEYS;
 
-  public static create = (
+  static create = (
     index: PDFObjectIndex,
     size: [number, number],
     resources?: PDFDictionary,
@@ -83,7 +83,7 @@ class PDFPage extends PDFDictionary {
     return page;
   };
 
-  public static fromDict = (dict: PDFDictionary) => {
+  static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFPage(dict.map, dict.index, PDFPage.validKeys);
   };
@@ -114,7 +114,7 @@ class PDFPage extends PDFDictionary {
 
   /** Convert "Contents" to array if it exists and is not already */
   // TODO: See is this is inefficient...
-  public normalizeContents = () => {
+  normalizeContents = () => {
     const Contents = this.getMaybe('Contents');
     if (Contents) {
       const contents: PDFObject = this.index.lookup(Contents);
@@ -124,7 +124,7 @@ class PDFPage extends PDFDictionary {
     }
   };
 
-  public normalizeResources = ({
+  normalizeResources = ({
     Font,
     XObject,
   }: {
@@ -144,7 +144,7 @@ class PDFPage extends PDFDictionary {
   };
 
   // TODO: Consider allowing *insertion* of content streams so order can be changed
-  public addContentStreams = (
+  addContentStreams = (
     ...contentStreams: Array<PDFIndirectReference<PDFContentStream>>
   ) => {
     validateArr(
@@ -163,7 +163,7 @@ class PDFPage extends PDFDictionary {
     return this;
   };
 
-  public addFontDictionary = (
+  addFontDictionary = (
     key: string, // TODO: Allow PDFName objects to be passed too
     fontDict: PDFIndirectReference<PDFDictionary>, // Allow PDFDictionaries as well
   ) => {
@@ -181,7 +181,7 @@ class PDFPage extends PDFDictionary {
     return this;
   };
 
-  public addXObject = (
+  addXObject = (
     key: string,
     xObject: PDFIndirectReference<PDFStream>,
   ) => {

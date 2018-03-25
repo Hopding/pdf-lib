@@ -13,10 +13,10 @@ import { isNumber, validate } from 'utils/validate';
  *              |t_x t_y 1|
  */
 export class Td extends PDFOperator {
-  public static of = (tx: number, ty: number) => new Td(tx, ty);
+  static of = (tx: number, ty: number) => new Td(tx, ty);
 
-  public tx: number;
-  public ty: number;
+  tx: number;
+  ty: number;
 
   constructor(tx: number, ty: number) {
     super();
@@ -26,11 +26,11 @@ export class Td extends PDFOperator {
     this.ty = ty;
   }
 
-  public toString = (): string => `${this.tx} ${this.ty} Td\n`;
+  toString = (): string => `${this.tx} ${this.ty} Td\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 
@@ -42,10 +42,10 @@ export class Td extends PDFOperator {
  * tx ty Td
  */
 export class TD extends PDFOperator {
-  public static of = (tx: number, ty: number) => new TD(tx, ty);
+  static of = (tx: number, ty: number) => new TD(tx, ty);
 
-  public tx: number;
-  public ty: number;
+  tx: number;
+  ty: number;
 
   constructor(tx: number, ty: number) {
     super();
@@ -55,10 +55,10 @@ export class TD extends PDFOperator {
     this.ty = ty;
   }
 
-  public toString = (): string => `${this.tx} ${this.ty} TD\n`;
+  toString = (): string => `${this.tx} ${this.ty} TD\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }

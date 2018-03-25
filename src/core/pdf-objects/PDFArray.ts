@@ -8,13 +8,13 @@ import { PDFIndirectObject } from '.';
 import PDFObject from './PDFObject';
 
 class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
-  public static fromArray = <A extends PDFObject>(
+  static fromArray = <A extends PDFObject>(
     array: A[],
     index?: PDFObjectIndex,
   ) => new PDFArray(array, index);
 
-  public array: T[];
-  public index: PDFObjectIndex;
+  array: T[];
+  index: PDFObjectIndex;
 
   constructor(array: T[], index: PDFObjectIndex) {
     super();
@@ -32,7 +32,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     this.index = index;
   }
 
-  public push = (...val: T[]) => {
+  push = (...val: T[]) => {
     validateArr(
       val,
       isInstance(PDFObject),
@@ -43,7 +43,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     return this;
   };
 
-  public set = (idx: number, val: any) => {
+  set = (idx: number, val: any) => {
     validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
     validate(
       val,
@@ -55,26 +55,26 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     return this;
   };
 
-  public get = (idx: number) => {
+  get = (idx: number) => {
     validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
     return this.array[idx];
   };
 
-  public forEach = (fn: (value: T, index: number, array: T[]) => void) =>
+  forEach = (fn: (value: T, index: number, array: T[]) => void) =>
     this.array.forEach(fn);
-  public map = <U>(fn: (value: T, index: number, array: T[]) => U) =>
+  map = <U>(fn: (value: T, index: number, array: T[]) => U) =>
     this.array.map(fn);
-  public splice = (start: number, deleteCount?: number) =>
+  splice = (start: number, deleteCount?: number) =>
     this.array.splice(start, deleteCount);
 
-  public toString = (): string => {
+  toString = (): string => {
     const bufferSize = this.bytesSize();
     const buffer = new Uint8Array(bufferSize);
     this.copyBytesInto(buffer);
     return arrayToString(buffer);
   };
 
-  public bytesSize = () =>
+  bytesSize = () =>
     2 + // "[ "
     _(this.array)
       .map((e) => {
@@ -85,7 +85,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
       .sum() +
     1; // "]";
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('[ ', buffer);
 
     this.array.forEach((e, idx) => {

@@ -10,9 +10,9 @@ import { isInRange, validate } from 'utils/validate';
  * tolerance.
  */
 class i extends PDFOperator {
-  public static of = (flatness: number) => new i(flatness);
+  static of = (flatness: number) => new i(flatness);
 
-  public flatness: number;
+  flatness: number;
 
   constructor(flatness: number) {
     super();
@@ -24,11 +24,11 @@ class i extends PDFOperator {
     this.flatness = flatness;
   }
 
-  public toString = (): string => `${this.flatness} i\n`;
+  toString = (): string => `${this.flatness} i\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

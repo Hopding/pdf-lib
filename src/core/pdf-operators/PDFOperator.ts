@@ -3,11 +3,11 @@ import { addStringToBuffer, error } from 'utils';
 import { isIdentity, validate } from 'utils/validate';
 
 class PDFOperator {
-  public static createSingletonOp = (op: string) => {
+  static createSingletonOp = (op: string) => {
     const ENFORCER = Symbol(`${op}_ENFORCER`);
 
     class Singleton extends PDFOperator {
-      public static operator: Singleton;
+      static operator: Singleton;
 
       constructor(enforcer: symbol) {
         super();
@@ -18,11 +18,11 @@ class PDFOperator {
         );
       }
 
-      public toString = (): string => `${op}\n`;
+      toString = (): string => `${op}\n`;
 
-      public bytesSize = (): number => 2;
+      bytesSize = (): number => 2;
 
-      public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+      copyBytesInto = (buffer: Uint8Array): Uint8Array =>
         addStringToBuffer(this.toString(), buffer);
     }
 
@@ -31,13 +31,13 @@ class PDFOperator {
     return Singleton;
   };
 
-  public toString = (): string =>
+  toString = (): string =>
     error(`toString() is not implemented on ${this.constructor.name}`);
 
-  public bytesSize = (): number =>
+  bytesSize = (): number =>
     error(`bytesSize() is not implemented on ${this.constructor.name}`);
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     error(`copyBytesInto() is not implemented on ${this.constructor.name}`);
 }
 

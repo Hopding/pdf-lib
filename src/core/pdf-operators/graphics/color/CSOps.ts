@@ -38,9 +38,9 @@ import { validate } from 'utils/validate';
  * causes nothing to be painted.
  */
 export class CS extends PDFOperator {
-  public static of = (name: string) => new CS(name);
+  static of = (name: string) => new CS(name);
 
-  public name: string;
+  name: string;
 
   constructor(name: string) {
     super();
@@ -48,11 +48,11 @@ export class CS extends PDFOperator {
     this.name = name;
   }
 
-  public toString = (): string => `${this.name} CS\n`;
+  toString = (): string => `${this.name} CS\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 
@@ -60,9 +60,9 @@ export class CS extends PDFOperator {
  * Same as CS but used for nonstroking operations.
  */
 export class cs extends PDFOperator {
-  public static of = (name: string) => new cs(name);
+  static of = (name: string) => new cs(name);
 
-  public name: string;
+  name: string;
 
   constructor(name: string) {
     super();
@@ -70,10 +70,10 @@ export class cs extends PDFOperator {
     this.name = name;
   }
 
-  public toString = (): string => `${this.name} cs\n`;
+  toString = (): string => `${this.name} cs\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }

@@ -21,16 +21,16 @@ const { Buffer } = require('buffer/');
  * https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
  */
 class PNGXObjectFactory {
-  public static for = (data: Uint8Array) => new PNGXObjectFactory(data);
+  static for = (data: Uint8Array) => new PNGXObjectFactory(data);
 
-  public image: PNG;
-  public width: number;
-  public height: number;
-  public imgData: Uint8Array;
-  public alphaChannel: Uint8Array;
+  image: PNG;
+  width: number;
+  height: number;
+  imgData: Uint8Array;
+  alphaChannel: Uint8Array;
 
-  public xObjDict: PDFDictionary;
-  public document: PDFDocument;
+  xObjDict: PDFDictionary;
+  document: PDFDocument;
 
   constructor(data: Uint8Array) {
     validate(
@@ -51,7 +51,7 @@ class PNGXObjectFactory {
     this.imgData = this.image.imgData;
   }
 
-  public embedImageIn = (
+  embedImageIn = (
     document: PDFDocument,
   ): PDFIndirectReference<PDFRawStream> => {
     this.document = document;
@@ -123,7 +123,7 @@ class PNGXObjectFactory {
     );
   };
 
-  public finalize = () => {
+  finalize = () => {
     if (this.alphaChannel) {
       const alphaStreamDict = PDFDictionary.from(
         {
@@ -155,7 +155,7 @@ class PNGXObjectFactory {
     return xObj;
   };
 
-  public splitAlphaChannel = () => {
+  splitAlphaChannel = () => {
     const pixels = this.image.decodePixelsSync();
     const colorByteSize = this.image.colors * this.image.bits / 8;
     const pixelCount = this.image.width * this.image.height;
@@ -174,7 +174,7 @@ class PNGXObjectFactory {
     return this.finalize();
   };
 
-  public loadIndexedAlphaChannel = () => {
+  loadIndexedAlphaChannel = () => {
     const transparency = this.image.transparency.indexed;
     const pixels = this.image.decodePixelsSync();
     this.alphaChannel = new Uint8Array(this.width * this.height);

@@ -10,9 +10,9 @@ import { isNumber, validate } from 'utils/validate';
  * used by the Tj, TJ, and ' operators. Initial value: 0.
  */
 class Tc extends PDFOperator {
-  public static of = (charSpace: number) => new Tc(charSpace);
+  static of = (charSpace: number) => new Tc(charSpace);
 
-  public charSpace: number;
+  charSpace: number;
 
   constructor(charSpace: number) {
     super();
@@ -24,11 +24,11 @@ class Tc extends PDFOperator {
     this.charSpace = charSpace;
   }
 
-  public toString = (): string => `${this.charSpace} Tc\n`;
+  toString = (): string => `${this.charSpace} Tc\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

@@ -3,6 +3,7 @@
   "rules": {
     "curly": [true, "ignore-same-line"],
     "max-line-length": false,
+    "member-access": [true, "no-public"],
     "no-console": false,
     "object-literal-sort-keys": false,
     "quotemark": [true, "single"],

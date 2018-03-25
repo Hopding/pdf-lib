@@ -9,9 +9,9 @@ import { isNumber, validate } from 'utils/validate';
  * text space units. Initial value: 0.
  */
 class Ts extends PDFOperator {
-  public static of = (rise: number) => new Ts(rise);
+  static of = (rise: number) => new Ts(rise);
 
-  public rise: number;
+  rise: number;
 
   constructor(rise: number) {
     super();
@@ -19,11 +19,11 @@ class Ts extends PDFOperator {
     this.rise = rise;
   }
 
-  public toString = (): string => `${this.rise} Ts\n`;
+  toString = (): string => `${this.rise} Ts\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

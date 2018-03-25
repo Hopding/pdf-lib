@@ -6,11 +6,11 @@ import { validate } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 class PDFNumber extends PDFObject {
-  public static fromNumber = (num: number) => new PDFNumber(num);
-  public static fromString = (numberStr: string) =>
+  static fromNumber = (num: number) => new PDFNumber(num);
+  static fromString = (numberStr: string) =>
     new PDFNumber(Number(numberStr));
 
-  public number: number;
+  number: number;
 
   constructor(num: number) {
     super();
@@ -18,11 +18,11 @@ class PDFNumber extends PDFObject {
     this.number = num;
   }
 
-  public toString = (): string => this.number.toString();
+  toString = (): string => this.number.toString();
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

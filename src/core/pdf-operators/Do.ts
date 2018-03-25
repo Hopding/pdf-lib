@@ -9,9 +9,9 @@ import { validate } from 'utils/validate';
  * Draws the XObject with the given name in the current Page's Resource dictionary.
  */
 class Do extends PDFOperator {
-  public static of = (name: string) => new Do(name);
+  static of = (name: string) => new Do(name);
 
-  public name: string;
+  name: string;
 
   // TODO: See if the "name" must be preceded by a "/" or not...
   constructor(name: string) {
@@ -20,11 +20,11 @@ class Do extends PDFOperator {
     this.name = name;
   }
 
-  public toString = (): string => `${this.name} Do\n`;
+  toString = (): string => `${this.name} Do\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

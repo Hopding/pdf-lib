@@ -8,9 +8,9 @@ import { isNumber, validate } from 'utils/validate';
  * Set the line width in the graphics state
  */
 class w extends PDFOperator {
-  public static of = (lineWidth: number) => new w(lineWidth);
+  static of = (lineWidth: number) => new w(lineWidth);
 
-  public lineWidth: number;
+  lineWidth: number;
 
   constructor(lineWidth: number) {
     super();
@@ -22,11 +22,11 @@ class w extends PDFOperator {
     this.lineWidth = lineWidth;
   }
 
-  public toString = (): string => `${this.lineWidth} w\n`;
+  toString = (): string => `${this.lineWidth} w\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

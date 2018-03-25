@@ -2,13 +2,13 @@ import { PDFDictionary, PDFIndirectObject, PDFObject } from 'core/pdf-objects';
 import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFObjectStream extends PDFObject {
-  public static from = (
+  static from = (
     dictionary: PDFDictionary,
     objects: PDFIndirectObject[],
   ) => new PDFObjectStream(dictionary, objects);
 
-  public dict: PDFDictionary;
-  public objects: PDFIndirectObject[];
+  dict: PDFDictionary;
+  objects: PDFIndirectObject[];
 
   constructor(dictionary: PDFDictionary, objects: PDFIndirectObject[]) {
     super();

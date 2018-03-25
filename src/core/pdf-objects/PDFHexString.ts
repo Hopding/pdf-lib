@@ -8,9 +8,9 @@ import PDFObject from './PDFObject';
 const HEX_STRING_REGEX = /^[\dABCDEFabcdef]*/;
 
 class PDFHexString extends PDFObject {
-  public static fromString = (str: string) => new PDFHexString(str);
+  static fromString = (str: string) => new PDFHexString(str);
 
-  public string: string;
+  string: string;
 
   constructor(str: string) {
     super();
@@ -23,11 +23,11 @@ class PDFHexString extends PDFObject {
     this.string = str;
   }
 
-  public toString = (): string => `<${this.string}>`;
+  toString = (): string => `<${this.string}>`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

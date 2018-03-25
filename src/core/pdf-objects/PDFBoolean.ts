@@ -6,11 +6,11 @@ import { validate } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 class PDFBoolean extends PDFObject {
-  public static fromBool = (bool: boolean) => new PDFBoolean(bool);
-  public static fromString = (boolStr: string) =>
+  static fromBool = (bool: boolean) => new PDFBoolean(bool);
+  static fromString = (boolStr: string) =>
     new PDFBoolean(toBoolean(boolStr));
 
-  public boolean: boolean;
+  boolean: boolean;
 
   constructor(bool: boolean) {
     super();
@@ -18,9 +18,9 @@ class PDFBoolean extends PDFObject {
     this.boolean = bool;
   }
 
-  public toString = (): string => this.boolean.toString();
-  public bytesSize = () => this.toString().length;
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  toString = (): string => this.boolean.toString();
+  bytesSize = () => this.toString().length;
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

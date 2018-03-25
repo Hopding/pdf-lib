@@ -11,7 +11,7 @@ import PDFParser, { IParsedPDF } from 'core/pdf-parser/PDFParser';
 import { PDFCatalog, PDFObjectStream, PDFPageTree } from 'core/pdf-structures';
 
 class PDFDocumentFactory {
-  public static create = (): PDFDocument => {
+  static create = (): PDFDocument => {
     const index = PDFObjectIndex.create();
     const refs = {
       catalog: PDFIndirectReference.forNumbers(1, 0),
@@ -30,7 +30,7 @@ class PDFDocumentFactory {
     return PDFDocument.fromIndex(index);
   };
 
-  public static load = (data: Uint8Array): PDFDocument => {
+  static load = (data: Uint8Array): PDFDocument => {
     const index = PDFObjectIndex.create();
     const pdfParser = new PDFParser();
 
@@ -45,7 +45,7 @@ class PDFDocumentFactory {
   };
 
   // TODO: Need to throw out objects with "free" obj numbers...
-  public static normalize = ({
+  static normalize = ({
     dictionaries,
     arrays,
     original: { body },

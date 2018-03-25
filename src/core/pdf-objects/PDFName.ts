@@ -9,10 +9,10 @@ const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
 const pdfNamePool: Map<string, PDFName> = new Map();
 
 class PDFName extends PDFObject {
-  public static isRegularChar = (char: string) =>
+  static isRegularChar = (char: string) =>
     charCode(char) >= charCode('!') && charCode(char) <= charCode('~');
 
-  public static from = (str: string): PDFName => {
+  static from = (str: string): PDFName => {
     validate(str, _.isString, 'PDFName.from() requires string as argument');
     let pdfName = pdfNamePool.get(str);
     if (!pdfName) {
@@ -21,7 +21,7 @@ class PDFName extends PDFObject {
     }
     return pdfName;
   };
-  public key: string;
+  key: string;
 
   constructor(enforcer: symbol, key: string) {
     super();
@@ -38,7 +38,7 @@ class PDFName extends PDFObject {
     this.key = key;
   }
 
-  public toString = (): string =>
+  toString = (): string =>
     `/${this.key}`
       .replace('#', '#23')
       .split('')
@@ -50,9 +50,9 @@ class PDFName extends PDFObject {
       )
       .join('');
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

@@ -19,7 +19,7 @@ export type Kid = PDFPageTree | PDFPage;
 const VALID_KEYS = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
 
 class PDFPageTree extends PDFDictionary {
-  public static createRootNode = (
+  static createRootNode = (
     kids: PDFArray<PDFIndirectReference<Kid>>,
     index: PDFObjectIndex,
   ): PDFPageTree => {
@@ -39,7 +39,7 @@ class PDFPageTree extends PDFDictionary {
     );
   };
 
-  public static fromDict = (dict: PDFDictionary): PDFPageTree => {
+  static fromDict = (dict: PDFDictionary): PDFPageTree => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFPageTree(dict.map, dict.index, VALID_KEYS);
   };
@@ -60,7 +60,7 @@ class PDFPageTree extends PDFDictionary {
     return this.get('Count') as PDFNumber;
   }
 
-  public addPage = (page: PDFIndirectReference<PDFPage>) => {
+  addPage = (page: PDFIndirectReference<PDFPage>) => {
     validate(
       page,
       isInstance(PDFIndirectReference),
@@ -73,7 +73,7 @@ class PDFPageTree extends PDFDictionary {
     return this;
   };
 
-  public removePage = (idx: number) => {
+  removePage = (idx: number) => {
     validate(idx, _.isNumber, '"idx" arg must be a Number');
     this.Kids.array.splice(idx, 1);
     this.ascend((pageTree) => {
@@ -82,7 +82,7 @@ class PDFPageTree extends PDFDictionary {
     return this;
   };
 
-  public insertPage = (idx: number, page: PDFIndirectReference<PDFPage>) => {
+  insertPage = (idx: number, page: PDFIndirectReference<PDFPage>) => {
     validate(idx, _.isNumber, '"idx" arg must be a Number');
     validate(
       page,
@@ -98,7 +98,7 @@ class PDFPageTree extends PDFDictionary {
 
   // TODO: Pass a "stop" callback to allow "visit" to end traversal early
   // TODO: Allow for optimized tree search given an index
-  public traverse = (
+  traverse = (
     visit: (k: Kid, r: Kid | PDFIndirectReference<Kid>) => any,
   ) => {
     if (this.Kids.array.length === 0) return this;
@@ -111,7 +111,7 @@ class PDFPageTree extends PDFDictionary {
     return this;
   };
 
-  public traverseRight = (
+  traverseRight = (
     visit: (k: Kid, r: Kid | PDFIndirectReference<Kid>) => any,
   ) => {
     if (this.Kids.array.length === 0) return this;
@@ -123,7 +123,7 @@ class PDFPageTree extends PDFDictionary {
     return this;
   };
 
-  public ascend = (visit: (t: PDFPageTree) => any, visitSelf = true) => {
+  ascend = (visit: (t: PDFPageTree) => any, visitSelf = true) => {
     if (visitSelf) visit(this);
     const Parent = this.Parent;
     if (!Parent) return;

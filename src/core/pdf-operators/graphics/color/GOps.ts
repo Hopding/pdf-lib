@@ -10,9 +10,9 @@ import { isInRange, isNumber, validate } from 'utils/validate';
  * between 0.0 (black) and 1.0 (white).
  */
 export class G extends PDFOperator {
-  public static of = (gray: number) => new G(gray);
+  static of = (gray: number) => new G(gray);
 
-  public gray: number;
+  gray: number;
 
   constructor(gray: number) {
     super();
@@ -24,11 +24,11 @@ export class G extends PDFOperator {
     this.gray = gray;
   }
 
-  public toString = (): string => `${this.gray} G\n`;
+  toString = (): string => `${this.gray} G\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 
@@ -36,9 +36,9 @@ export class G extends PDFOperator {
  * Same as G but used for nonstroking operations.
  */
 export class g extends PDFOperator {
-  public static of = (gray: number) => new g(gray);
+  static of = (gray: number) => new g(gray);
 
-  public gray: number;
+  gray: number;
 
   constructor(gray: number) {
     super();
@@ -46,10 +46,10 @@ export class g extends PDFOperator {
     this.gray = gray;
   }
 
-  public toString = (): string => `${this.gray} g\n`;
+  toString = (): string => `${this.gray} g\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }

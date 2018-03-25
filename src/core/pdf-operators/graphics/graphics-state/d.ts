@@ -9,11 +9,11 @@ import { isNumber, validate } from 'utils/validate';
  * Set the line dash pattern in the graphics state
  */
 class d extends PDFOperator {
-  public static of = (dashArray: [number, number], dashPhase: number) =>
+  static of = (dashArray: [number, number], dashPhase: number) =>
     new d(dashArray, dashPhase);
 
-  public dashArray: [number, number];
-  public dashPhase: number;
+  dashArray: [number, number];
+  dashPhase: number;
 
   constructor(dashArray: [number, number], dashPhase: number) {
     super();
@@ -36,15 +36,15 @@ class d extends PDFOperator {
     this.dashPhase = dashPhase;
   }
 
-  public toString = (): string =>
+  toString = (): string =>
     _.isNil(this.dashArray[0]) && _.isNil(this.dashArray[1])
       ? `[] ${this.dashPhase} d\n`
       : `[${String(this.dashArray[0])} ${String(this.dashArray[1])}] ` +
         `${this.dashPhase} d\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

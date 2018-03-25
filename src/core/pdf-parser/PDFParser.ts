@@ -66,26 +66,26 @@ export interface IParsedPDF {
 }
 
 class PDFParser {
-  public activelyParsing = false;
+  activelyParsing = false;
 
-  public arrays: PDFArray[] = [];
-  public dictionaries: PDFDictionary[] = [];
-  public catalog: PDFCatalog = null;
+  arrays: PDFArray[] = [];
+  dictionaries: PDFDictionary[] = [];
+  catalog: PDFCatalog = null;
 
-  public header: PDFHeader = null;
-  public body: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
-  public xRefTable: PDFXRefTable = null;
-  public trailer: PDFTrailer = null;
+  header: PDFHeader = null;
+  body: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
+  xRefTable: PDFXRefTable = null;
+  trailer: PDFTrailer = null;
 
-  public linearization: IPDFLinearization = null;
+  linearization: IPDFLinearization = null;
 
-  public updates: Array<{
+  updates: Array<{
     body: Map<PDFIndirectReference, PDFIndirectObject>;
     xRefTable: PDFXRefTable;
     trailer: PDFTrailer;
   }> = [];
 
-  public parseHandlers: IParseHandlers;
+  parseHandlers: IParseHandlers;
 
   constructor() {
     this.parseHandlers = {
@@ -100,15 +100,15 @@ class PDFParser {
     };
   }
 
-  public handleArray = (array: PDFArray) => {
+  handleArray = (array: PDFArray) => {
     this.arrays.push(array);
   };
 
-  public handleDict = (dict: PDFDictionary) => {
+  handleDict = (dict: PDFDictionary) => {
     this.dictionaries.push(dict);
   };
 
-  public handleObjectStream = ({ objects }: PDFObjectStream) => {
+  handleObjectStream = ({ objects }: PDFObjectStream) => {
     objects.forEach((indirectObj) => {
       if (this.updates.length > 0) {
         _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
@@ -118,7 +118,7 @@ class PDFParser {
     });
   };
 
-  public handleIndirectObj = (indirectObj: PDFIndirectObject) => {
+  handleIndirectObj = (indirectObj: PDFIndirectObject) => {
     if (this.updates.length > 0) {
       _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
     } else {
@@ -126,27 +126,27 @@ class PDFParser {
     }
   };
 
-  public handleHeader = (header: PDFHeader) => {
+  handleHeader = (header: PDFHeader) => {
     this.header = header;
   };
 
-  public handleXRefTable = (xRefTable: PDFXRefTable) => {
+  handleXRefTable = (xRefTable: PDFXRefTable) => {
     if (!this.trailer) this.xRefTable = xRefTable;
     else _.last(this.updates).xRefTable = xRefTable;
   };
 
-  public handleTrailer = (trailer: PDFTrailer) => {
+  handleTrailer = (trailer: PDFTrailer) => {
     if (!this.trailer) this.trailer = trailer;
     else _.last(this.updates).trailer = trailer;
 
     this.updates.push({ body: new Map(), xRefTable: null, trailer: null });
   };
 
-  public handleLinearization = (linearization: IPDFLinearization) => {
+  handleLinearization = (linearization: IPDFLinearization) => {
     this.linearization = linearization;
   };
 
-  public parse = (bytes: Uint8Array, index: PDFObjectIndex): IParsedPDF => {
+  parse = (bytes: Uint8Array, index: PDFObjectIndex): IParsedPDF => {
     validate(
       index,
       isInstance(PDFObjectIndex),

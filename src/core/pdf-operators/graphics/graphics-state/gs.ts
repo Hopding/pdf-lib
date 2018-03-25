@@ -11,9 +11,9 @@ import { validate } from 'utils/validate';
  * current resource dictionary.
  */
 class gs extends PDFOperator {
-  public static of = (dictName: string) => new gs(dictName);
+  static of = (dictName: string) => new gs(dictName);
 
-  public dictName: string;
+  dictName: string;
 
   // TODO: See if the "dictName" must be preceded by a "/" or not...
   constructor(dictName: string) {
@@ -26,11 +26,11 @@ class gs extends PDFOperator {
     this.dictName = dictName;
   }
 
-  public toString = (): string => `${this.dictName} gs\n`;
+  toString = (): string => `${this.dictName} gs\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

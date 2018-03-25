@@ -10,7 +10,7 @@ import { isNumber, validateArr } from 'utils/validate';
  * separate numbers, not as an array.
  */
 class cm extends PDFOperator {
-  public static of = (
+  static of = (
     a: number,
     b: number,
     c: number,
@@ -19,12 +19,12 @@ class cm extends PDFOperator {
     f: number,
   ) => new cm(a, b, c, d, e, f);
 
-  public a: number;
-  public b: number;
-  public c: number;
-  public d: number;
-  public e: number;
-  public f: number;
+  a: number;
+  b: number;
+  c: number;
+  d: number;
+  e: number;
+  f: number;
 
   constructor(
     a: number,
@@ -48,12 +48,12 @@ class cm extends PDFOperator {
     this.f = f;
   }
 
-  public toString = (): string =>
+  toString = (): string =>
     `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} cm\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

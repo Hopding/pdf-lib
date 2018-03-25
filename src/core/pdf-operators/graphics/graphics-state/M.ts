@@ -8,9 +8,9 @@ import { isNumber, validate } from 'utils/validate';
  * Set the miter limit in the graphics state
  */
 class M extends PDFOperator {
-  public static of = (miterLimit: number) => new M(miterLimit);
+  static of = (miterLimit: number) => new M(miterLimit);
 
-  public miterLimit: number;
+  miterLimit: number;
 
   constructor(miterLimit: number) {
     super();
@@ -22,11 +22,11 @@ class M extends PDFOperator {
     this.miterLimit = miterLimit;
   }
 
-  public toString = (): string => `${this.miterLimit} M\n`;
+  toString = (): string => `${this.miterLimit} M\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

@@ -3,11 +3,11 @@ import { error } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 class PDFObjectIndex {
-  public static create = () => new PDFObjectIndex();
+  static create = () => new PDFObjectIndex();
 
-  public index: Map<PDFIndirectReference, PDFObject> = new Map();
+  index: Map<PDFIndirectReference, PDFObject> = new Map();
 
-  public set = (key: PDFIndirectReference, val: PDFObject) => {
+  set = (key: PDFIndirectReference, val: PDFObject) => {
     validate(
       key,
       isInstance(PDFIndirectReference),
@@ -18,14 +18,14 @@ class PDFObjectIndex {
     return this;
   };
 
-  public lookupMaybe = (
+  lookupMaybe = (
     ref: PDFIndirectReference | PDFObject | void,
   ): PDFObject | void => {
     if (ref instanceof PDFIndirectReference) return this.index.get(ref);
     return ref;
   };
 
-  public lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
+  lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
     return this.lookupMaybe(ref) || error(`Failed to lookup ref: ${ref}}`);
   };
 }

@@ -9,17 +9,17 @@ import { typedArrayProxy } from 'utils/proxies';
 import { isInstance, validateArr } from 'utils/validate';
 
 class PDFContentStream extends PDFStream {
-  public static of = (dict: PDFDictionary, ...operators: PDFOperator[]) =>
+  static of = (dict: PDFDictionary, ...operators: PDFOperator[]) =>
     new PDFContentStream(dict, ...operators);
 
-  public static validateOperators = (elements: any[]) =>
+  static validateOperators = (elements: any[]) =>
     validateArr(
       elements,
       isInstance(PDFOperator),
       'only PDFOperators can be pushed to a PDFContentStream',
     );
 
-  public operators: PDFOperator[];
+  operators: PDFOperator[];
 
   constructor(dictionary: PDFDictionary, ...operators: PDFOperator[]) {
     super(dictionary);
@@ -44,20 +44,20 @@ class PDFContentStream extends PDFStream {
     return this.dictionary.index.lookup(Length) as PDFNumber;
   }
 
-  public operatorsBytesSize = () =>
+  operatorsBytesSize = () =>
     _(this.operators)
       .filter(Boolean)
       .map((op) => op.bytesSize())
       .sum();
 
-  public bytesSize = () =>
+  bytesSize = () =>
     this.dictionary.bytesSize() +
     1 + // "\n"
     7 + // "stream\n"
     this.operatorsBytesSize() +
     10; // \nendstream
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     this.validateDictionary();
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);

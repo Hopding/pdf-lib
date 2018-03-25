@@ -9,9 +9,9 @@ import { isNumber, validate } from 'utils/validate';
  * Initial value: 0.
  */
 class Tr extends PDFOperator {
-  public static of = (render: number) => new Tr(render);
+  static of = (render: number) => new Tr(render);
 
-  public render: number;
+  render: number;
 
   constructor(render: number) {
     super();
@@ -19,11 +19,11 @@ class Tr extends PDFOperator {
     this.render = render;
   }
 
-  public toString = (): string => `${this.render} Tr\n`;
+  toString = (): string => `${this.render} Tr\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

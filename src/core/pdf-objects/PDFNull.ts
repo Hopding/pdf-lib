@@ -6,7 +6,7 @@ import PDFObject from './PDFObject';
 const PDF_NULL_ENFORCER = Symbol('PDF_NULL_ENFORCER');
 
 class PDFNull extends PDFObject {
-  public static instance = new PDFNull(PDF_NULL_ENFORCER);
+  static instance = new PDFNull(PDF_NULL_ENFORCER);
 
   constructor(enforcer: symbol) {
     super();
@@ -17,11 +17,11 @@ class PDFNull extends PDFObject {
     );
   }
 
-  public toString = (): string => 'null';
+  toString = (): string => 'null';
 
-  public bytesSize = () => 4;
+  bytesSize = () => 4;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer('null', buffer);
 }
 

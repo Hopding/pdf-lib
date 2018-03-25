@@ -62,17 +62,17 @@ const fontFlags = (options: IFontFlagOptions) => {
  * https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/font/embedded.coffee
  */
 class PDFFontFactory {
-  public static for = (
+  static for = (
     name: string,
     fontData: Uint8Array,
     flagOptions: IFontFlagOptions,
   ) => new PDFFontFactory(name, fontData, flagOptions);
 
-  public font: any;
-  public scale: number;
-  public fontName: string;
-  public fontData: Uint8Array;
-  public flagOptions: IFontFlagOptions;
+  font: any;
+  scale: number;
+  fontName: string;
+  fontData: Uint8Array;
+  flagOptions: IFontFlagOptions;
 
   constructor(
     name: string,
@@ -104,7 +104,7 @@ class PDFFontFactory {
   TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
   to broaden support to other fonts.
   */
-  public embedFontIn = (
+  embedFontIn = (
     pdfDoc: PDFDocument,
   ): PDFIndirectReference<PDFDictionary> => {
     const fontStreamDict = PDFDictionary.from(
@@ -171,7 +171,7 @@ class PDFFontFactory {
     );
   };
 
-  public getWidths = (index: PDFObjectIndex) =>
+  getWidths = (index: PDFObjectIndex) =>
     PDFArray.fromArray(
       _.range(0, 256)
         .map(this.getCodePointWidth)
@@ -179,7 +179,7 @@ class PDFFontFactory {
       index,
     );
 
-  public getCodePointWidth = (code: number) =>
+  getCodePointWidth = (code: number) =>
     this.font.characterSet.includes(code)
       ? this.font.glyphForCodePoint(code).advanceWidth * this.scale
       : 0;

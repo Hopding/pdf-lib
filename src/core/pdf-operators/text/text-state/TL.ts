@@ -10,9 +10,9 @@ import { isNumber, validate } from 'utils/validate';
  * operators. Initial value: 0.
  */
 class TL extends PDFOperator {
-  public static of = (leading: number) => new TL(leading);
+  static of = (leading: number) => new TL(leading);
 
-  public leading: number;
+  leading: number;
 
   constructor(leading: number) {
     super();
@@ -20,11 +20,11 @@ class TL extends PDFOperator {
     this.leading = leading;
   }
 
-  public toString = (): string => `${this.leading} TL\n`;
+  toString = (): string => `${this.leading} TL\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

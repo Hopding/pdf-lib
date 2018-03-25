@@ -19,9 +19,9 @@ type RenderingIntents =
  *  - Perceptual
  */
 class ri extends PDFOperator {
-  public static of = (intent: RenderingIntents) => new ri(intent);
+  static of = (intent: RenderingIntents) => new ri(intent);
 
-  public intent: RenderingIntents;
+  intent: RenderingIntents;
 
   constructor(intent: RenderingIntents) {
     super();
@@ -39,11 +39,11 @@ class ri extends PDFOperator {
     this.intent = intent;
   }
 
-  public toString = (): string => `${this.intent} ri\n`;
+  toString = (): string => `${this.intent} ri\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

@@ -5,40 +5,40 @@ import { addStringToBuffer } from 'utils';
 import { isInstance, validate, validateArr } from 'utils/validate';
 
 export class Entry {
-  public static create = () => new Entry();
+  static create = () => new Entry();
 
-  public offset: number = null;
-  public generationNum: number = null;
-  public isInUse: boolean = null;
+  offset: number = null;
+  generationNum: number = null;
+  isInUse: boolean = null;
 
-  public setOffset = (offset: number) => {
+  setOffset = (offset: number) => {
     validate(offset, _.isNumber, 'offset must be a number');
     this.offset = offset;
     return this;
   };
 
-  public setGenerationNum = (generationNum: number) => {
+  setGenerationNum = (generationNum: number) => {
     validate(generationNum, _.isNumber, 'generationNum must be a number');
     this.generationNum = generationNum;
     return this;
   };
 
-  public setIsInUse = (isInUse: boolean) => {
+  setIsInUse = (isInUse: boolean) => {
     validate(isInUse, _.isBoolean, 'isInUse must be a boolean');
     this.isInUse = isInUse;
     return this;
   };
 
-  public toString = (): string =>
+  toString = (): string =>
     `${_.padStart(String(this.offset), 10, '0')} ` +
     `${_.padStart(String(this.generationNum), 5, '0')} ` +
     `${this.isInUse ? 'n' : 'f'} \n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 }
 
 export class Subsection {
-  public static from = (entries: Entry[]) => {
+  static from = (entries: Entry[]) => {
     validateArr(
       entries,
       isInstance(Entry),
@@ -50,25 +50,25 @@ export class Subsection {
     return subsection;
   };
 
-  public entries: Entry[] = [];
-  public firstObjNum: number;
+  entries: Entry[] = [];
+  firstObjNum: number;
 
-  public addEntry = (entry: Entry) => {
+  addEntry = (entry: Entry) => {
     this.entries.push(entry);
     return this;
   };
 
-  public setFirstObjNum = (firstObjNum: number) => {
+  setFirstObjNum = (firstObjNum: number) => {
     validate(firstObjNum, _.isNumber, 'firstObjNum must be a number');
     this.firstObjNum = firstObjNum;
     return this;
   };
 
-  public toString = (): string =>
+  toString = (): string =>
     `${this.firstObjNum} ${this.entries.length}\n` +
     `${this.entries.map(String).join('')}\n`;
 
-  public bytesSize = () =>
+  bytesSize = () =>
     `${this.firstObjNum} ${this.entries.length}\n`.length +
     _(this.entries)
       .map((e) => e.bytesSize())
@@ -76,7 +76,7 @@ export class Subsection {
 }
 
 export class Table {
-  public static from = (subsections: Subsection[]) => {
+  static from = (subsections: Subsection[]) => {
     validateArr(
       subsections,
       isInstance(Subsection),
@@ -88,23 +88,23 @@ export class Table {
     return table;
   };
 
-  public subsections: Subsection[] = [];
+  subsections: Subsection[] = [];
 
-  public addSubsection = (subsection: Subsection) => {
+  addSubsection = (subsection: Subsection) => {
     this.subsections.push(subsection);
     return this;
   };
 
-  public toString = (): string =>
+  toString = (): string =>
     `xref\n${this.subsections.map(String).join('\n')}\n`;
 
-  public bytesSize = () =>
+  bytesSize = () =>
     5 + // "xref\n"
     _(this.subsections)
       .map((ss) => ss.bytesSize() + 1)
       .sum();
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('xref\n', buffer);
     this.subsections.map(String).forEach((subsectionStr) => {
       remaining = addStringToBuffer(`${subsectionStr}\n`, remaining);

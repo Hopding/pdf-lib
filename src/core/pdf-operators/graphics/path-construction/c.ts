@@ -10,7 +10,7 @@ import { isNumber, validateArr } from 'utils/validate';
  * control points. The new current point shall be (x3, y3).
  */
 class c extends PDFOperator {
-  public static of = (
+  static of = (
     x1: number,
     y1: number,
     x2: number,
@@ -19,12 +19,12 @@ class c extends PDFOperator {
     y3: number,
   ) => new c(x1, y1, x2, y2, x3, y3);
 
-  public x1: number;
-  public y1: number;
-  public x2: number;
-  public y2: number;
-  public x3: number;
-  public y3: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  x3: number;
+  y3: number;
 
   constructor(
     x1: number,
@@ -48,12 +48,12 @@ class c extends PDFOperator {
     this.y3 = y3;
   }
 
-  public toString = (): string =>
+  toString = (): string =>
     `${this.x1} ${this.y1} ${this.x2} ${this.y2} ${this.x3} ${this.y3} c\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

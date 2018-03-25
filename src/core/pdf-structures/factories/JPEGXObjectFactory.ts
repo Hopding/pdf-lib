@@ -34,13 +34,13 @@ const MARKERS = [
  * https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
  */
 class JPEGXObjectFactory {
-  public static for = (data: Uint8Array) => new JPEGXObjectFactory(data);
+  static for = (data: Uint8Array) => new JPEGXObjectFactory(data);
 
-  public imgData: Uint8Array;
-  public bits: number;
-  public width: number;
-  public height: number;
-  public colorSpace: 'DeviceGray' | 'DeviceRGB' | 'DeviceCYMK';
+  imgData: Uint8Array;
+  bits: number;
+  width: number;
+  height: number;
+  colorSpace: 'DeviceGray' | 'DeviceRGB' | 'DeviceCYMK';
 
   constructor(data: Uint8Array) {
     validate(data, isInstance(Uint8Array), '"data" must be a Uint8Array');
@@ -77,7 +77,7 @@ class JPEGXObjectFactory {
     this.colorSpace = channelMap[channels] || error('Unknown JPEG channel.');
   }
 
-  public embedImageIn = (
+  embedImageIn = (
     document: PDFDocument,
   ): PDFIndirectReference<PDFRawStream> => {
     const xObjDict = PDFDictionary.from(

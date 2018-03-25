@@ -6,9 +6,9 @@ import { validate } from 'utils/validate';
 import PDFObject from './PDFObject';
 
 class PDFString extends PDFObject {
-  public static fromString = (str: string) => new PDFString(str);
+  static fromString = (str: string) => new PDFString(str);
 
-  public string: string;
+  string: string;
 
   constructor(str: string) {
     super();
@@ -16,11 +16,11 @@ class PDFString extends PDFObject {
     this.string = str;
   }
 
-  public toString = (): string => `(${this.string})`;
+  toString = (): string => `(${this.string})`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

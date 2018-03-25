@@ -13,10 +13,10 @@ import { isNumber, validate } from 'utils/validate';
  * using Tf before any text is shown.
  */
 class Tf extends PDFOperator {
-  public static of = (font: string, size: number) => new Tf(font, size);
+  static of = (font: string, size: number) => new Tf(font, size);
 
-  public font: string; // TODO: Should this be a PDFName?
-  public size: number;
+  font: string; // TODO: Should this be a PDFName?
+  size: number;
 
   constructor(font: string, size: number) {
     super();
@@ -26,11 +26,11 @@ class Tf extends PDFOperator {
     this.size = size;
   }
 
-  public toString = (): string => `${this.font} ${this.size} Tf\n`;
+  toString = (): string => `${this.font} ${this.size} Tf\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

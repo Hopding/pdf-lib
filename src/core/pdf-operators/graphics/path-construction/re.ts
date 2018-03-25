@@ -17,13 +17,13 @@ import { isNumber, validate } from 'utils/validate';
  * ```
  */
 class re extends PDFOperator {
-  public static of = (x: number, y: number, width: number, height: number) =>
+  static of = (x: number, y: number, width: number, height: number) =>
     new re(x, y, width, height);
 
-  public x: number;
-  public y: number;
-  public width: number;
-  public height: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 
   constructor(x: number, y: number, width: number, height: number) {
     super();
@@ -37,12 +37,12 @@ class re extends PDFOperator {
     this.height = height;
   }
 
-  public toString = (): string =>
+  toString = (): string =>
     `${this.x} ${this.y} ${this.width} ${this.height} re\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

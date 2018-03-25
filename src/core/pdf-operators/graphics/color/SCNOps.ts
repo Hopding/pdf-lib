@@ -21,10 +21,10 @@ import { isNumber, validate, validateArr } from 'utils/validate';
  * space. For other types of patterns, these operands shall not be specified.
  */
 export class SCN extends PDFOperator {
-  public static of = (c: number[], name?: string) => new SCN(c, name);
+  static of = (c: number[], name?: string) => new SCN(c, name);
 
-  public c: number[];
-  public name: string;
+  c: number[];
+  name: string;
 
   constructor(c: number[], name?: string) {
     super();
@@ -38,12 +38,12 @@ export class SCN extends PDFOperator {
     this.name = name;
   }
 
-  public toString = (): string =>
+  toString = (): string =>
     `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} SCN\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 
@@ -51,10 +51,10 @@ export class SCN extends PDFOperator {
  * Same as SCN but used for nonstroking operations.
  */
 export class scn extends PDFOperator {
-  public static of = (c: number[], name?: string) => new scn(c, name);
+  static of = (c: number[], name?: string) => new scn(c, name);
 
-  public c: number[];
-  public name: string;
+  c: number[];
+  name: string;
 
   constructor(c: number[], name?: string) {
     super();
@@ -68,11 +68,11 @@ export class scn extends PDFOperator {
     this.name = name;
   }
 
-  public toString = (): string =>
+  toString = (): string =>
     `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} scn\n`;
 
-  public bytesSize = (): number => this.toString().length;
+  bytesSize = (): number => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }

@@ -38,7 +38,7 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFCatalog extends PDFDictionary {
-  public static create = (
+  static create = (
     pageTree: PDFIndirectReference<PDFPageTree>,
     index: PDFObjectIndex,
   ): PDFCatalog => {
@@ -56,12 +56,12 @@ class PDFCatalog extends PDFDictionary {
     );
   };
 
-  public static fromObject = (
+  static fromObject = (
     object: { [key: string]: PDFObject },
     index: PDFObjectIndex,
   ): PDFCatalog => new PDFCatalog(object, index, VALID_KEYS);
 
-  public static fromDict = (dict: PDFDictionary) => {
+  static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFCatalog(dict.map, dict.index, VALID_KEYS);
   };

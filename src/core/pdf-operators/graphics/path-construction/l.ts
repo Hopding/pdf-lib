@@ -9,10 +9,10 @@ import { isNumber, validate } from 'utils/validate';
  * point (x, y). The new current point shall be (x, y).
  */
 class l extends PDFOperator {
-  public static of = (x: number, y: number) => new l(x, y);
+  static of = (x: number, y: number) => new l(x, y);
 
-  public x: number;
-  public y: number;
+  x: number;
+  y: number;
 
   constructor(x: number, y: number) {
     super();
@@ -22,11 +22,11 @@ class l extends PDFOperator {
     this.y = y;
   }
 
-  public toString = (): string => `${this.x} ${this.y} l\n`;
+  toString = (): string => `${this.x} ${this.y} l\n`;
 
-  public bytesSize = () => this.toString().length;
+  bytesSize = () => this.toString().length;
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
 

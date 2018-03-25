@@ -7,12 +7,12 @@ import PDFIndirectReference from './PDFIndirectReference';
 import PDFObject from './PDFObject';
 
 class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
-  public static of = <A extends PDFObject>(
+  static of = <A extends PDFObject>(
     pdfObject: A,
   ): PDFIndirectObject<A> => new PDFIndirectObject(pdfObject);
 
-  public reference: PDFIndirectReference<T>;
-  public pdfObject: T;
+  reference: PDFIndirectReference<T>;
+  pdfObject: T;
 
   constructor(pdfObject: T) {
     super();
@@ -24,7 +24,7 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     this.pdfObject = pdfObject;
   }
 
-  public setReferenceNumbers = (
+  setReferenceNumbers = (
     objectNumber: number,
     generationNumber: number,
   ) => {
@@ -38,27 +38,27 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     return this;
   };
 
-  public setReference = (reference: PDFIndirectReference<T>) => {
+  setReference = (reference: PDFIndirectReference<T>) => {
     this.reference = reference;
     return this;
   };
 
-  public getReference = () => this.reference;
-  public toReference = () => this.reference.toString();
+  getReference = () => this.reference;
+  toReference = () => this.reference.toString();
 
-  public toString = (): string => {
+  toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);
     return arrayToString(buffer);
   };
 
-  public bytesSize = () =>
+  bytesSize = () =>
     `${this.reference.objectNumber} ${this.reference.generationNumber} obj\n`
       .length +
     this.pdfObject.bytesSize() +
     9; // "\nendobj\n\n"
 
-  public copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+  copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer(
       `${this.reference.objectNumber} ${this.reference.generationNumber} obj\n`,
       buffer,
