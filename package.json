@@ -77,7 +77,8 @@
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))$",
     "testPathIgnorePatterns": [
       "<rootDir>/integration-tests/",
-      "<rootDir>/node_modules/"
+      "<rootDir>/node_modules/",
+      "<rootDir>/__tests__/tsconfig.json"
     ],
     "moduleFileExtensions": [
       "ts",
