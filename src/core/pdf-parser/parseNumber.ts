@@ -5,12 +5,12 @@ import { IParseHandlers } from './PDFParser';
 
 /**
  * Accepts an array of bytes as input. Checks to see if the first characters in the
- * trimmped input make up a PDF Number.
+ * trimmed input make up a PDF Number.
  *
  * If so, returns a tuple containing (1) an object representing the parsed PDF
  * Number and (2) a subarray of the input with the characters making up the parsed
  * number removed. The "onParseNumber" parse handler will also be called with the
- * PDFNumber object.
+ * parsed PDFNumber object.
  *
  * If not, null is returned.
  */

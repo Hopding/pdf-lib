@@ -23,4 +23,10 @@ describe(`parseNull`, () => {
     const res = parseNull(input, parseHandlers);
     expect(parseHandlers.onParseNull).toHaveBeenCalledWith(PDFNull.instance);
   });
+
+  it(`allows leading whitespace and line endings before & after the PDF Null object`, () => {
+    const input = typedArrayFor(' \n \r\n null \r\n (foo)');
+    const res = parseNull(input);
+    expect(res).toEqual([PDFNull.instance, typedArrayFor(' \r\n (foo)')]);
+  });
 });
