@@ -23,7 +23,12 @@ const parseName = (
 
   // Search for first character that isn't part of a name
   let idx = 1; // Skip the leading '/'
-  while (String.fromCharCode(trimmed[idx]).match(/^[^ \n\r\][<>(/]/)) idx += 1;
+  while (
+    trimmed[idx] !== undefined &&
+    String.fromCharCode(trimmed[idx]).match(/^[^ \n\r\][<>(/]/)
+  ) {
+    idx += 1;
+  }
 
   // Try to match the regex up to that character to see if we've got a name
   const result = arrayToString(trimmed, 0, idx).match(nameRegex);

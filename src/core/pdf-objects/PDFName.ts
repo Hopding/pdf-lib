@@ -33,7 +33,7 @@ class PDFName extends PDFObject {
     validate(
       key.charAt(0),
       and(isNotIdentity(' '), isNotIdentity('/')),
-      'PDF Name objects may not begin with a space character.',
+      'PDF Name objects may not begin with a space or slash character.',
     );
     this.key = key;
   }
