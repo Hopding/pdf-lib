@@ -1,5 +1,5 @@
+import { PDFArray, PDFDictionary, PDFName } from 'core/pdf-objects';
 import pako from 'pako';
-import { PDFArray, PDFDictionary, PDFName } from '../../pdf-objects';
 
 const decodeStream = (data: Uint8Array, { key: filter }: PDFName) => {
   if (filter === 'FlateDecode') return pako.inflate(data);

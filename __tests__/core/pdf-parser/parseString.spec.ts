@@ -1,6 +1,6 @@
 import { PDFString } from 'core/pdf-objects';
 import parseString from 'core/pdf-parser/parseString';
-import { charCodes, typedArrayFor } from 'utils';
+import { typedArrayFor } from 'utils';
 
 describe(`parseString`, () => {
   it(`parses a single PDF String object from its input array`, () => {

@@ -20,7 +20,7 @@ import { IParseHandlers } from './PDFParser';
  * trimmed input make up a PDF Array.
  *
  * If so, returns a tuple containing (1) an object representing the parsed PDFArray
- * and (2) a subarray of the input with the characters making up the parsed header
+ * and (2) a subarray of the input with the characters making up the parsed array
  * removed. The "onParseArray" parse handler will also be called with the PDFArray
  * object.
  *
@@ -34,7 +34,7 @@ const parseArray = (
   input: Uint8Array,
   index: PDFObjectIndex,
   parseHandlers: IParseHandlers = {},
-): [PDFArray, Uint8Array] | undefined => {
+): [PDFArray, Uint8Array] | void => {
   // Make sure it is possible for this to be an array.
   const trimmed = trimArray(input);
   if (arrayCharAt(trimmed, 0) !== '[') return null;
