@@ -38,7 +38,7 @@ const typeDict = (dict: PDFDictionary) => {
  *
  * If so, returns a tuple containing (1) an object representing the parsed
  * PDFDictionary and (2) a subarray of the input with the characters making up
- * the parsed header removed. The "onParseDict" parse handler will also be
+ * the parsed dictionary removed. The "onParseDict" parse handler will also be
  * called with the PDFDictionary object.
  *
  * If not, null is returned.

@@ -43,4 +43,10 @@ describe(`parseName`, () => {
       expect(res).toEqual([PDFName.from('Foo'), typedArrayFor(`${tc}Bar`)]);
     });
   });
+
+  it(`can parse names consisting of a single forward slash`, () => {
+    const input = typedArrayFor('/ /AS /Off');
+    const res = parseName(input);
+    expect(res[0]).toEqual(PDFName.from(''));
+  });
 });
