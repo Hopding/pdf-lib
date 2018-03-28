@@ -83,10 +83,7 @@ export default (
   // If it's an Object Stream, parse it and return the indirect objects it contains
   if (dict.getMaybe('Type') === PDFName.from('ObjStm')) {
     if (dict.get('Filter') !== PDFName.from('FlateDecode')) {
-      error(
-        `Cannot decode "${String(dict.get('Filter')) ||
-          'undefined'}" Object Streams`,
-      );
+      error(`Cannot decode "${dict.get('Filter')}" Object Streams`);
     }
 
     const decoded = decodeStream(dict, contents);
