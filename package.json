@@ -65,6 +65,9 @@
       }
     },
     "collectCoverage": true,
+    "collectCoverageFrom": [
+      "<rootDir>/src/**/*.ts"
+    ],
     "moduleNameMapper": {
       "^core/(.*)": "<rootDir>/src/core/$1",
       "^utils/(.*)": "<rootDir>/src/utils/$1",
