@@ -14,8 +14,8 @@ import { IParseHandlers } from './PDFParser';
  * first characters in the trimmed input make up a PDF Stream.
  *
  * If so, the content of the stream is extracted into a subarray. A tuple
- * containing this subarray and a subarray of the input with the bytes making
- * up the content removed is returned.
+ * containing this content subarray and a subarray of the input with the bytes making
+ * up the entire stream removed is returned.
  *
  * If not, null is returned.
  */
@@ -82,7 +82,7 @@ export default (
 
   // If it's an Object Stream, parse it and return the indirect objects it contains
   if (dict.getMaybe('Type') === PDFName.from('ObjStm')) {
-    if (dict.get('Filter') !== PDFName.from('FlateDecode')) {
+    if (dict.getMaybe('Filter') !== PDFName.from('FlateDecode')) {
       error(`Cannot decode "${dict.get('Filter')}" Object Streams`);
     }
 
