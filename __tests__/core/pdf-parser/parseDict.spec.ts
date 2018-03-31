@@ -118,7 +118,7 @@ describe(`parseDict`, () => {
     expect(res[0].get('PDFNull')).toEqual(expect.any(PDFNull));
   });
 
-  it(`forwards its parseHandlers onto its parsed elements`, () => {
+  it(`forwards its parseHandlers onto its parsed entries`, () => {
     const parseHandlers = {
       onParseName: jest.fn(),
       onParseDict: jest.fn(),

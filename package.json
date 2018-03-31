@@ -68,6 +68,10 @@
     "collectCoverageFrom": [
       "<rootDir>/src/**/*.ts"
     ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/src/types/"
+    ],
     "moduleNameMapper": {
       "^core/(.*)": "<rootDir>/src/core/$1",
       "^utils/(.*)": "<rootDir>/src/utils/$1",

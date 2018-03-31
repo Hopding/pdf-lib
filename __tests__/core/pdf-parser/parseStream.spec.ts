@@ -109,7 +109,7 @@ describe(`parseStream`, () => {
 
   describe(`when parsing "object" streams`, () => {
     const objectStream = fs.readFileSync(
-      './__tests__/core/pdf-parser/data/object-stream2',
+      './__tests__/core/pdf-parser/data/object-stream1',
     );
     const input = mergeUint8Arrays(
       typedArrayFor('stream\n'),

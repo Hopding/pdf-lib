@@ -18,7 +18,7 @@ import { IParseHandlers } from './PDFParser';
 
 /**
  * Accepts a PDFDictionary and an array of bytes as input. The PDFDictionary should
- * be a PDF Object Stream dictionary, and the array of bytes should be its content.
+ * be a PDF Object Stream dictionary, and the array of bytes should be the Object Stream's content.
  *
  * Attempts to parse the pairs of integers at the start of the input bytes. Each
  * pair describes one object within the Object Stream - its object number and byte
@@ -64,16 +64,16 @@ const parseObjData = (
 
 /**
  * Accepts an a PDFDictionary and an array of bytes as input. The PDFDictionary
- * should be a PDF Object Stream dictionary, and the array of bytes should be its
+ * should be a PDF Object Stream dictionary, and the array of bytes should be the Object Stream's
  * content. *The array of bytes is expected to have been decoded (based on the
  * "Filter"s in the dictionary) prior to being passed to this function.*
  *
  * After parsing the integer pairs from the start of the input bytes, the objects
  * themselves will be parsed from the remaining input bytes.
  *
- * An PDFObjectStream will be returned, representing the objects parsed
+ * A PDFObjectStream will be returned, representing the objects parsed
  * from the Object Stream. The "onParseObjectStream" parse handler will also be
- * called with the PDFObjectStream.
+ * called with the parsed PDFObjectStream object.
  */
 const parseObjectStream = (
   dict: PDFDictionary,
@@ -85,9 +85,7 @@ const parseObjectStream = (
   const objData = parseObjData(dict, input);
 
   // Extract the value of the "First" entry in the dict
-  const First: PDFNumber =
-    dict.get('First') || error('Object stream dict must have "First" entry');
-  if (!First) error('Missing PDFDictionary entry "First".');
+  const First: PDFNumber = dict.get('First');
   const firstObjOffset = First.number;
 
   // Map each pair of integers to a PDFIndirectObject

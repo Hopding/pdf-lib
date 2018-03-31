@@ -20,6 +20,7 @@ class PDFObjectStream extends PDFObject {
       isInstance(PDFIndirectObject),
       'PDFObjectStream.objects must be an array of PDFIndirectObject',
     );
+    this.dict = dictionary;
     this.objects = objects;
   }
 }
