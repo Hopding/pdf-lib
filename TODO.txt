@@ -39,6 +39,8 @@ Before 0.1.0 release:
   '0 851\r\n0000000000 65535 f\r\n0000229614 00000 n\r\n0000229916 00000 n\r\n0000230276 00000 n\r\n0000239589 00000 n\r\n0000260433 00000 n\r\n0000260685 00000 n\r\n0000261106 00000 n\r\n0000261398 00000 n\r\n0000261443 00000 n\r\n0000268136 00000 n\r\n0000268451 00000 n\r\n0000268766 00000 n\r\n0000269022 00000 n\r\n0000269283 00000 n\r\n0000269565 00000 n\r\n0000269845 00000 n\r\n0000270123 00000 n\r\n'
 
 # Bugs
+* See if "parseLinearization" is even necessary? It looks like the "linearization" section of a PDF might just be the same in structure as an update section, for example...
+* See if the test-pdfs/pdf/dc/form/DC2210.pdf (& other linearized files in that dir: "grep -r "Linearized" .") should be parsed as linearized. Because they appear to have a linearization dict, but dont comply with the linearization spec.
 * Figure out why the "2 0 R" object reference fails to be resolved in bol2.pdf
 * Look into why pdfDoc.toBytes().length and pdfDoc.toBytesEfficient().length are different sizes... (some of this code was removed in commit: c508f73103021317580b641a6f895737e4e6e1b5)
 * Update "parseTrailer" to handle files w/o "xref" and "trailer" keywords, as they are _not_ malformatted, but are to be expected in 1.5+ PDFs
