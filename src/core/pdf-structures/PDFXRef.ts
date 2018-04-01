@@ -111,11 +111,3 @@ export class Table {
     return remaining;
   };
 }
-
-const PDFXRef = {
-  Table,
-  Subsection,
-  Entry,
-};
-
-export default PDFXRef;

@@ -1,4 +1,4 @@
-import { Entry, Subsection, Table } from 'core/pdf-structures/PDFXRef';
+import { PDFXRef } from 'core/pdf-structures';
 import { arrayToString, trimArray } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
@@ -11,7 +11,7 @@ import { IParseHandlers } from './PDFParser';
  *
  * If not, null is returned.
  */
-const parseEntries = (input: string): Entry[] | void => {
+const parseEntries = (input: string): PDFXRef.Entry[] | void => {
   const trimmed = input.trim();
   const entryRegex = /^(\d{10}) (\d{5}) (n|f)/;
 
@@ -24,7 +24,7 @@ const parseEntries = (input: string): Entry[] | void => {
     const [fullMatch, offset, genNum, isInUse] = result;
 
     entriesArr.push(
-      Entry.create()
+      PDFXRef.Entry.create()
         .setOffset(Number(offset))
         .setGenerationNum(Number(genNum))
         .setIsInUse(isInUse === 'n'),
@@ -43,7 +43,7 @@ const parseEntries = (input: string): Entry[] | void => {
  *
  * If not, null is returned.
  */
-const parseSubsections = (input: string): Subsection[] | void => {
+const parseSubsections = (input: string): PDFXRef.Subsection[] | void => {
   const trimmed = input.trim();
   const sectionsRegex = /^(\d+) (\d+)((\n|\r| )*(\d{10} \d{5} (n|f)(\n|\r| )*)+)/;
 
@@ -59,7 +59,7 @@ const parseSubsections = (input: string): Subsection[] | void => {
     if (!entries) return null;
 
     sectionsArr.push(
-      Subsection.from(entries).setFirstObjNum(Number(firstObjNum)),
+      PDFXRef.Subsection.from(entries).setFirstObjNum(Number(firstObjNum)),
     );
     remainder = remainder.substring(fullMatch.length).trim();
   }
@@ -81,7 +81,7 @@ const parseSubsections = (input: string): Subsection[] | void => {
 const parseXRefTable = (
   input: Uint8Array,
   { onParseXRefTable }: IParseHandlers = {},
-): [Table, Uint8Array] | void => {
+): [PDFXRef.Table, Uint8Array] | void => {
   const trimmed = trimArray(input);
   const xRefTableRegex = /^xref[\n|\r| ]*([\d|\n|\r| |f|n]+)/;
 
@@ -98,7 +98,7 @@ const parseXRefTable = (
   const subsections = parseSubsections(contents);
   if (!subsections) return null;
 
-  const xRefTable = Table.from(subsections);
+  const xRefTable = PDFXRef.Table.from(subsections);
   if (onParseXRefTable) onParseXRefTable(xRefTable);
 
   return [xRefTable, trimmed.subarray(fullMatch.length)];

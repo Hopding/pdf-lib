@@ -1,3 +1,6 @@
+// This is required to prevent an issue with dependency resolution in this test
+import 'core/pdf-objects';
+
 import parseHeader from 'core/pdf-parser/parseHeader';
 import { PDFHeader } from 'core/pdf-structures';
 import { typedArrayFor } from 'utils';

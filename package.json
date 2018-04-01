@@ -4,9 +4,10 @@
   "description": "Library for creating and modifying PDF files in JavaScript",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest --notify --no-coverage --watch",
+    "test": "jest --no-coverage --watch",
     "test:ci": "jest --no-coverage",
     "test:coverage": "jest",
+    "jest:clear-cache": "rm -rf $TMPDIR/jest*",
     "coverage-report": "open coverage/lcov-report/index.html",
     "build": "gulp build",
     "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",

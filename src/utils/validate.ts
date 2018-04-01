@@ -3,8 +3,8 @@ import _ from 'lodash';
 
 import { Predicate } from 'utils';
 
+import { PDFIndirectObject } from 'core/pdf-objects';
 import { and, not } from '.';
-import { PDFIndirectObject } from '../core/pdf-objects';
 
 export const validate = <T>(
   value: T,

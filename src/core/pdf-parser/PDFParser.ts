@@ -18,8 +18,8 @@ import {
   PDFHeader,
   PDFObjectStream,
   PDFTrailer,
+  PDFXRef,
 } from 'core/pdf-structures';
-import { Table as PDFXRefTable } from 'core/pdf-structures/PDFXRef';
 import { error } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
@@ -43,7 +43,7 @@ export interface IParseHandlers {
   onParseIndirectRef?: (p: PDFIndirectReference) => any;
   onParseIndirectObj?: (p: PDFIndirectObject) => any;
   onParseHeader?: (p: PDFHeader) => any;
-  onParseXRefTable?: (p: PDFXRefTable) => any;
+  onParseXRefTable?: (p: PDFXRef.Table) => any;
   onParseTrailer?: (p: PDFTrailer) => any;
   onParseLinearization?: (p: IPDFLinearization) => any;
 }
@@ -55,12 +55,12 @@ export interface IParsedPDF {
     header: PDFHeader;
     linearization: IPDFLinearization;
     body: Map<PDFIndirectReference, PDFIndirectObject>;
-    xRefTable: PDFXRefTable;
+    xRefTable: PDFXRef.Table;
     trailer: PDFTrailer;
   };
   updates: Array<{
     body: Map<PDFIndirectReference, PDFIndirectObject>;
-    xRefTable?: PDFXRefTable;
+    xRefTable?: PDFXRef.Table;
     trailer: PDFTrailer;
   }>;
 }
@@ -74,14 +74,14 @@ class PDFParser {
 
   header: PDFHeader = null;
   body: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
-  xRefTable: PDFXRefTable = null;
+  xRefTable: PDFXRef.Table = null;
   trailer: PDFTrailer = null;
 
   linearization: IPDFLinearization = null;
 
   updates: Array<{
     body: Map<PDFIndirectReference, PDFIndirectObject>;
-    xRefTable: PDFXRefTable;
+    xRefTable: PDFXRef.Table;
     trailer: PDFTrailer;
   }> = [];
 
@@ -130,7 +130,7 @@ class PDFParser {
     this.header = header;
   };
 
-  handleXRefTable = (xRefTable: PDFXRefTable) => {
+  handleXRefTable = (xRefTable: PDFXRef.Table) => {
     if (!this.trailer) this.xRefTable = xRefTable;
     else _.last(this.updates).xRefTable = xRefTable;
   };

@@ -1,0 +1,86 @@
+// This is required to prevent an issue with dependency resolution in this test
+import 'core/pdf-objects';
+
+import parseXRefTable from 'core/pdf-parser/parseXRefTable';
+import { PDFXRef } from 'core/pdf-structures';
+import { arrayToString, typedArrayFor } from 'utils';
+
+const xRefTable = `
+xref
+0 2
+0000000000 65535 f
+0000000001 00000 n
+2 3
+0000000002 00000 n
+0000000003 00000 n
+0000000004 00000 n
+`.trim();
+
+describe(`parseXRefTable`, () => {
+  it(`parses a single PDF Cross Reference Table from its input array`, () => {
+    const input = typedArrayFor(xRefTable + xRefTable);
+    const res = parseXRefTable(input);
+    expect(res).toEqual([expect.any(PDFXRef.Table), expect.any(Uint8Array)]);
+
+    expect(res[0].subsections).toHaveLength(2);
+
+    expect(res[0].subsections[0].firstObjNum).toBe(0);
+    expect(res[0].subsections[0].entries).toHaveLength(2);
+    expect(res[0].subsections[0].entries[0]).toMatchObject({
+      offset: 0,
+      generationNum: 65535,
+      isInUse: false,
+    });
+    expect(res[0].subsections[0].entries[1]).toMatchObject({
+      offset: 1,
+      generationNum: 0,
+      isInUse: true,
+    });
+
+    expect(res[0].subsections[1].firstObjNum).toBe(2);
+    expect(res[0].subsections[1].entries).toHaveLength(3);
+    expect(res[0].subsections[1].entries[0]).toMatchObject({
+      offset: 2,
+      generationNum: 0,
+      isInUse: true,
+    });
+    expect(res[0].subsections[1].entries[1]).toMatchObject({
+      offset: 3,
+      generationNum: 0,
+      isInUse: true,
+    });
+    expect(res[0].subsections[1].entries[2]).toMatchObject({
+      offset: 4,
+      generationNum: 0,
+      isInUse: true,
+    });
+
+    expect(res[1]).toEqual(typedArrayFor(xRefTable));
+  });
+
+  it(`returns null when leading input is not a PDF Cross Reference Table`, () => {
+    const input = typedArrayFor(`(Look, a string!)`);
+    const res = parseXRefTable(input);
+    expect(res).toBeNull();
+  });
+
+  it(`invokes the "onParseXRefTable" parseHandler with the parsed PDFXRef.Table object`, () => {
+    const parseHandlers = {
+      onParseXRefTable: jest.fn(),
+    };
+    const input = typedArrayFor(xRefTable);
+    parseXRefTable(input, parseHandlers);
+    expect(parseHandlers.onParseXRefTable).toHaveBeenCalledWith(
+      expect.any(PDFXRef.Table),
+    );
+  });
+
+  it(`returns null when a subsection has no entries`, () => {
+    const input = typedArrayFor(`
+      xref
+      0 0
+    `);
+    const res = parseXRefTable(input);
+    expect(res).toBeNull();
+  });
+});
