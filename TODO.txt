@@ -18,7 +18,7 @@ Before 0.1.0 release:
 ***** Remove index.js files from fork repos and publish to NPM *****
 ***** Update READMEs of fork repos with credits and workaround using browserify command *****
 
-* Support PDFs with comments by stripping them before parsing. 
+* Support PDFs with comments by stripping them before parsing.
 * Support stream decompression for non FlateEncoded streams
 * Add in "early stops" to parsers (like checking if first char is a "<", for hex strings) to avoid excessive work.
 * Use "Length" dict entry when parsing streams
@@ -36,7 +36,11 @@ Before 0.1.0 release:
 * Support document outlines
 
 # Tests:
-*
+* Add more tests for "parseDocument" function. Need to test parsing on
+ - updated documents
+ - linearized documents
+ - documents with object streams
+ - etc...
 
 # Bugs
 * See if "parseLinearization" is even necessary? It looks like the "linearization" section of a PDF might just be the same in structure as an update section, for example...

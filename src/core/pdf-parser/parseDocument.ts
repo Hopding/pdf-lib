@@ -8,13 +8,12 @@ import parseIndirectObj from './parseIndirectObj';
 import parseLinearization from './parseLinearization';
 import { parseTrailer, parseTrailerWithoutDict } from './parseTrailer';
 import parseXRefTable from './parseXRefTable';
-// import removeComments from './removeComments';
 
 import { IParseHandlers } from './PDFParser';
 
 /**
  * Accepts an array of bytes as input. Parses indirect objects from the input bytes
- * until an xref table of trailer is found. The "onParseIndirectObj" parse
+ * until an xref table or trailer is found. The "onParseIndirectObj" parse
  * handler is called with each indirect object that is parsed.
  *
  * Returns a subarray of the input bytes with the bytes making up the parsed
@@ -68,9 +67,10 @@ const parseFooterSection = (
 /**
  * Accepts an array of bytes comprising a PDF document as input. Parses all the
  * objects in the file in a sequential fashion, beginning with the header and
- * ending with the last trailer. The XRef tables/streams in the input are not
- * used to locate and parse objects as needed. Rather, the whole document is
- * parsed and stored in memory at once.
+ * ending with the last trailer.
+ *
+ * The XRef tables/streams in the input are not used to locate and parse objects
+ * as needed. Rather, the whole document is parsed and stored in memory at once.
  */
 const parseDocument = (
   input: Uint8Array,
@@ -79,9 +79,9 @@ const parseDocument = (
 ): void => {
   // TODO: Figure out way to clean comments without messing stream content up
   // const cleaned = removeComments(input);
+  const cleaned = input;
 
   // Parse the document header
-  const cleaned = input;
   let remainder: Uint8Array | void;
   [, remainder] =
     parseHeader(cleaned, parseHandlers) || error('PDF is missing a header');
