@@ -83,4 +83,14 @@ describe(`parseXRefTable`, () => {
     const res = parseXRefTable(input);
     expect(res).toBeNull();
   });
+
+  it(`can parse Cross Reference Tables with multiple EOL characters`, () => {
+    const input = typedArrayFor(
+      `xref\n0 851\r\n0000000000 65535 f\r\n0000229614 00000 n\r\n0000229916 00000 n\r\n0000230276 00000 n\r\n0000239589 00000 n\r\n0000260433 00000 n\r\n0000260685 00000 n\r\n0000261106 00000 n\r\n0000261398 00000 n\r\n0000261443 00000 n\r\n0000268136 00000 n\r\n0000268451 00000 n\r\n0000268766 00000 n\r\n0000269022 00000 n\r\n0000269283 00000 n\r\n0000269565 00000 n\r\n0000269845 00000 n\r\n0000270123 00000 n\r\n`,
+    );
+    const res = parseXRefTable(input);
+    expect(res).not.toBeNull();
+    expect(res[0].subsections).toHaveLength(1);
+    expect(res[0].subsections[0].entries).toHaveLength(18);
+  });
 });

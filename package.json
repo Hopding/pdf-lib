@@ -86,7 +86,8 @@
     "testPathIgnorePatterns": [
       "<rootDir>/integration-tests/",
       "<rootDir>/node_modules/",
-      "<rootDir>/__tests__/tsconfig.json"
+      "<rootDir>/__tests__/tsconfig.json",
+      "<rootDir>/core/pdf-parser/removeComments.ts"
     ],
     "moduleFileExtensions": [
       "ts",
