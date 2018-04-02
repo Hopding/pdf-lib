@@ -66,26 +66,26 @@ export interface IParsedPDF {
 }
 
 class PDFParser {
-  activelyParsing = false;
+  private activelyParsing = false;
 
-  arrays: PDFArray[] = [];
-  dictionaries: PDFDictionary[] = [];
-  catalog: PDFCatalog = null;
+  private arrays: PDFArray[] = [];
+  private dictionaries: PDFDictionary[] = [];
+  private catalog: PDFCatalog;
 
-  header: PDFHeader = null;
-  body: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
-  xRefTable: PDFXRef.Table = null;
-  trailer: PDFTrailer = null;
+  private header: PDFHeader;
+  private body: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
+  private xRefTable: PDFXRef.Table;
+  private trailer: PDFTrailer;
 
-  linearization: IPDFLinearization = null;
+  private linearization: IPDFLinearization;
 
-  updates: Array<{
+  private updates: Array<{
     body: Map<PDFIndirectReference, PDFIndirectObject>;
     xRefTable: PDFXRef.Table;
     trailer: PDFTrailer;
   }> = [];
 
-  parseHandlers: IParseHandlers;
+  private parseHandlers: IParseHandlers;
 
   constructor() {
     this.parseHandlers = {
@@ -99,52 +99,6 @@ class PDFParser {
       onParseLinearization: this.handleLinearization,
     };
   }
-
-  handleArray = (array: PDFArray) => {
-    this.arrays.push(array);
-  };
-
-  handleDict = (dict: PDFDictionary) => {
-    this.dictionaries.push(dict);
-  };
-
-  handleObjectStream = ({ objects }: PDFObjectStream) => {
-    objects.forEach((indirectObj) => {
-      if (this.updates.length > 0) {
-        _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
-      } else {
-        this.body.set(indirectObj.getReference(), indirectObj);
-      }
-    });
-  };
-
-  handleIndirectObj = (indirectObj: PDFIndirectObject) => {
-    if (this.updates.length > 0) {
-      _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
-    } else {
-      this.body.set(indirectObj.getReference(), indirectObj);
-    }
-  };
-
-  handleHeader = (header: PDFHeader) => {
-    this.header = header;
-  };
-
-  handleXRefTable = (xRefTable: PDFXRef.Table) => {
-    if (!this.trailer) this.xRefTable = xRefTable;
-    else _.last(this.updates).xRefTable = xRefTable;
-  };
-
-  handleTrailer = (trailer: PDFTrailer) => {
-    if (!this.trailer) this.trailer = trailer;
-    else _.last(this.updates).trailer = trailer;
-
-    this.updates.push({ body: new Map(), xRefTable: null, trailer: null });
-  };
-
-  handleLinearization = (linearization: IPDFLinearization) => {
-    this.linearization = linearization;
-  };
 
   parse = (bytes: Uint8Array, index: PDFObjectIndex): IParsedPDF => {
     validate(
@@ -186,6 +140,52 @@ class PDFParser {
       },
       updates: _.initial(this.updates),
     };
+  };
+
+  private handleArray = (array: PDFArray) => {
+    this.arrays.push(array);
+  };
+
+  private handleDict = (dict: PDFDictionary) => {
+    this.dictionaries.push(dict);
+  };
+
+  private handleObjectStream = ({ objects }: PDFObjectStream) => {
+    objects.forEach((indirectObj) => {
+      if (this.updates.length > 0) {
+        _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
+      } else {
+        this.body.set(indirectObj.getReference(), indirectObj);
+      }
+    });
+  };
+
+  private handleIndirectObj = (indirectObj: PDFIndirectObject) => {
+    if (this.updates.length > 0) {
+      _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
+    } else {
+      this.body.set(indirectObj.getReference(), indirectObj);
+    }
+  };
+
+  private handleHeader = (header: PDFHeader) => {
+    this.header = header;
+  };
+
+  private handleXRefTable = (xRefTable: PDFXRef.Table) => {
+    if (!this.trailer) this.xRefTable = xRefTable;
+    else _.last(this.updates).xRefTable = xRefTable;
+  };
+
+  private handleTrailer = (trailer: PDFTrailer) => {
+    if (!this.trailer) this.trailer = trailer;
+    else _.last(this.updates).trailer = trailer;
+
+    this.updates.push({ body: new Map(), xRefTable: null, trailer: null });
+  };
+
+  private handleLinearization = (linearization: IPDFLinearization) => {
+    this.linearization = linearization;
   };
 }
 
