@@ -18,7 +18,9 @@ class PDFBoolean extends PDFObject {
   }
 
   toString = (): string => this.boolean.toString();
+
   bytesSize = () => this.toString().length;
+
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
 }
