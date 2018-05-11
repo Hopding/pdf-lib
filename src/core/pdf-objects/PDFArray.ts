@@ -43,7 +43,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     return this;
   };
 
-  set = (idx: number, val: any) => {
+  set = (idx: number, val: T) => {
     validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
     validate(
       val,
