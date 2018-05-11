@@ -41,6 +41,7 @@ Before 0.1.0 release:
  - linearized documents
  - documents with object streams
  - etc...
+* Write some more tests for "PDFParser" class as well.
 
 # Bugs
 * See if "parseLinearization" is even necessary? It looks like the "linearization" section of a PDF might just be the same in structure as an update section, for example...
