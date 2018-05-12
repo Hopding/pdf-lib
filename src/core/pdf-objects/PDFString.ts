@@ -16,7 +16,6 @@ class PDFString extends PDFObject {
     this.string = str;
   }
 
-  // TODO: Might need to escape parenthesis in `this.string`
   toString = (): string =>
     `(${this.string
       .replace(/\\/g, '\\\\')
