@@ -28,12 +28,12 @@ class PDFName extends PDFObject {
     validate(
       enforcer,
       isIdentity(pdfNameEnforcer),
-      'Cannot create PDFName via constructor',
+      'Cannot create PDFName via constructor. Use PDFName.from instead.',
     );
     validate(
       key.charAt(0),
       and(isNotIdentity(' '), isNotIdentity('/')),
-      'PDF Name objects may not begin with a space or slash character.',
+      'PDFName objects may not begin with a space or slash character.',
     );
     this.key = key;
   }
