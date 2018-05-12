@@ -33,14 +33,14 @@ describe(`PDFHexString`, () => {
   });
 
   describe(`"bytesSize" method`, () => {
-    it(`returns the size of the PDFArray in bytes`, () => {
+    it(`returns the size of the PDFHexString in bytes`, () => {
       const pdfHexString = PDFHexString.fromString('12ABCabc');
       expect(pdfHexString.bytesSize()).toEqual(10);
     });
   });
 
   describe(`"copyBytesInto" method`, () => {
-    it(`copies the PDFArray into the buffer as bytes`, () => {
+    it(`copies the PDFHexString into the buffer as bytes`, () => {
       const pdfHexString = PDFHexString.fromString('12ABCabc');
       const buffer = new Uint8Array(pdfHexString.bytesSize());
       pdfHexString.copyBytesInto(buffer);

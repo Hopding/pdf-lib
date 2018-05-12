@@ -23,6 +23,8 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
     this.pdfObject = pdfObject;
   }
 
+  getReference = () => this.reference;
+
   setReferenceNumbers = (objectNumber: number, generationNumber: number) => {
     validate(objectNumber, _.isNumber, 'objectNumber must be a Number');
     validate(generationNumber, _.isNumber, 'generationNumber must be a Number');
@@ -35,11 +37,15 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
   };
 
   setReference = (reference: PDFIndirectReference<T>) => {
+    validate(
+      reference,
+      isInstance(PDFIndirectReference),
+      '"reference" must be a PDFIndirectReference object',
+    );
     this.reference = reference;
     return this;
   };
 
-  getReference = () => this.reference;
   toReference = () => this.reference.toString();
 
   toString = (): string => {
