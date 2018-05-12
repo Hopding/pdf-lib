@@ -5,7 +5,7 @@ import { doesMatch, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
 
-const HEX_STRING_REGEX = /^[\dABCDEFabcdef]*/;
+const HEX_STRING_REGEX = /^[\dABCDEFabcdef]*$/;
 
 class PDFHexString extends PDFObject {
   static fromString = (str: string) => new PDFHexString(str);
