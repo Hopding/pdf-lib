@@ -194,7 +194,7 @@ describe(`PDFDictionary`, () => {
     });
   });
 
-  describe(`"toString()" method`, () => {
+  describe(`"toString" method`, () => {
     it(`returns the PDFDictionary as a string`, () => {
       const pdfNumber = PDFNumber.fromNumber(9000);
       const pdfDict = PDFDictionary.from(

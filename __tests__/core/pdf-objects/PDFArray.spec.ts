@@ -93,7 +93,7 @@ describe(`PDFArray`, () => {
     });
   });
 
-  describe(`"toString()" method`, () => {
+  describe(`"toString" method`, () => {
     it(`returns the PDFArray as a string`, () => {
       const pdfNumber = PDFNumber.fromNumber(9000);
       const pdfArray = PDFArray.fromArray(
