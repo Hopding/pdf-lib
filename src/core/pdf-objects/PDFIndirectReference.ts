@@ -7,7 +7,6 @@ const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
 const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();
 
 // TODO: Need to error out if obj or gen numbers are manually set!
-// eslint-disable-next-line no-unused-vars
 class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
   static forNumbers = (objectNumber: number, generationNumber: number) => {
     const key = `${objectNumber} ${generationNumber}`;
@@ -35,7 +34,7 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
     validate(
       enforcer,
       isIdentity(pdfIndirectRefEnforcer),
-      'Cannot create PDFIndirectReference via constructor',
+      'Cannot create PDFIndirectReference via constructor. Use PDFIndirectReference.forNumbers instead.',
     );
     validate(objectNumber, _.isNumber, 'objectNumber must be a Number');
     validate(generationNumber, _.isNumber, 'generationNumber must be a Number');
