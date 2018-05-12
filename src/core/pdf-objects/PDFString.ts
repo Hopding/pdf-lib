@@ -17,7 +17,11 @@ class PDFString extends PDFObject {
   }
 
   // TODO: Might need to escape parenthesis in `this.string`
-  toString = (): string => `(${this.string})`;
+  toString = (): string =>
+    `(${this.string
+      .replace(/\\/g, '\\\\')
+      .replace(/\(/g, '\\(')
+      .replace(/\)/g, '\\)')})`;
 
   bytesSize = () => this.toString().length;
 
