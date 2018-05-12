@@ -19,14 +19,14 @@ class PDFDictionary extends PDFObject {
   validKeys: ReadonlyArray<string>;
 
   constructor(
-    object?: { [key: string]: PDFObject } | Map<PDFName, any>,
-    index?: PDFObjectIndex,
+    object: { [key: string]: PDFObject } | Map<PDFName, any>,
+    index: PDFObjectIndex,
     validKeys?: ReadonlyArray<string>,
   ) {
     super();
     validate(
       object,
-      and(not(_.isNil), or(_.isObject, isInstance(Map))),
+      and(not(_.isNil), or(_.isPlainObject, isInstance(Map))),
       'PDFDictionary can only be constructed from an Object or a Map',
     );
     validate(
@@ -48,6 +48,21 @@ class PDFDictionary extends PDFObject {
 
   filter = (predicate: (o: PDFObject, n: PDFName) => boolean) =>
     Array.from(this.map.entries()).filter(([key, val]) => predicate(val, key));
+
+  getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
+    validate(
+      key,
+      or(_.isString, isInstance(PDFName)),
+      'PDFDictionary.set() requires keys to be strings or PDFNames',
+    );
+
+    const keyName = key instanceof PDFName ? key : PDFName.from(key);
+    return this.map.get(keyName);
+  };
+
+  get = <T extends PDFObject>(key: string | PDFName): T => {
+    return this.getMaybe(key) || error(`Missing PDFDictionary entry "${key}".`);
+  };
 
   set = (key: string | PDFName, val: PDFObject, validateKeys = true) => {
     validate(
@@ -72,21 +87,6 @@ class PDFDictionary extends PDFObject {
     this.map.set(keyName, val);
 
     return this;
-  };
-
-  getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
-    validate(
-      key,
-      or(_.isString, isInstance(PDFName)),
-      'PDFDictionary.set() requires keys to be strings or PDFNames',
-    );
-
-    const keyName = key instanceof PDFName ? key : PDFName.from(key);
-    return this.map.get(keyName);
-  };
-
-  get = <T extends PDFObject>(key: string | PDFName): T => {
-    return this.getMaybe(key) || error(`Missing PDFDictionary entry "${key}".`);
   };
 
   toString = (): string => {
