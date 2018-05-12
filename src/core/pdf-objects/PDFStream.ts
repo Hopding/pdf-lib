@@ -16,7 +16,7 @@ class PDFStream extends PDFObject {
   }
 
   validateDictionary = () => {
-    if (!this.dictionary.get('Length')) {
+    if (!this.dictionary.getMaybe('Length')) {
       error('"Length" is a required field for PDFStream dictionaries');
     }
   };
