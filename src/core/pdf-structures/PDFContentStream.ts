@@ -2,6 +2,8 @@
 /* eslint-disable getter-return */
 import _ from 'lodash';
 
+import 'core/pdf-objects';
+
 import { PDFDictionary, PDFNumber, PDFStream } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { addStringToBuffer } from 'utils';
@@ -16,9 +18,12 @@ class PDFContentStream extends PDFStream {
     validateArr(
       elements,
       isInstance(PDFOperator),
-      'only PDFOperators can be pushed to a PDFContentStream',
+      'Only PDFOperators can be pushed to a PDFContentStream.',
     );
 
+  // TODO: Should this allow text showing operators?
+  // TODO: Prevent this from being reassigned
+  // TODO: Should disallow non-numeric indexes
   operators: PDFOperator[];
 
   constructor(dictionary: PDFDictionary, ...operators: PDFOperator[]) {

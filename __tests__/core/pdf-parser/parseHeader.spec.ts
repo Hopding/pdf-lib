@@ -1,4 +1,4 @@
-// This is required to prevent an issue with dependency resolution in this test
+// Required to prevent an issue with circular dependency resolution in this test
 import 'core/pdf-objects';
 
 import parseHeader from 'core/pdf-parser/parseHeader';
