@@ -14,6 +14,9 @@ Before 0.1.0 release:
 ***** Encode characters passed to "Tj" as code point hex codes, not string literals *****
 ***** Add credits for PNGImage and JPEGImage and font embedding *****
 ***** Consider forking png-js to avoid "Buffer" dependency *****
+***** Make sure non-english character sets (any unicode character?) work correctly *****
+***** Support page transfer between two different PDFs *****
+***** Consider supporting saving as image using PDF-js *****
 
 ***** Remove index.js files from fork repos and publish to NPM *****
 ***** Update READMEs of fork repos with credits and workaround using browserify command *****

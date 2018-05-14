@@ -17,10 +17,7 @@ class PDFHeader {
     this.minor = minor;
   }
 
-  toString = (): string => `
-    %PDF-${this.major}.${this.minor}
-    %<COMMENT_WITH_BINARY_CHARACTERS>
-  `;
+  toString = (): string => `%PDF-${this.major}.${this.minor}\n`;
 
   bytesSize = () => `%PDF-${this.major}.${this.minor}\n`.length + 6;
 
