@@ -12,7 +12,7 @@ import { PDFCatalog, PDFPageTree } from 'core/pdf-structures';
 import { typedArrayFor } from 'utils';
 
 describe(`PDFCatalog`, () => {
-  it(`extends PDFCatalog`, () => {
+  it(`extends PDFDictionary`, () => {
     expect(
       PDFCatalog.create(
         PDFIndirectReference.forNumbers(0, 1),
