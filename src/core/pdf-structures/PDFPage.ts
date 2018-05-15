@@ -60,7 +60,8 @@ class PDFPage extends PDFDictionary {
     size: [number, number],
     resources?: PDFDictionary,
   ) => {
-    validate(size.length, isIdentity(2), 'size tuple must have two elements');
+    validate(size, _.isArray, 'size must be an array of 2 numbers.');
+    validate(size.length, isIdentity(2), 'size tuple must have two elements.');
     validate(size[0], _.isNumber, 'size tuple entries must be Numbers.');
     validate(size[1], _.isNumber, 'size tuple entries must be Numbers.');
     validate(
@@ -77,7 +78,7 @@ class PDFPage extends PDFDictionary {
         MediaBox: PDFArray.fromArray(mediaBox.map(PDFNumber.fromNumber), index),
       },
       index,
-      PDFPage.validKeys,
+      VALID_KEYS,
     );
     if (resources) page.set('Resources', resources);
     return page;
@@ -85,7 +86,7 @@ class PDFPage extends PDFDictionary {
 
   static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
-    return new PDFPage(dict.map, dict.index, PDFPage.validKeys);
+    return new PDFPage(dict.map, dict.index, VALID_KEYS);
   };
 
   get Resources() {
@@ -97,20 +98,6 @@ class PDFPage extends PDFDictionary {
       PDFContentStream | PDFIndirectReference<PDFContentStream>
     >;
   }
-
-  /*
-  There are three possibilities, the page can:
-    (1) have no "Contents"
-    (2) have an array of indirect objects as its "Contents"
-    (3) have a standalone indirect object as its "Contents"
-  */
-  // get contentStreams(): Array<PDFRawStream | PDFContentStream> {
-  //   let streams;
-  //   if (!this.get('Contents')) streams = [];
-  //   const contents = this.get('Contents').object;
-  //   streams = contents.is(PDFArray) ? contents.array : [contents];
-  //   return Object.freeze(streams.slice());
-  // }
 
   /** Convert "Contents" to array if it exists and is not already */
   // TODO: See is this is inefficient...
