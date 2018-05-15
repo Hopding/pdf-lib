@@ -3,7 +3,7 @@ import { PDFDictionary, PDFString } from 'core/pdf-objects';
 import { PDFLinearizationParams } from 'core/pdf-structures';
 import { typedArrayFor } from 'utils';
 
-describe(`PDFCatalog`, () => {
+describe(`PDFLinearizationParams`, () => {
   it(`extends PDFDictionary`, () => {
     const dict = PDFDictionary.from(
       { foo: PDFString.fromString('bar') },

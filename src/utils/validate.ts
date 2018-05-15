@@ -22,6 +22,7 @@ export const validateArr = <T extends any[]>(
   predicate: (t: T) => boolean,
   msg: string,
 ) => {
+  validate(value, _.isArray, 'validateArr.value must be an array.');
   value.forEach((v) => validate(v, predicate, msg));
 };
 
