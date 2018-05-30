@@ -37,7 +37,7 @@ class PDFTrailer {
     10 + // "startxref\n"
     String(this.offset).length +
     1 + // "\n"
-    5; // "%%EOF\n"
+    6; // "%%EOF\n"
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('trailer\n', buffer);
