@@ -39,6 +39,19 @@ class PDFPageTree extends PDFDictionary {
     );
   };
 
+  static createNode = (
+    parent: PDFIndirectReference<Kid>,
+    kids: PDFArray<PDFIndirectReference<Kid>>,
+    index: PDFObjectIndex,
+  ): PDFPageTree => {
+    validate(
+      parent,
+      isInstance(PDFIndirectReference),
+      '"parent" must be a PDFIndirectReference',
+    );
+    return PDFPageTree.createRootNode(kids, index).set('Parent', parent);
+  };
+
   static fromDict = (dict: PDFDictionary): PDFPageTree => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
     return new PDFPageTree(dict.map, dict.index, VALID_KEYS);
