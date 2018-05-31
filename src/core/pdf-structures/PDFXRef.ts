@@ -9,7 +9,7 @@ export class Entry {
 
   offset: number = null;
   generationNum: number = null;
-  isInUse: boolean = null;
+  isInUse: boolean = false;
 
   setOffset = (offset: number) => {
     validate(offset, _.isNumber, 'offset must be a number');
@@ -38,22 +38,27 @@ export class Entry {
 }
 
 export class Subsection {
-  static from = (entries: Entry[]) => {
+  static from = (entries: Entry[] = []) => new Subsection(entries);
+
+  entries: Entry[] = [];
+  firstObjNum: number = null;
+
+  constructor(entries: Entry[] = []) {
     validateArr(
       entries,
       isInstance(Entry),
       'PDFXRef.Subsection.entries must be an array of PDFXRef.Entry',
     );
-
-    const subsection = new Subsection();
-    subsection.entries = entries;
-    return subsection;
-  };
-
-  entries: Entry[] = [];
-  firstObjNum: number;
+    this.entries = entries;
+  }
 
   addEntry = (entry: Entry) => {
+    validate(
+      entry,
+      isInstance(Entry),
+      '"entry" must be instance of PDFXRef.Entry',
+    );
+
     this.entries.push(entry);
     return this;
   };
@@ -76,21 +81,27 @@ export class Subsection {
 }
 
 export class Table {
-  static from = (subsections: Subsection[]) => {
+  static from = (subsections: Subsection[] = []) => new Table(subsections);
+
+  subsections: Subsection[] = [];
+
+  constructor(subsections: Subsection[] = []) {
     validateArr(
       subsections,
       isInstance(Subsection),
       'subsections must be an array of PDFXRef.Subsection',
     );
 
-    const table = new Table();
-    table.subsections = subsections;
-    return table;
-  };
-
-  subsections: Subsection[] = [];
+    this.subsections = subsections;
+  }
 
   addSubsection = (subsection: Subsection) => {
+    validate(
+      subsection,
+      isInstance(Subsection),
+      '"subsection" must be instance of PDFXRef.Subsection',
+    );
+
     this.subsections.push(subsection);
     return this;
   };
