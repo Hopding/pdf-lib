@@ -1,5 +1,6 @@
 // This is required to prevent an error due to circular imports in this test
 import 'core/pdf-objects';
+import _ from 'lodash';
 
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { typedArrayFor } from 'utils';
@@ -18,13 +19,17 @@ export default (
   Operator: IPDFOperatorSingleton,
 ) => {
   describe(operatorClassName, () => {
-    it(`is a Singleton class that extends PDFOperator`, () => {
-      expect(() => new Operator()).toThrowError(
-        `Cannot instantiate PDFOperator.T* - use "T*.operator" instead`,
-      );
-      expect(Operator.operator).toBeInstanceOf(PDFOperator);
-      expect(Operator.operator).toBe(Operator.operator);
-    });
+    // Do this check to see if the object has a constructor.
+    // Sometimes they're lost through being spread with `...` operator.
+    if (!_.isFunction(Operator.constructor)) {
+      it(`is a Singleton class that extends PDFOperator`, () => {
+        expect(() => new Operator()).toThrowError(
+          `Cannot instantiate PDFOperator.${operatorStr} - use "${operatorStr}.operator" instead`,
+        );
+        expect(Operator.operator).toBeInstanceOf(PDFOperator);
+        expect(Operator.operator).toBe(Operator.operator);
+      });
+    }
 
     describe(`"toString" method`, () => {
       it(`returns ${operatorClassName} as a string`, () => {
@@ -34,7 +39,7 @@ export default (
 
     describe(`"bytesSize" method`, () => {
       it(`returns the size of ${operatorClassName} in bytes`, () => {
-        expect(Operator.operator.bytesSize()).toEqual(3);
+        expect(Operator.operator.bytesSize()).toEqual(operatorStr.length + 1);
       });
     });
 
