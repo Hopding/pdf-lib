@@ -6,7 +6,7 @@ import * as TDOps from 'core/pdf-operators/text/text-positioning/TDOps';
 import { typedArrayFor } from 'utils';
 
 describe(`TDOps.Td`, () => {
-  it(`it requires two numbers as its arguments`, () => {
+  it(`it requires two numbers to be constructed`, () => {
     expect(() => new TDOps.Td()).toThrowError(
       `Td operator arg "tx" must be a number.`,
     );
