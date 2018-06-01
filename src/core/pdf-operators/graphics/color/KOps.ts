@@ -22,22 +22,22 @@ export class K extends PDFOperator {
     super();
     validate(
       c,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'K operator arg "c" must be a number between 0.0 and 1.0.',
     );
     validate(
       m,
-      and(isNumber, isInRange(0.0, 1.1)),
-      'K operator arg "y" must be a number between 0.0 and 1.0.',
-    );
-    validate(
-      y,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'K operator arg "m" must be a number between 0.0 and 1.0.',
     );
     validate(
+      y,
+      and(isNumber, isInRange(0.0, 1.0)),
+      'K operator arg "y" must be a number between 0.0 and 1.0.',
+    );
+    validate(
       k,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'K operator arg "k" must be a number between 0.0 and 1.0.',
     );
     this.c = c;
@@ -46,7 +46,7 @@ export class K extends PDFOperator {
     this.k = k;
   }
 
-  toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} K\n`;
+  toString = (): string => `${this.c} ${this.m} ${this.y} ${this.k} K\n`;
 
   bytesSize = (): number => this.toString().length;
 
@@ -70,23 +70,23 @@ export class k extends PDFOperator {
     super();
     validate(
       c,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'k operator arg "c" must be a number between 0.0 and 1.0.',
     );
     validate(
       m,
-      and(isNumber, isInRange(0.0, 1.1)),
-      'k operator arg "y" must be a number between 0.0 and 1.0.',
-    );
-    validate(
-      y,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'k operator arg "m" must be a number between 0.0 and 1.0.',
     );
     validate(
+      y,
+      and(isNumber, isInRange(0.0, 1.0)),
+      'k operator arg "y" must be a number between 0.0 and 1.0.',
+    );
+    validate(
       key,
-      and(isNumber, isInRange(0.0, 1.1)),
-      'k operator arg "key" must be a number between 0.0 and 1.0.',
+      and(isNumber, isInRange(0.0, 1.0)),
+      'k operator arg "k" must be a number between 0.0 and 1.0.',
     );
     this.c = c;
     this.m = m;
@@ -94,7 +94,7 @@ export class k extends PDFOperator {
     this.k = key;
   }
 
-  toString = (): string => `${this.c} ${this.y} ${this.m} ${this.k} k\n`;
+  toString = (): string => `${this.c} ${this.m} ${this.y} ${this.k} k\n`;
 
   bytesSize = (): number => this.toString().length;
 

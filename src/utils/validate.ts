@@ -42,7 +42,7 @@ export const doesMatch = (regex: RegExp) => (value: string) =>
 export const isNumber = (n: any) => and(_.isNumber, not(_.isNaN))(n);
 
 export const isInRange = (lower: number, upper: number) => (value: any) =>
-  _.inRange(value, lower, upper);
+  _.inRange(value, lower, upper) || value === upper;
 
 export const isIndirectObjectOf = <T extends Function>(requiredClass: T) => (
   value: any,

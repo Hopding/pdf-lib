@@ -14,10 +14,10 @@ describe(`GOps.G`, () => {
     expect(() => new GOps.G(-0.1)).toThrowError(
       'G operator arg "gray" must be a number between 0.0 and 1.0.',
     );
-    expect(() => new GOps.G(2)).toThrowError(
+    expect(() => new GOps.G(1.1)).toThrowError(
       'G operator arg "gray" must be a number between 0.0 and 1.0.',
     );
-    expect(new GOps.G(0.5)).toBeInstanceOf(GOps.G);
+    expect(new GOps.G(1.0)).toBeInstanceOf(GOps.G);
     expect(new GOps.G(0.5)).toBeInstanceOf(PDFOperator);
   });
 
@@ -63,11 +63,11 @@ describe(`GOps.g`, () => {
     expect(() => new GOps.g(-0.1)).toThrowError(
       'g operator arg "gray" must be a number between 0.0 and 1.0.',
     );
-    expect(() => new GOps.g(2)).toThrowError(
+    expect(() => new GOps.g(1.1)).toThrowError(
       'g operator arg "gray" must be a number between 0.0 and 1.0.',
     );
 
-    expect(new GOps.g(0.5)).toBeInstanceOf(GOps.g);
+    expect(new GOps.g(1.0)).toBeInstanceOf(GOps.g);
     expect(new GOps.g(0.5)).toBeInstanceOf(PDFOperator);
   });
 
