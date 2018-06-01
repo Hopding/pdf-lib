@@ -49,8 +49,8 @@ export class TD extends PDFOperator {
 
   constructor(tx: number, ty: number) {
     super();
-    validate(tx, isNumber, 'Td operator arg "tx" must be a number.');
-    validate(ty, isNumber, 'Td operator arg "ty" must be a number.');
+    validate(tx, isNumber, 'TD operator arg "tx" must be a number.');
+    validate(ty, isNumber, 'TD operator arg "ty" must be a number.');
     this.tx = tx;
     this.ty = ty;
   }
