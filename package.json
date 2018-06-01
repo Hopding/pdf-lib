@@ -87,7 +87,8 @@
       "<rootDir>/integration-tests/",
       "<rootDir>/node_modules/",
       "<rootDir>/__tests__/tsconfig.json",
-      "(.*).spec.ts.snap"
+      "(.*).spec.ts.snap",
+      "PDFOperatorSingletonTest.ts"
     ],
     "moduleFileExtensions": [
       "ts",
