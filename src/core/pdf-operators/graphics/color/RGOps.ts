@@ -20,17 +20,17 @@ export class RG extends PDFOperator {
     super();
     validate(
       r,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'RG operator arg "r" must be a number between 0.0 and 1.0.',
     );
     validate(
       g,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'RG operator arg "g" must be a number between 0.0 and 1.0.',
     );
     validate(
       b,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'RG operator arg "b" must be a number between 0.0 and 1.0.',
     );
     this.r = r;
@@ -60,17 +60,17 @@ export class rg extends PDFOperator {
     super();
     validate(
       r,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'rg operator arg "r" must be a number between 0.0 and 1.0.',
     );
     validate(
       g,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'rg operator arg "g" must be a number between 0.0 and 1.0.',
     );
     validate(
       b,
-      and(isNumber, isInRange(0.0, 1.1)),
+      and(isNumber, isInRange(0.0, 1.0)),
       'rg operator arg "b" must be a number between 0.0 and 1.0.',
     );
     this.r = r;
