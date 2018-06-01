@@ -24,9 +24,7 @@ export class SingleQuote extends PDFOperator {
       or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
       '\' operator arg "string" must be one of: PDFString, PDFHexString, String',
     );
-    if (_.isString(str)) {
-      this.string = PDFString.fromString(str);
-    } else this.string = str;
+    this.string = _.isString(str) ? PDFString.fromString(str) : str;
   }
 
   toString = (): string => `${this.string.toString()} '\n`;
@@ -66,9 +64,10 @@ export class DoubleQuote extends PDFOperator {
       or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
       '" operator arg "string" must be one of: PDFString, PDFHexString, String',
     );
-    if (_.isString(str)) {
-      this.string = PDFString.fromString(str);
-    } else this.string = str;
+
+    this.aw = aw;
+    this.ac = ac;
+    this.string = _.isString(str) ? PDFString.fromString(str) : str;
   }
 
   toString = (): string =>
