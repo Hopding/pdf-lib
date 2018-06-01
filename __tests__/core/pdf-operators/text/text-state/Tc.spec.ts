@@ -6,7 +6,7 @@ import Tc from 'core/pdf-operators/text/text-state/Tc';
 import { typedArrayFor } from 'utils';
 
 describe(`Tc`, () => {
-  it(`requires a String to be constucted`, () => {
+  it(`requires a Number to be constucted`, () => {
     expect(() => new Tc()).toThrowError();
     expect(() => new Tc([])).toThrowError(
       'Tc operator arg "charSpace" must be a number.',
