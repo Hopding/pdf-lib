@@ -86,7 +86,8 @@
     "testPathIgnorePatterns": [
       "<rootDir>/integration-tests/",
       "<rootDir>/node_modules/",
-      "<rootDir>/__tests__/tsconfig.json"
+      "<rootDir>/__tests__/tsconfig.json",
+      "(.*).spec.ts.snap"
     ],
     "moduleFileExtensions": [
       "ts",

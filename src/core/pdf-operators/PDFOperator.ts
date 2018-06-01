@@ -20,7 +20,7 @@ class PDFOperator {
 
       toString = (): string => `${op}\n`;
 
-      bytesSize = (): number => 2;
+      bytesSize = (): number => this.toString().length;
 
       copyBytesInto = (buffer: Uint8Array): Uint8Array =>
         addStringToBuffer(this.toString(), buffer);
