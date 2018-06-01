@@ -8,7 +8,13 @@ import {
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
 
-import { addStringToBuffer, or } from 'utils';
+import {
+  addStringToBuffer,
+  addStringToBuffer,
+  arrayToString,
+  error,
+  or,
+} from 'utils';
 import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
 
 /**
@@ -24,17 +30,12 @@ export class Tj extends PDFOperator {
     validate(
       str,
       or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
-      'Tj operator arg "string" must be one of: PDFString, PDFHexString, String',
+      'Tj operator arg "str" must be one of: PDFString, PDFHexString, String',
     );
-    // TODO: Fix these suppressions...
-    if (_.isString(str)) {
-      // $SuppressFlow
-      this.string = PDFString.fromString(str);
-      // $SuppressFlow
-    } else this.string = str;
+    this.string = _.isString(str) ? PDFString.fromString(str) : str;
   }
 
-  toString = () => this.string.toString() + ' Tj\n';
+  toString = () => `${this.string} Tj\n`;
 
   bytesSize = () => this.toString().length;
 
@@ -44,24 +45,31 @@ export class Tj extends PDFOperator {
 
 /**
  * Show one or more text strings, allowing individual glyph positioning.
- * Each element of array shall be either a string or a number. If the element is a
- * string, this operator shall show the string. If it is a number, the operator
- * shall adjust the text position by that amount; that is, it shall translate the
- * text matrix, Tm. The number shall be expressed in thousandths of a unit of text
- * space. This amount shall be subtracted from the current horizontal or vertical
- * coordinate, depending on the writing mode. In the default coordinate system, a
- * positive adjustment has the effect of moving the next glyph painted either to
- * the left or down by the given amount. Figure 46 shows an example of the effect
- * of passing offsets to TJ.
+ * Each element of array shall be either a string or a number.
+ * If the element is a string, this operator shall show the string.
+ * If it is a number, the operator shall adjust the text position by that
+ *  amount; that is, it shall translate the text matrix, Tm.
+ * The number shall be expressed in thousandths of a unit of text space.
+ * This amount shall be subtracted from the current horizontal or vertical
+ *   coordinate, depending on the writing mode.
+ * In the default coordinate system, a positive adjustment has the effect of
+ * moving the next glyph painted either to the left or down by the given amount.
  */
 export class TJ extends PDFOperator {
-  static of = (array: Array<PDFString | PDFHexString | string | number>) =>
-    new TJ(array);
+  static of = (...array: Array<PDFString | PDFHexString | string | number>) =>
+    new TJ(...array);
 
-  array: PDFArray<PDFString | PDFHexString | PDFNumber>;
+  array: Array<PDFString | PDFHexString | PDFNumber>;
 
-  constructor(array: Array<PDFString | PDFHexString | string | number>) {
+  constructor(
+    ...array: Array<PDFString | PDFHexString | PDFNumber | string | number>
+  ) {
     super();
+    if (array.length === 0) {
+      error(
+        'TJ operator requires  PDFStrings, PDFHexStrings, PDFNumbers, Strings, or Numbers to be constructed',
+      );
+    }
     validateArr(
       array,
       or(
@@ -71,23 +79,38 @@ export class TJ extends PDFOperator {
         _.isString,
         isNumber,
       ),
-      'TJ operator arg "array" elements must be one of: PDFString, PDFHexString, PDFNumber, String, Number',
+      'TJ operator arg elements must be one of: PDFString, PDFHexString, PDFNumber, String, Number',
     );
 
-    this.array = PDFArray.fromArray(
-      array.map((elem) => {
-        if (_.isString(elem)) return PDFString.fromString(elem);
-        else if (_.isNumber(elem)) return PDFNumber.fromNumber(elem);
-        return elem;
-      }),
+    // prettier-ignore
+    this.array = array.map((elem) =>
+        _.isString(elem) ? PDFString.fromString(elem)
+      : _.isNumber(elem) ? PDFNumber.fromNumber(elem)
+      : elem
     );
   }
 
-  bytesSize = () => this.array.bytesSize() + 4; // "...<array> TJ\n"
+  toString = () => {
+    const buffer = new Uint8Array(this.bytesSize());
+    this.copyBytesInto(buffer);
+    return arrayToString(buffer);
+  };
+
+  bytesSize = () =>
+    _(this.array)
+      .map((elem) => elem.bytesSize())
+      .sum() +
+    this.array.length + // Spaces between elements
+    4 + // "[ " and "]"
+    3; // The "TJ" characters and trailing newline
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
-    let remaining = this.array.copyBytesInto(buffer);
-    remaining = addStringToBuffer(' TJ\n', buffer);
+    let remaining = addStringToBuffer('[ ', buffer);
+    this.array.forEach((elem) => {
+      remaining = elem.copyBytesInto(remaining);
+      remaining = addStringToBuffer(' ', remaining);
+    });
+    remaining = addStringToBuffer('] TJ\n', remaining);
     return remaining;
   };
 }
