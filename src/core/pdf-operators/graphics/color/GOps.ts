@@ -18,8 +18,8 @@ export class G extends PDFOperator {
     super();
     validate(
       gray,
-      and(isNumber, isInRange(0.0, 0.1)),
-      'G operator arg "gray" must be a number.',
+      and(isNumber, isInRange(0.0, 1.0)),
+      'G operator arg "gray" must be a number between 0.0 and 1.0.',
     );
     this.gray = gray;
   }
@@ -42,7 +42,11 @@ export class g extends PDFOperator {
 
   constructor(gray: number) {
     super();
-    validate(gray, isNumber, 'g operator arg "gray" must be a number.');
+    validate(
+      gray,
+      and(isNumber, isInRange(0.0, 1.0)),
+      'g operator arg "gray" must be a number between 0.0 and 1.0.',
+    );
     this.gray = gray;
   }
 
