@@ -5,10 +5,11 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
- * Begin a new subpath by moving the current point to coordinates (x, y), omitting
- * any connecting line segment. If the previous path construction operator in the
- * current path was also m, the new m overrides it; no vestige of the previous m
- * operation remains in the path.
+ * Begin a new subpath by moving the current point to coordinates (x, y),
+ *  omitting any connecting line segment.
+ * If the previous path construction operator in the current path was also m,
+ *  the new m overrides it; no vestige of the previous m operation remains in
+ *  the path.
  */
 class m extends PDFOperator {
   static of = (x: number, y: number) => new m(x, y);
