@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "jest --no-coverage --watch",
-    "test:ci": "jest --no-coverage",
+    "test:ci": "jest --runInBand --no-coverage",
     "test:coverage": "jest",
     "jest:clear-cache": "rm -rf $TMPDIR/jest*",
     "coverage-report": "open coverage/lcov-report/index.html",
