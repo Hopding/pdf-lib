@@ -6,9 +6,9 @@ import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
 
 /**
- * Set the specified parameters in the graphics state. dictName shall be the name
- * of a graphics state parameter dictionary in the ExtGState subdictionary of the
- * current resource dictionary.
+ * Set the specified parameters in the graphics state.
+ * dictName shall be the name of a graphics state parameter dictionary in the
+ *  ExtGState subdictionary of the current resource dictionary.
  */
 class gs extends PDFOperator {
   static of = (dictName: string) => new gs(dictName);
@@ -16,6 +16,7 @@ class gs extends PDFOperator {
   dictName: string;
 
   // TODO: See if the "dictName" must be preceded by a "/" or not...
+  // TODO: Should "dictName" be a PDFName?
   constructor(dictName: string) {
     super();
     validate(
