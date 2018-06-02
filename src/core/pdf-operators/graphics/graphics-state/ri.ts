@@ -5,10 +5,10 @@ import { addStringToBuffer } from 'utils';
 import { oneOf, validate } from 'utils/validate';
 
 type RenderingIntents =
-  | 'AbsoluteColorimetric'
-  | 'RelativeColorimetric'
-  | 'Saturation'
-  | 'Perceptual';
+  | '/AbsoluteColorimetric'
+  | '/RelativeColorimetric'
+  | '/Saturation'
+  | '/Perceptual';
 
 /**
  * Set the colour rendering intent in the graphics state. The rendering intent
@@ -23,25 +23,25 @@ class ri extends PDFOperator {
 
   intent: RenderingIntents;
 
+  // TODO: Should this be a PDFName?
   constructor(intent: RenderingIntents) {
     super();
     validate(
       intent,
       oneOf(
-        'AbsoluteColorimetric',
-        'RelativeColorimetric',
-        'Saturation',
-        'Perceptual',
+        '/AbsoluteColorimetric',
+        '/RelativeColorimetric',
+        '/Saturation',
+        '/Perceptual',
       ),
-      'ri operator arg "intent" must be one of: "AbsoluteColorimetric", ' +
-        '"RelativeColorimetric", "Saturation", "Perceptual"',
+      `ri operator arg "intent" must be one of: "AbsoluteColorimetric", "RelativeColorimetric", "Saturation", "Perceptual"`,
     );
     this.intent = intent;
   }
 
-  toString = (): string => `${this.intent} ri\n`;
+  toString = () => `${this.intent} ri\n`;
 
-  bytesSize = (): number => this.toString().length;
+  bytesSize = () => this.toString().length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
