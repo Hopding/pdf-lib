@@ -1,4 +1,4 @@
-import clippingPathOps from './graphics/clipping-path';
+import W from './graphics/clipping-path/W';
 
 import { CS, cs } from './graphics/color/CSOps';
 import { G, g } from './graphics/color/GOps';
@@ -45,7 +45,7 @@ import Tz from './text/text-state/Tz';
 import Do from './Do';
 
 const PDFOperators = {
-  ...clippingPathOps,
+  W,
   CS,
   cs,
   SC,

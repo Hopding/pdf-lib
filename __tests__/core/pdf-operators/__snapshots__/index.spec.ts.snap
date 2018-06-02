@@ -37,14 +37,7 @@ Object {
   "Ts": [Function],
   "Tw": [Function],
   "Tz": [Function],
-  "W": Object {
-    "asterisk": [Function],
-    "operator": Singleton {
-      "bytesSize": [Function],
-      "copyBytesInto": [Function],
-      "toString": [Function],
-    },
-  },
+  "W": [Function],
   "b": Object {
     "asterisk": [Function],
     "operator": Singleton {
