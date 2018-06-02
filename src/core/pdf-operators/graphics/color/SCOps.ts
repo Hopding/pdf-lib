@@ -49,10 +49,10 @@ export class sc extends PDFOperator {
 
   constructor(...c: number[]) {
     super();
-    validate(c[0], isNumber, 'SC operator args "c" must be a number.');
-    validate(c[1], isNumber, 'SC operator args "c" must be a number.');
-    validate(c[2], isNumber, 'SC operator args "c" must be a number.');
-    validate(c[3], isNumber, 'SC operator args "c" must be a number.');
+    validate(c[0], isNumber, 'sc operator args "c" must be a number.');
+    validate(c[1], isNumber, 'sc operator args "c" must be a number.');
+    validate(c[2], isNumber, 'sc operator args "c" must be a number.');
+    validate(c[3], isNumber, 'sc operator args "c" must be a number.');
     this.c = c as [number, number, number, number];
   }
 
