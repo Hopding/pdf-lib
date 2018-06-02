@@ -48,10 +48,10 @@ class cm extends PDFOperator {
     this.f = f;
   }
 
-  toString = (): string =>
+  toString = () =>
     `${this.a} ${this.b} ${this.c} ${this.d} ${this.e} ${this.f} cm\n`;
 
-  bytesSize = (): number => this.toString().length;
+  bytesSize = () => this.toString().length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
