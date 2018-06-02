@@ -6,7 +6,7 @@ import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { typedArrayFor } from 'utils';
 
 describe(`i`, () => {
-  it(`requires a Number to be constucted`, () => {
+  it(`requires a Number between 0 and 100 to be constucted`, () => {
     expect(() => new i()).toThrowError();
     expect(() => new i(-0.1)).toThrowError(
       'i operator arg "flatness" must be a number from 0 to 100.',
