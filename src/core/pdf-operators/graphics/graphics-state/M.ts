@@ -17,7 +17,7 @@ class M extends PDFOperator {
     validate(
       miterLimit,
       isNumber,
-      'j operator arg "miterLimit" must be a number.',
+      'M operator arg "miterLimit" must be a number.',
     );
     this.miterLimit = miterLimit;
   }
