@@ -8,6 +8,7 @@ class PDFOperator {
 
     class Singleton extends PDFOperator {
       static operator: Singleton;
+      static asterisk?: typeof Singleton;
 
       constructor(enforcer: symbol) {
         super();

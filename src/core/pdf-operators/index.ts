@@ -25,7 +25,7 @@ import re from './graphics/path-construction/re';
 import v from './graphics/path-construction/v';
 import y from './graphics/path-construction/y';
 
-import pathPaintingOps from './graphics/path-painting';
+import * as pathPaintingOps from './graphics/path-painting';
 
 import TAsterisk from './text/text-positioning/T-asterisk';
 import { TD, Td } from './text/text-positioning/TDOps';
