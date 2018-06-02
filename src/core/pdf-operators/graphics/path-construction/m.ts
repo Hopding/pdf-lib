@@ -25,9 +25,9 @@ class m extends PDFOperator {
     this.y = y;
   }
 
-  toString = (): string => `${this.x} ${this.y} m\n`;
+  toString = () => `${this.x} ${this.y} m\n`;
 
-  bytesSize = (): number => this.toString().length;
+  bytesSize = () => this.toString().length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
