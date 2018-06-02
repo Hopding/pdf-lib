@@ -2,7 +2,7 @@
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
 
-import { addStringToBuffer, and, not } from 'utils';
+import { addStringToBuffer, and, not, or } from 'utils';
 import { isNumber, validate, validateArr } from 'utils/validate';
 
 /**
@@ -26,22 +26,26 @@ export class SCN extends PDFOperator {
   c: number[];
   name: string;
 
+  // TODO: Should "name" be a PDFName?
+  // TODO: Confirm whether or not a number[] and string will ever both be present?
   constructor(c: number[], name?: string) {
     super();
     validateArr(c, isNumber, 'SCN operator args "c" must be all be numbers.');
     validate(
       name,
-      and(_.isString, not(_.isNil)),
-      'SCN operator args "c" must be all be numbers.',
+      or(_.isString, _.isNil),
+      'SCN operator arg "name" must be a string.',
     );
     this.c = c;
     this.name = name;
   }
 
-  toString = (): string =>
-    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} SCN\n`;
+  toString = () =>
+    this.name
+      ? `${this.c.join(' ')} ${this.name} SCN\n`
+      : `${this.c.join(' ')} SCN\n`;
 
-  bytesSize = (): number => this.toString().length;
+  bytesSize = () => this.toString().length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
@@ -61,17 +65,19 @@ export class scn extends PDFOperator {
     validateArr(c, isNumber, 'scn operator args "c" must be all be numbers.');
     validate(
       name,
-      and(_.isString, not(_.isNil)),
-      'scn operator args "c" must be all be numbers.',
+      or(_.isString, _.isNil),
+      'scn operator arg "name" must be a string.',
     );
     this.c = c;
     this.name = name;
   }
 
-  toString = (): string =>
-    `${this.c.join(' ')} ${this.name ? `${this.name} ` : ''} scn\n`;
+  toString = () =>
+    this.name
+      ? `${this.c.join(' ')} ${this.name} scn\n`
+      : `${this.c.join(' ')} scn\n`;
 
-  bytesSize = (): number => this.toString().length;
+  bytesSize = () => this.toString().length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
