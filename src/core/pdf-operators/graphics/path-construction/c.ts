@@ -5,9 +5,10 @@ import { addStringToBuffer } from 'utils';
 import { isNumber, validateArr } from 'utils/validate';
 
 /**
- * Append a cubic Bézier curve to the current path. The curve shall extend from the
- * current point to the point (x3, y3), using (x1, y1) and (x2, y2) as the Bézier
- * control points. The new current point shall be (x3, y3).
+ * Append a cubic Bézier curve to the current path.
+ * The curve shall extend from the current point to the point (x3, y3),
+ *   using (x1, y1) and (x2, y2) as the Bézier control points.
+ * The new current point shall be (x3, y3).
  */
 class c extends PDFOperator {
   static of = (
