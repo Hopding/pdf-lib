@@ -22,9 +22,9 @@ class w extends PDFOperator {
     this.lineWidth = lineWidth;
   }
 
-  toString = (): string => `${this.lineWidth} w\n`;
+  toString = () => `${this.lineWidth} w\n`;
 
-  bytesSize = (): number => this.toString().length;
+  bytesSize = () => this.toString().length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
