@@ -19,17 +19,13 @@ export default (
   Operator: IPDFOperatorSingleton,
 ) => {
   describe(operatorClassName, () => {
-    // Do this check to see if the object has a constructor.
-    // Sometimes they're lost through being spread with `...` operator.
-    if (!_.isFunction(Operator.constructor)) {
-      it(`is a Singleton class that extends PDFOperator`, () => {
-        expect(() => new Operator()).toThrowError(
-          `Cannot instantiate PDFOperator.${operatorStr} - use "${operatorStr}.operator" instead`,
-        );
-        expect(Operator.operator).toBeInstanceOf(PDFOperator);
-        expect(Operator.operator).toBe(Operator.operator);
-      });
-    }
+    it(`is a Singleton class that extends PDFOperator`, () => {
+      expect(() => new Operator()).toThrowError(
+        `Cannot instantiate PDFOperator.${operatorStr} - use "${operatorStr}.operator" instead`,
+      );
+      expect(Operator.operator).toBeInstanceOf(PDFOperator);
+      expect(Operator.operator).toBe(Operator.operator);
+    });
 
     describe(`"toString" method`, () => {
       it(`returns ${operatorClassName} as a string`, () => {
