@@ -6,7 +6,8 @@ import { isNumber, validate } from 'utils/validate';
 
 /**
  * (lowercase L) Append a straight line segment from the current point to the
- * point (x, y). The new current point shall be (x, y).
+ *   point (x, y).
+ * The new current point shall be (x, y).
  */
 class l extends PDFOperator {
   static of = (x: number, y: number) => new l(x, y);
@@ -22,7 +23,7 @@ class l extends PDFOperator {
     this.y = y;
   }
 
-  toString = (): string => `${this.x} ${this.y} l\n`;
+  toString = () => `${this.x} ${this.y} l\n`;
 
   bytesSize = () => this.toString().length;
 
