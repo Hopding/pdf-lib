@@ -1,20 +1,19 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable getter-return */
 import _ from 'lodash';
 
+import { isTextOperator } from 'core/pdf-operators';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import { addStringToBuffer } from 'utils';
+import { addStringToBuffer, arrayToString } from 'utils';
 import { isInstance, validateArr } from 'utils/validate';
 
-// TODO: Validate that only valid text operators are passed to this object.
+// TODO: Validate that only valid text operators are passed or pushed to this object.
 class PDFTextObject extends PDFOperator {
   static of = (...operators: PDFOperator[]) => new PDFTextObject(...operators);
 
   static validateOperators = (elements: any[]) =>
     validateArr(
       elements,
-      isInstance(PDFOperator),
-      'only PDFOperators can be pushed to a PDFTextObject',
+      isTextOperator,
+      'only PDF text operators can be pushed to a PDFTextObject',
     );
 
   operators: PDFOperator[];
@@ -30,6 +29,12 @@ class PDFTextObject extends PDFOperator {
       .filter(Boolean)
       .map((op) => op.bytesSize())
       .sum();
+
+  toString = () => {
+    const buffer = new Uint8Array(this.bytesSize());
+    this.copyBytesInto(buffer);
+    return arrayToString(buffer);
+  };
 
   bytesSize = () =>
     3 + // "BT\n"

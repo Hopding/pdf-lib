@@ -44,6 +44,25 @@ import Tz from './text/text-state/Tz';
 
 import Do from './Do';
 
+export const isTextOperator = (op: any) =>
+  [
+    TAsterisk,
+    TD,
+    Td,
+    Tm,
+    DoubleQuote,
+    SingleQuote,
+    TJ,
+    Tj,
+    Tc,
+    Tf,
+    TL,
+    Tr,
+    Ts,
+    Tw,
+    Tz,
+  ].some((type) => op instanceof type);
+
 const PDFOperators = {
   W,
   CS,
