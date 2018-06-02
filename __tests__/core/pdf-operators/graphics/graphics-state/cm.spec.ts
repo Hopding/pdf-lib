@@ -54,14 +54,14 @@ describe(`cm`, () => {
   });
 
   describe(`"bytesSize" method`, () => {
-    it(`returns the size of the TDOps.Td instance in bytes`, () => {
+    it(`returns the size of the cm instance in bytes`, () => {
       const instance = cm.of(1, 2, 3, 4, 5, 6);
       expect(instance.bytesSize()).toEqual(15);
     });
   });
 
   describe(`"copyBytesInto" method`, () => {
-    it(`copies the TDOps.Td instance into the buffer as bytes`, () => {
+    it(`copies the cm instance into the buffer as bytes`, () => {
       const instance = cm.of(1, 2, 3, 4, 5, 6);
       const buffer = new Uint8Array(instance.bytesSize());
       instance.copyBytesInto(buffer);

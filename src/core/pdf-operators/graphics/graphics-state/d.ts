@@ -15,34 +15,33 @@ class d extends PDFOperator {
   dashArray: [number, number];
   dashPhase: number;
 
-  constructor(dashArray: [number, number], dashPhase: number) {
+  constructor(dashArray: number[], dashPhase?: number) {
     super();
     validate(
       dashArray[0],
       or(isNumber, _.isNil),
-      'elements of "dashArray" must be numbers.',
+      'dashArray[0] must be a number or undefined.',
     );
     validate(
       dashArray[1],
       or(isNumber, _.isNil),
-      'elements of "dashArray" must be numbers.',
+      'dashArray[1] must be a number or undefined.',
     );
     validate(
       dashPhase,
       or(isNumber, _.isNil),
       'd operator arg "dashPhase" must be a number.',
     );
-    this.dashArray = dashArray;
+    this.dashArray = dashArray as [number, number];
     this.dashPhase = dashPhase;
   }
 
-  toString = (): string =>
-    _.isNil(this.dashArray[0]) && _.isNil(this.dashArray[1])
+  toString = () =>
+    this.dashArray.every(_.isNil)
       ? `[] ${this.dashPhase} d\n`
-      : `[${String(this.dashArray[0])} ${String(this.dashArray[1])}] ` +
-        `${this.dashPhase} d\n`;
+      : `[${this.dashArray[0]} ${this.dashArray[1]}] ${this.dashPhase} d\n`;
 
-  bytesSize = (): number => this.toString().length;
+  bytesSize = () => this.toString().length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
