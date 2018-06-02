@@ -37,10 +37,9 @@ class re extends PDFOperator {
     this.height = height;
   }
 
-  toString = (): string =>
-    `${this.x} ${this.y} ${this.width} ${this.height} re\n`;
+  toString = () => `${this.x} ${this.y} ${this.width} ${this.height} re\n`;
 
-  bytesSize = (): number => this.toString().length;
+  bytesSize = () => this.toString().length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
