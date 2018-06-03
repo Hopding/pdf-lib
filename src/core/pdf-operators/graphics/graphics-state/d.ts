@@ -9,12 +9,14 @@ import { isNumber, validate } from 'utils/validate';
  * Set the line dash pattern in the graphics state
  */
 class d extends PDFOperator {
-  static of = (dashArray: [number, number], dashPhase: number) =>
+  static of = (dashArray: number[], dashPhase: number) =>
     new d(dashArray, dashPhase);
 
   dashArray: [number, number];
   dashPhase: number;
 
+  // TODO: Looks like the dashArray can actually be an array of arbitrary size,
+  //       so shouldn't be restricting it here.
   constructor(dashArray: number[], dashPhase?: number) {
     super();
     validate(

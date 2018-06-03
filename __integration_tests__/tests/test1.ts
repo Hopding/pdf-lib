@@ -65,126 +65,198 @@ const makeBezierCircle = (
   ];
 };
 
+const makeUpperLeftQuadrant = (size: number) => [
+  // (1) ===== Draw red background in top-left quadrant of the page =====
+
+  // Set the non-stroking color space to RGB.
+  cs.of('/DeviceRGB'),
+  // Use the color red for non-stroking operations.
+  sc.of(1.0, 0.0, 0.0),
+
+  // Construct a path of the top, right, and bottom sides of a square starting
+  // at the top-left corner of the page.
+  m.of(0, size),
+  l.of(size, size),
+  l.of(size, 0),
+  l.of(0, 0),
+
+  // Close (by drawing the left side of the square) and fill (using the
+  // current non-stroking color) the current path
+  f.operator,
+
+  // (2) ===== Draw a yellow right angle in top-left quadrant of page =====
+
+  // Set clipping path to include only the top and left sides of the rectangle
+  m.of(0, size),
+  l.of(0, 0),
+  l.of(size, size),
+  h.operator,
+  W.operator,
+  n.operator,
+
+  // Set the stroking color space to RGB.
+  CS.of('/DeviceRGB'),
+  // Use the color yellow for stroking operations.
+  SC.of(1.0, 1.0, 0.0),
+
+  // Construct a rectangular path centered within the top-left quadrant.
+  //   (Note: We use (0.5 * pageSize) here so that we work within the
+  //         top-left quadrant, not the entire page.)
+  re.of(0.25 * size, size - 0.75 * size, 0.5 * size, 0.5 * size),
+
+  // Increase the line width
+  w.of(50),
+
+  // Stroke (outline) the current path
+  S.operator,
+];
+
+const makeUpperRightQuadrant = (size: number) => [
+  // (3) ===== Draw green background in top-right quadrant of the page =====
+
+  // Use green (in the RGB color space) as the stroking color.
+  rg.of(0.0, 1.0, 0.0),
+
+  // Construct a path of the top, right, and bottom sides of a square for the
+  // top-right quadrant of the page
+  m.of(0, size),
+  l.of(size, size),
+  l.of(size, 0),
+  l.of(0, 0),
+
+  // Close (by drawing the left side of the square) and fill (using the
+  // current non-stroking color) the current path.
+  f.operator,
+
+  // Draw an orange oval in center of upper-right quadrant.
+  rg.of(255 / 256, 153 / 256, 51 / 256),
+  ...makeBezierCircle(0.5 * size, 0.5 * size, 100, 150),
+  f.operator,
+
+  // Set clipping path to include a circular view of the following text
+  // with an oval hole in the center to avoid covering up the orange oval
+  // with text.
+  ...makeBezierCircle(0.5 * size, 0.5 * size, 250, 350),
+  ...makeBezierCircle(0.5 * size, 0.5 * size, 100, 150),
+  W.asterisk.operator,
+  n.operator,
+
+  // Create a text object
+  PDFTextObject.of(
+    // Set text color to pink using RGB colorspace
+    rg.of(1.0, 0.0, 1.0),
+
+    // Use Times New Roman font, size 24
+    Tf.of('/FontTimesRoman', 48),
+
+    // Position the current text position to the upper-left corner of the
+    // upper-right quadrant of the page.
+    Td.of(5, size - 48),
+
+    // Draw 15 lines of lorem ipsum text to fill the upper-right quadrant
+    ..._.flatMap(_.range(15), () => [
+      Tj.of(faker.lorem.sentence()),
+      Td.of(0, -48),
+    ]),
+  ),
+];
+
 const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
   PDFContentStream.of(
     PDFDictionary.from({}, pdfDoc.index),
-    // (1) ===== Draw red background in top-left quadrant of the page =====
+
     q.operator,
-
-    // Set the non-stroking color space to RGB.
-    cs.of('/DeviceRGB'),
-    // Use the color red for non-stroking operations.
-    sc.of(1.0, 0.0, 0.0),
-
-    // Construct a path of the top, right, and bottom sides of a square starting
-    // at the top-left corner of the page.
-    m.of(0, pageSize),
-    l.of(pageSize / 2, pageSize),
-    l.of(pageSize / 2, pageSize / 2),
-    l.of(0, pageSize / 2),
-
-    // Close (by drawing the left side of the square) and fill (using the
-    // current non-stroking color) the current path
-    f.operator,
-
-    // (2) ===== Draw a yellow right angle in top-left quadrant of page =====
-
-    // Set clipping path to include only the top and left sides of the rectangle
-    m.of(0, pageSize),
-    l.of(0, 0.5 * pageSize),
-    l.of(0.5 * pageSize, pageSize),
-    h.operator,
-    W.operator,
-    n.operator,
-
-    // Set the stroking color space to RGB.
-    CS.of('/DeviceRGB'),
-    // Use the color yellow for stroking operations.
-    SC.of(1.0, 1.0, 0.0),
-
-    // Construct a rectangular path centered within the top-left quadrant.
-    //   (Note: We use (0.5 * pageSize) here so that we work within the
-    //         top-left quadrant, not the entire page.)
-    re.of(
-      0.25 * (0.5 * pageSize),
-      pageSize - 0.75 * (0.5 * pageSize),
-      0.5 * (0.5 * pageSize),
-      0.5 * (0.5 * pageSize),
-    ),
-
-    // Increase the line width
-    w.of(50),
-
-    // Stroke (outline) the current path
-    S.operator,
-
+    cm.of(1, 0, 0, 1, 0, 0.5 * pageSize), // translate
+    cm.of(0.5, 0, 0, 0.5, 0, 0), // scale
+    ...makeUpperLeftQuadrant(pageSize),
     Q.operator,
 
-    // (3) ===== Draw green background in top-right quadrant of the page =====
+    q.operator,
+    cm.of(1, 0, 0, 1, 0.5 * pageSize, 0.5 * pageSize), // translate
+    cm.of(0.5, 0, 0, 0.5, 0, 0), // scale
+    ...makeUpperRightQuadrant(pageSize),
+    Q.operator,
+
+    // (4) ===== Draw cyan background in bottom-left quadrant of the page =====
     q.operator,
 
-    // Set the non-stroking color space to RGB.
-    cs.of('/DeviceRGB'),
-    // Use the color red for non-stroking operations.
-    sc.of(0.0, 1.0, 0.0),
+    // Use cyan (in the CMYK color space) as the stroking color.
+    k.of(100 / 256, 0, 0, 0),
 
-    // Construct a path of the top, right, and bottom sides of a square starting
-    // at the top-left corner of the page.
-    m.of(pageSize / 2, pageSize),
-    l.of(pageSize, pageSize),
-    l.of(pageSize, pageSize / 2),
+    // Construct a path of the top, right, and bottom sides of a square for
+    // the bottom-left quadrant of the page.
+    m.of(0, pageSize / 2),
     l.of(pageSize / 2, pageSize / 2),
+    l.of(pageSize / 2, 0),
+    l.of(0, 0),
 
     // Close (by drawing the left side of the square) and fill (using the
     // current non-stroking color) the current path.
     f.operator,
 
-    // Draw an orange oval in center of upper-right quadrant.
-    sc.of(255 / 256, 153 / 256, 51 / 256),
+    // Cause a series of dashes to be painted when the path is stroked instead
+    // of a single line.
+    d.of([25], 25),
+
+    // Cause the ends of stroked lines to be rounded instead of flat.
+    J.of(1),
+
+    // Increase the thickness of lines when they are stroked.
+    w.of(15),
+
+    // Draw a magenta oval in center of upper-right quadrant.
+    K.of(3 / 256, 200 / 256, 48 / 256, 21 / 256),
     ...makeBezierCircle(
-      pageSize / 2 + 0.25 * (0.5 * pageSize) + 100,
-      pageSize - 0.25 * (0.5 * pageSize) - 95,
-      50,
-      75,
+      0.5 * (0.5 * pageSize),
+      0.5 * (0.5 * pageSize),
+      150,
+      150,
     ),
+    s.operator,
+
+    Q.operator,
+
+    // (5) ===== Draw gray background in bottom-right quadrant of the page =====
+    q.operator,
+
+    // Use cyan (in the CMYK color space) as the stroking color.
+    g.of(0.8),
+
+    // Construct a path of the top, right, and bottom sides of a square for
+    // the bottom-right quadrant of the page.
+    m.of(pageSize / 2, pageSize / 2),
+    l.of(pageSize, pageSize / 2),
+    l.of(pageSize, 0),
+    l.of(pageSize / 2, 0),
+
+    // Close (by drawing the left side of the square) and fill (using the
+    // current non-stroking color) the current path.
     f.operator,
 
-    // Set clipping path to include a circular view of the following text
-    // with an oval hole in the center to avoid covering up the orange oval
-    // with text.
-    ...makeBezierCircle(
-      pageSize / 2 + 0.25 * (0.5 * pageSize) + 100,
-      pageSize - 0.25 * (0.5 * pageSize) - 95,
-      125,
-      175,
-    ),
-    ...makeBezierCircle(
-      pageSize / 2 + 0.25 * (0.5 * pageSize) + 100,
-      pageSize - 0.25 * (0.5 * pageSize) - 95,
-      50,
-      75,
-    ),
-    W.asterisk.operator,
-    n.operator,
+    G.of(0.5),
+    g.of(0.5),
 
-    // Create a text object
-    PDFTextObject.of(
-      // Set text color to pink using RGB colorspace
-      rg.of(1.0, 0.0, 1.0),
+    w.of(25),
+    j.of(1),
 
-      // Use Times New Roman font, size 24
-      Tf.of('/FontTimesRoman', 24),
+    m.of(pageSize / 2 + 0.25 * (0.5 * pageSize), 0.75 * (0.5 * pageSize)),
+    l.of(pageSize / 2 + 0.75 * (0.5 * pageSize), 0.75 * (0.5 * pageSize)),
+    l.of(pageSize / 2 + 0.75 * (0.5 * pageSize), 0.25 * (0.5 * pageSize)),
+    l.of(pageSize / 2 + 0.25 * (0.5 * pageSize), 0.25 * (0.5 * pageSize)),
 
-      // Position the current text position to the upper-left corner of the
-      // upper-right quadrant of the page.
-      Td.of(pageSize / 2 + 5, pageSize - 24),
+    b.operator,
 
-      // Draw 15 lines of lorem ipsum text to fill the upper-right quadrant
-      ..._.flatMap(_.range(15), () => [
-        Tj.of(faker.lorem.sentence()),
-        Td.of(0, -24),
-      ]),
-    ),
+    G.of(1),
+    g.of(0),
+
+    j.of(2),
+
+    m.of(pageSize / 2 + 0.35 * (0.5 * pageSize), 0.65 * (0.5 * pageSize)),
+    l.of(pageSize / 2 + 0.65 * (0.5 * pageSize), 0.65 * (0.5 * pageSize)),
+    l.of(pageSize / 2 + 0.65 * (0.5 * pageSize), 0.35 * (0.5 * pageSize)),
+    l.of(pageSize / 2 + 0.35 * (0.5 * pageSize), 0.35 * (0.5 * pageSize)),
+
+    b.operator,
 
     Q.operator,
   );
