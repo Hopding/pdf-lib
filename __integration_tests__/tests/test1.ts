@@ -161,6 +161,39 @@ const makeUpperRightQuadrant = (size: number) => [
   ),
 ];
 
+const makeLowerLeftQuadrant = (size: number) => [
+  // (4) ===== Draw cyan background in bottom-left quadrant of the page =====
+
+  // Use cyan (in the CMYK color space) as the stroking color.
+  k.of(100 / 256, 0, 0, 0),
+
+  // Construct a path of the top, right, and bottom sides of a square for
+  // the bottom-left quadrant of the page.
+  m.of(0, size / 2),
+  l.of(size / 2, size / 2),
+  l.of(size / 2, 0),
+  l.of(0, 0),
+
+  // Close (by drawing the left side of the square) and fill (using the
+  // current non-stroking color) the current path.
+  f.operator,
+
+  // Cause a series of dashes to be painted when the path is stroked instead
+  // of a single line.
+  d.of([25], 25),
+
+  // Cause the ends of stroked lines to be rounded instead of flat.
+  J.of(1),
+
+  // Increase the thickness of lines when they are stroked.
+  w.of(15),
+
+  // Draw a magenta oval in center of upper-right quadrant.
+  K.of(3 / 256, 200 / 256, 48 / 256, 21 / 256),
+  ...makeBezierCircle(0.5 * (0.5 * size), 0.5 * (0.5 * size), 150, 150),
+  s.operator,
+];
+
 const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
   PDFContentStream.of(
     PDFDictionary.from({}, pdfDoc.index),
@@ -177,43 +210,10 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
     ...makeUpperRightQuadrant(pageSize),
     Q.operator,
 
-    // (4) ===== Draw cyan background in bottom-left quadrant of the page =====
     q.operator,
-
-    // Use cyan (in the CMYK color space) as the stroking color.
-    k.of(100 / 256, 0, 0, 0),
-
-    // Construct a path of the top, right, and bottom sides of a square for
-    // the bottom-left quadrant of the page.
-    m.of(0, pageSize / 2),
-    l.of(pageSize / 2, pageSize / 2),
-    l.of(pageSize / 2, 0),
-    l.of(0, 0),
-
-    // Close (by drawing the left side of the square) and fill (using the
-    // current non-stroking color) the current path.
-    f.operator,
-
-    // Cause a series of dashes to be painted when the path is stroked instead
-    // of a single line.
-    d.of([25], 25),
-
-    // Cause the ends of stroked lines to be rounded instead of flat.
-    J.of(1),
-
-    // Increase the thickness of lines when they are stroked.
-    w.of(15),
-
-    // Draw a magenta oval in center of upper-right quadrant.
-    K.of(3 / 256, 200 / 256, 48 / 256, 21 / 256),
-    ...makeBezierCircle(
-      0.5 * (0.5 * pageSize),
-      0.5 * (0.5 * pageSize),
-      150,
-      150,
-    ),
-    s.operator,
-
+    cm.of(1, 0, 0, 1, 0, 0), // translate
+    cm.of(0.5, 0, 0, 0.5, 0, 0), // scale
+    ...makeLowerLeftQuadrant(pageSize),
     Q.operator,
 
     // (5) ===== Draw gray background in bottom-right quadrant of the page =====
