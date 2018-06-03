@@ -1,9 +1,23 @@
 import _ from 'lodash';
 
-import { isTextOperator } from 'core/pdf-operators';
+import {
+  colorOperators,
+  generalGraphicsStateOperators,
+  textPositioningOperators,
+  textShowingOperators,
+  textStateOperators,
+} from 'core/pdf-operators';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { addStringToBuffer, arrayToString } from 'utils';
 import { isInstance, validateArr } from 'utils/validate';
+
+const validCategories = [
+  ...colorOperators,
+  ...generalGraphicsStateOperators,
+  ...textPositioningOperators,
+  ...textShowingOperators,
+  ...textStateOperators,
+];
 
 // TODO: Validate that only valid text operators are passed or pushed to this object.
 class PDFTextObject extends PDFOperator {
@@ -12,7 +26,7 @@ class PDFTextObject extends PDFOperator {
   static validateOperators = (elements: any[]) =>
     validateArr(
       elements,
-      isTextOperator,
+      (op: any) => validCategories.some((category) => op instanceof category),
       'only PDF text operators can be pushed to a PDFTextObject',
     );
 
