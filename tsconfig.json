@@ -13,7 +13,7 @@
     "paths": {
       "*": [
         "node_modules/*",
-        "src/types/*",
+        "src/types/*"
       ],
       "core/*": ["src/core/*"],
       "utils/*": ["src/utils/*"],
@@ -23,6 +23,7 @@
   "include": [
     "src/**/*",
     "integration-tests/**/*",
+    "__integration_tests__/**/*",
     "index.ts"
   ]
 }
