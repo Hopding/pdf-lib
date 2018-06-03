@@ -169,9 +169,9 @@ const makeLowerLeftQuadrant = (size: number) => [
 
   // Construct a path of the top, right, and bottom sides of a square for
   // the bottom-left quadrant of the page.
-  m.of(0, size / 2),
-  l.of(size / 2, size / 2),
-  l.of(size / 2, 0),
+  m.of(0, size),
+  l.of(size, size),
+  l.of(size, 0),
   l.of(0, 0),
 
   // Close (by drawing the left side of the square) and fill (using the
@@ -180,18 +180,61 @@ const makeLowerLeftQuadrant = (size: number) => [
 
   // Cause a series of dashes to be painted when the path is stroked instead
   // of a single line.
-  d.of([25], 25),
+  d.of([50], 50),
 
   // Cause the ends of stroked lines to be rounded instead of flat.
   J.of(1),
 
   // Increase the thickness of lines when they are stroked.
-  w.of(15),
+  w.of(30),
 
   // Draw a magenta oval in center of upper-right quadrant.
   K.of(3 / 256, 200 / 256, 48 / 256, 21 / 256),
-  ...makeBezierCircle(0.5 * (0.5 * size), 0.5 * (0.5 * size), 150, 150),
+  ...makeBezierCircle(0.5 * size, 0.5 * size, 300, 300),
   s.operator,
+];
+
+const makeLowerRightQuadrant = (size: number) => [
+  // (5) ===== Draw gray background in bottom-right quadrant of the page =====
+
+  // Use cyan (in the CMYK color space) as the stroking color.
+  g.of(0.8),
+
+  // Construct a path of the top, right, and bottom sides of a square for
+  // the bottom-right quadrant of the page.
+  m.of(0, size),
+  l.of(size, size),
+  l.of(size, 0),
+  l.of(0, 0),
+
+  // Close (by drawing the left side of the square) and fill (using the
+  // current non-stroking color) the current path.
+  f.operator,
+
+  G.of(0.5),
+  g.of(0.5),
+
+  w.of(50),
+  j.of(1),
+
+  m.of(0.25 * size, 0.75 * size),
+  l.of(0.75 * size, 0.75 * size),
+  l.of(0.75 * size, 0.25 * size),
+  l.of(0.25 * size, 0.25 * size),
+
+  b.operator,
+
+  G.of(1),
+  g.of(0),
+
+  j.of(2),
+
+  m.of(0.35 * size, 0.65 * size),
+  l.of(0.65 * size, 0.65 * size),
+  l.of(0.65 * size, 0.35 * size),
+  l.of(0.35 * size, 0.35 * size),
+
+  b.operator,
 ];
 
 const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
@@ -216,48 +259,10 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
     ...makeLowerLeftQuadrant(pageSize),
     Q.operator,
 
-    // (5) ===== Draw gray background in bottom-right quadrant of the page =====
     q.operator,
-
-    // Use cyan (in the CMYK color space) as the stroking color.
-    g.of(0.8),
-
-    // Construct a path of the top, right, and bottom sides of a square for
-    // the bottom-right quadrant of the page.
-    m.of(pageSize / 2, pageSize / 2),
-    l.of(pageSize, pageSize / 2),
-    l.of(pageSize, 0),
-    l.of(pageSize / 2, 0),
-
-    // Close (by drawing the left side of the square) and fill (using the
-    // current non-stroking color) the current path.
-    f.operator,
-
-    G.of(0.5),
-    g.of(0.5),
-
-    w.of(25),
-    j.of(1),
-
-    m.of(pageSize / 2 + 0.25 * (0.5 * pageSize), 0.75 * (0.5 * pageSize)),
-    l.of(pageSize / 2 + 0.75 * (0.5 * pageSize), 0.75 * (0.5 * pageSize)),
-    l.of(pageSize / 2 + 0.75 * (0.5 * pageSize), 0.25 * (0.5 * pageSize)),
-    l.of(pageSize / 2 + 0.25 * (0.5 * pageSize), 0.25 * (0.5 * pageSize)),
-
-    b.operator,
-
-    G.of(1),
-    g.of(0),
-
-    j.of(2),
-
-    m.of(pageSize / 2 + 0.35 * (0.5 * pageSize), 0.65 * (0.5 * pageSize)),
-    l.of(pageSize / 2 + 0.65 * (0.5 * pageSize), 0.65 * (0.5 * pageSize)),
-    l.of(pageSize / 2 + 0.65 * (0.5 * pageSize), 0.35 * (0.5 * pageSize)),
-    l.of(pageSize / 2 + 0.35 * (0.5 * pageSize), 0.35 * (0.5 * pageSize)),
-
-    b.operator,
-
+    cm.of(1, 0, 0, 1, 0.5 * pageSize, 0), // translate
+    cm.of(0.5, 0, 0, 0.5, 0, 0), // scale
+    ...makeLowerRightQuadrant(pageSize),
     Q.operator,
   );
 
