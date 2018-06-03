@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "dependencies": {
+    "@types/faker": "^4.1.2",
     "buffer": "^5.0.8",
     "fontkit": "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8",
     "lodash": "^4.17.4",
@@ -52,6 +53,7 @@
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-preset-env": "^1.6.1",
     "chalk": "^2.4.1",
+    "faker": "^4.1.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",
     "gulp-typescript": "^4.0.1",

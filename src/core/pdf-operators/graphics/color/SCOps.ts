@@ -66,7 +66,6 @@ export class sc extends PDFOperator {
   // color space. So shouldn't really be restricting it to just 4 numbers.
   constructor(...c: number[]) {
     super();
-    console.log(c);
     validate(c[0], isNumber, 'sc operator args "c" must be a number.');
     validate(
       c[1],

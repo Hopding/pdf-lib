@@ -1,3 +1,4 @@
+import faker from 'faker';
 import _ from 'lodash';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
@@ -38,12 +39,37 @@ const { Tc, Tf, TL, Tr, Ts, Tw, Tz } = PDFOperators;
 // XObject operator
 const { Do } = PDFOperators;
 
-// W*, f*, B*, b*, T*, ', "
+// Based on: http://spencermortensen.com/articles/bezier-circle/
+//   P_0 = (0,1),  P_1 = (c,1),   P_2 = (1,c),   P_3 = (1,0)
+//   P_0 = (1,0),  P_1 = (1,-c),  P_2 = (c,-1),  P_3 = (0,-1)
+//   P_0 = (0,-1), P_1 = (-c,-1), P_3 = (-1,-c), P_4 = (-1,0)
+//   P_0 = (-1,0), P_1 = (-1,c),  P_2 = (-c,1),  P_3 = (0,1)
+//     with c = 0.551915024494
+const makeBezierCircle = (
+  xPos: number,
+  yPos: number,
+  xScale: number,
+  yScale: number,
+) => {
+  const cVal = 0.551915024494;
+  return [
+    q.operator,
+    cm.of(1, 0, 0, 1, xPos, yPos), // translate
+    cm.of(xScale, 0, 0, yScale, 0, 0), // scale
+    m.of(0, 1),
+    c.of(cVal, 1, 1, cVal, 1, 0),
+    c.of(1, -cVal, cVal, -1, 0, -1),
+    c.of(-cVal, -1, -1, -cVal, -1, 0),
+    c.of(-1, cVal, -cVal, 1, 0, 1),
+    Q.operator,
+  ];
+};
 
 const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
   PDFContentStream.of(
     PDFDictionary.from({}, pdfDoc.index),
     // (1) ===== Draw red background in top-left quadrant of the page =====
+    q.operator,
 
     // Set the non-stroking color space to RGB.
     cs.of('/DeviceRGB'),
@@ -76,7 +102,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
     // Use the color yellow for stroking operations.
     SC.of(1.0, 1.0, 0.0),
 
-    // Construct a rectangular centered within the top-left quadrant.
+    // Construct a rectangular path centered within the top-left quadrant.
     //   (Note: We use (0.5 * pageSize) here so that we work within the
     //         top-left quadrant, not the entire page.)
     re.of(
@@ -92,13 +118,75 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
     // Stroke (outline) the current path
     S.operator,
 
-    PDFTextObject.of(
-      // Draw red colored text at x-y coordinates (50, 500)
-      rg.of(1.0, 0.0, 0.0),
-      Tf.of('/FontTimesRoman', 50),
-      Td.of(20, 20),
-      Tj.of('This Is A Test Of The...'),
+    Q.operator,
+
+    // (3) ===== Draw green background in top-right quadrant of the page =====
+    q.operator,
+
+    // Set the non-stroking color space to RGB.
+    cs.of('/DeviceRGB'),
+    // Use the color red for non-stroking operations.
+    sc.of(0.0, 1.0, 0.0),
+
+    // Construct a path of the top, right, and bottom sides of a square starting
+    // at the top-left corner of the page.
+    m.of(pageSize / 2, pageSize),
+    l.of(pageSize, pageSize),
+    l.of(pageSize, pageSize / 2),
+    l.of(pageSize / 2, pageSize / 2),
+
+    // Close (by drawing the left side of the square) and fill (using the
+    // current non-stroking color) the current path.
+    f.operator,
+
+    // Draw an orange oval in center of upper-right quadrant.
+    sc.of(255 / 256, 153 / 256, 51 / 256),
+    ...makeBezierCircle(
+      pageSize / 2 + 0.25 * (0.5 * pageSize) + 100,
+      pageSize - 0.25 * (0.5 * pageSize) - 95,
+      50,
+      75,
     ),
+    f.operator,
+
+    // Set clipping path to include a circular view of the following text
+    // with an oval hole in the center to avoid covering up the orange oval
+    // with text.
+    ...makeBezierCircle(
+      pageSize / 2 + 0.25 * (0.5 * pageSize) + 100,
+      pageSize - 0.25 * (0.5 * pageSize) - 95,
+      125,
+      175,
+    ),
+    ...makeBezierCircle(
+      pageSize / 2 + 0.25 * (0.5 * pageSize) + 100,
+      pageSize - 0.25 * (0.5 * pageSize) - 95,
+      50,
+      75,
+    ),
+    W.asterisk.operator,
+    n.operator,
+
+    // Create a text object
+    PDFTextObject.of(
+      // Set text color to pink using RGB colorspace
+      rg.of(1.0, 0.0, 1.0),
+
+      // Use Times New Roman font, size 24
+      Tf.of('/FontTimesRoman', 24),
+
+      // Position the current text position to the upper-left corner of the
+      // upper-right quadrant of the page.
+      Td.of(pageSize / 2 + 5, pageSize - 24),
+
+      // Draw 15 lines of lorem ipsum text to fill the upper-right quadrant
+      ..._.flatMap(_.range(15), () => [
+        Tj.of(faker.lorem.sentence()),
+        Td.of(0, -24),
+      ]),
+    ),
+
+    Q.operator,
   );
 
 const kernel: IPDFCreator = (assets: ITestAssets) => {
