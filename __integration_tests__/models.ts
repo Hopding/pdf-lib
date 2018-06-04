@@ -7,7 +7,11 @@ export interface ITestAssets {
       indie_flower_r: Uint8Array;
       great_vibes_r: Uint8Array;
     };
-    otf: { fantasque_sans_mono_bi: Uint8Array; gfs_baskerville_r: Uint8Array };
+    otf: {
+      fantasque_sans_mono_bi: Uint8Array;
+      apple_storm_r: Uint8Array;
+      hussar_3d_r: Uint8Array;
+    };
   };
   images: {};
 }

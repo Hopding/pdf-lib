@@ -129,7 +129,7 @@ const makeUpperRightQuadrant = (size: number) => [
   f.operator,
 
   // Draw an orange oval in center of upper-right quadrant.
-  rg.of(255 / 256, 153 / 256, 51 / 256),
+  rg.of(255 / 255, 153 / 255, 51 / 255),
   ...makeBezierCircle(0.5 * size, 0.5 * size, 100, 150),
   f.operator,
 
@@ -165,7 +165,7 @@ const makeLowerLeftQuadrant = (size: number) => [
   // (4) ===== Draw cyan background in bottom-left quadrant of the page =====
 
   // Use cyan (in the CMYK color space) as the stroking color.
-  k.of(100 / 256, 0, 0, 0),
+  k.of(100 / 255, 0, 0, 0),
 
   // Construct a path of the top, right, and bottom sides of a square for
   // the bottom-left quadrant of the page.
@@ -189,7 +189,7 @@ const makeLowerLeftQuadrant = (size: number) => [
   w.of(30),
 
   // Draw a magenta oval in center of upper-right quadrant.
-  K.of(3 / 256, 200 / 256, 48 / 256, 21 / 256),
+  K.of(3 / 255, 200 / 255, 48 / 255, 21 / 255),
   ...makeBezierCircle(0.5 * size, 0.5 * size, 300, 300),
   s.operator,
 ];
@@ -266,44 +266,55 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
     Q.operator,
   );
 
-const drawTextLines = (fontName: string, fontSize: number, lines: number) => [
+const loremIpsumLines = [
+  'Eligendi est pariatur quidem in non excepturi et.',
+  'Consectetur non tenetur magnam est corporis tempor.',
+  'Labore nisi officiis quia ipsum qui voluptatem omnis.',
+];
+
+const drawTextLines = (
+  fontName: string,
+  fontSize: number,
+  lines: number,
+  extraSpace = false,
+) => [
   Tf.of(fontName, fontSize),
-  ..._.flatMap(_.range(lines), () => [
-    Tj.of(faker.lorem.sentence()),
+  ..._.flatMap(loremIpsumLines, (sentence) => [
+    Tj.of(extraSpace ? sentence.replace(/\ /g, '   ') : sentence),
     Td.of(0, -fontSize),
   ]),
+  Td.of(0, -25),
 ];
 
 const makePage2ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
   PDFContentStream.of(
     PDFDictionary.from({}, pdfDoc.index),
 
+    // Draw a tan background on the page
+    rg.of(253 / 255, 246 / 255, 227 / 255),
+    m.of(0, pageSize),
+    l.of(pageSize, pageSize),
+    l.of(pageSize, 0),
+    l.of(0, 0),
+    f.operator,
+
     // Create a text object
     PDFTextObject.of(
       // Position the current text position to the upper-left corner of the
       // upper-right quadrant of the page.
-      Td.of(5, pageSize - 12),
+      Td.of(25, pageSize - 40),
 
-      rg.of(1.0, 0.0, 0.0),
-      ...drawTextLines('/Ubuntu-R', 15, 5),
+      // Use a dark grey color when painting glyphs
+      rg.of(101 / 255, 123 / 255, 131 / 255),
 
-      rg.of(0.0, 1.0, 0.0),
+      ...drawTextLines('/Ubuntu-R', 20, 5),
+      ...drawTextLines('/Fantasque-BI', 25, 5),
+      ...drawTextLines('/IndieFlower-R', 25, 5),
+      ...drawTextLines('/GreatVibes-R', 30, 5),
+      ...drawTextLines('/AppleStorm-R', 25, 5),
       ...drawTextLines('/BioRhyme-R', 15, 5),
-
-      rg.of(0.0, 0.0, 1.0),
       ...drawTextLines('/PressStart2P-R', 15, 5),
-
-      rg.of(1.0, 1.0, 0.0),
-      ...drawTextLines('/IndieFlower-R', 15, 5),
-
-      rg.of(0.0, 1.0, 1.0),
-      ...drawTextLines('/GreatVibes-R', 15, 5),
-
-      rg.of(1.0, 0.0, 1.0),
-      ...drawTextLines('/Fantasque-BI', 15, 5),
-
-      rg.of(0.75, 0.75, 0.5),
-      ...drawTextLines('/GFSBaskerville-R', 15, 5),
+      ...drawTextLines('/Hussar3D-R', 25, 5, true),
     ),
   );
 
@@ -332,7 +343,8 @@ const kernel: IPDFCreator = (assets: ITestAssets) => {
   const [FontGreatVibesR] = pdfDoc.embedFont(ttf.great_vibes_r);
 
   const [FontFantasqueBI] = pdfDoc.embedFont(otf.fantasque_sans_mono_bi);
-  const [FontGFSBaskervilleR] = pdfDoc.embedFont(otf.gfs_baskerville_r);
+  const [FontAppleStormR] = pdfDoc.embedFont(otf.apple_storm_r);
+  const [FontHussar3D] = pdfDoc.embedFont(otf.hussar_3d_r);
 
   // Create pages:
   const page1Size = 750;
@@ -356,7 +368,8 @@ const kernel: IPDFCreator = (assets: ITestAssets) => {
     .addFontDictionary('IndieFlower-R', FontIndieFlowerR)
     .addFontDictionary('GreatVibes-R', FontGreatVibesR)
     .addFontDictionary('Fantasque-BI', FontFantasqueBI)
-    .addFontDictionary('GFSBaskerville-R', FontGFSBaskervilleR)
+    .addFontDictionary('AppleStorm-R', FontAppleStormR)
+    .addFontDictionary('Hussar3D-R', FontHussar3D)
     .addContentStreams(page2ContentStreamRef);
 
   // Add pages:

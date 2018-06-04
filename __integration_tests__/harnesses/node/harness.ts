@@ -33,7 +33,8 @@ const assets = {
       fantasque_sans_mono_bi: readFont(
         'fantasque/OTF/FantasqueSansMono-BoldItalic.otf',
       ),
-      gfs_baskerville_r: readFont('gfs_baskerville/GFSBaskerville.otf'),
+      apple_storm_r: readFont('apple_storm/AppleStormCBo.otf'),
+      hussar_3d_r: readFont('hussar_3d/Hussar3DFour.otf'),
     },
   },
   images: {},
