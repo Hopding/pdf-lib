@@ -1,5 +1,14 @@
 export interface ITestAssets {
-  fonts: {};
+  fonts: {
+    ttf: {
+      ubuntu_r: Uint8Array;
+      bio_rhyme_r: Uint8Array;
+      press_start_2p_r: Uint8Array;
+      indie_flower_r: Uint8Array;
+      great_vibes_r: Uint8Array;
+    };
+    otf: { fantasque_sans_mono_bi: Uint8Array; gfs_baskerville_r: Uint8Array };
+  };
   images: {};
 }
 

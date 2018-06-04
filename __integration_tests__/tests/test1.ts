@@ -266,9 +266,51 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
     Q.operator,
   );
 
+const drawTextLines = (fontName: string, fontSize: number, lines: number) => [
+  Tf.of(fontName, fontSize),
+  ..._.flatMap(_.range(lines), () => [
+    Tj.of(faker.lorem.sentence()),
+    Td.of(0, -fontSize),
+  ]),
+];
+
+const makePage2ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
+  PDFContentStream.of(
+    PDFDictionary.from({}, pdfDoc.index),
+
+    // Create a text object
+    PDFTextObject.of(
+      // Position the current text position to the upper-left corner of the
+      // upper-right quadrant of the page.
+      Td.of(5, pageSize - 12),
+
+      rg.of(1.0, 0.0, 0.0),
+      ...drawTextLines('/Ubuntu-R', 15, 5),
+
+      rg.of(0.0, 1.0, 0.0),
+      ...drawTextLines('/BioRhyme-R', 15, 5),
+
+      rg.of(0.0, 0.0, 1.0),
+      ...drawTextLines('/PressStart2P-R', 15, 5),
+
+      rg.of(1.0, 1.0, 0.0),
+      ...drawTextLines('/IndieFlower-R', 15, 5),
+
+      rg.of(0.0, 1.0, 1.0),
+      ...drawTextLines('/GreatVibes-R', 15, 5),
+
+      rg.of(1.0, 0.0, 1.0),
+      ...drawTextLines('/Fantasque-BI', 15, 5),
+
+      rg.of(0.75, 0.75, 0.5),
+      ...drawTextLines('/GFSBaskerville-R', 15, 5),
+    ),
+  );
+
 const kernel: IPDFCreator = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.create();
 
+  // Pull this out into some sort of "getDefaultFonts" helper
   const FontTimesRoman = pdfDoc.register(
     PDFDictionary.from(
       {
@@ -280,6 +322,19 @@ const kernel: IPDFCreator = (assets: ITestAssets) => {
     ),
   );
 
+  // Embed fonts:
+  const { ttf, otf } = assets.fonts;
+
+  const [FontUbuntuR] = pdfDoc.embedFont(ttf.ubuntu_r);
+  const [FontBioRhymeR] = pdfDoc.embedFont(ttf.bio_rhyme_r);
+  const [FontPressStart2PR] = pdfDoc.embedFont(ttf.press_start_2p_r);
+  const [FontIndieFlowerR] = pdfDoc.embedFont(ttf.indie_flower_r);
+  const [FontGreatVibesR] = pdfDoc.embedFont(ttf.great_vibes_r);
+
+  const [FontFantasqueBI] = pdfDoc.embedFont(otf.fantasque_sans_mono_bi);
+  const [FontGFSBaskervilleR] = pdfDoc.embedFont(otf.gfs_baskerville_r);
+
+  // Create pages:
   const page1Size = 750;
   const page1ContentStream = makePage1ContentStream(pdfDoc, page1Size);
   const page1ContentStreamRef = pdfDoc.register(page1ContentStream);
@@ -289,7 +344,24 @@ const kernel: IPDFCreator = (assets: ITestAssets) => {
     .addFontDictionary('FontTimesRoman', FontTimesRoman)
     .addContentStreams(page1ContentStreamRef);
 
+  const page2Size = 750;
+  const page2ContentStream = makePage2ContentStream(pdfDoc, page2Size);
+  const page2ContentStreamRef = pdfDoc.register(page2ContentStream);
+
+  const page2 = pdfDoc
+    .createPage([page2Size, page2Size])
+    .addFontDictionary('Ubuntu-R', FontUbuntuR)
+    .addFontDictionary('BioRhyme-R', FontBioRhymeR)
+    .addFontDictionary('PressStart2P-R', FontPressStart2PR)
+    .addFontDictionary('IndieFlower-R', FontIndieFlowerR)
+    .addFontDictionary('GreatVibes-R', FontGreatVibesR)
+    .addFontDictionary('Fantasque-BI', FontFantasqueBI)
+    .addFontDictionary('GFSBaskerville-R', FontGFSBaskervilleR)
+    .addContentStreams(page2ContentStreamRef);
+
+  // Add pages:
   pdfDoc.addPage(page1);
+  pdfDoc.addPage(page2);
 
   return PDFDocumentWriter.saveToBytes(pdfDoc);
 };
@@ -301,5 +373,23 @@ export default {
     `This test verifies that a PDF can be created from scratch.\n` +
     `It ensures that we can manipulate the PDF's pages, add fonts and images, ` +
     `and use all valid content stream operators.`,
-  checklist: ['Foo', 'Bar', 'Qux', 'Baz'],
+  checklist: [
+    'there is one page.',
+    'the background color of the upper-left quadrant of page 1 is red.',
+    'the upper-left quadrant of page 1 contains the left and top sides of a square, colored yellow.',
+    'the upper-left quadrant of page 1 does NOT contain the right and bottom sides of the square.',
+    'the background color of the upper-right quadrant of page 1 is green.',
+    'the upper-right quadrant of page 1 contains a circular cutout of pink text.',
+    'the upper-right quadrant of page 1 contains a centered orange oval that is NOT covered by text.',
+    'the background color of the lower-left quadrant of page 1 is cyan.',
+    'the lower-left quadrant of page 1 contains a circular formation of lines',
+    'the lines are colored dark magenta.',
+    'the lines are shaped like hot dogs, NOT rectangles.',
+    'the background color of the lower-right quadrant of page 1 is light gray.',
+    'the lower-right quadrant of page 1 contains a dark gray, centered, square.',
+    'the square\'s corners are rounded, NOT sharp.',
+    'the dark gray square contains a white square.',
+    'the white square\'s edges are flat, NOT sharp.',
+    'the white square contains a black square with sharp edges.',
+  ],
 };

@@ -17,8 +17,25 @@ const writePdfToTmp = (pdf: Uint8Array) => {
   return path;
 };
 
+const readFont = (font: string) =>
+  fs.readFileSync(`__integration_tests__/assets/fonts/${font}`);
+
 const assets = {
-  fonts: {},
+  fonts: {
+    ttf: {
+      ubuntu_r: readFont('ubuntu/Ubuntu-R.ttf'),
+      bio_rhyme_r: readFont('bio_rhyme/BioRhymeExpanded-Regular.ttf'),
+      press_start_2p_r: readFont('press_start_2p/PressStart2P-Regular.ttf'),
+      indie_flower_r: readFont('indie_flower/IndieFlower.ttf'),
+      great_vibes_r: readFont('great_vibes/GreatVibes-Regular.ttf'),
+    },
+    otf: {
+      fantasque_sans_mono_bi: readFont(
+        'fantasque/OTF/FantasqueSansMono-BoldItalic.otf',
+      ),
+      gfs_baskerville_r: readFont('gfs_baskerville/GFSBaskerville.otf'),
+    },
+  },
   images: {},
 };
 

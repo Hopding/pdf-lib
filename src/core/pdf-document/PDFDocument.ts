@@ -134,22 +134,25 @@ class PDFDocument {
   };
 
   embedFont = (
-    name: string,
     fontData: Uint8Array,
-    flagOptions: IFontFlagOptions,
-  ): PDFIndirectReference<PDFDictionary> => {
-    const fontFactory = PDFFontFactory.for(name, fontData, flagOptions);
-    return fontFactory.embedFontIn(this);
+    fontFlags: IFontFlagOptions = { Nonsymbolic: true },
+  ): [PDFIndirectReference<PDFDictionary>, PDFFontFactory] => {
+    const fontFactory = PDFFontFactory.for(fontData, fontFlags);
+    return [fontFactory.embedFontIn(this), fontFactory];
   };
 
-  addPNG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+  embedPNG = (
+    imageData: Uint8Array,
+  ): [PDFIndirectReference<PDFRawStream>, PNGXObjectFactory] => {
     const pngFactory = PNGXObjectFactory.for(imageData);
-    return pngFactory.embedImageIn(this);
+    return [pngFactory.embedImageIn(this), pngFactory];
   };
 
-  addJPG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+  embedJPG = (
+    imageData: Uint8Array,
+  ): [PDFIndirectReference<PDFRawStream>, JPEGXObjectFactory] => {
     const jpgFactory = JPEGXObjectFactory.for(imageData);
-    return jpgFactory.embedImageIn(this);
+    return [jpgFactory.embedImageIn(this), jpgFactory];
   };
 }
 
