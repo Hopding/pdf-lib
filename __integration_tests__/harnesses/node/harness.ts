@@ -20,6 +20,9 @@ const writePdfToTmp = (pdf: Uint8Array) => {
 const readFont = (font: string) =>
   fs.readFileSync(`__integration_tests__/assets/fonts/${font}`);
 
+const readImage = (image: string) =>
+  fs.readFileSync(`__integration_tests__/assets/images/${image}`);
+
 const assets = {
   fonts: {
     ttf: {
@@ -37,7 +40,18 @@ const assets = {
       hussar_3d_r: readFont('hussar_3d/Hussar3DFour.otf'),
     },
   },
-  images: {},
+  images: {
+    jpg: {
+      cat_riding_unicorn: readImage('cat_riding_unicorn.jpg'),
+      minions_laughing: readImage('minions_laughing.jpg'),
+    },
+    png: {
+      greyscale_bird: readImage('greyscale_bird.png'),
+      minions_banana_alpha: readImage('minions_banana_alpha.png'),
+      minions_banana_no_alpha: readImage('minions_banana_no_alpha.png'),
+      small_mario: readImage('small_mario.png'),
+    },
+  },
 };
 
 const renderTitle = (title: string) => {

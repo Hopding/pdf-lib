@@ -13,7 +13,18 @@ export interface ITestAssets {
       hussar_3d_r: Uint8Array;
     };
   };
-  images: {};
+  images: {
+    jpg: {
+      cat_riding_unicorn: Uint8Array;
+      minions_laughing: Uint8Array;
+    };
+    png: {
+      greyscale_bird: Uint8Array;
+      minions_banana_alpha: Uint8Array;
+      minions_banana_no_alpha: Uint8Array;
+      small_mario: Uint8Array;
+    };
+  };
 }
 
 export type IPDFCreator = (assets: ITestAssets) => Uint8Array;
