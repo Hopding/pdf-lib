@@ -1,6 +1,9 @@
 import _ from 'lodash';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
+import Standard14Fonts, {
+  IStandard14FontsUnion,
+} from 'core/pdf-document/Standard14Fonts';
 import {
   PDFDictionary,
   PDFIndirectReference,
@@ -21,45 +24,6 @@ import PDFFontFactory, {
 import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import { error } from 'utils';
 import { isInstance, oneOf, validate } from 'utils/validate';
-
-/**
- * === Specification: "9.6.2.2 Standard Type 1 Fonts (Standard 14 Fonts)" ===
- * These are the PostScript names of 14 Type 1 fonts, known as the standard 14
- * fonts. These fonts, or their font metrics and suitable substitution fonts,
- * shall be available to the conforming reader.
- */
-export const Standard14Fonts: Standard14FontsUnion[] = [
-  'Times-Roman',
-  'Helvetica',
-  'Courier',
-  'Symbol',
-  'Times-Bold',
-  'Helvetica-Bold',
-  'Courier-Bold',
-  'ZapfDingbats',
-  'Times-Italic',
-  'Helvetica-Oblique',
-  'Courier-Oblique',
-  'Times-BoldItalic',
-  'Helvetica-BoldOblique',
-  'Courier-BoldOblique',
-];
-
-export type Standard14FontsUnion =
-  | 'Times-Roman'
-  | 'Helvetica'
-  | 'Courier'
-  | 'Symbol'
-  | 'Times-Bold'
-  | 'Helvetica-Bold'
-  | 'Courier-Bold'
-  | 'ZapfDingbats'
-  | 'Times-Italic'
-  | 'Helvetica-Oblique'
-  | 'Courier-Oblique'
-  | 'Times-BoldItalic'
-  | 'Helvetica-BoldOblique'
-  | 'Courier-BoldOblique';
 
 class PDFDocument {
   static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
@@ -174,7 +138,7 @@ class PDFDocument {
   };
 
   embedStandardFont = (
-    fontName: Standard14FontsUnion,
+    fontName: IStandard14FontsUnion,
   ): PDFIndirectReference<PDFDictionary> => {
     validate(
       fontName,

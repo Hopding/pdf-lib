@@ -53,6 +53,7 @@ Before 0.1.0 release:
  - core/pdf-parser/encoding/*
  - core/pdf-structures/factories/*
  - utils/*
+* Add unit tests for simple and composite PDFOperator helpers
 
 # Bugs
 * See if "parseLinearization" is even necessary? It looks like the "linearization" section of a PDF might just be the same in structure as an update section, for example...

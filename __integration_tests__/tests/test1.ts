@@ -5,7 +5,7 @@ import PDFDocument from 'core/pdf-document/PDFDocument';
 import PDFDocumentFactory from 'core/pdf-document/PDFDocumentFactory';
 import PDFDocumentWriter from 'core/pdf-document/PDFDocumentWriter';
 import { PDFDictionary, PDFName } from 'core/pdf-objects';
-import PDFOperators from 'core/pdf-operators/index';
+import PDFOperators from 'core/pdf-operators';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { PDFContentStream } from 'core/pdf-structures';
 import PDFPage from 'core/pdf-structures/PDFPage';
