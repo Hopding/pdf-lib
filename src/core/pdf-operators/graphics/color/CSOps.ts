@@ -1,9 +1,11 @@
 /* tslint:disable:max-classes-per-file class-name */
-import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
 
-import { addStringToBuffer } from 'utils';
-import { validate } from 'utils/validate';
+import { PDFName } from 'core/pdf-objects';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
+
+import { addStringToBuffer, or } from 'utils';
+import { isInstance, validate } from 'utils/validate';
 
 /**
  * Set the current colour space to use for stroking operations. The operand name
@@ -38,14 +40,18 @@ import { validate } from 'utils/validate';
  * causes nothing to be painted.
  */
 export class CS extends PDFOperator {
-  static of = (name: string) => new CS(name);
+  static of = (name: string | PDFName) => new CS(name);
 
-  name: string;
+  name: PDFName;
 
-  constructor(name: string) {
+  constructor(name: string | PDFName) {
     super();
-    validate(name, _.isString, 'CS operator arg "name" must be a string.');
-    this.name = name;
+    validate(
+      name,
+      or(_.isString, isInstance(PDFName)),
+      'CS operator arg "name" must be a string or PDFName.',
+    );
+    this.name = _.isString(name) ? PDFName.from(name) : name;
   }
 
   toString = (): string => `${this.name} CS\n`;
@@ -60,14 +66,18 @@ export class CS extends PDFOperator {
  * Same as CS but used for nonstroking operations.
  */
 export class cs extends PDFOperator {
-  static of = (name: string) => new cs(name);
+  static of = (name: string | PDFName) => new cs(name);
 
-  name: string;
+  name: PDFName;
 
-  constructor(name: string) {
+  constructor(name: string | PDFName) {
     super();
-    validate(name, _.isString, 'cs operator arg "name" must be a string.');
-    this.name = name;
+    validate(
+      name,
+      or(_.isString, isInstance(PDFName)),
+      'cs operator arg "name" must be a string or PDFName.',
+    );
+    this.name = _.isString(name) ? PDFName.from(name) : name;
   }
 
   toString = (): string => `${this.name} cs\n`;

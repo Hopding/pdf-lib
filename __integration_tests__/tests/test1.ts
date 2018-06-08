@@ -69,7 +69,7 @@ const makeUpperLeftQuadrant = (size: number) => [
   // (1) ===== Draw a red background =====
 
   // Set the non-stroking color space to RGB.
-  cs.of('/DeviceRGB'),
+  cs.of('DeviceRGB'),
 
   // Use the color red for non-stroking operations.
   sc.of(1.0, 0.0, 0.0),
@@ -96,7 +96,7 @@ const makeUpperLeftQuadrant = (size: number) => [
   n.operator,
 
   // Set the stroking color space to RGB.
-  CS.of('/DeviceRGB'),
+  CS.of('DeviceRGB'),
 
   // Use the color yellow for stroking operations.
   SC.of(1.0, 1.0, 0.0),
@@ -147,7 +147,7 @@ const makeUpperRightQuadrant = (size: number) => [
     rg.of(1.0, 0.0, 1.0),
 
     // Use Times New Roman font, size 48.
-    Tf.of('/FontTimesRoman', 48),
+    Tf.of('FontTimesRoman', 48),
 
     // Position the current text position to the upper-left corner of
     // this quadrant.
@@ -315,14 +315,14 @@ const makePage2ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
       rg.of(101 / 255, 123 / 255, 131 / 255),
 
       // Draw 8 paragraphs of text, each in a different font.
-      ...drawTextLines('/Ubuntu-R', 20, 5),
-      ...drawTextLines('/Fantasque-BI', 25, 5),
-      ...drawTextLines('/IndieFlower-R', 25, 5),
-      ...drawTextLines('/GreatVibes-R', 30, 5),
-      ...drawTextLines('/AppleStorm-R', 25, 5),
-      ...drawTextLines('/BioRhyme-R', 15, 5),
-      ...drawTextLines('/PressStart2P-R', 15, 5),
-      ...drawTextLines('/Hussar3D-R', 25, 5, true),
+      ...drawTextLines('Ubuntu-R', 20, 5),
+      ...drawTextLines('Fantasque-BI', 25, 5),
+      ...drawTextLines('IndieFlower-R', 25, 5),
+      ...drawTextLines('GreatVibes-R', 30, 5),
+      ...drawTextLines('AppleStorm-R', 25, 5),
+      ...drawTextLines('BioRhyme-R', 15, 5),
+      ...drawTextLines('PressStart2P-R', 15, 5),
+      ...drawTextLines('Hussar3D-R', 25, 5, true),
     ),
   );
 
@@ -343,9 +343,9 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
     cm.of(1, 0, 0, 1, 0, pageHeight), // translate
 
     // Draw three images below one another. Scaling them to fit on the page.
-    ...drawImage('/CatRidingUnicorn', 1920 * 0.2, 1080 * 0.2),
-    ...drawImage('/MinionsLaughing', 630 * 0.75, 354 * 0.75),
-    ...drawImage('/GreyscaleBird', 600 * 0.75, 375 * 0.75),
+    ...drawImage('CatRidingUnicorn', 1920 * 0.2, 1080 * 0.2),
+    ...drawImage('MinionsLaughing', 630 * 0.75, 354 * 0.75),
+    ...drawImage('GreyscaleBird', 600 * 0.75, 375 * 0.75),
 
     // Draw a green background extending to bottom of the page to demo the
     // alpha layer of the following transparent PNGs.
@@ -357,9 +357,9 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
     f.operator,
 
     // Draw three images below one another. Scaling them to fit on the page.
-    ...drawImage('/MinionsBananaAlpha', 960 * 0.5, 640 * 0.5),
-    ...drawImage('/MinionsBananaNoAlpha', 960 * 0.5, 640 * 0.5),
-    ...drawImage('/SmallMario', 1473 * 0.18, 1854 * 0.18),
+    ...drawImage('MinionsBananaAlpha', 960 * 0.5, 640 * 0.5),
+    ...drawImage('MinionsBananaNoAlpha', 960 * 0.5, 640 * 0.5),
+    ...drawImage('SmallMario', 1473 * 0.18, 1854 * 0.18),
   );
 
 // Define the test kernel using the above content stream functions.

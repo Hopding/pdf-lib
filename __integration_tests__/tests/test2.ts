@@ -110,7 +110,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
       {
         x: 5,
         y: size / 2 - 5 - 25,
-        font: '/FontTimesRoman',
+        font: 'FontTimesRoman',
         size: 32,
         fillRgbColor: [1, 0, 1],
       },
@@ -171,49 +171,49 @@ const makePage2ContentStream = (pdfDoc: PDFDocument, size: number) =>
     ...drawLinesOfText(ipsumLines, {
       y: size - 20,
       size: 20,
-      font: '/Ubuntu-R',
+      font: 'Ubuntu-R',
       fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 105,
       size: 25,
-      font: '/Fantasque-BI',
+      font: 'Fantasque-BI',
       fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 200,
       size: 25,
-      font: '/IndieFlower-R',
+      font: 'IndieFlower-R',
       fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 300,
       size: 30,
-      font: '/GreatVibes-R',
+      font: 'GreatVibes-R',
       fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 425,
       size: 25,
-      font: '/AppleStorm-R',
+      font: 'AppleStorm-R',
       fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 500,
       size: 15,
-      font: '/BioRhyme-R',
+      font: 'BioRhyme-R',
       fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 575,
       size: 15,
-      font: '/PressStart2P-R',
+      font: 'PressStart2P-R',
       fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 650,
       size: 25,
-      font: '/Hussar3D-R',
+      font: 'Hussar3D-R',
       fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
     }),
   );
@@ -231,19 +231,19 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
     // clip(),
     // endPath(),
     ...drawImage({
-      name: '/CatRidingUnicorn',
+      name: 'CatRidingUnicorn',
       y: pageHeight - 1080 * 0.2,
       width: 1920 * 0.2,
       height: 1080 * 0.2,
     }),
     ...drawImage({
-      name: '/MinionsLaughing',
+      name: 'MinionsLaughing',
       y: pageHeight - 1080 * 0.2 - 354 * 0.75,
       width: 630 * 0.75,
       height: 354 * 0.75,
     }),
     ...drawImage({
-      name: '/GreyscaleBird',
+      name: 'GreyscaleBird',
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75,
       width: 600 * 0.75,
       height: 375 * 0.75,
@@ -254,20 +254,20 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
       fillRgbColor: [0, 1, 0],
     }),
     ...drawImage({
-      name: '/MinionsBananaAlpha',
+      name: 'MinionsBananaAlpha',
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75 - 640 * 0.5,
       width: 960 * 0.5,
       height: 640 * 0.5,
     }),
     ...drawImage({
-      name: '/MinionsBananaNoAlpha',
+      name: 'MinionsBananaNoAlpha',
       // prettier-ignore
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75 - 640 * 0.5 - 640 * 0.5,
       width: 960 * 0.5,
       height: 640 * 0.5,
     }),
     ...drawImage({
-      name: '/SmallMario',
+      name: 'SmallMario',
       // prettier-ignore
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75 - 640 * 0.5 - 640 * 0.5 - 1854 * 0.18,
       width: 1473 * 0.18,
