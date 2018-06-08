@@ -8,13 +8,18 @@ import { isInRange, validate } from 'utils/validate';
 import {
   appendBezierCurve,
   clip,
+  closePath,
+  dashPattern,
   endPath,
   fill,
   fillAndStroke,
   fillingRgbColor,
+  fontAndSize,
   image,
+  lineHeight,
   lineWidth,
   moveTo,
+  nextLine,
   popGraphicsState,
   pushGraphicsState,
   rectangle,
@@ -22,6 +27,8 @@ import {
   square,
   stroke,
   strokingRgbColor,
+  text,
+  textPosition,
   translate,
 } from 'core/pdf-operators/helpers/simple';
 
@@ -32,7 +39,7 @@ import {
 //   P_0 = (-1,0), P_1 = (-1,c),  P_2 = (-c,1),  P_3 = (0,1)
 //     with c = 0.551915024494
 const C_VAL = 0.551915024494;
-export const drawEllipsePath = ({
+const drawEllipsePath = ({
   x = 0,
   y = 0,
   xScale = 100,
@@ -54,22 +61,23 @@ export const drawEllipsePath = ({
   popGraphicsState(),
 ];
 
+// TODO: Implement borderStyle option.
 export const drawEllipse = ({
   x = 0,
   y = 0,
   xScale = 100,
   yScale = 100,
-  strokeWidth = 15,
+  borderWidth = 15,
   fillRgbColor = [],
-  strokeRgbColor = [],
+  borderRgbColor = [],
 }: {
   x?: number;
   y?: number;
   xScale?: number;
   yScale?: number;
-  strokeWidth?: number;
+  borderWidth?: number;
   fillRgbColor?: number[];
-  strokeRgbColor?: number[];
+  borderRgbColor?: number[];
 }): PDFOperator[] => [
   pushGraphicsState(),
   fillingRgbColor(
@@ -78,44 +86,81 @@ export const drawEllipse = ({
     fillRgbColor[2] || 0,
   ),
   strokingRgbColor(
-    strokeRgbColor[0] || 0,
-    strokeRgbColor[1] || 0,
-    strokeRgbColor[2] || 0,
+    borderRgbColor[0] || 0,
+    borderRgbColor[1] || 0,
+    borderRgbColor[2] || 0,
   ),
-  lineWidth(strokeWidth),
+  lineWidth(borderWidth),
   ...drawEllipsePath({ x, y, xScale, yScale }),
   // prettier-ignore
-  _.isEmpty(fillRgbColor) && _.isEmpty(strokeRgbColor)     ? fill()
-  : !_.isEmpty(fillRgbColor) && !_.isEmpty(strokeRgbColor) ? fillAndStroke()
-  : !_.isEmpty(fillRgbColor)                               ? fill()
-  : !_.isEmpty(strokeRgbColor)                             ? stroke()
-  : endPath(),
+  !_.isEmpty(fillRgbColor) && !_.isEmpty(borderRgbColor) ? fillAndStroke()
+  : !_.isEmpty(fillRgbColor)                             ? fill()
+  : !_.isEmpty(borderRgbColor)                           ? stroke()
+  : closePath(),
   popGraphicsState(),
 ];
 
 export const drawCircle = ({
   x = 0,
   y = 0,
-  scale: scaleVal = 100,
+  size = 100,
+  borderWidth = 15,
+  fillRgbColor = [],
+  borderRgbColor = [],
 }: {
   x?: number;
   y?: number;
-  scale?: number;
-}): PDFOperator[] => drawEllipse({ x, y, xScale: scaleVal, yScale: scaleVal });
+  size?: number;
+  borderWidth?: number;
+  fillRgbColor?: number[];
+  borderRgbColor?: number[];
+}): PDFOperator[] =>
+  drawEllipse({
+    x,
+    y,
+    xScale: size,
+    yScale: size,
+    borderWidth,
+    fillRgbColor,
+    borderRgbColor,
+  });
 
+// TODO: Implement cornerStyle option
 export const drawRectangle = ({
   x = 0,
   y = 0,
   width = 100,
-  height = 50,
+  height = 100,
+  borderWidth = 15,
+  fillRgbColor = [],
+  borderRgbColor = [],
 }: {
   x?: number;
   y?: number;
   width?: number;
   height?: number;
+  borderWidth?: number;
+  fillRgbColor?: number[];
+  borderRgbColor?: number[];
 }): PDFOperator[] => [
   pushGraphicsState(),
+  fillingRgbColor(
+    fillRgbColor[0] || 0,
+    fillRgbColor[1] || 0,
+    fillRgbColor[2] || 0,
+  ),
+  strokingRgbColor(
+    borderRgbColor[0] || 0,
+    borderRgbColor[1] || 0,
+    borderRgbColor[2] || 0,
+  ),
+  lineWidth(borderWidth),
   rectangle(x, y, width, height),
+  // prettier-ignore
+  !_.isEmpty(fillRgbColor) && !_.isEmpty(borderRgbColor) ? fillAndStroke()
+  : !_.isEmpty(fillRgbColor)                             ? fill()
+  : !_.isEmpty(borderRgbColor)                           ? stroke()
+  : closePath(),
   popGraphicsState(),
 ];
 
@@ -123,14 +168,94 @@ export const drawSquare = ({
   x = 0,
   y = 0,
   size = 100,
+  borderWidth = 15,
+  fillRgbColor = [],
+  borderRgbColor = [],
 }: {
   x?: number;
   y?: number;
   size?: number;
-}): PDFOperator[] => [
-  pushGraphicsState(),
-  square(x, y, size),
-  popGraphicsState(),
+  borderWidth?: number;
+  fillRgbColor?: number[];
+  borderRgbColor?: number[];
+}): PDFOperator[] =>
+  drawRectangle({
+    x,
+    y,
+    width: size,
+    height: size,
+    borderWidth,
+    fillRgbColor,
+    borderRgbColor,
+  });
+
+// TODO: Implement the border* options
+export const drawText = (
+  textStr: string,
+  {
+    x = 0,
+    y = 0,
+    font,
+    size = 12,
+    // borderWidth = 15,
+    fillRgbColor = [],
+  }: // borderRgbColor = [],
+  {
+    x?: number;
+    y?: number;
+    font: string; // | PDFName
+    size?: number;
+    // borderWidth?: number;
+    fillRgbColor?: number[];
+    // borderRgbColor?: number[];
+  },
+): PDFOperator[] => [
+  PDFTextObject.of(
+    fillingRgbColor(
+      fillRgbColor[0] || 0,
+      fillRgbColor[1] || 0,
+      fillRgbColor[2] || 0,
+    ),
+    fontAndSize(font, size),
+    textPosition(x, y),
+    text(textStr),
+  ),
+];
+
+// TODO: Implement the border* options
+export const drawLinesOfText = (
+  lines: string[],
+  {
+    x = 0,
+    y = 0,
+    font,
+    size = 12,
+    lineHeight: lineHeightParam,
+    // borderWidth = 15,
+    fillRgbColor = [],
+  }: // borderRgbColor = [],
+  {
+    x?: number;
+    y?: number;
+    font: string; // | PDFName
+    size?: number;
+    lineHeight?: number;
+    // borderWidth?: number;
+    fillRgbColor?: number[];
+    // borderRgbColor?: number[];
+  },
+): PDFOperator[] => [
+  PDFTextObject.of(
+    fillingRgbColor(
+      fillRgbColor[0] || 0,
+      fillRgbColor[1] || 0,
+      fillRgbColor[2] || 0,
+    ),
+    fontAndSize(font, size),
+    lineHeight(lineHeightParam || size),
+    textPosition(x, y),
+    ..._.flatMap(lines, (line) => [text(line), nextLine()]),
+  ),
 ];
 
 export const drawImage = ({
@@ -153,6 +278,4 @@ export const drawImage = ({
   popGraphicsState(),
 ];
 
-// TODO: Composite operator to draw text and move to newline.
-// TODO: Composite operator to draw multiline text? Looks like the behaviour
-//       "by default" is that newlines translate to spaces...
+// TODO: Make a "drawPolygon" function

@@ -75,7 +75,7 @@ export const endPath = () => n.operator;
 //       from lower level operations.
 
 /* ======== Test positioning operators ======== */
-const { T } = PDFOperators;
+const { T, Td } = PDFOperators;
 
 // TODO: See if it makes sense to have a Td operator helper. Probably to in
 //       order to move the current text position in more ways than just going
@@ -83,7 +83,9 @@ const { T } = PDFOperators;
 //       operator.
 
 // TODO: Allow an optional number to move more/less than the default line height.
-export const nextLine = () => T.asterisk;
+export const nextLine = () => T.asterisk.operator;
+
+export const textPosition = Td.of;
 
 /* ======== Text showing operators ======== */
 const { Tj } = PDFOperators;
@@ -120,116 +122,14 @@ export const image = Do.of;
 /* ======== Color operators ======== */
 const { G, g, K, k, RG, rg } = PDFOperators;
 
-export const fillingGrayscaleColor = (grayscale: number) => {
-  validate(
-    grayscale,
-    isInRange(0, 100),
-    'fillingGrayscaleColor: "grayscale" must be in range 0-100.',
-  );
-  return g.of(grayscale / 100);
-};
+export const fillingGrayscaleColor = g.of;
 
-export const strokingGrayscaleColor = (grayscale: number) => {
-  validate(
-    grayscale,
-    isInRange(0, 100),
-    'strokingGrayscaleColor: "grayscale" must be in range 0-100.',
-  );
-  return G.of(grayscale / 100);
-};
+export const strokingGrayscaleColor = G.of;
 
-export const fillingRgbColor = (red: number, green: number, blue: number) => {
-  validate(
-    red,
-    isInRange(0, 255),
-    'fillingRgbColor: "red" must be in range 0-255.',
-  );
-  validate(
-    green,
-    isInRange(0, 255),
-    'fillingRgbColor: "green" must be in range 0-255.',
-  );
-  validate(
-    blue,
-    isInRange(0, 255),
-    'fillingRgbColor: "blue" must be in range 0-255.',
-  );
-  return rg.of(red / 255, green / 255, blue / 255);
-};
+export const fillingRgbColor = rg.of;
 
-export const strokingRgbColor = (red: number, green: number, blue: number) => {
-  validate(
-    red,
-    isInRange(0, 255),
-    'strokingRgbColor: "red" must be in range 0-255.',
-  );
-  validate(
-    green,
-    isInRange(0, 255),
-    'strokingRgbColor: "green" must be in range 0-255.',
-  );
-  validate(
-    blue,
-    isInRange(0, 255),
-    'strokingRgbColor: "blue" must be in range 0-255.',
-  );
-  return RG.of(red / 255, green / 255, blue / 255);
-};
+export const strokingRgbColor = RG.of;
 
-export const fillingCmykColor = (
-  cyan: number,
-  magenta: number,
-  yellow: number,
-  key: number,
-) => {
-  validate(
-    cyan,
-    isInRange(0, 100),
-    'fillingCmykColor: "cyan" must be in range 0-100.',
-  );
-  validate(
-    magenta,
-    isInRange(0, 100),
-    'fillingCmykColor: "magenta" must be in range 0-100.',
-  );
-  validate(
-    yellow,
-    isInRange(0, 100),
-    'fillingCmykColor: "yellow" must be in range 0-100.',
-  );
-  validate(
-    key,
-    isInRange(0, 100),
-    'fillingCmykColor: "key" must be in range 0-100.',
-  );
-  return k.of(cyan / 100, magenta / 100, yellow / 100, key / 100);
-};
+export const fillingCmykColor = k.of;
 
-export const strokingCmykColor = (
-  cyan: number,
-  magenta: number,
-  yellow: number,
-  key: number,
-) => {
-  validate(
-    cyan,
-    isInRange(0, 100),
-    'strokingCmykColor: "cyan" must be in range 0-100.',
-  );
-  validate(
-    magenta,
-    isInRange(0, 100),
-    'strokingCmykColor: "magenta" must be in range 0-100.',
-  );
-  validate(
-    yellow,
-    isInRange(0, 100),
-    'strokingCmykColor: "yellow" must be in range 0-100.',
-  );
-  validate(
-    key,
-    isInRange(0, 100),
-    'strokingCmykColor: "key" must be in range 0-100.',
-  );
-  return K.of(cyan / 100, magenta / 100, yellow / 100, key / 100);
-};
+export const strokingCmykColor = K.of;

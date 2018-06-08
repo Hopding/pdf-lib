@@ -42,6 +42,8 @@ Before 0.1.0 release:
 * Support document outlines
 
 # Tests:
+* Consider using PDF.js to render documents in unit tests to avoid needing
+  humans to run integration tests all the time.
 * Add more tests for "parseDocument" function. Need to test parsing on
  - updated documents
  - linearized documents
