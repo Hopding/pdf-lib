@@ -237,7 +237,7 @@ export const drawLinesOfText = (
   {
     x?: number;
     y?: number;
-    font: string; // | PDFName
+    font: string | PDFName;
     size?: number;
     lineHeight?: number;
     // borderWidth?: number;
@@ -265,7 +265,7 @@ export const drawImage = ({
   width = 100,
   height = 100,
 }: {
-  name: string; // | PDFName;
+  name: string | PDFName;
   x?: number;
   y?: number;
   width?: number;
