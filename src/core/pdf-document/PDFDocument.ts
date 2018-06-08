@@ -11,8 +11,10 @@ import {
   PDFObject,
   PDFRawStream,
 } from 'core/pdf-objects';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
 import {
   PDFCatalog,
+  PDFContentStream,
   PDFHeader,
   PDFPage,
   PDFPageTree,
@@ -65,6 +67,9 @@ class PDFDocument {
 
   createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
     PDFPage.create(this.index, size, resources);
+
+  createContentStream = (...operators: PDFOperator[]) =>
+    PDFContentStream.of(PDFDictionary.from({}, this.index), ...operators);
 
   addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');

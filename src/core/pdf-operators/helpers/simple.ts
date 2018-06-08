@@ -20,23 +20,28 @@ export const translate = (xPos: number, yPos: number) =>
 export const scale = (xPos: number, yPos: number) =>
   cm.of(xPos, 0, 0, yPos, 0, 0);
 
-// TODO: TEST THIS THING: [cos(q) sin(q) -sin(q) cos(q) 0 0]
-export const rotate = (angle: number) =>
-  cm.of(cos(angle), sin(angle), -sin(angle), cos(angle), 0, 0);
-
-// TODO: TEST THIS THING: [1 tana tanb 1 0 0]
-export const skew = (xSkewAngle: number, ySkewAngle: number) =>
-  cm.of(1, tan(xSkewAngle), tan(ySkewAngle), 1, 0, 0);
+// TODO: TEST THIS:
+// export const rotate = (angle: number) =>
+//   cm.of(cos(angle), sin(angle), -sin(angle), cos(angle), 0, 0);
+//
+// export const rotateDegrees = (angle: number) => {
+//   const radians = angle * (Math.PI / 180);
+//   return cm.of(cos(radians), sin(radians), -sin(radians), cos(radians), 0, 0);
+// };
+//
+// // TODO: TEST THIS THING: [1 tana tanb 1 0 0]
+// export const skew = (xSkewAngle: number, ySkewAngle: number) =>
+//   cm.of(1, tan(xSkewAngle), tan(ySkewAngle), 1, 0, 0);
 
 export const dashPattern = d.of;
 
 export const restoreDashPattern = () => d.of([], 0);
 
-// TODO: Update this to accept a string enum instead of integers.
-export const lineCap = J.of;
+export const lineCap = (style: 'butt' | 'round' | 'projecting') =>
+  J.of({ butt: 0, round: 1, projecting: 2 }[style]);
 
-// TODO: Update this to accept a string enum instead of integers.
-export const lineJoin = j.of;
+export const lineJoin = (style: 'miter' | 'round' | 'bevel') =>
+  j.of({ miter: 0, round: 1, bevel: 2 }[style]);
 
 export const popGraphicsState = () => Q.operator;
 
@@ -71,16 +76,8 @@ export const fillAndStroke = () => B.operator;
 
 export const endPath = () => n.operator;
 
-// TODO: Make sure don't need B and b operators because they can be implemented
-//       from lower level operations.
-
 /* ======== Test positioning operators ======== */
 const { T, Td } = PDFOperators;
-
-// TODO: See if it makes sense to have a Td operator helper. Probably to in
-//       order to move the current text position in more ways than just going
-//       to the next line. Might also be able to make a helper for the "Tm"
-//       operator.
 
 // TODO: Allow an optional number to move more/less than the default line height.
 export const nextLine = () => T.asterisk.operator;
@@ -108,15 +105,33 @@ export const lineHeight = TL.of;
 
 export const textRise = Ts.of;
 
-// TODO: Update this to accept a string enum instead of integers.
-//       See this table for reference: "Table 106 – Text rendering modes"
-export const textRenderingMode = Tr.of;
+export const textRenderingMode = (
+  style:
+    | 'fill'
+    | 'outline'
+    | 'fillAndOutline'
+    | 'invisible'
+    | 'fillAndClip'
+    | 'outlineAndClip'
+    | 'fillAndOutlineAndClip'
+    | 'clip',
+) =>
+  Tr.of(
+    {
+      fill: 0,
+      outline: 1,
+      fillAndOutline: 2,
+      invisible: 3,
+      fillAndClip: 4,
+      outlineAndClip: 5,
+      fillAndOutlineAndClip: 6,
+      clip: 7,
+    }[style],
+  );
 
 /* ======== XObject operator ======== */
 const { Do } = PDFOperators;
 
-// TODO: See if this would make more sense as a composite helper, so that
-//       the dims can be passed to the operator as well.
 export const image = Do.of;
 
 /* ======== Color operators ======== */

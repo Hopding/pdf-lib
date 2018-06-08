@@ -35,10 +35,10 @@ import {
   nextLine,
   popGraphicsState,
   pushGraphicsState,
-  rotate,
   scale,
-  skew,
+  strokingRgbColor,
   text,
+  textRenderingMode,
   translate,
 } from 'core/pdf-operators/helpers/simple';
 
@@ -54,9 +54,7 @@ const ipsumLines = [
 ];
 
 const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
-  PDFContentStream.of(
-    PDFDictionary.from({}, pdfDoc.index),
-
+  pdfDoc.createContentStream(
     // Upper-left quadrant
     pushGraphicsState(),
     translate(0, size / 2),
@@ -127,7 +125,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
       fillRgbColor: [0, 1, 1],
     }),
     dashPattern([25], 25),
-    lineCap(1),
+    lineCap('round'),
     ...drawCircle({
       x: size / 4,
       y: size / 4,
@@ -144,7 +142,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
       size: size / 2,
       fillRgbColor: [0.8, 0.8, 0.8],
     }),
-    lineJoin(1),
+    lineJoin('round'),
     ...drawSquare({
       x: 50,
       y: 50,
@@ -152,7 +150,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
       borderRgbColor: [0.6, 0.6, 0.6],
       borderWidth: 15,
     }),
-    lineJoin(2),
+    lineJoin('bevel'),
     ...drawSquare({
       x: 100,
       y: 100,
@@ -165,9 +163,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
   );
 
 const makePage2ContentStream = (pdfDoc: PDFDocument, size: number) =>
-  PDFContentStream.of(
-    PDFDictionary.from({}, pdfDoc.index),
-
+  pdfDoc.createContentStream(
     ...drawSquare({
       size,
       fillRgbColor: [253 / 255, 246 / 255, 227 / 255],
@@ -223,16 +219,23 @@ const makePage2ContentStream = (pdfDoc: PDFDocument, size: number) =>
   );
 
 const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
-  PDFContentStream.of(
-    PDFDictionary.from({}, pdfDoc.index),
-
+  pdfDoc.createContentStream(
+    // textRenderingMode('outlineAndClip'),
+    // strokingRgbColor(0.5, 0.5, 0.5),
+    // ...drawText('Unicornz!', {
+    //   x: 75,
+    //   y: pageHeight - 1080 * 0.2 + 75,
+    //   font: '/Ubuntu-R',
+    //   size: 50,
+    // }),
+    // clip(),
+    // endPath(),
     ...drawImage({
       name: '/CatRidingUnicorn',
       y: pageHeight - 1080 * 0.2,
       width: 1920 * 0.2,
       height: 1080 * 0.2,
     }),
-    rotate(45),
     ...drawImage({
       name: '/MinionsLaughing',
       y: pageHeight - 1080 * 0.2 - 354 * 0.75,
@@ -337,6 +340,7 @@ const kernel: IPDFCreator = (assets: ITestAssets) => {
 
   const page3 = pdfDoc
     .createPage([page3Width, page3Height])
+    .addFontDictionary('Ubuntu-R', FontUbuntuR)
     .addXObject('CatRidingUnicorn', JpgCatRidingUnicorn)
     .addXObject('MinionsLaughing', JpgMinionsLaughing)
     .addXObject('GreyscaleBird', PngGreyscaleBird)
