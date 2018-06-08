@@ -35,7 +35,9 @@ import {
   nextLine,
   popGraphicsState,
   pushGraphicsState,
+  rotate,
   scale,
+  skew,
   text,
   translate,
 } from 'core/pdf-operators/helpers/simple';
@@ -230,6 +232,7 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
       width: 1920 * 0.2,
       height: 1080 * 0.2,
     }),
+    rotate(45),
     ...drawImage({
       name: '/MinionsLaughing',
       y: pageHeight - 1080 * 0.2 - 354 * 0.75,
