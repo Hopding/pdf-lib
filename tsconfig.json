@@ -22,7 +22,6 @@
   },
   "include": [
     "src/**/*",
-    "integration-tests/**/*",
     "__integration_tests__/**/*",
     "index.ts"
   ]
