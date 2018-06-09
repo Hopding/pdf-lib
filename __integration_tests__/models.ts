@@ -25,6 +25,12 @@ export interface ITestAssets {
       small_mario: Uint8Array;
     };
   };
+  pdfs: {
+    normal: Uint8Array;
+    with_update_sections: Uint8Array;
+    linearized_with_object_streams: Uint8Array;
+    with_large_page_count: Uint8Array;
+  };
 }
 
 export type IPDFCreator = (assets: ITestAssets) => Uint8Array;

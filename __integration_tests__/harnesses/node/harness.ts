@@ -23,6 +23,8 @@ const readFont = (font: string) =>
 const readImage = (image: string) =>
   fs.readFileSync(`__integration_tests__/assets/images/${image}`);
 
+const readPdf = (pdf: string) => fs.readFileSync(`test-pdfs/pdf/${pdf}`);
+
 const assets = {
   fonts: {
     ttf: {
@@ -51,6 +53,12 @@ const assets = {
       minions_banana_no_alpha: readImage('minions_banana_no_alpha.png'),
       small_mario: readImage('small_mario.png'),
     },
+  },
+  pdfs: {
+    normal: readPdf('dc/inst/dc_ins_2210.pdf'),
+    with_update_sections: readPdf('fd/form/F1040V.pdf'),
+    linearized_with_object_streams: readPdf('ef/inst/ef_ins_1040.pdf'),
+    with_large_page_count: fs.readFileSync('pdf_specification.pdf'),
   },
 };
 

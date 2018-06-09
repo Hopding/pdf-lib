@@ -128,8 +128,6 @@ class PDFParser {
       throw e;
     }
 
-    console.log('Update Sections:', this.updates.length);
-
     return {
       arrays: this.arrays,
       dictionaries: this.dictionaries,
@@ -155,7 +153,6 @@ class PDFParser {
 
   private handleObjectStream = ({ objects }: PDFObjectStream) => {
     objects.forEach((indirectObj) => {
-      // console.log('Parsed indirect Object Stream:', indirectObj.toReference());
       if (this.updates.length > 0) {
         _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
       } else {

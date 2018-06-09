@@ -48,11 +48,10 @@ import { IPDFCreator, ITest, ITestAssets } from '../models';
 // Define the test kernel using the above content stream functions.
 const kernel: IPDFCreator = (assets: ITestAssets) => {
   const data = fs.readFileSync(
-    // '/Users/user/github/pdf-lib/test-pdfs/pdf/dc/inst/dc_ins_2210.pdf',
-    // '/Users/user/github/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf', // Object Streams
-    '/Users/user/github/pdf-lib/test-pdfs/pdf/ef/inst/ef_ins_1040.pdf', // Linearized ?
-    // '/Users/user/Documents/PDF32000_2008.pdf',
-    // '/Users/user/github/pdf-lib/test-pdfs/minimal.pdf',
+    '/Users/user/github/pdf-lib/test-pdfs/pdf/dc/inst/dc_ins_2210.pdf', // Normal
+    // '/Users/user/github/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf', // Updates
+    // '/Users/user/github/pdf-lib/test-pdfs/pdf/ef/inst/ef_ins_1040.pdf', // Linearized & Object Streams
+    // '/Users/user/Documents/PDF32000_2008.pdf', // Large pdf (page count)
   );
   const pdfDoc = PDFDocumentFactory.load(data);
 
