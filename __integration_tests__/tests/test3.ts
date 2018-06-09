@@ -45,22 +45,81 @@ import {
 
 import { IPDFCreator, ITest, ITestAssets } from '../models';
 
+const makeOverlayContentStream = (
+  pdfDoc: PDFDocument,
+  marioDims: { width: number; height: number },
+) =>
+  pdfDoc.createContentStream(
+    ...drawImage('Mario', {
+      x: 200,
+      y: 375,
+      width: marioDims.width * 0.15,
+      height: marioDims.height * 0.15,
+    }),
+    ...drawRectangle({
+      x: 120,
+      y: 265,
+      width: 400,
+      height: 90,
+      fillRgbColor: [253 / 255, 246 / 255, 227 / 255],
+      borderWidth: 3,
+      borderRgbColor: [101 / 255, 123 / 255, 131 / 255],
+    }),
+    ...drawLinesOfText(
+      [
+        'This is an image of Mario running.',
+        'This image and text was drawn on',
+        'top of an existing PDF using pdf-lib!',
+      ],
+      {
+        x: 125,
+        y: 325,
+        fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+        font: 'Ubuntu',
+        size: 24,
+      },
+    ),
+  );
+
 // Define the test kernel using the above content stream functions.
 const kernel: IPDFCreator = (assets: ITestAssets) => {
-  const data = fs.readFileSync(
-    '/Users/user/github/pdf-lib/test-pdfs/pdf/dc/inst/dc_ins_2210.pdf', // Normal
-    // '/Users/user/github/pdf-lib/test-pdfs/pdf/fd/form/F1040V.pdf', // Updates
-    // '/Users/user/github/pdf-lib/test-pdfs/pdf/ef/inst/ef_ins_1040.pdf', // Linearized & Object Streams
-    // '/Users/user/Documents/PDF32000_2008.pdf', // Large pdf (page count)
+  const pdfDoc = PDFDocumentFactory.load(
+    assets.pdfs.linearized_with_object_streams,
   );
-  const pdfDoc = PDFDocumentFactory.load(data);
+
+  const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
+  const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
+  const [PngMario, marioDims] = pdfDoc.embedPNG(assets.images.png.small_mario);
+
+  const pages = pdfDoc.getPages();
+
+  const overlayContentStreamRef = pdfDoc.register(
+    makeOverlayContentStream(pdfDoc, marioDims),
+  );
+
+  pages.forEach((page) => {
+    page
+      .addFontDictionary('Times-Roman', FontTimesRoman)
+      .addFontDictionary('Ubuntu', FontUbuntu)
+      .addXObject('Mario', PngMario)
+      .addContentStreams(overlayContentStreamRef);
+  });
+
+  pdfDoc.removePage(1);
 
   return PDFDocumentWriter.saveToBytes(pdfDoc);
 };
 
 export default {
   kernel,
-  title: 'PDF Modification Test (with Object Streams)',
-  description: 'This tests that PDFs with Object Streams can be modified.',
-  checklist: [],
+  title: 'Linearized PDF Modification Test (with Object Streams)',
+  description:
+    'This tests that linearized PDFs with Object Streams can be modified.',
+  checklist: [
+    'the document has 205 pages.',
+    'the document contains 1040 tax instructions from the IRS.',
+    'each page of the document has a picture of Mario.',
+    'each page of the document has two sentences of solarized theme text underneath Mario.',
+    'the second page of the document is numbered "-3-" at the bottom.',
+  ],
 };

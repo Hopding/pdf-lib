@@ -144,7 +144,7 @@ class PDFDocument {
 
   embedStandardFont = (
     fontName: IStandard14FontsUnion,
-  ): PDFIndirectReference<PDFDictionary> => {
+  ): [PDFIndirectReference<PDFDictionary>] => {
     validate(
       fontName,
       oneOf(...Standard14Fonts),
@@ -167,16 +167,18 @@ class PDFDocument {
             See "Table 111 – Entries in a Type 1 font dictionary (continued)"
             for details on this...
     */
-    return this.register(
-      PDFDictionary.from(
-        {
-          Type: PDFName.from('Font'),
-          Subtype: PDFName.from('Type1'),
-          BaseFont: PDFName.from(fontName),
-        },
-        this.index,
+    return [
+      this.register(
+        PDFDictionary.from(
+          {
+            Type: PDFName.from('Font'),
+            Subtype: PDFName.from('Type1'),
+            BaseFont: PDFName.from(fontName),
+          },
+          this.index,
+        ),
       ),
-    );
+    ];
   };
 
   embedFont = (

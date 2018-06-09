@@ -258,19 +258,20 @@ export const drawLinesOfText = (
   ),
 ];
 
-export const drawImage = ({
-  name,
-  x = 0,
-  y = 0,
-  width = 100,
-  height = 100,
-}: {
-  name: string | PDFName;
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-}): PDFOperator[] => [
+export const drawImage = (
+  name: string | PDFName,
+  {
+    x = 0,
+    y = 0,
+    width = 100,
+    height = 100,
+  }: {
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+  },
+): PDFOperator[] => [
   pushGraphicsState(),
   translate(x, y),
   scale(width, height),

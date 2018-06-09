@@ -292,7 +292,7 @@ const kernel: IPDFCreator = (assets: ITestAssets) => {
   const [FontAppleStormR] = pdfDoc.embedFont(otf.apple_storm_r);
   const [FontHussar3D] = pdfDoc.embedFont(otf.hussar_3d_r);
 
-  const FontTimesRoman = pdfDoc.embedStandardFont('Times-Roman');
+  const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
 
   // Embed images:
   const { jpg, png } = assets.images;
