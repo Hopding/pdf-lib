@@ -1,5 +1,4 @@
 Before 0.1.0 release:
-* Add some unit and integration tests
 * Document the current (low-level) API in a simple README
 * Write some scripts/commands to handle the code building and release process.
 * Add LICENSE!!!
