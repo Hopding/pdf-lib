@@ -11,8 +11,7 @@
     "coverage-report": "open coverage/lcov-report/index.html",
     "build": "gulp build",
     "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
-    "test:integration:creation": "gulp build && node ./dist/integration-tests/creation/test1.js",
-    "test:integration:modification": "gulp build && node ./dist/integration-tests/modification/test1.js"
+    "it:node": "ts-node -r tsconfig-paths/register __integration_tests__/runners/node/index.ts"
   },
   "repository": {
     "type": "git",
@@ -43,19 +42,26 @@
     "png-js": "git+https://github.com/Hopding/png.js.git#c6f0917865029d39c039a143d600a81ff84eadac"
   },
   "devDependencies": {
+    "@types/faker": "^4.1.2",
+    "@types/inquirer": "^0.0.41",
     "@types/jest": "^22.2.2",
     "@types/lodash": "^4.14.106",
     "@types/node": "^9.6.0",
     "@types/pako": "^1.0.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-preset-env": "^1.6.1",
+    "chalk": "^2.4.1",
+    "faker": "^4.1.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",
     "gulp-typescript": "^4.0.1",
+    "inquirer": "^6.0.0",
     "jest": "^22.4.3",
     "jest-junit": "^3.6.0",
     "prettier": "^1.11.1",
     "ts-jest": "^22.4.2",
+    "ts-node": "^6.0.5",
+    "tsconfig-paths": "^3.3.2",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2"
   },

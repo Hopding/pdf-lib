@@ -8,13 +8,7 @@ import {
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
 
-import {
-  addStringToBuffer,
-  addStringToBuffer,
-  arrayToString,
-  error,
-  or,
-} from 'utils';
+import { addStringToBuffer, arrayToString, error, or } from 'utils';
 import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
 
 /**

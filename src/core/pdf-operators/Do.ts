@@ -1,23 +1,28 @@
 /* eslint-disable new-cap */
-import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
 
-import { addStringToBuffer } from 'utils';
-import { validate } from 'utils/validate';
+import { PDFName } from 'core/pdf-objects';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
+
+import { addStringToBuffer, or } from 'utils';
+import { isInstance, validate } from 'utils/validate';
 
 /**
  * Draws the XObject with the given name in the current Page's Resource dictionary.
  */
 class Do extends PDFOperator {
-  static of = (name: string) => new Do(name);
+  static of = (name: string | PDFName) => new Do(name);
 
-  name: string;
+  name: PDFName;
 
-  // TODO: See if the "name" must be preceded by a "/" or not...
-  constructor(name: string) {
+  constructor(name: string | PDFName) {
     super();
-    validate(name, _.isString, 'Do operator arg "name" must be a string.');
-    this.name = name;
+    validate(
+      name,
+      or(_.isString, isInstance(PDFName)),
+      'Do operator arg "name" must be a string or PDFName.',
+    );
+    this.name = _.isString(name) ? PDFName.from(name) : name;
   }
 
   toString = (): string => `${this.name} Do\n`;

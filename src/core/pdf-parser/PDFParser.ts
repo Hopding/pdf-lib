@@ -138,6 +138,7 @@ class PDFParser {
         xRefTable: this.xRefTable,
         trailer: this.trailer,
       },
+      // Drop the last element, because it will always be empty:
       updates: _.initial(this.updates),
     };
   };

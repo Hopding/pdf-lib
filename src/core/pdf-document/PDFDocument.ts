@@ -1,14 +1,20 @@
 import _ from 'lodash';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
+import Standard14Fonts, {
+  IStandard14FontsUnion,
+} from 'core/pdf-document/Standard14Fonts';
 import {
   PDFDictionary,
   PDFIndirectReference,
+  PDFName,
   PDFObject,
   PDFRawStream,
 } from 'core/pdf-objects';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
 import {
   PDFCatalog,
+  PDFContentStream,
   PDFHeader,
   PDFPage,
   PDFPageTree,
@@ -19,7 +25,7 @@ import PDFFontFactory, {
 } from 'core/pdf-structures/factories/PDFFontFactory';
 import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import { error } from 'utils';
-import { isInstance, validate } from 'utils/validate';
+import { isInstance, oneOf, validate } from 'utils/validate';
 
 class PDFDocument {
   static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
@@ -61,6 +67,9 @@ class PDFDocument {
 
   createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
     PDFPage.create(this.index, size, resources);
+
+  createContentStream = (...operators: PDFOperator[]) =>
+    PDFContentStream.of(PDFDictionary.from({}, this.index), ...operators);
 
   addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
@@ -133,23 +142,65 @@ class PDFDocument {
     return this;
   };
 
+  embedStandardFont = (
+    fontName: IStandard14FontsUnion,
+  ): [PDFIndirectReference<PDFDictionary>] => {
+    validate(
+      fontName,
+      oneOf(...Standard14Fonts),
+      'PDFDocument.embedStandardFont: "fontName" must be one of the Standard 14 Fonts: ' +
+        _.values(Standard14Fonts).join(', '),
+    );
+
+    /*
+      TODO:
+      A Type 1 font dictionary may contain the entries listed in Table 111.
+      Some entries are optional for the standard 14 fonts listed under 9.6.2.2,
+        "Standard Type 1 Fonts (Standard 14 Fonts)", but are required otherwise.
+
+      NOTE: For compliance sake, these standard 14 font dictionaries need to be
+            updated to include the following entries:
+              • FirstChar
+              • LastChar
+              • Widths
+              • FontDescriptor
+            See "Table 111 – Entries in a Type 1 font dictionary (continued)"
+            for details on this...
+    */
+    return [
+      this.register(
+        PDFDictionary.from(
+          {
+            Type: PDFName.from('Font'),
+            Subtype: PDFName.from('Type1'),
+            BaseFont: PDFName.from(fontName),
+          },
+          this.index,
+        ),
+      ),
+    ];
+  };
+
   embedFont = (
-    name: string,
     fontData: Uint8Array,
-    flagOptions: IFontFlagOptions,
-  ): PDFIndirectReference<PDFDictionary> => {
-    const fontFactory = PDFFontFactory.for(name, fontData, flagOptions);
-    return fontFactory.embedFontIn(this);
+    fontFlags: IFontFlagOptions = { Nonsymbolic: true },
+  ): [PDFIndirectReference<PDFDictionary>, PDFFontFactory] => {
+    const fontFactory = PDFFontFactory.for(fontData, fontFlags);
+    return [fontFactory.embedFontIn(this), fontFactory];
   };
 
-  addPNG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+  embedPNG = (
+    imageData: Uint8Array,
+  ): [PDFIndirectReference<PDFRawStream>, PNGXObjectFactory] => {
     const pngFactory = PNGXObjectFactory.for(imageData);
-    return pngFactory.embedImageIn(this);
+    return [pngFactory.embedImageIn(this), pngFactory];
   };
 
-  addJPG = (imageData: Uint8Array): PDFIndirectReference<PDFRawStream> => {
+  embedJPG = (
+    imageData: Uint8Array,
+  ): [PDFIndirectReference<PDFRawStream>, JPEGXObjectFactory] => {
     const jpgFactory = JPEGXObjectFactory.for(imageData);
-    return jpgFactory.embedImageIn(this);
+    return [jpgFactory.embedImageIn(this), jpgFactory];
   };
 }
 

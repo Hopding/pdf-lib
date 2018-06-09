@@ -44,24 +44,25 @@ import Tz from './text/text-state/Tz';
 
 import Do from './Do';
 
-export const isTextOperator = (op: any) =>
-  [
-    TAsterisk,
-    TD,
-    Td,
-    Tm,
-    DoubleQuote,
-    SingleQuote,
-    TJ,
-    Tj,
-    Tc,
-    Tf,
-    TL,
-    Tr,
-    Ts,
-    Tw,
-    Tz,
-  ].some((type) => op instanceof type);
+/*
+ * These operator categories are defined in the
+ * "Table 51 – Operator Categories" table in the PDF specification document
+ */
+
+export const generalGraphicsStateOperators = [w, J, j, M, d, ri, i, gs];
+
+export const colorOperators = [CS, cs, SC, SCN, sc, scn, G, g, RG, rg, K, k];
+
+export const textStateOperators = [Tc, Tw, Tz, TL, Tf, Tr, Ts];
+
+export const textShowingOperators = [Tj, TJ, SingleQuote, DoubleQuote];
+
+export const textPositioningOperators = [Td, TD, Tm, TAsterisk];
+
+// TODO: These are valid in TextObjects, but they aren't implemented in
+//       pdf-lib yet.
+// export const markedContentOperators =
+//   [MP, DP, BMC, BDC, EMC]
 
 const PDFOperators = {
   W,

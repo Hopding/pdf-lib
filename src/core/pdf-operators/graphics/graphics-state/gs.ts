@@ -1,6 +1,8 @@
 /* tslint:disable:max-classes-per-file class-name */
-import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
+
+import { PDFName } from 'core/pdf-objects';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
@@ -11,20 +13,18 @@ import { validate } from 'utils/validate';
  *  ExtGState subdictionary of the current resource dictionary.
  */
 class gs extends PDFOperator {
-  static of = (dictName: string) => new gs(dictName);
+  static of = (dictName: string | PDFName) => new gs(dictName);
 
-  dictName: string;
+  dictName: PDFName;
 
-  // TODO: See if the "dictName" must be preceded by a "/" or not...
-  // TODO: Should "dictName" be a PDFName?
-  constructor(dictName: string) {
+  constructor(dictName: string | PDFName) {
     super();
     validate(
       dictName,
       _.isString,
-      'gs operator arg "dictName" must be a string.',
+      'gs operator arg "dictName" must be a string or PDFName.',
     );
-    this.dictName = dictName;
+    this.dictName = _.isString(dictName) ? PDFName.from(dictName) : dictName;
   }
 
   toString = (): string => `${this.dictName} gs\n`;

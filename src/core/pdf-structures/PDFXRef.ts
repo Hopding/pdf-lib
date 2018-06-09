@@ -71,7 +71,7 @@ export class Subsection {
 
   toString = (): string =>
     `${this.firstObjNum} ${this.entries.length}\n` +
-    `${this.entries.map(String).join('')}\n`;
+    `${this.entries.map(String).join('')}`;
 
   bytesSize = () =>
     `${this.firstObjNum} ${this.entries.length}\n`.length +

@@ -34,9 +34,7 @@ class PDFDocumentFactory {
     const index = PDFObjectIndex.create();
     const pdfParser = new PDFParser();
 
-    console.time('ParsePDF');
     const parsedPdf = pdfParser.parse(data, index);
-    console.timeEnd('ParsePDF');
 
     const indexMap = PDFDocumentFactory.normalize(parsedPdf);
     index.index = indexMap;

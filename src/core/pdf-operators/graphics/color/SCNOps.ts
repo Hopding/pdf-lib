@@ -1,9 +1,11 @@
 /* tslint:disable:max-classes-per-file class-name */
-import PDFOperator from 'core/pdf-operators/PDFOperator';
 import _ from 'lodash';
 
+import { PDFName } from 'core/pdf-objects';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
+
 import { addStringToBuffer, and, not, or } from 'utils';
-import { isNumber, validate, validateArr } from 'utils/validate';
+import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
 
 /**
  * Same as SC but also supports Pattern, Separation, DeviceN and ICCBased colour
@@ -21,23 +23,22 @@ import { isNumber, validate, validateArr } from 'utils/validate';
  * space. For other types of patterns, these operands shall not be specified.
  */
 export class SCN extends PDFOperator {
-  static of = (c: number[], name?: string) => new SCN(c, name);
+  static of = (c: number[], name?: string | PDFName) => new SCN(c, name);
 
   c: number[];
-  name: string;
+  name: PDFName;
 
-  // TODO: Should "name" be a PDFName?
   // TODO: Confirm whether or not a number[] and string will ever both be present?
-  constructor(c: number[], name?: string) {
+  constructor(c: number[], name?: string | PDFName) {
     super();
     validateArr(c, isNumber, 'SCN operator args "c" must be all be numbers.');
     validate(
       name,
-      or(_.isString, _.isNil),
-      'SCN operator arg "name" must be a string.',
+      or(_.isString, isInstance(PDFName), _.isNil),
+      'SCN operator arg "name" must be a string or PDFName.',
     );
     this.c = c;
-    this.name = name;
+    this.name = _.isString(name) ? PDFName.from(name) : name;
   }
 
   toString = () =>
@@ -55,21 +56,21 @@ export class SCN extends PDFOperator {
  * Same as SCN but used for nonstroking operations.
  */
 export class scn extends PDFOperator {
-  static of = (c: number[], name?: string) => new scn(c, name);
+  static of = (c: number[], name?: string | PDFName) => new scn(c, name);
 
   c: number[];
-  name: string;
+  name: PDFName;
 
-  constructor(c: number[], name?: string) {
+  constructor(c: number[], name?: string | PDFName) {
     super();
     validateArr(c, isNumber, 'scn operator args "c" must be all be numbers.');
     validate(
       name,
-      or(_.isString, _.isNil),
-      'scn operator arg "name" must be a string.',
+      or(_.isString, isInstance(PDFName), _.isNil),
+      'scn operator arg "name" must be a string or PDFName.',
     );
     this.c = c;
-    this.name = name;
+    this.name = _.isString(name) ? PDFName.from(name) : name;
   }
 
   toString = () =>

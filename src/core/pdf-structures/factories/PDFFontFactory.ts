@@ -11,7 +11,7 @@ import {
   PDFNumber,
   PDFRawStream,
 } from 'core/pdf-objects';
-import { setCharAt } from 'utils';
+import { or, setCharAt } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
@@ -33,10 +33,12 @@ export interface IFontFlagOptions {
   ForceBold?: boolean;
 }
 
+// TODO: Make sure this works correctly. Setting any flag besides
+//       Nonsymbolic to true seems to screw up the font...
 /*
-Doing this by bit-twiddling a string, and then parsing it, gets around
-JavaScript converting the results of bit-shifting ops back into 64-bit integers.
-*/
+ * Doing this by bit-twiddling a string, and then parsing it, gets around
+ * JavaScript converting the results of bit-shifting ops back into 64-bit integers.
+ */
 // prettier-ignore
 const fontFlags = (options: IFontFlagOptions) => {
   let flags = unsigned32Bit;
@@ -62,24 +64,15 @@ const fontFlags = (options: IFontFlagOptions) => {
  * https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/font/embedded.coffee
  */
 class PDFFontFactory {
-  static for = (
-    name: string,
-    fontData: Uint8Array,
-    flagOptions: IFontFlagOptions,
-  ) => new PDFFontFactory(name, fontData, flagOptions);
+  static for = (fontData: Uint8Array, flagOptions: IFontFlagOptions) =>
+    new PDFFontFactory(fontData, flagOptions);
 
   font: any;
   scale: number;
-  fontName: string;
   fontData: Uint8Array;
   flagOptions: IFontFlagOptions;
 
-  constructor(
-    name: string,
-    fontData: Uint8Array,
-    flagOptions: IFontFlagOptions,
-  ) {
-    validate(name, _.isString, '"name" must be a string');
+  constructor(fontData: Uint8Array, flagOptions: IFontFlagOptions) {
     validate(
       fontData,
       isInstance(Uint8Array),
@@ -93,7 +86,6 @@ class PDFFontFactory {
     // to convert the "data" to a "Buffer" object that "fontkit" can work with.
     const dataBuffer = Buffer.from(fontData);
 
-    this.fontName = name;
     this.fontData = fontData;
     this.flagOptions = flagOptions;
     this.font = fontkit.create(dataBuffer);
@@ -104,7 +96,25 @@ class PDFFontFactory {
   TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
   to broaden support to other fonts.
   */
-  embedFontIn = (pdfDoc: PDFDocument): PDFIndirectReference<PDFDictionary> => {
+  embedFontIn = (
+    pdfDoc: PDFDocument,
+    name?: string,
+  ): PDFIndirectReference<PDFDictionary> => {
+    validate(
+      pdfDoc,
+      isInstance(PDFDocument),
+      'PDFFontFactory.embedFontIn: "pdfDoc" must be an instance of PDFDocument',
+    );
+    validate(
+      name,
+      or(_.isString, _.isNil),
+      '"name" must be a string or undefined',
+    );
+
+    const randSuffix = `-rand_${Math.floor(Math.random() * 10000)}`;
+    const fontName =
+      name || this.font.postscriptName + randSuffix || 'Font' + randSuffix;
+
     const fontStreamDict = PDFDictionary.from(
       {
         Subtype: PDFName.from('OpenType'),
@@ -129,7 +139,7 @@ class PDFFontFactory {
     const fontDescriptor = PDFDictionary.from(
       {
         Type: PDFName.from('FontDescriptor'),
-        FontName: PDFName.from(this.fontName),
+        FontName: PDFName.from(fontName),
         Flags: PDFNumber.fromNumber(fontFlags(this.flagOptions)),
         FontBBox: PDFArray.fromArray(
           [
@@ -158,7 +168,7 @@ class PDFFontFactory {
         {
           Type: PDFName.from('Font'),
           Subtype: PDFName.from('OpenType'),
-          BaseFont: PDFName.from(this.fontName),
+          BaseFont: PDFName.from(fontName),
           FirstChar: PDFNumber.fromNumber(0),
           LastChar: PDFNumber.fromNumber(255),
           Widths: this.getWidths(pdfDoc.index),

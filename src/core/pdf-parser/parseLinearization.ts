@@ -77,7 +77,7 @@ const parseLinearization = (
     );
   }
 
-  const [trailer, remaining3] = trailerMatch || [null, new Uint8Array()];
+  const [trailer, remaining3] = trailerMatch || [null, null];
 
   const linearization = { paramDict, xref, trailer };
   if (parseHandlers.onParseLinearization) {

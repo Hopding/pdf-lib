@@ -1,7 +1,8 @@
 /* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
+import _ from 'lodash';
 
-import { addStringToBuffer } from 'utils';
+import { addStringToBuffer, or } from 'utils';
 import { isNumber, validate } from 'utils/validate';
 
 /**
@@ -22,12 +23,26 @@ export class SC extends PDFOperator {
 
   c: [number, number, number, number];
 
+  // TODO: The number of operands required here depends on the current
+  // color space. So shouldn't really be restricting it to just 4 numbers.
   constructor(...c: number[]) {
     super();
     validate(c[0], isNumber, 'SC operator args "c" must be a number.');
-    validate(c[1], isNumber, 'SC operator args "c" must be a number.');
-    validate(c[2], isNumber, 'SC operator args "c" must be a number.');
-    validate(c[3], isNumber, 'SC operator args "c" must be a number.');
+    validate(
+      c[1],
+      or(isNumber, _.isNil),
+      'SC operator args "c" must be a number.',
+    );
+    validate(
+      c[2],
+      or(isNumber, _.isNil),
+      'SC operator args "c" must be a number.',
+    );
+    validate(
+      c[3],
+      or(isNumber, _.isNil),
+      'SC operator args "c" must be a number.',
+    );
     this.c = c as [number, number, number, number];
   }
 
@@ -47,12 +62,26 @@ export class sc extends PDFOperator {
 
   c: [number, number, number, number];
 
+  // TODO: The number of operands required here depends on the current
+  // color space. So shouldn't really be restricting it to just 4 numbers.
   constructor(...c: number[]) {
     super();
     validate(c[0], isNumber, 'sc operator args "c" must be a number.');
-    validate(c[1], isNumber, 'sc operator args "c" must be a number.');
-    validate(c[2], isNumber, 'sc operator args "c" must be a number.');
-    validate(c[3], isNumber, 'sc operator args "c" must be a number.');
+    validate(
+      c[1],
+      or(isNumber, _.isNil),
+      'sc operator args "c" must be a number.',
+    );
+    validate(
+      c[2],
+      or(isNumber, _.isNil),
+      'sc operator args "c" must be a number.',
+    );
+    validate(
+      c[3],
+      or(isNumber, _.isNil),
+      'sc operator args "c" must be a number.',
+    );
     this.c = c as [number, number, number, number];
   }
 
