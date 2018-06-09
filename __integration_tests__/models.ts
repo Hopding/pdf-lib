@@ -33,15 +33,10 @@ export interface ITestAssets {
   };
 }
 
-export type IPDFCreator = (assets: ITestAssets) => Uint8Array;
-
-export type IPDFModifier = (
-  assets: ITestAssets,
-  basePdf: Uint8Array,
-) => Uint8Array;
+export type ITestKernel = (assets: ITestAssets) => Uint8Array;
 
 export interface ITest {
-  kernel: IPDFCreator | IPDFModifier;
+  kernel: ITestKernel;
   description: string;
   checklist: string[];
 }

@@ -43,7 +43,7 @@ import {
   translate,
 } from 'core/pdf-operators/helpers/simple';
 
-import { IPDFCreator, ITest, ITestAssets } from '../models';
+import { ITestKernel, ITest, ITestAssets } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,
@@ -94,7 +94,7 @@ const makeMiddlePageContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
   );
 
 // Define the test kernel using the above content stream functions.
-const kernel: IPDFCreator = (assets: ITestAssets) => {
+const kernel: ITestKernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.load(assets.pdfs.normal);
 
   const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');

@@ -45,7 +45,7 @@ import {
 import PDFOperators from 'core/pdf-operators';
 const { T, TD, Td, Tm } = PDFOperators;
 
-import { IPDFCreator, ITest, ITestAssets } from '../models';
+import { ITestKernel, ITest, ITestAssets } from '../models';
 
 const ipsumLines = [
   'Eligendi est pariatur quidem in non excepturi et.',
@@ -230,20 +230,17 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
     // }),
     // clip(),
     // endPath(),
-    ...drawImage({
-      name: 'CatRidingUnicorn',
+    ...drawImage('CatRidingUnicorn', {
       y: pageHeight - 1080 * 0.2,
       width: 1920 * 0.2,
       height: 1080 * 0.2,
     }),
-    ...drawImage({
-      name: 'MinionsLaughing',
+    ...drawImage('MinionsLaughing', {
       y: pageHeight - 1080 * 0.2 - 354 * 0.75,
       width: 630 * 0.75,
       height: 354 * 0.75,
     }),
-    ...drawImage({
-      name: 'GreyscaleBird',
+    ...drawImage('GreyscaleBird', {
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75,
       width: 600 * 0.75,
       height: 375 * 0.75,
@@ -253,21 +250,18 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
       height: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75,
       fillRgbColor: [0, 1, 0],
     }),
-    ...drawImage({
-      name: 'MinionsBananaAlpha',
+    ...drawImage('MinionsBananaAlpha', {
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75 - 640 * 0.5,
       width: 960 * 0.5,
       height: 640 * 0.5,
     }),
-    ...drawImage({
-      name: 'MinionsBananaNoAlpha',
+    ...drawImage('MinionsBananaNoAlpha', {
       // prettier-ignore
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75 - 640 * 0.5 - 640 * 0.5,
       width: 960 * 0.5,
       height: 640 * 0.5,
     }),
-    ...drawImage({
-      name: 'SmallMario',
+    ...drawImage('SmallMario', {
       // prettier-ignore
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75 - 640 * 0.5 - 640 * 0.5 - 1854 * 0.18,
       width: 1473 * 0.18,
@@ -276,7 +270,7 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
   );
 
 // Define the test kernel using the above content stream functions.
-const kernel: IPDFCreator = (assets: ITestAssets) => {
+const kernel: ITestKernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.create();
 
   // Embed fonts:

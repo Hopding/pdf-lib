@@ -10,7 +10,7 @@ import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { PDFContentStream } from 'core/pdf-structures';
 import PDFPage from 'core/pdf-structures/PDFPage';
 
-import { IPDFCreator, ITest, ITestAssets } from '../models';
+import { ITestKernel, ITest, ITestAssets } from '../models';
 
 // Clipping path operators
 const { W } = PDFOperators;
@@ -363,7 +363,7 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
   );
 
 // Define the test kernel using the above content stream functions.
-const kernel: IPDFCreator = (assets: ITestAssets) => {
+const kernel: ITestKernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.create();
 
   // Pull this out into some sort of "getDefaultFonts" helper
