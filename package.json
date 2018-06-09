@@ -11,8 +11,6 @@
     "coverage-report": "open coverage/lcov-report/index.html",
     "build": "gulp build",
     "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
-    "test:integration:creation": "gulp build && node ./dist/integration-tests/creation/test1.js",
-    "test:integration:modification": "gulp build && node ./dist/integration-tests/modification/test1.js",
     "it:node": "ts-node -r tsconfig-paths/register __integration_tests__/harnesses/node/harness.ts"
   },
   "repository": {
@@ -37,7 +35,6 @@
   },
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "dependencies": {
-    "@types/faker": "^4.1.2",
     "buffer": "^5.0.8",
     "fontkit": "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8",
     "lodash": "^4.17.4",
@@ -45,6 +42,7 @@
     "png-js": "git+https://github.com/Hopding/png.js.git#c6f0917865029d39c039a143d600a81ff84eadac"
   },
   "devDependencies": {
+    "@types/faker": "^4.1.2",
     "@types/inquirer": "^0.0.41",
     "@types/jest": "^22.2.2",
     "@types/lodash": "^4.14.106",
