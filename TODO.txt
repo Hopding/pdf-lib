@@ -20,6 +20,7 @@ Before 0.1.0 release:
 ***** Consider using decorators (http://www.typescriptlang.org/docs/handbook/decorators.html)
       for argument validation, instead of manually typing out the validations *****
 ***** Flesh out TypeScript types for `fontkit` lib
+***** Need to lint for unused imports *****
 
 ***** Remove index.js files from fork repos and publish to NPM *****
 ***** Update READMEs of fork repos with credits and workaround using browserify command *****
@@ -44,7 +45,8 @@ Before 0.1.0 release:
 # Tests:
 * Create more "example-oriented" tests
 * Consider using PDF.js to render documents in unit tests to avoid needing
-  humans to run integration tests all the time.
+  humans to run integration tests all the time. Can use jest-image-snapshot to
+  compare them.
 * Add more tests for "parseDocument" function. Need to test parsing on
  - updated documents
  - linearized documents

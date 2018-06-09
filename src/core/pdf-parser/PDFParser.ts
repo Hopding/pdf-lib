@@ -128,6 +128,8 @@ class PDFParser {
       throw e;
     }
 
+    console.log('Update Sections:', this.updates.length);
+
     return {
       arrays: this.arrays,
       dictionaries: this.dictionaries,
@@ -138,6 +140,7 @@ class PDFParser {
         xRefTable: this.xRefTable,
         trailer: this.trailer,
       },
+      // Drop the last element, because it will always be empty:
       updates: _.initial(this.updates),
     };
   };
@@ -152,6 +155,7 @@ class PDFParser {
 
   private handleObjectStream = ({ objects }: PDFObjectStream) => {
     objects.forEach((indirectObj) => {
+      // console.log('Parsed indirect Object Stream:', indirectObj.toReference());
       if (this.updates.length > 0) {
         _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
       } else {

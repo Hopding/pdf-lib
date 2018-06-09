@@ -359,7 +359,8 @@ const kernel: IPDFCreator = (assets: ITestAssets) => {
 
 export default {
   kernel,
-  title: 'PDF Modification Test (with Object Streams)',
-  description: 'This is a test that does stuff and things.',
-  checklist: ['Foo', 'Bar', 'Qux', 'Baz'],
+  title: 'PDF Creation Test (with operator helpers)',
+  description:
+    'This tests that the composite and simple operator helpers work.',
+  checklist: [],
 };
