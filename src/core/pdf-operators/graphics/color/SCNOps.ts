@@ -5,7 +5,7 @@ import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer, and, not, or } from 'utils';
-import { isNumber, validate, validateArr } from 'utils/validate';
+import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
 
 /**
  * Same as SC but also supports Pattern, Separation, DeviceN and ICCBased colour
@@ -34,8 +34,8 @@ export class SCN extends PDFOperator {
     validateArr(c, isNumber, 'SCN operator args "c" must be all be numbers.');
     validate(
       name,
-      or(_.isString, _.isNil),
-      'SCN operator arg "name" must be a string.',
+      or(_.isString, isInstance(PDFName), _.isNil),
+      'SCN operator arg "name" must be a string or PDFName.',
     );
     this.c = c;
     this.name = _.isString(name) ? PDFName.from(name) : name;
@@ -66,8 +66,8 @@ export class scn extends PDFOperator {
     validateArr(c, isNumber, 'scn operator args "c" must be all be numbers.');
     validate(
       name,
-      or(_.isString, _.isNil),
-      'scn operator arg "name" must be a string.',
+      or(_.isString, isInstance(PDFName), _.isNil),
+      'scn operator arg "name" must be a string or PDFName.',
     );
     this.c = c;
     this.name = _.isString(name) ? PDFName.from(name) : name;

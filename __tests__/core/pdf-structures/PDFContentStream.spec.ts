@@ -88,7 +88,7 @@ describe(`PDFContentStream`, () => {
 
     it(`updates the PDFContentStream's PDFDictionary.Length entry`, () => {
       expect(dict.get('Length')).toBeInstanceOf(PDFNumber);
-      expect(dict.get('Length').number).toBe(14);
+      expect(dict.get('Length').number).toBe(15);
     });
   });
 
@@ -104,7 +104,7 @@ describe(`PDFContentStream`, () => {
         S.operator,
       );
       expect(contentStream.Length).toBeInstanceOf(PDFNumber);
-      expect(contentStream.Length.number).toBe(29);
+      expect(contentStream.Length.number).toBe(30);
     });
   });
 
@@ -119,7 +119,7 @@ describe(`PDFContentStream`, () => {
         Tf.of('Foo', 12),
         S.operator,
       );
-      expect(contentStream.operatorsBytesSize()).toBe(29);
+      expect(contentStream.operatorsBytesSize()).toBe(30);
     });
   });
 
@@ -134,7 +134,7 @@ describe(`PDFContentStream`, () => {
         Tf.of('Foo', 12),
         S.operator,
       );
-      expect(contentStream.bytesSize()).toBe(63);
+      expect(contentStream.bytesSize()).toBe(64);
     });
   });
 
@@ -154,12 +154,12 @@ describe(`PDFContentStream`, () => {
       contentStream.copyBytesInto(buffer);
       const expected = `
 <<
-/Length 29
+/Length 30
 >>
 stream
 s
 1 2 3 4 5 6 cm
-Foo 12 Tf
+/Foo 12 Tf
 S
 
 endstream

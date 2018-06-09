@@ -22,7 +22,7 @@ class gs extends PDFOperator {
     validate(
       dictName,
       _.isString,
-      'gs operator arg "dictName" must be a string.',
+      'gs operator arg "dictName" must be a string or PDFName.',
     );
     this.dictName = _.isString(dictName) ? PDFName.from(dictName) : dictName;
   }
