@@ -71,7 +71,8 @@ const renderTitle = (title: string) => {
 
 const renderChecklist = async (checklist: string[]) => {
   const failed = [] as string[];
-  for (const item of checklist) {
+  for (let i = 0; i < checklist.length; i++) {
+    const item = checklist[i];
     await inquirer
       .prompt([
         { type: 'confirm', name: 'confirmed', message: `Confirm that ${item}` },
@@ -90,7 +91,9 @@ const renderChecklist = async (checklist: string[]) => {
 };
 
 const main = async () => {
-  for (const { kernel, title, description, checklist } of _.values(tests)) {
+  const testValues = _.values(tests);
+  for (let i = 0; i < testValues.length; i++) {
+    const { kernel, title, description, checklist } = testValues[i];
     renderTitle(title);
     log(description);
     const resultPdf = kernel(assets);

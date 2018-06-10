@@ -185,16 +185,5 @@ export const arrayFindIndexOf = (
   return currIdx;
 };
 
-/* eslint-disable no-restricted-syntax */
-export const findInMap = <K, V>(
-  map: Map<K, V>,
-  predicate: Predicate<V, K>,
-): V | void => {
-  for (const [key, val] of map) {
-    if (predicate(val, key)) return val;
-  }
-  return null;
-};
-
 export const setCharAt = (str: string, idx: number, newChar: string) =>
   str.substring(0, idx) + newChar + str.substring(idx + 1);
