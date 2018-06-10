@@ -4,11 +4,11 @@ export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
 
 export type ArrayPredicate<A> = (...a: A[]) => boolean;
 
-export const writeToDebugFile = (data: any, postfix = 0) => {
-  // eslint-disable-next-line
-  const fs = require('fs');
-  fs.writeFileSync(`/Users/user/Desktop/pdf-lib/debug${postfix}`, data);
-};
+// export const writeToDebugFile = (data: any, postfix = 0) => {
+//   // eslint-disable-next-line
+//   const fs = require('fs');
+//   fs.writeFileSync(`/Users/user/Desktop/pdf-lib/debug${postfix}`, data);
+// };
 
 export const error = (msg: string) => {
   throw new Error(msg);
