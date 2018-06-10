@@ -3,12 +3,16 @@ import { isIdentity, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
 
-const PDF_NULL_ENFORCER = Symbol('PDF_NULL_ENFORCER');
+// const PDF_NULL_ENFORCER = Symbol('PDF_NULL_ENFORCER');
+
+// Using a Symbol is ideal here, but React Native doesn't current support them,
+// so we'll use a string instead.
+const PDF_NULL_ENFORCER = '@@__PDF_NULL_ENFORCER';
 
 class PDFNull extends PDFObject {
   static instance = new PDFNull(PDF_NULL_ENFORCER);
 
-  constructor(enforcer: symbol) {
+  constructor(enforcer: string) {
     super();
     validate(
       enforcer,
