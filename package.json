@@ -36,7 +36,7 @@
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "dependencies": {
     "buffer": "^5.0.8",
-    "fontkit": "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8",
+    "fontkit": "git+https://github.com/Hopding/fontkit.git#1b11a8467a383e1ef001a0cf92c37d17e842ab34",
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
     "png-js": "git+https://github.com/Hopding/png.js.git#6cfd84f6eefe92f4cd480a138b504ee1a849781b"
