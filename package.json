@@ -39,7 +39,7 @@
     "fontkit": "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8",
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
-    "png-js": "git+https://github.com/Hopding/png.js.git#c6f0917865029d39c039a143d600a81ff84eadac"
+    "png-js": "git+https://github.com/Hopding/png.js.git#6cfd84f6eefe92f4cd480a138b504ee1a849781b"
   },
   "devDependencies": {
     "@types/faker": "^4.1.2",
