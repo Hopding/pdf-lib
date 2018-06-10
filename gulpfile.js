@@ -22,13 +22,13 @@ const babelrc = {
   ],
 };
 
-gulp.task('build', ['clean', 'build-ts-and-babel', 'clean-dist']);
+gulp.task('release-build', ['clean', 'build-ts-and-babel', 'clean-dist']);
 
 gulp.task('clean', () => del('dist/**'));
 
 const jsFilter = filter(['**/*.js'], { restore: true });
 
-gulp.task('build-ts-and-babel', ['clean'], () =>
+gulp.task('build', ['clean'], () =>
   tsProject
     .src()
     .pipe(tsProject())
