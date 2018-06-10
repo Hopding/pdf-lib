@@ -1,5 +1,5 @@
-import { PDFHeader } from '..';
-import { PDFIndirectObject } from '../../pdf-objects';
+import { PDFIndirectObject, PDFObject } from 'core/pdf-objects';
+import { PDFHeader } from 'core/pdf-structures';
 import { Entry, Subsection, Table } from '../PDFXRef';
 
 class PDFXRefTableFactory {

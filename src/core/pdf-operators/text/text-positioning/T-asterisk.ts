@@ -1,4 +1,6 @@
-import PDFOperator from 'core/pdf-operators/PDFOperator';
+import PDFOperator, {
+  IPDFOperatorSingleton,
+} from 'core/pdf-operators/PDFOperator';
 
 /**
  * Move to the start of the next line.

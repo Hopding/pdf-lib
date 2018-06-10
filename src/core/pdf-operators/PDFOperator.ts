@@ -2,13 +2,18 @@
 import { addStringToBuffer, error } from 'utils';
 import { isIdentity, validate } from 'utils/validate';
 
+export class IPDFOperatorSingleton {
+  operator: PDFOperator;
+  asterisk?: IPDFOperatorSingleton;
+}
+
 class PDFOperator {
-  static createSingletonOp = (op: string) => {
+  static createSingletonOp = (op: string): IPDFOperatorSingleton => {
     const ENFORCER = Symbol(`${op}_ENFORCER`);
 
     class Singleton extends PDFOperator {
-      static operator: Singleton;
-      static asterisk?: typeof Singleton;
+      static operator: PDFOperator;
+      static asterisk?: IPDFOperatorSingleton;
 
       constructor(enforcer: symbol) {
         super();

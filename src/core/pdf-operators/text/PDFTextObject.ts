@@ -23,10 +23,11 @@ const validCategories = [
 class PDFTextObject extends PDFOperator {
   static of = (...operators: PDFOperator[]) => new PDFTextObject(...operators);
 
-  static validateOperators = (elements: any[]) =>
+  static validateOperators = (elements: PDFOperator[]) =>
     validateArr(
       elements,
-      (op: any) => validCategories.some((category) => op instanceof category),
+      (op: PDFOperator) =>
+        validCategories.some((category: any) => op instanceof category),
       'only PDF text operators can be pushed to a PDFTextObject',
     );
 
