@@ -68,34 +68,30 @@ export const drawEllipse = ({
   xScale = 100,
   yScale = 100,
   borderWidth = 15,
-  fillRgbColor = [],
-  borderRgbColor = [],
+  colorRgb = [],
+  borderColorRgb = [],
 }: {
   x?: number;
   y?: number;
   xScale?: number;
   yScale?: number;
   borderWidth?: number;
-  fillRgbColor?: number[];
-  borderRgbColor?: number[];
+  colorRgb?: number[];
+  borderColorRgb?: number[];
 }): PDFOperator[] => [
   pushGraphicsState(),
-  fillingRgbColor(
-    fillRgbColor[0] || 0,
-    fillRgbColor[1] || 0,
-    fillRgbColor[2] || 0,
-  ),
+  fillingRgbColor(colorRgb[0] || 0, colorRgb[1] || 0, colorRgb[2] || 0),
   strokingRgbColor(
-    borderRgbColor[0] || 0,
-    borderRgbColor[1] || 0,
-    borderRgbColor[2] || 0,
+    borderColorRgb[0] || 0,
+    borderColorRgb[1] || 0,
+    borderColorRgb[2] || 0,
   ),
   lineWidth(borderWidth),
   ...drawEllipsePath({ x, y, xScale, yScale }),
   // prettier-ignore
-  !_.isEmpty(fillRgbColor) && !_.isEmpty(borderRgbColor) ? fillAndStroke()
-  : !_.isEmpty(fillRgbColor)                             ? fill()
-  : !_.isEmpty(borderRgbColor)                           ? stroke()
+  !_.isEmpty(colorRgb) && !_.isEmpty(borderColorRgb) ? fillAndStroke()
+  : !_.isEmpty(colorRgb)                             ? fill()
+  : !_.isEmpty(borderColorRgb)                           ? stroke()
   : closePath(),
   popGraphicsState(),
 ];
@@ -105,15 +101,15 @@ export const drawCircle = ({
   y = 0,
   size = 100,
   borderWidth = 15,
-  fillRgbColor = [],
-  borderRgbColor = [],
+  colorRgb = [],
+  borderColorRgb = [],
 }: {
   x?: number;
   y?: number;
   size?: number;
   borderWidth?: number;
-  fillRgbColor?: number[];
-  borderRgbColor?: number[];
+  colorRgb?: number[];
+  borderColorRgb?: number[];
 }): PDFOperator[] =>
   drawEllipse({
     x,
@@ -121,8 +117,8 @@ export const drawCircle = ({
     xScale: size,
     yScale: size,
     borderWidth,
-    fillRgbColor,
-    borderRgbColor,
+    colorRgb,
+    borderColorRgb,
   });
 
 // TODO: Implement cornerStyle option
@@ -132,34 +128,30 @@ export const drawRectangle = ({
   width = 100,
   height = 100,
   borderWidth = 15,
-  fillRgbColor = [],
-  borderRgbColor = [],
+  colorRgb = [],
+  borderColorRgb = [],
 }: {
   x?: number;
   y?: number;
   width?: number;
   height?: number;
   borderWidth?: number;
-  fillRgbColor?: number[];
-  borderRgbColor?: number[];
+  colorRgb?: number[];
+  borderColorRgb?: number[];
 }): PDFOperator[] => [
   pushGraphicsState(),
-  fillingRgbColor(
-    fillRgbColor[0] || 0,
-    fillRgbColor[1] || 0,
-    fillRgbColor[2] || 0,
-  ),
+  fillingRgbColor(colorRgb[0] || 0, colorRgb[1] || 0, colorRgb[2] || 0),
   strokingRgbColor(
-    borderRgbColor[0] || 0,
-    borderRgbColor[1] || 0,
-    borderRgbColor[2] || 0,
+    borderColorRgb[0] || 0,
+    borderColorRgb[1] || 0,
+    borderColorRgb[2] || 0,
   ),
   lineWidth(borderWidth),
   rectangle(x, y, width, height),
   // prettier-ignore
-  !_.isEmpty(fillRgbColor) && !_.isEmpty(borderRgbColor) ? fillAndStroke()
-  : !_.isEmpty(fillRgbColor)                             ? fill()
-  : !_.isEmpty(borderRgbColor)                           ? stroke()
+  !_.isEmpty(colorRgb) && !_.isEmpty(borderColorRgb) ? fillAndStroke()
+  : !_.isEmpty(colorRgb)                             ? fill()
+  : !_.isEmpty(borderColorRgb)                           ? stroke()
   : closePath(),
   popGraphicsState(),
 ];
@@ -169,15 +161,15 @@ export const drawSquare = ({
   y = 0,
   size = 100,
   borderWidth = 15,
-  fillRgbColor = [],
-  borderRgbColor = [],
+  colorRgb = [],
+  borderColorRgb = [],
 }: {
   x?: number;
   y?: number;
   size?: number;
   borderWidth?: number;
-  fillRgbColor?: number[];
-  borderRgbColor?: number[];
+  colorRgb?: number[];
+  borderColorRgb?: number[];
 }): PDFOperator[] =>
   drawRectangle({
     x,
@@ -185,8 +177,8 @@ export const drawSquare = ({
     width: size,
     height: size,
     borderWidth,
-    fillRgbColor,
-    borderRgbColor,
+    colorRgb,
+    borderColorRgb,
   });
 
 // TODO: Implement the border* options
@@ -198,7 +190,7 @@ export const drawText = (
     font,
     size = 12,
     // borderWidth = 15,
-    fillRgbColor = [],
+    colorRgb = [],
   }: // borderRgbColor = [],
   {
     x?: number;
@@ -206,16 +198,12 @@ export const drawText = (
     font: string; // | PDFName
     size?: number;
     // borderWidth?: number;
-    fillRgbColor?: number[];
+    colorRgb?: number[];
     // borderRgbColor?: number[];
   },
 ): PDFOperator[] => [
   PDFTextObject.of(
-    fillingRgbColor(
-      fillRgbColor[0] || 0,
-      fillRgbColor[1] || 0,
-      fillRgbColor[2] || 0,
-    ),
+    fillingRgbColor(colorRgb[0] || 0, colorRgb[1] || 0, colorRgb[2] || 0),
     fontAndSize(font, size),
     textPosition(x, y),
     text(textStr),
@@ -232,7 +220,7 @@ export const drawLinesOfText = (
     size = 12,
     lineHeight: lineHeightParam,
     // borderWidth = 15,
-    fillRgbColor = [],
+    colorRgb = [],
   }: // borderRgbColor = [],
   {
     x?: number;
@@ -241,16 +229,12 @@ export const drawLinesOfText = (
     size?: number;
     lineHeight?: number;
     // borderWidth?: number;
-    fillRgbColor?: number[];
+    colorRgb?: number[];
     // borderRgbColor?: number[];
   },
 ): PDFOperator[] => [
   PDFTextObject.of(
-    fillingRgbColor(
-      fillRgbColor[0] || 0,
-      fillRgbColor[1] || 0,
-      fillRgbColor[2] || 0,
-    ),
+    fillingRgbColor(colorRgb[0] || 0, colorRgb[1] || 0, colorRgb[2] || 0),
     fontAndSize(font, size),
     lineHeight(lineHeightParam || size),
     textPosition(x, y),

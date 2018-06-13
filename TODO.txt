@@ -2,6 +2,7 @@ Before 0.1.0 release:
 * Document the current (low-level) API in a simple README
 * Write some scripts/commands to handle the code building and release process.
 * Add LICENSE!!!
+* Add GitHub project tags
 
 # Features
 ***** Create static "cm" members for operations like scaling, and translating *****

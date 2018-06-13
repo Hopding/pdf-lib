@@ -61,9 +61,9 @@ const makeOverlayContentStream = (
       y: 265,
       width: 400,
       height: 90,
-      fillRgbColor: [253 / 255, 246 / 255, 227 / 255],
+      colorRgb: [253 / 255, 246 / 255, 227 / 255],
       borderWidth: 3,
-      borderRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      borderColorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(
       [
@@ -74,7 +74,7 @@ const makeOverlayContentStream = (
       {
         x: 125,
         y: 325,
-        fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+        colorRgb: [101 / 255, 123 / 255, 131 / 255],
         font: 'Ubuntu',
         size: 24,
       },
@@ -88,7 +88,7 @@ const makeNewPageContentStream = (pdfDoc: PDFDocument) =>
       y: 65,
       size: 24,
       font: 'Ubuntu',
-      fillRgbColor: [0.7, 0.4, 0.9],
+      colorRgb: [0.7, 0.4, 0.9],
     }),
   );
 

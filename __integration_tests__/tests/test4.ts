@@ -61,9 +61,9 @@ const makeOverlayContentStream = (
       y: 265,
       width: 400,
       height: 90,
-      fillRgbColor: [253 / 255, 246 / 255, 227 / 255],
+      colorRgb: [253 / 255, 246 / 255, 227 / 255],
       borderWidth: 3,
-      borderRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      borderColorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(
       [
@@ -74,7 +74,7 @@ const makeOverlayContentStream = (
       {
         x: 125,
         y: 325,
-        fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+        colorRgb: [101 / 255, 123 / 255, 131 / 255],
         font: 'Ubuntu',
         size: 24,
       },
@@ -91,7 +91,7 @@ const makeNewPageContentStream = (
       y: 200,
       size: 24,
       font: 'Helvetica-Bold',
-      fillRgbColor: [1, 0, 1],
+      colorRgb: [1, 0, 1],
     }),
     ...drawImage('CatUnicorn', {
       x: 30,
@@ -108,14 +108,14 @@ const makeLastPageContentStream = (pdfDoc: PDFDocument) =>
       y: 60,
       size: 24,
       font: 'Helvetica-Bold',
-      fillRgbColor: [1, 0, 1],
+      colorRgb: [1, 0, 1],
     }),
     ...drawRectangle({
       x: 30,
       y: 50,
       width: 245,
       height: 5,
-      fillRgbColor: [1, 0, 1],
+      colorRgb: [1, 0, 1],
     }),
   );
 

@@ -45,7 +45,7 @@ import {
 import PDFOperators from 'core/pdf-operators';
 const { T, TD, Td, Tm } = PDFOperators;
 
-import { ITestKernel, ITest, ITestAssets } from '../models';
+import { ITest, ITestAssets, ITestKernel } from '../models';
 
 const ipsumLines = [
   'Eligendi est pariatur quidem in non excepturi et.',
@@ -60,7 +60,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
     translate(0, size / 2),
     ...drawSquare({
       size: size / 2,
-      fillRgbColor: [1, 0, 0],
+      colorRgb: [1, 0, 0],
     }),
     moveTo(0, size / 2),
     lineTo(0, 0),
@@ -73,7 +73,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
       y: size / 8,
       size: size / 4,
       borderWidth: 50,
-      borderRgbColor: [1, 1, 0],
+      borderColorRgb: [1, 1, 0],
     }),
     popGraphicsState(),
 
@@ -82,14 +82,14 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
     translate(size / 2, size / 2),
     ...drawSquare({
       size: size / 2,
-      fillRgbColor: [0, 1, 0],
+      colorRgb: [0, 1, 0],
     }),
     ...drawEllipse({
       x: size / 4,
       y: size / 4,
       xScale: 50,
       yScale: 75,
-      fillRgbColor: [255 / 255, 153 / 255, 51 / 255],
+      colorRgb: [255 / 255, 153 / 255, 51 / 255],
     }),
     ...drawEllipse({
       x: size / 4,
@@ -112,7 +112,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
         y: size / 2 - 5 - 25,
         font: 'FontTimesRoman',
         size: 32,
-        fillRgbColor: [1, 0, 1],
+        colorRgb: [1, 0, 1],
       },
     ),
     popGraphicsState(),
@@ -122,7 +122,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
     translate(0, 0),
     ...drawSquare({
       size: size / 2,
-      fillRgbColor: [0, 1, 1],
+      colorRgb: [0, 1, 1],
     }),
     dashPattern([25], 25),
     lineCap('round'),
@@ -131,7 +131,7 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
       y: size / 4,
       size: 150,
       borderWidth: 10,
-      borderRgbColor: [0.9, 0, 0.9],
+      borderColorRgb: [0.9, 0, 0.9],
     }),
     popGraphicsState(),
 
@@ -140,14 +140,14 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
     translate(size / 2, 0),
     ...drawSquare({
       size: size / 2,
-      fillRgbColor: [0.8, 0.8, 0.8],
+      colorRgb: [0.8, 0.8, 0.8],
     }),
     lineJoin('round'),
     ...drawSquare({
       x: 50,
       y: 50,
       size: size / 2 - 2 * 50,
-      borderRgbColor: [0.6, 0.6, 0.6],
+      borderColorRgb: [0.6, 0.6, 0.6],
       borderWidth: 15,
     }),
     lineJoin('bevel'),
@@ -155,8 +155,8 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
       x: 100,
       y: 100,
       size: size / 2 - 2 * 100,
-      fillRgbColor: [1, 1, 1],
-      borderRgbColor: [0, 0, 0],
+      colorRgb: [1, 1, 1],
+      borderColorRgb: [0, 0, 0],
       borderWidth: 15,
     }),
     popGraphicsState(),
@@ -166,55 +166,55 @@ const makePage2ContentStream = (pdfDoc: PDFDocument, size: number) =>
   pdfDoc.createContentStream(
     ...drawSquare({
       size,
-      fillRgbColor: [253 / 255, 246 / 255, 227 / 255],
+      colorRgb: [253 / 255, 246 / 255, 227 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 20,
       size: 20,
       font: 'Ubuntu-R',
-      fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 105,
       size: 25,
       font: 'Fantasque-BI',
-      fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 200,
       size: 25,
       font: 'IndieFlower-R',
-      fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 300,
       size: 30,
       font: 'GreatVibes-R',
-      fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 425,
       size: 25,
       font: 'AppleStorm-R',
-      fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 500,
       size: 15,
       font: 'BioRhyme-R',
-      fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 575,
       size: 15,
       font: 'PressStart2P-R',
-      fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
     ...drawLinesOfText(ipsumLines, {
       y: size - 650,
       size: 25,
       font: 'Hussar3D-R',
-      fillRgbColor: [101 / 255, 123 / 255, 131 / 255],
+      colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
   );
 
@@ -248,7 +248,7 @@ const makePage3ContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
     ...drawRectangle({
       width: 960 * 0.49,
       height: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75,
-      fillRgbColor: [0, 1, 0],
+      colorRgb: [0, 1, 0],
     }),
     ...drawImage('MinionsBananaAlpha', {
       y: pageHeight - 1080 * 0.2 - 354 * 0.75 - 375 * 0.75 - 640 * 0.5,
