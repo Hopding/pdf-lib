@@ -63,6 +63,8 @@
     "ts-node": "^6.0.5",
     "tsconfig-paths": "^3.3.2",
     "tslint": "^5.9.1",
+    "typedoc": "^0.11.1",
+    "typedoc-plugin-markdown": "^1.1.13",
     "typescript": "^2.7.2"
   },
   "jest": {

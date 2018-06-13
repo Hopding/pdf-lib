@@ -182,8 +182,13 @@ export const drawSquare = ({
   });
 
 // TODO: Implement the border* options
+/**
+ * Draws a line of text in a content stream.
+ * @param line  A string to draw.
+ * @param __namedParameters Object for stuff and things.
+ */
 export const drawText = (
-  textStr: string,
+  line: string,
   {
     x = 0,
     y = 0,
@@ -206,7 +211,7 @@ export const drawText = (
     fillingRgbColor(colorRgb[0] || 0, colorRgb[1] || 0, colorRgb[2] || 0),
     fontAndSize(font, size),
     textPosition(x, y),
-    text(textStr),
+    text(line),
   ),
 ];
 
