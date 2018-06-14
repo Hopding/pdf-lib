@@ -91,7 +91,7 @@ const makeNewPageContentStream = (
       y: 200,
       size: 24,
       font: 'Helvetica-Bold',
-      colorRgb: [1, 0, 1],
+      colorRgbx: [1, 0, 1],
     }),
     ...drawImage('CatUnicorn', {
       x: 30,
@@ -108,7 +108,7 @@ const makeLastPageContentStream = (pdfDoc: PDFDocument) =>
       y: 60,
       size: 24,
       font: 'Helvetica-Bold',
-      colorRgb: [1, 0, 1],
+      colorRgbx: [1, 0, 1],
     }),
     ...drawRectangle({
       x: 30,

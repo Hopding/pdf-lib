@@ -88,7 +88,7 @@ const makeNewPageContentStream = (pdfDoc: PDFDocument) =>
       y: 65,
       size: 24,
       font: 'Ubuntu',
-      colorRgb: [0.7, 0.4, 0.9],
+      colorRgbx: [0.7, 0.4, 0.9],
     }),
   );
 
