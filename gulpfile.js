@@ -28,3 +28,12 @@ gulp.task('build', () =>
     .js.pipe(babel(babelrc))
     .pipe(gulp.dest('dist')),
 );
+
+gulp.task('docs', () =>
+  execSync(`
+    yarn typedoc       \\
+      --theme markdown \\
+      --out   docs     \\
+      src/core/pdf-operators/helpers
+  `),
+);

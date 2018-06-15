@@ -1,5 +1,7 @@
 # pdf-lib
 
+`pdf-lib` is a library for **creating** and **modifying** PDF documents in JavaScript. It is designed to work in any modern JavaScript runtime (both **server-side** and **client-side**) and has been tested in Node, Browser, and React Native environments.
+
 <a href="https://www.npmjs.com/package/pdf-lib">
   <img alt="npm version" src="https://img.shields.io/npm/v/pdf-lib.svg?style=flat-square">
 </a>
@@ -11,10 +13,6 @@
 <a href="https://prettier.io/">
   <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square">
 </a>  
-
-> **Create** and **modify** PDF documents in any JavaScript environment
-
-`pdf-lib` is a library for **creating** and **modifying** PDF documents in JavaScript. It is designed to work in any modern JavaScript runtime (both **server-side** and **client-side**) and has been tested in Node, Browser, and React Native environments.
 
 ## Table of Contents
 ...
