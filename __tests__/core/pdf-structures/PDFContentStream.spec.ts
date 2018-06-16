@@ -8,14 +8,14 @@ import { PDFContentStream } from 'core/pdf-structures';
 import { arrayToString, typedArrayFor } from 'utils';
 
 describe(`PDFContentStream`, () => {
-  it(`requires a PDFDictionary and PDFOperator[] to be constructed`, () => {
+  it(`requires a PDFDictionary and Array<PDFOperator | PDFOperator[]> to be constructed`, () => {
     expect(() => new PDFContentStream()).toThrowError(
       'PDFStream.dictionary must be of type PDFDictionary',
     );
 
     const dict = PDFDictionary.from({}, PDFObjectIndex.create());
     expect(() => new PDFContentStream(dict, 'foo')).toThrowError(
-      'Only PDFOperators can be pushed to a PDFContentStream.',
+      'PDFContentStream requires PDFOperators or PDFOperator[]s to be constructed.',
     );
 
     const { cm, S, s } = PDFOperators;
@@ -30,14 +30,14 @@ describe(`PDFContentStream`, () => {
   });
 
   describe(`static "of" factory method`, () => {
-    it(`requires a PDFDictionary and PDFOperator[] to be constructed`, () => {
+    it(`requires a PDFDictionary and Array<PDFOperator | PDFOperator[]> to be constructed`, () => {
       expect(() => PDFContentStream.of()).toThrowError(
         'PDFStream.dictionary must be of type PDFDictionary',
       );
 
       const dict = PDFDictionary.from({}, PDFObjectIndex.create());
       expect(() => PDFContentStream.of(dict, 'foo')).toThrowError(
-        'Only PDFOperators can be pushed to a PDFContentStream.',
+        'PDFContentStream requires PDFOperators or PDFOperator[]s to be constructed.',
       );
     });
 
@@ -49,6 +49,13 @@ describe(`PDFContentStream`, () => {
           dict,
           s.operator,
           cm.of(1, 2, 3, 4, 5, 6),
+          S.operator,
+        ),
+      ).toBeInstanceOf(PDFContentStream);
+      expect(
+        PDFContentStream.of(
+          dict,
+          [s.operator, cm.of(1, 2, 3, 4, 5, 6)],
           S.operator,
         ),
       ).toBeInstanceOf(PDFContentStream);

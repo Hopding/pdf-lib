@@ -68,7 +68,7 @@ class PDFDocument {
   createPage = (size: [number, number], resources?: PDFDictionary): PDFPage =>
     PDFPage.create(this.index, size, resources);
 
-  createContentStream = (...operators: PDFOperator[]) =>
+  createContentStream = (...operators: Array<PDFOperator | PDFOperator[]>) =>
     PDFContentStream.of(PDFDictionary.from({}, this.index), ...operators);
 
   addPage = (page: PDFPage) => {

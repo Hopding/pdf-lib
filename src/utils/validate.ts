@@ -30,6 +30,16 @@ export const isInstance = <T extends Function>(requiredClass: T) => (
   value: any,
 ) => value instanceof requiredClass;
 
+export const isArrayOf = <T extends Function>(requiredClass: T) => (
+  value: any,
+) => {
+  if (!_.isArray(value)) return false;
+  for (let i = 0; i < value.length; i++) {
+    if (!(value[i] instanceof requiredClass)) return false;
+  }
+  return true;
+};
+
 export const isIdentity = <T>(requiredValue: T) => (value: any) =>
   value === requiredValue;
 
