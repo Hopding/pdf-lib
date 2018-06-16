@@ -203,7 +203,7 @@ class PDFPage extends PDFDictionary {
 
   /**
    * **Note:** This method is an alias for [[addXObject]]. It exists because its
-   * name is more descriptive and familiar then `addXObject` is.
+   * name is more descriptive and familiar than `addXObject` is.
    *
    * Adds an image object to the page.
    *

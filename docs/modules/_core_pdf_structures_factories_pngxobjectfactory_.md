@@ -20,7 +20,7 @@
 
 **● Buffer**: *`any`*
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:17](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L17)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:17](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L17)*
 
 ___
 

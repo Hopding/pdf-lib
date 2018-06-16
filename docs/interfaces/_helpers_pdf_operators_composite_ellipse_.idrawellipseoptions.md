@@ -14,7 +14,7 @@ Options object with named parameters for the [drawEllipse](../modules/_helpers_p
 
 **● borderColorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:131](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/ellipse.ts#L131)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:131](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/ellipse.ts#L131)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -29,7 +29,7 @@ ___
 
 **● borderWidth**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:105](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/ellipse.ts#L105)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:105](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/ellipse.ts#L105)*
 
 Default value is `15`.
 
@@ -42,7 +42,7 @@ ___
 
 **● colorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:118](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/ellipse.ts#L118)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:118](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/ellipse.ts#L118)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -57,7 +57,7 @@ ___
 
 **● x**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:81](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/ellipse.ts#L81)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:81](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/ellipse.ts#L81)*
 
 Default value is `0`.
 
@@ -70,7 +70,7 @@ ___
 
 **● xScale**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:93](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/ellipse.ts#L93)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:93](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/ellipse.ts#L93)*
 
 Default value is `100`.
 
@@ -83,7 +83,7 @@ ___
 
 **● y**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:87](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/ellipse.ts#L87)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:87](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/ellipse.ts#L87)*
 
 Default value is `0`.
 
@@ -96,7 +96,7 @@ ___
 
 **● yScale**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:99](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/ellipse.ts#L99)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:99](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/ellipse.ts#L99)*
 
 Default value is `100`.
 
