@@ -10,7 +10,7 @@ import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { PDFContentStream } from 'core/pdf-structures';
 import PDFPage from 'core/pdf-structures/PDFPage';
 
-import { ITestKernel, ITest, ITestAssets } from '../models';
+import { ITest, ITestAssets, ITestKernel } from '../models';
 
 // Clipping path operators
 const { W } = PDFOperators;

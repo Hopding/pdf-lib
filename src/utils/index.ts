@@ -4,11 +4,11 @@ export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
 
 export type ArrayPredicate<A> = (...a: A[]) => boolean;
 
-export const writeToDebugFile = (data: any, postfix = 0) => {
-  // eslint-disable-next-line
-  const fs = require('fs');
-  fs.writeFileSync(`/Users/user/Desktop/pdf-lib/debug${postfix}`, data);
-};
+// export const writeToDebugFile = (data: any, postfix = 0) => {
+//   // eslint-disable-next-line
+//   const fs = require('fs');
+//   fs.writeFileSync(`/Users/user/Desktop/pdf-lib/debug${postfix}`, data);
+// };
 
 export const error = (msg: string) => {
   throw new Error(msg);
@@ -183,17 +183,6 @@ export const arrayFindIndexOf = (
   }
 
   return currIdx;
-};
-
-/* eslint-disable no-restricted-syntax */
-export const findInMap = <K, V>(
-  map: Map<K, V>,
-  predicate: Predicate<V, K>,
-): V | void => {
-  for (const [key, val] of map) {
-    if (predicate(val, key)) return val;
-  }
-  return null;
 };
 
 export const setCharAt = (str: string, idx: number, newChar: string) =>

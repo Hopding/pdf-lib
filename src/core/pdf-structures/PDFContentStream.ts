@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable getter-return */
 import _ from 'lodash';
 
 import 'core/pdf-objects';

@@ -178,9 +178,11 @@ class PNGXObjectFactory {
     const transparency = this.image.transparency.indexed;
     const pixels = this.image.decodePixelsSync();
     this.alphaChannel = new Uint8Array(this.width * this.height);
-    pixels.forEach((pixel, idx) => {
-      this.alphaChannel[idx] = transparency[pixel];
-    });
+
+    // Can't use forEach here, because it's missing on React Native Android
+    for (let idx = 0; idx < pixels.length; idx++) {
+      this.alphaChannel[idx] = transparency[pixels[idx]];
+    }
     return this.finalize();
   };
 }

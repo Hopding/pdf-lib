@@ -1,4 +1,4 @@
-import { PDFIndirectReference } from 'core/pdf-objects';
+import { PDFIndirectReference, PDFObject } from 'core/pdf-objects';
 import { arrayIndexOf, arrayToString, trimArray } from 'utils';
 
 import { IParseHandlers } from './PDFParser';

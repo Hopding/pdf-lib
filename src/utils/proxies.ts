@@ -1,11 +1,12 @@
 /* tslint:disable:ban-types */
 import _ from 'lodash';
+import 'proxy-polyfill'; // Need this for React Native Android
 
 import { isInstance, validate } from 'utils/validate';
 
 const EMPTY_ARR = [] as any[];
 
-interface ITypedArrayProxyConfig {
+export interface ITypedArrayProxyConfig {
   methods?: Function[];
   set?: (k: string | number | symbol, v: any) => void;
   get?: (k: string | number | symbol) => any;

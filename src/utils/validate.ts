@@ -19,7 +19,7 @@ export const optional = <T>(predicate: Predicate<T>) => (value: any) =>
 
 export const validateArr = <T extends any[]>(
   value: T,
-  predicate: (t: T) => boolean,
+  predicate: (t: T[0]) => boolean,
   msg: string,
 ) => {
   validate(value, _.isArray, 'validateArr.value must be an array.');
