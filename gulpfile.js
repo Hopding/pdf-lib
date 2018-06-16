@@ -3,6 +3,7 @@ const ts = require('gulp-typescript');
 const babel = require('gulp-babel');
 const del = require('del');
 const filter = require('gulp-filter');
+const { execSync } = require('child_process');
 
 const tsProject = ts.createProject('tsconfig.json');
 

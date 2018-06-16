@@ -6,16 +6,16 @@
 
 ## `<Const>` drawCircle
 
-▸ **drawCircle**(options: *[IDrawCircleOptions](../interfaces/_pdf_operators_helpers_composite_ellipse_.idrawcircleoptions.md)*): `PDFOperator`[]
+▸ **drawCircle**(options: *[IDrawCircleOptions](../interfaces/_helpers_pdf_operators_composite_ellipse_.idrawcircleoptions.md)*): `PDFOperator`[]
 
-*Defined in [pdf-operators/helpers/composite/ellipse.ts:264](https://github.com/Hopding/pdf-lib/blob/ccd5602/src/core/pdf-operators/helpers/composite/ellipse.ts#L264)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:265](https://github.com/Hopding/pdf-lib/blob/dd3a0e3/src/helpers/pdf-operators/composite/ellipse.ts#L265)*
 
 Draws a circle in a content stream.
 
 ```javascript
 const contentStream = pdfDoc.register(
   pdfDoc.createContentStream(
-    ...drawCircle({
+    drawCircle({
       x: 25,
       y: 50,
       size: 50,
@@ -34,7 +34,7 @@ const page = pdfDoc
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| options | [IDrawCircleOptions](../interfaces/_pdf_operators_helpers_composite_ellipse_.idrawcircleoptions.md) |  An options object with named parameters. |
+| options | [IDrawCircleOptions](../interfaces/_helpers_pdf_operators_composite_ellipse_.idrawcircleoptions.md) |  An options object with named parameters. |
 
 **Returns:** `PDFOperator`[]
 
@@ -43,16 +43,16 @@ ___
 
 ## `<Const>` drawEllipse
 
-▸ **drawEllipse**(options: *[IDrawEllipseOptions](../interfaces/_pdf_operators_helpers_composite_ellipse_.idrawellipseoptions.md)*): `PDFOperator`[]
+▸ **drawEllipse**(options: *[IDrawEllipseOptions](../interfaces/_helpers_pdf_operators_composite_ellipse_.idrawellipseoptions.md)*): `PDFOperator`[]
 
-*Defined in [pdf-operators/helpers/composite/ellipse.ts:157](https://github.com/Hopding/pdf-lib/blob/ccd5602/src/core/pdf-operators/helpers/composite/ellipse.ts#L157)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:158](https://github.com/Hopding/pdf-lib/blob/dd3a0e3/src/helpers/pdf-operators/composite/ellipse.ts#L158)*
 
 Draws an ellipse in a content stream.
 
 ```javascript
 const contentStream = pdfDoc.register(
   pdfDoc.createContentStream(
-    ...drawEllipse({
+    drawEllipse({
       x: 25,
       y: 50,
       xScale: 50,
@@ -72,7 +72,7 @@ const page = pdfDoc
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| options | [IDrawEllipseOptions](../interfaces/_pdf_operators_helpers_composite_ellipse_.idrawellipseoptions.md) |  An options object with named parameters. |
+| options | [IDrawEllipseOptions](../interfaces/_helpers_pdf_operators_composite_ellipse_.idrawellipseoptions.md) |  An options object with named parameters. |
 
 **Returns:** `PDFOperator`[]
 

@@ -72,7 +72,7 @@ export interface IDrawImageOptions {
  * const [pngImage, pngDims] = pdfDoc.embedPNG(pngBytes);
  * const contentStream = pdfDoc.register(
  *   pdfDoc.createContentStream(
- *     ...drawImage('MyPngImage', {
+ *     drawImage('MyPngImage', {
  *       x: 25,
  *       y: 50,
  *       width: pngDims.width * 0.5,   // Make the image 50% smaller

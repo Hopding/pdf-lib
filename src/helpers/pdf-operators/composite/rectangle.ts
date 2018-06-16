@@ -104,7 +104,7 @@ export interface IDrawRectangleOptions {
  * ```javascript
  * const contentStream = pdfDoc.register(
  *   pdfDoc.createContentStream(
- *     ...drawRectangle({
+ *     drawRectangle({
  *       x: 25,
  *       y: 50,
  *       width: 1000,
@@ -214,7 +214,7 @@ export interface IDrawSquareOptions {
  * ```javascript
  * const contentStream = pdfDoc.register(
  *   pdfDoc.createContentStream(
- *     ...drawSquare({
+ *     drawSquare({
  *       x: 25,
  *       y: 50,
  *       size: 500,

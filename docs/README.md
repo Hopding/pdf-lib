@@ -4,19 +4,21 @@
 
 ### External modules
 
-* ["pdf-document/PDFDocument"](modules/_pdf_document_pdfdocument_.md)
-* ["pdf-document/PDFDocumentFactory"](modules/_pdf_document_pdfdocumentfactory_.md)
-* ["pdf-document/PDFDocumentWriter"](modules/_pdf_document_pdfdocumentwriter_.md)
-* ["pdf-document/Standard14Fonts"](modules/_pdf_document_standard14fonts_.md)
-* ["pdf-document/index"](modules/_pdf_document_index_.md)
-* ["pdf-operators/helpers/composite/ellipse"](modules/_pdf_operators_helpers_composite_ellipse_.md)
-* ["pdf-operators/helpers/composite/image"](modules/_pdf_operators_helpers_composite_image_.md)
-* ["pdf-operators/helpers/composite/index"](modules/_pdf_operators_helpers_composite_index_.md)
-* ["pdf-operators/helpers/composite/rectangle"](modules/_pdf_operators_helpers_composite_rectangle_.md)
-* ["pdf-operators/helpers/composite/text"](modules/_pdf_operators_helpers_composite_text_.md)
-* ["pdf-operators/helpers/simple"](modules/_pdf_operators_helpers_simple_.md)
-* ["pdf-structures/PDFPage"](modules/_pdf_structures_pdfpage_.md)
-* ["pdf-structures/index"](modules/_pdf_structures_index_.md)
+* ["core/pdf-document/PDFDocument"](modules/_core_pdf_document_pdfdocument_.md)
+* ["core/pdf-document/PDFDocumentFactory"](modules/_core_pdf_document_pdfdocumentfactory_.md)
+* ["core/pdf-document/PDFDocumentWriter"](modules/_core_pdf_document_pdfdocumentwriter_.md)
+* ["core/pdf-document/Standard14Fonts"](modules/_core_pdf_document_standard14fonts_.md)
+* ["core/pdf-document/index"](modules/_core_pdf_document_index_.md)
+* ["core/pdf-structures/PDFPage"](modules/_core_pdf_structures_pdfpage_.md)
+* ["core/pdf-structures/factories/JPEGXObjectFactory"](modules/_core_pdf_structures_factories_jpegxobjectfactory_.md)
+* ["core/pdf-structures/factories/PDFFontFactory"](modules/_core_pdf_structures_factories_pdffontfactory_.md)
+* ["core/pdf-structures/factories/PNGXObjectFactory"](modules/_core_pdf_structures_factories_pngxobjectfactory_.md)
+* ["core/pdf-structures/index"](modules/_core_pdf_structures_index_.md)
+* ["helpers/pdf-operators/composite/ellipse"](modules/_helpers_pdf_operators_composite_ellipse_.md)
+* ["helpers/pdf-operators/composite/image"](modules/_helpers_pdf_operators_composite_image_.md)
+* ["helpers/pdf-operators/composite/index"](modules/_helpers_pdf_operators_composite_index_.md)
+* ["helpers/pdf-operators/composite/rectangle"](modules/_helpers_pdf_operators_composite_rectangle_.md)
+* ["helpers/pdf-operators/composite/text"](modules/_helpers_pdf_operators_composite_text_.md)
 
 ---
 

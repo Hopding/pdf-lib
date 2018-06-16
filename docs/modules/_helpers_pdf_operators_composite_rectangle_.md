@@ -6,16 +6,16 @@
 
 ## `<Const>` drawRectangle
 
-▸ **drawRectangle**(options: *[IDrawRectangleOptions](../interfaces/_pdf_operators_helpers_composite_rectangle_.idrawrectangleoptions.md)*): `PDFOperator`[]
+▸ **drawRectangle**(options: *[IDrawRectangleOptions](../interfaces/_helpers_pdf_operators_composite_rectangle_.idrawrectangleoptions.md)*): `PDFOperator`[]
 
-*Defined in [pdf-operators/helpers/composite/rectangle.ts:124](https://github.com/Hopding/pdf-lib/blob/ccd5602/src/core/pdf-operators/helpers/composite/rectangle.ts#L124)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:125](https://github.com/Hopding/pdf-lib/blob/dd3a0e3/src/helpers/pdf-operators/composite/rectangle.ts#L125)*
 
 Draws a rectangle in a content stream.
 
 ```javascript
 const contentStream = pdfDoc.register(
   pdfDoc.createContentStream(
-    ...drawRectangle({
+    drawRectangle({
       x: 25,
       y: 50,
       width: 1000,
@@ -35,7 +35,7 @@ const page = pdfDoc
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| options | [IDrawRectangleOptions](../interfaces/_pdf_operators_helpers_composite_rectangle_.idrawrectangleoptions.md) |  An options object with named parameters. |
+| options | [IDrawRectangleOptions](../interfaces/_helpers_pdf_operators_composite_rectangle_.idrawrectangleoptions.md) |  An options object with named parameters. |
 
 **Returns:** `PDFOperator`[]
 
@@ -44,16 +44,16 @@ ___
 
 ## `<Const>` drawSquare
 
-▸ **drawSquare**(options: *[IDrawSquareOptions](../interfaces/_pdf_operators_helpers_composite_rectangle_.idrawsquareoptions.md)*): `PDFOperator`[]
+▸ **drawSquare**(options: *[IDrawSquareOptions](../interfaces/_helpers_pdf_operators_composite_rectangle_.idrawsquareoptions.md)*): `PDFOperator`[]
 
-*Defined in [pdf-operators/helpers/composite/rectangle.ts:233](https://github.com/Hopding/pdf-lib/blob/ccd5602/src/core/pdf-operators/helpers/composite/rectangle.ts#L233)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:234](https://github.com/Hopding/pdf-lib/blob/dd3a0e3/src/helpers/pdf-operators/composite/rectangle.ts#L234)*
 
 Draws a square in a content stream.
 
 ```javascript
 const contentStream = pdfDoc.register(
   pdfDoc.createContentStream(
-    ...drawSquare({
+    drawSquare({
       x: 25,
       y: 50,
       size: 500,
@@ -72,7 +72,7 @@ const page = pdfDoc
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| options | [IDrawSquareOptions](../interfaces/_pdf_operators_helpers_composite_rectangle_.idrawsquareoptions.md) |  An options object with named parameters. |
+| options | [IDrawSquareOptions](../interfaces/_helpers_pdf_operators_composite_rectangle_.idrawsquareoptions.md) |  An options object with named parameters. |
 
 **Returns:** `PDFOperator`[]
 

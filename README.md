@@ -28,14 +28,14 @@ There are other open source JavaScript PDF libraries available. But most of them
 ### Document Creation
 ```javascript
 import { PDFDocumentFactory, PDFDocumentWriter } from 'pdf-lib/core/pdf-document';
-import { drawText } from 'pdf-lib/core/pdf-operators/helpers/composite';
+import { drawText } from 'pdf-lib/helpers/pdf-operators/composite';
 
 const pdfDoc = PDFDocumentFactory.create();
 const [timesRomanFont] = pdfDoc.embedStandardFont('Times-Roman');
 
 const contentStream = pdfDoc.register(
   pdfDoc.createContentStream(
-    ...drawText('Creating PDFs in JavaScript is awesome!', {
+    drawText('Creating PDFs in JavaScript is awesome!', {
       x: 50,
       y: 450,
       size: 15,
@@ -58,7 +58,7 @@ const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 ### Document Modification
 ```javascript
 import { PDFDocumentFactory, PDFDocumentWriter } from 'pdf-lib/core/pdf-document';
-import { drawText } from 'pdf-lib/core/pdf-operators/helpers/composite';
+import { drawText } from 'pdf-lib/helpers/pdf-operators/composite';
 
 // This should be a Uint8Array.
 // This data can be obtained in a number of different ways.
@@ -71,7 +71,7 @@ const [helveticaFont] = pdfDoc.embedStandardFont('Helvetica');
 
 const contentStream = pdfDoc.register(
   pdfDoc.createContentStream(
-    ...drawText('This text was added to the PDF with JavaScript!', {
+    drawText('This text was added to the PDF with JavaScript!', {
       x: 25,
       y: 25,
       size: 24,

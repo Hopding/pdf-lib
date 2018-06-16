@@ -15,7 +15,7 @@ module.exports = {
     '**/pdf-operators/text/**/*',
     '**/pdf-operators/*',
     '**/pdf-parser/**/*',
-    '**/pdf-structures/factories/*',
+    '**/pdf-structures/factories/PDFXRefTableFactory.ts',
     '**/pdf-structures/PDFCatalog.ts',
     '**/pdf-structures/PDFContentStream.ts',
     '**/pdf-structures/PDFHeader.ts',

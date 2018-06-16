@@ -87,7 +87,7 @@ export interface IDrawTextOptions {
  * const [timesRomanFont] = pdfDoc.embedStandardFont('Times-Roman');
  * const contentStream = pdfDoc.register(
  *   pdfDoc.createContentStream(
- *     ...drawText('This is a line of text!', {
+ *     drawText('This is a line of text!', {
  *       x: 25,
  *       y: 50,
  *       font: 'Times-Roman',
@@ -181,7 +181,7 @@ export interface IDrawLinesOfTextOptions {
  * const [timesRomanFont] = pdfDoc.embedStandardFont('Times-Roman');
  * const contentStream = pdfDoc.register(
  *   pdfDoc.createContentStream(
- *     ...drawLinesOfText(
+ *     drawLinesOfText(
  *       ['First line of text.', 'Second line of text.'], {
  *       x: 25,
  *       y: 50,

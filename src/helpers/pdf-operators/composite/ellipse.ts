@@ -137,7 +137,7 @@ export interface IDrawEllipseOptions {
  * ```javascript
  * const contentStream = pdfDoc.register(
  *   pdfDoc.createContentStream(
- *     ...drawEllipse({
+ *     drawEllipse({
  *       x: 25,
  *       y: 50,
  *       xScale: 50,
@@ -245,7 +245,7 @@ export interface IDrawCircleOptions {
  * ```javascript
  * const contentStream = pdfDoc.register(
  *   pdfDoc.createContentStream(
- *     ...drawCircle({
+ *     drawCircle({
  *       x: 25,
  *       y: 50,
  *       size: 50,
