@@ -14,7 +14,7 @@ A note of thanks to the developers of [https://github.com/devongovett/pdfkit](ht
 
 ⊕ **new PNGXObjectFactory**(data: *`Uint8Array`*): [PNGXObjectFactory](_core_pdf_structures_factories_pngxobjectfactory_.pngxobjectfactory.md)
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:33](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L33)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:34](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L34)*
 
 **Parameters:**
 
@@ -34,7 +34,7 @@ ___
 
 **● alphaChannel**: *`Uint8Array`*
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:30](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L30)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:31](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L31)*
 
 ___
 <a id="document"></a>
@@ -43,7 +43,7 @@ ___
 
 **● document**: *[PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)*
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:33](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L33)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:34](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L34)*
 
 ___
 <a id="height"></a>
@@ -52,7 +52,7 @@ ___
 
 **● height**: *`number`*
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:28](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L28)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:29](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L29)*
 
 ___
 <a id="image"></a>
@@ -61,7 +61,7 @@ ___
 
 **● image**: *`PNG`*
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:26](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L26)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:27](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L27)*
 
 ___
 <a id="imgdata"></a>
@@ -70,7 +70,7 @@ ___
 
 **● imgData**: *`Uint8Array`*
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:29](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L29)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:30](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L30)*
 
 ___
 <a id="width"></a>
@@ -79,7 +79,7 @@ ___
 
 **● width**: *`number`*
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:27](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L27)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:28](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L28)*
 
 ___
 <a id="xobjdict"></a>
@@ -88,7 +88,7 @@ ___
 
 **● xObjDict**: *`PDFDictionary`*
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:32](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L32)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:33](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L33)*
 
 ___
 
@@ -100,7 +100,7 @@ ___
 
 ▸ **embedImageIn**(document: *[PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)*): `PDFIndirectReference`<`PDFRawStream`>
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:54](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L54)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:55](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L55)*
 
 **Parameters:**
 
@@ -111,46 +111,13 @@ ___
 **Returns:** `PDFIndirectReference`<`PDFRawStream`>
 
 ___
-<a id="finalize"></a>
-
-##  finalize
-
-▸ **finalize**(): `PDFIndirectReference`<`PDFRawStream`>
-
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:126](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L126)*
-
-**Returns:** `PDFIndirectReference`<`PDFRawStream`>
-
-___
-<a id="loadindexedalphachannel"></a>
-
-##  loadIndexedAlphaChannel
-
-▸ **loadIndexedAlphaChannel**(): `PDFIndirectReference`<`PDFRawStream`>
-
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:177](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L177)*
-
-**Returns:** `PDFIndirectReference`<`PDFRawStream`>
-
-___
-<a id="splitalphachannel"></a>
-
-##  splitAlphaChannel
-
-▸ **splitAlphaChannel**(): `PDFIndirectReference`<`PDFRawStream`>
-
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:158](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L158)*
-
-**Returns:** `PDFIndirectReference`<`PDFRawStream`>
-
-___
 <a id="for"></a>
 
 ## `<Static>` for
 
 ▸ **for**(data: *`Uint8Array`*): [PNGXObjectFactory](_core_pdf_structures_factories_pngxobjectfactory_.pngxobjectfactory.md)
 
-*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:24](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L24)*
+*Defined in [core/pdf-structures/factories/PNGXObjectFactory.ts:25](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L25)*
 
 **Parameters:**
 

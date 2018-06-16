@@ -8,7 +8,7 @@
 
 ▸ **drawRectangle**(options: *[IDrawRectangleOptions](../interfaces/_helpers_pdf_operators_composite_rectangle_.idrawrectangleoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:125](https://github.com/Hopding/pdf-lib/blob/41c216d/src/helpers/pdf-operators/composite/rectangle.ts#L125)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:125](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/rectangle.ts#L125)*
 
 Draws a rectangle in a content stream.
 
@@ -46,7 +46,7 @@ ___
 
 ▸ **drawSquare**(options: *[IDrawSquareOptions](../interfaces/_helpers_pdf_operators_composite_rectangle_.idrawsquareoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:234](https://github.com/Hopding/pdf-lib/blob/41c216d/src/helpers/pdf-operators/composite/rectangle.ts#L234)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:234](https://github.com/Hopding/pdf-lib/blob/10ef001/src/helpers/pdf-operators/composite/rectangle.ts#L234)*
 
 Draws a square in a content stream.
 

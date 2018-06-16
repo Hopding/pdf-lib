@@ -11,6 +11,11 @@ import PDFParser, { IParsedPDF } from 'core/pdf-parser/PDFParser';
 import { PDFCatalog, PDFObjectStream, PDFPageTree } from 'core/pdf-structures';
 
 class PDFDocumentFactory {
+  /**
+   * Creates a new [[PDFDocument]] object. Useful for creating new PDF documents.
+   *
+   * @returns The new [[PDFDocument]] object.
+   */
   static create = (): PDFDocument => {
     const index = PDFObjectIndex.create();
     const refs = {
@@ -30,6 +35,14 @@ class PDFDocumentFactory {
     return PDFDocument.fromIndex(index);
   };
 
+  /**
+   * Loads an existing PDF document contained from the specified `Uint8Array`
+   * into a [[PDFDocument]] object. Useful for modifying existing PDF documents.
+   *
+   * @param data A `Uint8Array` containing the raw bytes of a PDF document.
+   *
+   * @returns A [[PDFDocument]] object initialized from the provided document.
+   */
   static load = (data: Uint8Array): PDFDocument => {
     const index = PDFObjectIndex.create();
     const pdfParser = new PDFParser();
@@ -43,7 +56,8 @@ class PDFDocumentFactory {
   };
 
   // TODO: Need to throw out objects with "free" obj numbers...
-  static normalize = ({
+  /** @hidden */
+  private static normalize = ({
     dictionaries,
     arrays,
     original: { body },

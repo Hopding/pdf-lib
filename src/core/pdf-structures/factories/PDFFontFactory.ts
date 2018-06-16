@@ -17,8 +17,10 @@ import { isInstance, validate } from 'utils/validate';
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 // tslint:disable-next-line
+/** @hidden */
 const { Buffer } = require('buffer/');
 
+/** @hidden */
 const unsigned32Bit = '00000000000000000000000000000000';
 
 export interface IFontFlagOptions {
@@ -40,6 +42,7 @@ export interface IFontFlagOptions {
  * JavaScript converting the results of bit-shifting ops back into 64-bit integers.
  */
 // prettier-ignore
+/** @hidden */
 const fontFlags = (options: IFontFlagOptions) => {
   let flags = unsigned32Bit;
   if (options.FixedPitch)  flags = setCharAt(flags, 32 - 1, '1');
@@ -179,6 +182,7 @@ class PDFFontFactory {
     );
   };
 
+  /** @hidden */
   getWidths = (index: PDFObjectIndex) =>
     PDFArray.fromArray(
       _.range(0, 256)

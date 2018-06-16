@@ -14,7 +14,7 @@ A note of thanks to the developers of [https://github.com/devongovett/pdfkit](ht
 
 ⊕ **new JPEGXObjectFactory**(data: *`Uint8Array`*): [JPEGXObjectFactory](_core_pdf_structures_factories_jpegxobjectfactory_.jpegxobjectfactory.md)
 
-*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:43](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L43)*
+*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:44](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L44)*
 
 **Parameters:**
 
@@ -34,7 +34,7 @@ ___
 
 **● bits**: *`number`*
 
-*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:40](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L40)*
+*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:41](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L41)*
 
 ___
 <a id="colorspace"></a>
@@ -44,7 +44,7 @@ ___
 **● colorSpace**: * "DeviceGray" &#124; "DeviceRGB" &#124; "DeviceCYMK"
 *
 
-*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:43](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L43)*
+*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:44](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L44)*
 
 ___
 <a id="height"></a>
@@ -53,7 +53,7 @@ ___
 
 **● height**: *`number`*
 
-*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:42](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L42)*
+*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:43](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L43)*
 
 ___
 <a id="imgdata"></a>
@@ -62,7 +62,7 @@ ___
 
 **● imgData**: *`Uint8Array`*
 
-*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:39](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L39)*
+*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:40](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L40)*
 
 ___
 <a id="width"></a>
@@ -71,7 +71,7 @@ ___
 
 **● width**: *`number`*
 
-*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:41](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L41)*
+*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:42](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L42)*
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 ▸ **embedImageIn**(document: *[PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)*): `PDFIndirectReference`<`PDFRawStream`>
 
-*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:80](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L80)*
+*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:81](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L81)*
 
 **Parameters:**
 
@@ -100,7 +100,7 @@ ___
 
 ▸ **for**(data: *`Uint8Array`*): [JPEGXObjectFactory](_core_pdf_structures_factories_jpegxobjectfactory_.jpegxobjectfactory.md)
 
-*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:37](https://github.com/Hopding/pdf-lib/blob/41c216d/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L37)*
+*Defined in [core/pdf-structures/factories/JPEGXObjectFactory.ts:38](https://github.com/Hopding/pdf-lib/blob/10ef001/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L38)*
 
 **Parameters:**
 

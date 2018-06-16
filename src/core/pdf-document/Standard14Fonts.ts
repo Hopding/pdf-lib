@@ -1,5 +1,6 @@
 /**
- * === Specification: "9.6.2.2 Standard Type 1 Fonts (Standard 14 Fonts)" ===
+ * **Specification: "9.6.2.2 Standard Type 1 Fonts (Standard 14 Fonts)"**
+ *
  * These are the PostScript names of 14 Type 1 fonts, known as the standard 14
  * fonts. These fonts, or their font metrics and suitable substitution fonts,
  * shall be available to the conforming reader.

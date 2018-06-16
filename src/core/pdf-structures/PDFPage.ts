@@ -19,6 +19,7 @@ import {
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
+/** @hidden */
 const VALID_KEYS = Object.freeze([
   'Type',
   'Parent',
@@ -53,6 +54,7 @@ const VALID_KEYS = Object.freeze([
 ]);
 
 class PDFPage extends PDFDictionary {
+  /** @hidden */
   static validKeys = VALID_KEYS;
 
   static create = (
@@ -89,18 +91,21 @@ class PDFPage extends PDFDictionary {
     return new PDFPage(dict.map, dict.index, VALID_KEYS);
   };
 
+  /** @hidden */
   get Resources() {
     return this.index.lookup(this.get('Resources')) as PDFDictionary;
   }
 
+  /** @hidden */
   get Contents() {
     return this.index.lookup(this.get('Contents')) as PDFArray<
       PDFContentStream | PDFIndirectReference<PDFContentStream>
     >;
   }
 
-  /** Convert "Contents" to array if it exists and is not already */
+  /* Convert "Contents" to array if it exists and is not already */
   // TODO: See is this is inefficient...
+  /** @hidden */
   normalizeContents = () => {
     const Contents = this.getMaybe('Contents');
     if (Contents) {
@@ -111,6 +116,7 @@ class PDFPage extends PDFDictionary {
     }
   };
 
+  /** @hidden */
   normalizeResources = ({
     Font,
     XObject,
@@ -131,6 +137,18 @@ class PDFPage extends PDFDictionary {
   };
 
   // TODO: Consider allowing *insertion* of content streams so order can be changed
+  /**
+   * Add one or more content streams to the page.
+   *
+   * Note that this method does
+   * **not** directly accept [[PDFContentStream]](s) as its arguments. Instead,
+   * it accepts references to the content streams in the form of
+   * [[PDFIndirectReference]] objects. To obtain a reference for a
+   * [[PDFContentStream]], you must call the [[PDFDocument.register]] method
+   * with the [[PDFContentStream]].
+   *
+   * @param contentStreams The content stream(s) to be added to the page.
+   */
   addContentStreams = (
     ...contentStreams: Array<PDFIndirectReference<PDFContentStream>>
   ) => {
@@ -150,6 +168,21 @@ class PDFPage extends PDFDictionary {
     return this;
   };
 
+  /**
+   * Adds a font dictionary to the page.
+   *
+   * Note that this method does **not** directly accept font
+   * [[PDFDictionary]](s) as its arguments. Instead, it accepts references to
+   * the font dictionaries in the form of [[PDFIndirectReference]] objects.
+   *
+   * The first element of the tuples returned by the
+   * [[PDFDocument.embedStandardFont]] and [[PDFDocument.embedFont]] methods
+   * is a [[PDFIndirectReference]] to a font dictionary that can be passed as
+   * the `fontDict` parameter of this method.
+   *
+   * @param key      The name by which the font dictionary will be referenced.
+   * @param fontDict The font dictionary to be added to the page.
+   */
   addFontDictionary = (
     key: string, // TODO: Allow PDFName objects to be passed too
     fontDict: PDFIndirectReference<PDFDictionary>, // Allow PDFDictionaries as well
@@ -168,6 +201,24 @@ class PDFPage extends PDFDictionary {
     return this;
   };
 
+  /**
+   * **Note:** This method is an alias for [[addXObject]]. It exists because its
+   * name is more descriptive and familiar then `addXObject` is.
+   *
+   * Adds an image object to the page.
+   *
+   * Note that this method does **not** directly accept a [[PDFStream]] object
+   * as its argument. Instead, it accepts a reference to the [[PDFStream]] in
+   * the form of a [[PDFIndirectReference]] object.
+   *
+   * The first element of the tuples returned by the
+   * [[PDFDocument.embedPNG]] and [[PDFDocument.embedJPG]] methods
+   * is a [[PDFIndirectReference]] to a [[PDFStream]] that can be passed as
+   * the `imageObject` parameter of this method.
+   *
+   * @param key         The name by which the image object will be referenced.
+   * @param imageObject The image object to be added to the page.
+   */
   addImageObject = (
     key: string,
     imageObject: PDFIndirectReference<PDFStream>,
@@ -176,6 +227,16 @@ class PDFPage extends PDFDictionary {
     return this;
   };
 
+  /**
+   * Adds an XObject to the page.
+   *
+   * Note that this method does **not** directly accept a [[PDFStream]] object
+   * as its argument. Instead, it accepts a reference to the [[PDFStream]] in
+   * the form of a [[PDFIndirectReference]] object.
+   *
+   * @param key     The name by which the XObject will be referenced.
+   * @param xObject The XObject to be added to the page.
+   */
   addXObject = (key: string, xObject: PDFIndirectReference<PDFStream>) => {
     validate(key, _.isString, '"key" must be a string');
     validate(
