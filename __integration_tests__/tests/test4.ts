@@ -19,7 +19,7 @@ import {
   drawRectangle,
   drawSquare,
   drawText,
-} from 'core/pdf-operators/helpers/composite';
+} from 'helpers/pdf-operators/composite';
 import {
   clip,
   clipEvenOdd,
@@ -41,9 +41,9 @@ import {
   text,
   textRenderingMode,
   translate,
-} from 'core/pdf-operators/helpers/simple';
+} from 'helpers/pdf-operators/simple';
 
-import { ITestKernel, ITest, ITestAssets } from '../models';
+import { ITest, ITestAssets, ITestKernel } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,
@@ -91,7 +91,7 @@ const makeNewPageContentStream = (
       y: 200,
       size: 24,
       font: 'Helvetica-Bold',
-      colorRgbx: [1, 0, 1],
+      colorRgb: [1, 0, 1],
     }),
     ...drawImage('CatUnicorn', {
       x: 30,
@@ -108,7 +108,7 @@ const makeLastPageContentStream = (pdfDoc: PDFDocument) =>
       y: 60,
       size: 24,
       font: 'Helvetica-Bold',
-      colorRgbx: [1, 0, 1],
+      colorRgb: [1, 0, 1],
     }),
     ...drawRectangle({
       x: 30,

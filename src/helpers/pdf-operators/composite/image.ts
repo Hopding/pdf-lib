@@ -1,5 +1,3 @@
-import _, { get } from 'lodash';
-
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
@@ -30,13 +28,13 @@ import {
   text,
   textPosition,
   translate,
-} from 'core/pdf-operators/helpers/simple';
+} from 'helpers/pdf-operators/simple';
 
 // TODO: Implement the border* options
 /**
  * Options object with named parameters for the [[drawImage]] operator helper.
  */
-interface IDrawImageOptions {
+export interface IDrawImageOptions {
   /**
    * Default value is `0`.
    *
@@ -98,8 +96,8 @@ export const drawImage = (
   options: IDrawImageOptions,
 ): PDFOperator[] => [
   pushGraphicsState(),
-  translate(options.x, options.y),
-  scale(options.width, options.height),
+  translate(options.x || 0, options.y || 0),
+  scale(options.width || 100, options.height || 100),
   image(name),
   popGraphicsState(),
 ];

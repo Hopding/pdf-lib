@@ -1,39 +1,39 @@
 import { PDFHexString, PDFName, PDFString } from 'core/pdf-objects';
 
-import { G, g } from '../graphics/color/GOps';
-import { K, k } from '../graphics/color/KOps';
-import { RG, rg } from '../graphics/color/RGOps';
+import { G, g } from 'core/pdf-operators/graphics/color/GOps';
+import { K, k } from 'core/pdf-operators/graphics/color/KOps';
+import { RG, rg } from 'core/pdf-operators/graphics/color/RGOps';
 
-import cm from '../graphics/graphics-state/cm';
-import d from '../graphics/graphics-state/d';
-import { J, j } from '../graphics/graphics-state/JOps';
-import w from '../graphics/graphics-state/w';
+import cm from 'core/pdf-operators/graphics/graphics-state/cm';
+import d from 'core/pdf-operators/graphics/graphics-state/d';
+import { J, j } from 'core/pdf-operators/graphics/graphics-state/JOps';
+import w from 'core/pdf-operators/graphics/graphics-state/w';
 
-import c from '../graphics/path-construction/c';
-import h from '../graphics/path-construction/h';
-import l from '../graphics/path-construction/l';
-import m from '../graphics/path-construction/m';
-import re from '../graphics/path-construction/re';
+import c from 'core/pdf-operators/graphics/path-construction/c';
+import h from 'core/pdf-operators/graphics/path-construction/h';
+import l from 'core/pdf-operators/graphics/path-construction/l';
+import m from 'core/pdf-operators/graphics/path-construction/m';
+import re from 'core/pdf-operators/graphics/path-construction/re';
 
-import { TD, Td } from '../text/text-positioning/TDOps';
-import Tm from '../text/text-positioning/Tm';
+import { TD, Td } from 'core/pdf-operators/text/text-positioning/TDOps';
+import Tm from 'core/pdf-operators/text/text-positioning/Tm';
 
-import { TJ, Tj } from '../text/text-showing/TJOps';
+import { TJ, Tj } from 'core/pdf-operators/text/text-showing/TJOps';
 
-import Tc from '../text/text-state/Tc';
-import Tf from '../text/text-state/Tf';
-import TL from '../text/text-state/TL';
-import Tr from '../text/text-state/Tr';
-import Ts from '../text/text-state/Ts';
-import Tw from '../text/text-state/Tw';
-import Tz from '../text/text-state/Tz';
+import Tc from 'core/pdf-operators/text/text-state/Tc';
+import Tf from 'core/pdf-operators/text/text-state/Tf';
+import TL from 'core/pdf-operators/text/text-state/TL';
+import Tr from 'core/pdf-operators/text/text-state/Tr';
+import Ts from 'core/pdf-operators/text/text-state/Ts';
+import Tw from 'core/pdf-operators/text/text-state/Tw';
+import Tz from 'core/pdf-operators/text/text-state/Tz';
 
-import Do from '../Do';
+import Do from 'core/pdf-operators/Do';
 
+import PDFOperators from 'core/pdf-operators';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { isInRange, validate } from 'utils/validate';
-import PDFOperators from '..';
 
 /* ======== Clipping path operators ======== */
 const { W } = PDFOperators;

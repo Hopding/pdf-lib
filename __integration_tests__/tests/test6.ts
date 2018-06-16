@@ -19,7 +19,7 @@ import {
   drawRectangle,
   drawSquare,
   drawText,
-} from 'core/pdf-operators/helpers/composite';
+} from 'helpers/pdf-operators/composite';
 import {
   clip,
   clipEvenOdd,
@@ -41,9 +41,9 @@ import {
   text,
   textRenderingMode,
   translate,
-} from 'core/pdf-operators/helpers/simple';
+} from 'helpers/pdf-operators/simple';
 
-import { ITestKernel, ITest, ITestAssets } from '../models';
+import { ITest, ITestAssets, ITestKernel } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,
@@ -88,7 +88,7 @@ const makeNewPageContentStream = (pdfDoc: PDFDocument) =>
       y: 65,
       size: 24,
       font: 'Ubuntu',
-      colorRgbx: [0.7, 0.4, 0.9],
+      colorRgb: [0.7, 0.4, 0.9],
     }),
   );
 

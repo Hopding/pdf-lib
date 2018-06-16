@@ -1,4 +1,6 @@
-import _, { get } from 'lodash';
+import flatMap from 'lodash/flatMap';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
@@ -30,12 +32,12 @@ import {
   text,
   textPosition,
   translate,
-} from 'core/pdf-operators/helpers/simple';
+} from 'helpers/pdf-operators/simple';
 
 /**
  * Options object with named parameters for the [[drawText]] operator helper.
  */
-interface IDrawTextOptions {
+export interface IDrawTextOptions {
   /**
    * Default value is `0`.
    *
@@ -110,8 +112,8 @@ export const drawText = (
   PDFTextObject.of(
     fillingRgbColor(
       get(options, 'colorRgb[0]', 0),
-      get(options, 'colorRgb[1]', 1),
-      get(options, 'colorRgb[2]', 2),
+      get(options, 'colorRgb[1]', 0),
+      get(options, 'colorRgb[2]', 0),
     ),
     fontAndSize(options.font, options.size || 12),
     textPosition(options.x || 0, options.y || 0),
@@ -124,7 +126,7 @@ export const drawText = (
  * Options object with named parameters for the [[drawLinesOfText]] operator
  * helper.
  */
-interface IDrawLinesOfTextOptions {
+export interface IDrawLinesOfTextOptions {
   /**
    * Default value is `0`.
    *
@@ -154,7 +156,7 @@ interface IDrawLinesOfTextOptions {
    *
    * Distance between the lines of text.
    */
-  lineHeight: number;
+  lineHeight?: number;
   /**
    * Default value is `[0, 0, 0]` (black).
    *
@@ -209,9 +211,9 @@ export const drawLinesOfText = (
       get(options, 'colorRgb[1]', 0),
       get(options, 'colorRgb[2]', 0),
     ),
-    fontAndSize(options.font, options.size),
-    lineHeight(options.lineHeight || options.size),
-    textPosition(options.x, options.y),
-    ..._.flatMap(lines, (line) => [text(line), nextLine()]),
+    fontAndSize(options.font, options.size || 12),
+    lineHeight(options.lineHeight || options.size || 12),
+    textPosition(options.x || 0, options.y || 0),
+    ...flatMap(lines, (line) => [text(line), nextLine()]),
   ),
 ];

@@ -1,4 +1,5 @@
-import _, { get } from 'lodash';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
@@ -30,7 +31,7 @@ import {
   text,
   textPosition,
   translate,
-} from 'core/pdf-operators/helpers/simple';
+} from 'helpers/pdf-operators/simple';
 
 // =============================================================================
 // Based on: http://spencermortensen.com/articles/bezier-circle/
@@ -71,7 +72,7 @@ const drawEllipsePath = ({
 /**
  * Options object with named parameters for the [[drawEllipse]] operator helper.
  */
-interface IDrawEllipseOptions {
+export interface IDrawEllipseOptions {
   /**
    * Default value is `0`.
    *
@@ -166,17 +167,17 @@ export const drawEllipse = (options: IDrawEllipseOptions): PDFOperator[] => [
     get(options, 'borderColorRgb[1]', 0),
     get(options, 'borderColorRgb[2]', 0),
   ),
-  lineWidth(options.borderWidth),
+  lineWidth(options.borderWidth || 15),
   ...drawEllipsePath({
-    x: options.x,
-    y: options.y,
-    xScale: options.xScale,
-    yScale: options.yScale,
+    x: options.x || 0,
+    y: options.y || 0,
+    xScale: options.xScale || 100,
+    yScale: options.yScale || 100,
   }),
   // prettier-ignore
-  !_.isEmpty(options.colorRgb) && !_.isEmpty(options.borderColorRgb) ? fillAndStroke()
-  : !_.isEmpty(options.colorRgb)                                     ? fill()
-  : !_.isEmpty(options.borderColorRgb)                               ? stroke()
+  !isEmpty(options.colorRgb) && !isEmpty(options.borderColorRgb) ? fillAndStroke()
+  : !isEmpty(options.colorRgb)                                   ? fill()
+  : !isEmpty(options.borderColorRgb)                             ? stroke()
   : closePath(),
   popGraphicsState(),
 ];
@@ -185,7 +186,7 @@ export const drawEllipse = (options: IDrawEllipseOptions): PDFOperator[] => [
 /**
  * Options object with named parameters for the [[drawCircle]] operator helper.
  */
-interface IDrawCircleOptions {
+export interface IDrawCircleOptions {
   /**
    * Default value is `0`.
    *

@@ -1,4 +1,5 @@
-import _, { get } from 'lodash';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
@@ -30,7 +31,7 @@ import {
   text,
   textPosition,
   translate,
-} from 'core/pdf-operators/helpers/simple';
+} from 'helpers/pdf-operators/simple';
 
 // TODO: Make a "drawPolygon" function
 
@@ -38,7 +39,7 @@ import {
 /**
  * Options object with named parameters for the [[drawRectangle]] operator helper.
  */
-interface IDrawRectangleOptions {
+export interface IDrawRectangleOptions {
   /**
    * Default value is `0`.
    *
@@ -143,9 +144,9 @@ export const drawRectangle = (
     options.height || 100,
   ),
   // prettier-ignore
-  !_.isEmpty(options.colorRgb) && !_.isEmpty(options.borderColorRgb) ? fillAndStroke()
-  : !_.isEmpty(options.colorRgb)                                     ? fill()
-  : !_.isEmpty(options.borderColorRgb)                               ? stroke()
+  !isEmpty(options.colorRgb) && !isEmpty(options.borderColorRgb) ? fillAndStroke()
+  : !isEmpty(options.colorRgb)                                     ? fill()
+  : !isEmpty(options.borderColorRgb)                               ? stroke()
   : closePath(),
   popGraphicsState(),
 ];
@@ -154,7 +155,7 @@ export const drawRectangle = (
 /**
  * Options object with named parameters for the [[drawSquare]] operator helper.
  */
-interface IDrawSquareOptions {
+export interface IDrawSquareOptions {
   /**
    * Default value is `0`.
    *
@@ -232,11 +233,11 @@ interface IDrawSquareOptions {
  */
 export const drawSquare = (options: IDrawSquareOptions): PDFOperator[] =>
   drawRectangle({
-    x: options.x,
-    y: options.y,
-    width: options.size,
-    height: options.size,
-    borderWidth: options.borderWidth,
-    colorRgb: options.colorRgb,
-    borderColorRgb: options.borderColorRgb,
+    x: options.x || 0,
+    y: options.y || 0,
+    width: options.size || 100,
+    height: options.size || 100,
+    borderWidth: options.borderWidth || 15,
+    colorRgb: options.colorRgb || [],
+    borderColorRgb: options.borderColorRgb || [],
   });

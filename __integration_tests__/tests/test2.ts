@@ -18,7 +18,7 @@ import {
   drawRectangle,
   drawSquare,
   drawText,
-} from 'core/pdf-operators/helpers/composite';
+} from 'helpers/pdf-operators/composite';
 import {
   clip,
   clipEvenOdd,
@@ -40,7 +40,7 @@ import {
   text,
   textRenderingMode,
   translate,
-} from 'core/pdf-operators/helpers/simple';
+} from 'helpers/pdf-operators/simple';
 
 import PDFOperators from 'core/pdf-operators';
 const { T, TD, Td, Tm } = PDFOperators;

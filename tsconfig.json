@@ -17,6 +17,7 @@
         "src/types/*"
       ],
       "core/*": ["src/core/*"],
+      "helpers/*": ["src/helpers/*"],
       "utils/*": ["src/utils/*"],
       "utils": ["src/utils/index.ts"]
     }
