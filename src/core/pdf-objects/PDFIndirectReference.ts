@@ -3,7 +3,11 @@ import { addStringToBuffer } from 'utils';
 import { isIdentity, validate } from 'utils/validate';
 import PDFObject from './PDFObject';
 
-const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
+// const pdfIndirectRefEnforcer = Symbol('PDF_INDIRECT_REF_ENFORCER');
+
+// Using a Symbol is ideal here, but React Native doesn't current support them,
+// so we'll use a string instead.
+const pdfIndirectRefEnforcer = '@@__PDF_INDIRECT_REF_ENFORCER';
 const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();
 
 // TODO: Need to error out if obj or gen numbers are manually set!
@@ -26,7 +30,7 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
   generationNumber: number;
 
   constructor(
-    enforcer: symbol,
+    enforcer: string,
     objectNumber: number,
     generationNumber: number,
   ) {

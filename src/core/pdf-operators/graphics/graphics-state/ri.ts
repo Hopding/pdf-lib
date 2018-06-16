@@ -4,7 +4,7 @@ import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { addStringToBuffer } from 'utils';
 import { oneOf, validate } from 'utils/validate';
 
-type RenderingIntents =
+export type RenderingIntents =
   | '/AbsoluteColorimetric'
   | '/RelativeColorimetric'
   | '/Saturation'

@@ -5,7 +5,11 @@ import { isIdentity, isNotIdentity, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
 
-const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
+// const pdfNameEnforcer = Symbol('PDF_NAME_ENFORCER');
+
+// Using a Symbol is ideal here, but React Native doesn't current support them,
+// so we'll use a string instead.
+const pdfNameEnforcer = '@@__PDF_NAME_ENFORCER';
 const pdfNamePool: Map<string, PDFName> = new Map();
 
 class PDFName extends PDFObject {
@@ -23,7 +27,7 @@ class PDFName extends PDFObject {
   };
   key: string;
 
-  constructor(enforcer: symbol, key: string) {
+  constructor(enforcer: string, key: string) {
     super();
     validate(
       enforcer,

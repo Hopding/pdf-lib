@@ -1,4 +1,6 @@
-import PDFOperator from 'core/pdf-operators/PDFOperator';
+import PDFOperator, {
+  IPDFOperatorSingleton,
+} from 'core/pdf-operators/PDFOperator';
 
 /**
  * Modify the current clipping path by intersecting it with the current path,

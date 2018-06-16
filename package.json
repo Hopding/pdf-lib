@@ -37,10 +37,11 @@
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "dependencies": {
     "buffer": "^5.0.8",
-    "fontkit": "git+https://github.com/Hopding/fontkit.git#2a72a95ad294874470ba1adbb957bef1f8c4c8d8",
+    "fontkit": "git+https://github.com/Hopding/fontkit.git#97eb4f461e849956a595b3e6c8366cd715f71c38",
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
-    "png-js": "git+https://github.com/Hopding/png.js.git#c6f0917865029d39c039a143d600a81ff84eadac"
+    "png-js": "git+https://github.com/Hopding/png.js.git#9170c1451881487a625fff1cca6de4fd9949cd51",
+    "proxy-polyfill": "^0.3.0"
   },
   "devDependencies": {
     "@types/faker": "^4.1.2",
@@ -52,9 +53,11 @@
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-preset-env": "^1.6.1",
     "chalk": "^2.4.1",
+    "del": "^3.0.0",
     "faker": "^4.1.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",
+    "gulp-filter": "^5.1.0",
     "gulp-typescript": "^4.0.1",
     "inquirer": "^6.0.0",
     "jest": "^22.4.3",

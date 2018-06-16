@@ -8,6 +8,7 @@
     "object-literal-sort-keys": false,
     "quotemark": [true, "single"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "prefer-for-of": false,
     "trailing-comma": [true, {
       "multiline": { "functions": "ignore" },
       "esSpecCompliant": true

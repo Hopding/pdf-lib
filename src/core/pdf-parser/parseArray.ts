@@ -1,4 +1,4 @@
-import { PDFArray } from 'core/pdf-objects';
+import { PDFArray, PDFObject } from 'core/pdf-objects';
 import { arrayCharAt, error, trimArray } from 'utils';
 import { isIdentity, validate } from 'utils/validate';
 

@@ -1,7 +1,6 @@
 Before 0.1.0 release:
 * Document the current (low-level) API in a simple README
 * Write some scripts/commands to handle the code building and release process.
-* Add LICENSE!!!
 * Add GitHub project tags
 
 # Features
@@ -27,6 +26,8 @@ Before 0.1.0 release:
       the need to browserify the whole module. Also investigate why it's necessary
       to do so in React Native, but not the browser? Maybe just need to ugligy
       (not browserify) it? *****
+***** Try using `gulp-typescript` (https://github.com/ivogabe/gulp-typescript)
+      for compilation.
 
 ***** Remove index.js files from fork repos and publish to NPM *****
 ***** Update READMEs of fork repos with credits and workaround using browserify command *****

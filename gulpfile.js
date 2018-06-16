@@ -1,7 +1,8 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const babel = require('gulp-babel');
-const { execSync } = require('child_process');
+const del = require('del');
+const filter = require('gulp-filter');
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -21,12 +22,24 @@ const babelrc = {
   ],
 };
 
-gulp.task('build', () =>
+gulp.task('release-build', ['clean', 'build-ts-and-babel', 'clean-dist']);
+
+gulp.task('clean', () => del('dist/**'));
+
+const jsFilter = filter(['**/*.js'], { restore: true });
+
+gulp.task('build', ['clean'], () =>
   tsProject
     .src()
     .pipe(tsProject())
-    .js.pipe(babel(babelrc))
+    .pipe(jsFilter)
+    .pipe(babel(babelrc))
+    .pipe(jsFilter.restore)
     .pipe(gulp.dest('dist')),
+);
+
+gulp.task('clean-dist', ['build-ts-and-babel'], () =>
+  del('dist/__integration_tests__/**'),
 );
 
 gulp.task('docs', () =>

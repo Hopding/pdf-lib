@@ -1,7 +1,39 @@
-import PDFOperators from 'core/pdf-operators';
+import { PDFHexString, PDFName, PDFString } from 'core/pdf-objects';
+
+import { G, g } from '../graphics/color/GOps';
+import { K, k } from '../graphics/color/KOps';
+import { RG, rg } from '../graphics/color/RGOps';
+
+import cm from '../graphics/graphics-state/cm';
+import d from '../graphics/graphics-state/d';
+import { J, j } from '../graphics/graphics-state/JOps';
+import w from '../graphics/graphics-state/w';
+
+import c from '../graphics/path-construction/c';
+import h from '../graphics/path-construction/h';
+import l from '../graphics/path-construction/l';
+import m from '../graphics/path-construction/m';
+import re from '../graphics/path-construction/re';
+
+import { TD, Td } from '../text/text-positioning/TDOps';
+import Tm from '../text/text-positioning/Tm';
+
+import { TJ, Tj } from '../text/text-showing/TJOps';
+
+import Tc from '../text/text-state/Tc';
+import Tf from '../text/text-state/Tf';
+import TL from '../text/text-state/TL';
+import Tr from '../text/text-state/Tr';
+import Ts from '../text/text-state/Ts';
+import Tw from '../text/text-state/Tw';
+import Tz from '../text/text-state/Tz';
+
+import Do from '../Do';
+
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { isInRange, validate } from 'utils/validate';
+import PDFOperators from '..';
 
 /* ======== Clipping path operators ======== */
 const { W } = PDFOperators;
@@ -11,7 +43,7 @@ export const clip = () => W.operator;
 export const clipEvenOdd = () => W.asterisk.operator;
 
 /* ======== Graphics state operators ======== */
-const { cm, d, J, j, Q, q, w } = PDFOperators;
+const { Q, q } = PDFOperators;
 const { cos, sin, tan } = Math;
 
 export const translate = (xPos: number, yPos: number) =>
@@ -50,7 +82,6 @@ export const pushGraphicsState = () => q.operator;
 export const lineWidth = w.of;
 
 /* ======== Path construction operators ======== */
-const { c, h, m, l, re } = PDFOperators;
 
 export const appendBezierCurve = c.of;
 
@@ -77,7 +108,7 @@ export const fillAndStroke = () => B.operator;
 export const endPath = () => n.operator;
 
 /* ======== Test positioning operators ======== */
-const { T, Td } = PDFOperators;
+const { T } = PDFOperators;
 
 // TODO: Allow an optional number to move more/less than the default line height.
 export const nextLine = () => T.asterisk.operator;
@@ -85,12 +116,10 @@ export const nextLine = () => T.asterisk.operator;
 export const textPosition = Td.of;
 
 /* ======== Text showing operators ======== */
-const { Tj } = PDFOperators;
 
 export const text = Tj.of;
 
 /* ======== Text state operators ======== */
-const { Tf, Tc, Tw, Tz, TL, Ts, Tr } = PDFOperators;
 
 export const fontAndSize = Tf.of;
 
@@ -130,12 +159,10 @@ export const textRenderingMode = (
   );
 
 /* ======== XObject operator ======== */
-const { Do } = PDFOperators;
 
 export const image = Do.of;
 
 /* ======== Color operators ======== */
-const { G, g, K, k, RG, rg } = PDFOperators;
 
 export const fillingGrayscaleColor = g.of;
 

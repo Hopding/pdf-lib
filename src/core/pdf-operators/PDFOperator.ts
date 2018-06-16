@@ -2,15 +2,24 @@
 import { addStringToBuffer, error } from 'utils';
 import { isIdentity, validate } from 'utils/validate';
 
+export class IPDFOperatorSingleton {
+  operator: PDFOperator;
+  asterisk?: IPDFOperatorSingleton;
+}
+
 class PDFOperator {
-  static createSingletonOp = (op: string) => {
-    const ENFORCER = Symbol(`${op}_ENFORCER`);
+  static createSingletonOp = (op: string): IPDFOperatorSingleton => {
+    // const ENFORCER = Symbol(`${op}_ENFORCER`);
+
+    // Using a Symbol is ideal here, but React Native doesn't current support
+    // them, so we'll use a string instead.
+    const ENFORCER = `@@__${op}_ENFORCER`;
 
     class Singleton extends PDFOperator {
-      static operator: Singleton;
-      static asterisk?: typeof Singleton;
+      static operator: PDFOperator;
+      static asterisk?: IPDFOperatorSingleton;
 
-      constructor(enforcer: symbol) {
+      constructor(enforcer: string) {
         super();
         validate(
           enforcer,
