@@ -1,18 +1,9 @@
 # pdf-lib
 
-<a href="https://www.npmjs.com/package/pdf-lib">
-  <img alt="npm version" src="https://img.shields.io/npm/v/pdf-lib.svg?style=flat-square">
-</a>
+[![NPM Version](https://img.shields.io/npm/v/pdf-lib.svg?style=flat-square)](https://www.npmjs.com/package/pdf-lib)
+[![CircleCI Build Status](https://img.shields.io/circleci/project/github/Hopding/pdf-lib/master.svg?style=flat-square&label=CircleCI)](https://circleci.com/gh/Hopding/pdf-lib)
+[![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://prettier.io/)
 
-<a href="https://circleci.com/gh/Hopding/pdf-lib">
-  <img alt="CircleCI Build Status" src="https://img.shields.io/circleci/project/github/Hopding/pdf-lib/master.svg?style=flat-square&label=CircleCI">
-</a>
-
-<a href="https://prettier.io/">
-  <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square">
-</a>  
-
-> 
 > **Create** and **modify** PDF documents in any JavaScript environment. `pdf-lib` is designed to work in any modern JavaScript runtime (both **server-side** and **client-side**) and has been tested in Node, Browser, and React Native environments.
 
 ## Table of Contents
