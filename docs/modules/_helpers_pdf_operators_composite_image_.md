@@ -8,7 +8,7 @@
 
 ▸ **drawImage**(name: * `string` &#124; `PDFName`*, options: *[IDrawImageOptions](../interfaces/_helpers_pdf_operators_composite_image_.idrawimageoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/image.ts:94](https://github.com/Hopding/pdf-lib/blob/dd3a0e3/src/helpers/pdf-operators/composite/image.ts#L94)*
+*Defined in [helpers/pdf-operators/composite/image.ts:94](https://github.com/Hopding/pdf-lib/blob/41c216d/src/helpers/pdf-operators/composite/image.ts#L94)*
 
 Draws an image object in a content stream. PNG and JPG image objects are supported.
 

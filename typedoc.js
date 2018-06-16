@@ -27,6 +27,6 @@ module.exports = {
   ],
 
   excludeExternals: true,
-  excludeNotExported: true,
+  // excludeNotExported: true,
   excludePrivate: true,
 };
