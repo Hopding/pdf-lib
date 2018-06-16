@@ -30,10 +30,5 @@ gulp.task('build', () =>
 );
 
 gulp.task('docs', () =>
-  execSync(`
-    yarn typedoc       \\
-      --theme markdown \\
-      --out   docs     \\
-      src/core/pdf-operators/helpers
-  `),
+  execSync(`rm -rf docs && yarn typedoc --options typedoc.js src/`),
 );
