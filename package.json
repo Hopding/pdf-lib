@@ -1,6 +1,6 @@
 {
   "name": "pdf-lib",
-  "version": "0.0.1-rc",
+  "version": "0.0.1-rc3",
   "description": "Library for creating and modifying PDF files in JavaScript",
   "main": "dist/index.js",
   "scripts": {

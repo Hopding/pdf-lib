@@ -16,6 +16,7 @@ const babelrc = {
         root: ['./dist/src'],
         alias: {
           core: './dist/src/core',
+          helpers: './dist/src/helpers',
           utils: './dist/src/utils',
         },
       },
