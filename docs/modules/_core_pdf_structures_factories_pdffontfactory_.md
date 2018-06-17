@@ -24,7 +24,7 @@
 
 **● Buffer**: *`any`*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:21](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-structures/factories/PDFFontFactory.ts#L21)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:21](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L21)*
 
 ___
 

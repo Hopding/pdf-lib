@@ -16,7 +16,7 @@
 
 *Inherited from PDFDictionary.__constructor*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:19](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L19)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:19](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L19)*
 
 **Parameters:**
 
@@ -40,7 +40,7 @@ ___
 
 *Inherited from PDFDictionary.index*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:18](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L18)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:18](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L18)*
 
 ___
 <a id="map"></a>
@@ -51,7 +51,7 @@ ___
 
 *Inherited from PDFDictionary.map*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:17](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L17)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:17](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L17)*
 
 ___
 <a id="validkeys"></a>
@@ -62,7 +62,7 @@ ___
 
 *Inherited from PDFDictionary.validKeys*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:19](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L19)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:19](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L19)*
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 ▸ **addContentStreams**(...contentStreams: *`Array`<`PDFIndirectReference`<`PDFContentStream`>>*): `this`
 
-*Defined in [core/pdf-structures/PDFPage.ts:152](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-structures/PDFPage.ts#L152)*
+*Defined in [core/pdf-structures/PDFPage.ts:152](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/PDFPage.ts#L152)*
 
 Add one or more content streams to the page.
 
@@ -95,7 +95,7 @@ ___
 
 ▸ **addFontDictionary**(key: *`string`*, fontDict: *`PDFIndirectReference`<`PDFDictionary`>*): `this`
 
-*Defined in [core/pdf-structures/PDFPage.ts:186](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-structures/PDFPage.ts#L186)*
+*Defined in [core/pdf-structures/PDFPage.ts:186](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/PDFPage.ts#L186)*
 
 Adds a font dictionary to the page.
 
@@ -119,7 +119,7 @@ ___
 
 ▸ **addImageObject**(key: *`string`*, imageObject: *`PDFIndirectReference`<`PDFStream`>*): `this`
 
-*Defined in [core/pdf-structures/PDFPage.ts:222](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-structures/PDFPage.ts#L222)*
+*Defined in [core/pdf-structures/PDFPage.ts:222](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/PDFPage.ts#L222)*
 
 **Note:** This method is an alias for [addXObject](_core_pdf_structures_pdfpage_.pdfpage.md#addxobject). It exists because its name is more descriptive and familiar than `addXObject` is.
 
@@ -145,7 +145,7 @@ ___
 
 ▸ **addXObject**(key: *`string`*, xObject: *`PDFIndirectReference`<`PDFStream`>*): `this`
 
-*Defined in [core/pdf-structures/PDFPage.ts:240](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-structures/PDFPage.ts#L240)*
+*Defined in [core/pdf-structures/PDFPage.ts:240](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/PDFPage.ts#L240)*
 
 Adds an XObject to the page.
 
@@ -171,7 +171,7 @@ ___
 
 *Overrides PDFObject.bytesSize*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:98](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L98)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:98](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L98)*
 
 **Returns:** `number`
 
@@ -186,7 +186,7 @@ ___
 
 *Overrides PDFObject.copyBytesInto*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:113](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L113)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:113](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L113)*
 
 **Parameters:**
 
@@ -205,7 +205,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:49](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L49)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:49](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L49)*
 
 **Parameters:**
 
@@ -224,7 +224,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:63](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L63)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:63](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L63)*
 
 **Type parameters:**
 
@@ -246,7 +246,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:52](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L52)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:52](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L52)*
 
 **Type parameters:**
 
@@ -268,7 +268,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:67](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L67)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:67](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L67)*
 
 **Parameters:**
 
@@ -291,7 +291,7 @@ ___
 
 *Overrides PDFObject.toString*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:92](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L92)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:92](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L92)*
 
 **Returns:** `string`
 
@@ -302,7 +302,7 @@ ___
 
 ▸ **create**(index: *`PDFObjectIndex`*, size: *[`number`, `number`]*, resources?: *`PDFDictionary`*): [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)
 
-*Defined in [core/pdf-structures/PDFPage.ts:60](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-structures/PDFPage.ts#L60)*
+*Defined in [core/pdf-structures/PDFPage.ts:60](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/PDFPage.ts#L60)*
 
 **Parameters:**
 
@@ -323,7 +323,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:12](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-objects/PDFDictionary.ts#L12)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:12](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-objects/PDFDictionary.ts#L12)*
 
 **Parameters:**
 
@@ -341,7 +341,7 @@ ___
 
 ▸ **fromDict**(dict: *`PDFDictionary`*): [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)
 
-*Defined in [core/pdf-structures/PDFPage.ts:89](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/core/pdf-structures/PDFPage.ts#L89)*
+*Defined in [core/pdf-structures/PDFPage.ts:89](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/PDFPage.ts#L89)*
 
 **Parameters:**
 

@@ -14,7 +14,7 @@ Options object with named parameters for the [drawSquare](../modules/_helpers_pd
 
 **● borderColorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:208](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/rectangle.ts#L208)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:208](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/rectangle.ts#L208)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -29,7 +29,7 @@ ___
 
 **● borderWidth**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:182](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/rectangle.ts#L182)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:182](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/rectangle.ts#L182)*
 
 Default value is `15`.
 
@@ -42,7 +42,7 @@ ___
 
 **● colorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:195](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/rectangle.ts#L195)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:195](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/rectangle.ts#L195)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -57,7 +57,7 @@ ___
 
 **● size**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:176](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/rectangle.ts#L176)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:176](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/rectangle.ts#L176)*
 
 Default value is `100`.
 
@@ -70,7 +70,7 @@ ___
 
 **● x**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:164](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/rectangle.ts#L164)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:164](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/rectangle.ts#L164)*
 
 Default value is `0`.
 
@@ -83,7 +83,7 @@ ___
 
 **● y**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:170](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/rectangle.ts#L170)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:170](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/rectangle.ts#L170)*
 
 Default value is `0`.
 

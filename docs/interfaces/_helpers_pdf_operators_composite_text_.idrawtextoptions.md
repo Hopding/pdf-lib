@@ -14,7 +14,7 @@ Options object with named parameters for the [drawText](../modules/_helpers_pdf_
 
 **● colorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/text.ts:77](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/text.ts#L77)*
+*Defined in [helpers/pdf-operators/composite/text.ts:77](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/text.ts#L77)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -30,7 +30,7 @@ ___
 **● font**: * `string` &#124; `PDFName`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:58](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/text.ts#L58)*
+*Defined in [helpers/pdf-operators/composite/text.ts:58](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/text.ts#L58)*
 
 Name of the font to use when drawing the line of text. Should be present in the Font Dictionary of the page to which the content stream containing the `drawText` operator is applied.
 
@@ -41,7 +41,7 @@ ___
 
 **● size**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/text.ts:64](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/text.ts#L64)*
+*Defined in [helpers/pdf-operators/composite/text.ts:64](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/text.ts#L64)*
 
 Default value is `12`.
 
@@ -54,7 +54,7 @@ ___
 
 **● x**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/text.ts:46](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/text.ts#L46)*
+*Defined in [helpers/pdf-operators/composite/text.ts:46](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/text.ts#L46)*
 
 Default value is `0`.
 
@@ -67,7 +67,7 @@ ___
 
 **● y**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/text.ts:52](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/text.ts#L52)*
+*Defined in [helpers/pdf-operators/composite/text.ts:52](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/text.ts#L52)*
 
 Default value is `0`.
 

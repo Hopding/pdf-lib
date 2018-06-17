@@ -14,7 +14,7 @@ Options object with named parameters for the [drawImage](../modules/_helpers_pdf
 
 **● height**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/image.ts:61](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/image.ts#L61)*
+*Defined in [helpers/pdf-operators/composite/image.ts:61](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/image.ts#L61)*
 
 Default value is `100`.
 
@@ -27,7 +27,7 @@ ___
 
 **● width**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/image.ts:55](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/image.ts#L55)*
+*Defined in [helpers/pdf-operators/composite/image.ts:55](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/image.ts#L55)*
 
 Default value is `100`.
 
@@ -40,7 +40,7 @@ ___
 
 **● x**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/image.ts:43](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/image.ts#L43)*
+*Defined in [helpers/pdf-operators/composite/image.ts:43](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/image.ts#L43)*
 
 Default value is `0`.
 
@@ -53,7 +53,7 @@ ___
 
 **● y**: *`number`*
 
-*Defined in [helpers/pdf-operators/composite/image.ts:49](https://github.com/Hopding/pdf-lib/blob/fbaf7a9/src/helpers/pdf-operators/composite/image.ts#L49)*
+*Defined in [helpers/pdf-operators/composite/image.ts:49](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/helpers/pdf-operators/composite/image.ts#L49)*
 
 Default value is `0`.
 
