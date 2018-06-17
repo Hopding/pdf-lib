@@ -18,7 +18,7 @@ const {
 const assets = {
   ubuntuFontBytes: fs.readFileSync('./assets/ubuntu-fonts/Ubuntu-R.ttf'),
   unicornJpgBytes: fs.readFileSync('./assets/cat_riding_unicorn.jpg'),
-  marioPngBytes:   fs.readFileSync('./assets/running_mario.png'),
+  marioPngBytes: fs.readFileSync('./assets/running_mario.png'),
 };
 
 /* ================ 2. Create and Setup the PDF Document ==================== */
@@ -28,9 +28,9 @@ const assets = {
 // Let's define some constants that we can use to reference the fonts and
 // images later in the script.
 const HELVETIVA_FONT = 'Helvetica';
-const UBUNTU_FONT    = 'Ubuntu'
-const UNICORN_JPG    = 'UnicornJpg';
-const MARIO_PNG      = 'MarioPng';
+const UBUNTU_FONT = 'Ubuntu';
+const UNICORN_JPG = 'UnicornJpg';
+const MARIO_PNG = 'MarioPng';
 
 // Here we create a new PDF document.
 const pdfDoc = PDFDocumentFactory.create();
@@ -38,18 +38,18 @@ const pdfDoc = PDFDocumentFactory.create();
 // Now we embed a standard font (Helvetiva), and the custom TrueType font we
 // read in (Ubuntu-R).
 const [helveticaFontRef] = pdfDoc.embedStandardFont(HELVETIVA_FONT);
-const [ubuntuFontRef]    = pdfDoc.embedFont(assets.ubuntuFontBytes);
+const [ubuntuFontRef] = pdfDoc.embedFont(assets.ubuntuFontBytes);
 
 // Next, we embed the JPG and PNG images we read in.
 const [unicornJpgRef, unicornJpgDims] = pdfDoc.embedJPG(assets.unicornJpgBytes);
-const [marioPngRef, marioPngDims]     = pdfDoc.embedPNG(assets.marioPngBytes);
+const [marioPngRef, marioPngDims] = pdfDoc.embedPNG(assets.marioPngBytes);
 
 /* =================== 3. Setup and Create First Page ======================= */
 // This step is platform independent. The same code can be used in any
 // JavaScript runtime (e.g. Node, the browser, or React Native).
 
 // Let's define some constants containing the page's width and height.
-const PAGE_1_WIDTH  = 600;
+const PAGE_1_WIDTH = 600;
 const PAGE_1_HEIGHT = 750;
 
 // Next we create a page, and add the Helvetiva font and JPG image to it. This
@@ -65,14 +65,14 @@ const page1 = pdfDoc
 //
 // Since the image is quite large relative to our page size, we'll scale both
 // the width and height down to 20% of their original size.
-const UNICORN_JPG_WIDTH  = unicornJpgDims.width * 0.2;
+const UNICORN_JPG_WIDTH = unicornJpgDims.width * 0.2;
 const UNICORN_JPG_HEIGHT = unicornJpgDims.height * 0.2;
 
 // Let's define some RGB colors. Note that these arrays are of the form:
 //   [<red_intensity>, <green_intensity>, <blue_intensity>]
 // where each color value must be in the range 0.0-1.0. Note that they should
 // *not* be in the range 0-255 as they would be if you were writing CSS styles.
-const CYAN   = [0.25, 1.0, 0.79];
+const CYAN = [0.25, 1.0, 0.79];
 const PURPLE = [0.79, 0.25, 1.0];
 
 // Here, we define the first page's "content stream". A content stream is simply
@@ -94,8 +94,8 @@ const contentStream1 = pdfDoc.createContentStream(
   // position it a little bit below the text we just drew, and we'll center it
   // within the page.
   drawImage(UNICORN_JPG, {
-    x: (PAGE_1_WIDTH * 0.5) - (UNICORN_JPG_WIDTH * 0.5),
-    y: PAGE_1_HEIGHT * 0.5 ,
+    x: PAGE_1_WIDTH * 0.5 - UNICORN_JPG_WIDTH * 0.5,
+    y: PAGE_1_HEIGHT * 0.5,
     width: UNICORN_JPG_WIDTH,
     height: UNICORN_JPG_HEIGHT,
   }),
@@ -138,19 +138,19 @@ const page2 = pdfDoc
 //
 // Since the image is quite large relative to our page size, we'll scale both
 // the width and height down to 15% of their original size.
-const MARIO_PNG_WIDTH  = marioPngDims.width * 0.15;
+const MARIO_PNG_WIDTH = marioPngDims.width * 0.15;
 const MARIO_PNG_HEIGHT = marioPngDims.height * 0.15;
 
 // Let's define a constant containing the width of the text box we'll place
 // below the image of Mario.
-const TEXT_BOX_WIDTH   = 295;
+const TEXT_BOX_WIDTH = 295;
 
 // Let's define some RGB colors. Note that these arrays are of the form:
 //   [<red_intensity>, <green_intensity>, <blue_intensity>]
 // where each color value must be in the range 0.0-1.0. Note that they should
 // *not* be in the range 0-255 as they would be if you were writing CSS styles.
-const SOLARIZED_WHITE  = [253 / 255, 246 / 255, 227 / 255];
-const SOLARIZED_GRAY   = [101 / 255, 123 / 255, 131 / 255];
+const SOLARIZED_WHITE = [253 / 255, 246 / 255, 227 / 255];
+const SOLARIZED_GRAY = [101 / 255, 123 / 255, 131 / 255];
 
 // Here, we define the second page's "content stream". A content stream is
 // simply a sequence of PDF operators that define what we want to draw on the
@@ -159,7 +159,7 @@ const contentStream2 = pdfDoc.createContentStream(
   // Here we draw the image of Mario on the page's content stream. We'll draw
   // him centered horizontally in the top half of the page.
   drawImage(MARIO_PNG, {
-    x: (PAGE_2_WIDTH * 0.5) - (MARIO_PNG_WIDTH * 0.5),
+    x: PAGE_2_WIDTH * 0.5 - MARIO_PNG_WIDTH * 0.5,
     y: PAGE_2_HEIGHT * 0.5,
     width: MARIO_PNG_WIDTH,
     height: MARIO_PNG_HEIGHT,
@@ -167,27 +167,30 @@ const contentStream2 = pdfDoc.createContentStream(
   // Next we'll draw a Solarized White rectangle with a Solarized Gray border
   // beneath the image of Mario. It will be centered horizontally in the page.
   drawRectangle({
-    x: (PAGE_2_WIDTH * 0.5) - (TEXT_BOX_WIDTH * 0.5),
-    y: (PAGE_2_HEIGHT * 0.5) - 115,
+    x: PAGE_2_WIDTH * 0.5 - TEXT_BOX_WIDTH * 0.5,
+    y: PAGE_2_HEIGHT * 0.5 - 100,
     width: TEXT_BOX_WIDTH,
-    height: 85,
+    height: 90,
     colorRgb: SOLARIZED_WHITE,
     borderWidth: 4,
     borderColorRgb: SOLARIZED_GRAY,
   }),
   // Now we'll draw three lines of text within the rectangle we just drew. The
   // text will be drawn in the Ubuntu font colored Solarized Gray.
-  drawLinesOfText([
-    'Here is a picture of Mario',
-    'running. It was placed in',
-    'this PDF using JavaScript!',
-  ], {
-    x: (PAGE_2_WIDTH * 0.5) - (TEXT_BOX_WIDTH * 0.5) + 10,
-    y: (PAGE_2_HEIGHT * 0.5) - 38,
-    font: UBUNTU_FONT,
-    size: 24,
-    colorRgb: SOLARIZED_GRAY,
-  })
+  drawLinesOfText(
+    [
+      'Here is a picture of Mario',
+      'running. It was placed in',
+      'this PDF using JavaScript!',
+    ],
+    {
+      x: PAGE_2_WIDTH * 0.5 - TEXT_BOX_WIDTH * 0.5 + 10,
+      y: PAGE_2_HEIGHT * 0.5 - 38,
+      font: UBUNTU_FONT,
+      size: 24,
+      colorRgb: SOLARIZED_GRAY,
+    },
+  ),
 );
 
 // Here we (1) register the content stream to the PDF document, and (2) add the
@@ -202,9 +205,7 @@ page2.addContentStreams(pdfDoc.register(contentStream2));
 // pages to actually be rendered when the document is opened. Our previous calls
 // to `pdfDoc.createPage` only **created** the page, they did not add it to the
 // document.
-pdfDoc
-  .addPage(page1)
-  .addPage(page2)
+pdfDoc.addPage(page1).addPage(page2);
 
 // Now we'll convert the `pdfDoc` to a `Uint8Array` containing the bytes of a
 // PDF document. This step serializes the document. You can still make changes
@@ -219,4 +220,6 @@ const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 // This step is platform dependent. Since this is a Node script, we can just
 // save the `pdfBytes` to the file system, where it can be opened with a PDF
 // reader.
-fs.writeFileSync('./new.pdf', pdfBytes);
+const filePath = `${__dirname}/new.pdf`;
+fs.writeFileSync(filePath, pdfBytes);
+console.log('PDF file written to: ${filePath}');
