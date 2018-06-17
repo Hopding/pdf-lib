@@ -64,5 +64,6 @@ describe(`PDFObjectStream`, () => {
           PDFIndirectObject.of(PDFString.fromString('bar')),
         ]),
       ).toBeInstanceOf(PDFObjectStream);
+    });
   });
 });

@@ -16,8 +16,8 @@ import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-// tslint:disable-next-line
 /** @hidden */
+// tslint:disable-next-line
 const { Buffer } = require('buffer/');
 
 /** @hidden */

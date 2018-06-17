@@ -34,7 +34,7 @@ describe(`RGOps.RG`, () => {
     );
     expect(RGOps.RG.of(0.1, 1.0, 0.8)).toBeInstanceOf(RGOps.RG);
     expect(RGOps.RG.of(0.1, 1.0, 0.9)).toBeInstanceOf(PDFOperator);
-  );
+  });
 
   describe(`"toString" method`, () => {
     it(`returns the RGOps.RG instance as a string`, () => {
@@ -89,7 +89,7 @@ describe(`RGOps.rg`, () => {
     );
     expect(RGOps.rg.of(0.1, 1.0, 0.8)).toBeInstanceOf(RGOps.rg);
     expect(RGOps.rg.of(0.1, 1.0, 0.9)).toBeInstanceOf(PDFOperator);
-  );
+  });
 
   describe(`"toString" method`, () => {
     it(`returns the RGOps.rg instance as a string`, () => {

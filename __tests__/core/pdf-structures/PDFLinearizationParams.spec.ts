@@ -18,9 +18,12 @@ describe(`PDFLinearizationParams`, () => {
         '"dict" must be a PDFDictionary',
       );
       const dict = PDFDictionary.from(
-      { foo: PDFString.fromString('bar') },
-      PDFObjectIndex.create(),
-    );
-      expect(PDFLinearizationParams.fromDict(dict)).toBeInstanceOf(PDFLinearizationParams);
+        { foo: PDFString.fromString('bar') },
+        PDFObjectIndex.create(),
+      );
+      expect(PDFLinearizationParams.fromDict(dict)).toBeInstanceOf(
+        PDFLinearizationParams,
+      );
+    });
   });
 });

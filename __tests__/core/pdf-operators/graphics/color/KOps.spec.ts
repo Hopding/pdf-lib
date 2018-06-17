@@ -40,7 +40,7 @@ describe(`KOps.K`, () => {
     );
     expect(KOps.K.of(0.1, 1.0, 0.8, 0.5)).toBeInstanceOf(KOps.K);
     expect(KOps.K.of(0.1, 1.0, 0.9, 0.5)).toBeInstanceOf(PDFOperator);
-  );
+  });
 
   describe(`"toString" method`, () => {
     it(`returns the KOps.K instance as a string`, () => {
@@ -101,7 +101,7 @@ describe(`KOps.k`, () => {
     );
     expect(KOps.k.of(0.1, 1.0, 0.8, 0.5)).toBeInstanceOf(KOps.k);
     expect(KOps.k.of(0.1, 1.0, 0.9, 0.5)).toBeInstanceOf(PDFOperator);
-  );
+  });
 
   describe(`"toString" method`, () => {
     it(`returns the KOps.k instance as a string`, () => {
