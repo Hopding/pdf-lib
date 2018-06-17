@@ -46,3 +46,18 @@ gulp.task('clean-dist', ['build-ts-and-babel'], () =>
 gulp.task('docs', () =>
   execSync(`rm -rf docs && yarn typedoc --options typedoc.js src/`),
 );
+
+const { version } = require('package.json');
+
+gulp.task('prepublish', () =>
+  execSync(`
+    rm -rf node_modules && \\
+    yarn                && \\
+    yarn lint           && \\
+    yarn test:ci        && \\
+    yarn docs           && \\
+    yarn build          && \\
+    git tag ${version}  &&\\
+    git push origin ${version}
+  `),
+);

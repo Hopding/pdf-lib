@@ -12,10 +12,11 @@
 * [Motivation](#motivation)
 * [Features](#features)
 * [Usage Examples](#usage-examples)
- * [Document Creation](#document-creation)
- * [Document Modification](#document-modification)
+  * [Document Creation](#document-creation)
+  * [Document Modification](#document-modification)
 * [Installation](#installation)
 * [API Documentation](#api-documentation)
+* [Prior Art](#prior-art)
 * [License](#license)
 
 ## Motivation
@@ -23,9 +24,9 @@
 
 Two of `pdf-lib`'s design requirements since its inception are to:
 1. Support modification (editing) of existing documents.
-2. Work in all JavaScript environments - not just in Node or a browser.
+2. Work in all JavaScript environments - not just in Node or the browser.
 
-There are other good open source JavaScript PDF libraries available. But most of them can only _create_ documents, they cannot _modify_ existing ones (e.g. [`pdfkit`](https://github.com/devongovett/pdfkit), [`jspdf`](https://github.com/MrRio/jsPDF), [`pdfmake`](https://github.com/bpampuch/pdfmake)). There is at least one NodeJS library ([`hummus`](https://github.com/galkahana/HummusJS)) capable of both creating and modifying PDF documents. However, `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer). This means that it cannot run in _all_ JavaScript environments. For example, you cannot use `hummus` in the Browser or in React Native.
+There are other good open source JavaScript PDF libraries available. However, most of them can only _create_ documents, they cannot _modify_ existing ones (e.g. [`pdfkit`](https://github.com/devongovett/pdfkit), [`jspdf`](https://github.com/MrRio/jsPDF), [`pdfmake`](https://github.com/bpampuch/pdfmake)). ([`hummus`](https://github.com/galkahana/HummusJS)) is a NodeJS library capable of both creating and modifying PDF documents. However, `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer). This means that it cannot run in _all_ JavaScript environments. For example, you cannot use `hummus` in the Browser or in React Native.
 
 ## Features
 * Create new PDFs
