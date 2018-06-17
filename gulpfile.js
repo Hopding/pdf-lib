@@ -62,3 +62,14 @@ gulp.task('prepublish', () =>
     git push origin ${version}
   `),
 );
+
+gulp.task('publish', () =>
+  execSync(`
+    cd dist/                      && \\
+    cp ../package.json .          && \\
+    mv src/* .                    && \\
+    rm -rf src/                   && \\
+    rm -rf __integration_tests__/ && \\
+    npm publish
+  `),
+);
