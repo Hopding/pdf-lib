@@ -1,16 +1,14 @@
 # Features
 - [ ] Add feature to bypass validations (especially for prod builds).
-- [ ] Try using [decorators](http://www.typescriptlang.org/docs/handbook/decorators.html)
-    for argument validation, instead of manually typing them all out.
 - [ ] Support non-english unicode characters.
 - [ ] Support page transfer between PDFs.
-- [ ] Investigate possibility of saving PDFs as images using PDF-js.
 - [ ] Provide font metrics for the Standard 14 Fonts.
 - [ ] Support PDF with comments by stripping them before parsing.
 - [ ] Support stream decompression for non Flate-Encoded streams.
 - [ ] Support annotations & links.
 - [ ] Support Acroform manipulation.
 - [ ] Support document outlines.
+- [ ] Investigate possibility of saving PDFs as images using PDF-js.
 
 # Documentation
 - [ ] Add credits (file?) for the `test-pdfs`.
@@ -72,6 +70,8 @@
 - [ ] Lint for unused imports.
 - [ ] Try using [`gulp-typescript`](https://github.com/ivogabe/gulp-typescript)
     for compilation.
+- [ ] Try using [decorators](http://www.typescriptlang.org/docs/handbook/decorators.html)
+    for argument validation, instead of manually typing them all out.
 - [ ] Reduce bundle size. Only import `lodash` functions that are actually used.
 - [ ] Add in "early stops" to parsers (like checking if first char is a "<", for
     hex strings) to avoid excessive work.
