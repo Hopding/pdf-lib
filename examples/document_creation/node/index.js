@@ -25,15 +25,15 @@ const assets = {
 // This step is platform independent. The same code can be used in any
 // JavaScript runtime (e.g. Node, the browser, or React Native).
 
+// Here we create a new PDF document.
+const pdfDoc = PDFDocumentFactory.create();
+
 // Let's define some constants that we can use to reference the fonts and
 // images later in the script.
 const HELVETIVA_FONT = 'Helvetica';
 const UBUNTU_FONT = 'Ubuntu';
 const UNICORN_JPG = 'UnicornJpg';
 const MARIO_PNG = 'MarioPng';
-
-// Here we create a new PDF document.
-const pdfDoc = PDFDocumentFactory.create();
 
 // Now we embed a standard font (Helvetiva), and the custom TrueType font we
 // read in (Ubuntu-R).
@@ -76,8 +76,7 @@ const CYAN = [0.25, 1.0, 0.79];
 const PURPLE = [0.79, 0.25, 1.0];
 
 // Here, we define the first page's "content stream". A content stream is simply
-// a sequence of PDF operators that define what we want to draw on the page. All
-// PDF page's must have at least one content stream.
+// a sequence of PDF operators that define what we want to draw on the page.
 const contentStream1 = pdfDoc.createContentStream(
   // `drawText` is a "composite" PDF operator that lets us easily draw text on
   // a page's content stream. "composite" just means that it is composed of
@@ -154,7 +153,7 @@ const SOLARIZED_GRAY = [101 / 255, 123 / 255, 131 / 255];
 
 // Here, we define the second page's "content stream". A content stream is
 // simply a sequence of PDF operators that define what we want to draw on the
-// page. All PDF page's must have at least one content stream.
+// page.
 const contentStream2 = pdfDoc.createContentStream(
   // Here we draw the image of Mario on the page's content stream. We'll draw
   // him centered horizontally in the top half of the page.
@@ -203,8 +202,8 @@ page2.addContentStreams(pdfDoc.register(contentStream2));
 
 // Here we add the page's to the document. This step is what will cause the
 // pages to actually be rendered when the document is opened. Our previous calls
-// to `pdfDoc.createPage` only **created** the page, they did not add it to the
-// document.
+// to `pdfDoc.createPage` only **created** the pages, they did not add them to
+// the document.
 pdfDoc.addPage(page1).addPage(page2);
 
 // Now we'll convert the `pdfDoc` to a `Uint8Array` containing the bytes of a

@@ -10,8 +10,8 @@ The example script ([`index.js`](https://github.com/Hopding/pdf-lib/tree/master/
 ## Purpose of this example
 This example script  demonstrates how to:
 * Create a new PDF document.
-* Draw text with standard font.
-* Draw text with embedded font.
+* Draw text with a standard font.
+* Draw text with an embedded font.
 * Draw pictures of embedded PNG and JPG images.
 * Draw vector graphics (shapes likes ellipses and rectangles).
 
