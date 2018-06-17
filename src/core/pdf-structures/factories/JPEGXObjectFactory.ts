@@ -10,6 +10,7 @@ import {
 import { error } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
+/** @hidden */
 const MARKERS = [
   0xffc0,
   0xffc1,

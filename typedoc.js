@@ -1,0 +1,32 @@
+module.exports = {
+  name: 'pdf-lib',
+  theme: 'markdown',
+  out: './docs',
+  mdEngine: 'gitbook',
+
+  readme: 'none',
+  includes: './src',
+  exclude: [
+    '**/utils/**/*',
+    '**/pdf-document/PDFObjectIndex.ts',
+    '**/pdf-objects/**/*',
+    '**/pdf-operators/graphics/**/*',
+    '**/pdf-operators/text/**/*',
+    '**/pdf-operators/text/**/*',
+    '**/pdf-operators/*',
+    '**/pdf-parser/**/*',
+    '**/pdf-structures/factories/PDFXRefTableFactory.ts',
+    '**/pdf-structures/PDFCatalog.ts',
+    '**/pdf-structures/PDFContentStream.ts',
+    '**/pdf-structures/PDFHeader.ts',
+    '**/pdf-structures/PDFLinearizationParams.ts',
+    '**/pdf-structures/PDFObjectStream.ts',
+    '**/pdf-structures/PDFPageTree.ts',
+    '**/pdf-structures/PDFTrailer.ts',
+    '**/pdf-structures/PDFXRef.ts',
+  ],
+
+  excludeExternals: true,
+  // excludeNotExported: true,
+  excludePrivate: true,
+};

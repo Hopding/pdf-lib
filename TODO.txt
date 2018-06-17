@@ -1,6 +1,6 @@
 Before 0.1.0 release:
-* Document the current (low-level) API in a simple README
 * Write some scripts/commands to handle the code building and release process.
+* Add GitHub project tags
 
 # Features
 ***** Create static "cm" members for operations like scaling, and translating *****
@@ -21,9 +21,16 @@ Before 0.1.0 release:
 ***** Need to lint for unused imports *****
 ***** Investigate `pdfDoc.removePage` for `assets.pdfs.linearized_with_object_streams`,
       there might be a bug with removing first page or large numbers of pages?
+***** Try changing imports for node-specific libraries in `fontkit` fork to avoid
+      the need to browserify the whole module. Also investigate why it's necessary
+      to do so in React Native, but not the browser? Maybe just need to ugligy
+      (not browserify) it? *****
 ***** Try using `gulp-typescript` (https://github.com/ivogabe/gulp-typescript)
       for compilation.
+***** Try to reduce bundle size. Only import lodash funcs that are used.
 
+***** Document pdf-structures/factories and show how to use image width and height,
+      and get the width of a string in a given font *****
 ***** Remove index.js files from fork repos and publish to NPM *****
 ***** Update READMEs of fork repos with credits and workaround using browserify command *****
 

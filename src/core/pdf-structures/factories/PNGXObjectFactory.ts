@@ -12,6 +12,7 @@ import {
 } from 'core/pdf-objects';
 import { isInstance, validate } from 'utils/validate';
 
+/** @hidden */
 // tslint:disable-next-line
 const { Buffer } = require('buffer/');
 
@@ -123,7 +124,8 @@ class PNGXObjectFactory {
     );
   };
 
-  finalize = () => {
+  /** @hidden */
+  private finalize = () => {
     if (this.alphaChannel) {
       const alphaStreamDict = PDFDictionary.from(
         {
@@ -155,7 +157,8 @@ class PNGXObjectFactory {
     return xObj;
   };
 
-  splitAlphaChannel = () => {
+  /** @hidden */
+  private splitAlphaChannel = () => {
     const pixels = this.image.decodePixelsSync();
     const colorByteSize = this.image.colors * this.image.bits / 8;
     const pixelCount = this.image.width * this.image.height;
@@ -174,7 +177,8 @@ class PNGXObjectFactory {
     return this.finalize();
   };
 
-  loadIndexedAlphaChannel = () => {
+  /** @hidden */
+  private loadIndexedAlphaChannel = () => {
     const transparency = this.image.transparency.indexed;
     const pixels = this.image.decodePixelsSync();
     this.alphaChannel = new Uint8Array(this.width * this.height);

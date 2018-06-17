@@ -1,11 +1,16 @@
 __tests__
-integration-tests
+__integration_tests__
+.circleci
+docs
 src
 test-pdfs
 .gitignore
+.npmignore
 .prettierrc.json
 gulpfile.js
 index.ts
 TODO.txt
+pdf_specification.pdf
 tsconfig.json
 tslint.json
+typedoc.js

@@ -1,6 +1,6 @@
 {
   "name": "pdf-lib",
-  "version": "0.0.0",
+  "version": "0.0.1-rc",
   "description": "Library for creating and modifying PDF files in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "jest:clear-cache": "rm -rf $TMPDIR/jest*",
     "coverage-report": "open coverage/lcov-report/index.html",
     "build": "gulp build",
+    "docs": "gulp docs",
     "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
     "it:node": "ts-node -r tsconfig-paths/register __integration_tests__/runners/node/index.ts"
   },
@@ -26,7 +27,10 @@
     "creation",
     "modification",
     "edit",
-    "editing"
+    "editing",
+    "typescript",
+    "javascript",
+    "library"
   ],
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "license": "MIT",
@@ -66,6 +70,8 @@
     "ts-node": "^6.0.5",
     "tsconfig-paths": "^3.3.2",
     "tslint": "^5.9.1",
+    "typedoc": "^0.11.1",
+    "typedoc-plugin-markdown": "^1.1.13",
     "typescript": "^2.7.2"
   },
   "jest": {

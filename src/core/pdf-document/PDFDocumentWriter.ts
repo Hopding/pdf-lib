@@ -11,6 +11,15 @@ import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFacto
 import { error } from 'utils';
 
 class PDFDocumentWriter {
+  /**
+   * Converts a [[PDFDocument]] object into the raw bytes of a PDF document.
+   * These raw bytes could, for example, be saved as a file and opened in a
+   * PDF reader.
+   *
+   * @param pdfDoc The [[PDFDocument]] to be converted to bytes.
+   *
+   * @returns A `Uint8Array` containing the raw bytes of a PDF document.
+   */
   static saveToBytes = (pdfDoc: PDFDocument): Uint8Array => {
     const sortedIndex = PDFDocumentWriter.sortIndex(pdfDoc.index.index);
 
@@ -48,7 +57,8 @@ class PDFDocumentWriter {
     return buffer;
   };
 
-  static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
+  /** @hidden */
+  private static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
     const indexArr: PDFIndirectObject[] = [];
     index.forEach((object, ref) =>
       indexArr.push(PDFIndirectObject.of(object).setReference(ref)),

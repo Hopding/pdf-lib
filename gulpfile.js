@@ -3,6 +3,7 @@ const ts = require('gulp-typescript');
 const babel = require('gulp-babel');
 const del = require('del');
 const filter = require('gulp-filter');
+const { execSync } = require('child_process');
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -40,4 +41,23 @@ gulp.task('build', ['clean'], () =>
 
 gulp.task('clean-dist', ['build-ts-and-babel'], () =>
   del('dist/__integration_tests__/**'),
+);
+
+gulp.task('docs', () =>
+  execSync(`rm -rf docs && yarn typedoc --options typedoc.js src/`),
+);
+
+const { version } = require('./package.json');
+
+gulp.task('prepublish', () =>
+  execSync(`
+    rm -rf node_modules && \\
+    yarn                && \\
+    yarn lint           && \\
+    yarn test:ci        && \\
+    yarn docs           && \\
+    yarn build          && \\
+    git tag ${version}  && \\
+    git push origin ${version}
+  `),
 );
