@@ -48,6 +48,20 @@ gulp.task('docs', () =>
   execSync(`rm -rf docs && yarn typedoc --options typedoc.js src/`),
 );
 
+gulp.task('distprep', () =>
+  execSync(`
+    cd dist/                      && \\
+    cp ../package.json .          && \\
+    cp ../README.md .             && \\
+    cp ../LICENSE .               && \\
+    cp ../package-lock.json .     && \\
+    cp ../yarn.lock .             && \\
+    mv src/* .                    && \\
+    rm -rf src/                   && \\
+    rm -rf __integration_tests__/
+  `),
+);
+
 const { version } = require('./package.json');
 
 gulp.task('prepublish', () =>
@@ -56,20 +70,9 @@ gulp.task('prepublish', () =>
     yarn                && \\
     yarn lint           && \\
     yarn test:ci        && \\
-    yarn docs           && \\
     yarn build          && \\
     git tag ${version}  && \\
-    git push origin ${version}
-  `),
-);
-
-gulp.task('publish', () =>
-  execSync(`
-    cd dist/                      && \\
-    cp ../package.json .          && \\
-    mv src/* .                    && \\
-    rm -rf src/                   && \\
-    rm -rf __integration_tests__/ && \\
-    npm publish
+    git push origin ${version} && \\
+    yarn gulp distprep
   `),
 );
