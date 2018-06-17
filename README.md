@@ -4,7 +4,10 @@
   <strong>Create and modify PDF documents in any JavaScript environment.</strong>
 </div>
 <div align="center">
-  Designed to work in any modern JavaScript runtime (both <strong>server-side</strong> and <strong>client-side</strong>) and has been tested in Node, Browser, and React Native environments.
+  Designed to work in any modern JavaScript runtime (both server-side and client-side).
+</div>
+<div align="center">
+  Has been tested in Node, Browser, and React Native environments.
 </div>
 
 <br />
@@ -78,6 +81,8 @@ There are other good open source JavaScript PDF libraries available. However, mo
 * Embed Images
 
 ## Usage Examples
+More detailed examples are available [here](https://github.com/Hopding/pdf-lib/tree/master/examples).
+
 ### Document Creation
 ```javascript
 import { PDFDocumentFactory, PDFDocumentWriter } from 'pdf-lib/core/pdf-document';
@@ -86,22 +91,21 @@ import { drawText } from 'pdf-lib/helpers/pdf-operators/composite';
 const pdfDoc = PDFDocumentFactory.create();
 const [timesRomanFont] = pdfDoc.embedStandardFont('Times-Roman');
 
-const contentStream = pdfDoc.register(
-  pdfDoc.createContentStream(
-    drawText('Creating PDFs in JavaScript is awesome!', {
-      x: 50,
-      y: 450,
-      size: 15,
-      font: 'Times-Roman',
-      colorRgb: [0, 0.53, 0.71],
-    }),
-  ),
-);
-
 const page = pdfDoc
   .createPage([350, 500])
-  .addFontDictionary('Times-Roman', timesRomanFont)
-  .addContentStreams(contentStream);
+  .addFontDictionary('Times-Roman', timesRomanFont);
+
+const contentStream = pdfDoc.createContentStream(
+  drawText('Creating PDFs in JavaScript is awesome!', {
+    x: 50,
+    y: 450,
+    size: 15,
+    font: 'Times-Roman',
+    colorRgb: [0, 0.53, 0.71],
+  }),
+);
+
+page.addContentStreams(pdfDoc.register(contentStream));
 
 pdfDoc.addPage(page);
 
@@ -122,23 +126,22 @@ const existingPdfDocBytes = ...
 const pdfDoc = PDFDocumentFactory.load(existingPdfDocBytes);
 const [helveticaFont] = pdfDoc.embedStandardFont('Helvetica');
 
-const contentStream = pdfDoc.register(
-  pdfDoc.createContentStream(
-    drawText('This text was added to the PDF with JavaScript!', {
-      x: 25,
-      y: 25,
-      size: 24,
-      font: 'Helvetica',
-      colorRgb: [0.95, 0.26, 0.21],
-    }),
-  ),
+const pages = pdfDoc.getPages();
+const page  = pages[0];
+
+page.addFontDictionary('Helvetica', helveticaFont);
+
+const contentStream = pdfDoc.createContentStream(
+  drawText('This text was added to the PDF with JavaScript!', {
+    x: 25,
+    y: 25,
+    size: 24,
+    font: 'Helvetica',
+    colorRgb: [0.95, 0.26, 0.21],
+  }),
 );
 
-const pages = pdfDoc.getPages();
-
-pages[0]
-  .addFontDictionary('Helvetica', helveticaFont)
-  .addContentStreams(contentStream);
+page.addContentStreams(pdfDoc.register(contentStream));
 
 const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 ```
@@ -153,7 +156,7 @@ yarn add pdf-lib
 ```
 
 ## API Documentation
-This project's API documentation is written as [TypeDoc](http://typedoc.org/) comments. The generated markdown documentation is placed in the [`docs/`](https://github.com/Hopding/pdf-lib/tree/master/docs) directory of this repo.
+API documentation is available [here](https://github.com/Hopding/pdf-lib/tree/master/docs).
 
 ## Prior Art
 * [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/PDFFontFactory.ts#L64-L68), [PNG embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L19-L23), and [JPG embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L32-L36) was especially useful.
