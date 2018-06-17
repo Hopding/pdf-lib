@@ -71,8 +71,6 @@ gulp.task('prepublish', () =>
     yarn lint           && \\
     yarn test:ci        && \\
     yarn build          && \\
-    git tag ${version}  && \\
-    git push origin ${version} && \\
     yarn gulp distprep
   `),
 );
