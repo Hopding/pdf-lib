@@ -1,12 +1,49 @@
-# pdf-lib
+<h1 align="center">pdf-lib</h1>
 
-[![NPM Version](https://img.shields.io/npm/v/pdf-lib.svg?style=flat-square)](https://www.npmjs.com/package/pdf-lib)
-[![CircleCI Build Status](https://img.shields.io/circleci/project/github/Hopding/pdf-lib/master.svg?style=flat-square&label=CircleCI)](https://circleci.com/gh/Hopding/pdf-lib)
-[![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://prettier.io/)
+<div align="center">
+  <strong>Create and modify PDF documents in any JavaScript environment.</strong>
+</div>
+<div align="center">
+  Designed to work in any modern JavaScript runtime (both <strong>server-side</strong> and <strong>client-side</strong>) and has been tested in Node, Browser, and React Native environments.
+</div>
 
-> **Create** and **modify** PDF documents in any JavaScript environment.
->
-> `pdf-lib` is designed to work in any modern JavaScript runtime (both **server-side** and **client-side**) and has been tested in Node, Browser, and React Native environments.
+<br />
+
+<div align="center">
+  <!-- NPM version -->
+  <a href="https://www.npmjs.com/package/pdf-lib">
+    <img
+      src="https://img.shields.io/npm/v/pdf-lib.svg?style=flat-square"
+      alt="NPM Version"
+    />
+  </a>
+  <!-- Build Status -->
+  <a href="https://circleci.com/gh/Hopding/pdf-lib">
+    <img
+      src="https://img.shields.io/circleci/project/github/Hopding/pdf-lib/master.svg?style=flat-square&label=CircleCI"
+      alt="CircleCI Build Status"
+    />
+  </a>
+  <!-- Build Status -->
+  <a href="https://prettier.io/">
+    <img
+      src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square"
+      alt="Build Status"
+    />
+  </a>
+</div>
+
+<div align="center">
+  <h3>
+    <a href="https://github.com/Hopding/pdf-lib/tree/master/docs">
+      Documentation
+    </a>
+    <span> | </span>
+    <a href="https://github.com/Hopding/pdf-lib/tree/master/examples">
+      Examples
+    </a>
+  </h3>
+</div>
 
 ## Table of Contents
 * [Motivation](#motivation)

@@ -7,7 +7,7 @@ This example will produce the [this PDF](https://github.com/Hopding/pdf-lib/tree
 
 The example script ([`index.js`](https://github.com/Hopding/pdf-lib/tree/master/examples/document_modification/node/index.js)) contains detailed comments explaining each step in the process.
 
-## Purpose of this example
+## Purpose of this Example
 This example script  demonstrates how to:
 * Modify an existing PDF document.
 * Draw text with a standard font.
