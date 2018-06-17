@@ -222,4 +222,4 @@ const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 // reader.
 const filePath = `${__dirname}/new.pdf`;
 fs.writeFileSync(filePath, pdfBytes);
-console.log('PDF file written to: ${filePath}');
+console.log(`PDF file written to: ${filePath}`);

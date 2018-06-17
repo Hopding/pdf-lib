@@ -5,8 +5,10 @@ that uses a version of `pdf-lib` published to NPM.
 
 This example will produce the [this PDF](https://github.com/Hopding/pdf-lib/tree/master/examples/pdf_results/document_creation.pdf).
 
+The example script ([`index.js`](https://github.com/Hopding/pdf-lib/tree/master/examples/document_creation/node/index.js)) contains detailed comments explaining each step in the process.
+
 ## Purpose of this example
-This example script (`index.js`) demonstrates how to:
+This example script  demonstrates how to:
 * Create a new PDF document.
 * Draw text with standard font.
 * Draw text with embedded font.
