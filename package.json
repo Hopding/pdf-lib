@@ -4,7 +4,6 @@
   "description": "Library for creating and modifying PDF files in JavaScript",
   "main": "dist/index.js",
   "scripts": {
-    "prepublish": "gulp prepublish",
     "test": "jest --no-coverage --watch",
     "test:ci": "jest --runInBand --no-coverage",
     "test:coverage": "jest",
