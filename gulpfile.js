@@ -47,7 +47,7 @@ gulp.task('docs', () =>
   execSync(`rm -rf docs && yarn typedoc --options typedoc.js src/`),
 );
 
-const { version } = require('package.json');
+const { version } = require('./package.json');
 
 gulp.task('prepublish', () =>
   execSync(`
@@ -57,7 +57,7 @@ gulp.task('prepublish', () =>
     yarn test:ci        && \\
     yarn docs           && \\
     yarn build          && \\
-    git tag ${version}  &&\\
+    git tag ${version}  && \\
     git push origin ${version}
   `),
 );
