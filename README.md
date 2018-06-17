@@ -116,7 +116,7 @@ yarn add pdf-lib
 ```
 
 ## API Documentation
-This project's API documentation is written as [TypeDoc](http://typedoc.org/) comments. The generated markdown documentation is placed in the [`docs/`](https://github.com/Hopding/pdf-lib/tree/AddDocumentation/docs) directory of this repo.
+This project's API documentation is written as [TypeDoc](http://typedoc.org/) comments. The generated markdown documentation is placed in the [`docs/`](https://github.com/Hopding/pdf-lib/tree/master/docs) directory of this repo.
 
 ## Prior Art
 * [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/PDFFontFactory.ts#L64-L68), [PNG embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L19-L23), and [JPG embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L32-L36) was especially useful.
