@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 import { PDFIndirectObject, PDFName } from 'core/pdf-objects';
 import { addStringToBuffer, and, arrayToString, error, not, or } from 'utils';

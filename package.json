@@ -66,6 +66,7 @@
     "jest": "^22.4.3",
     "jest-junit": "^3.6.0",
     "prettier": "^1.11.1",
+    "rollup": "^0.60.7",
     "ts-jest": "^22.4.2",
     "ts-node": "^6.0.5",
     "tsconfig-paths": "^3.3.2",

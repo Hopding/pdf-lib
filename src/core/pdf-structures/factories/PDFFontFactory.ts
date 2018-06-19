@@ -1,5 +1,5 @@
 import fontkit from 'fontkit';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import pako from 'pako';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';

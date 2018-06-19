@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "es6",
     "esModuleInterop": true,
-    "target": "es6",
+    "target": "es5",
     "lib": ["es2017"],
     "types": ["node"],
     "noImplicitAny": true,
@@ -24,7 +24,6 @@
   },
   "include": [
     "src/**/*",
-    "__integration_tests__/**/*",
     "index.ts"
   ]
 }

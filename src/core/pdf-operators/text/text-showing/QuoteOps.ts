@@ -1,7 +1,7 @@
 /* tslint:disable:max-classes-per-file class-name */
 import { PDFHexString, PDFString } from 'core/pdf-objects/index';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 import { addStringToBuffer, or } from 'utils';
 import { isInstance, isNumber, validate } from 'utils/validate';

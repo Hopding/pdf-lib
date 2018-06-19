@@ -6,7 +6,7 @@ import {
   PDFString,
 } from 'core/pdf-objects/index';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 import { addStringToBuffer, arrayToString, error, or } from 'utils';
 import { isInstance, isNumber, validate, validateArr } from 'utils/validate';

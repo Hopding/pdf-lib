@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
 
