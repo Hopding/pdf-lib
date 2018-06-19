@@ -1,5 +1,5 @@
 /* tslint:disable:ban-types */
-import * as _ from 'lodash';
+import _ from 'lodash';
 import 'proxy-polyfill'; // Need this for React Native Android
 
 import { isInstance, validate } from 'utils/validate';

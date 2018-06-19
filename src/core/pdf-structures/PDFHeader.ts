@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { addStringToBuffer, charCode } from 'utils';
 import { validate } from 'utils/validate';
 

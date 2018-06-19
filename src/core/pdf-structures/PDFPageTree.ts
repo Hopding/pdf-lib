@@ -1,5 +1,5 @@
 /* eslint-disable prefer-destructuring, no-param-reassign */
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import {
   PDFArray,

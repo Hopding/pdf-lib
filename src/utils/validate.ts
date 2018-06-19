@@ -1,5 +1,5 @@
 /* tslint:disable:ban-types */
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import { Predicate } from 'utils';
 

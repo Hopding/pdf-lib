@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import Standard14Fonts, {

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { addStringToBuffer, arrayToString, error } from 'utils';
 import { isInstance, validate, validateArr } from 'utils/validate';
 

@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';

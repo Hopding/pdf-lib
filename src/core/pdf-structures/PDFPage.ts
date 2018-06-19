@@ -8,7 +8,7 @@ import {
   PDFStream,
 } from 'core/pdf-objects';
 import { PDFContentStream } from 'core/pdf-structures';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import {
   isIdentity,
   isInstance,
