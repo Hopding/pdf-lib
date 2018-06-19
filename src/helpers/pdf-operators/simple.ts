@@ -30,7 +30,7 @@ import Tz from 'core/pdf-operators/text/text-state/Tz';
 
 import Do from 'core/pdf-operators/Do';
 
-import PDFOperators from 'core/pdf-operators';
+import { PDFOperators } from 'core/pdf-operators';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { isInRange, validate } from 'utils/validate';
