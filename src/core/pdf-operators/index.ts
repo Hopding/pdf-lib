@@ -66,7 +66,7 @@ export const textPositioningOperators = [Td, TD, Tm, TAsterisk];
 // export const markedContentOperators =
 //   [MP, DP, BMC, BDC, EMC]
 
-export const PDFOperators = {
+const PDFOperators = {
   W,
   CS,
   cs,
@@ -114,3 +114,5 @@ export const PDFOperators = {
   Tz,
   Do,
 };
+
+export default PDFOperators;

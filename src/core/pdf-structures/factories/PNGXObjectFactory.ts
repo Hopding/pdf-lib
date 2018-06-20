@@ -14,7 +14,6 @@ import { isInstance, validate } from 'utils/validate';
 
 /** @hidden */
 // tslint:disable-next-line
-// const { Buffer } = require('buffer/');
 import { Buffer } from 'buffer/';
 
 /**

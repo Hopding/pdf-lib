@@ -18,7 +18,6 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 /** @hidden */
 // tslint:disable-next-line
-// const { Buffer } = require('buffer/');
 import { Buffer } from 'buffer/';
 
 /** @hidden */
