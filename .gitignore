@@ -13,6 +13,7 @@ yarn-error.log
 # Misc
 .DS_Store
 debug*
+.rpt2_cache/
 
 # Profiling
 isolate-0x102801600-v8.log

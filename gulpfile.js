@@ -75,6 +75,15 @@ gulp.task('prepublish', () =>
   `),
 );
 
+gulp.task('buildUmd', () =>
+  execSync(`
+    rm -rf dist/ && \\
+    yarn build && \\
+    yarn rollup -c rollup.config.js -o dist/UMD/pdf-lib.js --format umd && \\
+    cp dist/UMD/pdf-lib.js umd_test/
+  `),
+);
+
 /*
 rm -rf dist/ && yarn build
 yarn rollup -c rollup.config.js -o dist/UMD/pdf-lib.js --format umd
