@@ -14,7 +14,8 @@ import { isInstance, validate } from 'utils/validate';
 
 /** @hidden */
 // tslint:disable-next-line
-const { Buffer } = require('buffer/');
+// const { Buffer } = require('buffer/');
+import { Buffer } from 'buffer/';
 
 /**
  * A note of thanks to the developers of https://github.com/devongovett/pdfkit,

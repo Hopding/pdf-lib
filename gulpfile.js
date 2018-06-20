@@ -8,7 +8,7 @@ const { execSync } = require('child_process');
 const tsProject = ts.createProject('tsconfig.json');
 
 const babelrc = {
-  presets: ['env'],
+  // presets: ['env'],
   plugins: [
     [
       'module-resolver',
@@ -74,3 +74,9 @@ gulp.task('prepublish', () =>
     yarn gulp distprep
   `),
 );
+
+/*
+rm -rf dist/ && yarn build
+yarn rollup -c rollup.config.js -o dist/UMD/pdf-lib.js --format umd
+cp dist/UMD/pdf-lib.js umd_test/
+*/

@@ -18,7 +18,8 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 /** @hidden */
 // tslint:disable-next-line
-const { Buffer } = require('buffer/');
+// const { Buffer } = require('buffer/');
+import { Buffer } from 'buffer/';
 
 /** @hidden */
 const unsigned32Bit = '00000000000000000000000000000000';
