@@ -5,7 +5,7 @@ const del = require('del');
 const filter = require('gulp-filter');
 const { execSync } = require('child_process');
 
-const tsProject = ts.createProject('tsconfig.json');
+const tsProject = ts.createProject('tsconfig.json', { module: 'es2015' });
 
 const babelrc = {
   // presets: ['env'],
@@ -33,7 +33,7 @@ const jsFilter = filter(['**/*.js'], { restore: true });
 gulp.task('build', ['clean'], () =>
   tsProject
     .src()
-    .pipe(tsProject())
+    .pipe(tsProject({ module: 'es2015' }))
     .pipe(jsFilter)
     .pipe(babel(babelrc))
     .pipe(jsFilter.restore)
@@ -77,9 +77,12 @@ gulp.task('prepublish', () =>
 
 gulp.task('buildUmd', () =>
   execSync(`
-    rm -rf dist/ && \\
-    yarn build && \\
-    yarn rollup -c rollup.config.js -o dist/UMD/pdf-lib.js --format umd && \\
+    rm -rf dist/          && \\
+    yarn build            && \\
+    yarn rollup              \\
+      -c rollup.config.js    \\
+      -o dist/UMD/pdf-lib.js \\
+      --format umd        && \\
     cp dist/UMD/pdf-lib.js umd_test/
   `),
 );

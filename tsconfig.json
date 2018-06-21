@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "es2015",
+    "module": "commonjs",
     "esModuleInterop": true,
     "target": "es5",
     "lib": ["es2017"],
@@ -25,6 +25,7 @@
   },
   "include": [
     "src/**/*",
+    "__integration_tests__/**/*",
     "index.ts"
   ]
 }

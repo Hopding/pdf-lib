@@ -12,7 +12,7 @@
     "build": "gulp build",
     "docs": "gulp docs",
     "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
-    "it:node": "ts-node -r tsconfig-paths/register __integration_tests__/runners/node/index.ts"
+    "it:node": "ts-node --module commonjs -r tsconfig-paths/register __integration_tests__/runners/node/index.ts"
   },
   "repository": {
     "type": "git",

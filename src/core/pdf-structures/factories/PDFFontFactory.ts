@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer/';
 import fontkit from 'fontkit';
 import _ from 'lodash';
 import pako from 'pako';
@@ -15,10 +16,6 @@ import { or, setCharAt } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
-
-/** @hidden */
-// tslint:disable-next-line
-import { Buffer } from 'buffer/';
 
 /** @hidden */
 const unsigned32Bit = '00000000000000000000000000000000';
@@ -87,7 +84,7 @@ class PDFFontFactory {
     // the "fontkit" package makes use of Node "Buffer" objects, instead of
     // standard JS typed arrays. So, for now we'll just use the "buffer" package
     // to convert the "data" to a "Buffer" object that "fontkit" can work with.
-    const dataBuffer = Buffer.from(fontData);
+    const dataBuffer = Buffer.from(fontData as any);
 
     this.fontData = fontData;
     this.flagOptions = flagOptions;
