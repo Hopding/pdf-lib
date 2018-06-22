@@ -8,8 +8,6 @@
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
     "declaration": true,
     "baseUrl": ".",
     "paths": {

@@ -1,94 +1,80 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const babel = require('gulp-babel');
-const del = require('del');
 const filter = require('gulp-filter');
+const del = require('del');
 const { execSync } = require('child_process');
+
+/*
+  compiled/dist
+    - Single UMD file - unminified
+    - Single UMD file - minified
+  compiled/es
+    - Single ES6 file - unminified
+  compiled/lib
+    - Single CommonJS file - unminified
+  compiled/src
+    - Set of ES6 source files - unminified
+*/
 
 const tsProject = ts.createProject('tsconfig.json', { module: 'es2015' });
 
 const babelrc = {
-  // presets: ['env'],
   plugins: [
     [
       'module-resolver',
       {
-        root: ['./dist/src'],
+        root: ['./compiled'],
         alias: {
-          core: './dist/src/core',
-          helpers: './dist/src/helpers',
-          utils: './dist/src/utils',
+          core: './src/core',
+          helpers: './src/helpers',
+          utils: './src/utils',
         },
       },
     ],
   ],
 };
 
-gulp.task('release-build', ['clean', 'build-ts-and-babel', 'clean-dist']);
-
-gulp.task('clean', () => del('dist/**'));
-
-const jsFilter = filter(['**/*.js'], { restore: true });
-
-gulp.task('build', ['clean'], () =>
-  tsProject
-    .src()
-    .pipe(tsProject({ module: 'es2015' }))
-    .pipe(jsFilter)
-    .pipe(babel(babelrc))
-    .pipe(jsFilter.restore)
-    .pipe(gulp.dest('dist')),
-);
-
-gulp.task('clean-dist', ['build-ts-and-babel'], () =>
-  del('dist/__integration_tests__/**'),
-);
-
-gulp.task('docs', () =>
-  execSync(`rm -rf docs && yarn typedoc --options typedoc.js src/`),
-);
-
-gulp.task('distprep', () =>
-  execSync(`
-    cd dist/                      && \\
-    cp ../package.json .          && \\
-    cp ../README.md .             && \\
-    cp ../LICENSE .               && \\
-    cp ../package-lock.json .     && \\
-    cp ../yarn.lock .             && \\
-    mv src/* .                    && \\
-    rm -rf src/                   && \\
-    rm -rf __integration_tests__/
-  `),
-);
-
-const { version } = require('./package.json');
-
-gulp.task('prepublish', () =>
+gulp.task('prepare-release', () =>
   execSync(`
     rm -rf node_modules && \\
     yarn                && \\
     yarn lint           && \\
-    yarn test:ci        && \\
-    yarn build          && \\
-    yarn gulp distprep
+    yarn test:ci
   `),
 );
 
-gulp.task('buildUmd', () =>
+gulp.task('build-release', ['rollup-commonjs', 'rollup-es', 'rollup-umd'], () =>
   execSync(`
-    rm -rf dist/          && \\
-    yarn build            && \\
-    yarn rollup              \\
-      -c rollup.config.js    \\
-      -o dist/UMD/pdf-lib.js \\
-      --format umd        && \\
-    cp dist/UMD/pdf-lib.js umd_test/
+    cp -r  package.json README.md LICENSE.md compiled/ && \\
+    rm -rf compiled/__integration_tests__ compiled/src
   `),
 );
 
-/*
-rm -rf dist/ && yarn build
-yarn rollup -c rollup.config.js -o dist/UMD/pdf-lib.js --format umd
-cp dist/UMD/pdf-lib.js umd_test/
-*/
+gulp.task('build-dev', ['rollup-commonjs', 'rollup-es', 'rollup-umd']);
+
+const jsFilter = filter(['**/*.js'], { restore: true });
+
+const rollup = (dir, format) => () =>
+  execSync(`
+    yarn rollup                     \\
+      -c rollup.config.js           \\
+      -o compiled/${dir}/pdf-lib.js \\
+      --format ${format}
+  `);
+
+gulp.task('clean', () => del('compiled/**'));
+
+gulp.task('compile-to-js', ['clean'], () =>
+  tsProject
+    .src()
+    .pipe(tsProject())
+    .pipe(jsFilter)
+    .pipe(babel(babelrc))
+    .pipe(jsFilter.restore)
+    .pipe(gulp.dest('compiled')),
+);
+
+gulp.task('rollup-commonjs', ['compile-to-js'], rollup('lib', 'cjs'));
+gulp.task('rollup-es', ['compile-to-js'], rollup('es', 'es'));
+gulp.task('rollup-umd', ['compile-to-js'], rollup('dist', 'umd'));

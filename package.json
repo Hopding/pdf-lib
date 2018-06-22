@@ -2,15 +2,15 @@
   "name": "pdf-lib",
   "version": "0.1.0",
   "description": "Library for creating and modifying PDF files in JavaScript",
-  "main": "index.js",
+  "main": "lib/pdf-lib.js",
+  "module": "es/pdf-lib.js",
   "scripts": {
     "test": "jest --no-coverage --watch",
     "test:ci": "jest --runInBand --no-coverage",
     "test:coverage": "jest",
     "jest:clear-cache": "rm -rf $TMPDIR/jest*",
     "coverage-report": "open coverage/lcov-report/index.html",
-    "build": "gulp build",
-    "docs": "gulp docs",
+    "docs": "rm -rf docs && yarn typedoc --options typedoc.js src/",
     "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
     "it:node": "ts-node --module commonjs -r tsconfig-paths/register __integration_tests__/runners/node/index.ts"
   },
