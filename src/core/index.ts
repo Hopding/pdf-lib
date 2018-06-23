@@ -1,7 +1,8 @@
-import * as document from 'core/pdf-document';
-import * as objects from 'core/pdf-objects';
-import operators from 'core/pdf-operators';
-import * as parser from 'core/pdf-parser';
-import * as structures from 'core/pdf-structures';
-
-export { document, objects, operators, parser, structures };
+export * from 'core/pdf-document';
+export * from 'core/pdf-objects';
+export { default as PDFOperators } from 'core/pdf-operators';
+export {
+  default as PDFTextObject,
+} from 'core/pdf-operators/text/PDFTextObject';
+export * from 'core/pdf-parser';
+export * from 'core/pdf-structures';
