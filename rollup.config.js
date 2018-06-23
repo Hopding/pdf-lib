@@ -6,9 +6,10 @@ import { plugin as analyze } from 'rollup-plugin-analyzer';
 const { UGLIFY } = process.env;
 
 export default {
-  input: 'compiled/src/index.js',
+  input: 'compiled/es/src/index.js',
   output: {
     name: 'PDFLib',
+    format: 'umd',
   },
   plugins: [
     analyze(),
