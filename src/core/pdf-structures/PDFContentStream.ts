@@ -1,4 +1,4 @@
-import chain from 'lodash/chain';
+import _ from 'lodash';
 import flatten from 'lodash/flatten';
 import isNumber from 'lodash/isNumber';
 
@@ -58,14 +58,11 @@ class PDFContentStream extends PDFStream {
     return this.dictionary.index.lookup(Length) as PDFNumber;
   }
 
-  // Note we have to force the cast to type "number" because
-  // of a bug in '@types/lodash':
-  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
   operatorsBytesSize = (): number =>
-    chain(this.operators)
+    _(this.operators)
       .filter(Boolean)
       .map((op) => op.bytesSize())
-      .sum() as any;
+      .sum();
 
   bytesSize = () =>
     this.dictionary.bytesSize() +

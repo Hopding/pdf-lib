@@ -1,5 +1,5 @@
 /* tslint:disable:max-classes-per-file */
-import chain from 'lodash/chain';
+import _ from 'lodash';
 import isBoolean from 'lodash/isBoolean';
 import isNumber from 'lodash/isNumber';
 import padStart from 'lodash/padStart';
@@ -76,14 +76,11 @@ export class Subsection {
     `${this.firstObjNum} ${this.entries.length}\n` +
     `${this.entries.map(String).join('')}`;
 
-  // Note we have to force the cast to type "number" because
-  // of a bug in '@types/lodash':
-  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
   bytesSize = (): number =>
     `${this.firstObjNum} ${this.entries.length}\n`.length +
-    (chain(this.entries)
+    _(this.entries)
       .map((e) => e.bytesSize())
-      .sum() as any);
+      .sum();
 }
 
 export class Table {
@@ -114,14 +111,11 @@ export class Table {
 
   toString = (): string => `xref\n${this.subsections.map(String).join('\n')}\n`;
 
-  // Note we have to force the cast to type "number" because
-  // of a bug in '@types/lodash':
-  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
   bytesSize = (): number =>
     5 + // "xref\n"
-    (chain(this.subsections)
+    _(this.subsections)
       .map((ss) => ss.bytesSize() + 1)
-      .sum() as any);
+      .sum();
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('xref\n', buffer);

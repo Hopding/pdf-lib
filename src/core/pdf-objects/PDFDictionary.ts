@@ -1,4 +1,4 @@
-import chain from 'lodash/chain';
+import _ from 'lodash';
 import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
@@ -45,7 +45,7 @@ class PDFDictionary extends PDFObject {
       this.map = object;
     } else {
       this.map = new Map();
-      chain(object).forEach((val, key) => this.set(key, val, false));
+      _(object).forEach((val, key) => this.set(key, val, false));
     }
   }
 
@@ -98,12 +98,9 @@ class PDFDictionary extends PDFObject {
     return arrayToString(buffer);
   };
 
-  // Note we have to force the cast to type "number" because
-  // of a bug in '@types/lodash':
-  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
   bytesSize = (): number =>
     3 + // "<<\n"
-    (chain(Array.from(this.map.entries()))
+    _(Array.from(this.map.entries()))
       .map(([key, val]) => {
         const keySize = `${key.toString()} `.length;
         if (val instanceof PDFIndirectObject) {
@@ -113,7 +110,7 @@ class PDFDictionary extends PDFObject {
         }
         throw new Error(`Not a PDFObject: ${val.constructor.name}`);
       })
-      .sum() as any) +
+      .sum() +
     2; // ">>"
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {

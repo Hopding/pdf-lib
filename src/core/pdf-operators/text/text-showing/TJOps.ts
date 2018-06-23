@@ -1,5 +1,5 @@
 /* tslint:disable:max-classes-per-file class-name */
-import chain from 'lodash/chain';
+import _ from 'lodash';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 
@@ -93,13 +93,10 @@ export class TJ extends PDFOperator {
     return arrayToString(buffer);
   };
 
-  // Note we have to force the cast to type "number" because
-  // of a bug in '@types/lodash':
-  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
   bytesSize = (): number =>
-    (chain(this.array)
+    _(this.array)
       .map((elem) => elem.bytesSize())
-      .sum() as any) +
+      .sum() +
     this.array.length + // Spaces between elements
     4 + // "[ " and "]"
     3; // The "TJ" characters and trailing newline
