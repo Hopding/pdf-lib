@@ -4,10 +4,7 @@
   <strong>Create and modify PDF documents in any JavaScript environment.</strong>
 </div>
 <div align="center">
-  Designed to work in any modern JavaScript runtime (both server-side and client-side).
-</div>
-<div align="center">
-  Has been tested in Node, Browser, and React Native environments.
+  Designed to work in any modern JavaScript runtime. Tested in Node, Browser, and React Native environments.
 </div>
 
 <br />

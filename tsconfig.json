@@ -10,6 +10,7 @@
     "moduleResolution": "node",
     "declaration": true,
     "baseUrl": ".",
+    "outDir": "compiled",
     "paths": {
       "*": [
         "node_modules/*",

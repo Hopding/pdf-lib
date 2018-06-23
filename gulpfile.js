@@ -2,8 +2,12 @@ const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const babel = require('gulp-babel');
 const filter = require('gulp-filter');
+const replace = require('gulp-replace');
 const del = require('del');
+const relative = require('relative');
+
 const { execSync } = require('child_process');
+const path = require('path');
 
 /* =============================== Setup ==================================== */
 
@@ -66,17 +70,55 @@ gulp.task('build-dev', [
 
 gulp.task('clean', () => del('compiled/**'));
 
-gulp.task('compile-to-js', ['clean'], () =>
+// gulp.task('compile-to-js', ['clean'], () =>
+//   tsProject
+//     .src()
+//     .pipe(tsProject())
+//     // .pipe(jsFilter)
+//     // .pipe(babel(babelrc))
+//     // .pipe(jsFilter.restore)
+//     .pipe(gulp.dest('compiled')),
+// );
+
+// gulp.task('compile-to-js', ['absolute-imports-to-relative']);
+
+gulp.task('ts-compile', ['clean'], () =>
   tsProject
     .src()
     .pipe(tsProject())
-    .pipe(jsFilter)
-    .pipe(babel(babelrc))
-    .pipe(jsFilter.restore)
     .pipe(gulp.dest('compiled')),
 );
 
-gulp.task('rollup-commonjs', ['compile-to-js'], rollup('lib', 'cjs'));
-gulp.task('rollup-es', ['compile-to-js'], rollup('es', 'es'));
-gulp.task('rollup-umd', ['compile-to-js'], rollup('dist', 'umd'));
-gulp.task('rollup-umd-min', ['compile-to-js'], rollup('dist', 'umd', true));
+const absoluteToDir = (dir) => `${__dirname}/compiled/src/${dir}/`;
+
+gulp.task('absolute-imports-to-relative', ['ts-compile'], () =>
+  gulp
+    .src('compiled/src/**/*')
+    .pipe(
+      replace(/from '(core|helpers|utils)/g, function(match, dirName) {
+        const relativeToDir = relative(this.file.path, absoluteToDir(dirName));
+        if (relativeToDir === dirName) {
+          return `from './${dirName}`;
+        }
+        return `from '${relativeToDir}`;
+      }),
+    )
+    .pipe(gulp.dest('compiled/src')),
+);
+
+gulp.task(
+  'rollup-commonjs',
+  ['absolute-imports-to-relative'],
+  rollup('lib', 'cjs'),
+);
+gulp.task('rollup-es', ['absolute-imports-to-relative'], rollup('es', 'es'));
+gulp.task(
+  'rollup-umd',
+  ['absolute-imports-to-relative'],
+  rollup('dist', 'umd'),
+);
+gulp.task(
+  'rollup-umd-min',
+  ['absolute-imports-to-relative'],
+  rollup('dist', 'umd', true),
+);
