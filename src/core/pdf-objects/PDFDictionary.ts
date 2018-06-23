@@ -98,9 +98,12 @@ class PDFDictionary extends PDFObject {
     return arrayToString(buffer);
   };
 
-  bytesSize = () =>
+  // Note we have to force the cast to type "number" because
+  // of a bug in '@types/lodash':
+  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
+  bytesSize = (): number =>
     3 + // "<<\n"
-    _(Array.from(this.map.entries()))
+    (chain(Array.from(this.map.entries()))
       .map(([key, val]) => {
         const keySize = `${key.toString()} `.length;
         if (val instanceof PDFIndirectObject) {
@@ -110,7 +113,7 @@ class PDFDictionary extends PDFObject {
         }
         throw new Error(`Not a PDFObject: ${val.constructor.name}`);
       })
-      .sum() +
+      .sum() as any) +
     2; // ">>"
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {

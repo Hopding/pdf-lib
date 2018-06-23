@@ -1,3 +1,4 @@
+import chain from 'lodash/chain';
 import isNumber from 'lodash/isNumber';
 
 import { addStringToBuffer, arrayToString, error } from 'utils';
@@ -75,15 +76,18 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     return arrayToString(buffer);
   };
 
-  bytesSize = () =>
+  // Note we have to force the cast to type "number" because
+  // of a bug in '@types/lodash':
+  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
+  bytesSize = (): number =>
     2 + // "[ "
-    _(this.array)
+    (chain(this.array)
       .map((e) => {
         if (e instanceof PDFIndirectObject) return e.toReference().length + 1;
         else if (e instanceof PDFObject) return e.bytesSize() + 1;
         return error(`Not a PDFObject: ${e}`);
       })
-      .sum() +
+      .sum() as any) +
     1; // "]";
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
