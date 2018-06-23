@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import initial from 'lodash/initial';
+import last from 'lodash/last';
 
 import {
   PDFArray,
@@ -139,7 +140,7 @@ class PDFParser {
         trailer: this.trailer,
       },
       // Drop the last element, because it will always be empty:
-      updates: _.initial(this.updates),
+      updates: initial(this.updates),
     };
   };
 
@@ -154,7 +155,7 @@ class PDFParser {
   private handleObjectStream = ({ objects }: PDFObjectStream) => {
     objects.forEach((indirectObj) => {
       if (this.updates.length > 0) {
-        _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
+        last(this.updates).body.set(indirectObj.getReference(), indirectObj);
       } else {
         this.body.set(indirectObj.getReference(), indirectObj);
       }
@@ -163,7 +164,7 @@ class PDFParser {
 
   private handleIndirectObj = (indirectObj: PDFIndirectObject) => {
     if (this.updates.length > 0) {
-      _.last(this.updates).body.set(indirectObj.getReference(), indirectObj);
+      last(this.updates).body.set(indirectObj.getReference(), indirectObj);
     } else {
       this.body.set(indirectObj.getReference(), indirectObj);
     }
@@ -175,12 +176,12 @@ class PDFParser {
 
   private handleXRefTable = (xRefTable: PDFXRef.Table) => {
     if (!this.trailer) this.xRefTable = xRefTable;
-    else _.last(this.updates).xRefTable = xRefTable;
+    else last(this.updates).xRefTable = xRefTable;
   };
 
   private handleTrailer = (trailer: PDFTrailer) => {
     if (!this.trailer) this.trailer = trailer;
-    else _.last(this.updates).trailer = trailer;
+    else last(this.updates).trailer = trailer;
 
     this.updates.push({ body: new Map(), xRefTable: null, trailer: null });
   };

@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import isFinite from 'lodash/isFinite';
+import isString from 'lodash/isString';
 
 import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
@@ -11,7 +12,7 @@ class PDFNumber extends PDFObject {
   static fromString = (numberStr: string) => {
     validate(
       numberStr,
-      _.isString,
+      isString,
       'PDFNumber.fromString requires a string as a parameter.',
     );
     return new PDFNumber(Number(numberStr));
@@ -21,7 +22,7 @@ class PDFNumber extends PDFObject {
 
   constructor(num: number) {
     super();
-    validate(num, _.isFinite, 'Can only construct PDFNumbers from Numbers');
+    validate(num, isFinite, 'Can only construct PDFNumbers from Numbers');
     this.number = num;
   }
 

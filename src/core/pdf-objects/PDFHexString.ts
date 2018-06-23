@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isString from 'lodash/isString';
 
 import { addStringToBuffer } from 'utils';
 import { doesMatch, validate } from 'utils/validate';
@@ -14,7 +14,7 @@ class PDFHexString extends PDFObject {
 
   constructor(str: string) {
     super();
-    validate(str, _.isString, 'PDFHexString.string must be a String');
+    validate(str, isString, 'PDFHexString.string must be a String');
     validate(
       str,
       doesMatch(HEX_STRING_REGEX),

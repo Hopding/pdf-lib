@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-import _ from 'lodash';
+import isString from 'lodash/isString';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
@@ -24,11 +24,11 @@ class Tf extends PDFOperator {
     super();
     validate(
       font,
-      or(_.isString, isInstance(PDFName)),
+      or(isString, isInstance(PDFName)),
       'Tf operator arg "font" must be a string or PDFName.',
     );
     validate(size, isNumber, 'Tf operator arg "size" must be a number.');
-    this.font = _.isString(font) ? PDFName.from(font) : font;
+    this.font = isString(font) ? PDFName.from(font) : font;
     this.size = size;
   }
 

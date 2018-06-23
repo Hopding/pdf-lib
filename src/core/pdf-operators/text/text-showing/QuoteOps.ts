@@ -1,7 +1,8 @@
 /* tslint:disable:max-classes-per-file class-name */
+import isString from 'lodash/isString';
+
 import { PDFHexString, PDFString } from 'core/pdf-objects/index';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import _ from 'lodash';
 
 import { addStringToBuffer, or } from 'utils';
 import { isInstance, isNumber, validate } from 'utils/validate';
@@ -21,10 +22,10 @@ export class SingleQuote extends PDFOperator {
     super();
     validate(
       str,
-      or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
+      or(isInstance(PDFString), isInstance(PDFHexString), isString),
       '\' operator arg "string" must be one of: PDFString, PDFHexString, String',
     );
-    this.string = _.isString(str) ? PDFString.fromString(str) : str;
+    this.string = isString(str) ? PDFString.fromString(str) : str;
   }
 
   toString = (): string => `${this.string.toString()} '\n`;
@@ -61,13 +62,13 @@ export class DoubleQuote extends PDFOperator {
     validate(ac, isNumber, '" operator arg "ac" must be a Number');
     validate(
       str,
-      or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
+      or(isInstance(PDFString), isInstance(PDFHexString), isString),
       '" operator arg "string" must be one of: PDFString, PDFHexString, String',
     );
 
     this.aw = aw;
     this.ac = ac;
-    this.string = _.isString(str) ? PDFString.fromString(str) : str;
+    this.string = isString(str) ? PDFString.fromString(str) : str;
   }
 
   toString = (): string =>

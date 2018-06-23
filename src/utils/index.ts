@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import sum from 'lodash/sum';
 
 export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
 
@@ -45,7 +45,7 @@ export const charCode = (charStr: string) => {
 export const charFromCode = (code: number) => String.fromCharCode(code);
 
 export const mergeUint8Arrays = (...arrs: Uint8Array[]) => {
-  const totalLength = _.sum(arrs.map((a) => a.length));
+  const totalLength = sum(arrs.map((a) => a.length));
   const newArray = new Uint8Array(totalLength);
 
   let offset = 0;

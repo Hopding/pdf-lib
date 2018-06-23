@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isString from 'lodash/isString';
 
 import { addStringToBuffer } from 'utils';
 import { validate } from 'utils/validate';
@@ -12,7 +12,7 @@ class PDFString extends PDFObject {
 
   constructor(str: string) {
     super();
-    validate(str, _.isString, 'Can only construct PDFStrings from Strings');
+    validate(str, isString, 'Can only construct PDFStrings from Strings');
     this.string = str;
   }
 

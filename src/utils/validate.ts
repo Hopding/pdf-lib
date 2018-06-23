@@ -1,5 +1,9 @@
 /* tslint:disable:ban-types */
-import _ from 'lodash';
+import inRange from 'lodash/inRange';
+import isArray from 'lodash/isArray';
+import isNaN from 'lodash/isNaN';
+import isNil from 'lodash/isNil';
+import _isNumber from 'lodash/isNumber';
 
 import { Predicate } from 'utils';
 
@@ -15,14 +19,14 @@ export const validate = <T>(
 };
 
 export const optional = <T>(predicate: Predicate<T>) => (value: any) =>
-  _.isNil(value) || predicate(value);
+  isNil(value) || predicate(value);
 
 export const validateArr = <T extends any[]>(
   value: T,
   predicate: (t: T[0]) => boolean,
   msg: string,
 ) => {
-  validate(value, _.isArray, 'validateArr.value must be an array.');
+  validate(value, isArray, 'validateArr.value must be an array.');
   value.forEach((v) => validate(v, predicate, msg));
 };
 
@@ -33,7 +37,7 @@ export const isInstance = <T extends Function>(requiredClass: T) => (
 export const isArrayOf = <T extends Function>(requiredClass: T) => (
   value: any,
 ) => {
-  if (!_.isArray(value)) return false;
+  if (!isArray(value)) return false;
   for (let i = 0; i < value.length; i++) {
     if (!(value[i] instanceof requiredClass)) return false;
   }
@@ -49,10 +53,10 @@ export const isNotIdentity = <T>(requiredValue: T) => (value: any) =>
 export const doesMatch = (regex: RegExp) => (value: string) =>
   !!value.match(regex);
 
-export const isNumber = (n: any) => and(_.isNumber, not(_.isNaN))(n);
+export const isNumber = (n: any) => and(_isNumber, not(isNaN))(n);
 
 export const isInRange = (lower: number, upper: number) => (value: any) =>
-  _.inRange(value, lower, upper) || value === upper;
+  inRange(value, lower, upper) || value === upper;
 
 export const isIndirectObjectOf = <T extends Function>(requiredClass: T) => (
   value: any,

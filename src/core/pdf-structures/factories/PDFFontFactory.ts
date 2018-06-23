@@ -1,6 +1,9 @@
 import { Buffer } from 'buffer/';
 import fontkit from 'fontkit';
-import _ from 'lodash';
+import isNil from 'lodash/isNil';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+import range from 'lodash/range';
 import pako from 'pako';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
@@ -78,7 +81,7 @@ class PDFFontFactory {
       isInstance(Uint8Array),
       '"fontData" must be a Uint8Array',
     );
-    validate(flagOptions, _.isObject, '"flagOptions" must be an Object');
+    validate(flagOptions, isObject, '"flagOptions" must be an Object');
 
     // This has to work in browser & Node JS environments. And, unfortunately,
     // the "fontkit" package makes use of Node "Buffer" objects, instead of
@@ -105,11 +108,7 @@ class PDFFontFactory {
       isInstance(PDFDocument),
       'PDFFontFactory.embedFontIn: "pdfDoc" must be an instance of PDFDocument',
     );
-    validate(
-      name,
-      or(_.isString, _.isNil),
-      '"name" must be a string or undefined',
-    );
+    validate(name, or(isString, isNil), '"name" must be a string or undefined');
 
     const randSuffix = `-rand_${Math.floor(Math.random() * 10000)}`;
     const fontName =
@@ -182,7 +181,7 @@ class PDFFontFactory {
   /** @hidden */
   getWidths = (index: PDFObjectIndex) =>
     PDFArray.fromArray(
-      _.range(0, 256)
+      range(0, 256)
         .map(this.getCodePointWidth)
         .map(PDFNumber.fromNumber),
       index,

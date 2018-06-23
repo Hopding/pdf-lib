@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import chain from 'lodash/chain';
 
 import {
   colorOperators,
@@ -39,11 +39,14 @@ class PDFTextObject extends PDFOperator {
     this.operators = operators;
   }
 
-  operatorsBytesSize = () =>
-    _(this.operators)
+  // Note we have to force the cast to type "number" because
+  // of a bug in '@types/lodash':
+  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
+  operatorsBytesSize = (): number =>
+    chain(this.operators)
       .filter(Boolean)
       .map((op) => op.bytesSize())
-      .sum();
+      .sum() as any;
 
   toString = () => {
     const buffer = new Uint8Array(this.bytesSize());

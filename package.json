@@ -41,6 +41,7 @@
   },
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "dependencies": {
+    "@types/lodash": "^4.14.110",
     "buffer": "^5.0.8",
     "fontkit": "git+https://github.com/Hopding/fontkit.git#97eb4f461e849956a595b3e6c8366cd715f71c38",
     "lodash": "^4.17.4",
@@ -52,7 +53,6 @@
     "@types/faker": "^4.1.2",
     "@types/inquirer": "^0.0.41",
     "@types/jest": "^22.2.2",
-    "@types/lodash": "^4.14.106",
     "@types/node": "^9.6.0",
     "@types/pako": "^1.0.0",
     "chalk": "^2.4.1",

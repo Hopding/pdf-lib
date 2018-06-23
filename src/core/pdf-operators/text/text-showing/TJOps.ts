@@ -1,4 +1,8 @@
 /* tslint:disable:max-classes-per-file class-name */
+import chain from 'lodash/chain';
+import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
+
 import {
   PDFArray,
   PDFHexString,
@@ -6,10 +10,9 @@ import {
   PDFString,
 } from 'core/pdf-objects/index';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import _ from 'lodash';
 
 import { addStringToBuffer, arrayToString, error, or } from 'utils';
-import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
+import { isInstance, validate, validateArr } from 'utils/validate';
 
 /**
  * Show a text string.
@@ -23,10 +26,10 @@ export class Tj extends PDFOperator {
     super();
     validate(
       str,
-      or(isInstance(PDFString), isInstance(PDFHexString), _.isString),
+      or(isInstance(PDFString), isInstance(PDFHexString), isString),
       'Tj operator arg "str" must be one of: PDFString, PDFHexString, String',
     );
-    this.string = _.isString(str) ? PDFString.fromString(str) : str;
+    this.string = isString(str) ? PDFString.fromString(str) : str;
   }
 
   toString = () => `${this.string} Tj\n`;
@@ -70,7 +73,7 @@ export class TJ extends PDFOperator {
         isInstance(PDFString),
         isInstance(PDFHexString),
         isInstance(PDFNumber),
-        _.isString,
+        isString,
         isNumber,
       ),
       'TJ operator arg elements must be one of: PDFString, PDFHexString, PDFNumber, String, Number',
@@ -78,8 +81,8 @@ export class TJ extends PDFOperator {
 
     // prettier-ignore
     this.array = array.map((elem) =>
-        _.isString(elem) ? PDFString.fromString(elem)
-      : _.isNumber(elem) ? PDFNumber.fromNumber(elem)
+        isString(elem) ? PDFString.fromString(elem)
+      : isNumber(elem) ? PDFNumber.fromNumber(elem)
       : elem
     );
   }
@@ -90,10 +93,13 @@ export class TJ extends PDFOperator {
     return arrayToString(buffer);
   };
 
-  bytesSize = () =>
-    _(this.array)
+  // Note we have to force the cast to type "number" because
+  // of a bug in '@types/lodash':
+  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
+  bytesSize = (): number =>
+    (chain(this.array)
       .map((elem) => elem.bytesSize())
-      .sum() +
+      .sum() as any) +
     this.array.length + // Spaces between elements
     4 + // "[ " and "]"
     3; // The "TJ" characters and trailing newline

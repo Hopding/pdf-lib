@@ -1,6 +1,7 @@
 /* tslint:disable:max-classes-per-file class-name */
+import isNil from 'lodash/isNil';
+
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import _ from 'lodash';
 
 import { addStringToBuffer, or } from 'utils';
 import { isNumber, validate } from 'utils/validate';
@@ -30,17 +31,17 @@ export class SC extends PDFOperator {
     validate(c[0], isNumber, 'SC operator args "c" must be a number.');
     validate(
       c[1],
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'SC operator args "c" must be a number.',
     );
     validate(
       c[2],
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'SC operator args "c" must be a number.',
     );
     validate(
       c[3],
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'SC operator args "c" must be a number.',
     );
     this.c = c as [number, number, number, number];
@@ -69,17 +70,17 @@ export class sc extends PDFOperator {
     validate(c[0], isNumber, 'sc operator args "c" must be a number.');
     validate(
       c[1],
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'sc operator args "c" must be a number.',
     );
     validate(
       c[2],
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'sc operator args "c" must be a number.',
     );
     validate(
       c[3],
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'sc operator args "c" must be a number.',
     );
     this.c = c as [number, number, number, number];

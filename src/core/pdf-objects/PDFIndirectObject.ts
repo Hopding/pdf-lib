@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isNumber from 'lodash/isNumber';
 
 import { addStringToBuffer, arrayToString } from 'utils';
 import { isInstance, validate } from 'utils/validate';
@@ -26,8 +26,8 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
   getReference = () => this.reference;
 
   setReferenceNumbers = (objectNumber: number, generationNumber: number) => {
-    validate(objectNumber, _.isNumber, 'objectNumber must be a Number');
-    validate(generationNumber, _.isNumber, 'generationNumber must be a Number');
+    validate(objectNumber, isNumber, 'objectNumber must be a Number');
+    validate(generationNumber, isNumber, 'generationNumber must be a Number');
 
     this.reference = PDFIndirectReference.forNumbers(
       objectNumber,

@@ -1,4 +1,6 @@
-import _ from 'lodash';
+import chain from 'lodash/chain';
+import flatten from 'lodash/flatten';
+import isNumber from 'lodash/isNumber';
 
 import 'core/pdf-objects';
 
@@ -37,9 +39,9 @@ class PDFContentStream extends PDFStream {
       'PDFContentStream requires PDFOperators or PDFOperator[]s to be constructed.',
     );
 
-    this.operators = typedArrayProxy(_.flatten(operators), PDFOperator, {
+    this.operators = typedArrayProxy(flatten(operators), PDFOperator, {
       set: (property) => {
-        if (_.isNumber(Number(property))) {
+        if (isNumber(Number(property))) {
           this.Length.number = this.operatorsBytesSize();
         }
       },
@@ -56,11 +58,14 @@ class PDFContentStream extends PDFStream {
     return this.dictionary.index.lookup(Length) as PDFNumber;
   }
 
-  operatorsBytesSize = () =>
-    _(this.operators)
+  // Note we have to force the cast to type "number" because
+  // of a bug in '@types/lodash':
+  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
+  operatorsBytesSize = (): number =>
+    chain(this.operators)
       .filter(Boolean)
       .map((op) => op.bytesSize())
-      .sum();
+      .sum() as any;
 
   bytesSize = () =>
     this.dictionary.bytesSize() +

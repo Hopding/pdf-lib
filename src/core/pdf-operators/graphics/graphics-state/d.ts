@@ -1,6 +1,6 @@
 /* tslint:disable:max-classes-per-file class-name */
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import _ from 'lodash';
+import isNil from 'lodash/isNil';
 
 import { addStringToBuffer, or } from 'utils';
 import { isNumber, validate } from 'utils/validate';
@@ -21,17 +21,17 @@ class d extends PDFOperator {
     super();
     validate(
       dashArray[0],
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'dashArray[0] must be a number or undefined.',
     );
     validate(
       dashArray[1],
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'dashArray[1] must be a number or undefined.',
     );
     validate(
       dashPhase,
-      or(isNumber, _.isNil),
+      or(isNumber, isNil),
       'd operator arg "dashPhase" must be a number.',
     );
     this.dashArray = dashArray as [number, number];
@@ -39,7 +39,7 @@ class d extends PDFOperator {
   }
 
   toString = () =>
-    this.dashArray.every(_.isNil)
+    this.dashArray.every(isNil)
       ? `[] ${this.dashPhase} d\n`
       : `[${this.dashArray[0]} ${this.dashArray[1]}] ${this.dashPhase} d\n`;
 

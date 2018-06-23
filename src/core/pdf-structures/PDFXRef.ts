@@ -1,5 +1,8 @@
 /* tslint:disable:max-classes-per-file */
-import _ from 'lodash';
+import chain from 'lodash/chain';
+import isBoolean from 'lodash/isBoolean';
+import isNumber from 'lodash/isNumber';
+import padStart from 'lodash/padStart';
 
 import { addStringToBuffer } from 'utils';
 import { isInstance, validate, validateArr } from 'utils/validate';
@@ -12,26 +15,26 @@ export class Entry {
   isInUse: boolean = false;
 
   setOffset = (offset: number) => {
-    validate(offset, _.isNumber, 'offset must be a number');
+    validate(offset, isNumber, 'offset must be a number');
     this.offset = offset;
     return this;
   };
 
   setGenerationNum = (generationNum: number) => {
-    validate(generationNum, _.isNumber, 'generationNum must be a number');
+    validate(generationNum, isNumber, 'generationNum must be a number');
     this.generationNum = generationNum;
     return this;
   };
 
   setIsInUse = (isInUse: boolean) => {
-    validate(isInUse, _.isBoolean, 'isInUse must be a boolean');
+    validate(isInUse, isBoolean, 'isInUse must be a boolean');
     this.isInUse = isInUse;
     return this;
   };
 
   toString = (): string =>
-    `${_.padStart(String(this.offset), 10, '0')} ` +
-    `${_.padStart(String(this.generationNum), 5, '0')} ` +
+    `${padStart(String(this.offset), 10, '0')} ` +
+    `${padStart(String(this.generationNum), 5, '0')} ` +
     `${this.isInUse ? 'n' : 'f'} \n`;
 
   bytesSize = () => this.toString().length;
@@ -64,7 +67,7 @@ export class Subsection {
   };
 
   setFirstObjNum = (firstObjNum: number) => {
-    validate(firstObjNum, _.isNumber, 'firstObjNum must be a number');
+    validate(firstObjNum, isNumber, 'firstObjNum must be a number');
     this.firstObjNum = firstObjNum;
     return this;
   };
@@ -73,11 +76,14 @@ export class Subsection {
     `${this.firstObjNum} ${this.entries.length}\n` +
     `${this.entries.map(String).join('')}`;
 
-  bytesSize = () =>
+  // Note we have to force the cast to type "number" because
+  // of a bug in '@types/lodash':
+  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
+  bytesSize = (): number =>
     `${this.firstObjNum} ${this.entries.length}\n`.length +
-    _(this.entries)
+    (chain(this.entries)
       .map((e) => e.bytesSize())
-      .sum();
+      .sum() as any);
 }
 
 export class Table {
@@ -108,11 +114,14 @@ export class Table {
 
   toString = (): string => `xref\n${this.subsections.map(String).join('\n')}\n`;
 
-  bytesSize = () =>
+  // Note we have to force the cast to type "number" because
+  // of a bug in '@types/lodash':
+  //   https://github.com/DefinitelyTyped/DefinitelyTyped/issues/21206
+  bytesSize = (): number =>
     5 + // "xref\n"
-    _(this.subsections)
+    (chain(this.subsections)
       .map((ss) => ss.bytesSize() + 1)
-      .sum();
+      .sum() as any);
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('xref\n', buffer);

@@ -1,5 +1,5 @@
 /* tslint:disable:max-classes-per-file class-name */
-import _ from 'lodash';
+import isString from 'lodash/isString';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
@@ -48,10 +48,10 @@ export class CS extends PDFOperator {
     super();
     validate(
       name,
-      or(_.isString, isInstance(PDFName)),
+      or(isString, isInstance(PDFName)),
       'CS operator arg "name" must be a string or PDFName.',
     );
-    this.name = _.isString(name) ? PDFName.from(name) : name;
+    this.name = isString(name) ? PDFName.from(name) : name;
   }
 
   toString = (): string => `${this.name} CS\n`;
@@ -74,10 +74,10 @@ export class cs extends PDFOperator {
     super();
     validate(
       name,
-      or(_.isString, isInstance(PDFName)),
+      or(isString, isInstance(PDFName)),
       'cs operator arg "name" must be a string or PDFName.',
     );
-    this.name = _.isString(name) ? PDFName.from(name) : name;
+    this.name = isString(name) ? PDFName.from(name) : name;
   }
 
   toString = (): string => `${this.name} cs\n`;

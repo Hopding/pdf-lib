@@ -1,5 +1,5 @@
 /* tslint:disable:max-classes-per-file class-name */
-import _ from 'lodash';
+import isString from 'lodash/isString';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
@@ -21,10 +21,10 @@ class gs extends PDFOperator {
     super();
     validate(
       dictName,
-      _.isString,
+      isString,
       'gs operator arg "dictName" must be a string or PDFName.',
     );
-    this.dictName = _.isString(dictName) ? PDFName.from(dictName) : dictName;
+    this.dictName = isString(dictName) ? PDFName.from(dictName) : dictName;
   }
 
   toString = (): string => `${this.dictName} gs\n`;

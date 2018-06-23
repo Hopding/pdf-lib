@@ -1,5 +1,6 @@
 /* tslint:disable:max-classes-per-file class-name */
-import _ from 'lodash';
+import isNil from 'lodash/isNil';
+import isString from 'lodash/isString';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
@@ -34,11 +35,11 @@ export class SCN extends PDFOperator {
     validateArr(c, isNumber, 'SCN operator args "c" must be all be numbers.');
     validate(
       name,
-      or(_.isString, isInstance(PDFName), _.isNil),
+      or(isString, isInstance(PDFName), isNil),
       'SCN operator arg "name" must be a string or PDFName.',
     );
     this.c = c;
-    this.name = _.isString(name) ? PDFName.from(name) : name;
+    this.name = isString(name) ? PDFName.from(name) : name;
   }
 
   toString = () =>
@@ -66,11 +67,11 @@ export class scn extends PDFOperator {
     validateArr(c, isNumber, 'scn operator args "c" must be all be numbers.');
     validate(
       name,
-      or(_.isString, isInstance(PDFName), _.isNil),
+      or(isString, isInstance(PDFName), isNil),
       'scn operator arg "name" must be a string or PDFName.',
     );
     this.c = c;
-    this.name = _.isString(name) ? PDFName.from(name) : name;
+    this.name = isString(name) ? PDFName.from(name) : name;
   }
 
   toString = () =>

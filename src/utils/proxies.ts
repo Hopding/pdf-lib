@@ -1,5 +1,5 @@
 /* tslint:disable:ban-types */
-import _ from 'lodash';
+import chain from 'lodash/chain';
 
 // Need this for React Native Android.
 // Need to import the minified version because it is ES5 not ES6 - which is
@@ -22,7 +22,7 @@ export const typedArrayProxy = <T extends Function>(
   type: T,
   config: ITypedArrayProxyConfig = {},
 ) => {
-  _(config.methods).forEach((val: Function, key) => {
+  chain(config.methods).forEach((val: Function, key) => {
     obj[key] = new Proxy(obj[key], {
       apply: (target, thisArg, elements) =>
         val((args: any) => target.apply(thisArg, args), elements),

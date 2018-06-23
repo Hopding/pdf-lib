@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isBoolean from 'lodash/isBoolean';
 
 import { addStringToBuffer, toBoolean } from 'utils';
 import { validate } from 'utils/validate';
@@ -13,7 +13,7 @@ class PDFBoolean extends PDFObject {
 
   constructor(bool: boolean) {
     super();
-    validate(bool, _.isBoolean, 'Can only construct PDFBooleans from Booleans');
+    validate(bool, isBoolean, 'Can only construct PDFBooleans from Booleans');
     this.boolean = bool;
   }
 

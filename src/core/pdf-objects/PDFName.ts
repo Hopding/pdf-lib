@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isString from 'lodash/isString';
 
 import { addStringToBuffer, and, charCode } from 'utils';
 import { isIdentity, isNotIdentity, validate } from 'utils/validate';
@@ -17,7 +17,7 @@ class PDFName extends PDFObject {
     charCode(char) >= charCode('!') && charCode(char) <= charCode('~');
 
   static from = (str: string): PDFName => {
-    validate(str, _.isString, 'PDFName.from() requires string as argument');
+    validate(str, isString, 'PDFName.from() requires string as argument');
     let pdfName = pdfNamePool.get(str);
     if (!pdfName) {
       pdfName = new PDFName(pdfNameEnforcer, str);
