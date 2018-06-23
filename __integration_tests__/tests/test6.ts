@@ -2,16 +2,11 @@ import faker from 'faker';
 import fs from 'fs';
 import _ from 'lodash';
 
-import PDFDocument from 'core/pdf-document/PDFDocument';
-import PDFDocumentFactory from 'core/pdf-document/PDFDocumentFactory';
-import PDFDocumentWriter from 'core/pdf-document/PDFDocumentWriter';
-import Standard14Fonts from 'core/pdf-document/Standard14Fonts';
-import { PDFDictionary, PDFIndirectReference, PDFName } from 'core/pdf-objects';
-import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
-import { PDFContentStream } from 'core/pdf-structures';
-import PDFPage from 'core/pdf-structures/PDFPage';
-
 import {
+  clip,
+  clipEvenOdd,
+  closePath,
+  dashPattern,
   drawCircle,
   drawEllipse,
   drawImage,
@@ -19,12 +14,6 @@ import {
   drawRectangle,
   drawSquare,
   drawText,
-} from 'helpers/pdf-operators/composite';
-import {
-  clip,
-  clipEvenOdd,
-  closePath,
-  dashPattern,
   endPath,
   fillingRgbColor,
   fontAndSize,
@@ -34,14 +23,24 @@ import {
   lineTo,
   moveTo,
   nextLine,
+  PDFContentStream,
+  PDFDictionary,
+  PDFDocument,
+  PDFDocumentFactory,
+  PDFDocumentWriter,
+  PDFIndirectReference,
+  PDFName,
+  PDFPage,
+  PDFTextObject,
   popGraphicsState,
   pushGraphicsState,
   scale,
+  Standard14Fonts,
   strokingRgbColor,
   text,
   textRenderingMode,
   translate,
-} from 'helpers/pdf-operators/simple';
+} from '../../src';
 
 import { ITest, ITestAssets, ITestKernel } from '../models';
 
