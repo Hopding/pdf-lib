@@ -62,20 +62,22 @@ gulp.task('ts-compile-es2015', ['clean'], () =>
 gulp.task('abs-to-rel', ['abs-to-rel-commonjs', 'abs-to-rel-es2015']);
 
 const replacePaths = (moduleTypeDir) => {
-  const absoluteToDir = (dir) =>
+  const absolutePathToDir = (dir) =>
     `${__dirname}/compiled/${moduleTypeDir}/src/${dir}/`;
 
-  return replace(/(from ['"]|require\(['"])(core|helpers|utils)/g, function(
-    match,
-    importOrRequire,
-    dirName,
-  ) {
-    const relativeToDir = relative(this.file.path, absoluteToDir(dirName));
-    if (relativeToDir === dirName) {
-      return `${importOrRequire}./${dirName}`;
-    }
-    return `${importOrRequire}${relativeToDir}`;
-  });
+  return replace(
+    /(import ['"]|from ['"]|require\(['"])(core|helpers|utils)/g,
+    function(match, importOrRequire, dirName) {
+      const relativePathToDir = relative(
+        this.file.path,
+        absolutePathToDir(dirName),
+      );
+      if (relativePathToDir === dirName) {
+        return `${importOrRequire}./${dirName}`;
+      }
+      return `${importOrRequire}${relativePathToDir}`;
+    },
+  );
 };
 
 gulp.task('abs-to-rel-commonjs', ['ts-compile-commonjs'], () =>
