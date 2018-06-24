@@ -2,7 +2,7 @@
 node_modules
 
 # Build Dir
-dist
+compiled
 
 # Test Coverage Data
 coverage
@@ -13,6 +13,8 @@ yarn-error.log
 # Misc
 .DS_Store
 debug*
+.rpt2_cache/
+umd_test
 
 # Profiling
 isolate-0x102801600-v8.log

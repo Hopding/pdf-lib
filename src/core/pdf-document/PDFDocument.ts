@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import isNumber from 'lodash/isNumber';
+import values from 'lodash/values';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import Standard14Fonts, {
@@ -153,7 +154,7 @@ class PDFDocument {
    *              e.g. the first page in the document is index `0`.
    */
   removePage = (index: number) => {
-    validate(index, _.isNumber, 'idx must be a number');
+    validate(index, isNumber, 'idx must be a number');
     const pageTreeRef = this.catalog.get('Pages');
 
     // TODO: Use a "stop" callback to avoid unneccesarily traversing whole page tree...
@@ -187,7 +188,7 @@ class PDFDocument {
    * @param page  The page to be inserted.
    */
   insertPage = (index: number, page: PDFPage) => {
-    validate(index, _.isNumber, 'idx must be a number');
+    validate(index, isNumber, 'idx must be a number');
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const pageTreeRef = this.catalog.get('Pages');
 
@@ -229,7 +230,7 @@ class PDFDocument {
       fontName,
       oneOf(...Standard14Fonts),
       'PDFDocument.embedStandardFont: "fontName" must be one of the Standard 14 Fonts: ' +
-        _.values(Standard14Fonts).join(', '),
+        values(Standard14Fonts).join(', '),
     );
 
     /*

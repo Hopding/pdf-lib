@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import isNumber from 'lodash/isNumber';
+
 import { addStringToBuffer } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
@@ -12,7 +13,7 @@ class PDFTrailer {
   dictionary: PDFDictionary;
 
   constructor(offset: number, dictionary: PDFDictionary) {
-    validate(offset, _.isNumber, 'PDFTrailer offsets can only be Numbers');
+    validate(offset, isNumber, 'PDFTrailer offsets can only be Numbers');
     validate(
       dictionary,
       isInstance(PDFDictionary),

@@ -1,3 +1,7 @@
+import isArray from 'lodash/isArray';
+import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
+
 import {
   PDFArray,
   PDFDictionary,
@@ -8,7 +12,6 @@ import {
   PDFStream,
 } from 'core/pdf-objects';
 import { PDFContentStream } from 'core/pdf-structures';
-import _ from 'lodash';
 import {
   isIdentity,
   isInstance,
@@ -62,10 +65,10 @@ class PDFPage extends PDFDictionary {
     size: [number, number],
     resources?: PDFDictionary,
   ) => {
-    validate(size, _.isArray, 'size must be an array of 2 numbers.');
+    validate(size, isArray, 'size must be an array of 2 numbers.');
     validate(size.length, isIdentity(2), 'size tuple must have two elements.');
-    validate(size[0], _.isNumber, 'size tuple entries must be Numbers.');
-    validate(size[1], _.isNumber, 'size tuple entries must be Numbers.');
+    validate(size[0], isNumber, 'size tuple entries must be Numbers.');
+    validate(size[1], isNumber, 'size tuple entries must be Numbers.');
     validate(
       resources,
       optional(isInstance(PDFDictionary)),
@@ -187,7 +190,7 @@ class PDFPage extends PDFDictionary {
     key: string, // TODO: Allow PDFName objects to be passed too
     fontDict: PDFIndirectReference<PDFDictionary>, // Allow PDFDictionaries as well
   ) => {
-    validate(key, _.isString, '"key" must be a string');
+    validate(key, isString, '"key" must be a string');
     validate(
       fontDict,
       isInstance(PDFIndirectReference),
@@ -238,7 +241,7 @@ class PDFPage extends PDFDictionary {
    * @param xObject The XObject to be added to the page.
    */
   addXObject = (key: string, xObject: PDFIndirectReference<PDFStream>) => {
-    validate(key, _.isString, '"key" must be a string');
+    validate(key, isString, '"key" must be a string');
     validate(
       xObject,
       isInstance(PDFIndirectReference),

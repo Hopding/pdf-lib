@@ -1,5 +1,6 @@
 /* eslint-disable prefer-destructuring, no-param-reassign */
-import _ from 'lodash';
+import isNumber from 'lodash/isNumber';
+import last from 'lodash/last';
 
 import {
   PDFArray,
@@ -87,7 +88,7 @@ class PDFPageTree extends PDFDictionary {
   };
 
   removePage = (idx: number) => {
-    validate(idx, _.isNumber, '"idx" arg must be a Number');
+    validate(idx, isNumber, '"idx" arg must be a Number');
     this.Kids.array.splice(idx, 1);
     this.ascend((pageTree) => {
       pageTree.Count.number -= 1;
@@ -96,7 +97,7 @@ class PDFPageTree extends PDFDictionary {
   };
 
   insertPage = (idx: number, page: PDFIndirectReference<PDFPage>) => {
-    validate(idx, _.isNumber, '"idx" arg must be a Number');
+    validate(idx, isNumber, '"idx" arg must be a Number');
     validate(
       page,
       isInstance(PDFIndirectReference),
@@ -127,7 +128,7 @@ class PDFPageTree extends PDFDictionary {
   ) => {
     if (this.Kids.array.length === 0) return this;
 
-    const lastKidRef = _.last(this.Kids.array);
+    const lastKidRef = last(this.Kids.array);
     const lastKid = this.index.lookup(lastKidRef) as Kid;
     visit(lastKid, lastKidRef);
     if (lastKid instanceof PDFPageTree) lastKid.traverseRight(visit);

@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import isNumber from 'lodash/isNumber';
+
 import { addStringToBuffer, charCode } from 'utils';
 import { validate } from 'utils/validate';
 
@@ -10,8 +11,8 @@ class PDFHeader {
   minor: number;
 
   constructor(major: number, minor: number) {
-    validate(major, _.isNumber, 'PDFHeader.major must be a Number');
-    validate(minor, _.isNumber, 'PDFHeader.minor must be a Number');
+    validate(major, isNumber, 'PDFHeader.major must be a Number');
+    validate(minor, isNumber, 'PDFHeader.minor must be a Number');
 
     this.major = major;
     this.minor = minor;

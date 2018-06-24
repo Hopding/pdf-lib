@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import isNumber from 'lodash/isNumber';
+
 import { addStringToBuffer, arrayToString, error } from 'utils';
 import { isInstance, validate, validateArr } from 'utils/validate';
 
@@ -44,7 +46,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
   };
 
   set = (idx: number, val: T) => {
-    validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
+    validate(idx, isNumber, 'PDFArray.set() requires indexes to be numbers');
     validate(
       val,
       isInstance(PDFObject),
@@ -56,7 +58,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
   };
 
   get = (idx: number) => {
-    validate(idx, _.isNumber, 'PDFArray.set() requires indexes to be numbers');
+    validate(idx, isNumber, 'PDFArray.set() requires indexes to be numbers');
     return this.array[idx];
   };
 
@@ -74,7 +76,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     return arrayToString(buffer);
   };
 
-  bytesSize = () =>
+  bytesSize = (): number =>
     2 + // "[ "
     _(this.array)
       .map((e) => {

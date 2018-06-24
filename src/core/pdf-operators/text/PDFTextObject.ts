@@ -39,7 +39,7 @@ class PDFTextObject extends PDFOperator {
     this.operators = operators;
   }
 
-  operatorsBytesSize = () =>
+  operatorsBytesSize = (): number =>
     _(this.operators)
       .filter(Boolean)
       .map((op) => op.bytesSize())

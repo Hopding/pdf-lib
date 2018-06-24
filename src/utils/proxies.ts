@@ -1,6 +1,10 @@
 /* tslint:disable:ban-types */
 import _ from 'lodash';
-import 'proxy-polyfill'; // Need this for React Native Android
+
+// Need this for React Native Android.
+// Need to import the minified version because it is ES5 not ES6 - which is
+// required to us "uglify" for minification.
+import 'proxy-polyfill/proxy.min.js'; // Need this for React Native Android
 
 import { isInstance, validate } from 'utils/validate';
 

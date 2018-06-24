@@ -1,4 +1,7 @@
 import _ from 'lodash';
+import isNil from 'lodash/isNil';
+import isPlainObject from 'lodash/isPlainObject';
+import isString from 'lodash/isString';
 
 import { PDFIndirectObject, PDFName } from 'core/pdf-objects';
 import { addStringToBuffer, and, arrayToString, error, not, or } from 'utils';
@@ -26,7 +29,7 @@ class PDFDictionary extends PDFObject {
     super();
     validate(
       object,
-      and(not(_.isNil), or(_.isPlainObject, isInstance(Map))),
+      and(not(isNil), or(isPlainObject, isInstance(Map))),
       'PDFDictionary can only be constructed from an Object or a Map',
     );
     validate(
@@ -52,7 +55,7 @@ class PDFDictionary extends PDFObject {
   getMaybe = <T extends PDFObject>(key: string | PDFName): T | void => {
     validate(
       key,
-      or(_.isString, isInstance(PDFName)),
+      or(isString, isInstance(PDFName)),
       'PDFDictionary.set() requires keys to be strings or PDFNames',
     );
 
@@ -67,7 +70,7 @@ class PDFDictionary extends PDFObject {
   set = (key: string | PDFName, val: PDFObject, validateKeys = true) => {
     validate(
       key,
-      or(_.isString, isInstance(PDFName)),
+      or(isString, isInstance(PDFName)),
       'PDFDictionary.set() requires keys to be strings or PDFNames',
     );
     validate(
@@ -95,7 +98,7 @@ class PDFDictionary extends PDFObject {
     return arrayToString(buffer);
   };
 
-  bytesSize = () =>
+  bytesSize = (): number =>
     3 + // "<<\n"
     _(Array.from(this.map.entries()))
       .map(([key, val]) => {
