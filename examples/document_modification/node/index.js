@@ -2,13 +2,11 @@ const fs = require('fs');
 const {
   PDFDocumentFactory,
   PDFDocumentWriter,
-} = require('pdf-lib/core/pdf-document');
-const {
   drawText,
   drawLinesOfText,
   drawImage,
   drawRectangle,
-} = require('pdf-lib/helpers/pdf-operators/composite');
+} = require('pdf-lib');
 
 /* ========================= 1. Read in Assets ============================== */
 // This step is platform dependent. Since this is a Node script, we can just

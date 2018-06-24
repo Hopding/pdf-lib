@@ -82,8 +82,7 @@ More detailed examples are available [here](https://github.com/Hopding/pdf-lib/t
 
 ### Document Creation
 ```javascript
-import { PDFDocumentFactory, PDFDocumentWriter } from 'pdf-lib/core/pdf-document';
-import { drawText } from 'pdf-lib/helpers/pdf-operators/composite';
+import { PDFDocumentFactory, PDFDocumentWriter, drawText } from 'pdf-lib';
 
 const pdfDoc = PDFDocumentFactory.create();
 const [timesRomanFont] = pdfDoc.embedStandardFont('Times-Roman');
@@ -111,8 +110,7 @@ const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 
 ### Document Modification
 ```javascript
-import { PDFDocumentFactory, PDFDocumentWriter } from 'pdf-lib/core/pdf-document';
-import { drawText } from 'pdf-lib/helpers/pdf-operators/composite';
+import { PDFDocumentFactory, PDFDocumentWriter, drawText } from 'pdf-lib';
 
 // This should be a Uint8Array.
 // This data can be obtained in a number of different ways.
@@ -144,12 +142,34 @@ const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 ```
 
 ## Installation
-```
+### NPM Module
+To install the latest stable version:
+```bash
+# With npm
 npm install --save pdf-lib
-```
-or
-```
+
+# With yarn
 yarn add pdf-lib
+```
+This assumes you're using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/lang/en/) as your package manager.
+
+### UMD Module
+You can also download `pdf-lib` as a UMD module from [unpkg](https://unpkg.com/#/). The UMD builds have been compiled to ES5, so they should work [in any modern browser](https://caniuse.com/#feat=es5). UMD builds are useful if you aren't using a package manager or module bundler. For example, you can use them directly in the `<script>` tag of an HTML page.
+
+The following builds are available:
+
+* https://unpkg.com/pdf-lib/dist/pdf-lib.js
+* https://unpkg.com/pdf-lib/dist/pdf-lib.min.js
+
+When using a UMD build, you will have access to a global `window.PDFLib` variable. This variable contains all of the classes and functions exported by `pdf-lib`. For example:
+
+```javascript
+// NPM module
+import { PDFDocumentFactory, drawText } from 'pdf-lib';
+
+// UMD module
+var PDFDocumentFactory = PDFLib.PDFDocumentFactory;
+var drawText = PDFLib.drawText;
 ```
 
 ## API Documentation

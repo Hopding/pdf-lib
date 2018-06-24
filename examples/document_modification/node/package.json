@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pdf-lib": "^0.1.0"
+    "pdf-lib": "^0.1.1-rc2"
   }
 }
