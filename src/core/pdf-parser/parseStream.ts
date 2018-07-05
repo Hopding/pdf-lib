@@ -26,6 +26,7 @@ const parseStream = (
 ): [Uint8Array, Uint8Array] | void => {
   // Check that the next bytes comprise the beginning of a stream
   const trimmed = trimArray(input);
+
   let startstreamIdx;
   if (arrayToString(trimmed, 0, 7) === 'stream\n') startstreamIdx = 7;
   else if (arrayToString(trimmed, 0, 8) === 'stream\r\n') startstreamIdx = 8;
@@ -38,7 +39,8 @@ const parseStream = (
   // Locate the end of the stream
   const endstreamIdx =
     arrayIndexOf(trimmed, '\nendstream') ||
-    arrayIndexOf(trimmed, '\rendstream');
+    arrayIndexOf(trimmed, '\rendstream') ||
+    arrayIndexOf(trimmed, 'endstream');
   if (!endstreamIdx && endstreamIdx !== 0) error('Invalid Stream!');
 
   /*
