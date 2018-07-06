@@ -9,6 +9,7 @@ import {
 } from 'core/pdf-objects';
 import PDFParser, { IParsedPDF } from 'core/pdf-parser/PDFParser';
 import { PDFCatalog, PDFObjectStream, PDFPageTree } from 'core/pdf-structures';
+import { isInstance, validate } from 'utils/validate';
 
 class PDFDocumentFactory {
   /**
@@ -44,6 +45,12 @@ class PDFDocumentFactory {
    * @returns A [[PDFDocument]] object initialized from the provided document.
    */
   static load = (data: Uint8Array): PDFDocument => {
+    validate(
+      data,
+      isInstance(Uint8Array),
+      '"PDFDocumentFactory.load()" must be called with an argument of type Uint8Array.',
+    );
+
     const index = PDFObjectIndex.create();
     const pdfParser = new PDFParser();
 
