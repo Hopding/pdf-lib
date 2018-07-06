@@ -50,6 +50,8 @@ export interface IParseHandlers {
 }
 
 export interface IParsedPDF {
+  maxObjectNumber: number;
+  catalog: PDFCatalog;
   arrays: PDFArray[];
   dictionaries: PDFDictionary[];
   original: {
@@ -68,6 +70,8 @@ export interface IParsedPDF {
 
 class PDFParser {
   private activelyParsing = false;
+
+  private maxObjectNumber = -1;
 
   private arrays: PDFArray[] = [];
   private dictionaries: PDFDictionary[] = [];
@@ -111,6 +115,7 @@ class PDFParser {
     if (this.activelyParsing) error('Cannot parse documents concurrently');
     this.activelyParsing = true;
 
+    this.maxObjectNumber = -1;
     this.arrays = [];
     this.dictionaries = [];
     this.catalog = undefined;
@@ -130,6 +135,8 @@ class PDFParser {
     }
 
     return {
+      maxObjectNumber: this.maxObjectNumber!,
+      catalog: this.catalog!,
       arrays: this.arrays,
       dictionaries: this.dictionaries,
       original: {
@@ -150,6 +157,7 @@ class PDFParser {
 
   private handleDict = (dict: PDFDictionary) => {
     this.dictionaries.push(dict);
+    if (dict instanceof PDFCatalog) this.catalog = dict;
   };
 
   private handleObjectStream = ({ objects }: PDFObjectStream) => {
@@ -167,6 +175,10 @@ class PDFParser {
       last(this.updates)!.body.set(indirectObj.getReference(), indirectObj);
     } else {
       this.body.set(indirectObj.getReference(), indirectObj);
+    }
+
+    if (indirectObj.reference.objectNumber > this.maxObjectNumber) {
+      this.maxObjectNumber = indirectObj.reference.objectNumber;
     }
   };
 

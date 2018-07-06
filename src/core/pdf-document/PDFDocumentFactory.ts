@@ -2,13 +2,20 @@ import PDFDocument from 'core/pdf-document/PDFDocument';
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import {
   PDFArray,
+  PDFDictionary,
   PDFIndirectReference,
   PDFName,
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
+import QOps from 'core/pdf-operators/graphics/graphics-state/QOps';
 import PDFParser, { IParsedPDF } from 'core/pdf-parser/PDFParser';
-import { PDFCatalog, PDFObjectStream, PDFPageTree } from 'core/pdf-structures';
+import {
+  PDFCatalog,
+  PDFContentStream,
+  PDFObjectStream,
+  PDFPageTree,
+} from 'core/pdf-structures';
 import { isInstance, validate } from 'utils/validate';
 
 class PDFDocumentFactory {
@@ -33,7 +40,7 @@ class PDFDocumentFactory {
     index.set(refs.catalog, catalog);
     index.set(refs.pageTree, pageTree);
 
-    return PDFDocument.fromIndex(index);
+    return PDFDocument.from(catalog, 2, index);
   };
 
   /**
@@ -59,7 +66,22 @@ class PDFDocumentFactory {
     const indexMap = PDFDocumentFactory.normalize(parsedPdf);
     index.index = indexMap;
 
-    return PDFDocument.fromIndex(index);
+    const qContentStream = PDFContentStream.of(
+      PDFDictionary.from({}, index),
+      QOps.q.operator,
+    );
+    const QContentStream = PDFContentStream.of(
+      PDFDictionary.from({}, index),
+      QOps.Q.operator,
+    );
+
+    const { maxObjectNumber } = parsedPdf;
+    const ref1 = PDFIndirectReference.forNumbers(maxObjectNumber + 1, 0);
+    const ref2 = PDFIndirectReference.forNumbers(maxObjectNumber + 2, 0);
+    index.set(ref1, qContentStream);
+    index.set(ref2, QContentStream);
+
+    return PDFDocument.from(parsedPdf.catalog, maxObjectNumber + 2, index);
   };
 
   // TODO: Need to throw out objects with "free" obj numbers...
