@@ -181,6 +181,7 @@ API documentation is available [here](https://github.com/Hopding/pdf-lib/tree/ma
 * [`pdfmake`](https://github.com/bpampuch/pdfmake) is a PDF generation library for the browser.
 * [`hummus`](https://github.com/galkahana/HummusJS) is a PDF generation and modification library for Node environments. `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer).
 * [`react-native-pdf-lib`](https://github.com/Hopding/react-native-pdf-lib) is a PDF generation and modification library for React Native environments. `react-native-pdf-lib` is a wrapper around [C++](https://github.com/galkahana/PDF-Writer) and [Java](https://github.com/TomRoush/PdfBox-Android) libraries.
+* [`pdfassembler`](https://github.com/DevelopingMagic/pdfassembler) is a PDF generation and modification library for Node and the browser. It requires some knowledge about the logical structure of PDF document to use.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
