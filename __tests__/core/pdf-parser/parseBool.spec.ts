@@ -19,10 +19,10 @@ describe(`parseBool`, () => {
     expect(res[1]).toEqual(typedArrayFor('FOOBAR'));
   });
 
-  it(`returns null when leading input is not a PDFBoolean`, () => {
+  it(`returns undefined when leading input is not a PDFBoolean`, () => {
     const input = typedArrayFor('FOOBARtrue');
     const res = parseBool(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseBool" parse handler with the parsed PDFBoolean object`, () => {

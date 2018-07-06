@@ -11,10 +11,10 @@ describe(`parseHexString`, () => {
     expect(res[1]).toEqual(typedArrayFor('<AND STUFF>'));
   });
 
-  it(`returns null when leading input is not a PDF Hex String`, () => {
+  it(`returns undefined when leading input is not a PDF Hex String`, () => {
     const input = typedArrayFor('(FOOBAR)<ABD123>');
     const res = parseHexString(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseHexString" parseHandler with the parsed PDFHexString object`, () => {

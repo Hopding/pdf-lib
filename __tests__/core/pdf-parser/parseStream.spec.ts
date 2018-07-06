@@ -44,11 +44,11 @@ describe(`parseStream`, () => {
       );
     });
 
-    it(`returns null when the leading input is not a PDF Stream`, () => {
+    it(`returns undefined when the leading input is not a PDF Stream`, () => {
       const input = typedArrayFor(`(1 2)stream\nFOO_BAR\nendstreamendobj`);
       const index = PDFObjectIndex.create();
       const res = parseStream(input, PDFDictionary.from({}, index), index);
-      expect(res).toBeNull();
+      expect(res).toBeUndefined();
     });
 
     it(`invokes the "onParseStream" parseHandler with the parsing a PDFStream object`, () => {
@@ -115,13 +115,11 @@ describe(`parseStream`, () => {
       const index = PDFObjectIndex.create();
       const res = parseStream(input, PDFDictionary.from({}, index), index);
       expect(res).toEqual([expect.any(PDFRawStream), expect.any(Uint8Array)]);
-      console.log(arrayToString(res[0].content));
       expect(res[0].content).toEqual(
         typedArrayFor(
           `...HERE IS SOME ARBITRARY AND POTENTIALLY BINARY CONTENT...`,
         ),
       );
-      console.log(arrayToString(res[1]));
       expect(res[1]).toEqual(
         typedArrayFor(`endobjstream\n...OTHER STUFF...\nendstreamendobj`),
       );

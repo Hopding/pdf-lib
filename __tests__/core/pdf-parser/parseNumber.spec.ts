@@ -11,10 +11,10 @@ describe(`parseNumber`, () => {
     expect(res[1]).toEqual(typedArrayFor('.123'));
   });
 
-  it(`returns null when the leading input is not a PDF Number`, () => {
+  it(`returns undefined when the leading input is not a PDF Number`, () => {
     const input = typedArrayFor('(123)123');
     const res = parseNumber(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseNumber" parseHandler with the parsed PDFNumber object`, () => {

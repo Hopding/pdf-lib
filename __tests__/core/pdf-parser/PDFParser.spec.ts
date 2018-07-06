@@ -108,7 +108,7 @@ describe(`PDFParser`, () => {
       original: {
         header: expect.any(PDFHeader),
         body: expect.any(Map),
-        linearization: null,
+        linearization: undefined,
         xRefTable: expect.any(PDFXRef.Table),
         trailer: expect.any(PDFTrailer),
       },

@@ -9,10 +9,10 @@ describe(`parseName`, () => {
     expect(res).toEqual([PDFName.from('Foo'), typedArrayFor('/Bar')]);
   });
 
-  it(`returns null when the leading input is not a PDF Name`, () => {
+  it(`returns undefined when the leading input is not a PDF Name`, () => {
     const input = typedArrayFor('(Foo)/Bar');
     const res = parseName(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseName" parseHandler with the parsed PDFName object`, () => {

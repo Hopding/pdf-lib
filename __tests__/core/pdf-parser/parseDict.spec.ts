@@ -31,10 +31,10 @@ describe(`parseDict`, () => {
     expect(res[1]).toEqual(typedArrayFor('<< /Qux (Baz) >>'));
   });
 
-  it(`returns null when the leading input is not a PDF Dictionary`, () => {
+  it(`returns undefined when the leading input is not a PDF Dictionary`, () => {
     const input = typedArrayFor('[(foo)] << /Qux /Baz >>');
     const res = parseDict(input, PDFObjectIndex.create());
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseDict" parseHandler with the parsed PDFArray object`, () => {

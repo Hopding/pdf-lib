@@ -25,10 +25,10 @@ describe(`parseArray`, () => {
     expect(res[1]).toEqual(typedArrayFor('[3 4]'));
   });
 
-  it(`returns null when the leading input is not a PDF Array`, () => {
+  it(`returns undefined when the leading input is not a PDF Array`, () => {
     const input = typedArrayFor('1 2 [3 4]');
     const res = parseArray(input, PDFObjectIndex.create());
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseArray" parseHandler with the parsed PDFArray object`, () => {

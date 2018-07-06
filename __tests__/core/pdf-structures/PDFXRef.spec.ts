@@ -24,7 +24,7 @@ describe(`PDFXRef.Entry`, () => {
 
     it(`sets the "setOffset" member`, () => {
       const entry = PDFXRef.Entry.create();
-      expect(entry.offset).toBeNull();
+      expect(entry.offset).toBeUndefined();
 
       entry.setOffset(21);
       expect(entry.offset).toBe(21);
@@ -42,7 +42,7 @@ describe(`PDFXRef.Entry`, () => {
 
     it(`sets the "generationNum" member`, () => {
       const entry = PDFXRef.Entry.create();
-      expect(entry.generationNum).toBeNull();
+      expect(entry.generationNum).toBeUndefined();
 
       entry.setGenerationNum(21);
       expect(entry.generationNum).toBe(21);
@@ -142,7 +142,7 @@ describe(`PDFXRef.Subsection`, () => {
 
     it(`sets the "firstObjNum" member`, () => {
       const subsection = PDFXRef.Subsection.from();
-      expect(subsection.firstObjNum).toBeNull();
+      expect(subsection.firstObjNum).toBeUndefined();
 
       subsection.setFirstObjNum(21);
       expect(subsection.firstObjNum).toBe(21);
