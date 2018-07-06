@@ -1,6 +1,12 @@
 import { PDFDictionary, PDFName, PDFRawStream } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
-import { arrayIndexOf, arrayToString, error, trimArray } from 'utils';
+import {
+  arrayIndexOf,
+  arrayIndexOneOf,
+  arrayToString,
+  error,
+  trimArray,
+} from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -37,11 +43,13 @@ const parseStream = (
   dictionary to jump to the end of the stream, instead of traversing each byte.
   */
   // Locate the end of the stream
-  const endstreamIdx =
-    arrayIndexOf(trimmed, '\nendstream') ||
-    arrayIndexOf(trimmed, '\rendstream') ||
-    arrayIndexOf(trimmed, 'endstream');
-  if (!endstreamIdx && endstreamIdx !== 0) error('Invalid Stream!');
+  const endstreamMatchTuple = arrayIndexOneOf(trimmed, [
+    '\nendstream',
+    '\rendstream',
+    'endstream',
+  ]);
+  if (!endstreamMatchTuple) error('Invalid Stream!');
+  const [endstreamIdx, endstreamMatch] = endstreamMatchTuple!;
 
   /*
   TODO: See if it makes sense to .slice() the stream contents, even though this
@@ -56,7 +64,7 @@ const parseStream = (
     error('Invalid Stream!');
   }
 
-  return [contents, trimmed.subarray(endstreamIdx + 10)];
+  return [contents, trimmed.subarray(endstreamIdx + endstreamMatch.length)];
 };
 
 /**

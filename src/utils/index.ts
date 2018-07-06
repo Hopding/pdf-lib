@@ -69,7 +69,7 @@ export const charCodes = (str: string) =>
 export const typedArrayFor = (str: string) => new Uint8Array(charCodes(str));
 
 export const arrayToString = (
-  arr: Uint8Array,
+  arr: Uint8Array | number[],
   startAt = 0,
   stopAt?: number,
 ) => {
@@ -112,12 +112,6 @@ export const arrayIndexOf = (
   targetStr: string,
   startFrom = 0,
 ) => {
-  // validate(
-  //   startFrom,
-  //   and(_.isNumber, not(_.isNaN)),
-  //   `startFrom must be a number, found: "${startFrom}"`,
-  // );
-
   const targetArr = targetStr.split('').map((c) => c.charCodeAt(0));
   let currIdx = startFrom;
 
@@ -136,6 +130,33 @@ export const arrayIndexOf = (
   }
 
   return currIdx;
+};
+
+export const arrayIndexOneOf = (
+  arr: any[] | Uint8Array,
+  targetStrings: string[],
+  startFrom = 0,
+): [number, string] | void => {
+  const targetArrs = targetStrings.map((str) => str.split('').map(charCode));
+  let currIdx = startFrom;
+  let match = null;
+
+  while (!match) {
+    currIdx += 1;
+    if (currIdx >= arr.length) return undefined;
+    match = targetArrs.find((target) =>
+      arraysAreEqual(
+        arr,
+        currIdx,
+        currIdx + target.length,
+        target,
+        0,
+        target.length,
+      ),
+    );
+  }
+
+  return [currIdx, arrayToString(match)];
 };
 
 export const arrayIndexOfReverse = (
