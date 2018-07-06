@@ -2,6 +2,7 @@ import isArray from 'lodash/isArray';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 
+import { PDFDocument } from 'core/pdf-document';
 import {
   PDFArray,
   PDFDictionary,
@@ -11,6 +12,7 @@ import {
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
+import QOps from 'core/pdf-operators/graphics/graphics-state/QOps';
 import { PDFContentStream } from 'core/pdf-structures';
 import {
   isIdentity,
@@ -117,6 +119,36 @@ class PDFPage extends PDFDictionary {
         this.set('Contents', PDFArray.fromArray([Contents], this.index));
       }
     }
+  };
+
+  /**
+   * Ensures that content streams added to the [[PDFPage]] after calling
+   * [[normalizeCTM]] will be working in the default Content Transformation
+   * Matrix.
+   *
+   * This can be useful in cases where PDFs are being modified that
+   * have existing content streams which modify the CTM outside without
+   * resetting their changes (with the Q and q operators).
+   *
+   * Works by wrapping any existing content streams for this page in two new
+   * content streams that contain a single operator each: `q` and `Q`,
+   * respectively.
+   *
+   * @param pdfDoc The document containing this PDFPage, to which the two new
+   *               [[PDFContentStream]]s will be added
+   *
+   * @returns Returns this [[PDFPage]] instance.
+   */
+  normalizeCTM = (pdfDoc: PDFDocument): PDFPage => {
+    this.normalizeContents();
+    const contents = this.get('Contents') as PDFArray;
+    contents.array.unshift(
+      pdfDoc.register(pdfDoc.createContentStream(QOps.q.operator)),
+    );
+    contents.array.push(
+      pdfDoc.register(pdfDoc.createContentStream(QOps.Q.operator)),
+    );
+    return this;
   };
 
   /** @hidden */
