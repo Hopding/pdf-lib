@@ -66,11 +66,11 @@ class PDFDocumentFactory {
     const indexMap = PDFDocumentFactory.normalize(parsedPdf);
     index.index = indexMap;
 
-    const qContentStream = PDFContentStream.of(
+    const pushGraphicsStateContentStream = PDFContentStream.of(
       PDFDictionary.from({}, index),
       QOps.q.operator,
     );
-    const QContentStream = PDFContentStream.of(
+    const popGraphicsStateContentStream = PDFContentStream.of(
       PDFDictionary.from({}, index),
       QOps.Q.operator,
     );
@@ -78,8 +78,12 @@ class PDFDocumentFactory {
     const { maxObjectNumber } = parsedPdf;
     const ref1 = PDFIndirectReference.forNumbers(maxObjectNumber + 1, 0);
     const ref2 = PDFIndirectReference.forNumbers(maxObjectNumber + 2, 0);
-    index.set(ref1, qContentStream);
-    index.set(ref2, QContentStream);
+
+    index.set(ref1, pushGraphicsStateContentStream);
+    index.set(ref2, popGraphicsStateContentStream);
+
+    index.pushGraphicsStateContentStream = ref1;
+    index.popGraphicsStateContentStream = ref2;
 
     return PDFDocument.from(parsedPdf.catalog, maxObjectNumber + 2, index);
   };

@@ -96,6 +96,8 @@ class PDFPage extends PDFDictionary {
     return new PDFPage(dict.map, dict.index, VALID_KEYS);
   };
 
+  automaticallyNormalizeCTM = true;
+
   /** @hidden */
   get Resources() {
     return this.index.lookup(this.get('Resources')) as PDFDictionary;
@@ -134,20 +136,32 @@ class PDFPage extends PDFDictionary {
    * content streams that contain a single operator each: `q` and `Q`,
    * respectively.
    *
+   * Note that the `Contents` entry in this [[PDFPage]] must be a PDFArray.
+   * Calling [[normalizeContents]] first will ensure that this is the case.
+   *
    * @param pdfDoc The document containing this PDFPage, to which the two new
    *               [[PDFContentStream]]s will be added
    *
    * @returns Returns this [[PDFPage]] instance.
    */
-  normalizeCTM = (pdfDoc: PDFDocument): PDFPage => {
-    this.normalizeContents();
-    const contents = this.get('Contents') as PDFArray;
-    contents.array.unshift(
-      pdfDoc.register(pdfDoc.createContentStream(QOps.q.operator)),
-    );
-    contents.array.push(
-      pdfDoc.register(pdfDoc.createContentStream(QOps.Q.operator)),
-    );
+  normalizeCTM = (): PDFPage => {
+    const contents = this.getMaybe('Contents') as PDFArray | void;
+
+    if (!contents) return this;
+
+    const {
+      pushGraphicsStateContentStream,
+      popGraphicsStateContentStream,
+    } = this.index;
+    if (
+      pushGraphicsStateContentStream &&
+      popGraphicsStateContentStream &&
+      contents.array[0] !== pushGraphicsStateContentStream
+    ) {
+      contents.array.unshift(pushGraphicsStateContentStream);
+      contents.array.push(popGraphicsStateContentStream);
+    }
+
     return this;
   };
 
@@ -194,6 +208,8 @@ class PDFPage extends PDFDictionary {
     );
 
     this.normalizeContents();
+    if (this.automaticallyNormalizeCTM) this.normalizeCTM();
+
     if (!this.getMaybe('Contents')) {
       this.set('Contents', PDFArray.fromArray(contentStreams, this.index));
     } else {
