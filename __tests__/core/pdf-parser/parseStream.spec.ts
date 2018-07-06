@@ -12,7 +12,7 @@ import {
 import parseDict from 'core/pdf-parser/parseDict';
 import parseStream from 'core/pdf-parser/parseStream';
 import { PDFObjectStream } from 'core/pdf-structures';
-import { mergeUint8Arrays, typedArrayFor } from 'utils';
+import { arrayToString, mergeUint8Arrays, typedArrayFor } from 'utils';
 
 /*
   Note: All of the streams defined for these tests include an "endobj"
@@ -104,6 +104,27 @@ describe(`parseStream`, () => {
       expect(() =>
         parseStream(input, PDFDictionary.from({}, index), index),
       ).toThrowError();
+    });
+
+    // https://github.com/Hopding/pdf-lib/issues/12#issuecomment-402871995
+    it(`handles streams missing the EOL marker before the "endstream" keyword`, () => {
+      const input = typedArrayFor(
+        `stream\n...HERE IS SOME ARBITRARY AND POTENTIALLY BINARY CONTENT...endstreamendobj` +
+          `stream\n...OTHER STUFF...\nendstreamendobj`,
+      );
+      const index = PDFObjectIndex.create();
+      const res = parseStream(input, PDFDictionary.from({}, index), index);
+      expect(res).toEqual([expect.any(PDFRawStream), expect.any(Uint8Array)]);
+      console.log(arrayToString(res[0].content));
+      expect(res[0].content).toEqual(
+        typedArrayFor(
+          `...HERE IS SOME ARBITRARY AND POTENTIALLY BINARY CONTENT...`,
+        ),
+      );
+      console.log(arrayToString(res[1]));
+      expect(res[1]).toEqual(
+        typedArrayFor(`endobjstream\n...OTHER STUFF...\nendstreamendobj`),
+      );
     });
   });
 
