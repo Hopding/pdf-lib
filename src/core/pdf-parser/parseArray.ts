@@ -37,8 +37,8 @@ const parseArray = (
 ): [PDFArray, Uint8Array] | void => {
   // Make sure it is possible for this to be an array.
   const trimmed = trimArray(input);
-  if (arrayCharAt(trimmed, 0) !== '[') return null;
-  const pdfArray = PDFArray.fromArray([], index);
+  if (arrayCharAt(trimmed, 0) !== '[') return undefined;
+  const pdfArray = PDFArray.fromArray<PDFObject>([], index);
 
   // Recursively parse each element of the array
   let remainder = trimmed.subarray(1); // Remove the '['

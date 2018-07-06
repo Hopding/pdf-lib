@@ -128,7 +128,7 @@ class PDFPageTree extends PDFDictionary {
   ) => {
     if (this.Kids.array.length === 0) return this;
 
-    const lastKidRef = last(this.Kids.array);
+    const lastKidRef = last(this.Kids.array)!;
     const lastKid = this.index.lookup(lastKidRef) as Kid;
     visit(lastKid, lastKidRef);
     if (lastKid instanceof PDFPageTree) lastKid.traverseRight(visit);

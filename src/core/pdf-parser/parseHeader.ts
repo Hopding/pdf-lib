@@ -27,7 +27,7 @@ const parseHeader = (
 
   // Try to match the regex up to that character to see if we've got a header
   const result = arrayToString(trimmed, 0, idx).match(fileHeaderRegex);
-  if (!result) return null;
+  if (!result) return undefined;
 
   const [fullMatch, major, minor] = result;
   const withoutVersion = trimArray(trimmed.subarray(fullMatch.length));
@@ -35,7 +35,7 @@ const parseHeader = (
 
   // Check for a comment with binary characters
   if (arrayCharAt(withoutVersion, 0) === '%') {
-    const nextNewline = arrayIndexOf(withoutVersion, '\n');
+    const nextNewline = arrayIndexOf(withoutVersion, '\n')!;
     returnArray = withoutVersion.subarray(nextNewline);
   }
 

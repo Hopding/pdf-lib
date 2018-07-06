@@ -19,7 +19,7 @@ const parseNull = (
   { onParseNull }: IParseHandlers = {},
 ): [PDFNull, Uint8Array] | void => {
   const trimmed = trimArray(input);
-  if (arrayToString(trimmed, 0, 4) !== 'null') return null;
+  if (arrayToString(trimmed, 0, 4) !== 'null') return undefined;
 
   if (onParseNull) onParseNull(PDFNull.instance);
   return [PDFNull.instance, trimmed.subarray(4)];

@@ -58,7 +58,7 @@ const parseFooterSection = (
   const parsedTrailer =
     parseTrailer(remainder, index, parseHandlers) ||
     parseTrailerWithoutDict(remainder, index, parseHandlers);
-  if (!parsedTrailer) return null;
+  if (!parsedTrailer) return undefined;
 
   [, remainder] = parsedTrailer;
   return remainder;

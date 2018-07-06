@@ -22,9 +22,9 @@ const parseIndirectRef = (
   const indirectRefRegex = /^(\d+) (\d+) R/;
 
   // Check that initial characters make up an indirect reference
-  const rIdx = arrayIndexOf(trimmed, 'R');
+  const rIdx = arrayIndexOf(trimmed, 'R')!;
   const result = arrayToString(trimmed, 0, rIdx + 1).match(indirectRefRegex);
-  if (!result) return null;
+  if (!result) return undefined;
 
   const [fullMatch, objNum, genNum] = result;
 

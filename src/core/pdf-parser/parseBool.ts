@@ -26,7 +26,7 @@ const parseBool = (
 
   // Try to match the regex up to that character to see if we've got a boolean
   const result = arrayToString(input, 0, idx).match(boolRegex);
-  if (!result) return null;
+  if (!result) return undefined;
 
   const [fullMatch, bool] = result;
 

@@ -36,7 +36,7 @@ const parseStream = (
   let startstreamIdx;
   if (arrayToString(trimmed, 0, 7) === 'stream\n') startstreamIdx = 7;
   else if (arrayToString(trimmed, 0, 8) === 'stream\r\n') startstreamIdx = 8;
-  if (!startstreamIdx) return null;
+  if (!startstreamIdx) return undefined;
 
   /*
   TODO: Make this more efficient by using the "Length" entry of the stream
@@ -87,7 +87,7 @@ export default (
 ): [PDFRawStream | PDFObjectStream, Uint8Array] | void => {
   // Parse the input bytes into the stream dictionary and content bytes
   const res = parseStream(input, dict, parseHandlers);
-  if (!res) return null;
+  if (!res) return undefined;
   const [contents, remaining] = res;
 
   // If it's an Object Stream, parse it and return the indirect objects it contains

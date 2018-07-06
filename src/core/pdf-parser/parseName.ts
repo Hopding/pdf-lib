@@ -32,7 +32,7 @@ const parseName = (
 
   // Try to match the regex up to that character to see if we've got a name
   const result = arrayToString(trimmed, 0, idx).match(nameRegex);
-  if (!result) return null;
+  if (!result) return undefined;
 
   const [fullMatch, name] = result;
 

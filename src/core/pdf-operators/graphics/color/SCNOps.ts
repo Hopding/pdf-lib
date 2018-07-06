@@ -27,7 +27,7 @@ export class SCN extends PDFOperator {
   static of = (c: number[], name?: string | PDFName) => new SCN(c, name);
 
   c: number[];
-  name: PDFName;
+  name?: PDFName;
 
   // TODO: Confirm whether or not a number[] and string will ever both be present?
   constructor(c: number[], name?: string | PDFName) {
@@ -60,7 +60,7 @@ export class scn extends PDFOperator {
   static of = (c: number[], name?: string | PDFName) => new scn(c, name);
 
   c: number[];
-  name: PDFName;
+  name?: PDFName;
 
   constructor(c: number[], name?: string | PDFName) {
     super();

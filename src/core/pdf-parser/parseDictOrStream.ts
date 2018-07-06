@@ -27,7 +27,7 @@ const parseDictOrStream = (
 ): [PDFDictionary | PDFStream | PDFObjectStream, Uint8Array] | void => {
   // Attempt to parse a dictionary
   const dictMatch = parseDict(input, index, parseHandlers);
-  if (!dictMatch) return null;
+  if (!dictMatch) return undefined;
   const [dict, r] = dictMatch;
 
   // Attempt to parse a stream next

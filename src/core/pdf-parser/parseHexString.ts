@@ -27,7 +27,7 @@ const parseHexString = (
 
   // Try to match the regex up to that character to see if we've got a hex string
   const result = arrayToString(trimmed, 0, idx + 2).match(hexStringRegex);
-  if (!result) return null;
+  if (!result) return undefined;
 
   const [fullMatch, hexString] = result;
 

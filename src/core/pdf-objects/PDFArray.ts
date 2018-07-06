@@ -10,10 +10,8 @@ import { PDFIndirectObject } from '.';
 import PDFObject from './PDFObject';
 
 class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
-  static fromArray = <A extends PDFObject>(
-    array: A[],
-    index?: PDFObjectIndex,
-  ) => new PDFArray(array, index);
+  static fromArray = <A extends PDFObject>(array: A[], index: PDFObjectIndex) =>
+    new PDFArray(array, index);
 
   array: T[];
   index: PDFObjectIndex;
