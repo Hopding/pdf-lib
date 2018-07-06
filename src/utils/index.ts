@@ -1,3 +1,4 @@
+import isString from 'lodash/isString';
 import sum from 'lodash/sum';
 
 export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
@@ -15,8 +16,6 @@ export const error = (msg: string) => {
 };
 
 export const isInt = (num: number) => num % 1 === 0;
-
-export const isString = (val: any) => typeof val === 'string';
 
 export const and = (...predicates: Array<ArrayPredicate<any>>) => (
   ...values: any[]
