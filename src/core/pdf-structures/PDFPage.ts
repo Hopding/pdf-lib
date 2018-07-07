@@ -96,7 +96,7 @@ class PDFPage extends PDFDictionary {
     return new PDFPage(dict.map, dict.index, VALID_KEYS);
   };
 
-  automaticallyNormalizeCTM = true;
+  autoNormalizeCTM = true;
 
   /** @hidden */
   get Resources() {
@@ -208,7 +208,7 @@ class PDFPage extends PDFDictionary {
     );
 
     this.normalizeContents();
-    if (this.automaticallyNormalizeCTM) this.normalizeCTM();
+    if (this.autoNormalizeCTM) this.normalizeCTM();
 
     if (!this.getMaybe('Contents')) {
       this.set('Contents', PDFArray.fromArray(contentStreams, this.index));
