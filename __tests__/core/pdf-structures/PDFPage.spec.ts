@@ -127,6 +127,54 @@ describe(`PDFPage`, () => {
     });
   });
 
+  describe(`"normalizeCTM" method`, () => {
+    it(`does nothing if the PDFPage's "Contents" is undefined`, () => {
+      const index = PDFObjectIndex.create();
+      const page = PDFPage.create(index, [1, 2]);
+      page.map.set(PDFName.from('Contents'), undefined);
+
+      const res = page.normalizeCTM();
+      expect(res).toBe(page);
+    });
+
+    it(`wraps the PDFPage's "Contents" in the PDFObjectIndex's graphics state content streams`, () => {
+      const { q, Q, cm, s, S } = PDFOperators;
+      const index = PDFObjectIndex.create();
+      const ref1 = PDFIndirectReference.forNumbers(1, 0);
+      const ref2 = PDFIndirectReference.forNumbers(2, 0);
+      const ref3 = PDFIndirectReference.forNumbers(3, 0);
+
+      const qContentStream = PDFContentStream.of(
+        PDFDictionary.from({}, index),
+        q.operator,
+      );
+      const QContentStream = PDFContentStream.of(
+        PDFDictionary.from({}, index),
+        Q.operator,
+      );
+
+      index.set(ref1, qContentStream);
+      index.set(ref2, qContentStream);
+      index.pushGraphicsStateContentStream = ref1;
+      index.popGraphicsStateContentStream = ref2;
+
+      const contentStream = PDFContentStream.of(
+        PDFDictionary.from({}, index),
+        s.operator,
+        cm.of(1, 2, 3, 4, 5, 6),
+        S.operator,
+      );
+      index.set(ref3, contentStream);
+
+      const page = PDFPage.create(index, [1, 2]);
+      page.set('Contents', PDFArray.fromArray([ref3], index));
+
+      expect(page.Contents.array).toEqual([ref3]);
+      page.normalizeCTM();
+      expect(page.Contents.array).toEqual([ref1, ref3, ref2]);
+    });
+  });
+
   describe(`"normalizeResources" method`, () => {
     it(`adds a "Resources" entry to the PDFPage if it doesn't exist`, () => {
       const index = PDFObjectIndex.create();
