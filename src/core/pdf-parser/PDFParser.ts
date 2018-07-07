@@ -50,6 +50,8 @@ export interface IParseHandlers {
 }
 
 export interface IParsedPDF {
+  maxObjectNumber: number;
+  catalog: PDFCatalog;
   arrays: PDFArray[];
   dictionaries: PDFDictionary[];
   original: {
@@ -62,28 +64,30 @@ export interface IParsedPDF {
   updates: Array<{
     body: Map<PDFIndirectReference, PDFIndirectObject>;
     xRefTable?: PDFXRef.Table;
-    trailer: PDFTrailer;
+    trailer?: PDFTrailer;
   }>;
 }
 
 class PDFParser {
   private activelyParsing = false;
 
+  private maxObjectNumber = -1;
+
   private arrays: PDFArray[] = [];
   private dictionaries: PDFDictionary[] = [];
-  private catalog: PDFCatalog;
+  private catalog?: PDFCatalog;
 
-  private header: PDFHeader;
+  private header?: PDFHeader;
   private body: Map<PDFIndirectReference, PDFIndirectObject> = new Map();
-  private xRefTable: PDFXRef.Table;
-  private trailer: PDFTrailer;
+  private xRefTable?: PDFXRef.Table;
+  private trailer?: PDFTrailer;
 
-  private linearization: IPDFLinearization;
+  private linearization?: IPDFLinearization;
 
   private updates: Array<{
     body: Map<PDFIndirectReference, PDFIndirectObject>;
-    xRefTable: PDFXRef.Table;
-    trailer: PDFTrailer;
+    xRefTable?: PDFXRef.Table;
+    trailer?: PDFTrailer;
   }> = [];
 
   private parseHandlers: IParseHandlers;
@@ -111,14 +115,15 @@ class PDFParser {
     if (this.activelyParsing) error('Cannot parse documents concurrently');
     this.activelyParsing = true;
 
+    this.maxObjectNumber = -1;
     this.arrays = [];
     this.dictionaries = [];
-    this.catalog = null;
-    this.header = null;
+    this.catalog = undefined;
+    this.header = undefined;
     this.body = new Map();
-    this.xRefTable = null;
-    this.trailer = null;
-    this.linearization = null;
+    this.xRefTable = undefined;
+    this.trailer = undefined;
+    this.linearization = undefined;
     this.updates = [];
 
     try {
@@ -130,14 +135,16 @@ class PDFParser {
     }
 
     return {
+      maxObjectNumber: this.maxObjectNumber!,
+      catalog: this.catalog!,
       arrays: this.arrays,
       dictionaries: this.dictionaries,
       original: {
-        header: this.header,
-        linearization: this.linearization,
+        header: this.header!,
+        linearization: this.linearization!,
         body: this.body,
-        xRefTable: this.xRefTable,
-        trailer: this.trailer,
+        xRefTable: this.xRefTable!,
+        trailer: this.trailer!,
       },
       // Drop the last element, because it will always be empty:
       updates: initial(this.updates),
@@ -150,12 +157,13 @@ class PDFParser {
 
   private handleDict = (dict: PDFDictionary) => {
     this.dictionaries.push(dict);
+    if (dict instanceof PDFCatalog) this.catalog = dict;
   };
 
   private handleObjectStream = ({ objects }: PDFObjectStream) => {
     objects.forEach((indirectObj) => {
       if (this.updates.length > 0) {
-        last(this.updates).body.set(indirectObj.getReference(), indirectObj);
+        last(this.updates)!.body.set(indirectObj.getReference(), indirectObj);
       } else {
         this.body.set(indirectObj.getReference(), indirectObj);
       }
@@ -164,9 +172,13 @@ class PDFParser {
 
   private handleIndirectObj = (indirectObj: PDFIndirectObject) => {
     if (this.updates.length > 0) {
-      last(this.updates).body.set(indirectObj.getReference(), indirectObj);
+      last(this.updates)!.body.set(indirectObj.getReference(), indirectObj);
     } else {
       this.body.set(indirectObj.getReference(), indirectObj);
+    }
+
+    if (indirectObj.reference.objectNumber > this.maxObjectNumber) {
+      this.maxObjectNumber = indirectObj.reference.objectNumber;
     }
   };
 
@@ -176,14 +188,18 @@ class PDFParser {
 
   private handleXRefTable = (xRefTable: PDFXRef.Table) => {
     if (!this.trailer) this.xRefTable = xRefTable;
-    else last(this.updates).xRefTable = xRefTable;
+    else last(this.updates)!.xRefTable = xRefTable;
   };
 
   private handleTrailer = (trailer: PDFTrailer) => {
     if (!this.trailer) this.trailer = trailer;
-    else last(this.updates).trailer = trailer;
+    else last(this.updates)!.trailer = trailer;
 
-    this.updates.push({ body: new Map(), xRefTable: null, trailer: null });
+    this.updates.push({
+      body: new Map(),
+      xRefTable: undefined,
+      trailer: undefined,
+    });
   };
 
   private handleLinearization = (linearization: IPDFLinearization) => {

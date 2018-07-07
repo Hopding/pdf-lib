@@ -40,7 +40,7 @@ const { W } = PDFOperators;
 
 export const clip = () => W.operator;
 
-export const clipEvenOdd = () => W.asterisk.operator;
+export const clipEvenOdd = () => W.asterisk!.operator;
 
 /* ======== Graphics state operators ======== */
 const { Q, q } = PDFOperators;

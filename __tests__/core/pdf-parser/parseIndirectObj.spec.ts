@@ -49,10 +49,10 @@ describe(`parseIndirectObj`, () => {
     expect(res[1]).toEqual(typedArrayFor(`0 2 obj\n<< /Foo /Bar >>\nendobj`));
   });
 
-  it(`returns null when leading input is not a PDF Indirect Object`, () => {
+  it(`returns undefined when leading input is not a PDF Indirect Object`, () => {
     const input = typedArrayFor(`(foobar)0 1 obj\n[/Foo]\nendobj`);
     const res = parseIndirectObj(input, PDFObjectIndex.create());
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseIndirectObj" parseHandler with the parsed PDFArray object`, () => {

@@ -9,10 +9,10 @@ describe(`parseNull`, () => {
     expect(res).toEqual([PDFNull.instance, typedArrayFor('null(foo)')]);
   });
 
-  it(`returns null when the leading input is not a PDF Null`, () => {
+  it(`returns undefined when the leading input is not a PDF Null`, () => {
     const input = typedArrayFor('(foo)null');
     const res = parseNull(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseNull" parseHandler with the parsed PDFNull object`, () => {

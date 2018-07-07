@@ -51,7 +51,7 @@ class JPEGXObjectFactory {
     if (dataView.getUint16(0) !== 0xffd8) error('SOI not found in JPEG');
 
     let pos = 2;
-    let marker;
+    let marker: number;
     while (pos < dataView.byteLength) {
       marker = dataView.getUint16(pos);
       pos += 2;
@@ -59,7 +59,7 @@ class JPEGXObjectFactory {
       pos += dataView.getUint16(pos);
     }
 
-    if (!MARKERS.includes(marker)) error('Invalid JPEG');
+    if (!MARKERS.includes(marker!)) error('Invalid JPEG');
     pos += 2;
 
     this.bits = dataView.getUint8(pos++);

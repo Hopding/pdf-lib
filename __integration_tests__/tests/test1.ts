@@ -138,7 +138,7 @@ const makeUpperRightQuadrant = (size: number) => [
   // with text.
   ...drawCircle(0.5 * size, 0.5 * size, 250, 350),
   ...drawCircle(0.5 * size, 0.5 * size, 100, 150),
-  W.asterisk.operator,
+  W!.asterisk!.operator,
   n.operator,
 
   // Create a text object.

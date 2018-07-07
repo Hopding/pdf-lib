@@ -19,7 +19,7 @@ const parseEntries = (input: string): PDFXRef.Entry[] | void => {
   let remainder = trimmed;
   while (remainder.length > 0) {
     const result = remainder.match(entryRegex);
-    if (!result) return null;
+    if (!result) return undefined;
 
     const [fullMatch, offset, genNum, isInUse] = result;
 
@@ -51,12 +51,12 @@ const parseSubsections = (input: string): PDFXRef.Subsection[] | void => {
   let remainder = trimmed;
   while (remainder.length > 0) {
     const result = remainder.match(sectionsRegex);
-    if (!result) return null;
+    if (!result) return undefined;
 
     // eslint-disable-next-line no-unused-vars
     const [fullMatch, firstObjNum, objCount, entriesStr] = result;
     const entries = parseEntries(entriesStr);
-    if (!entries) return null;
+    if (!entries) return undefined;
 
     sectionsArr.push(
       PDFXRef.Subsection.from(entries).setFirstObjNum(Number(firstObjNum)),
@@ -91,12 +91,12 @@ const parseXRefTable = (
 
   // Try to match the regex up to that character to see if we've got an xref table
   const result1 = arrayToString(trimmed, 0, idx).match(xRefTableRegex);
-  if (!result1) return null;
+  if (!result1) return undefined;
 
   // Parse the subsections of the xref table
   const [fullMatch, contents] = result1;
   const subsections = parseSubsections(contents);
-  if (!subsections) return null;
+  if (!subsections) return undefined;
 
   const xRefTable = PDFXRef.Table.from(subsections);
   if (onParseXRefTable) onParseXRefTable(xRefTable);

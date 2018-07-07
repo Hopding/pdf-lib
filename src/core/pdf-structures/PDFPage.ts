@@ -2,6 +2,7 @@ import isArray from 'lodash/isArray';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 
+import { PDFDocument } from 'core/pdf-document';
 import {
   PDFArray,
   PDFDictionary,
@@ -11,6 +12,7 @@ import {
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
+import QOps from 'core/pdf-operators/graphics/graphics-state/QOps';
 import { PDFContentStream } from 'core/pdf-structures';
 import {
   isIdentity,
@@ -94,6 +96,8 @@ class PDFPage extends PDFDictionary {
     return new PDFPage(dict.map, dict.index, VALID_KEYS);
   };
 
+  autoNormalizeCTM = true;
+
   /** @hidden */
   get Resources() {
     return this.index.lookup(this.get('Resources')) as PDFDictionary;
@@ -117,6 +121,48 @@ class PDFPage extends PDFDictionary {
         this.set('Contents', PDFArray.fromArray([Contents], this.index));
       }
     }
+  };
+
+  /**
+   * Ensures that content streams added to the [[PDFPage]] after calling
+   * [[normalizeCTM]] will be working in the default Content Transformation
+   * Matrix.
+   *
+   * This can be useful in cases where PDFs are being modified that
+   * have existing content streams which modify the CTM outside without
+   * resetting their changes (with the Q and q operators).
+   *
+   * Works by wrapping any existing content streams for this page in two new
+   * content streams that contain a single operator each: `q` and `Q`,
+   * respectively.
+   *
+   * Note that the `Contents` entry in this [[PDFPage]] must be a PDFArray.
+   * Calling [[normalizeContents]] first will ensure that this is the case.
+   *
+   * @param pdfDoc The document containing this PDFPage, to which the two new
+   *               [[PDFContentStream]]s will be added
+   *
+   * @returns Returns this [[PDFPage]] instance.
+   */
+  normalizeCTM = (): PDFPage => {
+    const contents = this.getMaybe('Contents') as PDFArray | void;
+
+    if (!contents) return this;
+
+    const {
+      pushGraphicsStateContentStream,
+      popGraphicsStateContentStream,
+    } = this.index;
+    if (
+      pushGraphicsStateContentStream &&
+      popGraphicsStateContentStream &&
+      contents.array[0] !== pushGraphicsStateContentStream
+    ) {
+      contents.array.unshift(pushGraphicsStateContentStream);
+      contents.array.push(popGraphicsStateContentStream);
+    }
+
+    return this;
   };
 
   /** @hidden */
@@ -162,6 +208,8 @@ class PDFPage extends PDFDictionary {
     );
 
     this.normalizeContents();
+    if (this.autoNormalizeCTM) this.normalizeCTM();
+
     if (!this.getMaybe('Contents')) {
       this.set('Contents', PDFArray.fromArray(contentStreams, this.index));
     } else {

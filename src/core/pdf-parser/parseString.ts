@@ -19,7 +19,7 @@ const parseString = (
   { onParseString }: IParseHandlers = {},
 ): [PDFString, Uint8Array] | void => {
   const trimmed = trimArray(input);
-  if (arrayCharAt(trimmed, 0) !== '(') return null;
+  if (arrayCharAt(trimmed, 0) !== '(') return undefined;
 
   const parensStack = [];
   let isEscaped = false;
@@ -48,7 +48,7 @@ const parseString = (
       return [pdfString, trimmed.subarray(idx + 1)];
     }
   }
-  return null; // Parenthesis didn't balance out
+  return undefined; // Parenthesis didn't balance out
 };
 
 export default parseString;

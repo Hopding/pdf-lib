@@ -103,12 +103,14 @@ describe(`PDFParser`, () => {
     expect(res.dictionaries).toHaveLength(14);
     expect(res.updates).toHaveLength(1);
     expect(res).toEqual({
+      maxObjectNumber: 5,
+      catalog: expect.any(PDFCatalog),
       arrays: expect.any(Array),
       dictionaries: expect.any(Array),
       original: {
         header: expect.any(PDFHeader),
         body: expect.any(Map),
-        linearization: null,
+        linearization: undefined,
         xRefTable: expect.any(PDFXRef.Table),
         trailer: expect.any(PDFTrailer),
       },

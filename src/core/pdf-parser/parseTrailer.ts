@@ -31,9 +31,9 @@ const parseTrailer = (
   const trailerRegex = /^trailer[\n|\r| ]*([^]+)startxref[\n|\r| ]+?(\d+)[\n|\r| ]+?%%EOF/;
 
   // Find the nearest "%%EOF" of the input and match the regex up to that index
-  const eofIdx = arrayIndexOf(trimmed, '%%EOF');
+  const eofIdx = arrayIndexOf(trimmed, '%%EOF')!;
   const result = arrayToString(trimmed, 0, eofIdx + 5).match(trailerRegex);
-  if (!result) return null;
+  if (!result) return undefined;
 
   const [fullMatch, dictStr, lastXRefOffsetStr] = result;
 
@@ -70,9 +70,9 @@ const parseTrailerWithoutDict = (
   const trailerRegex = /^startxref[\n|\r| ]+?(\d+)[\n|\r| ]+?%%EOF/;
 
   // Find the nearest "%%EOF" of the input and match the regex up to that index
-  const eofIdx = arrayIndexOf(trimmed, '%%EOF');
+  const eofIdx = arrayIndexOf(trimmed, '%%EOF')!;
   const result = arrayToString(trimmed, 0, eofIdx + 5).match(trailerRegex);
-  if (!result) return null;
+  if (!result) return undefined;
 
   const [fullMatch, lastXRefOffsetStr] = result;
 

@@ -52,7 +52,7 @@ const parseObjData = (
   let i = 0;
   let remaining = objDatumsStr;
   while (i < numObjects) {
-    const [fullmatch, objNum, byteOffset] = remaining.match(objDatumRegex);
+    const [fullmatch, objNum, byteOffset] = remaining.match(objDatumRegex)!;
     objData.push({ objNum: Number(objNum), byteOffset: Number(byteOffset) });
 
     remaining = remaining.substring(fullmatch.length);

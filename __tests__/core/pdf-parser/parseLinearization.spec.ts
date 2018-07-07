@@ -109,15 +109,15 @@ describe(`parseLinearization`, () => {
     expect(res[0]).toEqual({
       paramDict: expect.any(PDFIndirectObject),
       xref: expect.any(PDFIndirectObject),
-      trailer: null,
+      trailer: undefined,
     });
     expect(res[0].paramDict.pdfObject).toEqual(expect.any(PDFDictionary));
   });
 
-  it(`returns null when the leading input is not a PDF linearization`, () => {
+  it(`returns undefined when the leading input is not a PDF linearization`, () => {
     const input = typedArrayFor(`(I'm a string!)`);
     const res = parseLinearization(input, PDFObjectIndex.create());
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseLinearization" parseHandler with the parsed IPDFLinearization object`, () => {
@@ -132,10 +132,10 @@ describe(`parseLinearization`, () => {
     });
   });
 
-  it(`returns null if the leading indirect object is not a Linearization Param Dictionary`, () => {
+  it(`returns undefined if the leading indirect object is not a Linearization Param Dictionary`, () => {
     const input = typedArrayFor(`1 0 obj\n<< /Type /Catalog >>\nendobj`);
     const res = parseLinearization(input, PDFObjectIndex.create());
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`throws an error if a Linearization Param Dictionary is found, but no xref table or stream is found.`, () => {

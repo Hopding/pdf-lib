@@ -10,8 +10,8 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 export class Entry {
   static create = () => new Entry();
 
-  offset: number = null;
-  generationNum: number = null;
+  offset: number;
+  generationNum: number;
   isInUse: boolean = false;
 
   setOffset = (offset: number) => {
@@ -44,7 +44,7 @@ export class Subsection {
   static from = (entries: Entry[] = []) => new Subsection(entries);
 
   entries: Entry[] = [];
-  firstObjNum: number = null;
+  firstObjNum: number;
 
   constructor(entries: Entry[] = []) {
     validateArr(

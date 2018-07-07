@@ -38,10 +38,10 @@ describe(`parseTrailer`, () => {
     `));
   });
 
-  it(`returns null when the leading input is not a PDF Trailer`, () => {
+  it(`returns undefined when the leading input is not a PDF Trailer`, () => {
     const input = typedArrayFor(`(Look, I'm a string!)`);
     const res = parseTrailer(input, PDFObjectIndex.create());
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseTrailer" parseHandler with the parsed PDFTrailer object`, () => {
@@ -94,10 +94,10 @@ describe(`parseTrailerWithoutDict`, () => {
     `));
   });
 
-  it(`returns null when the leading input is not a PDF Trailer`, () => {
+  it(`returns undefined when the leading input is not a PDF Trailer`, () => {
     const input = typedArrayFor(`(Look, I'm a string!)`);
     const res = parseTrailerWithoutDict(input, PDFObjectIndex.create());
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseTrailer" parseHandler with the parsed PDFTrailer object`, () => {

@@ -35,17 +35,17 @@ const parseIndirectObj = (
   const indirectObjRegex = /^(\d+) (\d+) obj/;
 
   // Check that initial characters make up an indirect object "header"
-  const objIdx = arrayIndexOf(trimmed, 'obj');
+  const objIdx = arrayIndexOf(trimmed, 'obj')!;
   const result = arrayToString(trimmed.subarray(0, objIdx + 3)).match(
     indirectObjRegex,
   );
-  if (!result) return null;
+  if (!result) return undefined;
 
   // eslint-disable-next-line no-unused-vars
   const [fullMatch, objNum, genNum] = result;
 
   // Extract the bytes making up the object itself
-  const endobjIdx = arrayIndexOf(trimmed, 'endobj', objIdx);
+  const endobjIdx = arrayIndexOf(trimmed, 'endobj', objIdx)!;
   const content = trimmed.subarray(objIdx + 3, endobjIdx);
 
   // Try to parse the object bytes

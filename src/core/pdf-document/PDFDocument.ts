@@ -29,7 +29,11 @@ import { error } from 'utils';
 import { isInstance, oneOf, validate } from 'utils/validate';
 
 class PDFDocument {
-  static fromIndex = (index: PDFObjectIndex) => new PDFDocument(index);
+  static from = (
+    catalog: PDFCatalog,
+    maxObjectNumber: number,
+    index: PDFObjectIndex,
+  ) => new PDFDocument(catalog, maxObjectNumber, index);
 
   /** @hidden */
   header: PDFHeader = PDFHeader.forVersion(1, 7);
@@ -40,18 +44,26 @@ class PDFDocument {
 
   private maxObjNum: number = 0;
 
-  constructor(index: PDFObjectIndex) {
+  constructor(
+    catalog: PDFCatalog,
+    maxObjectNumber: number,
+    index: PDFObjectIndex,
+  ) {
+    validate(
+      catalog,
+      isInstance(PDFCatalog),
+      '"catalog" must be a PDFCatalog object',
+    );
+    validate(maxObjectNumber, isNumber, '"maxObjectNumber" must be a number');
     validate(
       index,
       isInstance(PDFObjectIndex),
       '"index" must be a PDFObjectIndex object',
     );
-    index.index.forEach((obj, ref) => {
-      if (obj instanceof PDFCatalog) this.catalog = obj;
-      if (ref.objectNumber > this.maxObjNum) this.maxObjNum = ref.objectNumber;
-    });
+
+    this.catalog = catalog;
+    this.maxObjNum = maxObjectNumber;
     this.index = index;
-    if (!this.catalog) error('"index" does not contain a PDFCatalog object');
   }
 
   /**

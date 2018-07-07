@@ -14,10 +14,10 @@ describe(`parseIndirectRef`, () => {
     expect(res[1]).toEqual(typedArrayFor(`1 1 R`));
   });
 
-  it(`returns null when the leading input is not a PDF Indirect Reference`, () => {
+  it(`returns undefined when the leading input is not a PDF Indirect Reference`, () => {
     const input = typedArrayFor(`(foo)1 1 R`);
     const res = parseIndirectRef(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseIndirectRef" parseHandler with the parsed PDFIndirectReference object`, () => {

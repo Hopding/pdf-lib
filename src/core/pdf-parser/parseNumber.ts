@@ -27,7 +27,7 @@ const parseNumber = (
 
   // Try to match the regex up to that character to see if we've got a number
   const result = arrayToString(trimmed, 0, idx).match(numRegex);
-  if (!result) return null;
+  if (!result) return undefined;
 
   const [fullMatch, num] = result;
 

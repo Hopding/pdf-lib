@@ -17,7 +17,7 @@ import { IParseHandlers } from './PDFParser';
 export interface IPDFLinearization {
   paramDict: PDFIndirectObject<PDFLinearizationParams>;
   xref: typeof PDFXRef.Table | PDFIndirectObject<PDFStream>;
-  trailer: PDFTrailer;
+  trailer?: PDFTrailer;
 }
 
 /**
@@ -42,14 +42,16 @@ const parseLinearization = (
 
   // Try to parse a dictionary from the input
   const paramDictMatch = parseIndirectObj(trimmed, index, parseHandlers);
-  if (!paramDictMatch) return null;
+  if (!paramDictMatch) return undefined;
 
   // Make sure it is a Linearization Param Dictionary
   const [paramDict, remaining1] = paramDictMatch as [
     PDFIndirectObject<PDFLinearizationParams>,
     Uint8Array
   ];
-  if (!(paramDict.pdfObject instanceof PDFLinearizationParams)) return null;
+  if (!(paramDict.pdfObject instanceof PDFLinearizationParams)) {
+    return undefined;
+  }
 
   // TODO: Do the parseHandlers really need to be passed to parseIndirectObj?
   // Next we should find a cross reference stream or xref table
@@ -77,7 +79,7 @@ const parseLinearization = (
     );
   }
 
-  const [trailer, remaining3] = trailerMatch || [null, null];
+  const [trailer, remaining3] = trailerMatch || [undefined, undefined];
 
   const linearization = { paramDict, xref, trailer };
   if (parseHandlers.onParseLinearization) {

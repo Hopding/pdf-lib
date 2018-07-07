@@ -54,7 +54,7 @@ const parseDict = (
   parseHandlers: IParseHandlers = {},
 ): [PDFDictionary, Uint8Array] | void => {
   const trimmed = trimArray(input);
-  if (arrayToString(trimmed, 0, 2) !== '<<') return null;
+  if (arrayToString(trimmed, 0, 2) !== '<<') return undefined;
   const pdfDict = PDFDictionary.from(new Map(), index);
 
   // Recursively parse each entry in the dictionary

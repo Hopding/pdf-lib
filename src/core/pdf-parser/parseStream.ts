@@ -1,6 +1,12 @@
 import { PDFDictionary, PDFName, PDFRawStream } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
-import { arrayIndexOf, arrayToString, error, trimArray } from 'utils';
+import {
+  arrayIndexOf,
+  arrayIndexOneOf,
+  arrayToString,
+  error,
+  trimArray,
+} from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -26,20 +32,24 @@ const parseStream = (
 ): [Uint8Array, Uint8Array] | void => {
   // Check that the next bytes comprise the beginning of a stream
   const trimmed = trimArray(input);
+
   let startstreamIdx;
   if (arrayToString(trimmed, 0, 7) === 'stream\n') startstreamIdx = 7;
   else if (arrayToString(trimmed, 0, 8) === 'stream\r\n') startstreamIdx = 8;
-  if (!startstreamIdx) return null;
+  if (!startstreamIdx) return undefined;
 
   /*
   TODO: Make this more efficient by using the "Length" entry of the stream
   dictionary to jump to the end of the stream, instead of traversing each byte.
   */
   // Locate the end of the stream
-  const endstreamIdx =
-    arrayIndexOf(trimmed, '\nendstream') ||
-    arrayIndexOf(trimmed, '\rendstream');
-  if (!endstreamIdx && endstreamIdx !== 0) error('Invalid Stream!');
+  const endstreamMatchTuple = arrayIndexOneOf(trimmed, [
+    '\nendstream',
+    '\rendstream',
+    'endstream',
+  ]);
+  if (!endstreamMatchTuple) error('Invalid Stream!');
+  const [endstreamIdx, endstreamMatch] = endstreamMatchTuple!;
 
   /*
   TODO: See if it makes sense to .slice() the stream contents, even though this
@@ -54,7 +64,7 @@ const parseStream = (
     error('Invalid Stream!');
   }
 
-  return [contents, trimmed.subarray(endstreamIdx + 10)];
+  return [contents, trimmed.subarray(endstreamIdx + endstreamMatch.length)];
 };
 
 /**
@@ -77,7 +87,7 @@ export default (
 ): [PDFRawStream | PDFObjectStream, Uint8Array] | void => {
   // Parse the input bytes into the stream dictionary and content bytes
   const res = parseStream(input, dict, parseHandlers);
-  if (!res) return null;
+  if (!res) return undefined;
   const [contents, remaining] = res;
 
   // If it's an Object Stream, parse it and return the indirect objects it contains

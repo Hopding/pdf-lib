@@ -59,6 +59,9 @@ const assets = {
     with_update_sections: readPdf('fd/form/F1040V.pdf'),
     linearized_with_object_streams: readPdf('ef/inst/ef_ins_1040.pdf'),
     with_large_page_count: fs.readFileSync('pdf_specification.pdf'),
+    with_missing_endstream_eol_and_polluted_ctm: fs.readFileSync(
+      'test-pdfs/receipt.pdf',
+    ),
   },
 };
 

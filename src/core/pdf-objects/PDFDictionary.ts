@@ -19,7 +19,7 @@ class PDFDictionary extends PDFObject {
 
   map: Map<PDFName, any>;
   index: PDFObjectIndex;
-  validKeys: ReadonlyArray<string>;
+  validKeys?: ReadonlyArray<string>;
 
   constructor(
     object: { [key: string]: PDFObject } | Map<PDFName, any>,

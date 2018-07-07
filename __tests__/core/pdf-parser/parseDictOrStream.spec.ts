@@ -41,10 +41,10 @@ describe(`parseDictOrStream`, () => {
     );
   });
 
-  it(`returns null when leading input is not a PDF Dictionary or a PDF Stream`, () => {
+  it(`returns undefined when leading input is not a PDF Dictionary or a PDF Stream`, () => {
     const input = typedArrayFor('(Foo)<< /Stuff /AndThings >>');
     const res = parseDictOrStream(input, PDFObjectIndex.create());
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseDict" parseHandler with the parsing a PDFDictionary object`, () => {

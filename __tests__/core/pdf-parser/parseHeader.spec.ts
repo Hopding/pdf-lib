@@ -16,10 +16,10 @@ describe(`parseHeader`, () => {
     expect(res[1]).toEqual(typedArrayFor('%PDF-1.3'));
   });
 
-  it(`returns null when leading input is not a PDF Header`, () => {
+  it(`returns undefined when leading input is not a PDF Header`, () => {
     const input = typedArrayFor('(%PDF-1.3)');
     const res = parseHeader(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseHeader" parseHandler with the parsed PDFHeader object`, () => {

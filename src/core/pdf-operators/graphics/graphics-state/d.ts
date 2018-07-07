@@ -17,7 +17,7 @@ class d extends PDFOperator {
 
   // TODO: Looks like the dashArray can actually be an array of arbitrary size,
   //       so shouldn't be restricting it here.
-  constructor(dashArray: number[], dashPhase?: number) {
+  constructor(dashArray: number[], dashPhase: number) {
     super();
     validate(
       dashArray[0],

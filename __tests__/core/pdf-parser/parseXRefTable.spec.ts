@@ -58,10 +58,10 @@ describe(`parseXRefTable`, () => {
     expect(res[1]).toEqual(typedArrayFor(xRefTable));
   });
 
-  it(`returns null when leading input is not a PDF Cross Reference Table`, () => {
+  it(`returns undefined when leading input is not a PDF Cross Reference Table`, () => {
     const input = typedArrayFor(`(Look, a string!)`);
     const res = parseXRefTable(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`invokes the "onParseXRefTable" parseHandler with the parsed PDFXRef.Table object`, () => {
@@ -75,13 +75,13 @@ describe(`parseXRefTable`, () => {
     );
   });
 
-  it(`returns null when a subsection has no entries`, () => {
+  it(`returns undefined when a subsection has no entries`, () => {
     const input = typedArrayFor(`
       xref
       0 0
     `);
     const res = parseXRefTable(input);
-    expect(res).toBeNull();
+    expect(res).toBeUndefined();
   });
 
   it(`can parse Cross Reference Tables with multiple EOL characters`, () => {
