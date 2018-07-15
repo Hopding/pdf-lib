@@ -1,6 +1,5 @@
 // This is required to prevent an error due to circular imports in this test
 import 'core/pdf-objects';
-import _ from 'lodash';
 
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { typedArrayFor } from 'utils';

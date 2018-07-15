@@ -2,7 +2,6 @@ import chalk from 'chalk';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import inquirer from 'inquirer';
-import _ from 'lodash';
 
 import * as tests from '../../tests';
 
@@ -94,7 +93,7 @@ const renderChecklist = async (checklist: string[]) => {
 };
 
 const main = async () => {
-  const testValues = _.values(tests);
+  const testValues = Object.values(tests);
   for (let i = 0; i < testValues.length; i++) {
     const { kernel, title, description, checklist } = testValues[i];
     renderTitle(title);

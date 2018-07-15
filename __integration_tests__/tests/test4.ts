@@ -1,6 +1,5 @@
 import faker from 'faker';
 import fs from 'fs';
-import _ from 'lodash';
 
 import {
   clip,

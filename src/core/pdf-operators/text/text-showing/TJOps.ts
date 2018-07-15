@@ -1,5 +1,5 @@
 /* tslint:disable:max-classes-per-file class-name */
-import _ from 'lodash';
+import add from 'lodash/add';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 
@@ -94,9 +94,7 @@ export class TJ extends PDFOperator {
   };
 
   bytesSize = (): number =>
-    _(this.array)
-      .map((elem) => elem.bytesSize())
-      .sum() +
+    this.array.map((elem) => elem.bytesSize()).reduce(add, 0) +
     this.array.length + // Spaces between elements
     4 + // "[ " and "]"
     3; // The "TJ" characters and trailing newline

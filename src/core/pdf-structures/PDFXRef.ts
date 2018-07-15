@@ -1,5 +1,5 @@
 /* tslint:disable:max-classes-per-file */
-import _ from 'lodash';
+import add from 'lodash/add';
 import isBoolean from 'lodash/isBoolean';
 import isNumber from 'lodash/isNumber';
 import padStart from 'lodash/padStart';
@@ -78,9 +78,7 @@ export class Subsection {
 
   bytesSize = (): number =>
     `${this.firstObjNum} ${this.entries.length}\n`.length +
-    _(this.entries)
-      .map((e) => e.bytesSize())
-      .sum();
+    this.entries.map((e) => e.bytesSize()).reduce(add, 0);
 }
 
 export class Table {
@@ -112,10 +110,7 @@ export class Table {
   toString = (): string => `xref\n${this.subsections.map(String).join('\n')}\n`;
 
   bytesSize = (): number =>
-    5 + // "xref\n"
-    _(this.subsections)
-      .map((ss) => ss.bytesSize() + 1)
-      .sum();
+    5 + this.subsections.map((ss) => ss.bytesSize() + 1).reduce(add, 0); // "xref\n"
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     let remaining = addStringToBuffer('xref\n', buffer);

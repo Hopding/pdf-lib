@@ -1,6 +1,6 @@
 import faker from 'faker';
 import fs from 'fs';
-import _ from 'lodash';
+import flatMap from 'lodash/flatMap';
 
 import {
   clip,
@@ -82,7 +82,7 @@ const makeOverlayContentStream = (
 
 const makeMiddlePageContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
   pdfDoc.createContentStream(
-    ..._.flatMap(Standard14Fonts, (font, idx) =>
+    ...flatMap(Standard14Fonts, (font, idx) =>
       drawText(`${idx + 1}. These are the 14 Standard Fonts.`, {
         x: 5,
         y: pageHeight - (idx + 1) * 20,

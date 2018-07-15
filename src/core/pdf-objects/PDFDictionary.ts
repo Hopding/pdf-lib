@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import add from 'lodash/add';
+import forEach from 'lodash/forEach';
 import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
@@ -45,7 +46,7 @@ class PDFDictionary extends PDFObject {
       this.map = object;
     } else {
       this.map = new Map();
-      _(object).forEach((val, key) => this.set(key, val, false));
+      forEach(object, (val, key) => this.set(key, val, false));
     }
   }
 
@@ -100,7 +101,7 @@ class PDFDictionary extends PDFObject {
 
   bytesSize = (): number =>
     3 + // "<<\n"
-    _(Array.from(this.map.entries()))
+    Array.from(this.map.entries())
       .map(([key, val]) => {
         const keySize = `${key.toString()} `.length;
         if (val instanceof PDFIndirectObject) {
@@ -110,7 +111,7 @@ class PDFDictionary extends PDFObject {
         }
         throw new Error(`Not a PDFObject: ${val.constructor.name}`);
       })
-      .sum() +
+      .reduce(add, 0) +
     2; // ">>"
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {

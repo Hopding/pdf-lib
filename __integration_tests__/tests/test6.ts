@@ -1,6 +1,6 @@
 import faker from 'faker';
 import fs from 'fs';
-import _ from 'lodash';
+import range from 'lodash/range';
 
 import {
   clip,
@@ -119,7 +119,7 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
   );
 
   // Interleave new pages between all existing ones
-  _.range(pages.length).forEach((idx) => {
+  range(pages.length).forEach((idx) => {
     const newPage = pdfDoc
       .createPage([500, 150])
       .addFontDictionary('Ubuntu', FontUbuntu)

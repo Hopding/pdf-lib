@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import add from 'lodash/add';
 
 import {
   colorOperators,
@@ -40,10 +40,10 @@ class PDFTextObject extends PDFOperator {
   }
 
   operatorsBytesSize = (): number =>
-    _(this.operators)
+    this.operators
       .filter(Boolean)
       .map((op) => op.bytesSize())
-      .sum();
+      .reduce(add, 0);
 
   toString = () => {
     const buffer = new Uint8Array(this.bytesSize());

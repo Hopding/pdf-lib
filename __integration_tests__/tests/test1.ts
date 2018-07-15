@@ -1,5 +1,6 @@
 import faker from 'faker';
-import _ from 'lodash';
+import flatMap from 'lodash/flatMap';
+import range from 'lodash/range';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import PDFDocumentFactory from 'core/pdf-document/PDFDocumentFactory';
@@ -154,10 +155,7 @@ const makeUpperRightQuadrant = (size: number) => [
     Td.of(5, size - 48),
 
     // Draw 15 lines of lorem ipsum text to fill this quadrant with text.
-    ..._.flatMap(_.range(15), () => [
-      Tj.of(faker.lorem.sentence()),
-      Td.of(0, -48),
-    ]),
+    ...flatMap(range(15), () => [Tj.of(faker.lorem.sentence()), Td.of(0, -48)]),
   ),
 ];
 
@@ -286,7 +284,7 @@ const drawTextLines = (
   extraSpace = false,
 ) => [
   Tf.of(fontName, fontSize),
-  ..._.flatMap(loremIpsumLines, (sentence) => [
+  ...flatMap(loremIpsumLines, (sentence) => [
     Tj.of(extraSpace ? sentence.replace(/\ /g, '   ') : sentence),
     Td.of(0, -fontSize),
   ]),

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import add from 'lodash/add';
 import isNumber from 'lodash/isNumber';
 
 import { addStringToBuffer, arrayToString, error } from 'utils';
@@ -76,13 +76,13 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
 
   bytesSize = (): number =>
     2 + // "[ "
-    _(this.array)
+    this.array
       .map((e) => {
         if (e instanceof PDFIndirectObject) return e.toReference().length + 1;
         else if (e instanceof PDFObject) return e.bytesSize() + 1;
         return error(`Not a PDFObject: ${e}`);
       })
-      .sum() +
+      .reduce(add, 0) +
     1; // "]";
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
