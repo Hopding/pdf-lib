@@ -15,6 +15,8 @@ export const error = (msg: string) => {
   throw new Error(msg);
 };
 
+export const digits = (num: number) => String(num).split('').length;
+
 export const isInt = (num: number) => num % 1 === 0;
 
 export const and = (...predicates: Array<ArrayPredicate<any>>) => (
