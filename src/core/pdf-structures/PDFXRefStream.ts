@@ -22,7 +22,7 @@ class PDFXRefStream extends PDFStream {
   static create = (index: PDFObjectIndex) =>
     new PDFXRefStream(new PDFDictionary({ Type: PDFName.from('XRef') }, index));
 
-  private entries: Array<[number, number, number]>;
+  private entries: Array<[number, number, number]> = [];
 
   constructor(dictionary: PDFDictionary) {
     super(dictionary);

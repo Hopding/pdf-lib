@@ -8,4 +8,5 @@ export { default as PDFPage } from './PDFPage';
 export { default as PDFPageTree } from './PDFPageTree';
 export { default as PDFTrailer } from './PDFTrailer';
 export { default as PDFLinearizationParams } from './PDFLinearizationParams';
+export { default as PDFXRefStream } from './PDFXRefStream';
 export { PDFXRef };
