@@ -73,6 +73,7 @@ class PDFContentStream extends PDFStream {
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     this.validateDictionary();
+
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
 

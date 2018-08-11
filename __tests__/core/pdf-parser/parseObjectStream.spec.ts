@@ -60,7 +60,7 @@ describe(`parseObjectStream`, () => {
     const res = parseObjectStream(dict, input, index);
 
     expect(res).toEqual(expect.any(PDFObjectStream));
-    expect(res.dict).toBe(dict);
+    expect(res.dictionary).toBe(dict);
 
     expect(res.objects[0].reference).toEqual(
       PDFIndirectReference.forNumbers(1, 0),

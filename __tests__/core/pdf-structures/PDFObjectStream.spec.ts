@@ -19,7 +19,7 @@ describe(`PDFObjectStream`, () => {
 
   it(`requires a PDFDictionary and PDFIndirectObject[] to be constructed`, () => {
     expect(() => new PDFObjectStream()).toThrowError(
-      'PDFObjectStream.dictionary must be a PDFDictionary',
+      'PDFStream.dictionary must be of type PDFDictionary',
     );
 
     const dict = PDFDictionary.from(
@@ -44,7 +44,7 @@ describe(`PDFObjectStream`, () => {
   describe(`static "from" factory method`, () => {
     it(`requires a PDFDictionary and PDFIndirectObject[] as its arguments`, () => {
       expect(() => new PDFObjectStream()).toThrowError(
-        'PDFObjectStream.dictionary must be a PDFDictionary',
+        'PDFStream.dictionary must be of type PDFDictionary',
       );
 
       const dict = PDFDictionary.from(
