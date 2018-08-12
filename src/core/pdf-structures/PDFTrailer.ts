@@ -51,4 +51,28 @@ class PDFTrailer {
   };
 }
 
+/* tslint:disable max-classes-per-file */
+// TODO: Cleanup and unit test this!
+export class PDFTrailerX {
+  static from = (offset: number) => new PDFTrailerX(offset);
+
+  offset: number;
+
+  constructor(offset: number) {
+    validate(offset, isNumber, 'PDFTrailer offsets can only be Numbers');
+    this.offset = offset;
+  }
+
+  toString = (): string => `startxref\n` + `${this.offset}\n` + `%%EOF\n`;
+
+  bytesSize = () =>
+    10 + // "startxref\n"
+    String(this.offset).length +
+    1 + // "\n"
+    6; // "%%EOF\n"
+
+  copyBytesInto = (buffer: Uint8Array): Uint8Array =>
+    addStringToBuffer(`startxref\n${this.offset}\n%%EOF\n`, buffer);
+}
+
 export default PDFTrailer;
