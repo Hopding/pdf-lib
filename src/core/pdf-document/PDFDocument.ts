@@ -42,7 +42,7 @@ class PDFDocument {
   /** @hidden */
   index: PDFObjectIndex;
 
-  readonly maxObjNum: number = 0;
+  maxObjNum: number = 0;
 
   constructor(
     catalog: PDFCatalog,

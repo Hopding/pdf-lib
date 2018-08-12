@@ -75,30 +75,48 @@ class PDFDocumentWriter {
    * @returns A `Uint8Array` containing the raw bytes of a PDF document.
    */
   static saveToBytesWithObjectStreams = (pdfDoc: PDFDocument): Uint8Array => {
-    const streamObjects: Array<PDFIndirectObject<PDFStream>> = [];
+    // const streamObjects: Array<PDFIndirectObject<PDFStream>> = [];
+    const streamObjects: Array<PDFIndirectObject<PDFObject>> = [];
     const nonStreamObjects: Array<PDFIndirectObject<PDFObject>> = [];
     let pdfCatalogRef: PDFIndirectReference<PDFCatalog>;
 
     pdfDoc.index.index.forEach((object, ref) => {
       if (object instanceof PDFCatalog) pdfCatalogRef = ref;
-      if (object instanceof PDFStream) {
-        streamObjects.push(PDFIndirectObject.of(object).setReference(ref));
-      } else {
-        nonStreamObjects.push(PDFIndirectObject.of(object).setReference(ref));
-      }
+      // if (object instanceof PDFStream) {
+      //   streamObjects.push(PDFIndirectObject.of(object).setReference(ref));
+      // } else {
+      //   nonStreamObjects.push(PDFIndirectObject.of(object).setReference(ref));
+      // }
+      streamObjects.push(PDFIndirectObject.of(object).setReference(ref));
     });
 
-    if (!pdfCatalogRef) error('Missing PDFCatalog');
-
-    const objectStream = PDFObjectStream.create(pdfDoc.index, streamObjects);
+    if (!pdfCatalogRef!) error('Missing PDFCatalog');
 
     const { maxObjNum } = pdfDoc;
-    const objectStreamRef = PDFIndirectReference.forNumbers(maxObjNum + 1, 0);
-    streamObjects.push(
-      PDFIndirectObject.of(objectStream).setReference(objectStreamRef),
-    );
+
+    // const objectStream = PDFObjectStream.create(pdfDoc.index, nonStreamObjects);
+    // const objectStreamRef = PDFIndirectReference.forNumbers(maxObjNum + 1, 0);
+    // const objectStreamIndObj = PDFIndirectObject.of(objectStream).setReference(
+    //   objectStreamRef,
+    // );
+    // streamObjects.push(
+    //   PDFIndirectObject.of(objectStream).setReference(objectStreamRef),
+    // );
 
     const xrefStream = PDFXRefStream.create(pdfDoc.index);
+    const xrefStreamRef = PDFIndirectReference.forNumbers(maxObjNum + 1, 0);
+    const xrefStreamIndObj = PDFIndirectObject.of(xrefStream).setReference(
+      xrefStreamRef,
+    );
+    // streamObjects.push(
+    //   PDFIndirectObject.of(xrefStream).setReference(xrefStreamRef),
+    // );
+
+    xrefStream.dictionary.set(
+      PDFName.from('Size'),
+      PDFNumber.fromNumber(xrefStreamRef.objectNumber + 1),
+    );
+    xrefStream.dictionary.set(PDFName.from('Root'), pdfCatalogRef!);
     xrefStream.addFreeObjectEntry(0, 65535);
 
     // TODO: Do the entries have to be "in order"?
@@ -108,17 +126,25 @@ class PDFDocumentWriter {
       xrefStream.addUncompressedObjectEntry(offset, generationNumber);
       offset += obj.bytesSize();
     });
-    objectStream.objects.forEach((obj, idx) => {
-      xrefStream.addCompressedObjectEntry(objectStreamRef.objectNumber, idx);
-    });
+    console.log('Offset Before objectStreamRef:', offset);
+    // xrefStream.addUncompressedObjectEntry(
+    //   offset + 1,
+    //   objectStreamRef.generationNumber,
+    // );
+    // offset += objectStreamIndObj.bytesSize();
+    console.log('Offset After objectStreamRef:', offset);
 
-    xrefStream.dictionary.set(
-      PDFName.from('Size'),
-      PDFNumber.fromNumber(objectStreamRef.objectNumber + 1),
+    // objectStream.objects.forEach((obj, idx) => {
+    //   xrefStream.addCompressedObjectEntry(objectStreamRef.objectNumber, idx);
+    // });
+
+    const trailer = PDFTrailerX.from(offset);
+
+    xrefStream.addUncompressedObjectEntry(
+      offset + 1,
+      xrefStreamRef.generationNumber,
     );
-    xrefStream.dictionary.set(PDFName.from('Root'), pdfCatalogRef!);
-
-    const trailer = PDFTrailerX.from(offset - xrefStream.bytesSize());
+    offset += xrefStreamIndObj.bytesSize();
 
     /* ----- */
 
@@ -130,6 +156,8 @@ class PDFDocumentWriter {
       (remBytes, obj) => obj.copyBytesInto(remBytes),
       remaining,
     );
+    // remaining = objectStreamIndObj.copyBytesInto(remaining);
+    remaining = xrefStreamIndObj.copyBytesInto(remaining);
     remaining = trailer.copyBytesInto(remaining);
 
     return buffer;

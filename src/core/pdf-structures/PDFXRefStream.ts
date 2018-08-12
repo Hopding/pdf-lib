@@ -20,7 +20,12 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFXRefStream extends PDFStream {
   static create = (index: PDFObjectIndex) =>
-    new PDFXRefStream(new PDFDictionary({ Type: PDFName.from('XRef') }, index));
+    new PDFXRefStream(
+      new PDFDictionary(
+        { Type: PDFName.from('XRef'), Filter: PDFName.from('ASCIIHexDecode') },
+        index,
+      ),
+    );
 
   private entries: Array<[number, number, number]> = [];
 
@@ -63,22 +68,22 @@ class PDFXRefStream extends PDFStream {
   };
 
   private entriesToString = (): string => {
-    const entryWidths = this.maxEntryByteWidths();
+    const entryWidths = this.maxEntryByteWidths().map((w) => w * 2);
     return this.entries
       .map(([first, second, third]) =>
         [
-          padStart(String(first), entryWidths[0], '0'),
-          padStart(String(second), entryWidths[1], '0'),
-          padStart(String(third), entryWidths[2], '0'),
+          padStart(first.toString(16).toUpperCase(), entryWidths[0], '0'),
+          padStart(second.toString(16).toUpperCase(), entryWidths[1], '0'),
+          padStart(third.toString(16).toUpperCase(), entryWidths[2], '0'),
         ].join(' '),
       )
       .join('\n');
   };
 
   private maxEntryByteWidths = (): [number, number, number] => [
-    digits(max(this.entries.map(([x]) => x))!),
-    digits(max(this.entries.map(([, x]) => x))!),
-    digits(max(this.entries.map(([, , x]) => x))!),
+    Math.ceil(max(this.entries.map(([x]) => x))!.toString(2).length / 8),
+    Math.ceil(max(this.entries.map(([, x]) => x))!.toString(2).length / 8),
+    Math.ceil(max(this.entries.map(([, , x]) => x))!.toString(2).length / 8),
   ];
 
   private updateDictionary = () => {

@@ -86,7 +86,7 @@ class PDFObjectStream extends PDFStream {
   };
 
   private leadingIntegerPairsStr = (): string =>
-    flatten(this.leadingIntegerPairs()).join(' ');
+    flatten(this.leadingIntegerPairs()).join(' ') + ' ';
 
   private updateDictionary = () => {
     this.dictionary.set(
