@@ -4,6 +4,7 @@ import flatten from 'lodash/flatten';
 import last from 'lodash/last';
 import max from 'lodash/max';
 import padStart from 'lodash/padStart';
+import sum from 'lodash/sum';
 
 import { PDFObjectIndex } from 'core/pdf-document';
 import {
@@ -15,17 +16,12 @@ import {
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
-import { addStringToBuffer, digits, or } from 'utils';
+import { addStringToBuffer, bytesFor, digits, or, sizeInBytes } from 'utils';
 import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFXRefStream extends PDFStream {
   static create = (index: PDFObjectIndex) =>
-    new PDFXRefStream(
-      new PDFDictionary(
-        { Type: PDFName.from('XRef'), Filter: PDFName.from('ASCIIHexDecode') },
-        index,
-      ),
-    );
+    new PDFXRefStream(new PDFDictionary({ Type: PDFName.from('XRef') }, index));
 
   private entries: Array<[number, number, number]> = [];
 
@@ -51,7 +47,7 @@ class PDFXRefStream extends PDFStream {
       this.dictionary.bytesSize() +
       1 + // "\n"
       7 + // "stream\n"
-      this.entriesToString().length +
+      this.entriesBytesSize() +
       10 // \nendstream
     );
   };
@@ -62,28 +58,32 @@ class PDFXRefStream extends PDFStream {
 
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
-    remaining = addStringToBuffer(this.entriesToString(), remaining);
+    remaining = this.copyEntryBytesInto(remaining);
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
   };
 
-  private entriesToString = (): string => {
-    const entryWidths = this.maxEntryByteWidths().map((w) => w * 2);
-    return this.entries
-      .map(([first, second, third]) =>
-        [
-          padStart(first.toString(16).toUpperCase(), entryWidths[0], '0'),
-          padStart(second.toString(16).toUpperCase(), entryWidths[1], '0'),
-          padStart(third.toString(16).toUpperCase(), entryWidths[2], '0'),
-        ].join(' '),
-      )
-      .join('\n');
+  private copyEntryBytesInto = (buffer: Uint8Array): Uint8Array => {
+    const entryWidths = this.maxEntryByteWidths();
+
+    let idx = 0;
+    flatten(this.entries).forEach((entry, currEntryIdx) => {
+      const bytes = bytesFor(entry).reverse();
+      for (let i = entryWidths[currEntryIdx % 3] - 1; i >= 0; i--) {
+        buffer[idx++] = bytes[i] || 0;
+      }
+    });
+
+    return buffer.subarray(idx);
   };
 
+  private entriesBytesSize = (): number =>
+    sum(this.maxEntryByteWidths()) * this.entries.length;
+
   private maxEntryByteWidths = (): [number, number, number] => [
-    Math.ceil(max(this.entries.map(([x]) => x))!.toString(2).length / 8),
-    Math.ceil(max(this.entries.map(([, x]) => x))!.toString(2).length / 8),
-    Math.ceil(max(this.entries.map(([, , x]) => x))!.toString(2).length / 8),
+    sizeInBytes(max(this.entries.map(([x]) => x))!),
+    sizeInBytes(max(this.entries.map(([, x]) => x))!),
+    sizeInBytes(max(this.entries.map(([, , x]) => x))!),
   ];
 
   private updateDictionary = () => {
@@ -96,7 +96,7 @@ class PDFXRefStream extends PDFStream {
     );
     this.dictionary.set(
       PDFName.from('Length'),
-      PDFNumber.fromNumber(this.entriesToString().length),
+      PDFNumber.fromNumber(this.entriesBytesSize()),
     );
   };
 }
