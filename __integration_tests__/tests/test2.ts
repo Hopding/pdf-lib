@@ -306,42 +306,42 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
     .addFontDictionary('FontTimesRoman', FontTimesRoman)
     .addContentStreams(page1ContentStreamRef);
 
-  const page2Size = 750;
-  const page2ContentStream = makePage2ContentStream(pdfDoc, page2Size);
-  const page2ContentStreamRef = pdfDoc.register(page2ContentStream);
-
-  const page2 = pdfDoc
-    .createPage([page2Size, page2Size])
-    .addFontDictionary('Ubuntu-R', FontUbuntuR)
-    .addFontDictionary('BioRhyme-R', FontBioRhymeR)
-    .addFontDictionary('PressStart2P-R', FontPressStart2PR)
-    .addFontDictionary('IndieFlower-R', FontIndieFlowerR)
-    .addFontDictionary('GreatVibes-R', FontGreatVibesR)
-    .addFontDictionary('Fantasque-BI', FontFantasqueBI)
-    .addFontDictionary('AppleStorm-R', FontAppleStormR)
-    .addFontDictionary('Hussar3D-R', FontHussar3D)
-    .addContentStreams(page2ContentStreamRef);
-
-  const page3Width = 750;
-  const page3Height = 1750;
-  const page3ContentStream = makePage3ContentStream(pdfDoc, page3Height);
-  const page3ContentStreamRef = pdfDoc.register(page3ContentStream);
-
-  const page3 = pdfDoc
-    .createPage([page3Width, page3Height])
-    .addFontDictionary('Ubuntu-R', FontUbuntuR)
-    .addImageObject('CatRidingUnicorn', JpgCatRidingUnicorn)
-    .addImageObject('MinionsLaughing', JpgMinionsLaughing)
-    .addImageObject('GreyscaleBird', PngGreyscaleBird)
-    .addImageObject('MinionsBananaAlpha', PngMinionsBananaAlpha)
-    .addImageObject('MinionsBananaNoAlpha', PngMinionsBananaNoAlpha)
-    .addImageObject('SmallMario', PngSmallMario)
-    .addContentStreams(page3ContentStreamRef);
+  // const page2Size = 750;
+  // const page2ContentStream = makePage2ContentStream(pdfDoc, page2Size);
+  // const page2ContentStreamRef = pdfDoc.register(page2ContentStream);
+  //
+  // const page2 = pdfDoc
+  //   .createPage([page2Size, page2Size])
+  //   .addFontDictionary('Ubuntu-R', FontUbuntuR)
+  //   .addFontDictionary('BioRhyme-R', FontBioRhymeR)
+  //   .addFontDictionary('PressStart2P-R', FontPressStart2PR)
+  //   .addFontDictionary('IndieFlower-R', FontIndieFlowerR)
+  //   .addFontDictionary('GreatVibes-R', FontGreatVibesR)
+  //   .addFontDictionary('Fantasque-BI', FontFantasqueBI)
+  //   .addFontDictionary('AppleStorm-R', FontAppleStormR)
+  //   .addFontDictionary('Hussar3D-R', FontHussar3D)
+  //   .addContentStreams(page2ContentStreamRef);
+  //
+  // const page3Width = 750;
+  // const page3Height = 1750;
+  // const page3ContentStream = makePage3ContentStream(pdfDoc, page3Height);
+  // const page3ContentStreamRef = pdfDoc.register(page3ContentStream);
+  //
+  // const page3 = pdfDoc
+  //   .createPage([page3Width, page3Height])
+  //   .addFontDictionary('Ubuntu-R', FontUbuntuR)
+  //   .addImageObject('CatRidingUnicorn', JpgCatRidingUnicorn)
+  //   .addImageObject('MinionsLaughing', JpgMinionsLaughing)
+  //   .addImageObject('GreyscaleBird', PngGreyscaleBird)
+  //   .addImageObject('MinionsBananaAlpha', PngMinionsBananaAlpha)
+  //   .addImageObject('MinionsBananaNoAlpha', PngMinionsBananaNoAlpha)
+  //   .addImageObject('SmallMario', PngSmallMario)
+  //   .addContentStreams(page3ContentStreamRef);
 
   // Add pages:
   pdfDoc.addPage(page1);
-  pdfDoc.addPage(page2);
-  pdfDoc.addPage(page3);
+  // pdfDoc.addPage(page2);
+  // pdfDoc.addPage(page3);
 
   // return PDFDocumentWriter.saveToBytes(pdfDoc);
   return PDFDocumentWriter.saveToBytesWithObjectStreams(pdfDoc);

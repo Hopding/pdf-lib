@@ -58,7 +58,7 @@ class PDFObjectStream extends PDFStream {
 
     remaining = this.objects.reduce(
       (remBytes: Uint8Array, obj: PDFIndirectObject) =>
-        obj.pdfObject.copyBytesInto(remBytes),
+        addStringToBuffer('\n', obj.pdfObject.copyBytesInto(remBytes)),
       remaining,
     );
 
@@ -68,12 +68,12 @@ class PDFObjectStream extends PDFStream {
 
   private contentBytesSize = (): number =>
     this.leadingIntegerPairsStr().length +
-    this.objects.map((obj) => obj.pdfObject.bytesSize()).reduce(add, 0);
+    this.objects.map((obj) => obj.pdfObject.bytesSize() + 1).reduce(add, 0);
 
   private objectByteOffsets = (): number[] =>
     dropRight(this.objects).reduce(
       (offsets, obj) =>
-        offsets.concat(last(offsets)! + obj.pdfObject.bytesSize()),
+        offsets.concat(last(offsets)! + obj.pdfObject.bytesSize() + 1),
       [0],
     );
 
@@ -86,7 +86,7 @@ class PDFObjectStream extends PDFStream {
   };
 
   private leadingIntegerPairsStr = (): string =>
-    flatten(this.leadingIntegerPairs()).join(' ') + ' ';
+    flatten(this.leadingIntegerPairs()).join(' ') + '\n';
 
   private updateDictionary = () => {
     this.dictionary.set(
