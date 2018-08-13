@@ -106,7 +106,8 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
     .addXObject('Mario', PngMario)
     .addContentStreams(overlayContentStreamRef);
 
-  return PDFDocumentWriter.saveToBytes(pdfDoc);
+  // return PDFDocumentWriter.saveToBytes(pdfDoc);
+  return PDFDocumentWriter.saveToBytesWithObjectStreams(pdfDoc);
 };
 
 export default {
