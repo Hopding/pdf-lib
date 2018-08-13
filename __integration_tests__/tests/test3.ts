@@ -105,7 +105,8 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
 
   pdfDoc.removePage(1);
 
-  return PDFDocumentWriter.saveToBytes(pdfDoc);
+  // return PDFDocumentWriter.saveToBytes(pdfDoc);
+  return PDFDocumentWriter.saveToBytesWithObjectStreams(pdfDoc);
 };
 
 export default {

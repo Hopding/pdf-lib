@@ -26,6 +26,7 @@ class PDFObjectStream extends PDFStream {
     new PDFObjectStream(dictionary, objects);
 
   objects: PDFIndirectObject[];
+  objectByteSizes: number[] = [];
 
   constructor(dictionary: PDFDictionary, objects: PDFIndirectObject[]) {
     super(dictionary);
@@ -38,6 +39,7 @@ class PDFObjectStream extends PDFStream {
   }
 
   bytesSize = (): number => {
+    if (this.objectByteSizes.length === 0) this.updateObjectByteSizes();
     this.updateDictionary();
     return (
       this.dictionary.bytesSize() +
@@ -49,6 +51,7 @@ class PDFObjectStream extends PDFStream {
   };
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
+    if (this.objectByteSizes.length === 0) this.updateObjectByteSizes();
     this.updateDictionary();
     this.validateDictionary();
 
@@ -58,7 +61,7 @@ class PDFObjectStream extends PDFStream {
 
     remaining = this.objects.reduce(
       (remBytes: Uint8Array, obj: PDFIndirectObject) =>
-        addStringToBuffer('\n', obj.pdfObject.copyBytesInto(remBytes)),
+        obj.pdfObject.copyBytesInto(remBytes),
       remaining,
     );
 
@@ -66,16 +69,15 @@ class PDFObjectStream extends PDFStream {
     return remaining;
   };
 
-  private contentBytesSize = (): number =>
-    this.leadingIntegerPairsStr().length +
-    this.objects.map((obj) => obj.pdfObject.bytesSize() + 1).reduce(add, 0);
+  private updateObjectByteSizes = () => {
+    this.objectByteSizes = this.objects.map((obj) => obj.pdfObject.bytesSize());
+  };
 
-  private objectByteOffsets = (): number[] =>
-    dropRight(this.objects).reduce(
-      (offsets, obj) =>
-        offsets.concat(last(offsets)! + obj.pdfObject.bytesSize() + 1),
-      [0],
-    );
+  private contentBytesSize = (): number =>
+    this.leadingIntegerPairsStr().length + this.objectByteSizes.reduce(add, 0);
+
+  private leadingIntegerPairsStr = (): string =>
+    flatten(this.leadingIntegerPairs()).join(' ') + '\n';
 
   private leadingIntegerPairs = (): Array<[number, number]> => {
     const byteOffsets = this.objectByteOffsets();
@@ -85,8 +87,13 @@ class PDFObjectStream extends PDFStream {
     );
   };
 
-  private leadingIntegerPairsStr = (): string =>
-    flatten(this.leadingIntegerPairs()).join(' ') + '\n';
+  private objectByteOffsets = (): number[] => {
+    const offsets = [0];
+    dropRight(this.objectByteSizes).forEach((byteSize) => {
+      offsets.push(last(offsets)! + byteSize);
+    });
+    return offsets;
+  };
 
   private updateDictionary = () => {
     this.dictionary.set(
