@@ -2,6 +2,7 @@ import add from 'lodash/add';
 import dropRight from 'lodash/dropRight';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
+import pako from 'pako';
 
 import { PDFObjectIndex } from 'core/pdf-document';
 import {
@@ -18,7 +19,10 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 class PDFObjectStream extends PDFStream {
   static create = (index: PDFObjectIndex, objects: PDFIndirectObject[]) =>
     new PDFObjectStream(
-      new PDFDictionary({ Type: PDFName.from('ObjStm') }, index),
+      new PDFDictionary(
+        { Type: PDFName.from('ObjStm'), Filter: PDFName.from('FlateDecode') },
+        index,
+      ),
       objects,
     );
 
@@ -41,13 +45,31 @@ class PDFObjectStream extends PDFStream {
   bytesSize = (): number => {
     if (this.objectByteSizes.length === 0) this.updateObjectByteSizes();
     this.updateDictionary();
+
+    const buffer = new Uint8Array(this.contentBytesSize());
+    const remaining = addStringToBuffer(this.leadingIntegerPairsStr(), buffer);
+    this.objects.reduce(
+      (remBytes: Uint8Array, obj: PDFIndirectObject) =>
+        obj.pdfObject.copyBytesInto(remBytes),
+      remaining,
+    );
+    const deflated = pako.deflate(buffer);
+
     return (
       this.dictionary.bytesSize() +
       1 + // "\n"
       7 + // "stream\n"
-      this.contentBytesSize() +
+      deflated.length +
       10 // \nendstream
     );
+
+    // return (
+    //   this.dictionary.bytesSize() +
+    //   1 + // "\n"
+    //   7 + // "stream\n"
+    //   this.contentBytesSize() +
+    //   10 // \nendstream
+    // );
   };
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
@@ -57,13 +79,33 @@ class PDFObjectStream extends PDFStream {
 
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
-    remaining = addStringToBuffer(this.leadingIntegerPairsStr(), remaining);
 
-    remaining = this.objects.reduce(
+    const contentBuffer = new Uint8Array(this.contentBytesSize());
+    const contentBufferRem = addStringToBuffer(
+      this.leadingIntegerPairsStr(),
+      contentBuffer,
+    );
+    this.objects.reduce(
       (remBytes: Uint8Array, obj: PDFIndirectObject) =>
         obj.pdfObject.copyBytesInto(remBytes),
-      remaining,
+      contentBufferRem,
     );
+
+    const deflated = pako.deflate(contentBuffer);
+    deflated.forEach((byte, idx) => {
+      remaining[idx] = byte;
+    });
+    remaining = remaining.subarray(deflated.length);
+
+    // let remaining = this.dictionary.copyBytesInto(buffer);
+    // remaining = addStringToBuffer('\nstream\n', remaining);
+    // remaining = addStringToBuffer(this.leadingIntegerPairsStr(), remaining);
+    //
+    // remaining = this.objects.reduce(
+    //   (remBytes: Uint8Array, obj: PDFIndirectObject) =>
+    //     obj.pdfObject.copyBytesInto(remBytes),
+    //   remaining,
+    // );
 
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;

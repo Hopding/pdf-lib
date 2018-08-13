@@ -5,6 +5,7 @@ import last from 'lodash/last';
 import max from 'lodash/max';
 import padStart from 'lodash/padStart';
 import sum from 'lodash/sum';
+import pako from 'pako';
 
 import { PDFObjectIndex } from 'core/pdf-document';
 import {
@@ -21,7 +22,12 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFXRefStream extends PDFStream {
   static create = (index: PDFObjectIndex) =>
-    new PDFXRefStream(new PDFDictionary({ Type: PDFName.from('XRef') }, index));
+    new PDFXRefStream(
+      new PDFDictionary(
+        { Type: PDFName.from('XRef'), Filter: PDFName.from('FlateDecode') },
+        index,
+      ),
+    );
 
   private entries: Array<[number, number, number]> = [];
 
@@ -43,24 +49,54 @@ class PDFXRefStream extends PDFStream {
 
   bytesSize = (): number => {
     this.updateDictionary();
+
+    const buffer = new Uint8Array(this.entriesBytesSize());
+    this.copyEntryBytesInto(buffer);
+    const deflated = pako.deflate(buffer);
+
     return (
       this.dictionary.bytesSize() +
       1 + // "\n"
       7 + // "stream\n"
-      this.entriesBytesSize() +
+      deflated.length +
       10 // \nendstream
     );
+
+    // this.updateDictionary();
+    // return (
+    //   this.dictionary.bytesSize() +
+    //   1 + // "\n"
+    //   7 + // "stream\n"
+    //   this.entriesBytesSize() +
+    //   10 // \nendstream
+    // );
   };
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     this.updateDictionary();
     this.validateDictionary();
 
+    const entriesBuffer = new Uint8Array(this.entriesBytesSize());
+    this.copyEntryBytesInto(entriesBuffer);
+    const deflated = pako.deflate(entriesBuffer);
+
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
-    remaining = this.copyEntryBytesInto(remaining);
+
+    deflated.forEach((byte, idx) => {
+      remaining[idx] = byte;
+    });
+    remaining = remaining.subarray(deflated.length);
+
+    // remaining = this.copyEntryBytesInto(remaining);
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
+
+    // let remaining = this.dictionary.copyBytesInto(buffer);
+    // remaining = addStringToBuffer('\nstream\n', remaining);
+    // remaining = this.copyEntryBytesInto(remaining);
+    // remaining = addStringToBuffer('\nendstream', remaining);
+    // return remaining;
   };
 
   private copyEntryBytesInto = (buffer: Uint8Array): Uint8Array => {
