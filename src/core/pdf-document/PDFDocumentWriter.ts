@@ -20,6 +20,7 @@ import {
   PDFTrailer,
   PDFXRefStream,
 } from 'core/pdf-structures';
+import PDFXRefStreamFactory from 'core/pdf-structures/factories/PDFXRefStreamFactory';
 import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
 import { error } from 'utils';
 
@@ -81,10 +82,10 @@ class PDFDocumentWriter {
    * @returns A `Uint8Array` containing the raw bytes of a PDF document.
    */
   static saveToBytesWithObjectStreams = (pdfDoc: PDFDocument): Uint8Array => {
-    const streamObjects: Array<PDFIndirectObject<PDFStream>> = [];
-    // const streamObjects: Array<PDFIndirectObject<PDFObject>> = [];
-    const nonStreamObjects: Array<PDFIndirectObject<PDFObject>> = [];
     let pdfCatalogRef: PDFIndirectReference<PDFCatalog>;
+
+    const streamObjects: Array<PDFIndirectObject<PDFStream>> = [];
+    const nonStreamObjects: Array<PDFIndirectObject<PDFObject>> = [];
 
     pdfDoc.index.index.forEach((object, ref) => {
       if (object instanceof PDFCatalog) pdfCatalogRef = ref;
@@ -103,105 +104,29 @@ class PDFDocumentWriter {
       pdfDoc.index,
       nonStreamObjects,
     ).encode();
+
     const objectStreamRef = PDFIndirectReference.forNumbers(maxObjNum + 1, 0);
-    streamObjects.push(
-      PDFIndirectObject.of(objectStream).setReference(objectStreamRef),
+    const objectStreamIndObj = PDFIndirectObject.of(objectStream).setReference(
+      objectStreamRef,
     );
 
-    const xrefStream = PDFXRefStream.create(pdfDoc.index);
-    const xrefStreamRef = PDFIndirectReference.forNumbers(maxObjNum + 2, 0);
-    const xrefStreamIndObj = PDFIndirectObject.of(xrefStream).setReference(
-      xrefStreamRef,
+    streamObjects.push(objectStreamIndObj);
+
+    const [offset, xrefStream] = PDFXRefStreamFactory.forIndirectObjects(
+      pdfDoc.header,
+      streamObjects,
+      objectStreamIndObj,
+      pdfDoc.index,
+      pdfCatalogRef!,
     );
 
-    xrefStream.dictionary.set(
-      PDFName.from('Size'),
-      PDFNumber.fromNumber(xrefStreamRef.objectNumber + 1),
-    );
-    xrefStream.dictionary.set(PDFName.from('Root'), pdfCatalogRef!);
-    xrefStream.addFreeObjectEntry(0, 65535);
-
-    interface IGroupElement {
-      objectNumber: number;
-      generationNumber: number;
-      offset?: number;
-      index?: number;
-    }
-    const group: IGroupElement[] = [];
-
-    objectStream.objects.forEach((obj, idx) => {
-      // xrefStream.addCompressedObjectEntry(objectStreamRef.objectNumber, idx);
-      group.push({
-        objectNumber: obj.reference.objectNumber,
-        generationNumber: obj.reference.generationNumber,
-        index: idx,
-      });
-    });
-
-    let offset = pdfDoc.header.bytesSize();
-    streamObjects.forEach((obj) => {
-      const { generationNumber } = obj.reference;
-      // xrefStream.addUncompressedObjectEntry(offset, generationNumber);
-      group.push({
-        objectNumber: obj.reference.objectNumber,
-        generationNumber: obj.reference.generationNumber,
-        offset,
-      });
-      offset += obj.bytesSize();
-    });
+    // streamObjects.push(xrefStream);
 
     const trailer = PDFTrailerX.from(offset);
 
-    /* ===== Add Index... ===== */
-    group.push({
-      objectNumber: xrefStreamRef.objectNumber,
-      generationNumber: xrefStreamRef.generationNumber,
-      offset,
-    });
-
-    const sortedGroup: IGroupElement[] = sortBy(group, 'objectNumber');
-    const groupChunks: Array<{ firstObjectNumber: number; size: number }> = [
-      { firstObjectNumber: 0, size: 1 },
-    ];
-
-    sortedGroup.forEach((obj, idx) => {
-      const shouldStartNewSection =
-        idx !== 0 && obj.objectNumber - sortedGroup[idx - 1].objectNumber > 1;
-
-      if (shouldStartNewSection) {
-        groupChunks.push({ firstObjectNumber: obj.objectNumber, size: 1 });
-      } else {
-        last(groupChunks)!.size += 1;
-      }
-
-      if (!isNil(obj.offset)) {
-        xrefStream.addUncompressedObjectEntry(obj.offset, obj.generationNumber);
-      }
-      if (!isNil(obj.index)) {
-        xrefStream.addCompressedObjectEntry(
-          objectStreamRef.objectNumber,
-          obj.index,
-        );
-      }
-    });
-
-    const index = PDFArray.fromArray(
-      flatMap(groupChunks, ({ firstObjectNumber, size }) => [
-        PDFNumber.fromNumber(firstObjectNumber),
-        PDFNumber.fromNumber(size),
-      ]),
-      pdfDoc.index,
-    );
-
-    xrefStream.dictionary.set(PDFName.from('Index'), index);
-    xrefStream.encode();
-    /* ======================== */
-
-    offset += xrefStreamIndObj.bytesSize();
-
     /* ----- */
 
-    const bufferSize = offset + trailer.bytesSize();
+    const bufferSize = offset + xrefStream.bytesSize() + trailer.bytesSize();
     const buffer = new Uint8Array(bufferSize);
 
     let remaining = pdfDoc.header.copyBytesInto(buffer);
@@ -209,7 +134,7 @@ class PDFDocumentWriter {
       (remBytes, obj) => obj.copyBytesInto(remBytes),
       remaining,
     );
-    remaining = xrefStreamIndObj.copyBytesInto(remaining);
+    remaining = xrefStream.copyBytesInto(remaining);
     remaining = trailer.copyBytesInto(remaining);
 
     return buffer;
