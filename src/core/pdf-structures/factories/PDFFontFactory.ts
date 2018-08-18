@@ -114,16 +114,17 @@ class PDFFontFactory {
     const fontName =
       name || this.font.postscriptName + randSuffix || 'Font' + randSuffix;
 
+    const deflatedFontData = pako.deflate(this.fontData);
     const fontStreamDict = PDFDictionary.from(
       {
         Subtype: PDFName.from('OpenType'),
         Filter: PDFName.from('FlateDecode'),
-        Length: PDFNumber.fromNumber(this.fontData.length),
+        Length: PDFNumber.fromNumber(deflatedFontData.length),
       },
       pdfDoc.index,
     );
     const fontStream = pdfDoc.register(
-      PDFRawStream.from(fontStreamDict, pako.deflate(this.fontData)),
+      PDFRawStream.from(fontStreamDict, deflatedFontData),
     );
 
     const {
