@@ -45,11 +45,7 @@ class PDFObjectStream extends PDFStream {
     this.dictionary.set(PDFName.from('Filter'), PDFName.from('FlateDecode'));
 
     const buffer = new Uint8Array(this.contentBytesSize());
-    const remaining = addStringToBuffer(this.leadingIntegerPairsStr(), buffer);
-    this.objects.reduce(
-      (remBytes, obj) => obj.pdfObject.copyBytesInto(remBytes),
-      remaining,
-    );
+    this.copyContentBytesInto(buffer);
     this.encodedContents = pako.deflate(buffer);
 
     return this;
@@ -82,19 +78,27 @@ class PDFObjectStream extends PDFStream {
       });
       remaining = remaining.subarray(this.encodedContents.length);
     } else {
-      remaining = addStringToBuffer(this.leadingIntegerPairsStr(), remaining);
-      remaining = this.objects.reduce(
-        (remBytes, obj) => obj.pdfObject.copyBytesInto(remBytes),
-        remaining,
-      );
+      remaining = this.copyContentBytesInto(remaining);
     }
 
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
   };
 
+  private copyContentBytesInto = (buffer: Uint8Array): Uint8Array => {
+    const remaining = addStringToBuffer(this.leadingIntegerPairsStr(), buffer);
+    return this.objects.reduce(
+      (remBytes, obj) =>
+        addStringToBuffer('\n', obj.pdfObject.copyBytesInto(remBytes)),
+      remaining,
+    );
+  };
+
   private updateObjectByteSizes = () => {
-    this.objectByteSizes = this.objects.map((obj) => obj.pdfObject.bytesSize());
+    // "+ 1" for the newline we add to separate the objects
+    this.objectByteSizes = this.objects.map(
+      (obj) => obj.pdfObject.bytesSize() + 1,
+    );
   };
 
   private contentBytesSize = (): number =>
