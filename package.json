@@ -14,7 +14,8 @@
     "coverage-report": "open coverage/lcov-report/index.html",
     "docs": "rm -rf docs && yarn typedoc --options typedoc.js src/",
     "lint": "yarn prettier --config ./.prettierrc.json --loglevel error --write \"{src,integration-tests,__tests__}/**/*.ts\" && tslint --project ./tsconfig.json --fix",
-    "it:node": "ts-node --module commonjs -r tsconfig-paths/register __integration_tests__/runners/node/index.ts"
+    "it:node": "ts-node --module commonjs -r tsconfig-paths/register __integration_tests__/runners/node/index.ts",
+    "it:node:profile": "rm isolate*.log && gulp build-dev && node --prof compiled/lib/__integration_tests__/runners/node/index.js && node --prof-process --preprocess -j isolate*.log | flamebearer"
   },
   "repository": {
     "type": "git",

@@ -17,5 +17,6 @@ debug*
 umd_test
 
 # Profiling
-isolate-0x102801600-v8.log
+isolate*.log
 profile-res.txt
+flamegraph.html
