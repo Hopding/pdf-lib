@@ -22,14 +22,10 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFXRefStream extends PDFStream {
   static create = (index: PDFObjectIndex) =>
-    new PDFXRefStream(
-      new PDFDictionary(
-        { Type: PDFName.from('XRef'), Filter: PDFName.from('FlateDecode') },
-        index,
-      ),
-    );
+    new PDFXRefStream(new PDFDictionary({ Type: PDFName.from('XRef') }, index));
 
   private entries: Array<[number, number, number]> = [];
+  private encodedEntries: Uint8Array | void;
 
   constructor(dictionary: PDFDictionary) {
     super(dictionary);
@@ -47,57 +43,47 @@ class PDFXRefStream extends PDFStream {
     this.entries.push([2, objectStreamNum, index]);
   };
 
-  bytesSize = (): number => {
-    this.updateDictionary();
-
+  encode = () => {
+    this.dictionary.set(PDFName.from('Filter'), PDFName.from('FlateDecode'));
     const buffer = new Uint8Array(this.entriesBytesSize());
     this.copyEntryBytesInto(buffer);
-    const deflated = pako.deflate(buffer);
+    this.encodedEntries = pako.deflate(buffer);
+    return this;
+  };
 
+  bytesSize = (): number => {
+    this.updateDictionary();
     return (
       this.dictionary.bytesSize() +
       1 + // "\n"
       7 + // "stream\n"
-      deflated.length +
+      this.contentBytesSize() +
       10 // \nendstream
     );
-
-    // this.updateDictionary();
-    // return (
-    //   this.dictionary.bytesSize() +
-    //   1 + // "\n"
-    //   7 + // "stream\n"
-    //   this.entriesBytesSize() +
-    //   10 // \nendstream
-    // );
   };
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
     this.updateDictionary();
     this.validateDictionary();
 
-    const entriesBuffer = new Uint8Array(this.entriesBytesSize());
-    this.copyEntryBytesInto(entriesBuffer);
-    const deflated = pako.deflate(entriesBuffer);
-
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
 
-    deflated.forEach((byte, idx) => {
-      remaining[idx] = byte;
-    });
-    remaining = remaining.subarray(deflated.length);
+    if (this.encodedEntries) {
+      this.encodedEntries.forEach((byte, idx) => {
+        remaining[idx] = byte;
+      });
+      remaining = remaining.subarray(this.encodedEntries.length);
+    } else {
+      remaining = this.copyEntryBytesInto(remaining);
+    }
 
-    // remaining = this.copyEntryBytesInto(remaining);
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
-
-    // let remaining = this.dictionary.copyBytesInto(buffer);
-    // remaining = addStringToBuffer('\nstream\n', remaining);
-    // remaining = this.copyEntryBytesInto(remaining);
-    // remaining = addStringToBuffer('\nendstream', remaining);
-    // return remaining;
   };
+
+  private contentBytesSize = () =>
+    this.encodedEntries ? this.encodedEntries.length : this.entriesBytesSize();
 
   private copyEntryBytesInto = (buffer: Uint8Array): Uint8Array => {
     const entryWidths = this.maxEntryByteWidths();
@@ -132,7 +118,7 @@ class PDFXRefStream extends PDFStream {
     );
     this.dictionary.set(
       PDFName.from('Length'),
-      PDFNumber.fromNumber(this.entriesBytesSize()),
+      PDFNumber.fromNumber(this.contentBytesSize()),
     );
   };
 }

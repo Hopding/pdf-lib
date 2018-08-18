@@ -19,10 +19,7 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 class PDFObjectStream extends PDFStream {
   static create = (index: PDFObjectIndex, objects: PDFIndirectObject[]) =>
     new PDFObjectStream(
-      new PDFDictionary(
-        { Type: PDFName.from('ObjStm'), Filter: PDFName.from('FlateDecode') },
-        index,
-      ),
+      new PDFDictionary({ Type: PDFName.from('ObjStm') }, index),
       objects,
     );
 
@@ -31,6 +28,7 @@ class PDFObjectStream extends PDFStream {
 
   objects: PDFIndirectObject[];
   objectByteSizes: number[] = [];
+  encodedContents: Uint8Array | void;
 
   constructor(dictionary: PDFDictionary, objects: PDFIndirectObject[]) {
     super(dictionary);
@@ -42,34 +40,32 @@ class PDFObjectStream extends PDFStream {
     this.objects = objects;
   }
 
-  bytesSize = (): number => {
-    if (this.objectByteSizes.length === 0) this.updateObjectByteSizes();
-    this.updateDictionary();
+  encode = () => {
+    this.updateObjectByteSizes();
+    this.dictionary.set(PDFName.from('Filter'), PDFName.from('FlateDecode'));
 
     const buffer = new Uint8Array(this.contentBytesSize());
     const remaining = addStringToBuffer(this.leadingIntegerPairsStr(), buffer);
     this.objects.reduce(
-      (remBytes: Uint8Array, obj: PDFIndirectObject) =>
-        obj.pdfObject.copyBytesInto(remBytes),
+      (remBytes, obj) => obj.pdfObject.copyBytesInto(remBytes),
       remaining,
     );
-    const deflated = pako.deflate(buffer);
+    this.encodedContents = pako.deflate(buffer);
+
+    return this;
+  };
+
+  bytesSize = (): number => {
+    if (this.objectByteSizes.length === 0) this.updateObjectByteSizes();
+    this.updateDictionary();
 
     return (
       this.dictionary.bytesSize() +
       1 + // "\n"
       7 + // "stream\n"
-      deflated.length +
+      this.contentBytesSize() +
       10 // \nendstream
     );
-
-    // return (
-    //   this.dictionary.bytesSize() +
-    //   1 + // "\n"
-    //   7 + // "stream\n"
-    //   this.contentBytesSize() +
-    //   10 // \nendstream
-    // );
   };
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array => {
@@ -80,32 +76,18 @@ class PDFObjectStream extends PDFStream {
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
 
-    const contentBuffer = new Uint8Array(this.contentBytesSize());
-    const contentBufferRem = addStringToBuffer(
-      this.leadingIntegerPairsStr(),
-      contentBuffer,
-    );
-    this.objects.reduce(
-      (remBytes: Uint8Array, obj: PDFIndirectObject) =>
-        obj.pdfObject.copyBytesInto(remBytes),
-      contentBufferRem,
-    );
-
-    const deflated = pako.deflate(contentBuffer);
-    deflated.forEach((byte, idx) => {
-      remaining[idx] = byte;
-    });
-    remaining = remaining.subarray(deflated.length);
-
-    // let remaining = this.dictionary.copyBytesInto(buffer);
-    // remaining = addStringToBuffer('\nstream\n', remaining);
-    // remaining = addStringToBuffer(this.leadingIntegerPairsStr(), remaining);
-    //
-    // remaining = this.objects.reduce(
-    //   (remBytes: Uint8Array, obj: PDFIndirectObject) =>
-    //     obj.pdfObject.copyBytesInto(remBytes),
-    //   remaining,
-    // );
+    if (this.encodedContents) {
+      this.encodedContents.forEach((byte, idx) => {
+        remaining[idx] = byte;
+      });
+      remaining = remaining.subarray(this.encodedContents.length);
+    } else {
+      remaining = addStringToBuffer(this.leadingIntegerPairsStr(), remaining);
+      remaining = this.objects.reduce(
+        (remBytes, obj) => obj.pdfObject.copyBytesInto(remBytes),
+        remaining,
+      );
+    }
 
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
@@ -116,7 +98,10 @@ class PDFObjectStream extends PDFStream {
   };
 
   private contentBytesSize = (): number =>
-    this.leadingIntegerPairsStr().length + this.objectByteSizes.reduce(add, 0);
+    this.encodedContents
+      ? this.encodedContents.length
+      : this.leadingIntegerPairsStr().length +
+        this.objectByteSizes.reduce(add, 0);
 
   private leadingIntegerPairsStr = (): string =>
     flatten(this.leadingIntegerPairs()).join(' ') + '\n';

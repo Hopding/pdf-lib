@@ -99,7 +99,10 @@ class PDFDocumentWriter {
 
     const { maxObjNum } = pdfDoc;
 
-    const objectStream = PDFObjectStream.create(pdfDoc.index, nonStreamObjects);
+    const objectStream = PDFObjectStream.create(
+      pdfDoc.index,
+      nonStreamObjects,
+    ).encode();
     const objectStreamRef = PDFIndirectReference.forNumbers(maxObjNum + 1, 0);
     streamObjects.push(
       PDFIndirectObject.of(objectStream).setReference(objectStreamRef),
@@ -191,6 +194,7 @@ class PDFDocumentWriter {
     );
 
     xrefStream.dictionary.set(PDFName.from('Index'), index);
+    xrefStream.encode();
     /* ======================== */
 
     offset += xrefStreamIndObj.bytesSize();
