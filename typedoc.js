@@ -7,6 +7,7 @@ module.exports = {
   readme: 'none',
   includes: './src',
   exclude: [
+    '**/index.ts',
     '**/utils/**/*',
     '**/pdf-document/PDFObjectIndex.ts',
     '**/pdf-objects/**/*',
@@ -16,6 +17,7 @@ module.exports = {
     '**/pdf-operators/*',
     '**/pdf-parser/**/*',
     '**/pdf-structures/factories/PDFXRefTableFactory.ts',
+    '**/pdf-structures/factories/PDFXRefStreamFactory.ts',
     '**/pdf-structures/PDFCatalog.ts',
     '**/pdf-structures/PDFContentStream.ts',
     '**/pdf-structures/PDFHeader.ts',
@@ -24,6 +26,7 @@ module.exports = {
     '**/pdf-structures/PDFPageTree.ts',
     '**/pdf-structures/PDFTrailer.ts',
     '**/pdf-structures/PDFXRef.ts',
+    '**/pdf-structures/PDFXRefStream.ts',
   ],
 
   excludeExternals: true,
