@@ -2,12 +2,19 @@ import { PDFIndirectObject, PDFObject } from 'core/pdf-objects';
 import { PDFHeader } from 'core/pdf-structures';
 import { Entry, Subsection, Table } from '../PDFXRef';
 
+export interface IObjectMetadata {
+  objectNumber: number;
+  generationNumber: number;
+  startOffset: number;
+  endOffset: number;
+}
+
 class PDFXRefTableFactory {
-  static forIndirectObjects = (
-    header: PDFHeader,
-    sortedIndex: PDFIndirectObject[],
-  ): [Table, number] => {
+  static forIndirectObjectOffsets = (
+    indirectObjectsInfo: IObjectMetadata[],
+  ): Table => {
     const table = new Table();
+
     let subsection = new Subsection().setFirstObjNum(0);
     subsection.addEntry(
       Entry.create()
@@ -17,28 +24,23 @@ class PDFXRefTableFactory {
     );
     table.addSubsection(subsection);
 
-    let offset = header.bytesSize();
-    sortedIndex.forEach((indirectObj, idx) => {
+    indirectObjectsInfo.forEach((info, idx) => {
       // Add new subsection if needed...
-      const { reference } = indirectObj;
-      const { reference: prevReference } = sortedIndex[idx - 1] || indirectObj;
-      if (reference.objectNumber - prevReference.objectNumber > 1) {
-        subsection = new Subsection().setFirstObjNum(
-          indirectObj.reference.objectNumber,
-        );
+      const prevObjectMeta = indirectObjectsInfo[idx - 1] || info;
+      if (info.objectNumber - prevObjectMeta.objectNumber > 1) {
+        subsection = new Subsection().setFirstObjNum(info.objectNumber);
         table.addSubsection(subsection);
       }
 
       subsection.addEntry(
         Entry.create()
-          .setOffset(offset)
+          .setOffset(info.startOffset)
           .setGenerationNum(0)
           .setIsInUse(true),
       );
-      offset += indirectObj.bytesSize();
     });
 
-    return [table, offset];
+    return table;
   };
 }
 

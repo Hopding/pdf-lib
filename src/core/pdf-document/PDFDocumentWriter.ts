@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 import last from 'lodash/last';
 import sortBy from 'lodash/sortBy';
 
-import PDFDocument from 'core/pdf-document/PDFDocument';
+import { PDFDocument, PDFObjectIndex } from 'core/pdf-document';
 import {
   PDFArray,
   PDFDictionary,
@@ -26,6 +26,47 @@ import { error } from 'utils';
 
 import { PDFTrailerX } from 'core/pdf-structures/PDFTrailer';
 
+interface IIndirectObjectInfo {
+  objectNumber: number;
+  generationNumber: number;
+  offset?: number;
+  index?: number;
+}
+
+const createIndirectObjectsFromIndex = ({ index }: PDFObjectIndex) => {
+  let catalogRef: PDFIndirectReference<PDFCatalog> | undefined;
+
+  const streamObjects: Array<PDFIndirectObject<PDFStream>> = [];
+  const nonStreamObjects: Array<PDFIndirectObject<PDFObject>> = [];
+
+  index.forEach((object, ref) => {
+    if (object instanceof PDFCatalog) catalogRef = ref;
+    const array =
+      object instanceof PDFStream ? streamObjects : nonStreamObjects;
+    array.push(PDFIndirectObject.of(object).setReference(ref));
+  });
+
+  return { catalogRef, streamObjects, nonStreamObjects };
+};
+
+const computeOffsets = (
+  startingOffset: number,
+  indirectObjects: Array<PDFIndirectObject<PDFObject>>,
+) =>
+  indirectObjects.map((object) => ({
+    objectNumber: object.reference.objectNumber,
+    generationNumber: object.reference.generationNumber,
+    startOffset: startingOffset,
+    endOffset: (startingOffset += object.bytesSize()),
+  }));
+
+const computeIndices = (objectStream: PDFObjectStream) =>
+  objectStream.objects.map((object, index) => ({
+    objectNumber: object.reference.objectNumber,
+    generationNumber: object.reference.generationNumber,
+    index,
+  }));
+
 class PDFDocumentWriter {
   /**
    * Converts a [[PDFDocument]] object into the raw bytes of a PDF document.
@@ -37,23 +78,26 @@ class PDFDocumentWriter {
    * @returns A `Uint8Array` containing the raw bytes of a PDF document.
    */
   static saveToBytes = (pdfDoc: PDFDocument): Uint8Array => {
-    const sortedIndex = PDFDocumentWriter.sortIndex(pdfDoc.index.index);
+    const {
+      catalogRef,
+      streamObjects,
+      nonStreamObjects,
+    } = createIndirectObjectsFromIndex(pdfDoc.index);
 
-    const { reference: catalogRef } =
-      sortedIndex.find(({ pdfObject }) => pdfObject instanceof PDFCatalog) ||
-      error('Missing PDFCatalog');
+    if (!catalogRef) error('Missing PDFCatalog');
 
-    const [table, tableOffset] = PDFXRefTableFactory.forIndirectObjects(
-      pdfDoc.header,
-      sortedIndex,
-    );
+    const merged = [...streamObjects, ...nonStreamObjects];
+    const offsets = computeOffsets(pdfDoc.header.bytesSize(), merged);
+    const sortedOffsets = sortBy(offsets, 'objectNumber');
 
+    const table = PDFXRefTableFactory.forIndirectObjectOffsets(sortedOffsets);
+    const tableOffset = last(offsets)!.endOffset;
     const trailer = PDFTrailer.from(
       tableOffset,
       PDFDictionary.from(
         {
-          Size: PDFNumber.fromNumber(sortedIndex.length + 1),
-          Root: catalogRef,
+          Size: PDFNumber.fromNumber(last(offsets)!.objectNumber + 1),
+          Root: catalogRef!,
         },
         pdfDoc.index,
       ),
@@ -63,9 +107,10 @@ class PDFDocumentWriter {
     const buffer = new Uint8Array(bufferSize);
 
     let remaining = pdfDoc.header.copyBytesInto(buffer);
-    sortedIndex.forEach((indirectObj) => {
-      remaining = indirectObj.copyBytesInto(remaining);
-    });
+    remaining = merged.reduce(
+      (remBytes, indirectObj) => indirectObj.copyBytesInto(remBytes),
+      remaining,
+    );
     remaining = table.copyBytesInto(remaining);
     remaining = trailer.copyBytesInto(remaining);
 
@@ -82,51 +127,44 @@ class PDFDocumentWriter {
    * @returns A `Uint8Array` containing the raw bytes of a PDF document.
    */
   static saveToBytesWithObjectStreams = (pdfDoc: PDFDocument): Uint8Array => {
-    let pdfCatalogRef: PDFIndirectReference<PDFCatalog>;
-
-    const streamObjects: Array<PDFIndirectObject<PDFStream>> = [];
-    const nonStreamObjects: Array<PDFIndirectObject<PDFObject>> = [];
-
-    pdfDoc.index.index.forEach((object, ref) => {
-      if (object instanceof PDFCatalog) pdfCatalogRef = ref;
-      if (object instanceof PDFStream) {
-        streamObjects.push(PDFIndirectObject.of(object).setReference(ref));
-      } else {
-        nonStreamObjects.push(PDFIndirectObject.of(object).setReference(ref));
-      }
-    });
-
-    if (!pdfCatalogRef!) error('Missing PDFCatalog');
-
-    const { maxObjNum } = pdfDoc;
-
-    const objectStream = PDFObjectStream.create(
-      pdfDoc.index,
+    const {
+      catalogRef,
+      streamObjects,
       nonStreamObjects,
-    ).encode();
+    } = createIndirectObjectsFromIndex(pdfDoc.index);
 
-    const objectStreamRef = PDFIndirectReference.forNumbers(maxObjNum + 1, 0);
-    const objectStreamIndObj = PDFIndirectObject.of(objectStream).setReference(
-      objectStreamRef,
-    );
+    if (!catalogRef!) error('Missing PDFCatalog');
+
+    const objectStream = PDFObjectStream.create(pdfDoc.index, nonStreamObjects);
+    objectStream.encode();
+
+    const objectStreamIndObj = PDFIndirectObject.of(
+      objectStream,
+    ).setReferenceNumbers(pdfDoc.maxObjNum + 1, 0);
 
     streamObjects.push(objectStreamIndObj);
 
-    const [offset, xrefStream] = PDFXRefStreamFactory.forIndirectObjects(
-      pdfDoc.header,
-      streamObjects,
-      objectStreamIndObj,
+    const offsets = computeOffsets(pdfDoc.header.bytesSize(), streamObjects);
+    const indices = computeIndices(objectStream);
+    const merged = sortBy([...offsets, ...indices], 'objectNumber');
+
+    const trailerOffset = last(offsets)!.endOffset;
+    const xrefStream = PDFXRefStreamFactory.forIndirectObjects(
+      trailerOffset,
+      objectStreamIndObj.reference.objectNumber,
+      merged,
       pdfDoc.index,
-      pdfCatalogRef!,
+      catalogRef!,
     );
 
-    // streamObjects.push(xrefStream);
+    streamObjects.push(xrefStream);
 
-    const trailer = PDFTrailerX.from(offset);
+    const trailer = PDFTrailerX.from(trailerOffset);
 
     /* ----- */
 
-    const bufferSize = offset + xrefStream.bytesSize() + trailer.bytesSize();
+    const bufferSize =
+      trailerOffset + xrefStream.bytesSize() + trailer.bytesSize();
     const buffer = new Uint8Array(bufferSize);
 
     let remaining = pdfDoc.header.copyBytesInto(buffer);
@@ -134,22 +172,9 @@ class PDFDocumentWriter {
       (remBytes, obj) => obj.copyBytesInto(remBytes),
       remaining,
     );
-    remaining = xrefStream.copyBytesInto(remaining);
     remaining = trailer.copyBytesInto(remaining);
 
     return buffer;
-  };
-
-  /** @hidden */
-  private static sortIndex = (index: Map<PDFIndirectReference, PDFObject>) => {
-    const indexArr: PDFIndirectObject[] = [];
-    index.forEach((object, ref) =>
-      indexArr.push(PDFIndirectObject.of(object).setReference(ref)),
-    );
-    indexArr.sort(
-      ({ reference: a }, { reference: b }) => a.objectNumber - b.objectNumber,
-    );
-    return indexArr;
   };
 }
 
