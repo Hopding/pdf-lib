@@ -127,8 +127,7 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
     pdfDoc.insertPage(2 * idx + 1, newPage);
   });
 
-  // return PDFDocumentWriter.saveToBytes(pdfDoc);
-  return PDFDocumentWriter.saveToBytesWithObjectStreams(pdfDoc);
+  return PDFDocumentWriter.saveToBytes(pdfDoc, { useObjectStreams: false });
 };
 
 export default {

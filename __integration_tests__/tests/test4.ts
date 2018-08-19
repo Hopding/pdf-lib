@@ -167,8 +167,7 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
 
   pdfDoc.addPage(lastPage);
 
-  // return PDFDocumentWriter.saveToBytes(pdfDoc);
-  return PDFDocumentWriter.saveToBytesWithObjectStreams(pdfDoc);
+  return PDFDocumentWriter.saveToBytes(pdfDoc);
 };
 
 export default {
