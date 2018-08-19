@@ -2,16 +2,13 @@ import { PDFIndirectObject, PDFObject } from 'core/pdf-objects';
 import { PDFHeader } from 'core/pdf-structures';
 import { Entry, Subsection, Table } from '../PDFXRef';
 
-export interface IObjectMetadata {
-  objectNumber: number;
-  generationNumber: number;
-  startOffset: number;
-  endOffset: number;
-}
-
 class PDFXRefTableFactory {
-  static forIndirectObjectOffsets = (
-    indirectObjectsInfo: IObjectMetadata[],
+  static forOffsets = (
+    offsets: Array<{
+      objectNumber: number;
+      generationNumber: number;
+      startOffset: number;
+    }>,
   ): Table => {
     const table = new Table();
 
@@ -24,9 +21,9 @@ class PDFXRefTableFactory {
     );
     table.addSubsection(subsection);
 
-    indirectObjectsInfo.forEach((info, idx) => {
+    offsets.forEach((info, idx) => {
       // Add new subsection if needed...
-      const prevObjectMeta = indirectObjectsInfo[idx - 1] || info;
+      const prevObjectMeta = offsets[idx - 1] || info;
       if (info.objectNumber - prevObjectMeta.objectNumber > 1) {
         subsection = new Subsection().setFirstObjNum(info.objectNumber);
         table.addSubsection(subsection);

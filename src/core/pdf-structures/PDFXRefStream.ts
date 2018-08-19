@@ -12,23 +12,30 @@ import {
   PDFArray,
   PDFDictionary,
   PDFIndirectObject,
+  PDFIndirectReference,
   PDFName,
   PDFNumber,
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
+import { PDFCatalog } from 'core/pdf-structures';
 import { addStringToBuffer, bytesFor, digits, or, sizeInBytes } from 'utils';
 import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFXRefStream extends PDFStream {
-  static create = (index: PDFObjectIndex) =>
-    new PDFXRefStream(new PDFDictionary({ Type: PDFName.from('XRef') }, index));
+  static create = (
+    config: { Size: PDFNumber; Root: PDFIndirectReference<PDFCatalog> },
+    index: PDFObjectIndex,
+  ) => new PDFXRefStream(config, index);
 
   private entries: Array<[number, number, number]> = [];
   private encodedEntries: Uint8Array | void;
 
-  constructor(dictionary: PDFDictionary) {
-    super(dictionary);
+  constructor(
+    { Size, Root }: { Size: PDFNumber; Root: PDFIndirectReference<PDFCatalog> },
+    index: PDFObjectIndex,
+  ) {
+    super(new PDFDictionary({ Type: PDFName.from('XRef'), Size, Root }, index));
   }
 
   addFreeObjectEntry = (nextFreeObjectNum: number, generationNum: number) => {

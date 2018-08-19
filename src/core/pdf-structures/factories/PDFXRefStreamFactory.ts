@@ -1,6 +1,7 @@
 import flatMap from 'lodash/flatMap';
 import isNil from 'lodash/isNil';
 import last from 'lodash/last';
+import sortBy from 'lodash/sortBy';
 
 import { PDFObjectIndex } from 'core/pdf-document';
 import {
@@ -20,47 +21,48 @@ import {
 } from 'core/pdf-structures';
 import { PDFTrailerX } from 'core/pdf-structures/PDFTrailer';
 
-export interface IObjectMetadata {
-  objectNumber: number;
-  generationNumber: number;
-  startOffset?: number;
-  endOffset?: number;
-  index?: number;
-}
+const computeIndices = (objectStream: PDFObjectStream) =>
+  objectStream.objects.map((object, index) => ({
+    objectNumber: object.reference.objectNumber,
+    generationNumber: object.reference.generationNumber,
+    index,
+  }));
 
 class PDFXRefStreamFactory {
-  static forIndirectObjects = (
-    startingOffset: number,
-    objectStreamObjectNumber: number,
-    objectsInfo: IObjectMetadata[],
-    index: PDFObjectIndex,
+  static forOffsetsAndObjectStream = (
+    offsets: Array<{
+      objectNumber: number;
+      generationNumber: number;
+      startOffset: number;
+    }>,
+    objectStream: PDFIndirectObject<PDFObjectStream>,
     catalog: PDFIndirectReference<PDFCatalog>,
+    index: PDFObjectIndex,
   ): PDFIndirectObject<PDFXRefStream> => {
-    const xrefStream = PDFXRefStream.create(index);
-    const xrefStreamRef = PDFIndirectReference.forNumbers(
-      last(objectsInfo)!.objectNumber + 1,
-      0,
+    const indices = computeIndices(objectStream.pdfObject);
+    const merged = sortBy([...offsets, ...indices], 'objectNumber');
+
+    const xrefObjectNumber = last(merged)!.objectNumber + 1;
+    const xrefStream = PDFXRefStream.create(
+      {
+        Size: PDFNumber.fromNumber(xrefObjectNumber + 1),
+        Root: catalog,
+      },
+      index,
     );
 
-    xrefStream.dictionary.set(
-      PDFName.from('Size'),
-      PDFNumber.fromNumber(xrefStreamRef.objectNumber + 1),
-    );
-    xrefStream.dictionary.set(PDFName.from('Root'), catalog);
-
-    /* ===== Add Index... ===== */
-    objectsInfo.push({
-      objectNumber: xrefStreamRef.objectNumber,
-      generationNumber: xrefStreamRef.generationNumber,
-      startOffset: startingOffset,
+    merged.push({
+      objectNumber: xrefObjectNumber,
+      generationNumber: 0,
+      startOffset: last(offsets)!.startOffset,
     });
 
     xrefStream.addFreeObjectEntry(0, 65535);
     const xrefSections = [{ firstObjectNumber: 0, size: 1 }];
 
-    objectsInfo.forEach((obj, idx) => {
+    merged.forEach((obj, idx) => {
       const shouldStartNewSection =
-        idx !== 0 && obj.objectNumber - objectsInfo[idx - 1].objectNumber > 1;
+        idx !== 0 && obj.objectNumber - merged[idx - 1].objectNumber > 1;
 
       if (shouldStartNewSection) {
         xrefSections.push({ firstObjectNumber: obj.objectNumber, size: 1 });
@@ -68,15 +70,15 @@ class PDFXRefStreamFactory {
         last(xrefSections)!.size += 1;
       }
 
-      if (!isNil(obj.startOffset)) {
+      if ('startOffset' in obj) {
         xrefStream.addUncompressedObjectEntry(
           obj.startOffset,
           obj.generationNumber,
         );
       }
-      if (!isNil(obj.index)) {
+      if ('index' in obj) {
         xrefStream.addCompressedObjectEntry(
-          objectStreamObjectNumber,
+          objectStream.reference.objectNumber,
           obj.index,
         );
       }
@@ -93,13 +95,11 @@ class PDFXRefStreamFactory {
       ),
     );
     xrefStream.encode();
-    /* ======================== */
 
-    const xrefStreamIndObj = PDFIndirectObject.of(xrefStream).setReference(
-      xrefStreamRef,
+    return PDFIndirectObject.of(xrefStream).setReferenceNumbers(
+      xrefObjectNumber,
+      0,
     );
-    return xrefStreamIndObj;
-    // return [offset, xrefStreamIndObj];
   };
 }
 
