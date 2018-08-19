@@ -24,8 +24,6 @@ import PDFXRefStreamFactory from 'core/pdf-structures/factories/PDFXRefStreamFac
 import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
 import { error } from 'utils';
 
-import { PDFTrailerX } from 'core/pdf-structures/PDFTrailer';
-
 const createIndirectObjectsFromIndex = ({ index }: PDFObjectIndex) => {
   let catalogRef: PDFIndirectReference<PDFCatalog> | undefined;
 
@@ -158,7 +156,7 @@ class PDFDocumentWriter {
     );
     streamObjects.push(xrefStream);
 
-    const trailer = PDFTrailerX.from(trailerOffset);
+    const trailer = PDFTrailer.from(trailerOffset);
 
     /* ===== (5) Create buffer and copy objects into it ===== */
     const bufferSize =

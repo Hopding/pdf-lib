@@ -19,7 +19,6 @@ import {
   PDFObjectStream,
   PDFXRefStream,
 } from 'core/pdf-structures';
-import { PDFTrailerX } from 'core/pdf-structures/PDFTrailer';
 
 const computeIndices = (objectStream: PDFObjectStream) =>
   objectStream.objects.map((object, index) => ({
