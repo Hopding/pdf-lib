@@ -67,6 +67,11 @@ class PDFContentStream extends PDFStream {
     this.copyOperatorBytesInto(buffer);
     this.encodedOperators = pako.deflate(buffer);
 
+    this.dictionary.set(
+      'Length',
+      PDFNumber.fromNumber(this.encodedOperators.length),
+    );
+
     return this;
   };
 
