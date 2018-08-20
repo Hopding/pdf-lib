@@ -1,4 +1,5 @@
 import flatMap from 'lodash/flatMap';
+import isFunction from 'lodash/isFunction';
 import isNil from 'lodash/isNil';
 import last from 'lodash/last';
 import sortBy from 'lodash/sortBy';
@@ -87,6 +88,9 @@ class PDFDocumentWriter {
     } = createIndirectObjectsFromIndex(pdfDoc.index);
 
     if (!catalogRef) error('Missing PDFCatalog');
+    streamObjects.forEach((streamObj: any) => {
+      if (isFunction(streamObj.encode)) streamObj.encode();
+    });
 
     const merged = [...streamObjects, ...nonStreamObjects];
     const offsets = computeOffsets(pdfDoc.header.bytesSize(), merged);
@@ -132,6 +136,9 @@ class PDFDocumentWriter {
     } = createIndirectObjectsFromIndex(pdfDoc.index);
 
     if (!catalogRef!) error('Missing PDFCatalog');
+    streamObjects.forEach((streamObj: any) => {
+      if (isFunction(streamObj.encode)) streamObj.encode();
+    });
 
     /* ===== (2) Create ObjectStream ===== */
     const objectStream = PDFObjectStream.create(pdfDoc.index, nonStreamObjects);

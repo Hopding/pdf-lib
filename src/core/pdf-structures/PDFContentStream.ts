@@ -1,10 +1,11 @@
 import add from 'lodash/add';
 import flatten from 'lodash/flatten';
 import isNumber from 'lodash/isNumber';
+import pako from 'pako';
 
 import 'core/pdf-objects';
 
-import { PDFDictionary, PDFNumber, PDFStream } from 'core/pdf-objects';
+import { PDFDictionary, PDFName, PDFNumber, PDFStream } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { addStringToBuffer, or } from 'utils';
 import { typedArrayProxy } from 'utils/proxies';
@@ -27,6 +28,7 @@ class PDFContentStream extends PDFStream {
   // TODO: Prevent this from being reassigned
   // TODO: Should disallow non-numeric indexes
   operators: PDFOperator[];
+  encodedOperators: Uint8Array | void;
 
   constructor(
     dictionary: PDFDictionary,
@@ -58,11 +60,23 @@ class PDFContentStream extends PDFStream {
     return this.dictionary.index.lookup(Length) as PDFNumber;
   }
 
+  encode = () => {
+    this.dictionary.set(PDFName.from('Filter'), PDFName.from('FlateDecode'));
+
+    const buffer = new Uint8Array(this.operatorsBytesSize());
+    this.copyOperatorBytesInto(buffer);
+    this.encodedOperators = pako.deflate(buffer);
+
+    return this;
+  };
+
   operatorsBytesSize = (): number =>
-    this.operators
-      .filter(Boolean)
-      .map((op) => op.bytesSize())
-      .reduce(add, 0);
+    this.encodedOperators
+      ? this.encodedOperators.length
+      : this.operators
+          .filter(Boolean)
+          .map((op) => op.bytesSize())
+          .reduce(add, 0);
 
   bytesSize = () =>
     this.dictionary.bytesSize() +
@@ -77,16 +91,23 @@ class PDFContentStream extends PDFStream {
     let remaining = this.dictionary.copyBytesInto(buffer);
     remaining = addStringToBuffer('\nstream\n', remaining);
 
-    remaining = this.operators
-      .filter(Boolean)
-      .reduce(
-        (remBytes: Uint8Array, op: PDFOperator) => op.copyBytesInto(remBytes),
-        remaining,
-      );
+    if (this.encodedOperators) {
+      this.encodedOperators.forEach((byte, idx) => {
+        remaining[idx] = byte;
+      });
+      remaining = remaining.subarray(this.encodedOperators.length);
+    } else {
+      remaining = this.copyOperatorBytesInto(remaining);
+    }
 
     remaining = addStringToBuffer('\nendstream', remaining);
     return remaining;
   };
+
+  private copyOperatorBytesInto = (buffer: Uint8Array): Uint8Array =>
+    this.operators
+      .filter(Boolean)
+      .reduce((remBytes, op) => op.copyBytesInto(remBytes), buffer);
 }
 
 export default PDFContentStream;
