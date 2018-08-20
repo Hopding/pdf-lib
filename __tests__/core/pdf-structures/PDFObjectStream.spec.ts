@@ -1,3 +1,5 @@
+import pako from 'pako';
+
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import {
   PDFArray,
@@ -9,7 +11,7 @@ import {
 } from 'core/pdf-objects';
 import PDFOperators from 'core/pdf-operators';
 import { PDFObjectStream } from 'core/pdf-structures';
-import { arrayToString, typedArrayFor } from 'utils';
+import { arrayToString, mergeUint8Arrays, typedArrayFor } from 'utils';
 
 describe(`PDFObjectStream`, () => {
   it(`extends PDFObject`, () => {
@@ -143,6 +145,62 @@ stream
 endstream
   `.trim();
       expect(buffer).toEqual(typedArrayFor(expected));
+    });
+
+    it(`copies the encoded PDFObjectStream into the buffer as bytes`, () => {
+      const index = PDFObjectIndex.create();
+
+      const object1 = PDFString.fromString('FooBar');
+      const object2 = PDFDictionary.from(
+        { Qux: PDFString.fromString('Baz') },
+        index,
+      );
+      const object3 = PDFArray.fromArray(
+        [
+          PDFDictionary.from({ Qux: PDFString.fromString('Baz') }, index),
+          PDFNumber.fromNumber(21),
+        ],
+        index,
+      );
+
+      const objStream = PDFObjectStream.create(index, [
+        PDFIndirectObject.of(object1).setReferenceNumbers(1, 0),
+        PDFIndirectObject.of(object2).setReferenceNumbers(2, 0),
+        PDFIndirectObject.of(object3).setReferenceNumbers(9000, 0),
+      ]);
+      objStream.encode();
+
+      const buffer = new Uint8Array(objStream.bytesSize());
+      objStream.copyBytesInto(buffer);
+
+      // prettier-ignore
+      const encodedContents = pako.deflate(typedArrayFor(
+`1 0 2 9 9000 26
+(FooBar)
+<<
+/Qux (Baz)
+>>
+[ <<
+/Qux (Baz)
+>> 21 ]
+`));
+
+      // prettier-ignore
+      const expected = mergeUint8Arrays(
+        typedArrayFor(
+`<<
+/Type /ObjStm
+/Filter /FlateDecode
+/Length ${encodedContents.length}
+/N 3
+/First 16
+>>
+stream\n`,
+        ),
+        encodedContents,
+        typedArrayFor(`\nendstream`));
+
+      expect(buffer).toEqual(expected);
     });
   });
 });
