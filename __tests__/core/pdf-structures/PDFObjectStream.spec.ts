@@ -93,7 +93,7 @@ describe(`PDFObjectStream`, () => {
         PDFIndirectObject.of(object3).setReferenceNumbers(9000, 0),
       ]);
 
-      expect(objStream.bytesSize()).toBe(125);
+      expect(objStream.bytesSize()).toBe(129);
     });
   });
 
@@ -126,16 +126,20 @@ describe(`PDFObjectStream`, () => {
       const expected = `
 <<
 /Type /ObjStm
-/Length 62
+/Length 66
 /N 3
-/First 15
+/First 16
 >>
 stream
-1 0 2 8 9000 24(FooBar)<<
+1 0 2 9 9000 26
+(FooBar)
+<<
 /Qux (Baz)
->>[ <<
+>>
+[ <<
 /Qux (Baz)
 >> 21 ]
+
 endstream
   `.trim();
       expect(buffer).toEqual(typedArrayFor(expected));
