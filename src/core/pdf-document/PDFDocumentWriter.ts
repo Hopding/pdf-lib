@@ -88,8 +88,8 @@ class PDFDocumentWriter {
     } = createIndirectObjectsFromIndex(pdfDoc.index);
 
     if (!catalogRef) error('Missing PDFCatalog');
-    streamObjects.forEach((streamObj: any) => {
-      if (isFunction(streamObj.encode)) streamObj.encode();
+    streamObjects.forEach((streamObj: PDFIndirectObject<any>) => {
+      if (isFunction(streamObj.pdfObject.encode)) streamObj.pdfObject.encode();
     });
 
     const merged = [...streamObjects, ...nonStreamObjects];
@@ -136,8 +136,8 @@ class PDFDocumentWriter {
     } = createIndirectObjectsFromIndex(pdfDoc.index);
 
     if (!catalogRef!) error('Missing PDFCatalog');
-    streamObjects.forEach((streamObj: any) => {
-      if (isFunction(streamObj.encode)) streamObj.encode();
+    streamObjects.forEach((streamObj: PDFIndirectObject<any>) => {
+      if (isFunction(streamObj.pdfObject.encode)) streamObj.pdfObject.encode();
     });
 
     /* ===== (2) Create ObjectStream ===== */
