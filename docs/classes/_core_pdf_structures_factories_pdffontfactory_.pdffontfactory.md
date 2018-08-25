@@ -16,7 +16,7 @@ A note of thanks to the developers of [https://github.com/devongovett/pdfkit](ht
 
 ⊕ **new PDFFontFactory**(fontData: *`Uint8Array`*, flagOptions: *[IFontFlagOptions](../interfaces/_core_pdf_structures_factories_pdffontfactory_.ifontflagoptions.md)*): [PDFFontFactory](_core_pdf_structures_factories_pdffontfactory_.pdffontfactory.md)
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:76](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L76)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:76](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/factories/PDFFontFactory.ts#L76)*
 
 **Parameters:**
 
@@ -37,7 +37,7 @@ ___
 
 **● flagOptions**: *[IFontFlagOptions](../interfaces/_core_pdf_structures_factories_pdffontfactory_.ifontflagoptions.md)*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:76](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L76)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:76](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/factories/PDFFontFactory.ts#L76)*
 
 ___
 <a id="font"></a>
@@ -46,7 +46,7 @@ ___
 
 **● font**: *`any`*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:73](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L73)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:73](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/factories/PDFFontFactory.ts#L73)*
 
 ___
 <a id="fontdata"></a>
@@ -55,7 +55,7 @@ ___
 
 **● fontData**: *`Uint8Array`*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:75](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L75)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:75](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/factories/PDFFontFactory.ts#L75)*
 
 ___
 <a id="scale"></a>
@@ -64,7 +64,7 @@ ___
 
 **● scale**: *`number`*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:74](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L74)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:74](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/factories/PDFFontFactory.ts#L74)*
 
 ___
 
@@ -74,16 +74,16 @@ ___
 
 ##  embedFontIn
 
-▸ **embedFontIn**(pdfDoc: *[PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)*, name?: *`string`*): `PDFIndirectReference`<`PDFDictionary`>
+▸ **embedFontIn**(pdfDoc: *[PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)*, name?: * `undefined` &#124; `string`*): `PDFIndirectReference`<`PDFDictionary`>
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:102](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L102)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:102](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/factories/PDFFontFactory.ts#L102)*
 
 **Parameters:**
 
 | Param | Type |
 | ------ | ------ |
 | pdfDoc | [PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md) |
-| `Optional` name | `string` |
+| `Optional` name |  `undefined` &#124; `string`|
 
 **Returns:** `PDFIndirectReference`<`PDFDictionary`>
 
@@ -94,7 +94,7 @@ ___
 
 ▸ **getCodePointWidth**(code: *`number`*): `number`
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:194](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L194)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:191](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/factories/PDFFontFactory.ts#L191)*
 
 **Parameters:**
 
@@ -111,7 +111,7 @@ ___
 
 ▸ **for**(fontData: *`Uint8Array`*, flagOptions: *[IFontFlagOptions](../interfaces/_core_pdf_structures_factories_pdffontfactory_.ifontflagoptions.md)*): [PDFFontFactory](_core_pdf_structures_factories_pdffontfactory_.pdffontfactory.md)
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:70](https://github.com/Hopding/pdf-lib/blob/d7334b8/src/core/pdf-structures/factories/PDFFontFactory.ts#L70)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:70](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/factories/PDFFontFactory.ts#L70)*
 
 **Parameters:**
 

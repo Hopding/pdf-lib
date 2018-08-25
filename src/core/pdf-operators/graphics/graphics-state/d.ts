@@ -38,10 +38,7 @@ class d extends PDFOperator {
     this.dashPhase = dashPhase;
   }
 
-  toString = () =>
-    this.dashArray.every(isNil)
-      ? `[] ${this.dashPhase} d\n`
-      : `[${this.dashArray[0]} ${this.dashArray[1]}] ${this.dashPhase} d\n`;
+  toString = () => `[${this.dashArray.join(' ')}] ${this.dashPhase} d\n`;
 
   bytesSize = () => this.toString().length;
 

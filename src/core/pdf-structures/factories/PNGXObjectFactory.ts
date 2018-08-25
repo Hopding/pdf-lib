@@ -117,6 +117,7 @@ class PNGXObjectFactory {
   /** @hidden */
   private finalize = () => {
     if (this.alphaChannel) {
+      const deflatedAlphaChannel = pako.deflate(this.alphaChannel);
       const alphaStreamDict = PDFDictionary.from(
         {
           Type: PDFName.from('XObject'),
@@ -130,12 +131,12 @@ class PNGXObjectFactory {
             [PDFNumber.fromNumber(0), PDFNumber.fromNumber(1)],
             this.document.index,
           ),
-          Length: PDFNumber.fromNumber(this.alphaChannel.length),
+          Length: PDFNumber.fromNumber(deflatedAlphaChannel.length),
         },
         this.document.index,
       );
       const smaskStream = this.document.register(
-        PDFRawStream.from(alphaStreamDict, pako.deflate(this.alphaChannel)),
+        PDFRawStream.from(alphaStreamDict, deflatedAlphaChannel),
       );
       this.xObjDict.set('SMask', smaskStream);
     }

@@ -9,6 +9,8 @@
 - [ ] Support Acroform manipulation.
 - [ ] Support document outlines.
 - [ ] Investigate possibility of saving PDFs as images using PDF-js.
+- [ ] Consider detecting and removing duplicate objects to reduce file size,
+      per: https://github.com/Hopding/pdf-lib/issues/9#issuecomment-413407284
 
 # Documentation
 - [ ] Add credits (file?) for the `test-pdfs`.
@@ -84,3 +86,7 @@
 - [ ] Consider removing the "validKeys" stuff from PDFDictionaries?
 - [ ] Make sure PDFDocument validates existence of its catalog.
 - [ ] Clean up "parseDocument" function.
+- [ ] Use multiple XRef streams for large documents with many pages, to improve
+      performance of readers. This way they can randomly access the objects as
+      needed, rather than being forced to decode one giant stream before they
+      can render anything.

@@ -1,3 +1,4 @@
+/* tslint:disable no-bitwise */
 import isString from 'lodash/isString';
 import sum from 'lodash/sum';
 
@@ -13,6 +14,30 @@ export type ArrayPredicate<A> = (...a: A[]) => boolean;
 
 export const error = (msg: string) => {
   throw new Error(msg);
+};
+
+export const digits = (num: number) => String(num).split('').length;
+
+export const sizeInBytes = (n: number) => Math.ceil(n.toString(2).length / 8);
+
+/**
+ * Converts a number into its constituent bytes and returns them as
+ * a number[].
+ *
+ * Returns most significant byte as first element in array. It may be necessary
+ * to call .reverse() to get the bits in the desired order.
+ *
+ * Example:
+ *   bytesFor(0x02A41E) => [ 0b10, 0b10100100, 0b11110 ]
+ *
+ * Credit for algorithm: https://stackoverflow.com/a/1936865
+ */
+export const bytesFor = (n: number) => {
+  const bytes = new Uint8Array(sizeInBytes(n));
+  for (let i = 1; i <= bytes.length; i++) {
+    bytes[i - 1] = n >> ((bytes.length - i) * 8);
+  }
+  return bytes;
 };
 
 export const isInt = (num: number) => num % 1 === 0;

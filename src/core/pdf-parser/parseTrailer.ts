@@ -58,8 +58,8 @@ const parseTrailer = (
  * Same as "parseTrailer" function, except does not look for the complete trailer.
  * Specifically, the "trailer" keyword and the trailer's dictionary are not parsed.
  *
- * Documents that have such a trailer do not meet the official specification, but
- * they do appear in the wild sometimes. This function allows us to handle them.
+ * Documents that use Object Streams do not need the "trailer" keyword or the
+ * associated dictionary. (The Object Streams store the trailer's dictionary.)
  */
 const parseTrailerWithoutDict = (
   input: Uint8Array,

@@ -1,3 +1,5 @@
+import pako from 'pako';
+
 // Required to prevent an issue with circular dependency resolution in this test
 import 'core/pdf-objects';
 
@@ -5,7 +7,7 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import { PDFDictionary, PDFNumber } from 'core/pdf-objects';
 import PDFOperators from 'core/pdf-operators';
 import { PDFContentStream } from 'core/pdf-structures';
-import { arrayToString, typedArrayFor } from 'utils';
+import { arrayToString, mergeUint8Arrays, typedArrayFor } from 'utils';
 
 describe(`PDFContentStream`, () => {
   it(`requires a PDFDictionary and Array<PDFOperator | PDFOperator[]> to be constructed`, () => {
@@ -171,7 +173,45 @@ S
 
 endstream
 `.trim();
+
       expect(buffer).toEqual(typedArrayFor(expected));
+    });
+
+    it(`copies the encoded PDFContentStream into the buffer as bytes`, () => {
+      const dict = PDFDictionary.from({}, PDFObjectIndex.create());
+      const { cm, S, s, Tf } = PDFOperators;
+      const contentStream = PDFContentStream.of(
+        dict,
+        s.operator,
+        cm.of(1, 2, 3, 4, 5, 6),
+        Tf.of('Foo', 12),
+        S.operator,
+      );
+      contentStream.encode();
+
+      const buffer = new Uint8Array(contentStream.bytesSize());
+      contentStream.copyBytesInto(buffer);
+
+      // prettier-ignore
+      const expected = mergeUint8Arrays(
+        typedArrayFor(
+`<<
+/Length 38
+/Filter /FlateDecode
+>>
+stream
+`),
+        pako.deflate(typedArrayFor(
+`s
+1 2 3 4 5 6 cm
+/Foo 12 Tf
+S
+`)),
+        typedArrayFor(
+`\nendstream`),
+      );
+
+      expect(buffer).toEqual(expected);
     });
   });
 });
