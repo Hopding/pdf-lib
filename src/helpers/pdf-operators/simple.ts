@@ -45,6 +45,7 @@ export const clipEvenOdd = () => W.asterisk!.operator;
 /* ======== Graphics state operators ======== */
 const { Q, q } = PDFOperators;
 const { cos, sin, tan } = Math;
+const degreesToRadians = (degrees: number) => degrees * Math.PI / 180;
 
 export const translate = (xPos: number, yPos: number) =>
   cm.of(1, 0, 0, 1, xPos, yPos);
@@ -52,18 +53,31 @@ export const translate = (xPos: number, yPos: number) =>
 export const scale = (xPos: number, yPos: number) =>
   cm.of(xPos, 0, 0, yPos, 0, 0);
 
-// TODO: TEST THIS:
-// export const rotate = (angle: number) =>
-//   cm.of(cos(angle), sin(angle), -sin(angle), cos(angle), 0, 0);
-//
-// export const rotateDegrees = (angle: number) => {
-//   const radians = angle * (Math.PI / 180);
-//   return cm.of(cos(radians), sin(radians), -sin(radians), cos(radians), 0, 0);
-// };
-//
-// // TODO: TEST THIS THING: [1 tana tanb 1 0 0]
-// export const skew = (xSkewAngle: number, ySkewAngle: number) =>
-//   cm.of(1, tan(xSkewAngle), tan(ySkewAngle), 1, 0, 0);
+export const rotateRadians = (angle: number) =>
+  cm.of(
+    Math.cos(angle + 0.00001),
+    Math.sin(angle + 0.00001),
+    -Math.sin(angle + 0.00001),
+    Math.cos(angle + 0.00001),
+    0,
+    0,
+  );
+
+export const rotateDegrees = (angle: number) =>
+  rotateRadians(degreesToRadians(angle));
+
+export const skewRadians = (xSkewAngle: number, ySkewAngle: number) =>
+  cm.of(1, tan(xSkewAngle + 0.00001), tan(ySkewAngle + 0.00001), 1, 0, 0);
+
+export const skewDegrees = (xSkewAngle: number, ySkewAngle: number) =>
+  cm.of(
+    1,
+    tan(degreesToRadians(xSkewAngle)),
+    tan(degreesToRadians(ySkewAngle)),
+    1,
+    0,
+    0,
+  );
 
 export const dashPattern = d.of;
 
