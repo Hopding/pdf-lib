@@ -74,6 +74,8 @@ const makeOverlayContentStream = (
       y: 265,
       width: 400,
       height: 90,
+      rotateDegrees: 10,
+      skewDegrees: { xAxis: 0, yAxis: 15 },
       colorRgb: [253 / 255, 246 / 255, 227 / 255],
       borderWidth: 3,
       borderColorRgb: [101 / 255, 123 / 255, 131 / 255],
@@ -87,6 +89,8 @@ const makeOverlayContentStream = (
       {
         x: 125,
         y: 325,
+        rotateDegrees: 10,
+        skewDegrees: { xAxis: 0, yAxis: 15 },
         colorRgb: [101 / 255, 123 / 255, 131 / 255],
         font: 'Ubuntu',
         size: 24,
@@ -129,5 +133,6 @@ export default {
     'an image of Mario running is drawn on top of the receipt.',
     'the same image of Mario is drawn upside down and skewed.',
     'a box with solarized text is drawn underneath Mario.',
+    'this box of text is angled upwards and skewed to the right.',
   ],
 };
