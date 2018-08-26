@@ -34,6 +34,8 @@ import {
   PDFTextObject,
   popGraphicsState,
   pushGraphicsState,
+  rotateDegrees,
+  rotateRadians,
   scale,
   Standard14Fonts,
   strokingRgbColor,
@@ -58,6 +60,14 @@ const makeOverlayContentStream = (
       y: 375,
       width: marioDims.width * 0.15,
       height: marioDims.height * 0.15,
+    }),
+    ...drawImage('Mario', {
+      x: 200 + marioDims.width * 0.15,
+      y: 375,
+      width: marioDims.width * 0.15,
+      height: marioDims.height * 0.15,
+      rotateDegrees: 180,
+      skewDegrees: { xAxis: 35, yAxis: 35 },
     }),
     ...drawRectangle({
       x: 120,
@@ -117,6 +127,7 @@ export default {
   checklist: [
     'the background of the PDF is a WaveOC USA, Inc. refund receipt.',
     'an image of Mario running is drawn on top of the receipt.',
+    'the same image of Mario is drawn upside down and skewed.',
     'a box with solarized text is drawn underneath Mario.',
   ],
 };
