@@ -1,3 +1,5 @@
+import round from 'lodash/round';
+
 import { PDFHexString, PDFName, PDFString } from 'core/pdf-objects';
 
 import { G, g } from 'core/pdf-operators/graphics/color/GOps';
@@ -45,6 +47,7 @@ export const clipEvenOdd = () => W.asterisk!.operator;
 /* ======== Graphics state operators ======== */
 const { Q, q } = PDFOperators;
 const { cos, sin, tan } = Math;
+export const degreesToRadians = (degrees: number) => degrees * Math.PI / 180;
 
 export const translate = (xPos: number, yPos: number) =>
   cm.of(1, 0, 0, 1, xPos, yPos);
@@ -52,18 +55,32 @@ export const translate = (xPos: number, yPos: number) =>
 export const scale = (xPos: number, yPos: number) =>
   cm.of(xPos, 0, 0, yPos, 0, 0);
 
-// TODO: TEST THIS:
-// export const rotate = (angle: number) =>
-//   cm.of(cos(angle), sin(angle), -sin(angle), cos(angle), 0, 0);
-//
-// export const rotateDegrees = (angle: number) => {
-//   const radians = angle * (Math.PI / 180);
-//   return cm.of(cos(radians), sin(radians), -sin(radians), cos(radians), 0, 0);
-// };
-//
-// // TODO: TEST THIS THING: [1 tana tanb 1 0 0]
-// export const skew = (xSkewAngle: number, ySkewAngle: number) =>
-//   cm.of(1, tan(xSkewAngle), tan(ySkewAngle), 1, 0, 0);
+// Round to the 6th decimal place to avoid JavaScript exponential notation
+// being used, which starts at the 7th decimal place, e.g.
+//   0.0000001 => 1e-7
+//   0.000001  => 0.000001
+export const rotateRadians = (angle: number) =>
+  cm.of(
+    round(Math.cos(angle), 6),
+    round(Math.sin(angle), 6),
+    round(-Math.sin(angle), 6),
+    round(Math.cos(angle), 6),
+    0,
+    0,
+  );
+
+export const rotateDegrees = (angle: number) =>
+  rotateRadians(degreesToRadians(angle));
+
+// Round to the 6th decimal place to avoid JavaScript exponential notation
+// being used, which starts at the 7th decimal place, e.g.
+//   0.0000001 => 1e-7
+//   0.000001  => 0.000001
+export const skewRadians = (xSkewAngle: number, ySkewAngle: number) =>
+  cm.of(1, round(tan(xSkewAngle), 6), round(tan(ySkewAngle), 6), 1, 0, 0);
+
+export const skewDegrees = (xSkewAngle: number, ySkewAngle: number) =>
+  skewRadians(degreesToRadians(xSkewAngle), degreesToRadians(ySkewAngle));
 
 export const dashPattern = d.of;
 
@@ -156,6 +173,43 @@ export const textRenderingMode = (
       fillAndOutlineAndClip: 6,
       clip: 7,
     }[style],
+  );
+
+export const textMatrix = Tm.of;
+
+// Round to the 6th decimal place to avoid JavaScript exponential notation
+// being used, which starts at the 7th decimal place, e.g.
+//   0.0000001 => 1e-7
+//   0.000001  => 0.000001
+export const rotateAndSkewTextRadiansAndTranslate = (
+  rotationAngle: number,
+  xSkewAngle: number,
+  ySkewAngle: number,
+  x: number,
+  y: number,
+) =>
+  Tm.of(
+    round(Math.cos(rotationAngle), 6),
+    round(Math.sin(rotationAngle) + tan(xSkewAngle), 6),
+    round(-Math.sin(rotationAngle) + tan(ySkewAngle), 6),
+    round(Math.cos(rotationAngle), 6),
+    x,
+    y,
+  );
+
+export const rotateAndSkewTextDegreesAndTranslate = (
+  rotationAngle: number,
+  xSkewAngle: number,
+  ySkewAngle: number,
+  x: number,
+  y: number,
+) =>
+  rotateAndSkewTextRadiansAndTranslate(
+    degreesToRadians(rotationAngle),
+    degreesToRadians(xSkewAngle),
+    degreesToRadians(ySkewAngle),
+    x,
+    y,
   );
 
 /* ======== XObject operator ======== */

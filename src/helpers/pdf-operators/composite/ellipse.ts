@@ -11,6 +11,7 @@ import {
   clip,
   closePath,
   dashPattern,
+  degreesToRadians,
   endPath,
   fill,
   fillAndStroke,
@@ -24,7 +25,10 @@ import {
   popGraphicsState,
   pushGraphicsState,
   rectangle,
+  rotateRadians,
   scale,
+  skewDegrees,
+  skewRadians,
   square,
   stroke,
   strokingRgbColor,
@@ -50,15 +54,21 @@ const drawEllipsePath = ({
   y = 0,
   xScale = 100,
   yScale = 100,
+  rotationAngle = 0,
+  skewAngles = { xAxis: 0, yAxis: 0 },
 }: {
   x?: number;
   y?: number;
   xScale?: number;
   yScale?: number;
+  rotationAngle?: number;
+  skewAngles?: { xAxis: number; yAxis: number };
 }): PDFOperator[] => [
   pushGraphicsState(),
   translate(x, y),
+  rotateRadians(rotationAngle),
   scale(xScale, yScale),
+  skewRadians(skewAngles.xAxis, skewAngles.yAxis),
   moveTo(0, 1),
   appendBezierCurve(C_VAL, 1, 1, C_VAL, 1, 0),
   appendBezierCurve(1, -C_VAL, C_VAL, -1, 0, -1),
@@ -129,6 +139,36 @@ export interface IDrawEllipseOptions {
    * `borderColorRgb: [255 / 255, 50 / 255, 255 / 255]`.
    */
   borderColorRgb?: number[];
+  /**
+   * Default value is `0`.
+   *
+   * Degrees to rotate the ellipse clockwise. If defined as a negative number,
+   * the ellipse will be rotated counter-clockwise.
+   */
+  rotateDegrees?: number;
+  /**
+   * Default value is `0`.
+   *
+   * Radians to rotate the ellipse clockwise. If defined as a negative number,
+   * the ellipse will be rotated counter-clockwise.
+   */
+  rotateRadians?: number;
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Degrees to skew the x and y axes of the ellipse. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
+   * Quadrant 1.
+   */
+  skewDegrees?: { xAxis: number; yAxis: number };
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Radians to skew the x and y axes of the ellipse. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
+   * Quadrant 1.
+   */
+  skewRadians?: { xAxis: number; yAxis: number };
 }
 
 /**
@@ -142,6 +182,8 @@ export interface IDrawEllipseOptions {
  *       y: 50,
  *       xScale: 50,
  *       yScale: 150,
+ *       rotateDegrees: 45,
+ *       skewDegrees: { xAxis: 30, yAxis: 30 },
  *       borderWidth: 25,
  *       colorRgb: [0.25, 1.0, 0.79],
  *       borderColorRgb: [0.79, 0.25, 1.0],
@@ -173,6 +215,15 @@ export const drawEllipse = (options: IDrawEllipseOptions): PDFOperator[] => [
     y: options.y || 0,
     xScale: options.xScale || 100,
     yScale: options.yScale || 100,
+    rotationAngle: options.rotateDegrees
+      ? degreesToRadians(options.rotateDegrees)
+      : options.rotateRadians,
+    skewAngles: options.skewDegrees
+      ? {
+          xAxis: degreesToRadians(options.skewDegrees.xAxis),
+          yAxis: degreesToRadians(options.skewDegrees.yAxis),
+        }
+      : options.skewRadians,
   }),
   // prettier-ignore
   !isEmpty(options.colorRgb) && !isEmpty(options.borderColorRgb) ? fillAndStroke()
@@ -237,6 +288,36 @@ export interface IDrawCircleOptions {
    * `borderColorRgb: [255 / 255, 50 / 255, 255 / 255]`.
    */
   borderColorRgb?: number[];
+  /**
+   * Default value is `0`.
+   *
+   * Degrees to rotate the circle clockwise. If defined as a negative number,
+   * the circle will be rotated counter-clockwise.
+   */
+  rotateDegrees?: number;
+  /**
+   * Default value is `0`.
+   *
+   * Radians to rotate the circle clockwise. If defined as a negative number,
+   * the circle will be rotated counter-clockwise.
+   */
+  rotateRadians?: number;
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Degrees to skew the x and y axes of the circle. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
+   * Quadrant 1.
+   */
+  skewDegrees?: { xAxis: number; yAxis: number };
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Radians to skew the x and y axes of the circle. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
+   * Quadrant 1.
+   */
+  skewRadians?: { xAxis: number; yAxis: number };
 }
 
 /**
@@ -249,6 +330,8 @@ export interface IDrawCircleOptions {
  *       x: 25,
  *       y: 50,
  *       size: 50,
+ *       rotateDegrees: 45,
+ *       skewDegrees: { xAxis: 30, yAxis: 30 },
  *       borderWidth: 25,
  *       colorRgb: [0.25, 1.0, 0.79],
  *       borderColorRgb: [0.79, 0.25, 1.0],
@@ -271,4 +354,8 @@ export const drawCircle = (options: IDrawCircleOptions): PDFOperator[] =>
     borderWidth: options.borderWidth || 15,
     colorRgb: options.colorRgb || [],
     borderColorRgb: options.borderColorRgb || [],
+    rotateDegrees: options.rotateDegrees,
+    rotateRadians: options.rotateRadians,
+    skewDegrees: options.skewDegrees,
+    skewRadians: options.skewRadians,
   });

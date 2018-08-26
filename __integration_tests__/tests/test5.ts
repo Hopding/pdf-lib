@@ -88,6 +88,8 @@ const makeMiddlePageContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
         y: pageHeight - (idx + 1) * 20,
         size: 20,
         font,
+        rotateRadians: -Math.PI / 6,
+        skewRadians: { xAxis: Math.PI / 10, yAxis: Math.PI / 10 },
       }),
     ),
   );
@@ -143,6 +145,7 @@ export default {
     'the first and last pages contain a picture of Mario.',
     'the first and last pages contains a box of solarized text beneath Mario.',
     'the middle page has 14 lines of text that say "These are the 14 Standard Fonts."',
+    'the 14 lines of text are angled downwards and skewed to the right.',
     'each line of text is in a different font.',
     'the 4th and 8th fonts are symbolic non-latin fonts.',
   ],

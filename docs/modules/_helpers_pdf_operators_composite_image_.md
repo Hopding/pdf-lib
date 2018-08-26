@@ -8,7 +8,7 @@
 
 ▸ **drawImage**(name: * `string` &#124; `PDFName`*, options: *[IDrawImageOptions](../interfaces/_helpers_pdf_operators_composite_image_.idrawimageoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/image.ts:94](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/image.ts#L94)*
+*Defined in [helpers/pdf-operators/composite/image.ts:130](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L130)*
 
 Draws an image object in a content stream. PNG and JPG image objects are supported.
 
@@ -22,8 +22,10 @@ const contentStream = pdfDoc.register(
     drawImage('MyPngImage', {
       x: 25,
       y: 50,
-      width: pngDims.width * 0.5,   // Make the image 50% smaller
+      width:  pngDims.width  * 0.5, // Make the image 50% smaller
       height: pngDims.height * 0.5, // Make the image 50% smaller
+      rotateDegrees: 180            // Draw the image upside down
+      skewDegrees: { xAxis: 30, yAxis: 30 } // Skew both axes by 30 degrees
     }),
   ),
 );
