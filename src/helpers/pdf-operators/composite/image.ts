@@ -80,16 +80,16 @@ export interface IDrawImageOptions {
   /**
    * Default value is `{ xAxis: 0, yAxis: 0 }`.
    *
-   * Degrees to skew the x and y axes of the image. Positive numbers will skew
-   * the axes into Quadrant 1. Negative numbers will skew the axes away from
+   * Degrees to skew the x and y axes of the image. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
    * Quadrant 1.
    */
   skewDegrees?: { xAxis: number; yAxis: number };
   /**
    * Default value is `{ xAxis: 0, yAxis: 0 }`.
    *
-   * Radians to skew the x and y axes of the image. Positive numbers will skew
-   * the axes into Quadrant 1. Negative numbers will skew the axes away from
+   * Radians to skew the x and y axes of the image. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
    * Quadrant 1.
    */
   skewRadians?: { xAxis: number; yAxis: number };

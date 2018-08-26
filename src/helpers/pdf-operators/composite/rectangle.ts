@@ -18,13 +18,18 @@ import {
   fontAndSize,
   image,
   lineHeight,
+  lineTo,
   lineWidth,
   moveTo,
   nextLine,
   popGraphicsState,
   pushGraphicsState,
   rectangle,
+  rotateDegrees,
+  rotateRadians,
   scale,
+  skewDegrees,
+  skewRadians,
   square,
   stroke,
   strokingRgbColor,
@@ -96,6 +101,36 @@ export interface IDrawRectangleOptions {
    * `borderColorRgb: [255 / 255, 50 / 255, 255 / 255]`.
    */
   borderColorRgb?: number[];
+  /**
+   * Default value is `0`.
+   *
+   * Degrees to rotate the rectangle clockwise. If defined as a negative number,
+   * the rectangle will be rotated counter-clockwise.
+   */
+  rotateDegrees?: number;
+  /**
+   * Default value is `0`.
+   *
+   * Radians to rotate the rectangle clockwise. If defined as a negative number,
+   * the rectangle will be rotated counter-clockwise.
+   */
+  rotateRadians?: number;
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Degrees to skew the x and y axes of the rectangle. Positive values will
+   * skew the axes into Quadrant 1. Negative values will skew the axes away
+   * from Quadrant 1.
+   */
+  skewDegrees?: { xAxis: number; yAxis: number };
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Radians to skew the x and y axes of the rectangle. Positive values will
+   * skew the axes into Quadrant 1. Negative values will skew the axes away
+   * from Quadrant 1.
+   */
+  skewRadians?: { xAxis: number; yAxis: number };
 }
 
 /**
@@ -109,6 +144,8 @@ export interface IDrawRectangleOptions {
  *       y: 50,
  *       width: 1000,
  *       height: 500,
+ *       rotateDegrees: 45,
+ *       skewDegrees: { xAxis: 30, yAxis: 30 },
  *       borderWidth: 25,
  *       colorRgb: [0.25, 1.0, 0.79],
  *       borderColorRgb: [0.79, 0.25, 1.0],
@@ -122,34 +159,41 @@ export interface IDrawRectangleOptions {
  *
  * @param options An options object with named parameters.
  */
-export const drawRectangle = (
-  options: IDrawRectangleOptions,
-): PDFOperator[] => [
-  pushGraphicsState(),
-  fillingRgbColor(
-    get(options, 'colorRgb[0]', 0),
-    get(options, 'colorRgb[1]', 0),
-    get(options, 'colorRgb[2]', 0),
-  ),
-  strokingRgbColor(
-    get(options, 'borderColorRgb[0]', 0),
-    get(options, 'borderColorRgb[1]', 0),
-    get(options, 'borderColorRgb[2]', 0),
-  ),
-  lineWidth(options.borderWidth || 15),
-  rectangle(
-    options.x || 0,
-    options.y || 0,
-    options.width || 150,
-    options.height || 100,
-  ),
-  // prettier-ignore
-  !isEmpty(options.colorRgb) && !isEmpty(options.borderColorRgb) ? fillAndStroke()
-  : !isEmpty(options.colorRgb)                                     ? fill()
-  : !isEmpty(options.borderColorRgb)                               ? stroke()
-  : closePath(),
-  popGraphicsState(),
-];
+export const drawRectangle = (options: IDrawRectangleOptions): PDFOperator[] =>
+  [
+    pushGraphicsState(),
+    fillingRgbColor(
+      get(options, 'colorRgb[0]', 0),
+      get(options, 'colorRgb[1]', 0),
+      get(options, 'colorRgb[2]', 0),
+    ),
+    strokingRgbColor(
+      get(options, 'borderColorRgb[0]', 0),
+      get(options, 'borderColorRgb[1]', 0),
+      get(options, 'borderColorRgb[2]', 0),
+    ),
+    lineWidth(options.borderWidth || 15),
+
+    translate(options.x || 0, options.y || 0),
+    options.rotateDegrees && rotateDegrees(options.rotateDegrees),
+    options.rotateRadians && rotateRadians(options.rotateRadians),
+    options.skewDegrees &&
+      skewDegrees(options.skewDegrees.xAxis, options.skewDegrees.yAxis),
+    options.skewRadians &&
+      skewRadians(options.skewRadians.xAxis, options.skewRadians.yAxis),
+    moveTo(0, 0),
+    lineTo(0, options.height || 100),
+    lineTo(options.width || 150, options.height || 100),
+    lineTo(options.width || 150, 0),
+    closePath(),
+
+    // prettier-ignore
+    !isEmpty(options.colorRgb) && !isEmpty(options.borderColorRgb)   ? fillAndStroke()
+    : !isEmpty(options.colorRgb)                                     ? fill()
+    : !isEmpty(options.borderColorRgb)                               ? stroke()
+    : closePath(),
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
 
 // TODO: Implement cornerStyle option
 /**
@@ -206,6 +250,36 @@ export interface IDrawSquareOptions {
    * `borderColorRgb: [255 / 255, 50 / 255, 255 / 255]`.
    */
   borderColorRgb?: number[];
+  /**
+   * Default value is `0`.
+   *
+   * Degrees to rotate the square clockwise. If defined as a negative number,
+   * the square will be rotated counter-clockwise.
+   */
+  rotateDegrees?: number;
+  /**
+   * Default value is `0`.
+   *
+   * Radians to rotate the square clockwise. If defined as a negative number,
+   * the square will be rotated counter-clockwise.
+   */
+  rotateRadians?: number;
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Degrees to skew the x and y axes of the square. Positive values will
+   * skew the axes into Quadrant 1. Negative values will skew the axes away
+   * from Quadrant 1.
+   */
+  skewDegrees?: { xAxis: number; yAxis: number };
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Radians to skew the x and y axes of the square. Positive values will
+   * skew the axes into Quadrant 1. Negative values will skew the axes away
+   * from Quadrant 1.
+   */
+  skewRadians?: { xAxis: number; yAxis: number };
 }
 
 /**
@@ -218,6 +292,8 @@ export interface IDrawSquareOptions {
  *       x: 25,
  *       y: 50,
  *       size: 500,
+ *       rotateDegrees: 45,
+ *       skewDegrees: { xAxis: 30, yAxis: 30 },
  *       borderWidth: 25,
  *       colorRgb: [0.25, 1.0, 0.79],
  *       borderColorRgb: [0.79, 0.25, 1.0],
@@ -237,6 +313,10 @@ export const drawSquare = (options: IDrawSquareOptions): PDFOperator[] =>
     y: options.y || 0,
     width: options.size || 100,
     height: options.size || 100,
+    rotateDegrees: options.rotateDegrees,
+    rotateRadians: options.rotateRadians,
+    skewDegrees: options.skewDegrees,
+    skewRadians: options.skewRadians,
     borderWidth: options.borderWidth || 15,
     colorRgb: options.colorRgb || [],
     borderColorRgb: options.borderColorRgb || [],

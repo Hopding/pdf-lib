@@ -1,6 +1,5 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import mapValues from 'lodash/mapValues';
 
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
@@ -157,16 +156,16 @@ export interface IDrawEllipseOptions {
   /**
    * Default value is `{ xAxis: 0, yAxis: 0 }`.
    *
-   * Degrees to skew the x and y axes of the ellipse. Positive numbers will skew
-   * the axes into Quadrant 1. Negative numbers will skew the axes away from
+   * Degrees to skew the x and y axes of the ellipse. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
    * Quadrant 1.
    */
   skewDegrees?: { xAxis: number; yAxis: number };
   /**
    * Default value is `{ xAxis: 0, yAxis: 0 }`.
    *
-   * Radians to skew the x and y axes of the ellipse. Positive numbers will skew
-   * the axes into Quadrant 1. Negative numbers will skew the axes away from
+   * Radians to skew the x and y axes of the ellipse. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
    * Quadrant 1.
    */
   skewRadians?: { xAxis: number; yAxis: number };
@@ -183,6 +182,8 @@ export interface IDrawEllipseOptions {
  *       y: 50,
  *       xScale: 50,
  *       yScale: 150,
+ *       rotateDegrees: 45,
+ *       skewDegrees: { xAxis: 30, yAxis: 30 },
  *       borderWidth: 25,
  *       colorRgb: [0.25, 1.0, 0.79],
  *       borderColorRgb: [0.79, 0.25, 1.0],
@@ -304,16 +305,16 @@ export interface IDrawCircleOptions {
   /**
    * Default value is `{ xAxis: 0, yAxis: 0 }`.
    *
-   * Degrees to skew the x and y axes of the circle. Positive numbers will skew
-   * the axes into Quadrant 1. Negative numbers will skew the axes away from
+   * Degrees to skew the x and y axes of the circle. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
    * Quadrant 1.
    */
   skewDegrees?: { xAxis: number; yAxis: number };
   /**
    * Default value is `{ xAxis: 0, yAxis: 0 }`.
    *
-   * Radians to skew the x and y axes of the circle. Positive numbers will skew
-   * the axes into Quadrant 1. Negative numbers will skew the axes away from
+   * Radians to skew the x and y axes of the circle. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
    * Quadrant 1.
    */
   skewRadians?: { xAxis: number; yAxis: number };
@@ -329,6 +330,8 @@ export interface IDrawCircleOptions {
  *       x: 25,
  *       y: 50,
  *       size: 50,
+ *       rotateDegrees: 45,
+ *       skewDegrees: { xAxis: 30, yAxis: 30 },
  *       borderWidth: 25,
  *       colorRgb: [0.25, 1.0, 0.79],
  *       borderColorRgb: [0.79, 0.25, 1.0],
