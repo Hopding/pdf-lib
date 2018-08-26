@@ -40,6 +40,21 @@ export const bytesFor = (n: number) => {
   return bytes;
 };
 
+// Arrays and TypedArrays in JS both have .reverse() methods, which would seem
+// to negate the need for this function. However, not all runtimes support this
+// method (e.g. React Native), so using this function compensates for that.
+export const reverseArray = (array: any[] | Uint8Array) => {
+  for (let i = 0; i < Math.floor(array.length / 2); i++) {
+    const leftIdx = i;
+    const rightIdx = array.length - i - 1;
+    const temp = array[i];
+
+    array[leftIdx] = array[rightIdx];
+    array[rightIdx] = temp;
+  }
+  return array;
+};
+
 export const isInt = (num: number) => num % 1 === 0;
 
 export const and = (...predicates: Array<ArrayPredicate<any>>) => (

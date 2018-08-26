@@ -97,9 +97,9 @@ class PDFContentStream extends PDFStream {
     remaining = addStringToBuffer('\nstream\n', remaining);
 
     if (this.encodedOperators) {
-      this.encodedOperators.forEach((byte, idx) => {
-        remaining[idx] = byte;
-      });
+      for (let i = 0; i < this.encodedOperators.length; i++) {
+        remaining[i] = this.encodedOperators[i];
+      }
       remaining = remaining.subarray(this.encodedOperators.length);
     } else {
       remaining = this.copyOperatorBytesInto(remaining);

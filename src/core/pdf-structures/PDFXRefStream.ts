@@ -19,7 +19,14 @@ import {
   PDFStream,
 } from 'core/pdf-objects';
 import { PDFCatalog } from 'core/pdf-structures';
-import { addStringToBuffer, bytesFor, digits, or, sizeInBytes } from 'utils';
+import {
+  addStringToBuffer,
+  bytesFor,
+  digits,
+  or,
+  reverseArray,
+  sizeInBytes,
+} from 'utils';
 import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFXRefStream extends PDFStream {
@@ -77,9 +84,9 @@ class PDFXRefStream extends PDFStream {
     remaining = addStringToBuffer('\nstream\n', remaining);
 
     if (this.encodedEntries) {
-      this.encodedEntries.forEach((byte, idx) => {
-        remaining[idx] = byte;
-      });
+      for (let i = 0; i < this.encodedEntries.length; i++) {
+        remaining[i] = this.encodedEntries[i];
+      }
       remaining = remaining.subarray(this.encodedEntries.length);
     } else {
       remaining = this.copyEntryBytesInto(remaining);
@@ -97,7 +104,7 @@ class PDFXRefStream extends PDFStream {
 
     let idx = 0;
     flatten(this.entries).forEach((entry, currEntryIdx) => {
-      const bytes = bytesFor(entry).reverse();
+      const bytes = reverseArray(bytesFor(entry));
       for (let i = entryWidths[currEntryIdx % 3] - 1; i >= 0; i--) {
         buffer[idx++] = bytes[i] || 0;
       }
