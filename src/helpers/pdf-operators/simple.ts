@@ -1,3 +1,5 @@
+import round from 'lodash/round';
+
 import { PDFHexString, PDFName, PDFString } from 'core/pdf-objects';
 
 import { G, g } from 'core/pdf-operators/graphics/color/GOps';
@@ -53,12 +55,16 @@ export const translate = (xPos: number, yPos: number) =>
 export const scale = (xPos: number, yPos: number) =>
   cm.of(xPos, 0, 0, yPos, 0, 0);
 
+// Round to the 6th decimal place to avoid JavaScript exponential notation
+// being used, which starts at the 7th decimal place, e.g.
+//   0.0000001 => 1e-7
+//   0.000001  => 0.000001
 export const rotateRadians = (angle: number) =>
   cm.of(
-    Math.cos(angle + 0.00001),
-    Math.sin(angle + 0.00001),
-    -Math.sin(angle + 0.00001),
-    Math.cos(angle + 0.00001),
+    round(Math.cos(angle), 6),
+    round(Math.sin(angle), 6),
+    round(-Math.sin(angle), 6),
+    round(Math.cos(angle), 6),
     0,
     0,
   );
@@ -66,18 +72,15 @@ export const rotateRadians = (angle: number) =>
 export const rotateDegrees = (angle: number) =>
   rotateRadians(degreesToRadians(angle));
 
+// Round to the 6th decimal place to avoid JavaScript exponential notation
+// being used, which starts at the 7th decimal place, e.g.
+//   0.0000001 => 1e-7
+//   0.000001  => 0.000001
 export const skewRadians = (xSkewAngle: number, ySkewAngle: number) =>
-  cm.of(1, tan(xSkewAngle + 0.00001), tan(ySkewAngle + 0.00001), 1, 0, 0);
+  cm.of(1, round(tan(xSkewAngle), 6), round(tan(ySkewAngle), 6), 1, 0, 0);
 
 export const skewDegrees = (xSkewAngle: number, ySkewAngle: number) =>
-  cm.of(
-    1,
-    tan(degreesToRadians(xSkewAngle)),
-    tan(degreesToRadians(ySkewAngle)),
-    1,
-    0,
-    0,
-  );
+  skewRadians(degreesToRadians(xSkewAngle), degreesToRadians(ySkewAngle));
 
 export const dashPattern = d.of;
 
@@ -174,6 +177,10 @@ export const textRenderingMode = (
 
 export const textMatrix = Tm.of;
 
+// Round to the 6th decimal place to avoid JavaScript exponential notation
+// being used, which starts at the 7th decimal place, e.g.
+//   0.0000001 => 1e-7
+//   0.000001  => 0.000001
 export const rotateAndSkewTextRadiansAndTranslate = (
   rotationAngle: number,
   xSkewAngle: number,
@@ -182,10 +189,10 @@ export const rotateAndSkewTextRadiansAndTranslate = (
   y: number,
 ) =>
   Tm.of(
-    Math.cos(rotationAngle + 0.00001),
-    Math.sin(rotationAngle + 0.00001) + tan(xSkewAngle + 0.00001),
-    -Math.sin(rotationAngle + 0.00001) + tan(ySkewAngle + 0.00001),
-    Math.cos(rotationAngle + 0.00001),
+    round(Math.cos(rotationAngle), 6),
+    round(Math.sin(rotationAngle) + tan(xSkewAngle), 6),
+    round(-Math.sin(rotationAngle) + tan(ySkewAngle), 6),
+    round(Math.cos(rotationAngle), 6),
     x,
     y,
   );

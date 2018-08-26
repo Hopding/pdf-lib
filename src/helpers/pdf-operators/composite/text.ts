@@ -12,6 +12,7 @@ import {
   clip,
   closePath,
   dashPattern,
+  degreesToRadians,
   endPath,
   fill,
   fillAndStroke,
@@ -79,6 +80,36 @@ export interface IDrawTextOptions {
   colorRgb?: number[];
   // borderWidth?: number;
   // borderRgbColor?: number[];
+  /**
+   * Default value is `0`.
+   *
+   * Degrees to rotate the text clockwise. If defined as a negative number,
+   * the text will be rotated counter-clockwise.
+   */
+  rotateDegrees?: number;
+  /**
+   * Default value is `0`.
+   *
+   * Radians to rotate the text clockwise. If defined as a negative number,
+   * the text will be rotated counter-clockwise.
+   */
+  rotateRadians?: number;
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Degrees to skew the x and y axes of the text. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
+   * Quadrant 1.
+   */
+  skewDegrees?: { xAxis: number; yAxis: number };
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Radians to skew the x and y axes of the text. Positive values will skew
+   * the axes into Quadrant 1. Negative values will skew the axes away from
+   * Quadrant 1.
+   */
+  skewRadians?: { xAxis: number; yAxis: number };
 }
 
 // TODO: Implement the border* options
@@ -92,6 +123,8 @@ export interface IDrawTextOptions {
  *     drawText('This is a line of text!', {
  *       x: 25,
  *       y: 50,
+ *       rotateDegrees: 180,
+ *       skewDegrees: { xAxis: 15, yAxis: 15 },
  *       font: 'Times-Roman',
  *       size: 24,
  *       colorRgb: [0.25, 1.0, 0.79],
@@ -118,11 +151,18 @@ export const drawText = (
       get(options, 'colorRgb[2]', 0),
     ),
     fontAndSize(options.font, options.size || 12),
-    // textPosition(options.x || 0, options.y || 0),
-    rotateAndSkewTextDegreesAndTranslate(
-      90,
-      0,
-      0,
+    rotateAndSkewTextRadiansAndTranslate(
+      options.rotateDegrees
+        ? degreesToRadians(options.rotateDegrees)
+        : options.rotateRadians || 0,
+      // prettier-ignore
+      options.skewDegrees   ? degreesToRadians(options.skewDegrees.xAxis)
+      : options.skewRadians ? options.skewRadians.xAxis
+      : 0,
+      // prettier-ignore
+      options.skewDegrees   ? degreesToRadians(options.skewDegrees.yAxis)
+      : options.skewRadians ? options.skewRadians.yAxis
+      : 0,
       options.x || 0,
       options.y || 0,
     ),
@@ -181,6 +221,36 @@ export interface IDrawLinesOfTextOptions {
   colorRgb?: number[];
   // borderWidth?: number;
   // borderRgbColor?: number[];
+  /**
+   * Default value is `0`.
+   *
+   * Degrees to rotate the lines of text clockwise. If defined as a negative
+   * number, the line of text will be rotated counter-clockwise.
+   */
+  rotateDegrees?: number;
+  /**
+   * Default value is `0`.
+   *
+   * Radians to rotate the lines of text clockwise. If defined as a negative
+   * number, the lines of text will be rotated counter-clockwise.
+   */
+  rotateRadians?: number;
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Degrees to skew the x and y axes of the lines of text. Positive values will
+   * skew the axes into Quadrant 1. Negative values will skew the axes away from
+   * Quadrant 1.
+   */
+  skewDegrees?: { xAxis: number; yAxis: number };
+  /**
+   * Default value is `{ xAxis: 0, yAxis: 0 }`.
+   *
+   * Radians to skew the x and y axes of the lines of text. Positive values will
+   * skew the axes into Quadrant 1. Negative values will skew the axes away from
+   * Quadrant 1.
+   */
+  skewRadians?: { xAxis: number; yAxis: number };
 }
 
 /**
@@ -194,6 +264,8 @@ export interface IDrawLinesOfTextOptions {
  *       ['First line of text.', 'Second line of text.'], {
  *       x: 25,
  *       y: 50,
+ *       rotateDegrees: 180,
+ *       skewDegrees: { xAxis: 15, yAxis: 15 },
  *       font: 'Times-Roman',
  *       size: 24,
  *       lineHeight: 48,
@@ -222,11 +294,18 @@ export const drawLinesOfText = (
     ),
     fontAndSize(options.font, options.size || 12),
     lineHeight(options.lineHeight || options.size || 12),
-    // textPosition(options.x || 0, options.y || 0),
-    rotateAndSkewTextDegreesAndTranslate(
-      10,
-      -15,
-      -15,
+    rotateAndSkewTextRadiansAndTranslate(
+      options.rotateDegrees
+        ? degreesToRadians(options.rotateDegrees)
+        : options.rotateRadians || 0,
+      // prettier-ignore
+      options.skewDegrees   ? degreesToRadians(options.skewDegrees.xAxis)
+      : options.skewRadians ? options.skewRadians.xAxis
+      : 0,
+      // prettier-ignore
+      options.skewDegrees   ? degreesToRadians(options.skewDegrees.yAxis)
+      : options.skewRadians ? options.skewRadians.yAxis
+      : 0,
       options.x || 0,
       options.y || 0,
     ),
