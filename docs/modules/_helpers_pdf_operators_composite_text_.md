@@ -8,7 +8,7 @@
 
 ▸ **drawLinesOfText**(lines: *`string`[]*, options: *[IDrawLinesOfTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawlinesoftextoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/text.ts:204](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/text.ts#L204)*
+*Defined in [helpers/pdf-operators/composite/text.ts:285](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L285)*
 
 Draws multiple lines of text in a content stream.
 
@@ -20,6 +20,8 @@ const contentStream = pdfDoc.register(
       ['First line of text.', 'Second line of text.'], {
       x: 25,
       y: 50,
+      rotateDegrees: 180,
+      skewDegrees: { xAxis: 15, yAxis: 15 },
       font: 'Times-Roman',
       size: 24,
       lineHeight: 48,
@@ -49,7 +51,7 @@ ___
 
 ▸ **drawText**(line: *`string`*, options: *[IDrawTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawtextoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/text.ts:108](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/text.ts#L108)*
+*Defined in [helpers/pdf-operators/composite/text.ts:143](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L143)*
 
 Draws a line of text in a content stream.
 
@@ -60,6 +62,8 @@ const contentStream = pdfDoc.register(
     drawText('This is a line of text!', {
       x: 25,
       y: 50,
+      rotateDegrees: 180,
+      skewDegrees: { xAxis: 15, yAxis: 15 },
       font: 'Times-Roman',
       size: 24,
       colorRgb: [0.25, 1.0, 0.79],

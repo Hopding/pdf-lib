@@ -12,7 +12,7 @@
 
 ⊕ **new PDFDocument**(catalog: *`PDFCatalog`*, maxObjectNumber: *`number`*, index: *`PDFObjectIndex`*): [PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)
 
-*Defined in [core/pdf-document/PDFDocument.ts:45](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L45)*
+*Defined in [core/pdf-document/PDFDocument.ts:45](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L45)*
 
 **Parameters:**
 
@@ -34,7 +34,7 @@ ___
 
 **● maxObjNum**: *`number`* = 0
 
-*Defined in [core/pdf-document/PDFDocument.ts:45](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L45)*
+*Defined in [core/pdf-document/PDFDocument.ts:45](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L45)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 ▸ **addPage**(page: *[PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)*): `this`
 
-*Defined in [core/pdf-document/PDFDocument.ts:142](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L142)*
+*Defined in [core/pdf-document/PDFDocument.ts:142](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L142)*
 
 Adds a page to the end of the [PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md).
 
@@ -65,7 +65,7 @@ ___
 
 ▸ **createContentStream**(...operators: *`Array`< `PDFOperator` &#124; `PDFOperator`[]>*): `PDFContentStream`
 
-*Defined in [core/pdf-document/PDFDocument.ts:132](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L132)*
+*Defined in [core/pdf-document/PDFDocument.ts:132](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L132)*
 
 Creates a new \[\[PDFContentStream\]\] with the given operators.
 
@@ -87,7 +87,7 @@ ___
 
 ▸ **createPage**(size: *[`number`, `number`]*, resources?: *`PDFDictionary`*): [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)
 
-*Defined in [core/pdf-document/PDFDocument.ts:115](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L115)*
+*Defined in [core/pdf-document/PDFDocument.ts:115](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L115)*
 
 Creates a new [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md) of the given `size`. And optionally, with the given `resources` dictionary.
 
@@ -110,7 +110,7 @@ ___
 
 ▸ **embedFont**(fontData: *`Uint8Array`*, fontFlags?: *[IFontFlagOptions](../interfaces/_core_pdf_structures_factories_pdffontfactory_.ifontflagoptions.md)*): [`PDFIndirectReference`<`PDFDictionary`>, [PDFFontFactory](_core_pdf_structures_factories_pdffontfactory_.pdffontfactory.md)]
 
-*Defined in [core/pdf-document/PDFDocument.ts:287](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L287)*
+*Defined in [core/pdf-document/PDFDocument.ts:287](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L287)*
 
 Embeds the font contained in the specified `Uint8Array` in the document.
 
@@ -133,7 +133,7 @@ ___
 
 ▸ **embedJPG**(jpgData: *`Uint8Array`*): [`PDFIndirectReference`<`PDFRawStream`>, [JPEGXObjectFactory](_core_pdf_structures_factories_jpegxobjectfactory_.jpegxobjectfactory.md)]
 
-*Defined in [core/pdf-document/PDFDocument.ts:320](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L320)*
+*Defined in [core/pdf-document/PDFDocument.ts:320](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L320)*
 
 Embeds the JPG image contained in the specified `Uint8Array` in the document.
 
@@ -155,7 +155,7 @@ ___
 
 ▸ **embedPNG**(pngData: *`Uint8Array`*): [`PDFIndirectReference`<`PDFRawStream`>, [PNGXObjectFactory](_core_pdf_structures_factories_pngxobjectfactory_.pngxobjectfactory.md)]
 
-*Defined in [core/pdf-document/PDFDocument.ts:304](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L304)*
+*Defined in [core/pdf-document/PDFDocument.ts:304](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L304)*
 
 Embeds the PNG image contained in the specified `Uint8Array` in the document.
 
@@ -177,7 +177,7 @@ ___
 
 ▸ **embedStandardFont**(fontName: *[IStandard14FontsUnion](../modules/_core_pdf_document_standard14fonts_.md#istandard14fontsunion)*): [`PDFIndirectReference`<`PDFDictionary`>]
 
-*Defined in [core/pdf-document/PDFDocument.ts:238](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L238)*
+*Defined in [core/pdf-document/PDFDocument.ts:238](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L238)*
 
 Embeds one of the Standard 14 Fonts fonts in the document. This method does **not** require a `Uint8Array` containing a font to be passed, because the Standard 14 Fonts are automatically available to all PDF documents.
 
@@ -198,7 +198,7 @@ ___
 
 ▸ **getPages**(): [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)[]
 
-*Defined in [core/pdf-document/PDFDocument.ts:93](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L93)*
+*Defined in [core/pdf-document/PDFDocument.ts:93](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L93)*
 
 **Returns:** [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)[]
 An array of [[PDFPage]] objects representing the pages of the
@@ -213,7 +213,7 @@ ___
 
 ▸ **insertPage**(index: *`number`*, page: *[PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)*): `this`
 
-*Defined in [core/pdf-document/PDFDocument.ts:202](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L202)*
+*Defined in [core/pdf-document/PDFDocument.ts:202](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L202)*
 
 Inserts a page into the document at the specified index. The page that is displaced by the insertion will be become the page immediately following the inserted page.
 
@@ -233,7 +233,7 @@ ___
 
 ▸ **register**T(object: *`T`*): `PDFIndirectReference`<`T`>
 
-*Defined in [core/pdf-document/PDFDocument.ts:79](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L79)*
+*Defined in [core/pdf-document/PDFDocument.ts:79](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L79)*
 
 Registers a \[\[PDFObject\]\] to the [PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)'s `index`. Returns a \[\[PDFIndirectReference\]\] that can be used to reference the given `object` in other `pdf-lib` methods.
 
@@ -257,7 +257,7 @@ ___
 
 ▸ **removePage**(index: *`number`*): `this`
 
-*Defined in [core/pdf-document/PDFDocument.ts:168](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L168)*
+*Defined in [core/pdf-document/PDFDocument.ts:168](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L168)*
 
 Removes a page from the document.
 
@@ -276,7 +276,7 @@ ___
 
 ▸ **from**(catalog: *`PDFCatalog`*, maxObjectNumber: *`number`*, index: *`PDFObjectIndex`*): [PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)
 
-*Defined in [core/pdf-document/PDFDocument.ts:32](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocument.ts#L32)*
+*Defined in [core/pdf-document/PDFDocument.ts:32](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocument.ts#L32)*
 
 **Parameters:**
 

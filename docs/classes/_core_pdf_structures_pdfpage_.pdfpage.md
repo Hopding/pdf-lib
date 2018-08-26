@@ -16,7 +16,7 @@
 
 *Inherited from PDFDictionary.__constructor*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:23](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L23)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:23](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L23)*
 
 **Parameters:**
 
@@ -38,7 +38,7 @@ ___
 
 **● autoNormalizeCTM**: *`boolean`* = true
 
-*Defined in [core/pdf-structures/PDFPage.ts:99](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/PDFPage.ts#L99)*
+*Defined in [core/pdf-structures/PDFPage.ts:99](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-structures/PDFPage.ts#L99)*
 
 ___
 <a id="index"></a>
@@ -49,7 +49,7 @@ ___
 
 *Inherited from PDFDictionary.index*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:22](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L22)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:22](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L22)*
 
 ___
 <a id="map"></a>
@@ -60,7 +60,7 @@ ___
 
 *Inherited from PDFDictionary.map*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:21](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L21)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:21](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L21)*
 
 ___
 <a id="validkeys"></a>
@@ -71,7 +71,7 @@ ___
 
 *Inherited from PDFDictionary.validKeys*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:23](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L23)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:23](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L23)*
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 ▸ **addContentStreams**(...contentStreams: *`Array`<`PDFIndirectReference`<`PDFContentStream`>>*): `this`
 
-*Defined in [core/pdf-structures/PDFPage.ts:201](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/PDFPage.ts#L201)*
+*Defined in [core/pdf-structures/PDFPage.ts:201](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-structures/PDFPage.ts#L201)*
 
 Add one or more content streams to the page.
 
@@ -104,7 +104,7 @@ ___
 
 ▸ **addFontDictionary**(key: *`string`*, fontDict: *`PDFIndirectReference`<`PDFDictionary`>*): `this`
 
-*Defined in [core/pdf-structures/PDFPage.ts:237](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/PDFPage.ts#L237)*
+*Defined in [core/pdf-structures/PDFPage.ts:237](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-structures/PDFPage.ts#L237)*
 
 Adds a font dictionary to the page.
 
@@ -128,7 +128,7 @@ ___
 
 ▸ **addImageObject**(key: *`string`*, imageObject: *`PDFIndirectReference`<`PDFStream`>*): `this`
 
-*Defined in [core/pdf-structures/PDFPage.ts:273](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/PDFPage.ts#L273)*
+*Defined in [core/pdf-structures/PDFPage.ts:273](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-structures/PDFPage.ts#L273)*
 
 **Note:** This method is an alias for [addXObject](_core_pdf_structures_pdfpage_.pdfpage.md#addxobject). It exists because its name is more descriptive and familiar than `addXObject` is.
 
@@ -154,7 +154,7 @@ ___
 
 ▸ **addXObject**(key: *`string`*, xObject: *`PDFIndirectReference`<`PDFStream`>*): `this`
 
-*Defined in [core/pdf-structures/PDFPage.ts:291](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/PDFPage.ts#L291)*
+*Defined in [core/pdf-structures/PDFPage.ts:291](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-structures/PDFPage.ts#L291)*
 
 Adds an XObject to the page.
 
@@ -180,7 +180,7 @@ ___
 
 *Overrides PDFObject.bytesSize*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:102](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L102)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:102](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L102)*
 
 **Returns:** `number`
 
@@ -195,7 +195,7 @@ ___
 
 *Overrides PDFObject.copyBytesInto*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:117](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L117)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:117](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L117)*
 
 **Parameters:**
 
@@ -214,7 +214,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:53](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L53)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:53](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L53)*
 
 **Parameters:**
 
@@ -233,7 +233,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:67](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L67)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:67](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L67)*
 
 **Type parameters:**
 
@@ -255,7 +255,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:56](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L56)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:56](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L56)*
 
 **Type parameters:**
 
@@ -275,7 +275,7 @@ ___
 
 ▸ **normalizeCTM**(): [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)
 
-*Defined in [core/pdf-structures/PDFPage.ts:147](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/PDFPage.ts#L147)*
+*Defined in [core/pdf-structures/PDFPage.ts:147](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-structures/PDFPage.ts#L147)*
 
 Ensures that content streams added to the [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md) after calling [normalizeCTM](_core_pdf_structures_pdfpage_.pdfpage.md#normalizectm) will be working in the default Content Transformation Matrix.
 
@@ -297,7 +297,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:71](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L71)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:71](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L71)*
 
 **Parameters:**
 
@@ -320,7 +320,7 @@ ___
 
 *Overrides PDFObject.toString*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:96](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L96)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:96](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L96)*
 
 **Returns:** `string`
 
@@ -331,7 +331,7 @@ ___
 
 ▸ **create**(index: *`PDFObjectIndex`*, size: *[`number`, `number`]*, resources?: *`PDFDictionary`*): [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)
 
-*Defined in [core/pdf-structures/PDFPage.ts:65](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/PDFPage.ts#L65)*
+*Defined in [core/pdf-structures/PDFPage.ts:65](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-structures/PDFPage.ts#L65)*
 
 **Parameters:**
 
@@ -352,7 +352,7 @@ ___
 
 *Inherited from (Anonymous function)*
 
-*Defined in [core/pdf-objects/PDFDictionary.ts:16](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-objects/PDFDictionary.ts#L16)*
+*Defined in [core/pdf-objects/PDFDictionary.ts:16](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-objects/PDFDictionary.ts#L16)*
 
 **Parameters:**
 
@@ -370,7 +370,7 @@ ___
 
 ▸ **fromDict**(dict: *`PDFDictionary`*): [PDFPage](_core_pdf_structures_pdfpage_.pdfpage.md)
 
-*Defined in [core/pdf-structures/PDFPage.ts:94](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-structures/PDFPage.ts#L94)*
+*Defined in [core/pdf-structures/PDFPage.ts:94](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-structures/PDFPage.ts#L94)*
 
 **Parameters:**
 

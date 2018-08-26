@@ -21,7 +21,7 @@
 
 ▸ **computeOffsets**(startingOffset: *`number`*, indirectObjects: *`Array`<`PDFIndirectObject`<`PDFObject`>>*): `object`[]
 
-*Defined in [core/pdf-document/PDFDocumentWriter.ts:45](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocumentWriter.ts#L45)*
+*Defined in [core/pdf-document/PDFDocumentWriter.ts:44](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocumentWriter.ts#L44)*
 
 **Parameters:**
 
@@ -39,7 +39,7 @@ ___
 
 ▸ **createIndirectObjectsFromIndex**(__namedParameters: *`object`*): `object`
 
-*Defined in [core/pdf-document/PDFDocumentWriter.ts:29](https://github.com/Hopding/pdf-lib/blob/4875209/src/core/pdf-document/PDFDocumentWriter.ts#L29)*
+*Defined in [core/pdf-document/PDFDocumentWriter.ts:28](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/PDFDocumentWriter.ts#L28)*
 
 **Parameters:**
 

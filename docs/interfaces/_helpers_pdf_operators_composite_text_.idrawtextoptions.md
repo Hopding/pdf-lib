@@ -14,7 +14,7 @@ Options object with named parameters for the [drawText](../modules/_helpers_pdf_
 
 **● colorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/text.ts:77](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/text.ts#L77)*
+*Defined in [helpers/pdf-operators/composite/text.ts:80](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L80)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -30,9 +30,37 @@ ___
 **● font**: * `string` &#124; `PDFName`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:58](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/text.ts#L58)*
+*Defined in [helpers/pdf-operators/composite/text.ts:61](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L61)*
 
 Name of the font to use when drawing the line of text. Should be present in the Font Dictionary of the page to which the content stream containing the `drawText` operator is applied.
+
+___
+<a id="rotatedegrees"></a>
+
+## `<Optional>` rotateDegrees
+
+**● rotateDegrees**: * `undefined` &#124; `number`
+*
+
+*Defined in [helpers/pdf-operators/composite/text.ts:89](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L89)*
+
+Default value is `0`.
+
+Degrees to rotate the text clockwise. If defined as a negative number, the text will be rotated counter-clockwise.
+
+___
+<a id="rotateradians"></a>
+
+## `<Optional>` rotateRadians
+
+**● rotateRadians**: * `undefined` &#124; `number`
+*
+
+*Defined in [helpers/pdf-operators/composite/text.ts:96](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L96)*
+
+Default value is `0`.
+
+Radians to rotate the text clockwise. If defined as a negative number, the text will be rotated counter-clockwise.
 
 ___
 <a id="size"></a>
@@ -42,11 +70,39 @@ ___
 **● size**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:64](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/text.ts#L64)*
+*Defined in [helpers/pdf-operators/composite/text.ts:67](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L67)*
 
 Default value is `12`.
 
 Size to draw the text. Can be any number.
+
+___
+<a id="skewdegrees"></a>
+
+## `<Optional>` skewDegrees
+
+**● skewDegrees**: * `undefined` &#124; `object`
+*
+
+*Defined in [helpers/pdf-operators/composite/text.ts:104](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L104)*
+
+Default value is `{ xAxis: 0, yAxis: 0 }`.
+
+Degrees to skew the x and y axes of the text. Positive values will skew the axes into Quadrant 1. Negative values will skew the axes away from Quadrant 1.
+
+___
+<a id="skewradians"></a>
+
+## `<Optional>` skewRadians
+
+**● skewRadians**: * `undefined` &#124; `object`
+*
+
+*Defined in [helpers/pdf-operators/composite/text.ts:112](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L112)*
+
+Default value is `{ xAxis: 0, yAxis: 0 }`.
+
+Radians to skew the x and y axes of the text. Positive values will skew the axes into Quadrant 1. Negative values will skew the axes away from Quadrant 1.
 
 ___
 <a id="x"></a>
@@ -56,7 +112,7 @@ ___
 **● x**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:46](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/text.ts#L46)*
+*Defined in [helpers/pdf-operators/composite/text.ts:49](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L49)*
 
 Default value is `0`.
 
@@ -70,7 +126,7 @@ ___
 **● y**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:52](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/text.ts#L52)*
+*Defined in [helpers/pdf-operators/composite/text.ts:55](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/text.ts#L55)*
 
 Default value is `0`.
 

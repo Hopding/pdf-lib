@@ -8,7 +8,7 @@
 
 ▸ **drawCircle**(options: *[IDrawCircleOptions](../interfaces/_helpers_pdf_operators_composite_ellipse_.idrawcircleoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:265](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/ellipse.ts#L265)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:348](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/ellipse.ts#L348)*
 
 Draws a circle in a content stream.
 
@@ -19,6 +19,8 @@ const contentStream = pdfDoc.register(
       x: 25,
       y: 50,
       size: 50,
+      rotateDegrees: 45,
+      skewDegrees: { xAxis: 30, yAxis: 30 },
       borderWidth: 25,
       colorRgb: [0.25, 1.0, 0.79],
       borderColorRgb: [0.79, 0.25, 1.0],
@@ -45,7 +47,7 @@ ___
 
 ▸ **drawEllipse**(options: *[IDrawEllipseOptions](../interfaces/_helpers_pdf_operators_composite_ellipse_.idrawellipseoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:158](https://github.com/Hopding/pdf-lib/blob/4875209/src/helpers/pdf-operators/composite/ellipse.ts#L158)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:200](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/ellipse.ts#L200)*
 
 Draws an ellipse in a content stream.
 
@@ -57,6 +59,8 @@ const contentStream = pdfDoc.register(
       y: 50,
       xScale: 50,
       yScale: 150,
+      rotateDegrees: 45,
+      skewDegrees: { xAxis: 30, yAxis: 30 },
       borderWidth: 25,
       colorRgb: [0.25, 1.0, 0.79],
       borderColorRgb: [0.79, 0.25, 1.0],
