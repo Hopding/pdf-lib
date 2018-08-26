@@ -172,6 +172,39 @@ export const textRenderingMode = (
     }[style],
   );
 
+export const textMatrix = Tm.of;
+
+export const rotateAndSkewTextRadiansAndTranslate = (
+  rotationAngle: number,
+  xSkewAngle: number,
+  ySkewAngle: number,
+  x: number,
+  y: number,
+) =>
+  Tm.of(
+    Math.cos(rotationAngle + 0.00001),
+    Math.sin(rotationAngle + 0.00001) + tan(xSkewAngle + 0.00001),
+    -Math.sin(rotationAngle + 0.00001) + tan(ySkewAngle + 0.00001),
+    Math.cos(rotationAngle + 0.00001),
+    x,
+    y,
+  );
+
+export const rotateAndSkewTextDegreesAndTranslate = (
+  rotationAngle: number,
+  xSkewAngle: number,
+  ySkewAngle: number,
+  x: number,
+  y: number,
+) =>
+  rotateAndSkewTextRadiansAndTranslate(
+    degreesToRadians(rotationAngle),
+    degreesToRadians(xSkewAngle),
+    degreesToRadians(ySkewAngle),
+    x,
+    y,
+  );
+
 /* ======== XObject operator ======== */
 
 export const image = Do.of;
