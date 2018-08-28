@@ -266,6 +266,7 @@ class PDFDocument {
           {
             Type: PDFName.from('Font'),
             Subtype: PDFName.from('Type1'),
+            Encoding: PDFName.from('WinAnsiEncoding'),
             BaseFont: PDFName.from(fontName),
           },
           this.index,

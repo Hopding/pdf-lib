@@ -87,6 +87,12 @@ const contentStream1 = pdfDoc.createContentStream(
     font: HELVETIVA_FONT,
     size: 24,
   }),
+  drawText('Olé!', {
+    x: PAGE_1_WIDTH * 0.5 -  30,
+    y: PAGE_1_HEIGHT - 48 - 30,
+    font: HELVETIVA_FONT,
+    size: 12,
+  }),
   // Now we'll draw the Unicorn image on the page's content stream. We'll
   // position it a little bit below the text we just drew, and we'll center it
   // within the page.
