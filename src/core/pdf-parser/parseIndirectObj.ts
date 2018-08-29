@@ -32,7 +32,7 @@ const parseIndirectObj = (
   parseHandlers: IParseHandlers = {},
 ): [PDFIndirectObject, Uint8Array] | void => {
   const trimmed = trimArray(input);
-  const indirectObjRegex = /^(\d+) (\d+) obj/;
+  const indirectObjRegex = /^(\d+)[\0\t\n\f\r ]*(\d+)[\0\t\n\f\r ]*obj/;
 
   // Check that initial characters make up an indirect object "header"
   const objIdx = arrayIndexOf(trimmed, 'obj')!;

@@ -5,7 +5,9 @@ import { doesMatch, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
 
-const HEX_STRING_REGEX = /^[\dABCDEFabcdef]*$/;
+// TODO: We have to support whitespace characters in hex strings when parsing,
+// but maybe we should remove them when serializing?
+const HEX_STRING_REGEX = /^[\dABCDEFabcdef\0\t\n\f\r ]*$/;
 
 class PDFHexString extends PDFObject {
   static fromString = (str: string) => new PDFHexString(str);
