@@ -1,6 +1,6 @@
 import { PDFHexString } from 'core/pdf-objects';
 import parseHexString from 'core/pdf-parser/parseHexString';
-import { charCodes, typedArrayFor } from 'utils';
+import { charCodes, trimArray, typedArrayFor } from 'utils';
 
 describe(`parseHexString`, () => {
   it(`parses a single PDF Hex String from its input array`, () => {
@@ -29,10 +29,16 @@ describe(`parseHexString`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDF Hex String object`, () => {
-    const input = typedArrayFor(' \n \r\n <ABC123> \r\n (FOOBAR)');
+    const input = typedArrayFor('\u0000\t\n\f\r <\fA\nB C12\t3>\u0000\t\n\f\r (FOOBAR)');
     const res = parseHexString(input);
     expect(res).toEqual([expect.any(PDFHexString), expect.any(Uint8Array)]);
-    expect(res[0].string).toEqual('ABC123');
-    expect(res[1]).toEqual(typedArrayFor(' \r\n (FOOBAR)'));
+    expect(res[0].string).toEqual('\fA\nB C12\t3');
+    expect(res[1]).toEqual(typedArrayFor('\u0000\t\n\f\r (FOOBAR)'));
+  });
+
+  it(`handles empty input`, () => {
+    const input = typedArrayFor('\u0000\t\n\f\r ');
+    const res = parseHexString(input);
+    expect(res).toBeUndefined();
   });
 });

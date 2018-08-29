@@ -17,7 +17,7 @@ import parseIndirectObj from 'core/pdf-parser/parseIndirectObj';
 import { typedArrayFor } from 'utils';
 
 const FOOBAR = typedArrayFor(`
-  7 0 obj
+  7\u0000\t\n\f\r 0\u0000\t\n\f\r obj
     << /Length 8 0 R >>
   stream
     BT
@@ -146,5 +146,11 @@ describe(`parseIndirectObj`, () => {
       );
       expect(parseHandlers[handler]).toHaveBeenCalledWith(expect.any(type));
     });
+  });
+
+  it(`handles empty input`, () => {
+    const input = typedArrayFor('\u0000\t\n\f\r ');
+    const res = parseIndirectObj(input, PDFObjectIndex.create());
+    expect(res).toBeUndefined();
   });
 });
