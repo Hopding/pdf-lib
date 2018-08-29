@@ -3,7 +3,7 @@ import parseIndirectRef from 'core/pdf-parser/parseIndirectRef';
 import { typedArrayFor } from 'utils';
 
 describe(`parseIndirectRef`, () => {
-  it(`parses a single PDF String object from its input array`, () => {
+  it(`parses a single PDF Indirect Reference object from its input array`, () => {
     const input = typedArrayFor(`0 0 R1 1 R`);
     const res = parseIndirectRef(input);
     expect(res).toEqual([
@@ -31,13 +31,30 @@ describe(`parseIndirectRef`, () => {
     );
   });
 
+  it(`allows any valid whitespace characters to separate the object numbers`, () => {
+    const input = typedArrayFor(`0\u0000\t\n\f\r0\u0000\t\n\f\rR`);
+    const res = parseIndirectRef(input);
+    expect(res).toEqual([
+      expect.any(PDFIndirectReference),
+      expect.any(Uint8Array),
+    ]);
+    expect(res[0]).toEqual(PDFIndirectReference.forNumbers(0, 0));
+    expect(res[1]).toHaveLength(0);
+  });
+
   it(`allows leading whitespace and line endings before & after the PDF Indirect Reference object`, () => {
-    const input = typedArrayFor(' \n \r\n 0 2 R \r\n << /Key /Val >>');
+    const input = typedArrayFor('\u0000\t\n\f\r 0 2 R \u0000\t\n\f\r << /Key /Val >>');
     const res = parseIndirectRef(input);
     expect(res).toEqual([
       PDFIndirectReference.forNumbers(0, 2),
       expect.any(Uint8Array),
     ]);
-    expect(res[1]).toEqual(typedArrayFor(' \r\n << /Key /Val >>'));
+    expect(res[1]).toEqual(typedArrayFor(' \u0000\t\n\f\r << /Key /Val >>'));
+  });
+
+  it(`handles empty input`, () => {
+    const input = typedArrayFor('\u0000\t\n\f\r ');
+    const res = parseIndirectRef(input);
+    expect(res).toBeUndefined();
   });
 });
