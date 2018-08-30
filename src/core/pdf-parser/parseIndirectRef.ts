@@ -19,7 +19,7 @@ const parseIndirectRef = (
   { onParseIndirectRef }: IParseHandlers = {},
 ): [PDFIndirectReference, Uint8Array] | void => {
   const trimmed = trimArray(input);
-  const indirectRefRegex = /^(\d+) (\d+) R/;
+  const indirectRefRegex = /^(\d+)[\0\t\n\f\r ]*(\d+)[\0\t\n\f\r ]*R/;
 
   // Check that initial characters make up an indirect reference
   const rIdx = arrayIndexOf(trimmed, 'R')!;
