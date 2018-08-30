@@ -21,6 +21,8 @@ import {
   PDFPageTree,
 } from 'core/pdf-structures';
 import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
+import PDFStandardFontFactory from 'core/pdf-structures/factories/PDFStandardFontFactory';
+import PDFFontEncoder from 'core/pdf-structures/factories/PDFFontEncoder';
 import PDFFontFactory, {
   IFontFlagOptions,
 } from 'core/pdf-structures/factories/PDFFontFactory';
@@ -237,7 +239,7 @@ class PDFDocument {
    */
   embedStandardFont = (
     fontName: IStandard14FontsUnion,
-  ): [PDFIndirectReference<PDFDictionary>] => {
+  ): [PDFIndirectReference<PDFDictionary>, PDFFontEncoder] => {
     validate(
       fontName,
       oneOf(...Standard14Fonts),
@@ -260,19 +262,8 @@ class PDFDocument {
             See "Table 111 – Entries in a Type 1 font dictionary (continued)"
             for details on this...
     */
-    return [
-      this.register(
-        PDFDictionary.from(
-          {
-            Type: PDFName.from('Font'),
-            Subtype: PDFName.from('Type1'),
-            Encoding: PDFName.from('WinAnsiEncoding'),
-            BaseFont: PDFName.from(fontName),
-          },
-          this.index,
-        ),
-      ),
-    ];
+   const standardFontFactory = PDFStandardFontFactory.for(fontName);
+    return [standardFontFactory.embedFontIn(this), standardFontFactory];
   };
 
   /**
