@@ -87,7 +87,7 @@ const contentStream1 = pdfDoc.createContentStream(
     font: HELVETIVA_FONT,
     size: 24,
   }),
-  drawText(helveticaFont.encode('Olé! - Œ')[0], {
+  drawText(helveticaFont.encodeText('Olé! - Œ'), {
     x: PAGE_1_WIDTH * 0.5 -  30,
     y: PAGE_1_HEIGHT - 48 - 30,
     font: HELVETIVA_FONT,

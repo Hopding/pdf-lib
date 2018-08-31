@@ -15,38 +15,37 @@ import Standard14Fonts, {
 
 import PDFFontEncoder from 'core/pdf-structures/factories/PDFFontEncoder'
 
-const toWinAnsi= (charCode: number): number => {
-	switch (charCode) {
-		case  402: return 131 // ƒ
-		case 8211: return 150 // –
-		case 8212: return 151 // —
-		case 8216: return 145 // ‘
-		case 8217: return 146 // ’
-		case 8218: return 130 // ‚
-		case 8220: return 147 // “
-		case 8221: return 148 // ”
-		case 8222: return 132 // „
-		case 8224: return 134 // †
-		case 8225: return 135 // ‡
-		case 8226: return 149 // •
-		case 8230: return 133 // …
-		case 8364: return 128 // €
-		case 8240: return 137 // ‰
-		case 8249: return 139 // ‹
-		case 8250: return 155 // ›
-		case  710: return 136 // ˆ
-		case 8482: return 153 // ™
-		case  338: return 140 // Œ
-		case  339: return 156 // œ
-		case  732: return 152 // ˜
-		case  352: return 138 // Š
-		case  353: return 154 // š
-		case  376: return 159 // Ÿ
-		case  381: return 142 // Ž
-		case  382: return 158 // ž
-		default: return charCode
-	}
+const UnicodeToWinAnsiMap:{ [index:number] : number } = {
+   402: 131, // ƒ
+  8211: 150, // –
+  8212: 151, // —
+  8216: 145, // ‘
+  8217: 146, // ’
+  8218: 130, // ‚
+  8220: 147, // “
+  8221: 148, // ”
+  8222: 132, // „
+  8224: 134, // †
+  8225: 135, // ‡
+  8226: 149, // •
+  8230: 133, // …
+  8364: 128, // €
+  8240: 137, // ‰
+  8249: 139, // ‹
+  8250: 155, // ›
+   710: 136, // ˆ
+  8482: 153, // ™
+   338: 140, // Œ
+   339: 156, // œ
+   732: 152, // ˜
+   352: 138, // Š
+   353: 154, // š
+   376: 159, // Ÿ
+   381: 142, // Ž
+   382: 158, // ž
 }
+
+const toWinAnsi= (charCode: number): number => UnicodeToWinAnsiMap[charCode] || charCode
 /**
  * This Factory supports Standard fonts. Note that the apparent
  * hardcoding of values for OpenType fonts does not actually affect TrueType
@@ -79,11 +78,23 @@ class PDFStandardFontFactory implements PDFFontEncoder {
 		.map((charCode: number): string => charCode.toString(16))
 		.join(''))
 	}
-  encode(text: string): [PDFHexString] {
-		return [ this.encodeText(text) ]
-  }
   
-  embedFontIn = (
+    /*
+      TODO:
+      A Type 1 font dictionary may contain the entries listed in Table 111.
+      Some entries are optional for the standard 14 fonts listed under 9.6.2.2,
+        "Standard Type 1 Fonts (Standard 14 Fonts)", but are required otherwise.
+
+      NOTE: For compliance sake, these standard 14 font dictionaries need to be
+            updated to include the following entries:
+              • FirstChar
+              • LastChar
+              • Widths
+              • FontDescriptor
+            See "Table 111 – Entries in a Type 1 font dictionary (continued)"
+            for details on this...
+    */
+   embedFontIn = (
     pdfDoc: PDFDocument,
   ): PDFIndirectReference<PDFDictionary> => {
     validate(

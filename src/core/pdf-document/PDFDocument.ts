@@ -247,21 +247,6 @@ class PDFDocument {
         values(Standard14Fonts).join(', '),
     );
 
-    /*
-      TODO:
-      A Type 1 font dictionary may contain the entries listed in Table 111.
-      Some entries are optional for the standard 14 fonts listed under 9.6.2.2,
-        "Standard Type 1 Fonts (Standard 14 Fonts)", but are required otherwise.
-
-      NOTE: For compliance sake, these standard 14 font dictionaries need to be
-            updated to include the following entries:
-              • FirstChar
-              • LastChar
-              • Widths
-              • FontDescriptor
-            See "Table 111 – Entries in a Type 1 font dictionary (continued)"
-            for details on this...
-    */
    const standardFontFactory = PDFStandardFontFactory.for(fontName);
     return [standardFontFactory.embedFontIn(this), standardFontFactory];
   };
