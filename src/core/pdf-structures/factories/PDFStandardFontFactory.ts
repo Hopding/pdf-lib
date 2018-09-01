@@ -15,7 +15,7 @@ import Standard14Fonts, {
 import IPDFFontEncoder from 'core/pdf-structures/factories/PDFFontEncoder';
 
 const UnicodeToWinAnsiMap: { [index: number]: number } = {
-  402: 131,  // ƒ
+  402: 131, // ƒ
   8211: 150, // –
   8212: 151, // —
   8216: 145, // ‘
@@ -32,16 +32,16 @@ const UnicodeToWinAnsiMap: { [index: number]: number } = {
   8240: 137, // ‰
   8249: 139, // ‹
   8250: 155, // ›
-  710: 136,  // ˆ
+  710: 136, // ˆ
   8482: 153, // ™
-  338: 140,  // Œ
-  339: 156,  // œ
-  732: 152,  // ˜
-  352: 138,  // Š
-  353: 154,  // š
-  376: 159,  // Ÿ
-  381: 142,  // Ž
-  382: 158,  // ž
+  338: 140, // Œ
+  339: 156, // œ
+  732: 152, // ˜
+  352: 138, // Š
+  353: 154, // š
+  376: 159, // Ÿ
+  381: 142, // Ž
+  382: 158, // ž
 };
 
 const toWinAnsi = (charCode: number): number =>
@@ -70,8 +70,8 @@ class PDFStandardFontFactory implements IPDFFontEncoder {
     );
     this.fontName = fontName;
   }
-  encodeText(text: string): PDFHexString {
-    return PDFHexString.fromString(
+  encodeText = (text: string): PDFHexString =>
+    PDFHexString.fromString(
       text
         .split('')
         .map((char) => char.charCodeAt(0))
@@ -79,7 +79,6 @@ class PDFStandardFontFactory implements IPDFFontEncoder {
         .map((charCode) => charCode.toString(16))
         .join(''),
     );
-  }
 
   /*
       TODO:
