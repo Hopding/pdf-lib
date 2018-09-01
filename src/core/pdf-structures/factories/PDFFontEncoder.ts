@@ -1,7 +1,5 @@
-import {
-  PDFHexString,
-} from 'core/pdf-objects';
-interface PDFFontEncoder {
-	encodeText(text: string): PDFHexString;
+import { PDFHexString } from 'core/pdf-objects';
+interface IPDFFontEncoder {
+  encodeText(text: string): PDFHexString;
 }
-export default PDFFontEncoder
+export default IPDFFontEncoder;

@@ -21,11 +21,11 @@ import {
   PDFPageTree,
 } from 'core/pdf-structures';
 import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
-import PDFStandardFontFactory from 'core/pdf-structures/factories/PDFStandardFontFactory';
 import PDFFontEncoder from 'core/pdf-structures/factories/PDFFontEncoder';
 import PDFFontFactory, {
   IFontFlagOptions,
 } from 'core/pdf-structures/factories/PDFFontFactory';
+import PDFStandardFontFactory from 'core/pdf-structures/factories/PDFStandardFontFactory';
 import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import { error } from 'utils';
 import { isInstance, oneOf, validate } from 'utils/validate';
@@ -247,7 +247,7 @@ class PDFDocument {
         values(Standard14Fonts).join(', '),
     );
 
-   const standardFontFactory = PDFStandardFontFactory.for(fontName);
+    const standardFontFactory = PDFStandardFontFactory.for(fontName);
     return [standardFontFactory.embedFontIn(this), standardFontFactory];
   };
 

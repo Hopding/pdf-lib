@@ -29,7 +29,9 @@ describe(`parseHexString`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDF Hex String object`, () => {
-    const input = typedArrayFor('\u0000\t\n\f\r <\fA\nB C12\t3>\u0000\t\n\f\r (FOOBAR)');
+    const input = typedArrayFor(
+      '\u0000\t\n\f\r <\fA\nB C12\t3>\u0000\t\n\f\r (FOOBAR)',
+    );
     const res = parseHexString(input);
     expect(res).toEqual([expect.any(PDFHexString), expect.any(Uint8Array)]);
     expect(res[0].string).toEqual('\fA\nB C12\t3');
