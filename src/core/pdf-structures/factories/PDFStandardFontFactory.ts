@@ -44,8 +44,6 @@ const UnicodeToWinAnsiMap: { [index: number]: number } = {
   382: 158, // ž
 };
 
-const toWinAnsi = (charCode: number): number =>
-  UnicodeToWinAnsiMap[charCode] || charCode;
 /**
  * This Factory supports Standard fonts. Note that the apparent
  * hardcoding of values for OpenType fonts does not actually affect TrueType
