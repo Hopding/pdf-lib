@@ -1,7 +1,5 @@
 import round from 'lodash/round';
 
-import { PDFHexString, PDFName, PDFString } from 'core/pdf-objects';
-
 import { G, g } from 'core/pdf-operators/graphics/color/GOps';
 import { K, k } from 'core/pdf-operators/graphics/color/KOps';
 import { RG, rg } from 'core/pdf-operators/graphics/color/RGOps';
@@ -17,10 +15,10 @@ import l from 'core/pdf-operators/graphics/path-construction/l';
 import m from 'core/pdf-operators/graphics/path-construction/m';
 import re from 'core/pdf-operators/graphics/path-construction/re';
 
-import { TD, Td } from 'core/pdf-operators/text/text-positioning/TDOps';
+import { Td } from 'core/pdf-operators/text/text-positioning/TDOps';
 import Tm from 'core/pdf-operators/text/text-positioning/Tm';
 
-import { TJ, Tj } from 'core/pdf-operators/text/text-showing/TJOps';
+import { Tj } from 'core/pdf-operators/text/text-showing/TJOps';
 
 import Tc from 'core/pdf-operators/text/text-state/Tc';
 import Tf from 'core/pdf-operators/text/text-state/Tf';
@@ -34,8 +32,9 @@ import Do from 'core/pdf-operators/Do';
 
 import PDFOperators from 'core/pdf-operators';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
-import { isInRange, validate } from 'utils/validate';
+
+// tslint:disable-next-line:no-unused-variable
+import { PDFHexString, PDFName, PDFString } from 'core/pdf-objects';
 
 /* ======== Clipping path operators ======== */
 const { W } = PDFOperators;
@@ -61,10 +60,10 @@ export const scale = (xPos: number, yPos: number) =>
 //   0.000001  => 0.000001
 export const rotateRadians = (angle: number) =>
   cm.of(
-    round(Math.cos(angle), 6),
-    round(Math.sin(angle), 6),
-    round(-Math.sin(angle), 6),
-    round(Math.cos(angle), 6),
+    round(cos(angle), 6),
+    round(sin(angle), 6),
+    round(-sin(angle), 6),
+    round(cos(angle), 6),
     0,
     0,
   );
@@ -189,10 +188,10 @@ export const rotateAndSkewTextRadiansAndTranslate = (
   y: number,
 ) =>
   Tm.of(
-    round(Math.cos(rotationAngle), 6),
-    round(Math.sin(rotationAngle) + tan(xSkewAngle), 6),
-    round(-Math.sin(rotationAngle) + tan(ySkewAngle), 6),
-    round(Math.cos(rotationAngle), 6),
+    round(cos(rotationAngle), 6),
+    round(sin(rotationAngle) + tan(xSkewAngle), 6),
+    round(-sin(rotationAngle) + tan(ySkewAngle), 6),
+    round(cos(rotationAngle), 6),
     x,
     y,
   );

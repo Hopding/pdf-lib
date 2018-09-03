@@ -1,4 +1,3 @@
-import faker from 'faker';
 
 import {
   clip,
@@ -11,36 +10,22 @@ import {
   drawLinesOfText,
   drawRectangle,
   drawSquare,
-  drawText,
   endPath,
-  fillingRgbColor,
-  fontAndSize,
   lineCap,
-  lineHeight,
   lineJoin,
   lineTo,
   moveTo,
-  nextLine,
   PDFContentStream,
-  PDFDictionary,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
-  PDFIndirectReference,
-  PDFName,
   PDFPage,
-  PDFTextObject,
   popGraphicsState,
   pushGraphicsState,
-  scale,
-  Standard14Fonts,
-  strokingRgbColor,
-  text,
-  textRenderingMode,
   translate,
 } from '../../src';
 
-import { ITest, ITestAssets, ITestKernel } from '../models';
+import { ITestAssets, ITestKernel } from '../models';
 
 const ipsumLines = [
   'Eligendi est pariatur quidem in non excepturi et.',

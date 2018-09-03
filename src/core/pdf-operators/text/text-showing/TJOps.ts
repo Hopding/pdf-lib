@@ -3,12 +3,7 @@ import add from 'lodash/add';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 
-import {
-  PDFArray,
-  PDFHexString,
-  PDFNumber,
-  PDFString,
-} from 'core/pdf-objects/index';
+import { PDFHexString, PDFNumber, PDFString } from 'core/pdf-objects/index';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 import { addStringToBuffer, arrayToString, error, or } from 'utils';

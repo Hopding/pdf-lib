@@ -1,5 +1,4 @@
 /* tslint:disable no-bitwise */
-import isString from 'lodash/isString';
 import sum from 'lodash/sum';
 
 export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
@@ -127,7 +126,12 @@ export const arrayCharAt = (arr: Uint8Array | any[], idx: number) =>
 
 export const trimArray = (arr: Uint8Array) => {
   let idx = 0;
-  while (String.fromCharCode(arr[idx]).match(/^[\0\t\n\f\r ]/) && idx < arr.length) idx += 1;
+  while (
+    String.fromCharCode(arr[idx]).match(/^[\0\t\n\f\r ]/) &&
+    idx < arr.length
+  ) {
+    idx += 1;
+  }
   return arr.subarray(idx);
 };
 

@@ -1,5 +1,4 @@
 import flatMap from 'lodash/flatMap';
-import isNil from 'lodash/isNil';
 import last from 'lodash/last';
 import sortBy from 'lodash/sortBy';
 
@@ -10,12 +9,9 @@ import {
   PDFIndirectReference,
   PDFName,
   PDFNumber,
-  PDFObject,
-  PDFStream,
 } from 'core/pdf-objects';
 import {
   PDFCatalog,
-  PDFHeader,
   PDFObjectStream,
   PDFXRefStream,
 } from 'core/pdf-structures';

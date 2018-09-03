@@ -1,5 +1,5 @@
 import { PDFHexString } from 'core/pdf-objects';
-import { arrayToString, charCode, charFromCode, trimArray } from 'utils';
+import { arrayToString, charFromCode, trimArray } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 

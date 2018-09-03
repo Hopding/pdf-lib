@@ -11,7 +11,9 @@ describe(`PDFHexString`, () => {
     expect(() => new PDFHexString('!@3$@')).toThrowError(
       'Invalid characters in hex string: "!@3$@"',
     );
-    expect(new PDFHexString('2\u00001\tA\nB\fC\ra bc')).toBeInstanceOf(PDFHexString);
+    expect(new PDFHexString('2\u00001\tA\nB\fC\ra bc')).toBeInstanceOf(
+      PDFHexString,
+    );
   });
 
   it(`has a static "fromString" factory method`, () => {
@@ -22,7 +24,9 @@ describe(`PDFHexString`, () => {
     expect(() => PDFHexString.fromString('!@3$@')).toThrowError(
       'Invalid characters in hex string: "!@3$@"',
     );
-    expect(PDFHexString.fromString('2\u00001\tA\nB\fC\ra bc')).toBeInstanceOf(PDFHexString);
+    expect(PDFHexString.fromString('2\u00001\tA\nB\fC\ra bc')).toBeInstanceOf(
+      PDFHexString,
+    );
   });
 
   describe(`"toString()" method`, () => {

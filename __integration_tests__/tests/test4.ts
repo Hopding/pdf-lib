@@ -1,47 +1,17 @@
-import faker from 'faker';
-import fs from 'fs';
 
 import {
-  clip,
-  clipEvenOdd,
-  closePath,
-  dashPattern,
-  drawCircle,
-  drawEllipse,
   drawImage,
   drawLinesOfText,
   drawRectangle,
-  drawSquare,
   drawText,
-  endPath,
-  fillingRgbColor,
-  fontAndSize,
-  lineCap,
-  lineHeight,
-  lineJoin,
-  lineTo,
-  moveTo,
-  nextLine,
   PDFContentStream,
-  PDFDictionary,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
-  PDFIndirectReference,
-  PDFName,
   PDFPage,
-  PDFTextObject,
-  popGraphicsState,
-  pushGraphicsState,
-  scale,
-  Standard14Fonts,
-  strokingRgbColor,
-  text,
-  textRenderingMode,
-  translate,
 } from '../../src';
 
-import { ITest, ITestAssets, ITestKernel } from '../models';
+import { ITestAssets, ITestKernel } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,

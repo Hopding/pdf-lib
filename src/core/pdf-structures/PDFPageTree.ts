@@ -10,7 +10,6 @@ import {
   PDFNumber,
 } from 'core/pdf-objects';
 import { PDFPage } from 'core/pdf-structures';
-import { error } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';

@@ -12,6 +12,7 @@ const pdfIndirectRefEnforcer = '@@__PDF_INDIRECT_REF_ENFORCER';
 const pdfIndirectRefPool: Map<string, PDFIndirectReference> = new Map();
 
 // TODO: Need to error out if obj or gen numbers are manually set!
+// tslint:disable-next-line:no-unused-variable
 class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
   static forNumbers = (objectNumber: number, generationNumber: number) => {
     const key = `${objectNumber} ${generationNumber}`;

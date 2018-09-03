@@ -5,7 +5,7 @@ import isString from 'lodash/isString';
 import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
-import { addStringToBuffer, and, not, or } from 'utils';
+import { addStringToBuffer, or } from 'utils';
 import { isInstance, isNumber, validate, validateArr } from 'utils/validate';
 
 /**
