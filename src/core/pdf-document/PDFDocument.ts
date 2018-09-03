@@ -27,7 +27,6 @@ import PDFFontFactory, {
 } from 'core/pdf-structures/factories/PDFFontFactory';
 import PDFStandardFontFactory from 'core/pdf-structures/factories/PDFStandardFontFactory';
 import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
-import { error } from 'utils';
 import { isInstance, oneOf, validate } from 'utils/validate';
 
 class PDFDocument {

@@ -1,3 +1,4 @@
+/* tslint:disable:no-unused-variable */
 import faker from 'faker';
 import flatMap from 'lodash/flatMap';
 import range from 'lodash/range';
@@ -11,7 +12,7 @@ import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { PDFContentStream } from 'core/pdf-structures';
 import PDFPage from 'core/pdf-structures/PDFPage';
 
-import { ITest, ITestAssets, ITestKernel } from '../models';
+import { ITestAssets, ITestKernel } from '../models';
 
 // Clipping path operators
 const { W } = PDFOperators;

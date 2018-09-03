@@ -1,5 +1,4 @@
 /* tslint:disable no-bitwise */
-import isString from 'lodash/isString';
 import sum from 'lodash/sum';
 
 export type Predicate<A, B = true> = (a: A, b?: B) => boolean;

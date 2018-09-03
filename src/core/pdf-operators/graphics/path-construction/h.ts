@@ -1,4 +1,4 @@
-/* eslint-disable new-cap */
+// tslint:disable-next-line:no-unused-variable
 import PDFOperator, {
   IPDFOperatorSingleton,
 } from 'core/pdf-operators/PDFOperator';

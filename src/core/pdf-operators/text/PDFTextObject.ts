@@ -9,7 +9,7 @@ import {
 } from 'core/pdf-operators';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { addStringToBuffer, arrayToString } from 'utils';
-import { isInstance, validateArr } from 'utils/validate';
+import { validateArr } from 'utils/validate';
 
 const validCategories = [
   ...colorOperators,
