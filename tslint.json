@@ -9,6 +9,7 @@
     "quotemark": [true, "single"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
     "prefer-for-of": false,
+    "import-blacklist": [true, "lodash"],
     "trailing-comma": [true, {
       "multiline": { "functions": "ignore" },
       "esSpecCompliant": true

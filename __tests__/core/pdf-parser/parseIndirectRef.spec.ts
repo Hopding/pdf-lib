@@ -43,7 +43,9 @@ describe(`parseIndirectRef`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDF Indirect Reference object`, () => {
-    const input = typedArrayFor('\u0000\t\n\f\r 0 2 R \u0000\t\n\f\r << /Key /Val >>');
+    const input = typedArrayFor(
+      '\u0000\t\n\f\r 0 2 R \u0000\t\n\f\r << /Key /Val >>',
+    );
     const res = parseIndirectRef(input);
     expect(res).toEqual([
       PDFIndirectReference.forNumbers(0, 2),
