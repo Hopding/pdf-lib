@@ -1,4 +1,5 @@
-import { PDFIndirectReference } from 'core/pdf-objects';
+// tslint:disable-next-line:no-unused-variable
+import { PDFIndirectReference, PDFObject } from 'core/pdf-objects';
 import { arrayIndexOf, arrayToString, trimArray } from 'utils';
 
 import { IParseHandlers } from './PDFParser';

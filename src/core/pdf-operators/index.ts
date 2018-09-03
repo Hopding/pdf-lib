@@ -1,3 +1,6 @@
+// tslint:disable-next-line:no-unused-variable
+import { IPDFOperatorSingleton } from 'core/pdf-operators/PDFOperator';
+
 import W from './graphics/clipping-path/W';
 
 import { CS, cs } from './graphics/color/CSOps';

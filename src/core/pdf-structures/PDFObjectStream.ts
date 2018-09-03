@@ -10,6 +10,8 @@ import {
   PDFIndirectObject,
   PDFName,
   PDFNumber,
+  // tslint:disable-next-line:no-unused-variable
+  PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
 import { addStringToBuffer } from 'utils';

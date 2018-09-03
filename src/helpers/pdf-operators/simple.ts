@@ -33,6 +33,9 @@ import Do from 'core/pdf-operators/Do';
 import PDFOperators from 'core/pdf-operators';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 
+// tslint:disable-next-line:no-unused-variable
+import { PDFHexString, PDFName, PDFString } from 'core/pdf-objects';
+
 /* ======== Clipping path operators ======== */
 const { W } = PDFOperators;
 

@@ -1,5 +1,7 @@
-/* eslint-disable new-cap */
-import PDFOperator from 'core/pdf-operators/PDFOperator';
+// tslint:disable-next-line:no-unused-variable
+import PDFOperator, {
+  IPDFOperatorSingleton,
+} from 'core/pdf-operators/PDFOperator';
 
 /**
  * Close the current subpath by appending a straight line segment from the current
