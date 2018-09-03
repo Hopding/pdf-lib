@@ -42,7 +42,7 @@ const parseIndirectObj = (
   if (!result) return undefined;
 
   // eslint-disable-next-line no-unused-vars
-  const [fullMatch, objNum, genNum] = result;
+  const [_fullMatch, objNum, genNum] = result;
 
   // Extract the bytes making up the object itself
   const endobjIdx = arrayIndexOf(trimmed, 'endobj', objIdx)!;

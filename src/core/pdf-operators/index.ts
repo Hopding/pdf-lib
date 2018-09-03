@@ -1,4 +1,3 @@
-
 import W from './graphics/clipping-path/W';
 
 import { CS, cs } from './graphics/color/CSOps';

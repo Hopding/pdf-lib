@@ -53,8 +53,7 @@ const parseSubsections = (input: string): PDFXRef.Subsection[] | void => {
     const result = remainder.match(sectionsRegex);
     if (!result) return undefined;
 
-    // eslint-disable-next-line no-unused-vars
-    const [fullMatch, firstObjNum, objCount, entriesStr] = result;
+    const [fullMatch, firstObjNum, _objCount, entriesStr] = result;
     const entries = parseEntries(entriesStr);
     if (!entries) return undefined;
 

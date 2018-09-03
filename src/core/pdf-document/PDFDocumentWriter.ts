@@ -11,11 +11,7 @@ import {
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
-import {
-  PDFCatalog,
-  PDFObjectStream,
-  PDFTrailer,
-} from 'core/pdf-structures';
+import { PDFCatalog, PDFObjectStream, PDFTrailer } from 'core/pdf-structures';
 import PDFXRefStreamFactory from 'core/pdf-structures/factories/PDFXRefStreamFactory';
 import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
 import { error } from 'utils';

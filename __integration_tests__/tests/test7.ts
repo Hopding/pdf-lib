@@ -1,4 +1,3 @@
-
 import {
   drawImage,
   drawLinesOfText,
@@ -8,10 +7,6 @@ import {
   PDFDocumentFactory,
   PDFDocumentWriter,
 } from '../../src';
-
-import { PDFOperators } from '../../src';
-
-const { cm } = PDFOperators;
 
 import { ITestAssets, ITestKernel } from '../models';
 

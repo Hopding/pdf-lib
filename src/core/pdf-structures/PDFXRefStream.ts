@@ -13,12 +13,7 @@ import {
   PDFStream,
 } from 'core/pdf-objects';
 import { PDFCatalog } from 'core/pdf-structures';
-import {
-  addStringToBuffer,
-  bytesFor,
-  reverseArray,
-  sizeInBytes,
-} from 'utils';
+import { addStringToBuffer, bytesFor, reverseArray, sizeInBytes } from 'utils';
 
 class PDFXRefStream extends PDFStream {
   static create = (

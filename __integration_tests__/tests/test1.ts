@@ -1,3 +1,4 @@
+/* tslint:disable:no-unused-variable */
 import faker from 'faker';
 import flatMap from 'lodash/flatMap';
 import range from 'lodash/range';
