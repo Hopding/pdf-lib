@@ -75,20 +75,26 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
   recursiveTraverse = (
     destIndex: PDFObjectIndex,
     mappedRefs: Map<PDFIndirectReference, PDFIndirectReference>,
+    traversedObjects: Set<PDFObject>,
     nextObjectNumber: () => number,
   ) => {
+    if (traversedObjects.has(this)) return;
+    traversedObjects.add(this);
+
     this.array.forEach((value, idx) => {
-      console.log('Value:', value.toString());
       if (value instanceof PDFDictionary || value instanceof PDFArray) {
-        value.recursiveTraverse(destIndex, mappedRefs, nextObjectNumber);
+        value.recursiveTraverse(
+          destIndex,
+          mappedRefs,
+          traversedObjects,
+          nextObjectNumber,
+        );
       }
 
       if (value instanceof PDFIndirectReference) {
-        console.log('Found Ref:', value.toString());
         const alreadyMapped = mappedRefs.has(value);
-        if (alreadyMapped) {
-          this.array[idx] = mappedRefs.get(value) as any;
-        } else {
+
+        if (!alreadyMapped) {
           const dereferencedValue = this.index.lookup(value);
 
           const newRef = PDFIndirectReference.forNumbers(nextObjectNumber(), 0);
@@ -96,10 +102,10 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
           mappedRefs.set(value, newRef);
 
           if (dereferencedValue instanceof PDFStream) {
-            console.log('Dereferenced (Stream) Dict:');
             dereferencedValue.dictionary.recursiveTraverse(
               destIndex,
               mappedRefs,
+              traversedObjects,
               nextObjectNumber,
             );
           } else if (
@@ -109,17 +115,14 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
             dereferencedValue.recursiveTraverse(
               destIndex,
               mappedRefs,
+              traversedObjects,
               nextObjectNumber,
             );
-          } else {
-            console.log('Dereferenced:', dereferencedValue.toString());
           }
-
-          this.array[idx] = newRef as any;
         }
-      }
 
-      console.log();
+        this.array[idx] = mappedRefs.get(value) as any;
+      }
     });
   };
 

@@ -102,26 +102,26 @@ class PDFDictionary extends PDFObject {
   recursiveTraverse = (
     destIndex: PDFObjectIndex,
     mappedRefs: Map<PDFIndirectReference, PDFIndirectReference>,
+    traversedObjects: Set<PDFObject>,
     nextObjectNumber: () => number,
   ) => {
-    // TODO: May not need to make clone after all?
-    console.log('MAPPING:', this.toString());
-    new Map(this.map).forEach((value, key) => {
-      console.log('Key:  ', key.toString());
-      console.log('Value:', value.toString());
+    if (traversedObjects.has(this)) return;
+    traversedObjects.add(this);
 
+    new Map(this.map).forEach((value, key) => {
       if (value instanceof PDFDictionary || value instanceof PDFArray) {
-        value.recursiveTraverse(destIndex, mappedRefs, nextObjectNumber);
+        value.recursiveTraverse(
+          destIndex,
+          mappedRefs,
+          traversedObjects,
+          nextObjectNumber,
+        );
       }
 
       if (value instanceof PDFIndirectReference) {
-        console.log('Found Ref:', value.toString());
-
         const alreadyMapped = mappedRefs.has(value);
 
-        if (alreadyMapped) {
-          this.map.set(key, mappedRefs.get(value));
-        } else {
+        if (!alreadyMapped) {
           const dereferencedValue = this.index.lookup(value);
 
           const newRef = PDFIndirectReference.forNumbers(nextObjectNumber(), 0);
@@ -129,10 +129,10 @@ class PDFDictionary extends PDFObject {
           mappedRefs.set(value, newRef);
 
           if (dereferencedValue instanceof PDFStream) {
-            console.log('Dereferenced (Stream) Dict:');
             dereferencedValue.dictionary.recursiveTraverse(
               destIndex,
               mappedRefs,
+              traversedObjects,
               nextObjectNumber,
             );
           } else if (
@@ -142,17 +142,14 @@ class PDFDictionary extends PDFObject {
             dereferencedValue.recursiveTraverse(
               destIndex,
               mappedRefs,
+              traversedObjects,
               nextObjectNumber,
             );
-          } else {
-            console.log('Dereferenced:', dereferencedValue.toString());
           }
-
-          this.map.set(key, newRef);
         }
-      }
 
-      console.log();
+        this.map.set(key, mappedRefs.get(value));
+      }
     });
   };
 

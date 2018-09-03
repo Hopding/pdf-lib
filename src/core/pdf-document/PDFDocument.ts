@@ -142,10 +142,18 @@ class PDFDocument {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const { Pages } = this.catalog;
 
-    // ----------
-    const mappedRefs = new Map();
-    page.recursiveTraverse(this.index, mappedRefs, () => (this.maxObjNum += 1));
-    // ----------
+    // ----- If page comes from another document, copy it into this one -----
+    if (page.index !== this.index) {
+      const mappedRefs = new Map();
+      const traversedObjects = new Set();
+      page.recursiveTraverse(
+        this.index,
+        mappedRefs,
+        traversedObjects,
+        () => (this.maxObjNum += 1),
+      );
+    }
+    // ----------------------------------------------------------------------
 
     let lastPageTree = Pages;
     let lastPageTreeRef = this.catalog.get('Pages');
