@@ -4,7 +4,13 @@ import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
 
-import { PDFIndirectObject, PDFName } from 'core/pdf-objects';
+import {
+  PDFArray,
+  PDFIndirectObject,
+  PDFIndirectReference,
+  PDFName,
+  PDFStream,
+} from 'core/pdf-objects';
 import { addStringToBuffer, and, arrayToString, error, not, or } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
@@ -91,6 +97,63 @@ class PDFDictionary extends PDFObject {
     this.map.set(keyName, val);
 
     return this;
+  };
+
+  recursiveTraverse = (
+    destIndex: PDFObjectIndex,
+    mappedRefs: Map<PDFIndirectReference, PDFIndirectReference>,
+    nextObjectNumber: () => number,
+  ) => {
+    // TODO: May not need to make clone after all?
+    console.log('MAPPING:', this.toString());
+    new Map(this.map).forEach((value, key) => {
+      console.log('Key:  ', key.toString());
+      console.log('Value:', value.toString());
+
+      if (value instanceof PDFDictionary || value instanceof PDFArray) {
+        value.recursiveTraverse(destIndex, mappedRefs, nextObjectNumber);
+      }
+
+      if (value instanceof PDFIndirectReference) {
+        console.log('Found Ref:', value.toString());
+
+        const alreadyMapped = mappedRefs.has(value);
+
+        if (alreadyMapped) {
+          this.map.set(key, mappedRefs.get(value));
+        } else {
+          const dereferencedValue = this.index.lookup(value);
+
+          const newRef = PDFIndirectReference.forNumbers(nextObjectNumber(), 0);
+          destIndex.set(newRef, dereferencedValue);
+          mappedRefs.set(value, newRef);
+
+          if (dereferencedValue instanceof PDFStream) {
+            console.log('Dereferenced (Stream) Dict:');
+            dereferencedValue.dictionary.recursiveTraverse(
+              destIndex,
+              mappedRefs,
+              nextObjectNumber,
+            );
+          } else if (
+            dereferencedValue instanceof PDFDictionary ||
+            dereferencedValue instanceof PDFArray
+          ) {
+            dereferencedValue.recursiveTraverse(
+              destIndex,
+              mappedRefs,
+              nextObjectNumber,
+            );
+          } else {
+            console.log('Dereferenced:', dereferencedValue.toString());
+          }
+
+          this.map.set(key, newRef);
+        }
+      }
+
+      console.log();
+    });
   };
 
   toString = (): string => {

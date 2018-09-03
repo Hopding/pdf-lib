@@ -6,7 +6,12 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-import { PDFIndirectObject } from '.';
+import {
+  PDFDictionary,
+  PDFIndirectObject,
+  PDFIndirectReference,
+  PDFStream,
+} from '.';
 import PDFObject from './PDFObject';
 
 class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
@@ -66,6 +71,57 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     this.array.map(fn);
   splice = (start: number, deleteCount?: number) =>
     this.array.splice(start, deleteCount);
+
+  recursiveTraverse = (
+    destIndex: PDFObjectIndex,
+    mappedRefs: Map<PDFIndirectReference, PDFIndirectReference>,
+    nextObjectNumber: () => number,
+  ) => {
+    this.array.forEach((value, idx) => {
+      console.log('Value:', value.toString());
+      if (value instanceof PDFDictionary || value instanceof PDFArray) {
+        value.recursiveTraverse(destIndex, mappedRefs, nextObjectNumber);
+      }
+
+      if (value instanceof PDFIndirectReference) {
+        console.log('Found Ref:', value.toString());
+        const alreadyMapped = mappedRefs.has(value);
+        if (alreadyMapped) {
+          this.array[idx] = mappedRefs.get(value) as any;
+        } else {
+          const dereferencedValue = this.index.lookup(value);
+
+          const newRef = PDFIndirectReference.forNumbers(nextObjectNumber(), 0);
+          destIndex.set(newRef, dereferencedValue);
+          mappedRefs.set(value, newRef);
+
+          if (dereferencedValue instanceof PDFStream) {
+            console.log('Dereferenced (Stream) Dict:');
+            dereferencedValue.dictionary.recursiveTraverse(
+              destIndex,
+              mappedRefs,
+              nextObjectNumber,
+            );
+          } else if (
+            dereferencedValue instanceof PDFDictionary ||
+            dereferencedValue instanceof PDFArray
+          ) {
+            dereferencedValue.recursiveTraverse(
+              destIndex,
+              mappedRefs,
+              nextObjectNumber,
+            );
+          } else {
+            console.log('Dereferenced:', dereferencedValue.toString());
+          }
+
+          this.array[idx] = newRef as any;
+        }
+      }
+
+      console.log();
+    });
+  };
 
   toString = (): string => {
     const bufferSize = this.bytesSize();
