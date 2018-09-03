@@ -2,17 +2,19 @@
   "extends": "tslint:recommended",
   "rules": {
     "curly": [true, "ignore-same-line"],
+    "import-blacklist": [true, "lodash"],
     "max-line-length": false,
     "member-access": [true, "no-public"],
     "no-console": false,
+    "no-unused-variable": [true, { "ignore-pattern": "^_" }],
     "object-literal-sort-keys": false,
+    "prefer-for-of": false,
     "quotemark": [true, "single"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
-    "prefer-for-of": false,
-    "import-blacklist": [true, "lodash"],
     "trailing-comma": [true, {
-      "multiline": { "functions": "ignore" },
-      "esSpecCompliant": true
-    }]
+        "esSpecCompliant": true,
+        "multiline": { "functions": "ignore" }
+      }
+    ]
   }
 }

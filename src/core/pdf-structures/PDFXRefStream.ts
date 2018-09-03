@@ -1,9 +1,5 @@
-import add from 'lodash/add';
-import dropRight from 'lodash/dropRight';
 import flatten from 'lodash/flatten';
-import last from 'lodash/last';
 import max from 'lodash/max';
-import padStart from 'lodash/padStart';
 import sum from 'lodash/sum';
 import pako from 'pako';
 
@@ -11,23 +7,18 @@ import { PDFObjectIndex } from 'core/pdf-document';
 import {
   PDFArray,
   PDFDictionary,
-  PDFIndirectObject,
   PDFIndirectReference,
   PDFName,
   PDFNumber,
-  PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
 import { PDFCatalog } from 'core/pdf-structures';
 import {
   addStringToBuffer,
   bytesFor,
-  digits,
-  or,
   reverseArray,
   sizeInBytes,
 } from 'utils';
-import { isInstance, validate, validateArr } from 'utils/validate';
 
 class PDFXRefStream extends PDFStream {
   static create = (

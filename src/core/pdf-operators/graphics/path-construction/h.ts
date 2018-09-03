@@ -1,7 +1,5 @@
 /* eslint-disable new-cap */
-import PDFOperator, {
-  IPDFOperatorSingleton,
-} from 'core/pdf-operators/PDFOperator';
+import PDFOperator from 'core/pdf-operators/PDFOperator';
 
 /**
  * Close the current subpath by appending a straight line segment from the current

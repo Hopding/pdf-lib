@@ -1,39 +1,24 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import { PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
-import { isInRange, validate } from 'utils/validate';
 
 import {
   appendBezierCurve,
-  clip,
   closePath,
-  dashPattern,
   degreesToRadians,
-  endPath,
   fill,
   fillAndStroke,
   fillingRgbColor,
-  fontAndSize,
-  image,
-  lineHeight,
   lineWidth,
   moveTo,
-  nextLine,
   popGraphicsState,
   pushGraphicsState,
-  rectangle,
   rotateRadians,
   scale,
-  skewDegrees,
   skewRadians,
-  square,
   stroke,
   strokingRgbColor,
-  text,
-  textPosition,
   translate,
 } from 'helpers/pdf-operators/simple';
 

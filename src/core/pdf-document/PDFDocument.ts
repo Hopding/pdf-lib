@@ -25,7 +25,6 @@ import PDFFontFactory, {
   IFontFlagOptions,
 } from 'core/pdf-structures/factories/PDFFontFactory';
 import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
-import { error } from 'utils';
 import { isInstance, oneOf, validate } from 'utils/validate';
 
 class PDFDocument {

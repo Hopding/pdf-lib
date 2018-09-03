@@ -10,11 +10,10 @@ import {
   PDFIndirectObject,
   PDFName,
   PDFNumber,
-  PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
-import { addStringToBuffer, or } from 'utils';
-import { isInstance, validate, validateArr } from 'utils/validate';
+import { addStringToBuffer } from 'utils';
+import { isInstance, validateArr } from 'utils/validate';
 
 class PDFObjectStream extends PDFStream {
   static create = (index: PDFObjectIndex, objects: PDFIndirectObject[]) =>

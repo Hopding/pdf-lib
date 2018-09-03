@@ -2,7 +2,6 @@ import isArray from 'lodash/isArray';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 
-import { PDFDocument } from 'core/pdf-document';
 import {
   PDFArray,
   PDFDictionary,
@@ -12,7 +11,6 @@ import {
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
-import QOps from 'core/pdf-operators/graphics/graphics-state/QOps';
 import { PDFContentStream } from 'core/pdf-structures';
 import {
   isIdentity,

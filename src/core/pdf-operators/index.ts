@@ -1,4 +1,3 @@
-import { IPDFOperatorSingleton } from 'core/pdf-operators/PDFOperator';
 
 import W from './graphics/clipping-path/W';
 

@@ -1,6 +1,5 @@
 import round from 'lodash/round';
 
-import { PDFHexString, PDFName, PDFString } from 'core/pdf-objects';
 
 import { G, g } from 'core/pdf-operators/graphics/color/GOps';
 import { K, k } from 'core/pdf-operators/graphics/color/KOps';
@@ -17,10 +16,10 @@ import l from 'core/pdf-operators/graphics/path-construction/l';
 import m from 'core/pdf-operators/graphics/path-construction/m';
 import re from 'core/pdf-operators/graphics/path-construction/re';
 
-import { TD, Td } from 'core/pdf-operators/text/text-positioning/TDOps';
+import { Td } from 'core/pdf-operators/text/text-positioning/TDOps';
 import Tm from 'core/pdf-operators/text/text-positioning/Tm';
 
-import { TJ, Tj } from 'core/pdf-operators/text/text-showing/TJOps';
+import { Tj } from 'core/pdf-operators/text/text-showing/TJOps';
 
 import Tc from 'core/pdf-operators/text/text-state/Tc';
 import Tf from 'core/pdf-operators/text/text-state/Tf';
@@ -34,8 +33,6 @@ import Do from 'core/pdf-operators/Do';
 
 import PDFOperators from 'core/pdf-operators';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
-import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
-import { isInRange, validate } from 'utils/validate';
 
 /* ======== Clipping path operators ======== */
 const { W } = PDFOperators;

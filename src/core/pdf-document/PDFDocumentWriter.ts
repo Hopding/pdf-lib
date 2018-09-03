@@ -1,16 +1,12 @@
-import flatMap from 'lodash/flatMap';
 import isFunction from 'lodash/isFunction';
-import isNil from 'lodash/isNil';
 import last from 'lodash/last';
 import sortBy from 'lodash/sortBy';
 
 import { PDFDocument, PDFObjectIndex } from 'core/pdf-document';
 import {
-  PDFArray,
   PDFDictionary,
   PDFIndirectObject,
   PDFIndirectReference,
-  PDFName,
   PDFNumber,
   PDFObject,
   PDFStream,
@@ -19,7 +15,6 @@ import {
   PDFCatalog,
   PDFObjectStream,
   PDFTrailer,
-  PDFXRefStream,
 } from 'core/pdf-structures';
 import PDFXRefStreamFactory from 'core/pdf-structures/factories/PDFXRefStreamFactory';
 import PDFXRefTableFactory from 'core/pdf-structures/factories/PDFXRefTableFactory';
