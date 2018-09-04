@@ -102,7 +102,7 @@ const copiedObj = copier.copy(originalObj);
 
 const copiedObj = PDFObjectCopier.for(srcIndex, destIndex).copy(origObject);
 
-this.index.setNextObjectNumber(value);
+this.index.assignNextObjectNumber(value);
 this.index.assignNextObjectNumber(value);
 
 */

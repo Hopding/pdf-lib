@@ -79,7 +79,7 @@ describe(`PDFPageTree`, () => {
       const index = PDFObjectIndex.create();
       const kids = PDFArray.fromArray([], index);
 
-      index.set(PDFIndirectReference.forNumbers(0, 1), kids);
+      index.assign(PDFIndirectReference.forNumbers(0, 1), kids);
       const dict = PDFDictionary.from(
         { Kids: PDFIndirectReference.forNumbers(0, 1) },
         index,
@@ -96,7 +96,7 @@ describe(`PDFPageTree`, () => {
       const kids = PDFArray.fromArray([], index);
       const parent = PDFPageTree.createRootNode(kids, index);
 
-      index.set(PDFIndirectReference.forNumbers(0, 1), parent);
+      index.assign(PDFIndirectReference.forNumbers(0, 1), parent);
 
       const dict = PDFDictionary.from(
         { Parent: PDFIndirectReference.forNumbers(0, 1) },
@@ -139,7 +139,7 @@ describe(`PDFPageTree`, () => {
         index,
       );
       const parent = PDFPageTree.createRootNode(parentKids, index);
-      index.set(PDFIndirectReference.forNumbers(0, 1), parent);
+      index.assign(PDFIndirectReference.forNumbers(0, 1), parent);
 
       const kids = PDFArray.fromArray([], index);
       const pageTree = PDFPageTree.createNode(
@@ -147,10 +147,10 @@ describe(`PDFPageTree`, () => {
         kids,
         index,
       );
-      index.set(PDFIndirectReference.forNumbers(0, 2), pageTree);
+      index.assign(PDFIndirectReference.forNumbers(0, 2), pageTree);
 
       const newPage = PDFPage.create(index, [500, 500]);
-      index.set(PDFIndirectReference.forNumbers(0, 3), newPage);
+      index.assign(PDFIndirectReference.forNumbers(0, 3), newPage);
 
       expect(parent.Count.number).toBe(1);
       expect(pageTree.Count.number).toBe(0);
@@ -181,7 +181,7 @@ describe(`PDFPageTree`, () => {
       const parentKids = PDFArray.fromArray([], index);
       const parent = PDFPageTree.createRootNode(parentKids, index);
       parent.addPage(PDFIndirectReference.forNumbers(0, 2));
-      index.set(PDFIndirectReference.forNumbers(0, 1), parent);
+      index.assign(PDFIndirectReference.forNumbers(0, 1), parent);
 
       const kids = PDFArray.fromArray([], index);
       const pageTree = PDFPageTree.createNode(
@@ -192,7 +192,7 @@ describe(`PDFPageTree`, () => {
       pageTree.addPage(PDFIndirectReference.forNumbers(0, 3));
       pageTree.addPage(PDFIndirectReference.forNumbers(0, 4));
       pageTree.addPage(PDFIndirectReference.forNumbers(0, 5));
-      index.set(PDFIndirectReference.forNumbers(0, 2), pageTree);
+      index.assign(PDFIndirectReference.forNumbers(0, 2), pageTree);
 
       expect(parent.Count.number).toBe(4);
       expect(pageTree.Count.number).toBe(3);
@@ -233,7 +233,7 @@ describe(`PDFPageTree`, () => {
       const parentKids = PDFArray.fromArray([], index);
       const parent = PDFPageTree.createRootNode(parentKids, index);
       parent.addPage(PDFIndirectReference.forNumbers(0, 2));
-      index.set(PDFIndirectReference.forNumbers(0, 1), parent);
+      index.assign(PDFIndirectReference.forNumbers(0, 1), parent);
 
       const kids = PDFArray.fromArray([], index);
       const pageTree = PDFPageTree.createNode(
@@ -243,7 +243,7 @@ describe(`PDFPageTree`, () => {
       );
       pageTree.addPage(PDFIndirectReference.forNumbers(0, 3));
       pageTree.addPage(PDFIndirectReference.forNumbers(0, 4));
-      index.set(PDFIndirectReference.forNumbers(0, 2), pageTree);
+      index.assign(PDFIndirectReference.forNumbers(0, 2), pageTree);
 
       expect(parent.Count.number).toBe(3);
       expect(pageTree.Count.number).toBe(2);
@@ -309,13 +309,13 @@ describe(`PDFPageTree`, () => {
     // R 0 7
     const page3 = PDFPage.create(index, [250, 500]);
 
-    index.set(PDFIndirectReference.forNumbers(0, 1), root);
-    index.set(PDFIndirectReference.forNumbers(0, 2), pageTree1);
-    index.set(PDFIndirectReference.forNumbers(0, 3), pageTree2);
-    index.set(PDFIndirectReference.forNumbers(0, 4), pageTree3);
-    index.set(PDFIndirectReference.forNumbers(0, 5), page1);
-    index.set(PDFIndirectReference.forNumbers(0, 6), page2);
-    index.set(PDFIndirectReference.forNumbers(0, 7), page3);
+    index.assign(PDFIndirectReference.forNumbers(0, 1), root);
+    index.assign(PDFIndirectReference.forNumbers(0, 2), pageTree1);
+    index.assign(PDFIndirectReference.forNumbers(0, 3), pageTree2);
+    index.assign(PDFIndirectReference.forNumbers(0, 4), pageTree3);
+    index.assign(PDFIndirectReference.forNumbers(0, 5), page1);
+    index.assign(PDFIndirectReference.forNumbers(0, 6), page2);
+    index.assign(PDFIndirectReference.forNumbers(0, 7), page3);
 
     describe(`"traverse"`, () => {
       it(`invokes the "visit" callback for every child of the pageTree`, () => {

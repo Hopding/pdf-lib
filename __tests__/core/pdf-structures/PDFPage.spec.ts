@@ -76,7 +76,7 @@ describe(`PDFPage`, () => {
         { foo: PDFString.fromString('bar') },
         index,
       );
-      index.set(PDFIndirectReference.forNumbers(1, 2), resourcesDict);
+      index.assign(PDFIndirectReference.forNumbers(1, 2), resourcesDict);
       const page = PDFPage.create(index, [1, 2], resourcesDict);
       expect(page.Resources).toBe(resourcesDict);
     });
@@ -95,7 +95,7 @@ describe(`PDFPage`, () => {
       );
 
       const contentsArray = PDFArray.fromArray([contentStream], index);
-      index.set(PDFIndirectReference.forNumbers(1, 2), contentsArray);
+      index.assign(PDFIndirectReference.forNumbers(1, 2), contentsArray);
 
       const page = PDFPage.create(index, [1, 2]);
       page.set('Contents', PDFIndirectReference.forNumbers(1, 2));
@@ -114,7 +114,7 @@ describe(`PDFPage`, () => {
         cm.of(1, 2, 3, 4, 5, 6),
         S.operator,
       );
-      index.set(PDFIndirectReference.forNumbers(1, 2), contentStream);
+      index.assign(PDFIndirectReference.forNumbers(1, 2), contentStream);
 
       const page = PDFPage.create(index, [1, 2]);
       page.set('Contents', PDFIndirectReference.forNumbers(1, 2));
@@ -153,8 +153,8 @@ describe(`PDFPage`, () => {
         Q.operator,
       );
 
-      index.set(ref1, qContentStream);
-      index.set(ref2, qContentStream);
+      index.assign(ref1, qContentStream);
+      index.assign(ref2, qContentStream);
       index.pushGraphicsStateContentStream = ref1;
       index.popGraphicsStateContentStream = ref2;
 
@@ -164,7 +164,7 @@ describe(`PDFPage`, () => {
         cm.of(1, 2, 3, 4, 5, 6),
         S.operator,
       );
-      index.set(ref3, contentStream);
+      index.assign(ref3, contentStream);
 
       const page = PDFPage.create(index, [1, 2]);
       page.set('Contents', PDFArray.fromArray([ref3], index));
