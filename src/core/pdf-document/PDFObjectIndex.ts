@@ -26,6 +26,8 @@ class PDFObjectIndex {
   /** @hidden */
   popGraphicsStateContentStream?: PDFIndirectReference<PDFContentStream>;
 
+  highestObjectNumber: number = -1;
+
   set = (key: PDFIndirectReference, val: PDFObject) => {
     validate(
       key,
@@ -33,8 +35,18 @@ class PDFObjectIndex {
       '"key" must be a PDFIndirectReference',
     );
     validate(val, isInstance(PDFObject), '"val" must be a PDFObject');
+    if (key.objectNumber > this.highestObjectNumber) {
+      this.highestObjectNumber = key.objectNumber;
+    }
     this.index.set(key, val);
     return this;
+  };
+
+  assignNextObjectNumberTo = (val: PDFObject) => {
+    this.highestObjectNumber += 1;
+    const ref = PDFIndirectReference.forNumbers(this.highestObjectNumber, 0);
+    this.set(ref, val);
+    return ref;
   };
 
   lookupMaybe = (

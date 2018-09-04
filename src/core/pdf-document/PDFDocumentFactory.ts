@@ -40,7 +40,7 @@ class PDFDocumentFactory {
     index.set(refs.catalog, catalog);
     index.set(refs.pageTree, pageTree);
 
-    return PDFDocument.from(catalog, 2, index);
+    return PDFDocument.from(catalog, index);
   };
 
   /**
@@ -85,7 +85,7 @@ class PDFDocumentFactory {
     index.pushGraphicsStateContentStream = ref1;
     index.popGraphicsStateContentStream = ref2;
 
-    return PDFDocument.from(parsedPdf.catalog, maxObjectNumber + 2, index);
+    return PDFDocument.from(parsedPdf.catalog, index);
   };
 
   // TODO: Need to throw out objects with "free" obj numbers...

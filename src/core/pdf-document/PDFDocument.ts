@@ -1,6 +1,7 @@
 import isNumber from 'lodash/isNumber';
 import values from 'lodash/values';
 
+import PDFObjectCopier from 'core/pdf-document/PDFObjectCopier';
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import Standard14Fonts, {
   IStandard14FontsUnion,
@@ -30,11 +31,8 @@ import PNGXObjectFactory from 'core/pdf-structures/factories/PNGXObjectFactory';
 import { isInstance, oneOf, validate } from 'utils/validate';
 
 class PDFDocument {
-  static from = (
-    catalog: PDFCatalog,
-    maxObjectNumber: number,
-    index: PDFObjectIndex,
-  ) => new PDFDocument(catalog, maxObjectNumber, index);
+  static from = (catalog: PDFCatalog, index: PDFObjectIndex) =>
+    new PDFDocument(catalog, index);
 
   /** @hidden */
   header: PDFHeader = PDFHeader.forVersion(1, 7);
@@ -43,19 +41,12 @@ class PDFDocument {
   /** @hidden */
   index: PDFObjectIndex;
 
-  maxObjNum: number = 0;
-
-  constructor(
-    catalog: PDFCatalog,
-    maxObjectNumber: number,
-    index: PDFObjectIndex,
-  ) {
+  constructor(catalog: PDFCatalog, index: PDFObjectIndex) {
     validate(
       catalog,
       isInstance(PDFCatalog),
       '"catalog" must be a PDFCatalog object',
     );
-    validate(maxObjectNumber, isNumber, '"maxObjectNumber" must be a number');
     validate(
       index,
       isInstance(PDFObjectIndex),
@@ -63,7 +54,6 @@ class PDFDocument {
     );
 
     this.catalog = catalog;
-    this.maxObjNum = maxObjectNumber;
     this.index = index;
   }
 
@@ -79,10 +69,7 @@ class PDFDocument {
    */
   register = <T extends PDFObject>(object: T): PDFIndirectReference<T> => {
     validate(object, isInstance(PDFObject), 'object must be a PDFObject');
-    this.maxObjNum += 1;
-    const ref = PDFIndirectReference.forNumbers(this.maxObjNum, 0);
-    this.index.set(ref, object);
-    return ref;
+    return this.index.assignNextObjectNumberTo(object);
   };
 
   /**
@@ -144,18 +131,10 @@ class PDFDocument {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
     const { Pages } = this.catalog;
 
-    // ----- If page comes from another document, copy it into this one -----
+    // If page comes from another document, copy it into this one
     if (page.index !== this.index) {
-      const mappedRefs = new Map();
-      const traversedObjects = new Set();
-      page.recursiveTraverse(
-        this.index,
-        mappedRefs,
-        traversedObjects,
-        () => (this.maxObjNum += 1),
-      );
+      PDFObjectCopier.for(page.index, this.index).copy(page);
     }
-    // ----------------------------------------------------------------------
 
     let lastPageTree = Pages;
     let lastPageTreeRef = this.catalog.get('Pages');

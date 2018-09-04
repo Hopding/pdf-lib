@@ -137,7 +137,7 @@ class PDFDocumentWriter {
 
     const objectStreamIndObj = PDFIndirectObject.of(
       objectStream,
-    ).setReferenceNumbers(pdfDoc.maxObjNum + 1, 0);
+    ).setReferenceNumbers(pdfDoc.index.highestObjectNumber + 1, 0);
 
     streamObjects.push(objectStreamIndObj);
 
