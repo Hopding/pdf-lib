@@ -28,7 +28,7 @@ class PDFObjectIndex {
 
   highestObjectNumber: number = -1;
 
-  set = (key: PDFIndirectReference, val: PDFObject) => {
+  assign = (key: PDFIndirectReference, val: PDFObject) => {
     validate(
       key,
       isInstance(PDFIndirectReference),
@@ -45,7 +45,7 @@ class PDFObjectIndex {
   assignNextObjectNumberTo = (val: PDFObject) => {
     this.highestObjectNumber += 1;
     const ref = PDFIndirectReference.forNumbers(this.highestObjectNumber, 0);
-    this.set(ref, val);
+    this.assign(ref, val);
     return ref;
   };
 

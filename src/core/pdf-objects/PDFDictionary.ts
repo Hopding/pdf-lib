@@ -125,7 +125,7 @@ class PDFDictionary extends PDFObject {
           const dereferencedValue = this.index.lookup(value);
 
           const newRef = PDFIndirectReference.forNumbers(nextObjectNumber(), 0);
-          destIndex.set(newRef, dereferencedValue);
+          destIndex.assign(newRef, dereferencedValue);
           mappedRefs.set(value, newRef);
 
           if (dereferencedValue instanceof PDFStream) {
