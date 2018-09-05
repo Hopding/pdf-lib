@@ -5,6 +5,7 @@ import pako from 'pako';
 
 import 'core/pdf-objects';
 
+import { PDFObjectIndex } from 'core/pdf-document';
 import { PDFDictionary, PDFName, PDFNumber, PDFStream } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { addStringToBuffer, or } from 'utils';
@@ -59,6 +60,19 @@ class PDFContentStream extends PDFStream {
     const Length = this.dictionary.get('Length');
     return this.dictionary.index.lookup(Length) as PDFNumber;
   }
+
+  // Note: If this PDFContentStream is encoded when it is cloned, the
+  //       clone will *not* be encoded.
+  cloneDeep = (cloneIndex: PDFObjectIndex) => {
+    const clonedDict = this.dictionary.cloneDeep(cloneIndex);
+    clonedDict.map.delete(PDFName.from('Filter'));
+    const cloned = PDFContentStream.of(
+      clonedDict,
+      // TODO: Should probably do a deep clone on these operators
+      ...this.operators,
+    );
+    return cloned;
+  };
 
   encode = () => {
     this.dictionary.set(PDFName.from('Filter'), PDFName.from('FlateDecode'));

@@ -20,45 +20,78 @@ class PDFObjectCopier {
     PDFIndirectReference,
     PDFIndirectReference
   >();
-  private readonly traversedObjects = new Set<PDFObject>();
+  private readonly traversedObjects = new Map<PDFObject, PDFObject>();
 
   constructor(from: PDFObjectIndex, to: PDFObjectIndex) {
     this.from = from;
     this.to = to;
   }
 
-  copy = <T extends PDFObject>(object: T) => {
-    if (object instanceof PDFDictionary) this.copyDictionary(object);
-    else if (object instanceof PDFArray) this.copyArray(object);
-    else error(`Cannot copy object of type: ${object.constructor.name}`);
+  copy = (object: PDFObject): PDFObject => {
+    if (object instanceof PDFDictionary) return this.copyDictionary(object)!;
+    if (object instanceof PDFArray) return this.copyArray(object)!;
+    if (object instanceof PDFStream) return this.copyStream(object)!;
+    return error(`Cannot copy object of type: ${object.constructor.name}`);
   };
 
-  private copyDictionary = (pdfDict: PDFDictionary) => {
-    if (this.traversedObjects.has(pdfDict)) return;
-    this.traversedObjects.add(pdfDict);
+  private copyDictionary = (pdfDict: PDFDictionary): PDFDictionary => {
+    if (this.traversedObjects.has(pdfDict)) {
+      return this.traversedObjects.get(pdfDict) as PDFDictionary;
+    }
 
-    new Map(pdfDict.map).forEach((value, key) => {
+    const cloned = pdfDict.cloneDeep(this.to);
+    this.traversedObjects.set(pdfDict, cloned);
+
+    new Map(cloned.map).forEach((value, key) => {
       if (value instanceof PDFDictionary) this.copyDictionary(value);
       if (value instanceof PDFArray) this.copyArray(value);
       if (value instanceof PDFIndirectReference) {
         const newRef = this.copyIndirectObject(value);
-        pdfDict.map.set(key, newRef);
+        cloned.map.set(key, newRef);
       }
     });
+
+    return cloned;
   };
 
-  private copyArray = (pdfArray: PDFArray) => {
-    if (this.traversedObjects.has(pdfArray)) return;
-    this.traversedObjects.add(pdfArray);
+  private copyArray = (pdfArray: PDFArray): PDFArray => {
+    if (this.traversedObjects.has(pdfArray)) {
+      return this.traversedObjects.get(pdfArray) as PDFArray;
+    }
+
+    const cloned = pdfArray.cloneDeep(this.to);
+    this.traversedObjects.set(pdfArray, cloned);
 
     pdfArray.forEach((value, idx) => {
       if (value instanceof PDFDictionary) this.copyDictionary(value);
       if (value instanceof PDFArray) this.copyArray(value);
       if (value instanceof PDFIndirectReference) {
         const newRef = this.copyIndirectObject(value);
-        pdfArray.array[idx] = newRef;
+        pdfArray.set(idx, newRef);
       }
     });
+
+    return cloned;
+  };
+
+  private copyStream = (pdfStream: PDFStream): PDFStream => {
+    if (this.traversedObjects.has(pdfStream)) {
+      return this.traversedObjects.get(pdfStream) as PDFStream;
+    }
+
+    const cloned = pdfStream.cloneDeep(this.to);
+    this.traversedObjects.set(pdfStream, cloned);
+
+    new Map(cloned.dictionary.map).forEach((value, key) => {
+      if (value instanceof PDFDictionary) this.copyDictionary(value);
+      if (value instanceof PDFArray) this.copyArray(value);
+      if (value instanceof PDFIndirectReference) {
+        const newRef = this.copyIndirectObject(value);
+        cloned.dictionary.map.set(key, newRef);
+      }
+    });
+
+    return cloned;
   };
 
   private copyIndirectObject = (
@@ -69,42 +102,33 @@ class PDFObjectCopier {
     if (!alreadyMapped) {
       const dereferencedValue = this.from.lookup(ref);
 
-      console.log('Found a ', dereferencedValue.constructor.name);
+      // const newRef = this.to.assignNextObjectNumberTo(dereferencedValue);
+      // this.mappedRefs.set(ref, newRef);
 
-      const newRef = this.to.assignNextObjectNumberTo(dereferencedValue);
-      this.mappedRefs.set(ref, newRef);
-
+      let cloned = dereferencedValue;
       if (dereferencedValue instanceof PDFStream) {
-        this.copyDictionary(dereferencedValue.dictionary);
+        // cloned = dereferencedValue.cloneDeep(this.to);
+        // this.copyDictionary(dereferencedValue.dictionary);
+        cloned = this.copyStream(dereferencedValue);
       }
       if (dereferencedValue instanceof PDFDictionary) {
-        this.copyDictionary(dereferencedValue);
+        // cloned = dereferencedValue.cloneDeep(this.to);
+        // this.copyDictionary(cloned as PDFDictionary);
+        cloned = this.copyDictionary(dereferencedValue);
       }
       if (dereferencedValue instanceof PDFArray) {
-        this.copyArray(dereferencedValue);
+        // cloned = dereferencedValue.cloneDeep(this.to);
+        // this.copyArray(cloned as PDFArray);
+        cloned = this.copyArray(dereferencedValue);
       }
+
+      // TODO: This probably _needs_ to be done before copying the dereferencedValue...
+      const newRef = this.to.assignNextObjectNumberTo(cloned);
+      this.mappedRefs.set(ref, newRef);
     }
 
     return this.mappedRefs.get(ref)!;
   };
 }
-
-/*
-
-const srcIndex = ...
-const destIndex = ...
-const originalObj = ...
-
-const copiedObj = PDFObjectCopier.copy(srcIndex, destIndex, origObject);
-
-const copier = PDFObjectCopier.for(srcIndex, destIndex);
-const copiedObj = copier.copy(originalObj);
-
-const copiedObj = PDFObjectCopier.for(srcIndex, destIndex).copy(origObject);
-
-this.index.assignNextObjectNumber(value);
-this.index.assignNextObjectNumber(value);
-
-*/
 
 export default PDFObjectCopier;

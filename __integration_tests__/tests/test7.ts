@@ -1,3 +1,5 @@
+import shuffle from 'lodash/shuffle';
+
 import {
   drawImage,
   drawLinesOfText,
@@ -60,6 +62,43 @@ const makeOverlayContentStream = (
 
 // Define the test kernel using the above content stream functions.
 const kernel: ITestKernel = (assets: ITestAssets) => {
+  // const allPdfs = shuffle(Object.values(assets.pdfs));
+  //
+  // const doneePdfBytes = allPdfs[0];
+  // const donorPdfsBytes = allPdfs.slice(1);
+  //
+  // const pdfDoc = PDFDocumentFactory.load(doneePdfBytes);
+  //
+  // const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
+  // const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
+  // const [PngMario, marioDims] = pdfDoc.embedPNG(assets.images.png.small_mario);
+  //
+  // const pages = pdfDoc.getPages();
+  //
+  // const overlayContentStreamRef = pdfDoc.register(
+  //   makeOverlayContentStream(pdfDoc, marioDims),
+  // );
+  //
+  // pages[0]
+  //   .addFontDictionary('Times-Roman', FontTimesRoman)
+  //   .addFontDictionary('Ubuntu', FontUbuntu)
+  //   .addXObject('Mario', PngMario)
+  //   .addContentStreams(overlayContentStreamRef);
+  //
+  // for (const donorBytes of donorPdfsBytes) {
+  //   const donorPdf = PDFDocumentFactory.load(donorBytes);
+  //   const donorPages = donorPdf.getPages();
+  //   const firstDonorPage = donorPages[0];
+  //   pdfDoc.addPage(firstDonorPage);
+  // }
+  //
+  // return PDFDocumentWriter.saveToBytes(pdfDoc);
+
+  // const donorPdf = PDFDocumentFactory.load(
+  //   assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
+  // );
+  // const pdfDoc = PDFDocumentFactory.load(assets.pdfs.normal);
+  const donorPdf = PDFDocumentFactory.load(assets.pdfs.normal);
   const pdfDoc = PDFDocumentFactory.load(
     assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
   );
@@ -80,7 +119,12 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
     .addXObject('Mario', PngMario)
     .addContentStreams(overlayContentStreamRef);
 
+  const donorPages = donorPdf.getPages();
+  const firstDonorPage = donorPages[0];
+  pdfDoc.addPage(firstDonorPage);
+
   return PDFDocumentWriter.saveToBytes(pdfDoc);
+  // return PDFDocumentWriter.saveToBytes(pdfDoc, { useObjectStreams: false });
 };
 
 export default {

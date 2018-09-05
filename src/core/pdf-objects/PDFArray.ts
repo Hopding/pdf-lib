@@ -72,58 +72,13 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
   splice = (start: number, deleteCount?: number) =>
     this.array.splice(start, deleteCount);
 
-  recursiveTraverse = (
-    destIndex: PDFObjectIndex,
-    mappedRefs: Map<PDFIndirectReference, PDFIndirectReference>,
-    traversedObjects: Set<PDFObject>,
-    nextObjectNumber: () => number,
-  ) => {
-    if (traversedObjects.has(this)) return;
-    traversedObjects.add(this);
-
-    this.array.forEach((value, idx) => {
-      if (value instanceof PDFDictionary || value instanceof PDFArray) {
-        value.recursiveTraverse(
-          destIndex,
-          mappedRefs,
-          traversedObjects,
-          nextObjectNumber,
-        );
-      }
-
-      if (value instanceof PDFIndirectReference) {
-        const alreadyMapped = mappedRefs.has(value);
-
-        if (!alreadyMapped) {
-          const dereferencedValue = this.index.lookup(value);
-
-          const newRef = PDFIndirectReference.forNumbers(nextObjectNumber(), 0);
-          destIndex.assign(newRef, dereferencedValue);
-          mappedRefs.set(value, newRef);
-
-          if (dereferencedValue instanceof PDFStream) {
-            dereferencedValue.dictionary.recursiveTraverse(
-              destIndex,
-              mappedRefs,
-              traversedObjects,
-              nextObjectNumber,
-            );
-          } else if (
-            dereferencedValue instanceof PDFDictionary ||
-            dereferencedValue instanceof PDFArray
-          ) {
-            dereferencedValue.recursiveTraverse(
-              destIndex,
-              mappedRefs,
-              traversedObjects,
-              nextObjectNumber,
-            );
-          }
-        }
-
-        this.array[idx] = mappedRefs.get(value) as any;
-      }
+  cloneDeep = (cloneIndex: PDFObjectIndex) => {
+    const cloned = PDFArray.fromArray([] as PDFObject[], cloneIndex);
+    cloned.forEach((value: any, idx) => {
+      const clonedValue = value.clone ? value.clone(cloneIndex) : value;
+      cloned.set(idx, value);
     });
+    return cloned;
   };
 
   toString = (): string => {

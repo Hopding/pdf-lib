@@ -20,6 +20,9 @@ class PDFStream extends PDFObject {
       error('"Length" is a required field for PDFStream dictionaries');
     }
   };
+
+  cloneDeep = (...args: any[]): any =>
+    error('Method "cloneDeep" is not implemented on PDFStream.');
 }
 
 export default PDFStream;

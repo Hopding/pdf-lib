@@ -25,6 +25,8 @@ class PDFHexString extends PDFObject {
     this.string = str;
   }
 
+  cloneDeep = () => PDFHexString.fromString(this.string);
+
   toString = (): string => `<${this.string}>`;
 
   bytesSize = () => this.toString().length;

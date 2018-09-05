@@ -16,6 +16,8 @@ class PDFString extends PDFObject {
     this.string = str;
   }
 
+  cloneDeep = () => PDFString.fromString(this.string);
+
   toString = (): string =>
     `(${this.string
       .replace(/\\/g, '\\\\')

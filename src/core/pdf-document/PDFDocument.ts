@@ -129,15 +129,17 @@ class PDFDocument {
    */
   addPage = (page: PDFPage) => {
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
-    const { Pages } = this.catalog;
 
     // If page comes from another document, copy it into this one
     if (page.index !== this.index) {
-      PDFObjectCopier.for(page.index, this.index).copy(page);
+      const clonedPage = PDFObjectCopier.for(page.index, this.index).copy(page);
+      page = clonedPage as PDFPage;
     }
 
+    const { Pages } = this.catalog;
     let lastPageTree = Pages;
     let lastPageTreeRef = this.catalog.get('Pages');
+
     Pages.traverseRight((kid, ref) => {
       if (kid instanceof PDFPageTree) {
         lastPageTree = kid;
@@ -195,6 +197,12 @@ class PDFDocument {
   insertPage = (index: number, page: PDFPage) => {
     validate(index, isNumber, 'idx must be a number');
     validate(page, isInstance(PDFPage), 'page must be a PDFPage');
+
+    // If page comes from another document, copy it into this one
+    if (page.index !== this.index) {
+      PDFObjectCopier.for(page.index, this.index).copy(page);
+    }
+
     const pageTreeRef = this.catalog.get('Pages');
 
     // TODO: Use a "stop" callback to avoid unneccesarily traversing whole page tree...
