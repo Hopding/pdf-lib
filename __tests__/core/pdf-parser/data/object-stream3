@@ -1,0 +1,3310 @@
+2 0
+265 34
+267 449
+4 864
+268 971
+270 1386
+272 1801
+273 2216
+275 2631
+10 2805
+277 2996
+278 4050
+280 5104
+281 6158
+283 7212
+284 8266
+286 9320
+288 10374
+289 11428
+21 12482
+292 12679
+293 13120
+294 13561
+296 14002
+33 14180
+35 14377
+39 14422
+41 14619
+45 14664
+47 14862
+51 14933
+53 15131
+57 15176
+59 15373
+63 15418
+65 15616
+69 15648
+71 15845
+75 15890
+77 16087
+81 16158
+82 16387
+83 16554
+84 16708
+86 16878
+90 16936
+92 17135
+96 17206
+101 17406
+103 17608
+107 17692
+109 17888
+113 17972
+115 18174
+119 18258
+121 18454
+125 18525
+127 18728
+131 18812
+133 19005
+137 19089
+139 19291
+143 19375
+145 19577
+149 19596
+150 19799
+154 19844
+156 20046
+160 20143
+162 20345
+163 20429
+167 20435
+169 20631
+173 20650
+174 21560
+175 22470
+176 23380
+177 24290
+178 25200
+179 26110
+180 27020
+181 27930
+182 28840
+183 29750
+184 30660
+185 31570
+186 32480
+187 33390
+188 34300
+189 35210
+190 36120
+191 37030
+192 37940
+193 38850
+194 39760
+195 40670
+197 40847
+198 42175
+199 43503
+200 44831
+201 46159
+202 47487
+203 48815
+204 50143
+205 51471
+206 52799
+207 54127
+208 55455
+209 56783
+210 58111
+211 59439
+212 60767
+213 62095
+214 63423
+215 64751
+216 66079
+217 67407
+218 68735
+219 70063
+220 71391
+221 72719
+222 74047
+223 75375
+224 76703
+226 76871
+227 77441
+228 78011
+229 78581
+230 79151
+231 79721
+232 80291
+233 80861
+234 81431
+235 82001
+237 82183
+238 83423
+239 84663
+240 85903
+241 87143
+242 88383
+243 89623
+244 90863
+245 92103
+246 93343
+247 94583
+248 95823
+249 97063
+250 98303
+251 99543
+252 100783
+253 102023
+254 103263
+255 104503
+256 105743
+257 106983
+258 108223
+259 109463
+260 110703
+261 111943
+262 113183
+264 113356
+3 113771
+266 114015
+5 114430
+269 114623
+6 115038
+271 115109
+274 115524
+12 115939
+279 115984
+282 117038
+16 118092
+285 118289
+17 119343
+287 119388
+290 120442
+23 120621
+295 120666
+298 121107
+27 121354
+299 121552
+29 121735
+<<
+/Type /Catalog
+/Pages 3 0 R
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Creator (IBM Datacap OCR/A actions.)
+/CreationDate (D:20180816123345Z)
+/ModDate (D:20180816123345Z)
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /FontDescriptor
+/Ascent 613
+/CapHeight 0
+/Descent -188
+/Flags 35
+/FontBBox [-122 -680 623 1021]
+/FontName /CourierNewPSMT
+/FontWeight 400
+/ItalicAngle 0
+/StemV 0
+>>
+<<
+/Type /Page
+/Contents [13 0 R 14 0 R 15 0 R]
+/MediaBox [0 0 598.55 777.60]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 12 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 22 0 R
+>>
+>>
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Page
+/Contents [24 0 R 25 0 R 26 0 R]
+/MediaBox [0 0.01000 598.30 777.36]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 23 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 34 0 R
+>>
+>>
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /TimesNewRomanPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /P /L /A /C /R /D /S /T 11 /E /N 14 /colon /one /comma /l /semicolon /I /F /Y /V /hyphen /H /B /quotesingle]
+>>
+/FirstChar 1
+/FontDescriptor 296 0 R
+/LastChar 26
+/ToUnicode 297 0 R
+/Widths [250 556 611 722 667 667 722 556 611 0 611 722 0 278 500 250 278 278 333 556 722 722 333 722 667 180]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /TimesNewRomanPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /P /L /A /C /R /D /S /T 11 /E /N 14 /colon /one /comma /l /semicolon /I /F /Y /V /hyphen /H /B /quotesingle]
+>>
+/FirstChar 1
+/FontDescriptor 296 0 R
+/LastChar 26
+/ToUnicode 297 0 R
+/Widths [250 556 611 722 667 667 722 556 611 0 611 722 0 278 500 250 278 278 333 556 722 722 333 722 667 180]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /TimesNewRomanPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /P /L /A /C /R /D /S /T 11 /E /N 14 /colon /one /comma /l /semicolon /I /F /Y /V /hyphen /H /B /quotesingle]
+>>
+/FirstChar 1
+/FontDescriptor 296 0 R
+/LastChar 26
+/ToUnicode 297 0 R
+/Widths [250 556 611 722 667 667 722 556 611 0 611 722 0 278 500 250 278 278 333 556 722 722 333 722 667 180]
+>>
+<<
+/Type /FontDescriptor
+/Ascent 693
+/CapHeight 0
+/Descent -216
+/Flags 34
+/FontBBox [-568 -307 2046 1040]
+/FontName /TimesNewRomanPSMT
+/FontWeight 400
+/ItalicAngle 0
+/StemV 0
+>>
+<<
+/Type /Page
+/Contents [36 0 R 37 0 R 38 0 R]
+/MediaBox [0 0.02000 594.70 774.72]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 35 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 46 0 R
+>>
+>>
+>>
+<<
+/F_0 178 0 R
+/F_1 202 0 R
+/F_3 242 0 R
+>>
+<<
+/Type /Page
+/Contents [42 0 R 43 0 R 44 0 R]
+/MediaBox [0 0.01000 596.65 776.16]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 41 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 52 0 R
+>>
+>>
+>>
+<<
+/F_0 179 0 R
+/F_1 203 0 R
+/F_3 243 0 R
+>>
+<<
+/Type /Page
+/Contents [48 0 R 49 0 R 50 0 R]
+/MediaBox [0 -0.01000 597.35 776.64]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 47 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 58 0 R
+>>
+>>
+>>
+<<
+/F_0 180 0 R
+/F_1 204 0 R
+/F_2 227 0 R
+/F_3 244 0 R
+/F_5 277 0 R
+>>
+<<
+/Type /Page
+/Contents [54 0 R 55 0 R 56 0 R]
+/MediaBox [0 -0.02000 599.30 778.08]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 53 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 64 0 R
+>>
+>>
+>>
+<<
+/F_0 181 0 R
+/F_1 205 0 R
+/F_3 245 0 R
+>>
+<<
+/Type /Page
+/Contents [60 0 R 61 0 R 62 0 R]
+/MediaBox [0 0.02000 597.85 777.12]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 59 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 70 0 R
+>>
+>>
+>>
+<<
+/F_0 182 0 R
+/F_1 206 0 R
+/F_3 246 0 R
+>>
+<<
+/Type /Page
+/Contents [66 0 R 67 0 R 68 0 R]
+/MediaBox [0 -0.02000 597.60 776.88]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 65 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 76 0 R
+>>
+>>
+>>
+<<
+/F_1 207 0 R
+/F_3 247 0 R
+>>
+<<
+/Type /Page
+/Contents [72 0 R 73 0 R 74 0 R]
+/MediaBox [0 0.02000 594.70 774.72]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 71 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 85 0 R
+>>
+>>
+>>
+<<
+/F_0 183 0 R
+/F_1 208 0 R
+/F_3 248 0 R
+>>
+<<
+/Type /Page
+/Contents [78 0 R 79 0 R 80 0 R]
+/MediaBox [0 0.01000 596.65 776.16]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 77 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 91 0 R
+>>
+>>
+>>
+<<
+/F_0 184 0 R
+/F_1 209 0 R
+/F_2 228 0 R
+/F_3 249 0 R
+/F_6 292 0 R
+>>
+<<
+/Type /Page
+/Annots [82 0 R 83 0 R 84 0 R]
+/Contents [87 0 R 88 0 R 89 0 R]
+/MediaBox [0 -0.02000 600.50 779.28]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 86 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 97 0 R
+>>
+>>
+>>
+<<
+/Type /Annot
+/Subtype /Link
+/F 4
+/A 
+<<
+/Type /Action
+/S /URI
+/URI (mailto:cdnimDorts@livinastonintl.com)
+>>
+/Border [0 0 0]
+/Rect [76.099 590.38 198.69 599.33]
+>>
+<<
+/Type /Annot
+/Subtype /Link
+/F 4
+/A 
+<<
+/Type /Action
+/S /URI
+/URI (http://www.PARStracker.com)
+>>
+/Border [0 0 0]
+/Rect [343.70 524.38 444 533.33]
+>>
+<<
+/Type /Annot
+/Subtype /Link
+/F 4
+/A 
+<<
+/Type /Action
+/S /URI
+/URI (http://www.livingstonintl.com/locations)
+>>
+/Border [0 0 0]
+/Rect [347.75 69.880 491.75 79.930]
+>>
+<<
+/F_1 210 0 R
+/F_2 229 0 R
+/F_3 250 0 R
+/F_5 278 0 R
+>>
+<<
+/Type /Page
+/Contents [93 0 R 94 0 R 95 0 R]
+/MediaBox [0 -0.01000 598.80 777.84]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 92 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 102 0 R
+>>
+>>
+>>
+<<
+/F_0 185 0 R
+/F_1 211 0 R
+/F_3 251 0 R
+/F_4 265 0 R
+/F_5 279 0 R
+>>
+<<
+/Type /Page
+/Contents [98 0 R 99 0 R 100 0 R]
+/MediaBox [0 0.01000 596.65 776.16]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 163 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 108 0 R
+>>
+>>
+>>
+<<
+/Type /Page
+/Contents [104 0 R 105 0 R 106 0 R]
+/MediaBox [0 0.02000 596.40 775.92]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 103 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 114 0 R
+>>
+>>
+>>
+<<
+/F_0 186 0 R
+/F_1 212 0 R
+/F_2 230 0 R
+/F_3 252 0 R
+/F_4 266 0 R
+/F_5 280 0 R
+>>
+<<
+/Type /Page
+/Contents [110 0 R 111 0 R 112 0 R]
+/MediaBox [0 0 598.55 777.60]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 109 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 120 0 R
+>>
+>>
+>>
+<<
+/F_0 187 0 R
+/F_1 213 0 R
+/F_2 231 0 R
+/F_3 253 0 R
+/F_4 267 0 R
+/F_5 281 0 R
+>>
+<<
+/Type /Page
+/Contents [116 0 R 117 0 R 118 0 R]
+/MediaBox [0 0.01000 599.50 778.56]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 115 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 126 0 R
+>>
+>>
+>>
+<<
+/F_0 188 0 R
+/F_1 214 0 R
+/F_2 232 0 R
+/F_3 254 0 R
+/F_4 268 0 R
+/F_5 282 0 R
+>>
+<<
+/Type /Page
+/Contents [122 0 R 123 0 R 124 0 R]
+/MediaBox [0 0 603.10 781.20]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 121 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 132 0 R
+>>
+>>
+>>
+<<
+/F_0 189 0 R
+/F_1 215 0 R
+/F_3 255 0 R
+/F_4 269 0 R
+/F_5 283 0 R
+>>
+<<
+/Type /Page
+/Contents [128 0 R 129 0 R 130 0 R]
+/MediaBox [0 -0.01000 601.90 780.24]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 127 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 138 0 R
+>>
+>>
+>>
+<<
+/F_0 190 0 R
+/F_1 216 0 R
+/F_3 256 0 R
+/F_4 270 0 R
+/F_5 284 0 R
+/F_6 293 0 R
+>>
+<<
+/Type /Page
+/Contents [134 0 R 135 0 R 136 0 R]
+/MediaBox [0 0 601.45 780]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 133 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 144 0 R
+>>
+>>
+>>
+<<
+/F_0 191 0 R
+/F_1 217 0 R
+/F_2 233 0 R
+/F_3 257 0 R
+/F_4 271 0 R
+/F_5 285 0 R
+>>
+<<
+/Type /Page
+/Contents [140 0 R 141 0 R 142 0 R]
+/MediaBox [0 0.01000 602.90 780.96]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 139 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 155 0 R
+>>
+>>
+>>
+<<
+/F_0 192 0 R
+/F_1 218 0 R
+/F_3 258 0 R
+/F_4 272 0 R
+/F_5 286 0 R
+/F_6 294 0 R
+>>
+<<
+/Type /Page
+/Contents [146 0 R 147 0 R 148 0 R]
+/MediaBox [0 0.01000 598.10 777.36]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 145 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 161 0 R
+>>
+>>
+>>
+<<
+/F_1 219 0 R
+>>
+<<
+/Type /Page
+/Contents [151 0 R 152 0 R 153 0 R]
+/MediaBox [0 -0.01000 600.25 779.04]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 150 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 168 0 R
+>>
+>>
+>>
+<<
+/F_1 220 0 R
+/F_3 259 0 R
+/F_5 287 0 R
+>>
+<<
+/Type /Page
+/Contents [157 0 R 158 0 R 159 0 R]
+/MediaBox [0 0.02000 594.70 774.72]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 156 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 301 0 R
+>>
+>>
+>>
+<<
+/F_0 193 0 R
+/F_1 221 0 R
+/F_2 234 0 R
+/F_3 260 0 R
+/F_4 273 0 R
+/F_5 288 0 R
+/F_6 295 0 R
+>>
+<<
+/Type /Page
+/Contents [164 0 R 165 0 R 166 0 R]
+/MediaBox [0 0.02000 594.70 774.72]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 162 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 303 0 R
+>>
+>>
+>>
+<<
+/F_0 194 0 R
+/F_1 222 0 R
+/F_3 261 0 R
+/F_4 274 0 R
+/F_5 289 0 R
+/F_7 298 0 R
+>>
+<<
+>>
+<<
+/Type /Page
+/Contents [170 0 R 171 0 R 172 0 R]
+/MediaBox [0 0 597.10 776.40]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 169 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 302 0 R
+>>
+>>
+>>
+<<
+/F_1 223 0 R
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /filledbox /A /period /quotesingle /seven /parenleft /f /o 11 /g /U 14 /S /hyphen /t /i /question
+/braceleft /bracketright /I /n /w /a /r /d /m /e /l /c /comma /h /s /u /p /P /J /y /L /bracketleft /asciicircum /zero /asterisk
+/ampersand /O /D /Q /eight /greater /semicolon /colon /six /braceright /backslash /bullet /one /slash /j /H /V /guillemotright
+/W /Z /nine /C /q /T /two /guillemotleft /percent]
+>>
+/FirstChar 1
+/FontDescriptor 195 0 R
+/LastChar 70
+/ToUnicode 196 0 R
+/Widths [278 604 667 278 191 556 333 278 556 0 556 722 0 667 333 278 222 556 334 278 278 556 722 556 333 556 833 556 222
+500 278 556 500 556 556 667 500 500 556 278 469 556 389 667 778 722 778 556 584 278 278 556 334 278 350 556 278 222 722 
+667 556 944 611 556 722 556 611 556 556 889]
+>>
+<<
+/Type /FontDescriptor
+/Ascent 728
+/CapHeight 0
+/Descent -208
+/Flags 96
+/FontBBox [-517 -325 1359 998]
+/FontName /Arial-ItalicMT
+/FontWeight 400
+/ItalicAngle -120
+/StemV 0
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /ArialMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /less /i /C /r /m /s /o 11 /n /L 14 /g /c /S /M /f /e /t /four /W /asterisk /d /hyphen /eight
+/three /two /nine /six /parenright /I /l /O /D /P /zero /one /p /N /u /b /Y /asciicircum /comma /slash /E /x /A /v /a /colon
+/H /X /h /dollar /V /backslash /period /K /greater /filledbox /U /guillemotleft /y /percent /copyright /exclam /guillemotright
+/quotesingle /J /B /bracketright /five /sterling /T /underscore /F /R /parenleft /quotedbl /j /G /z /quoteright /ampersand
+/braceright /k /q /Q /seven /w /semicolon /Z /H22073 /bracketleft /quoteleft /asciitilde /bar /quotedblbase /degree /numbersign
+/quotedblright /quotedblleft /emdash /question /trademark /uni00AD]
+>>
+/FirstChar 1
+/FontDescriptor 224 0 R
+/LastChar 108
+/ToUnicode 225 0 R
+/Widths [278 350 584 222 722 333 833 500 556 0 556 556 0 556 500 667 833 278 556 278 556 944 389 556 333 556 556 556 556
+556 333 278 222 778 722 667 556 556 556 722 556 556 667 469 278 278 667 500 667 500 556 278 722 667 556 556 667 278 278 
+667 584 604 722 556 500 889 737 278 556 191 500 667 278 556 556 611 556 611 722 333 355 222 778 500 222 667 334 500 556 
+778 556 722 278 611 604 278 222 584 260 333 400 556 333 333 1000 556 1000 333]
+>>
+<<
+/Type /FontDescriptor
+/Ascent 728
+/CapHeight 0
+/Descent -210
+/Flags 32
+/FontBBox [-665 -325 2000 1040]
+/FontName /ArialMT
+/FontWeight 400
+/ItalicAngle 0
+/StemV 0
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /A /C /I /H /i /g /h /w 11 /a /y 14 /E /l /e /c /t /r /o /n /M /f /s /two /quotesingle /bullet /S
+/hyphen /L /V /N /G /T /O /R /d /period /three /seven /slash /D /less]
+>>
+/FirstChar 1
+/FontDescriptor 235 0 R
+/LastChar 43
+/ToUnicode 236 0 R
+/Widths [278 722 722 278 722 278 611 611 778 0 556 556 0 667 278 556 556 333 389 611 611 833 333 556 556 238 350 667 333
+611 667 722 778 611 778 722 611 278 556 556 278 722 584]
+>>
+<<
+/Type /FontDescriptor
+/Ascent 728
+/CapHeight 0
+/Descent -210
+/Flags 96
+/FontBBox [-560 -376 1390 1018]
+/FontName /Arial-BoldItalicMT
+/FontWeight 700
+/ItalicAngle -120
+/StemV 0
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /Arial-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /comma /l /o /t /a /n /period /i 11 /M /p 14 /m /colon /b /f /parenright /c /O /s /r /u /e /J /one
+/zero /w /ampersand /S /underscore /C /g /D /E /P /L /A /N /X /R /v /semicolon /slash /asterisk /bar /H /guillemotright 
+/H22073 /guillemotleft /quotedblright 54 /hyphen /six /bullet /Q /dollar /quotedbl /V /three /question /d /I /T /k /bracketleft
+/bracketright /h /x /W /F /K /two /eight /B /numbersign /seven /U /Y /G /nine /y /quotesingle /sterling /quoteright /quoteleft
+/exclam /braceleft /greater /less /degree /filledbox /triagrt /asciicircum /j /emdash /parenleft /at /copyright /Z /quotedblleft]
+>>
+/FirstChar 1
+/FontDescriptor 262 0 R
+/LastChar 102
+/ToUnicode 263 0 R
+/Widths [278 278 278 611 333 556 611 278 278 0 833 611 0 889 333 611 333 333 556 778 556 389 611 556 556 556 556 778 722
+667 556 722 611 722 667 667 611 722 722 667 722 556 333 278 389 280 722 556 604 556 500 556 556 333 556 350 778 556 474 
+667 556 611 611 278 611 556 333 333 611 556 944 611 722 556 556 722 556 556 722 667 778 556 556 238 556 278 278 333 389 
+584 584 400 604 990 584 278 1000 333 975 737 611 500]
+>>
+<<
+/Type /FontDescriptor
+/Ascent 728
+/CapHeight 0
+/Descent -210
+/Flags 32
+/FontBBox [-628 -376 2000 1056]
+/FontName /Arial-BoldMT
+/FontWeight 700
+/ItalicAngle 0
+/StemV 0
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Pages
+/Count 28
+/Kids [5 0 R 10 0 R 16 0 R 21 0 R 27 0 R 33 0 R 39 0 R 45 0 R 51 0 R 57 0 R 63 0 R 69 0 R 75 0 R 81 0 R 90 0 R 96 0 R 101 0 R
+107 0 R 113 0 R 119 0 R 125 0 R 131 0 R 137 0 R 143 0 R 149 0 R 154 0 R 160 0 R 167 0 R]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Page
+/Contents [7 0 R 8 0 R 9 0 R]
+/MediaBox [0 0.01000 596.65 776.16]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 6 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 11 0 R
+>>
+>>
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/F_0 173 0 R
+/F_1 197 0 R
+/F_2 226 0 R
+/F_3 237 0 R
+/F_4 264 0 R
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /bullet /n /J /o /f /i /T /hyphen 11 /period /O 14 /N /A /I /U /R /C /r /S /t /a /h /one]
+>>
+/FirstChar 1
+/FontDescriptor 275 0 R
+/LastChar 25
+/ToUnicode 276 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/F_0 174 0 R
+/F_1 198 0 R
+/F_3 238 0 R
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /Page
+/Contents [18 0 R 19 0 R 20 0 R]
+/MediaBox [0 0.02000 597.85 777.12]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 17 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 28 0 R
+>>
+>>
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/F_0 175 0 R
+/F_1 199 0 R
+/F_3 239 0 R
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-BoldMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /semicolon /o /i /exclam /l /one /zero /O 11 /quoteleft /colon 14 /eight /period /t /three /six /nine
+/four /T /asciitilde /five /r /bar /quotedblleft /quotesingle /I /W /E /v /e /c /a /d /f /n /s /k /comma /P /R /C /N /L 
+/A /D /H /two /h /parenleft /parenright /hyphen /seven /B /F /G /X /U /M /V /b /x /g /K /J /j /emdash /S /Y /Q /braceleft
+/asciicircum /numbersign /sterling /less /greater /q /backslash /ampersand /quoteright /bullet /p /underscore /u /slash 
+/dollar]
+>>
+/FirstChar 1
+/FontDescriptor 290 0 R
+/LastChar 87
+/ToUnicode 291 0 R
+/Widths [600 600 600 600 600 600 600 600 600 0 600 600 0 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 
+600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600 600]
+>>
+<<
+/Type /FontDescriptor
+/Ascent 633
+/CapHeight 0
+/Descent -209
+/Flags 35
+/FontBBox [-192 -710 702 1221]
+/FontName /CourierNewPS-BoldMT
+/FontWeight 700
+/ItalicAngle 0
+/StemV 0
+>>
+<<
+/F_0 176 0 R
+/F_1 200 0 R
+/F_3 240 0 R
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /TimesNewRomanPSMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /P /L /A /C /R /D /S /T 11 /E /N 14 /colon /one /comma /l /semicolon /I /F /Y /V /hyphen /H /B /quotesingle]
+>>
+/FirstChar 1
+/FontDescriptor 296 0 R
+/LastChar 26
+/ToUnicode 297 0 R
+/Widths [250 556 611 722 667 667 722 556 611 0 611 722 0 278 500 250 278 278 333 556 722 722 333 722 667 180]
+>>
+<<
+/Type /Font
+/Subtype /TrueType
+/BaseFont /CourierNewPS-ItalicMT
+/Encoding 
+<<
+/Type /Encoding
+/BaseEncoding /WinAnsiEncoding
+/Differences [1 /space /T]
+>>
+/FirstChar 1
+/FontDescriptor 299 0 R
+/LastChar 2
+/ToUnicode 300 0 R
+/Widths [600 600]
+>>
+<<
+/Type /Page
+/Contents [30 0 R 31 0 R 32 0 R]
+/MediaBox [0 -0.01000 600.25 779.04]
+/Parent 3 0 R
+/Resources 
+<<
+/Font 29 0 R
+/ProcSet [/PDF /Text /ImageC /ImageB]
+/XObject 
+<<
+/BG 40 0 R
+>>
+>>
+>>
+<<
+/Type /FontDescriptor
+/Ascent 613
+/CapHeight 0
+/Descent -188
+/Flags 99
+/FontBBox [-67 -274 800 1000]
+/FontName /CourierNewPS-ItalicMT
+/FontWeight 400
+/ItalicAngle -120
+/StemV 0
+>>
+<<
+/F_0 177 0 R
+/F_1 201 0 R
+/F_3 241 0 R
+>>

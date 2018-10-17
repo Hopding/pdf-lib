@@ -34,7 +34,7 @@ const parseObjData = (
   const numObjects = (dict.get('N') as PDFNumber).number;
 
   // Regex representing a pair of integers
-  const objDatumRegex = /^ *(\d+) *(\d+) */;
+  const objDatumRegex = /^ *(\d+) *(\d+)[ \n\r]*/;
 
   // Find the first non-numeric character (not including EOLs and spaces) in the
   // input bytes
@@ -46,14 +46,20 @@ const parseObjData = (
   // Convert the input bytes to a string, up to the first non-numeric character
   const objDatumsStr = arrayToString(input, 0, firstNonNumIdx);
 
-  // Split datums into lines and extract out the number/offset pairs
-  return objDatumsStr
-    .split('\n')
-    .slice(0, numObjects)
-    .map((line) => {
-      const [_, objNum, byteOffset] = line.trim().match(objDatumRegex)!;
-      return { objNum: Number(objNum), byteOffset: Number(byteOffset) };
-    });
+  // Repeatedly apply the integer pair regex to the input string to build up an
+  // array of the parsed integer pairs
+  const objData: Array<{ objNum: number; byteOffset: number }> = [];
+  let i = 0;
+  let remaining = objDatumsStr;
+  while (i < numObjects) {
+    const [fullmatch, objNum, byteOffset] = remaining.match(objDatumRegex)!;
+    objData.push({ objNum: Number(objNum), byteOffset: Number(byteOffset) });
+
+    remaining = remaining.substring(fullmatch.length);
+    i += 1;
+  }
+
+  return objData;
 };
 
 /**
