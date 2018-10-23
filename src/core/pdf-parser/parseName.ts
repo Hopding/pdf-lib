@@ -35,8 +35,12 @@ const parseName = (
   if (!result) return undefined;
 
   const [fullMatch, name] = result;
+  const decoded = name.replace(
+    /(#\d{2})/g,
+    (match) => String.fromCharCode(parseInt(match.slice(1), 16))
+  );
 
-  const pdfName = PDFName.from(name);
+  const pdfName = PDFName.from(decoded);
   if (onParseName) onParseName(pdfName);
   return [pdfName, trimmed.subarray(fullMatch.length)];
 };
