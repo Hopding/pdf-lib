@@ -25,7 +25,7 @@ describe(`parseName`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDF Name object`, () => {
-    const input = typedArrayFor(' \0\f \n \r\n /FOOBAR \r\n << /Key /Val >>');
+    const input = typedArrayFor(' \0\f \t\n \r\n /FOOBAR \r\n << /Key /Val >>');
     const res = parseName(input);
     expect(res).toEqual([
       PDFName.from('FOOBAR'),
