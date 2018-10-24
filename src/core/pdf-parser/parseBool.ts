@@ -18,11 +18,11 @@ const parseBool = (
   input: Uint8Array,
   { onParseBool }: IParseHandlers = {},
 ): [PDFBoolean, Uint8Array] | void => {
-  const boolRegex = /^(?:[\0\t\n\f\r ]*)(true|false)((?=[\0\t\n\f\r \]]))?/;
+  const boolRegex = /^(?:[\n|\r| ]*)(true|false)((?= |\]|\n|\r))?/;
 
   // Search for first character that isn't part of a boolean
   let idx = 0;
-  while (String.fromCharCode(input[idx]).match(/^[\0\t\n\f\r truefalse]/)) idx += 1;
+  while (String.fromCharCode(input[idx]).match(/^[ \n\rtruefalse]/)) idx += 1;
 
   // Try to match the regex up to that character to see if we've got a boolean
   const result = arrayToString(input, 0, idx).match(boolRegex);
