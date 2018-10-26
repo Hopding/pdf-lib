@@ -24,7 +24,6 @@ const parseNumber = (
   // Search for the first character that isn't part of a number
   let idx = 0;
   while (String.fromCharCode(trimmed[idx]).match(/^[+-.\d]/)) idx += 1;
-  console.log('parseNumber', idx, arrayToString(trimmed, 0, 100));
 
   // Try to match the regex up to that character to see if we've got a number
   const result = arrayToString(trimmed, 0, idx).match(numRegex);
