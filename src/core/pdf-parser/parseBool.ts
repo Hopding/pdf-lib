@@ -24,7 +24,6 @@ const parseBool = (
   // Search for first character that isn't part of a boolean
   let idx = 0;
   while (String.fromCharCode(trimmed[idx]).match(/^[\0\t\n\f\r truefalse]/) && idx < trimmed.length) idx += 1;
-  console.log('parseBool', idx, encodeURI(arrayToString(trimmed, 0, 100)));
 
   // Try to match the regex up to that character to see if we've got a boolean
   const result = arrayToString(trimmed, 0, idx).match(boolRegex);
