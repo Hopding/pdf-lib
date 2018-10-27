@@ -33,7 +33,20 @@ describe(`parseName`, () => {
     ]);
   });
 
-  const terminationChars = ['\0', '\t', '\n', '\f', '\r', ' ', ']', '[', '<', '>', '(', '/'];
+  const terminationChars = [
+    '\0',
+    '\t',
+    '\n',
+    '\f',
+    '\r',
+    ' ',
+    ']',
+    '[',
+    '<',
+    '>',
+    '(',
+    '/',
+  ];
   terminationChars.forEach((tc) => {
     it(`terminates PDF Name objects on ${JSON.stringify(tc)}`, () => {
       const input = typedArrayFor(`/Foo${tc}Bar`);
