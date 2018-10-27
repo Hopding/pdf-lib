@@ -137,6 +137,24 @@ describe(`parseObjectStream`, () => {
       expect(handler).toHaveBeenCalled();
     });
   });
+
+  it(`handles datums with new lines`, () => {
+    const input = fs.readFileSync(
+      './__tests__/core/pdf-parser/data/object-stream3',
+    );
+    const index = PDFObjectIndex.create();
+    const dict = PDFDictionary.from(
+      {
+        Length: PDFNumber.fromNumber(input.length),
+        N: PDFNumber.fromNumber(182),
+        First: PDFNumber.fromNumber(1786),
+      },
+      index,
+    );
+    const res = parseObjectStream(dict, input, index);
+    expect(res).toEqual(expect.any(PDFObjectStream));
+  });
+
   it(`throws an error when it fails to parse an object in the stream`, () => {
     const input = fs.readFileSync(
       './__tests__/core/pdf-parser/data/object-stream-invalid',
