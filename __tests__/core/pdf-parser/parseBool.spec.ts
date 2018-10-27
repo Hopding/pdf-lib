@@ -37,7 +37,7 @@ describe(`parseBool`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDFBoolean object`, () => {
-    const input = typedArrayFor(' \n \r\n false \r\n FOOBAR');
+    const input = typedArrayFor(' \0\f \t\n \r\n false \r\n FOOBAR');
     const res = parseBool(input);
     expect(res).toEqual([expect.any(PDFBoolean), expect.any(Uint8Array)]);
     expect(res[0].boolean).toEqual(false);

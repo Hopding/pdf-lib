@@ -19,7 +19,7 @@ const parseNumber = (
   { onParseNumber }: IParseHandlers = {},
 ): [PDFNumber, Uint8Array] | void => {
   const trimmed = trimArray(input);
-  const numRegex = /^(((\+{1}|-{1})?\d+(\.\d+)?)|((\+{1}|-{1})?\.\d+))/;
+  const numRegex = /^(([+-]?\d+(\.\d+)?)|([+-]?\.\d+))/;
 
   // Search for the first character that isn't part of a number
   let idx = 0;

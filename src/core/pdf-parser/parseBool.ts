@@ -1,5 +1,5 @@
 import { PDFBoolean } from 'core/pdf-objects';
-import { arrayToString } from 'utils';
+import { arrayToString, trimArray } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -18,21 +18,22 @@ const parseBool = (
   input: Uint8Array,
   { onParseBool }: IParseHandlers = {},
 ): [PDFBoolean, Uint8Array] | void => {
-  const boolRegex = /^(?:[\n|\r| ]*)(true|false)((?= |\]|\n|\r))?/;
+  const trimmed = trimArray(input);
+  const boolRegex = /^(?:[\0\t\n\f\r ]*)(true|false)((?=[\0\t\n\f\r \]]))?/;
 
   // Search for first character that isn't part of a boolean
   let idx = 0;
-  while (String.fromCharCode(input[idx]).match(/^[ \n\rtruefalse]/)) idx += 1;
+  while (String.fromCharCode(trimmed[idx]).match(/^[\0\t\n\f\r truefalse]/) && idx < trimmed.length) idx += 1;
 
   // Try to match the regex up to that character to see if we've got a boolean
-  const result = arrayToString(input, 0, idx).match(boolRegex);
+  const result = arrayToString(trimmed, 0, idx).match(boolRegex);
   if (!result) return undefined;
 
   const [fullMatch, bool] = result;
 
   const pdfBool = PDFBoolean.fromString(bool);
   if (onParseBool) onParseBool(pdfBool);
-  return [pdfBool, input.subarray(fullMatch.length)];
+  return [pdfBool, trimmed.subarray(fullMatch.length)];
 };
 
 export default parseBool;
