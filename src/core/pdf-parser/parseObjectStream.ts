@@ -34,13 +34,13 @@ const parseObjData = (
   const numObjects = (dict.get('N') as PDFNumber).number;
 
   // Regex representing a pair of integers
-  const objDatumRegex = /^ *(\d+) *(\d+) */;
+  const objDatumRegex = /^[\0\t\n\f\r ]*(\d+)[\0\t\n\f\r ]*(\d+)[\0\t\n\f\r ]*/;
 
   // Find the first non-numeric character (not including EOLs and spaces) in the
   // input bytes
   const firstNonNumIdx = arrayFindIndexOf(
     input,
-    (charByte) => !!String.fromCharCode(charByte).match(/[^\d\n\r ]/),
+    (charByte) => !!String.fromCharCode(charByte).match(/[^\0\t\n\f\r \d]/),
   );
 
   // Convert the input bytes to a string, up to the first non-numeric character

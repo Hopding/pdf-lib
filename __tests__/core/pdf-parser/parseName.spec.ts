@@ -25,7 +25,7 @@ describe(`parseName`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDF Name object`, () => {
-    const input = typedArrayFor(' \n \r\n /FOOBAR \r\n << /Key /Val >>');
+    const input = typedArrayFor(' \0\f \t\n \r\n /FOOBAR \r\n << /Key /Val >>');
     const res = parseName(input);
     expect(res).toEqual([
       PDFName.from('FOOBAR'),
@@ -33,11 +33,22 @@ describe(`parseName`, () => {
     ]);
   });
 
-  const terminationChars = [' ', '\n', '\r', ']', '[', '<', '>', '(', '/'];
-  it(`terminates PDF Name objects on these characters: ${JSON.stringify(
-    terminationChars,
-  )}`, () => {
-    terminationChars.forEach((tc) => {
+  const terminationChars = [
+    '\0',
+    '\t',
+    '\n',
+    '\f',
+    '\r',
+    ' ',
+    ']',
+    '[',
+    '<',
+    '>',
+    '(',
+    '/',
+  ];
+  terminationChars.forEach((tc) => {
+    it(`terminates PDF Name objects on ${JSON.stringify(tc)}`, () => {
       const input = typedArrayFor(`/Foo${tc}Bar`);
       const res = parseName(input);
       expect(res).toEqual([PDFName.from('Foo'), typedArrayFor(`${tc}Bar`)]);

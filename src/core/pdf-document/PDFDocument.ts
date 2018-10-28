@@ -8,7 +8,6 @@ import Standard14Fonts, {
 import {
   PDFDictionary,
   PDFIndirectReference,
-  PDFName,
   PDFObject,
   PDFRawStream,
 } from 'core/pdf-objects';

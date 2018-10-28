@@ -29,7 +29,7 @@ describe(`parseNumber`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDF Number object`, () => {
-    const input = typedArrayFor(' \n \r\n .123 \r\n (foo)');
+    const input = typedArrayFor(' \0\f \t\n \r\n .123 \r\n (foo)');
     const res = parseNumber(input);
     expect(res).toEqual([expect.any(PDFNumber), expect.any(Uint8Array)]);
     expect(res[0].number).toEqual(0.123);
