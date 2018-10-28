@@ -60,4 +60,28 @@ describe(`parseName`, () => {
     const res = parseName(input);
     expect(res[0]).toEqual(PDFName.from(''));
   });
+
+  describe('documentation examples, 7.3.5 Table 4', () => {
+    const examples = [
+      { raw: '/Name1', name: 'Name1' },
+      { raw: '/ASomewhatLongerName', name: 'ASomewhatLongerName' },
+      { raw: '/A;Name_With-Various***Characters?', name: 'A;Name_With-Various***Characters?' },
+      { raw: '/1.2', name: '1.2' },
+      { raw: '/$$', name: '$$' },
+      { raw: '/@pattern', name: '@pattern' },
+      { raw: '/.notdef', name: '.notdef' },
+      { raw: '/Lime#20Green', name: 'Lime Green' },
+      { raw: '/paired#28#29parentheses', name: 'paired()parentheses' },
+      { raw: '/The_Key_of_F#23_Minor', name: 'The_Key_of_F#_Minor' },
+      { raw: '/A#42', name: 'AB' },
+    ];
+
+    examples.forEach((example) => {
+      it(`will parse ${example.raw} as ${example.name}`, () => {
+        const input = typedArrayFor(example.raw);
+        const res = parseName(input);
+        expect(res[0]).toEqual(PDFName.from(example.name));
+      });
+    });
+  });
 });

@@ -35,8 +35,7 @@ const parseName = (
   if (!result) return undefined;
 
   const [fullMatch, name] = result;
-
-  const pdfName = PDFName.from(name);
+  const pdfName = PDFName.fromEncoded(name);
   if (onParseName) onParseName(pdfName);
   return [pdfName, trimmed.subarray(fullMatch.length)];
 };
