@@ -27,10 +27,13 @@ class PDFName extends PDFObject {
   };
 
   static fromEncoded = (str: string): PDFName => {
-    validate(str, isString, 'PDFName.fromEncoded() requires string as argument');
-    const decoded = str.replace(
-      /(#\d{2})/g,
-      (match) => String.fromCharCode(parseInt(match.slice(1), 16))
+    validate(
+      str,
+      isString,
+      'PDFName.fromEncoded() requires string as argument',
+    );
+    const decoded = str.replace(/(#\d{2})/g, (match) =>
+      String.fromCharCode(parseInt(match.slice(1), 16)),
     );
     return PDFName.from(decoded);
   };

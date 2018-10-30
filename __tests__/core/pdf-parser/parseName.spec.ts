@@ -65,7 +65,10 @@ describe(`parseName`, () => {
     const examples = [
       { raw: '/Name1', name: 'Name1' },
       { raw: '/ASomewhatLongerName', name: 'ASomewhatLongerName' },
-      { raw: '/A;Name_With-Various***Characters?', name: 'A;Name_With-Various***Characters?' },
+      {
+        raw: '/A;Name_With-Various***Characters?',
+        name: 'A;Name_With-Various***Characters?',
+      },
       { raw: '/1.2', name: '1.2' },
       { raw: '/$$', name: '$$' },
       { raw: '/@pattern', name: '@pattern' },
