@@ -65,7 +65,7 @@
     "inquirer": "^6.0.0",
     "jest": "^22.4.3",
     "jest-junit": "^3.6.0",
-    "prettier": "^1.11.1",
+    "prettier": "^1.15.2",
     "relative": "^3.0.2",
     "rollup": "^0.60.7",
     "rollup-plugin-analyzer": "^2.0.3",
@@ -75,7 +75,7 @@
     "ts-jest": "^22.4.2",
     "ts-node": "^6.0.5",
     "tsconfig-paths": "^3.3.2",
-    "tslint": "^5.9.1",
+    "tslint": "^5.11.0",
     "typedoc": "^0.11.1",
     "typedoc-plugin-markdown": "^1.1.13",
     "typescript": "^2.7.2"

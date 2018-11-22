@@ -59,11 +59,8 @@ class PDFName extends PDFObject {
     `/${this.key}`
       .replace('#', '#23')
       .split('')
-      .map(
-        (char) =>
-          PDFName.isRegularChar(char)
-            ? char
-            : `#${charCode(char).toString(16)}`,
+      .map((char) =>
+        PDFName.isRegularChar(char) ? char : `#${charCode(char).toString(16)}`,
       )
       .join('');
 

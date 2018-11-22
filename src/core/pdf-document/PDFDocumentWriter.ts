@@ -40,7 +40,7 @@ const computeOffsets = (
     objectNumber: object.reference.objectNumber,
     generationNumber: object.reference.generationNumber,
     startOffset: startingOffset,
-    endOffset: (startingOffset += object.bytesSize()),
+    endOffset: startingOffset += object.bytesSize(),
   }));
 
 class PDFDocumentWriter {

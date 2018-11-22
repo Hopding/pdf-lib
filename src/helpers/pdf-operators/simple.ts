@@ -46,7 +46,7 @@ export const clipEvenOdd = () => W.asterisk!.operator;
 /* ======== Graphics state operators ======== */
 const { Q, q } = PDFOperators;
 const { cos, sin, tan } = Math;
-export const degreesToRadians = (degrees: number) => degrees * Math.PI / 180;
+export const degreesToRadians = (degrees: number) => (degrees * Math.PI) / 180;
 
 export const translate = (xPos: number, yPos: number) =>
   cm.of(1, 0, 0, 1, xPos, yPos);
