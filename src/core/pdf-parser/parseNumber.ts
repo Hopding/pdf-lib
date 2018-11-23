@@ -1,5 +1,5 @@
 import { PDFNumber } from 'core/pdf-objects';
-import { arrayToString, trimArray } from 'utils';
+import { arrayToString, trimArrayAndRemoveComments } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -18,7 +18,7 @@ const parseNumber = (
   input: Uint8Array,
   { onParseNumber }: IParseHandlers = {},
 ): [PDFNumber, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   const numRegex = /^(([+-]?\d+(\.\d+)?)|([+-]?\.\d+))/;
 
   // Search for the first character that isn't part of a number
