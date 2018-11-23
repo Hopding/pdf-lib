@@ -127,14 +127,12 @@ describe(`parseStream`, () => {
 
     it(`handles leading comments before the PDFStream object`, () => {
       const input = typedArrayFor(
-        `% This is a comment\rstream\n...STUFF AND THINGZ...\nendstreamendobj`
+        `% This is a comment\rstream\n...STUFF AND THINGZ...\nendstreamendobj`,
       );
       const index = PDFObjectIndex.create();
       const res = parseStream(input, PDFDictionary.from({}, index), index);
       expect(res).toEqual([expect.any(PDFRawStream), expect.any(Uint8Array)]);
-      expect(res[0].content).toEqual(
-        typedArrayFor(`...STUFF AND THINGZ...`),
-      );
+      expect(res[0].content).toEqual(typedArrayFor(`...STUFF AND THINGZ...`));
       expect(res[1]).toEqual(typedArrayFor('endobj'));
     });
   });

@@ -89,7 +89,9 @@ describe(`parseName`, () => {
   });
 
   it(`handles leading comments before the PDFName object`, () => {
-    const input = typedArrayFor('% This is a comment\n% And so is this!\r\n/Foo');
+    const input = typedArrayFor(
+      '% This is a comment\n% And so is this!\r\n/Foo',
+    );
     const res = parseName(input);
     expect(res).toEqual([PDFName.from('Foo'), typedArrayFor('')]);
   });

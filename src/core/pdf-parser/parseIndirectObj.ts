@@ -53,7 +53,7 @@ const parseIndirectObj = (
   // Extract the bytes making up the object itself
   const endobjIdx = arrayIndexOf(trimmed, 'endobj', objIdx)!;
   const content = trimArrayAndRemoveComments(
-    trimmed.subarray(objIdx + 3, endobjIdx)
+    trimmed.subarray(objIdx + 3, endobjIdx),
   );
 
   // Try to parse the object bytes
@@ -69,7 +69,9 @@ const parseIndirectObj = (
     parseNull(content, parseHandlers) ||
     error('Failed to parse object contents');
 
-  if (trimArrayAndRemoveComments(r).length > 0) error('Incorrectly parsed object contents');
+  if (trimArrayAndRemoveComments(r).length > 0) {
+    error('Incorrectly parsed object contents');
+  }
 
   const indirectObj = PDFIndirectObject.of(contentObj).setReferenceNumbers(
     Number(objNum),

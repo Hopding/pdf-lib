@@ -156,7 +156,7 @@ describe(`parseIndirectObj`, () => {
 
   it(`handles leading comments before the PDFIndirectObject`, () => {
     const input = typedArrayFor(
-      `% This is a comment!\n0 1 obj\n(I'm a little teapot)\nendobj`
+      `% This is a comment!\n0 1 obj\n(I'm a little teapot)\nendobj`,
     );
     const res = parseIndirectObj(input, PDFObjectIndex.create());
     expect(res).toEqual([
@@ -170,7 +170,7 @@ describe(`parseIndirectObj`, () => {
 
   it(`handles comments after the reference numbers of the PDFIndirectObject`, () => {
     const input = typedArrayFor(
-      `0 1 obj\n% This is a comment!\n(I'm a little teapot)\nendobj`
+      `0 1 obj\n% This is a comment!\n(I'm a little teapot)\nendobj`,
     );
     const res = parseIndirectObj(input, PDFObjectIndex.create());
     expect(res).toEqual([
@@ -184,7 +184,7 @@ describe(`parseIndirectObj`, () => {
 
   it(`handles comments before the "endobj" keyword of the PDFIndirectObject`, () => {
     const input = typedArrayFor(
-      `0 1 obj\n(I'm a little teapot)\n% This is a comment!\nendobj`
+      `0 1 obj\n(I'm a little teapot)\n% This is a comment!\nendobj`,
     );
     const res = parseIndirectObj(input, PDFObjectIndex.create());
     expect(res).toEqual([
