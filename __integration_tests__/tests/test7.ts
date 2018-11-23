@@ -60,12 +60,9 @@ const makeOverlayContentStream = (
 
 // Define the test kernel using the above content stream functions.
 const kernel: ITestKernel = (assets: ITestAssets) => {
-  const fs = require('fs');
   const pdfDoc = PDFDocumentFactory.load(
-    fs.readFileSync('/Users/user/Desktop/11598-101F.pdf'),
-    // fs.readFileSync('/Users/user/Desktop/11598-101F_tweaked.pdf'),
+    assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
   );
-  // The font 'UZCHSP+Helvetica' contains a bad /BBox.
 
   const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
   const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
@@ -83,8 +80,7 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
     .addXObject('Mario', PngMario)
     .addContentStreams(overlayContentStreamRef);
 
-  return PDFDocumentWriter.saveToBytes(pdfDoc, { useObjectStreams: false });
-  // return PDFDocumentWriter.saveToBytes(pdfDoc);
+  return PDFDocumentWriter.saveToBytes(pdfDoc);
 };
 
 export default {
@@ -93,10 +89,10 @@ export default {
   description:
     'This tests that PDFs with missing EOL markers before their "endstream" keywords and a modified CTM can be parsed and modified with the default CTM.\nhttps://github.com/Hopding/pdf-lib/issues/12',
   checklist: [
-    // 'the background of the PDF is a WaveOC USA, Inc. refund receipt.',
-    // 'an image of Mario running is drawn on top of the receipt.',
-    // 'the same image of Mario is drawn upside down and skewed.',
-    // 'a box with solarized text is drawn underneath Mario.',
-    // 'this box of text is angled upwards and skewed to the right.',
+    'the background of the PDF is a WaveOC USA, Inc. refund receipt.',
+    'an image of Mario running is drawn on top of the receipt.',
+    'the same image of Mario is drawn upside down and skewed.',
+    'a box with solarized text is drawn underneath Mario.',
+    'this box of text is angled upwards and skewed to the right.',
   ],
 };
