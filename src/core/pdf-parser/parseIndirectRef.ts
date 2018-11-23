@@ -1,6 +1,6 @@
 // tslint:disable-next-line:no-unused-variable
 import { PDFIndirectReference, PDFObject } from 'core/pdf-objects';
-import { arrayIndexOf, arrayToString, trimArray } from 'utils';
+import { arrayIndexOf, arrayToString, trimArrayAndRemoveComments } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -19,7 +19,7 @@ const parseIndirectRef = (
   input: Uint8Array,
   { onParseIndirectRef }: IParseHandlers = {},
 ): [PDFIndirectReference, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   const indirectRefRegex = /^(\d+)[\0\t\n\f\r ]*(\d+)[\0\t\n\f\r ]*R/;
 
   // Check that initial characters make up an indirect reference
