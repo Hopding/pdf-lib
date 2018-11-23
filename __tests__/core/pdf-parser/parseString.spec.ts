@@ -67,4 +67,12 @@ describe(`parseString`, () => {
     const res = parseString(input);
     expect(res).toBeUndefined();
   });
+
+  it(`handles leading comments before the PDFString object`, () => {
+    const input = typedArrayFor('% This is a comment!\r(FOO%Bar\n)');
+    const res = parseString(input);
+    expect(res).toEqual([expect.any(PDFString), expect.any(Uint8Array)]);
+    expect(res[0].string).toEqual('FOO%Bar\n');
+    expect(res[1]).toEqual(typedArrayFor(''));
+  });
 });
