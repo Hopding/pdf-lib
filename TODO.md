@@ -3,7 +3,7 @@
 - [ ] Support non-english unicode characters.
 - [ ] Support page transfer between PDFs.
 - [ ] Provide font metrics for the Standard 14 Fonts.
-- [ ] Support PDF with comments by stripping them before parsing.
+- [x] Support PDF with comments by stripping them before parsing.
 - [ ] Support stream decompression for non Flate-Encoded streams.
 - [ ] Support annotations & links.
 - [ ] Support Acroform manipulation.
