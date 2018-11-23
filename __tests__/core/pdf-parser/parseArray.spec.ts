@@ -50,6 +50,22 @@ describe(`parseArray`, () => {
     expect(res[1]).toEqual(typedArrayFor('<< /Key /Val >>'));
   });
 
+  it(`allows leading comments before the PDF Array object`, () => {
+    const input = typedArrayFor('% This is a % comment\n [(foo)] \n');
+    const res = parseArray(input, PDFObjectIndex.create());
+    expect(res).toEqual([expect.any(PDFArray), expect.any(Uint8Array)]);
+    expect(res[0].array).toEqual([expect.any(PDFString)]);
+    expect(res[1]).toEqual(typedArrayFor(''));
+  });
+
+  it(`allows comments before the PDF Array object's closing bracket`, () => {
+    const input = typedArrayFor('[(foo)% This is a comment!\n]');
+    const res = parseArray(input, PDFObjectIndex.create());
+    expect(res).toEqual([expect.any(PDFArray), expect.any(Uint8Array)]);
+    expect(res[0].array).toEqual([expect.any(PDFString)]);
+    expect(res[1]).toEqual(typedArrayFor(''));
+  });
+
   it(`parses nested PDF Arrays`, () => {
     const input = typedArrayFor('[[[]]]');
     const res = parseArray(input, PDFObjectIndex.create());

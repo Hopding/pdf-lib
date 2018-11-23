@@ -1,5 +1,5 @@
 import { PDFArray, PDFObject } from 'core/pdf-objects';
-import { arrayCharAt, error, trimArray } from 'utils';
+import { arrayCharAt, error, trimArrayAndRemoveComments } from 'utils';
 import { isIdentity, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
@@ -36,13 +36,13 @@ const parseArray = (
   parseHandlers: IParseHandlers = {},
 ): [PDFArray, Uint8Array] | void => {
   // Make sure it is possible for this to be an array.
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   if (arrayCharAt(trimmed, 0) !== '[') return undefined;
   const pdfArray = PDFArray.fromArray<PDFObject>([], index);
 
   // Recursively parse each element of the array
   let remainder = trimmed.subarray(1); // Remove the '['
-  while (arrayCharAt(trimArray(remainder), 0) !== ']') {
+  while (arrayCharAt(trimArrayAndRemoveComments(remainder), 0) !== ']') {
     // Parse the value for this element
     const [pdfObject, r] =
       parseName(remainder, parseHandlers) ||
@@ -59,7 +59,7 @@ const parseArray = (
     pdfArray.push(pdfObject);
     remainder = r;
   }
-  const remainderTrim = trimArray(remainder);
+  const remainderTrim = trimArrayAndRemoveComments(remainder);
 
   // Make sure the brackets are paired
   validate(
@@ -67,7 +67,7 @@ const parseArray = (
     isIdentity(']'),
     'Mismatched brackets!',
   );
-  remainder = trimArray(remainderTrim.subarray(1)); // Remove the ']'
+  remainder = trimArrayAndRemoveComments(remainderTrim.subarray(1)); // Remove the ']'
 
   if (parseHandlers.onParseArray) parseHandlers.onParseArray(pdfArray);
   return [pdfArray, remainder];
