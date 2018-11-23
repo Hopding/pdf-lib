@@ -1,6 +1,6 @@
 import { PDFDictionary } from 'core/pdf-objects';
 import { PDFTrailer } from 'core/pdf-structures';
-import { arrayIndexOf, arrayToString, charCode, error, trimArray } from 'utils';
+import { arrayIndexOf, arrayToString, charCode, error, trimArrayAndRemoveComments } from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -27,7 +27,7 @@ const parseTrailer = (
   index: PDFObjectIndex,
   parseHandlers: IParseHandlers = {},
 ): [PDFTrailer, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   const trailerRegex = /^trailer[\n|\r| ]*([^]+)startxref[\n|\r| ]+?(\d+)[\n|\r| ]+?%%EOF/;
 
   // Find the nearest "%%EOF" of the input and match the regex up to that index
@@ -66,7 +66,7 @@ const parseTrailerWithoutDict = (
   index: PDFObjectIndex,
   parseHandlers: IParseHandlers = {},
 ): [PDFTrailer, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   const trailerRegex = /^startxref[\n|\r| ]+?(\d+)[\n|\r| ]+?%%EOF/;
 
   // Find the nearest "%%EOF" of the input and match the regex up to that index
