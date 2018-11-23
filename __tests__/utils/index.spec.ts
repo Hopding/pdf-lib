@@ -28,4 +28,10 @@ describe(`trimArrayAndRemoveComments`, () => {
     const res = trimArrayAndRemoveComments(input);
     expect(res).toEqual(typedArrayFor('This is not a comment. \n '));
   });
+
+  it(`returns its input when the comment's newline is missing`, () => {
+    const input = typedArrayFor('% This is not a complete comment');
+    const res = trimArrayAndRemoveComments(input);
+    expect(res).toEqual(typedArrayFor('% This is not a complete comment'));
+  });
 });

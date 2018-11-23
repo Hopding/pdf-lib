@@ -51,10 +51,28 @@ describe(`parseDict`, () => {
   it(`allows leading whitespace and line endings before & after the PDF Dictionary object`, () => {
     const input = typedArrayFor(' \n \r\n << /Foo /Bar >> \r\n [(foo)]');
     const res = parseDict(input, PDFObjectIndex.create());
-    expect(res).toEqual([expect.any(PDFDictionary), expect.any(Uint8Array)]);
 
+    expect(res).toEqual([expect.any(PDFDictionary), expect.any(Uint8Array)]);
     expect(res[0].get('Foo')).toBe(PDFName.from('Bar'));
     expect(res[1]).toEqual(typedArrayFor('[(foo)]'));
+  });
+
+  it(`handles leading comments before the PDFDictionary object`, () => {
+    const input = typedArrayFor('% This is a comment!\n<< /Foo /Bar >>% Stuff');
+    const res = parseDict(input, PDFObjectIndex.create());
+
+    expect(res).toEqual([expect.any(PDFDictionary), expect.any(Uint8Array)]);
+    expect(res[0].get('Foo')).toBe(PDFName.from('Bar'));
+    expect(res[1]).toEqual(typedArrayFor('% Stuff'));
+  });
+
+  it(`handles comments before the PDFDictionary object's closing brackets`, () => {
+    const input = typedArrayFor('<< /Foo /Bar % Stuff\n >>');
+    const res = parseDict(input, PDFObjectIndex.create());
+
+    expect(res).toEqual([expect.any(PDFDictionary), expect.any(Uint8Array)]);
+    expect(res[0].get('Foo')).toBe(PDFName.from('Bar'));
+    expect(res[1]).toEqual(typedArrayFor(''));
   });
 
   it(`parses nested PDF Dictionaries`, () => {

@@ -146,9 +146,10 @@ export const trimArrayAndRemoveComments = (arr: Uint8Array): Uint8Array => {
     newArray = trimArray(newArray);
     if (newArray[0] === PERCENT_SIGN_CODE) {
       let idx = 0;
-      while (newArray[idx] !== NEWLINE_CODE) idx += 1;
-      newArray = newArray.subarray(idx);
-      strippedComment = true;
+      while (newArray[idx] !== NEWLINE_CODE && idx < newArray.length) idx += 1;
+      const foundNewline = newArray[idx] === NEWLINE_CODE;
+      if (foundNewline) newArray = newArray.subarray(idx);
+      strippedComment = foundNewline;
     } else {
       strippedComment = false;
     }
