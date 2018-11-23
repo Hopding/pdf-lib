@@ -51,4 +51,12 @@ describe(`parseNumber`, () => {
     expect(res[0].number).toEqual(0.123);
     expect(res[1]).toEqual(typedArrayFor('-.123'));
   });
+
+  it(`handles leading comments before the PDFNumber object`, () => {
+    const input = typedArrayFor('% This is a comment!\r+.123-.123');
+    const res = parseNumber(input);
+    expect(res).toEqual([expect.any(PDFNumber), expect.any(Uint8Array)]);
+    expect(res[0].number).toEqual(0.123);
+    expect(res[1]).toEqual(typedArrayFor('-.123'));
+  });
 });

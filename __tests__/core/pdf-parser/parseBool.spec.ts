@@ -19,6 +19,14 @@ describe(`parseBool`, () => {
     expect(res[1]).toEqual(typedArrayFor('FOOBAR'));
   });
 
+  it(`allows leading comments before the PDFBoolean object`, () => {
+    const input = typedArrayFor('\n% This is a % comment!\ntrue% Another one!');
+    const res = parseBool(input);
+    expect(res).toEqual([expect.any(PDFBoolean), expect.any(Uint8Array)]);
+    expect(res[0].boolean).toEqual(true);
+    expect(res[1]).toEqual(typedArrayFor('% Another one!'));
+  });
+
   it(`returns undefined when leading input is not a PDFBoolean`, () => {
     const input = typedArrayFor('FOOBARtrue');
     const res = parseBool(input);

@@ -1,5 +1,5 @@
 import { PDFBoolean } from 'core/pdf-objects';
-import { arrayToString, trimArray } from 'utils';
+import { arrayToString, trimArrayAndRemoveComments } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -18,7 +18,7 @@ const parseBool = (
   input: Uint8Array,
   { onParseBool }: IParseHandlers = {},
 ): [PDFBoolean, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   const boolRegex = /^(?:[\0\t\n\f\r ]*)(true|false)((?=[\0\t\n\f\r \]]))?/;
 
   // Search for first character that isn't part of a boolean

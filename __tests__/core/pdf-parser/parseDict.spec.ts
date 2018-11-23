@@ -51,10 +51,28 @@ describe(`parseDict`, () => {
   it(`allows leading whitespace and line endings before & after the PDF Dictionary object`, () => {
     const input = typedArrayFor(' \n \r\n << /Foo /Bar >> \r\n [(foo)]');
     const res = parseDict(input, PDFObjectIndex.create());
-    expect(res).toEqual([expect.any(PDFDictionary), expect.any(Uint8Array)]);
 
+    expect(res).toEqual([expect.any(PDFDictionary), expect.any(Uint8Array)]);
     expect(res[0].get('Foo')).toBe(PDFName.from('Bar'));
     expect(res[1]).toEqual(typedArrayFor('[(foo)]'));
+  });
+
+  it(`handles leading comments before the PDFDictionary object`, () => {
+    const input = typedArrayFor('% This is a comment!\n<< /Foo /Bar >>% Stuff');
+    const res = parseDict(input, PDFObjectIndex.create());
+
+    expect(res).toEqual([expect.any(PDFDictionary), expect.any(Uint8Array)]);
+    expect(res[0].get('Foo')).toBe(PDFName.from('Bar'));
+    expect(res[1]).toEqual(typedArrayFor('% Stuff'));
+  });
+
+  it(`handles comments before the PDFDictionary object's closing brackets`, () => {
+    const input = typedArrayFor('<< /Foo /Bar % Stuff\n >>');
+    const res = parseDict(input, PDFObjectIndex.create());
+
+    expect(res).toEqual([expect.any(PDFDictionary), expect.any(Uint8Array)]);
+    expect(res[0].get('Foo')).toBe(PDFName.from('Bar'));
+    expect(res[1]).toEqual(typedArrayFor(''));
   });
 
   it(`parses nested PDF Dictionaries`, () => {
@@ -93,15 +111,43 @@ describe(`parseDict`, () => {
     ]`, () => {
     const input = typedArrayFor(`
       <<
-        /PDFName /Foo
-        /PDFDictionary << /Key /Val >>
-        /PDFArray [1 (2)]
-        /PDFString (Look, a string!)
-        /PDFIndirectReference 21 0 R
-        /PDFNumber -.123
-        /PDFHexString <ABC123>
-        /PDFBoolean true
-        /PDFNull null
+        % Entry 1
+        /PDFName % Key
+        /Foo     % Value
+
+        % Entry 2
+        /PDFDictionary  % Key
+        << /Key /Val >> % Value
+
+        % Entry 3
+        /PDFArray % Key
+        [1 (2)]   % Value
+
+        % Entry 4
+        /PDFString        % Key
+        (Look, a string!) % Value
+
+        % Entry 5
+        /PDFIndirectReference % Key
+        21 0 R                % Value
+
+        % Entry 6
+        /PDFNumber % Key
+        -.123      % Value
+
+        % Entry 7
+        /PDFHexString % Key
+        <ABC123>      % Value
+
+        % Entry 8
+        /PDFBoolean % Key
+        true        % Value
+
+        % Entry 9
+        /PDFNull % Key
+        null     % Value
+
+        % End
       >>
     `);
     const res = parseDict(input, PDFObjectIndex.create());

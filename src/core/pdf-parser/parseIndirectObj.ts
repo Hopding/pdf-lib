@@ -1,6 +1,11 @@
 // tslint:disable-next-line:no-unused-variable
 import { PDFIndirectObject, PDFObject } from 'core/pdf-objects';
-import { arrayIndexOf, arrayToString, error, trimArray } from 'utils';
+import {
+  arrayIndexOf,
+  arrayToString,
+  error,
+  trimArrayAndRemoveComments,
+} from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
@@ -32,7 +37,7 @@ const parseIndirectObj = (
   index: PDFObjectIndex,
   parseHandlers: IParseHandlers = {},
 ): [PDFIndirectObject, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   const indirectObjRegex = /^(\d+)[\0\t\n\f\r ]*(\d+)[\0\t\n\f\r ]*obj/;
 
   // Check that initial characters make up an indirect object "header"
@@ -47,7 +52,9 @@ const parseIndirectObj = (
 
   // Extract the bytes making up the object itself
   const endobjIdx = arrayIndexOf(trimmed, 'endobj', objIdx)!;
-  const content = trimmed.subarray(objIdx + 3, endobjIdx);
+  const content = trimArrayAndRemoveComments(
+    trimmed.subarray(objIdx + 3, endobjIdx),
+  );
 
   // Try to parse the object bytes
   const [contentObj, r] =
@@ -62,7 +69,9 @@ const parseIndirectObj = (
     parseNull(content, parseHandlers) ||
     error('Failed to parse object contents');
 
-  if (trimArray(r).length > 0) error('Incorrectly parsed object contents');
+  if (trimArrayAndRemoveComments(r).length > 0) {
+    error('Incorrectly parsed object contents');
+  }
 
   const indirectObj = PDFIndirectObject.of(contentObj).setReferenceNumbers(
     Number(objNum),

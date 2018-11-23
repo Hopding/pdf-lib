@@ -1,5 +1,5 @@
 import { PDFHexString } from 'core/pdf-objects';
-import { arrayToString, charFromCode, trimArray } from 'utils';
+import { arrayToString, charFromCode, trimArrayAndRemoveComments } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -19,7 +19,7 @@ const parseHexString = (
   { onParseHexString }: IParseHandlers = {},
 ): [PDFHexString, Uint8Array] | void => {
   const hexStringRegex = /^<([\dABCDEFabcdef\0\t\n\f\r ]*)>/;
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   if (trimmed.length === 0) return undefined;
 
   // Search for first character that isn't part of a hex string

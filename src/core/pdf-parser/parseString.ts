@@ -1,5 +1,5 @@
 import { PDFString } from 'core/pdf-objects';
-import { arrayCharAt, arrayToString, trimArray } from 'utils';
+import { arrayCharAt, arrayToString, trimArrayAndRemoveComments } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -18,7 +18,7 @@ const parseString = (
   input: Uint8Array,
   { onParseString }: IParseHandlers = {},
 ): [PDFString, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   if (arrayCharAt(trimmed, 0) !== '(') return undefined;
 
   const parensStack = [];

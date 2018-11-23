@@ -1,5 +1,5 @@
 import { PDFName } from 'core/pdf-objects';
-import { arrayToString, trimArray } from 'utils';
+import { arrayToString, trimArrayAndRemoveComments } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -18,7 +18,7 @@ const parseName = (
   input: Uint8Array,
   { onParseName }: IParseHandlers = {},
 ): [PDFName, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   const nameRegex = /^\/([^\0\t\n\f\r \][<>(/]*)/;
 
   // Search for first character that isn't part of a name
