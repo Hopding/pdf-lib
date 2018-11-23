@@ -1,5 +1,5 @@
 import { PDFNull } from 'core/pdf-objects';
-import { arrayToString, trimArray } from 'utils';
+import { arrayToString, trimArrayAndRemoveComments } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -18,7 +18,7 @@ const parseNull = (
   input: Uint8Array,
   { onParseNull }: IParseHandlers = {},
 ): [PDFNull, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   if (arrayToString(trimmed, 0, 4) !== 'null') return undefined;
 
   if (onParseNull) onParseNull(PDFNull.instance);
