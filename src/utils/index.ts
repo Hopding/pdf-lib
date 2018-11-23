@@ -137,6 +137,9 @@ export const trimArray = (arr: Uint8Array) => {
 
 const PERCENT_SIGN_CODE = charCode('%');
 const NEWLINE_CODE = charCode('\n');
+const CARRIAGE_RETURN_CODE = charCode('\r');
+const isEOLMarker = (code: number) =>
+  code === NEWLINE_CODE || code === CARRIAGE_RETURN_CODE;
 
 export const trimArrayAndRemoveComments = (arr: Uint8Array): Uint8Array => {
   let strippedComment = true;
@@ -146,10 +149,10 @@ export const trimArrayAndRemoveComments = (arr: Uint8Array): Uint8Array => {
     newArray = trimArray(newArray);
     if (newArray[0] === PERCENT_SIGN_CODE) {
       let idx = 0;
-      while (newArray[idx] !== NEWLINE_CODE && idx < newArray.length) idx += 1;
-      const foundNewline = newArray[idx] === NEWLINE_CODE;
-      if (foundNewline) newArray = newArray.subarray(idx);
-      strippedComment = foundNewline;
+      while (!isEOLMarker(newArray[idx]) && idx < newArray.length) idx += 1;
+      const foundEOLMarker = isEOLMarker(newArray[idx]);
+      if (foundEOLMarker) newArray = newArray.subarray(idx);
+      strippedComment = foundEOLMarker;
     } else {
       strippedComment = false;
     }

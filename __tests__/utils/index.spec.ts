@@ -34,4 +34,10 @@ describe(`trimArrayAndRemoveComments`, () => {
     const res = trimArrayAndRemoveComments(input);
     expect(res).toEqual(typedArrayFor('% This is not a complete comment'));
   });
+
+  it(`handles "\\n" and "\\r" EOL markers`, () => {
+    const input = typedArrayFor('% First\n%Second\r% Third\r\nFoo');
+    const res = trimArrayAndRemoveComments(input);
+    expect(res).toEqual(typedArrayFor('Foo'));
+  });
 });
