@@ -43,4 +43,13 @@ describe(`parseHexString`, () => {
     const res = parseHexString(input);
     expect(res).toBeUndefined();
   });
+
+  it(`handles leading comments before the PDFHexString object`, () => {
+    const input = typedArrayFor('\u0000% This is a comment!\n<ABC123>');
+    const res = parseHexString(input);
+
+    expect(res).toEqual([expect.any(PDFHexString), expect.any(Uint8Array)]);
+    expect(res[0].string).toEqual('ABC123');
+    expect(res[1]).toEqual(typedArrayFor(''));
+  });
 });
