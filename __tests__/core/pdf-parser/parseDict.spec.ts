@@ -111,15 +111,43 @@ describe(`parseDict`, () => {
     ]`, () => {
     const input = typedArrayFor(`
       <<
-        /PDFName /Foo
-        /PDFDictionary << /Key /Val >>
-        /PDFArray [1 (2)]
-        /PDFString (Look, a string!)
-        /PDFIndirectReference 21 0 R
-        /PDFNumber -.123
-        /PDFHexString <ABC123>
-        /PDFBoolean true
-        /PDFNull null
+        % Entry 1
+        /PDFName % Key
+        /Foo     % Value
+
+        % Entry 2
+        /PDFDictionary  % Key
+        << /Key /Val >> % Value
+
+        % Entry 3
+        /PDFArray % Key
+        [1 (2)]   % Value
+
+        % Entry 4
+        /PDFString        % Key
+        (Look, a string!) % Value
+
+        % Entry 5
+        /PDFIndirectReference % Key
+        21 0 R                % Value
+
+        % Entry 6
+        /PDFNumber % Key
+        -.123      % Value
+
+        % Entry 7
+        /PDFHexString % Key
+        <ABC123>      % Value
+
+        % Entry 8
+        /PDFBoolean % Key
+        true        % Value
+
+        % Entry 9
+        /PDFNull % Key
+        null     % Value
+
+        % End
       >>
     `);
     const res = parseDict(input, PDFObjectIndex.create());

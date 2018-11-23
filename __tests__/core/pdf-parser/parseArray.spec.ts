@@ -91,7 +91,27 @@ describe(`parseArray`, () => {
       PDF Null
     ]`, () => {
     const input = typedArrayFor(
-      '[/Foo << /Key /Val >> [] (Bar) 21 0 R 0.56 <ABC123> true null]',
+      `[
+        % Comment
+        /Foo % Comment
+        % Comment
+        << /Key /Val >> % Comment
+        % Comment
+        [] % Comment
+        % Comment
+        (Bar) % Comment
+        % Comment
+        21 0 R % Comment
+        % Comment
+        0.56 % Comment
+        % Comment
+        <ABC123> % Comment
+        % Comment
+        true % Comment
+        % Comment
+        null % Comment
+        % Comment
+      ]`,
     );
     const res = parseArray(input, PDFObjectIndex.create());
     expect(res).toEqual([expect.any(PDFArray), expect.any(Uint8Array)]);
