@@ -7,7 +7,6 @@ import {
   PDFStream,
 } from 'core/pdf-objects';
 import { PDFPage } from 'core/pdf-structures';
-import { error } from 'utils';
 
 class PDFObjectCopier {
   static for = (src: PDFObjectIndex, dest: PDFObjectIndex) =>

@@ -46,7 +46,7 @@ class PDFObjectIndex {
     this.highestObjectNumber += 1;
     const ref = PDFIndirectReference.forNumbers(this.highestObjectNumber, 0);
     return ref;
-  }
+  };
 
   assignNextObjectNumberTo = (val: PDFObject) => {
     // this.highestObjectNumber += 1;

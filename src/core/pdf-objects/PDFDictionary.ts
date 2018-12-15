@@ -5,11 +5,8 @@ import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
 
 import {
-  PDFArray,
   PDFIndirectObject,
-  PDFIndirectReference,
   PDFName,
-  PDFStream,
 } from 'core/pdf-objects';
 import { addStringToBuffer, and, arrayToString, error, not, or } from 'utils';
 import { isInstance, validate } from 'utils/validate';

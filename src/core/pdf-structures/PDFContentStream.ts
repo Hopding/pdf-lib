@@ -5,7 +5,6 @@ import pako from 'pako';
 
 import 'core/pdf-objects';
 
-import { PDFObjectIndex } from 'core/pdf-document';
 import { PDFDictionary, PDFName, PDFNumber, PDFStream } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import { addStringToBuffer, or } from 'utils';

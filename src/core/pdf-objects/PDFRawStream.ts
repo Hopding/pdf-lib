@@ -1,7 +1,6 @@
 import { addStringToBuffer } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
-import { PDFObjectIndex } from 'core/pdf-document';
 import { PDFDictionary, PDFStream } from '.';
 
 class PDFRawStream extends PDFStream {
@@ -20,7 +19,8 @@ class PDFRawStream extends PDFStream {
     this.content = content;
   }
 
-  clone = () => PDFRawStream.from(this.dictionary.clone(), this.content.slice());
+  clone = () =>
+    PDFRawStream.from(this.dictionary.clone(), this.content.slice());
 
   bytesSize = () =>
     this.dictionary.bytesSize() +

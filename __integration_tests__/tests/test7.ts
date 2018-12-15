@@ -1,4 +1,3 @@
-import shuffle from 'lodash/shuffle';
 
 import {
   drawImage,

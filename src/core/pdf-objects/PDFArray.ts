@@ -7,10 +7,7 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 import {
-  PDFDictionary,
   PDFIndirectObject,
-  PDFIndirectReference,
-  PDFStream,
 } from '.';
 import PDFObject from './PDFObject';
 
