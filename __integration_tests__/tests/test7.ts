@@ -95,7 +95,7 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
   // return PDFDocumentWriter.saveToBytes(pdfDoc);
 
   // const donorPdf = PDFDocumentFactory.load(
-    // assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
+  // assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
   // );
   // const pdfDoc = PDFDocumentFactory.load(assets.pdfs.normal);
 
@@ -107,7 +107,7 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
   // const fs = require('fs');
   // const donorPdf = PDFDocumentFactory.load(fs.readFileSync('/Users/user/github/pdf-lib/test-pdfs/minimal.pdf'));
   // const pdfDoc = PDFDocumentFactory.load(
-    // assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
+  // assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
   // );
 
   const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
@@ -128,8 +128,8 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
 
   const donorPages = donorPdf.getPages();
   const firstDonorPage = donorPages[0];
-  // pdfDoc.addPage(firstDonorPage);
-  pdfDoc.insertPage(0, firstDonorPage);
+  pdfDoc.addPage(firstDonorPage);
+  // pdfDoc.insertPage(0, firstDonorPage);
 
   // return PDFDocumentWriter.saveToBytes(pdfDoc);
   return PDFDocumentWriter.saveToBytes(pdfDoc, { useObjectStreams: false });

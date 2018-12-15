@@ -20,15 +20,7 @@ class PDFRawStream extends PDFStream {
     this.content = content;
   }
 
-  // cloneDeep = (cloneIndex: PDFObjectIndex) => {
-  //   const clonedDict = this.dictionary.cloneDeep(cloneIndex);
-  //   const cloned = PDFRawStream.from(clonedDict, this.content.slice());
-  //   return cloned;
-  // };
-
-  clone = (cloneIndex: PDFObjectIndex) => {
-    return PDFRawStream.from(this.dictionary.clone(cloneIndex), this.content.slice());
-  };
+  clone = () => PDFRawStream.from(this.dictionary.clone(), this.content.slice());
 
   bytesSize = () =>
     this.dictionary.bytesSize() +
