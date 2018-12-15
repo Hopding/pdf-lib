@@ -77,8 +77,6 @@ const parseDocument = (
   index: PDFObjectIndex,
   parseHandlers: IParseHandlers,
 ): void => {
-  // TODO: Figure out way to clean comments without messing stream content up
-  // const cleaned = removeComments(input);
   const cleaned = input;
 
   // Parse the document header

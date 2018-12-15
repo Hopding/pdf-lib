@@ -25,7 +25,7 @@ describe(`parseName`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDF Name object`, () => {
-    const input = typedArrayFor(' \n \r\n /FOOBAR \r\n << /Key /Val >>');
+    const input = typedArrayFor(' \0\f \t\n \r\n /FOOBAR \r\n << /Key /Val >>');
     const res = parseName(input);
     expect(res).toEqual([
       PDFName.from('FOOBAR'),
@@ -33,11 +33,22 @@ describe(`parseName`, () => {
     ]);
   });
 
-  const terminationChars = [' ', '\n', '\r', ']', '[', '<', '>', '(', '/'];
-  it(`terminates PDF Name objects on these characters: ${JSON.stringify(
-    terminationChars,
-  )}`, () => {
-    terminationChars.forEach((tc) => {
+  const terminationChars = [
+    '\0',
+    '\t',
+    '\n',
+    '\f',
+    '\r',
+    ' ',
+    ']',
+    '[',
+    '<',
+    '>',
+    '(',
+    '/',
+  ];
+  terminationChars.forEach((tc) => {
+    it(`terminates PDF Name objects on ${JSON.stringify(tc)}`, () => {
       const input = typedArrayFor(`/Foo${tc}Bar`);
       const res = parseName(input);
       expect(res).toEqual([PDFName.from('Foo'), typedArrayFor(`${tc}Bar`)]);
@@ -48,5 +59,40 @@ describe(`parseName`, () => {
     const input = typedArrayFor('/ /AS /Off');
     const res = parseName(input);
     expect(res[0]).toEqual(PDFName.from(''));
+  });
+
+  describe('documentation examples, 7.3.5 Table 4', () => {
+    const examples = [
+      { raw: '/Name1', name: 'Name1' },
+      { raw: '/ASomewhatLongerName', name: 'ASomewhatLongerName' },
+      {
+        raw: '/A;Name_With-Various***Characters?',
+        name: 'A;Name_With-Various***Characters?',
+      },
+      { raw: '/1.2', name: '1.2' },
+      { raw: '/$$', name: '$$' },
+      { raw: '/@pattern', name: '@pattern' },
+      { raw: '/.notdef', name: '.notdef' },
+      { raw: '/Lime#20Green', name: 'Lime Green' },
+      { raw: '/paired#28#29parentheses', name: 'paired()parentheses' },
+      { raw: '/The_Key_of_F#23_Minor', name: 'The_Key_of_F#_Minor' },
+      { raw: '/A#42', name: 'AB' },
+    ];
+
+    examples.forEach((example) => {
+      it(`will parse ${example.raw} as ${example.name}`, () => {
+        const input = typedArrayFor(example.raw);
+        const res = parseName(input);
+        expect(res[0]).toEqual(PDFName.from(example.name));
+      });
+    });
+  });
+
+  it(`handles leading comments before the PDFName object`, () => {
+    const input = typedArrayFor(
+      '% This is a comment\n% And so is this!\r\n/Foo',
+    );
+    const res = parseName(input);
+    expect(res).toEqual([PDFName.from('Foo'), typedArrayFor('')]);
   });
 });

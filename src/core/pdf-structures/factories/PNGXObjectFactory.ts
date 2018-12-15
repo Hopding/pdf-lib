@@ -151,7 +151,7 @@ class PNGXObjectFactory {
   /** @hidden */
   private splitAlphaChannel = () => {
     const pixels = this.image.decodePixelsSync();
-    const colorByteSize = this.image.colors * this.image.bits / 8;
+    const colorByteSize = (this.image.colors * this.image.bits) / 8;
     const pixelCount = this.image.width * this.image.height;
     this.imgData = new Uint8Array(pixelCount * colorByteSize);
     this.alphaChannel = new Uint8Array(pixelCount);

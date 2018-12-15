@@ -59,4 +59,15 @@ describe(`parseIndirectRef`, () => {
     const res = parseIndirectRef(input);
     expect(res).toBeUndefined();
   });
+
+  it(`handles leading comments before the PDFIndirectReference object`, () => {
+    const input = typedArrayFor(`% This is a comment!\r1 1 RFoo`);
+    const res = parseIndirectRef(input);
+    expect(res).toEqual([
+      expect.any(PDFIndirectReference),
+      expect.any(Uint8Array),
+    ]);
+    expect(res[0]).toEqual(PDFIndirectReference.forNumbers(1, 1));
+    expect(res[1]).toEqual(typedArrayFor(`Foo`));
+  });
 });

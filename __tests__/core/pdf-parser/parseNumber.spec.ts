@@ -29,7 +29,7 @@ describe(`parseNumber`, () => {
   });
 
   it(`allows leading whitespace and line endings before & after the PDF Number object`, () => {
-    const input = typedArrayFor(' \n \r\n .123 \r\n (foo)');
+    const input = typedArrayFor(' \0\f \t\n \r\n .123 \r\n (foo)');
     const res = parseNumber(input);
     expect(res).toEqual([expect.any(PDFNumber), expect.any(Uint8Array)]);
     expect(res[0].number).toEqual(0.123);
@@ -46,6 +46,14 @@ describe(`parseNumber`, () => {
 
   it(`parses positive numbers`, () => {
     const input = typedArrayFor('+.123-.123');
+    const res = parseNumber(input);
+    expect(res).toEqual([expect.any(PDFNumber), expect.any(Uint8Array)]);
+    expect(res[0].number).toEqual(0.123);
+    expect(res[1]).toEqual(typedArrayFor('-.123'));
+  });
+
+  it(`handles leading comments before the PDFNumber object`, () => {
+    const input = typedArrayFor('% This is a comment!\r+.123-.123');
     const res = parseNumber(input);
     expect(res).toEqual([expect.any(PDFNumber), expect.any(Uint8Array)]);
     expect(res[0].number).toEqual(0.123);

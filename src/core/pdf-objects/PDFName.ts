@@ -25,6 +25,19 @@ class PDFName extends PDFObject {
     }
     return pdfName;
   };
+
+  static fromEncoded = (str: string): PDFName => {
+    validate(
+      str,
+      isString,
+      'PDFName.fromEncoded() requires string as argument',
+    );
+    const decoded = str.replace(/(#\d{2})/g, (match) =>
+      String.fromCharCode(parseInt(match.slice(1), 16)),
+    );
+    return PDFName.from(decoded);
+  };
+
   key: string;
 
   constructor(enforcer: string, key: string) {
@@ -46,11 +59,8 @@ class PDFName extends PDFObject {
     `/${this.key}`
       .replace('#', '#23')
       .split('')
-      .map(
-        (char) =>
-          PDFName.isRegularChar(char)
-            ? char
-            : `#${charCode(char).toString(16)}`,
+      .map((char) =>
+        PDFName.isRegularChar(char) ? char : `#${charCode(char).toString(16)}`,
       )
       .join('');
 

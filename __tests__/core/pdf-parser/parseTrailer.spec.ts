@@ -5,7 +5,7 @@ import {
   parseTrailerWithoutDict,
 } from 'core/pdf-parser/parseTrailer';
 import { PDFTrailer } from 'core/pdf-structures';
-import { typedArrayFor } from 'utils';
+import { arrayToString, typedArrayFor } from 'utils';
 
 describe(`parseTrailer`, () => {
   it(`parses a single PDF Trailer object from its input array`, () => {
@@ -113,5 +113,24 @@ describe(`parseTrailerWithoutDict`, () => {
     expect(parseHandlers.onParseTrailer).toHaveBeenCalledWith(
       expect.any(PDFTrailer),
     );
+  });
+
+  it(`handles leading comments before the PDFTrailer object`, () => {
+    const input = typedArrayFor(`
+      % This is a comment!
+      trailer
+      << /Root 1 0 R /Size 5 >>
+      startxref
+      565
+      %%EOF
+    `);
+    const res = parseTrailer(input, PDFObjectIndex.create());
+    expect(res).toEqual([expect.any(PDFTrailer), expect.any(Uint8Array)]);
+    expect(res[0].offset).toEqual(565);
+    expect(res[0].dictionary).toEqual(expect.any(PDFDictionary));
+    expect(res[0].dictionary.get('Root')).toEqual(
+      PDFIndirectReference.forNumbers(1, 0),
+    );
+    expect(res[1]).toEqual(typedArrayFor('\n    '));
   });
 });

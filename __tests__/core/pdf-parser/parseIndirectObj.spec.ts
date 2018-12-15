@@ -153,4 +153,46 @@ describe(`parseIndirectObj`, () => {
     const res = parseIndirectObj(input, PDFObjectIndex.create());
     expect(res).toBeUndefined();
   });
+
+  it(`handles leading comments before the PDFIndirectObject`, () => {
+    const input = typedArrayFor(
+      `% This is a comment!\n0 1 obj\n(I'm a little teapot)\nendobj`,
+    );
+    const res = parseIndirectObj(input, PDFObjectIndex.create());
+    expect(res).toEqual([
+      expect.any(PDFIndirectObject),
+      expect.any(Uint8Array),
+    ]);
+    expect(res[0].pdfObject).toEqual(expect.any(PDFString));
+    expect(res[0].pdfObject.string).toEqual(`I'm a little teapot`);
+    expect(res[0].reference).toEqual(PDFIndirectReference.forNumbers(0, 1));
+  });
+
+  it(`handles comments after the reference numbers of the PDFIndirectObject`, () => {
+    const input = typedArrayFor(
+      `0 1 obj\n% This is a comment!\n(I'm a little teapot)\nendobj`,
+    );
+    const res = parseIndirectObj(input, PDFObjectIndex.create());
+    expect(res).toEqual([
+      expect.any(PDFIndirectObject),
+      expect.any(Uint8Array),
+    ]);
+    expect(res[0].pdfObject).toEqual(expect.any(PDFString));
+    expect(res[0].pdfObject.string).toEqual(`I'm a little teapot`);
+    expect(res[0].reference).toEqual(PDFIndirectReference.forNumbers(0, 1));
+  });
+
+  it(`handles comments before the "endobj" keyword of the PDFIndirectObject`, () => {
+    const input = typedArrayFor(
+      `0 1 obj\n(I'm a little teapot)\n% This is a comment!\nendobj`,
+    );
+    const res = parseIndirectObj(input, PDFObjectIndex.create());
+    expect(res).toEqual([
+      expect.any(PDFIndirectObject),
+      expect.any(Uint8Array),
+    ]);
+    expect(res[0].pdfObject).toEqual(expect.any(PDFString));
+    expect(res[0].pdfObject.string).toEqual(`I'm a little teapot`);
+    expect(res[0].reference).toEqual(PDFIndirectReference.forNumbers(0, 1));
+  });
 });

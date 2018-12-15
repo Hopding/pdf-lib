@@ -1,5 +1,5 @@
 import { PDFName } from 'core/pdf-objects';
-import { arrayToString, trimArray } from 'utils';
+import { arrayToString, trimArrayAndRemoveComments } from 'utils';
 
 import { IParseHandlers } from './PDFParser';
 
@@ -18,14 +18,14 @@ const parseName = (
   input: Uint8Array,
   { onParseName }: IParseHandlers = {},
 ): [PDFName, Uint8Array] | void => {
-  const trimmed = trimArray(input);
-  const nameRegex = /^\/([^ \n\r\][<>(/]*)/;
+  const trimmed = trimArrayAndRemoveComments(input);
+  const nameRegex = /^\/([^\0\t\n\f\r \][<>(/]*)/;
 
   // Search for first character that isn't part of a name
   let idx = 1; // Skip the leading '/'
   while (
     trimmed[idx] !== undefined &&
-    String.fromCharCode(trimmed[idx]).match(/^[^ \n\r\][<>(/]/)
+    String.fromCharCode(trimmed[idx]).match(/^[^\0\t\n\f\r \][<>(/]/)
   ) {
     idx += 1;
   }
@@ -35,8 +35,7 @@ const parseName = (
   if (!result) return undefined;
 
   const [fullMatch, name] = result;
-
-  const pdfName = PDFName.from(name);
+  const pdfName = PDFName.fromEncoded(name);
   if (onParseName) onParseName(pdfName);
   return [pdfName, trimmed.subarray(fullMatch.length)];
 };

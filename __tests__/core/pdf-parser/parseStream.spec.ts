@@ -124,6 +124,17 @@ describe(`parseStream`, () => {
         typedArrayFor(`endobjstream\n...OTHER STUFF...\nendstreamendobj`),
       );
     });
+
+    it(`handles leading comments before the PDFStream object`, () => {
+      const input = typedArrayFor(
+        `% This is a comment\rstream\n...STUFF AND THINGZ...\nendstreamendobj`,
+      );
+      const index = PDFObjectIndex.create();
+      const res = parseStream(input, PDFDictionary.from({}, index), index);
+      expect(res).toEqual([expect.any(PDFRawStream), expect.any(Uint8Array)]);
+      expect(res[0].content).toEqual(typedArrayFor(`...STUFF AND THINGZ...`));
+      expect(res[1]).toEqual(typedArrayFor('endobj'));
+    });
   });
 
   describe(`when parsing "object" streams`, () => {
@@ -176,6 +187,18 @@ describe(`parseStream`, () => {
         index,
       );
       expect(() => parseStream(input, errDict, index)).toThrowError();
+    });
+
+    it(`handles leading comments before the PDFObjectStream object`, () => {
+      const commentedInput = mergeUint8Arrays(
+        typedArrayFor('% This is a comment!\r'),
+        input,
+      );
+      const res = parseStream(commentedInput, dict, index);
+      expect(res).toEqual([
+        expect.any(PDFObjectStream),
+        expect.any(Uint8Array),
+      ]);
     });
   });
 });

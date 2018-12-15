@@ -40,7 +40,7 @@ const computeOffsets = (
     objectNumber: object.reference.objectNumber,
     generationNumber: object.reference.generationNumber,
     startOffset: startingOffset,
-    endOffset: (startingOffset += object.bytesSize()),
+    endOffset: startingOffset += object.bytesSize(),
   }));
 
 class PDFDocumentWriter {
@@ -84,6 +84,7 @@ class PDFDocumentWriter {
     });
 
     const merged = [...streamObjects, ...nonStreamObjects];
+
     const offsets = computeOffsets(pdfDoc.header.bytesSize(), merged);
     const sortedOffsets = sortBy(offsets, 'objectNumber');
 
@@ -94,7 +95,7 @@ class PDFDocumentWriter {
       tableOffset,
       PDFDictionary.from(
         {
-          Size: PDFNumber.fromNumber(last(offsets)!.objectNumber + 1),
+          Size: PDFNumber.fromNumber(last(sortedOffsets)!.objectNumber + 1),
           Root: catalogRef!,
         },
         pdfDoc.index,

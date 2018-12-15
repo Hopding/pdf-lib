@@ -29,4 +29,10 @@ describe(`parseNull`, () => {
     const res = parseNull(input);
     expect(res).toEqual([PDFNull.instance, typedArrayFor(' \r\n (foo)')]);
   });
+
+  it(`handles leading comments before the PDF Null object`, () => {
+    const input = typedArrayFor('% This is a comment!\r\n null \r\n (foo)');
+    const res = parseNull(input);
+    expect(res).toEqual([PDFNull.instance, typedArrayFor(' \r\n (foo)')]);
+  });
 });

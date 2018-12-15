@@ -5,7 +5,7 @@ import {
   arrayIndexOneOf,
   arrayToString,
   error,
-  trimArray,
+  trimArrayAndRemoveComments,
 } from 'utils';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
@@ -31,7 +31,7 @@ const parseStream = (
   parseHandlers: IParseHandlers = {},
 ): [Uint8Array, Uint8Array] | void => {
   // Check that the next bytes comprise the beginning of a stream
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
 
   let startstreamIdx;
   if (arrayToString(trimmed, 0, 7) === 'stream\n') startstreamIdx = 7;

@@ -5,7 +5,7 @@ import {
   PDFPage,
   PDFPageTree,
 } from 'core/pdf-structures';
-import { arrayToString, error, trimArray } from 'utils';
+import { arrayToString, error, trimArrayAndRemoveComments } from 'utils';
 import { isIdentity, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
@@ -53,13 +53,13 @@ const parseDict = (
   index: PDFObjectIndex,
   parseHandlers: IParseHandlers = {},
 ): [PDFDictionary, Uint8Array] | void => {
-  const trimmed = trimArray(input);
+  const trimmed = trimArrayAndRemoveComments(input);
   if (arrayToString(trimmed, 0, 2) !== '<<') return undefined;
   const pdfDict = PDFDictionary.from(new Map(), index);
 
   // Recursively parse each entry in the dictionary
-  let remainder = trimArray(trimmed.subarray(2));
-  while (arrayToString(trimArray(remainder), 0, 2) !== '>>') {
+  let remainder = trimArrayAndRemoveComments(trimmed.subarray(2));
+  while (arrayToString(trimArrayAndRemoveComments(remainder), 0, 2) !== '>>') {
     // Parse the key for this entry
     const [key, r1] =
       parseName(remainder) || error('Failed to parse dictionary key');
@@ -82,7 +82,7 @@ const parseDict = (
     pdfDict.set(key, pdfObject);
     remainder = r2;
   }
-  const remainderTrim = trimArray(remainder);
+  const remainderTrim = trimArrayAndRemoveComments(remainder);
 
   // Make sure the brackets are paired
   validate(
@@ -91,7 +91,7 @@ const parseDict = (
     'Mismatched brackets!',
   );
 
-  remainder = trimArray(remainderTrim.subarray(2)); // Remove ending '>>' pair
+  remainder = trimArrayAndRemoveComments(remainderTrim.subarray(2)); // Remove ending '>>' pair
 
   const typedDict = typeDict(pdfDict);
   if (parseHandlers.onParseDict) parseHandlers.onParseDict(typedDict);
