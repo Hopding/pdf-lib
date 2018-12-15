@@ -61,10 +61,23 @@ class PDFContentStream extends PDFStream {
     return this.dictionary.index.lookup(Length) as PDFNumber;
   }
 
+  // // Note: If this PDFContentStream is encoded when it is cloned, the
+  // //       clone will *not* be encoded.
+  // cloneDeep = (cloneIndex: PDFObjectIndex) => {
+  //   const clonedDict = this.dictionary.cloneDeep(cloneIndex);
+  //   clonedDict.map.delete(PDFName.from('Filter'));
+  //   const cloned = PDFContentStream.of(
+  //     clonedDict,
+  //     // TODO: Should probably do a deep clone on these operators
+  //     ...this.operators,
+  //   );
+  //   return cloned;
+  // };
+
   // Note: If this PDFContentStream is encoded when it is cloned, the
   //       clone will *not* be encoded.
-  cloneDeep = (cloneIndex: PDFObjectIndex) => {
-    const clonedDict = this.dictionary.cloneDeep(cloneIndex);
+  clone = (cloneIndex: PDFObjectIndex) => {
+    const clonedDict = this.dictionary.clone(cloneIndex);
     clonedDict.map.delete(PDFName.from('Filter'));
     const cloned = PDFContentStream.of(
       clonedDict,

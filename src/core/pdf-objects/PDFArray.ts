@@ -72,13 +72,17 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
   splice = (start: number, deleteCount?: number) =>
     this.array.splice(start, deleteCount);
 
-  cloneDeep = (cloneIndex: PDFObjectIndex) => {
-    const cloned = PDFArray.fromArray([] as PDFObject[], cloneIndex);
-    cloned.forEach((value: any, idx) => {
-      const clonedValue = value.clone ? value.clone(cloneIndex) : value;
-      cloned.set(idx, value);
-    });
-    return cloned;
+  // cloneDeep = (cloneIndex: PDFObjectIndex) => {
+  //   const cloned = PDFArray.fromArray([] as PDFObject[], cloneIndex);
+  //   cloned.forEach((value: any, idx) => {
+  //     const clonedValue = value.clone ? value.cloneDeep(cloneIndex) : value;
+  //     cloned.set(idx, value);
+  //   });
+  //   return cloned;
+  // };
+
+  clone = (cloneIndex: PDFObjectIndex) => {
+    return PDFArray.fromArray(this.array.slice(), cloneIndex);
   };
 
   toString = (): string => {

@@ -21,8 +21,11 @@ class PDFStream extends PDFObject {
     }
   };
 
-  cloneDeep = (...args: any[]): any =>
-    error('Method "cloneDeep" is not implemented on PDFStream.');
+  // cloneDeep = (...args: any[]): any =>
+    // error('Method "cloneDeep" is not implemented on PDFStream.');
+
+  clone = (...args: any[]): any =>
+    error('Method "clone" is not implemented on PDFStream.');
 }
 
 export default PDFStream;

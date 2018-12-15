@@ -99,13 +99,17 @@ class PDFDictionary extends PDFObject {
     return this;
   };
 
-  cloneDeep = (cloneIndex: PDFObjectIndex) => {
-    const cloned = PDFDictionary.from(new Map(), cloneIndex);
-    this.map.forEach((value, key) => {
-      const clonedValue = value.clone ? value.clone(cloneIndex) : value;
-      cloned.set(key, clonedValue);
-    });
-    return cloned;
+  // cloneDeep = (cloneIndex: PDFObjectIndex) => {
+  //   const cloned = PDFDictionary.from(new Map(), cloneIndex);
+  //   this.map.forEach((value, key) => {
+  //     const clonedValue = value.clone ? value.cloneDeep(cloneIndex) : value;
+  //     cloned.set(key, clonedValue);
+  //   });
+  //   return cloned;
+  // };
+
+  clone = (cloneIndex: PDFObjectIndex) => {
+    return PDFDictionary.from(new Map(this.map), cloneIndex);
   };
 
   toString = (): string => {

@@ -9,6 +9,7 @@ import Standard14Fonts, {
 import {
   PDFDictionary,
   PDFIndirectReference,
+  PDFName,
   PDFObject,
   PDFRawStream,
 } from 'core/pdf-objects';
@@ -199,7 +200,15 @@ class PDFDocument {
 
     // If page comes from another document, copy it into this one
     if (page.index !== this.index) {
-      PDFObjectCopier.for(page.index, this.index).copy(page);
+      // Remove the parent reference to prevent the whole donor document's page
+      // tree from being copied when we only need a single page.
+      // NOTE: May need to update this to copy over entries that the donor page
+      //       inherits from its Parent in the donor document...
+      const clonedPage = page.clone(page.index);
+      clonedPage.map.delete(PDFName.from('Parent'));
+
+      const copiedPage = PDFObjectCopier.for(clonedPage.index, this.index).copy(clonedPage);
+      page = copiedPage as PDFPage;
     }
 
     const pageTreeRef = this.catalog.get('Pages');

@@ -42,9 +42,18 @@ class PDFObjectIndex {
     return this;
   };
 
-  assignNextObjectNumberTo = (val: PDFObject) => {
+  nextObjectNumber = () => {
     this.highestObjectNumber += 1;
     const ref = PDFIndirectReference.forNumbers(this.highestObjectNumber, 0);
+    return ref;
+  }
+
+  assignNextObjectNumberTo = (val: PDFObject) => {
+    // this.highestObjectNumber += 1;
+    // const ref = PDFIndirectReference.forNumbers(this.highestObjectNumber, 0);
+    // this.assign(ref, val);
+    // return ref;
+    const ref = this.nextObjectNumber();
     this.assign(ref, val);
     return ref;
   };
