@@ -17,7 +17,7 @@ class PDFBoolean extends PDFObject {
     this.boolean = bool;
   }
 
-  cloneDeep = () => PDFBoolean.fromBool(this.boolean);
+  clone = () => PDFBoolean.fromBool(this.boolean);
 
   toString = (): string => this.boolean.toString();
 

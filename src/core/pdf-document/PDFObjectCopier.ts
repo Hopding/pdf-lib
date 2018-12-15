@@ -22,7 +22,6 @@ class PDFObjectCopier {
     this.to = to;
   }
 
-  // TODO: Maybe should clone non-collection objects too?
   // prettier-ignore
   copy = <T extends PDFObject>(value: T): T => (
       value instanceof PDFPage              ? this.copyPDFPage(value)
@@ -30,7 +29,7 @@ class PDFObjectCopier {
     : value instanceof PDFDictionary        ? this.copyPDFDict(value)
     : value instanceof PDFArray             ? this.copyPDFArray(value)
     : value instanceof PDFIndirectReference ? this.copyPDFIndirectObject(value)
-    : value
+    : value.clone()
   ) as T;
 
   // NOTE: May need to update this to copy over entries that the donor page
@@ -103,8 +102,6 @@ class PDFObjectCopier {
       this.traversedObjects.set(ref, newRef);
 
       const dereferencedValue = this.from.lookup(ref);
-
-      // TODO: Maybe should clone non-collection objects too?
       const cloned = this.copy(dereferencedValue);
 
       this.to.assign(newRef, cloned);

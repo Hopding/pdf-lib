@@ -16,6 +16,10 @@ class PDFObject {
       `copyBytesInto() is not implemented on ${this.constructor.name}`,
     );
   };
+
+  clone = (): PDFObject => {
+    throw new Error(`clone() is not implemented on ${this.constructor.name}`);
+  };
 }
 
 export default PDFObject;

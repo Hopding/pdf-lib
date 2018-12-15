@@ -26,7 +26,7 @@ class PDFNumber extends PDFObject {
     this.number = num;
   }
 
-  cloneDeep = () => PDFNumber.fromNumber(this.number);
+  clone = () => PDFNumber.fromNumber(this.number);
 
   toString = (): string => this.number.toString();
 
