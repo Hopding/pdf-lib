@@ -1,4 +1,3 @@
-
 import {
   drawImage,
   drawLinesOfText,
@@ -7,6 +6,7 @@ import {
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
+  PDFNumber,
 } from '../../src';
 
 import { ITestAssets, ITestKernel } from '../models';
@@ -98,16 +98,41 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
   // );
   // const pdfDoc = PDFDocumentFactory.load(assets.pdfs.normal);
 
-  const donorPdf = PDFDocumentFactory.load(assets.pdfs.normal);
-  const pdfDoc = PDFDocumentFactory.load(
-    assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
-  );
+  // const donorPdf = PDFDocumentFactory.load(assets.pdfs.normal);
+  // const pdfDoc = PDFDocumentFactory.load(
+  // assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
+  // );
 
   // const fs = require('fs');
   // const donorPdf = PDFDocumentFactory.load(fs.readFileSync('/Users/user/github/pdf-lib/test-pdfs/minimal.pdf'));
   // const pdfDoc = PDFDocumentFactory.load(
   // assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
   // );
+
+  const donorPdf = PDFDocumentFactory.create();
+  const [FontHelvetica] = donorPdf.embedStandardFont('Helvetica');
+  donorPdf.addPage(
+    donorPdf
+      .createPage([500, 500])
+      .addFontDictionary('Helvetica', FontHelvetica)
+      .addContentStreams(
+        donorPdf.register(
+          donorPdf.createContentStream(
+            drawLinesOfText(['Foo', 'Bar'], {
+              font: 'Helvetica',
+              x: 25,
+              y: 200,
+              size: 25,
+            }),
+          ),
+        ),
+      ),
+  );
+  donorPdf.catalog.Pages.set('Rotate', PDFNumber.fromNumber(180));
+
+  const pdfDoc = PDFDocumentFactory.load(
+    assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
+  );
 
   const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
   const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
@@ -127,8 +152,8 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
 
   const donorPages = donorPdf.getPages();
   const firstDonorPage = donorPages[0];
-  pdfDoc.addPage(firstDonorPage);
-  // pdfDoc.insertPage(0, firstDonorPage);
+  // pdfDoc.addPage(firstDonorPage);
+  pdfDoc.insertPage(0, firstDonorPage);
 
   // return PDFDocumentWriter.saveToBytes(pdfDoc);
   return PDFDocumentWriter.saveToBytes(pdfDoc, { useObjectStreams: false });

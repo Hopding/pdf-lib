@@ -31,10 +31,19 @@ class PDFObjectCopier {
     : value.clone()
   ) as T;
 
-  // NOTE: May need to update this to copy over entries that the donor page
-  //       inherits from its Parent in the donor document...
   private copyPDFPage = (originalPage: PDFPage): PDFPage => {
-    const clonedPage = originalPage.clone();
+    const clonedPage = originalPage.clone() as PDFPage;
+
+    // Move any entries that the originalPage is inheriting from its parent
+    // tree nodes directly into originalPage so they are preserved during
+    // the copy.
+    clonedPage.Parent.ascend((parentNode) => {
+      PDFPage.INHERITABLE_ENTRIES.forEach((key) => {
+        if (!clonedPage.getMaybe(key) && parentNode.getMaybe(key)) {
+          clonedPage.set(key, parentNode.get(key));
+        }
+      });
+    }, true);
 
     // Remove the parent reference to prevent the whole donor document's page
     // tree from being copied when we only need a single page.
