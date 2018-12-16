@@ -6,9 +6,7 @@ import { isInstance, validate, validateArr } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-import {
-  PDFIndirectObject,
-} from '.';
+import { PDFIndirectObject } from '.';
 import PDFObject from './PDFObject';
 
 class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
@@ -58,7 +56,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
   };
 
   get = (idx: number) => {
-    validate(idx, isNumber, 'PDFArray.set() requires indexes to be numbers');
+    validate(idx, isNumber, 'PDFArray.get() requires indexes to be numbers');
     return this.array[idx];
   };
 
