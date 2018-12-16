@@ -80,7 +80,7 @@ describe(`PDFArray`, () => {
     it(`requires a number as its argument`, () => {
       const pdfArray = PDFArray.fromArray([], PDFObjectIndex.create());
       expect(() => pdfArray.get('0')).toThrowError(
-        'PDFArray.set() requires indexes to be numbers',
+        'PDFArray.get() requires indexes to be numbers',
       );
     });
 
@@ -90,6 +90,23 @@ describe(`PDFArray`, () => {
         PDFObjectIndex.create(),
       );
       expect(pdfArray.get(0)).toEqual(expect.any(PDFString));
+    });
+  });
+
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFArray`, () => {
+      const origArray = PDFArray.fromArray(
+        [PDFString.fromString('test'), PDFNumber.fromNumber(21)],
+        PDFObjectIndex.create(),
+      );
+
+      const clonedArray = origArray.clone();
+
+      expect(clonedArray).not.toBe(origArray);
+      expect(clonedArray.index).toBe(origArray.index);
+      expect(clonedArray.array.length).toBe(origArray.array.length);
+      expect(clonedArray.get(0)).toBe(origArray.get(0));
+      expect(clonedArray.get(1)).toBe(origArray.get(1));
     });
   });
 

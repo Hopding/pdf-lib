@@ -48,6 +48,9 @@ class PDFIndirectObject<T extends PDFObject = PDFObject> extends PDFObject {
 
   toReference = () => this.reference.toString();
 
+  clone = () =>
+    PDFIndirectObject.of(this.pdfObject).setReference(this.reference);
+
   toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);

@@ -34,4 +34,15 @@ describe(`PDFStream`, () => {
       );
     });
   });
+
+  describe(`"clone" method`, () => {
+    it(`throws an error`, () => {
+      const pdfStream = new PDFStream(
+        PDFDictionary.from({}, PDFObjectIndex.create()),
+      );
+      expect(() => pdfStream.clone()).toThrowError(
+        '"clone" is not implemented on PDFStream.',
+      );
+    });
+  });
 });

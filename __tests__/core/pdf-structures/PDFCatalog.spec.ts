@@ -89,8 +89,8 @@ describe(`PDFCatalog`, () => {
         index,
       );
 
-      index.set(PDFIndirectReference.forNumbers(1, 2), kidsArray);
-      index.set(PDFIndirectReference.forNumbers(1, 3), pagesDict);
+      index.assign(PDFIndirectReference.forNumbers(1, 2), kidsArray);
+      index.assign(PDFIndirectReference.forNumbers(1, 3), pagesDict);
 
       const catalog = PDFCatalog.create(
         PDFIndirectReference.forNumbers(1, 3),

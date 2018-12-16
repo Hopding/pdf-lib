@@ -45,6 +45,14 @@ describe(`PDFName`, () => {
     });
   });
 
+  describe(`"clone" method`, () => {
+    it(`returns the PDFName`, () => {
+      const origName = PDFName.from('FooBar');
+      const clonedName = origName.clone();
+      expect(clonedName).toBe(origName);
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`returns the PDFName as a string`, () => {
       const pdfName = PDFName.from('Foo');

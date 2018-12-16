@@ -51,6 +51,7 @@
 * [Usage Examples](#usage-examples)
   * [Document Creation](#document-creation)
   * [Document Modification](#document-modification)
+  * [Copying Pages](#copying-pages)
 * [Installation](#installation)
 * [API Documentation](#api-documentation)
 * [Prior Art](#prior-art)
@@ -68,6 +69,7 @@ There are other good open source JavaScript PDF libraries available. However, mo
 ## Features
 * Create new PDFs
 * Modify existing PDFs
+* _**New:**_ [Copy pages between PDFs](#copying-pages)
 * Add Pages
 * Insert Pages
 * Remove Pages
@@ -137,6 +139,31 @@ const contentStream = pdfDoc.createContentStream(
 );
 
 page.addContentStreams(pdfDoc.register(contentStream));
+
+const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
+```
+
+### Copying Pages
+```javascript
+import { PDFDocumentFactory, PDFDocumentWriter } from 'pdf-lib';
+
+// These should be a Uint8Arrays. (see Document Modification example for more details)
+const firstDonorPdfBytes = ...
+const secondDonorPdfBytes = ...
+
+const firstDonorPdfDoc = PDFDocumentFactory.load(firstDonorPdfBytes);
+const secondDonorPdfDoc = PDFDocumentFactory.load(secondDonorPdfBytes);
+
+// We'll copy the fourth page from the first donor document, and the
+// first page from the second donor document.
+const firstDonorPage = firstDonorPdfDoc.getPages()[3];
+const secondDonorPage = secondDonorPdfDoc.getPages()[0];
+
+const pdfDoc = PDFDocumentFactory.create();
+
+// Copy over the pages from the donor documents into our new document
+pdfDoc.addPage(firstDonorPage);
+pdfDoc.insertPage(0, secondDonorPage);
 
 const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 ```

@@ -41,6 +41,14 @@ describe(`PDFIndirectReference`, () => {
     });
   });
 
+  describe(`"clone" method`, () => {
+    it(`returns the PDFIndirectReference`, () => {
+      const origIndirectRef = PDFIndirectReference.forNumbers(0, 1);
+      const clonedIndirectRef = origIndirectRef.clone();
+      expect(clonedIndirectRef).toBe(origIndirectRef);
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`returns the PDFIndirectReference as a string`, () => {
       const indirectRef = PDFIndirectReference.forNumbers(0, 1);

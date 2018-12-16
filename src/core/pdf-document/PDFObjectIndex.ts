@@ -26,26 +26,45 @@ class PDFObjectIndex {
   /** @hidden */
   popGraphicsStateContentStream?: PDFIndirectReference<PDFContentStream>;
 
-  set = (key: PDFIndirectReference, val: PDFObject) => {
+  highestObjectNumber: number = -1;
+
+  assign = (key: PDFIndirectReference, val: PDFObject) => {
     validate(
       key,
       isInstance(PDFIndirectReference),
       '"key" must be a PDFIndirectReference',
     );
     validate(val, isInstance(PDFObject), '"val" must be a PDFObject');
+    if (key.objectNumber > this.highestObjectNumber) {
+      this.highestObjectNumber = key.objectNumber;
+    }
     this.index.set(key, val);
     return this;
   };
 
-  lookupMaybe = (
-    ref: PDFIndirectReference | PDFObject | void,
-  ): PDFObject | void => {
-    if (ref instanceof PDFIndirectReference) return this.index.get(ref);
+  nextObjectNumber = () => {
+    this.highestObjectNumber += 1;
+    const ref = PDFIndirectReference.forNumbers(this.highestObjectNumber, 0);
     return ref;
   };
 
-  lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
-    return this.lookupMaybe(ref) || error(`Failed to lookup ref: ${ref}}`);
+  assignNextObjectNumberTo = (val: PDFObject) => {
+    const ref = this.nextObjectNumber();
+    this.assign(ref, val);
+    return ref;
+  };
+
+  lookupMaybe = <T extends PDFObject = PDFObject>(
+    ref: PDFIndirectReference | PDFObject | void,
+  ): T | void => {
+    if (ref instanceof PDFIndirectReference) return this.index.get(ref) as T;
+    return ref as T;
+  };
+
+  lookup = <T extends PDFObject = PDFObject>(
+    ref: PDFIndirectReference | PDFObject,
+  ): T => {
+    return this.lookupMaybe<T>(ref) || error(`Failed to lookup ref: ${ref}`);
   };
 }
 

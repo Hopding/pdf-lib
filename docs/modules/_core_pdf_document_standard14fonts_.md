@@ -9,7 +9,7 @@
 **ΤIStandard14FontsUnion**: * "Times-Roman" &#124; "Helvetica" &#124; "Courier" &#124; "Symbol" &#124; "Times-Bold" &#124; "Helvetica-Bold" &#124; "Courier-Bold" &#124; "ZapfDingbats" &#124; "Times-Italic" &#124; "Helvetica-Oblique" &#124; "Courier-Oblique" &#124; "Times-BoldItalic" &#124; "Helvetica-BoldOblique" &#124; "Courier-BoldOblique"
 *
 
-*Defined in [core/pdf-document/Standard14Fonts.ts:25](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/Standard14Fonts.ts#L25)*
+*Defined in [core/pdf-document/Standard14Fonts.ts:25](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/core/pdf-document/Standard14Fonts.ts#L25)*
 
 ___
 
@@ -36,7 +36,7 @@ ___
   'Courier-BoldOblique',
 ]
 
-*Defined in [core/pdf-document/Standard14Fonts.ts:8](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/core/pdf-document/Standard14Fonts.ts#L8)*
+*Defined in [core/pdf-document/Standard14Fonts.ts:8](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/core/pdf-document/Standard14Fonts.ts#L8)*
 
 **Specification: "9.6.2.2 Standard Type 1 Fonts (Standard 14 Fonts)"**
 

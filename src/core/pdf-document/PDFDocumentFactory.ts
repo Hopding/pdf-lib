@@ -37,10 +37,10 @@ class PDFDocumentFactory {
       index,
     );
 
-    index.set(refs.catalog, catalog);
-    index.set(refs.pageTree, pageTree);
+    index.assign(refs.catalog, catalog);
+    index.assign(refs.pageTree, pageTree);
 
-    return PDFDocument.from(catalog, 2, index);
+    return PDFDocument.from(catalog, index);
   };
 
   /**
@@ -79,13 +79,13 @@ class PDFDocumentFactory {
     const ref1 = PDFIndirectReference.forNumbers(maxObjectNumber + 1, 0);
     const ref2 = PDFIndirectReference.forNumbers(maxObjectNumber + 2, 0);
 
-    index.set(ref1, pushGraphicsStateContentStream);
-    index.set(ref2, popGraphicsStateContentStream);
+    index.assign(ref1, pushGraphicsStateContentStream);
+    index.assign(ref2, popGraphicsStateContentStream);
 
     index.pushGraphicsStateContentStream = ref1;
     index.popGraphicsStateContentStream = ref2;
 
-    return PDFDocument.from(parsedPdf.catalog, maxObjectNumber + 2, index);
+    return PDFDocument.from(parsedPdf.catalog, index);
   };
 
   // TODO: Need to throw out objects with "free" obj numbers...

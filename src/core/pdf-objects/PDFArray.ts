@@ -56,7 +56,7 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
   };
 
   get = (idx: number) => {
-    validate(idx, isNumber, 'PDFArray.set() requires indexes to be numbers');
+    validate(idx, isNumber, 'PDFArray.get() requires indexes to be numbers');
     return this.array[idx];
   };
 
@@ -66,6 +66,8 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     this.array.map(fn);
   splice = (start: number, deleteCount?: number) =>
     this.array.splice(start, deleteCount);
+
+  clone = () => PDFArray.fromArray(this.array.slice(), this.index);
 
   toString = (): string => {
     const bufferSize = this.bytesSize();

@@ -26,6 +26,8 @@ class PDFNumber extends PDFObject {
     this.number = num;
   }
 
+  clone = () => PDFNumber.fromNumber(this.number);
+
   toString = (): string => this.number.toString();
 
   bytesSize = () => this.toString().length;

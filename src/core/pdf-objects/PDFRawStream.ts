@@ -19,6 +19,9 @@ class PDFRawStream extends PDFStream {
     this.content = content;
   }
 
+  clone = () =>
+    PDFRawStream.from(this.dictionary.clone(), this.content.slice());
+
   bytesSize = () =>
     this.dictionary.bytesSize() +
     1 + // "\n"

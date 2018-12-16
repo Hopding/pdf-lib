@@ -11,7 +11,7 @@ import {
   PDFObject,
   PDFStream,
 } from 'core/pdf-objects';
-import { PDFContentStream } from 'core/pdf-structures';
+import { PDFContentStream, PDFPageTree } from 'core/pdf-structures';
 import {
   isIdentity,
   isInstance,
@@ -60,6 +60,14 @@ class PDFPage extends PDFDictionary {
   /** @hidden */
   static validKeys = VALID_KEYS;
 
+  /** @hidden */
+  static readonly INHERITABLE_ENTRIES = [
+    'Resources',
+    'MediaBox',
+    'CropBox',
+    'Rotate',
+  ];
+
   static create = (
     index: PDFObjectIndex,
     size: [number, number],
@@ -95,6 +103,11 @@ class PDFPage extends PDFDictionary {
   };
 
   autoNormalizeCTM = true;
+
+  /** @hidden */
+  get Parent() {
+    return this.index.lookup(this.get('Parent')) as PDFPageTree;
+  }
 
   /** @hidden */
   get Resources() {
@@ -302,6 +315,9 @@ class PDFPage extends PDFDictionary {
 
     return this;
   };
+
+  clone = () =>
+    PDFPage.fromDict(PDFDictionary.from(new Map(this.map), this.index));
 }
 
 export default PDFPage;

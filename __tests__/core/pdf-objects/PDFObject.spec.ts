@@ -5,6 +5,15 @@ describe(`PDFDictionary`, () => {
     expect(new PDFObject()).toBeInstanceOf(PDFObject);
   });
 
+  describe(`"clone" method`, () => {
+    it(`throws an error`, () => {
+      const pdfObject = new PDFObject();
+      expect(() => pdfObject.clone()).toThrowError(
+        `clone() is not implemented on PDFObject`,
+      );
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`throws an error`, () => {
       const pdfObject = new PDFObject();

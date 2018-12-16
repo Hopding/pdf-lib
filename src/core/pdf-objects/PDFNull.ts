@@ -21,6 +21,8 @@ class PDFNull extends PDFObject {
     );
   }
 
+  clone = () => this;
+
   toString = (): string => 'null';
 
   bytesSize = () => 4;

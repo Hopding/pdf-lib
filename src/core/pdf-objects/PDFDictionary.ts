@@ -93,6 +93,21 @@ class PDFDictionary extends PDFObject {
     return this;
   };
 
+  delete = (key: string | PDFName) => {
+    validate(
+      key,
+      or(isString, isInstance(PDFName)),
+      'PDFDictionary.set() requires keys to be strings or PDFNames',
+    );
+
+    const keyName = key instanceof PDFName ? key : PDFName.from(key);
+    this.map.delete(keyName);
+
+    return this;
+  };
+
+  clone = () => PDFDictionary.from(new Map(this.map), this.index);
+
   toString = (): string => {
     const buffer = new Uint8Array(this.bytesSize());
     this.copyBytesInto(buffer);

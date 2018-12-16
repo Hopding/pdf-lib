@@ -55,6 +55,8 @@ class PDFName extends PDFObject {
     this.key = key;
   }
 
+  clone = () => this;
+
   toString = (): string =>
     `/${this.key}`
       .replace('#', '#23')

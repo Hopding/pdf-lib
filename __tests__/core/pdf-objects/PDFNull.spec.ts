@@ -10,6 +10,14 @@ describe(`PDFNull`, () => {
     expect(PDFNull.instance).toBeInstanceOf(PDFNull);
   });
 
+  describe(`"clone" method`, () => {
+    it(`returns the PDFNull instance`, () => {
+      const origNull = PDFNull.instance;
+      const clonedNull = origNull.clone();
+      expect(clonedNull).toBe(origNull);
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`returns PDFNull as a string`, () => {
       expect(PDFNull.instance.toString()).toEqual('null');

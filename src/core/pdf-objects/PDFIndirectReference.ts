@@ -49,6 +49,8 @@ class PDFIndirectReference<T extends PDFObject = PDFObject> extends PDFObject {
     this.generationNumber = generationNumber;
   }
 
+  clone = () => this;
+
   toString = (): string => `${this.objectNumber} ${this.generationNumber} R`;
 
   bytesSize = () => this.toString().length;

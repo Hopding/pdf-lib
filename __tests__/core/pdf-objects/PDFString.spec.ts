@@ -24,6 +24,15 @@ describe(`PDFString`, () => {
     expect(PDFString.fromString('foo')).toBeInstanceOf(PDFString);
   });
 
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFString`, () => {
+      const origString = PDFString.fromString('FooBar');
+      const clonedString = origString.clone();
+      expect(clonedString).not.toBe(origString);
+      expect(clonedString.string).toBe(origString.string);
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`returns the PDFString as a string`, () => {
       const pdfString = PDFString.fromString('FooBar');

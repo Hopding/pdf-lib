@@ -17,6 +17,8 @@ class PDFBoolean extends PDFObject {
     this.boolean = bool;
   }
 
+  clone = () => PDFBoolean.fromBool(this.boolean);
+
   toString = (): string => this.boolean.toString();
 
   bytesSize = () => this.toString().length;

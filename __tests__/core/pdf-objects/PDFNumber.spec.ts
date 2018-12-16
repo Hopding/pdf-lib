@@ -36,6 +36,15 @@ describe(`PDFNumber`, () => {
     expect(PDFNumber.fromString('9021')).toBeInstanceOf(PDFNumber);
   });
 
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFNumber`, () => {
+      const origNumber = PDFNumber.fromNumber(21);
+      const clonedNumber = origNumber.clone();
+      expect(clonedNumber).not.toBe(origNumber);
+      expect(clonedNumber.number).toBe(origNumber.number);
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`returns the PDFNumber as a string`, () => {
       const pdfNumber = PDFNumber.fromNumber(9000);

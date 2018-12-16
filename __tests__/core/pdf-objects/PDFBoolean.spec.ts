@@ -30,7 +30,16 @@ describe(`PDFBoolean`, () => {
     expect(PDFBoolean.fromString('true')).toBeInstanceOf(PDFBoolean);
   });
 
-  describe(`"toString()" method`, () => {
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFBoolean`, () => {
+      const origBool = PDFBoolean.fromBool(true);
+      const clonedBool = origBool.clone();
+      expect(clonedBool).not.toBe(origBool);
+      expect(clonedBool.boolean).toBe(origBool.boolean);
+    });
+  });
+
+  describe(`"toString" method`, () => {
     it(`returns the PDFBoolean as a string`, () => {
       const pdfBoolTrue = PDFBoolean.fromBool(true);
       expect(pdfBoolTrue.toString()).toEqual('true');
