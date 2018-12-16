@@ -49,24 +49,22 @@ class PDFObjectIndex {
   };
 
   assignNextObjectNumberTo = (val: PDFObject) => {
-    // this.highestObjectNumber += 1;
-    // const ref = PDFIndirectReference.forNumbers(this.highestObjectNumber, 0);
-    // this.assign(ref, val);
-    // return ref;
     const ref = this.nextObjectNumber();
     this.assign(ref, val);
     return ref;
   };
 
-  lookupMaybe = (
+  lookupMaybe = <T extends PDFObject = PDFObject>(
     ref: PDFIndirectReference | PDFObject | void,
-  ): PDFObject | void => {
-    if (ref instanceof PDFIndirectReference) return this.index.get(ref);
-    return ref;
+  ): T | void => {
+    if (ref instanceof PDFIndirectReference) return this.index.get(ref) as T;
+    return ref as T;
   };
 
-  lookup = (ref: PDFIndirectReference | PDFObject): PDFObject => {
-    return this.lookupMaybe(ref) || error(`Failed to lookup ref: ${ref}}`);
+  lookup = <T extends PDFObject = PDFObject>(
+    ref: PDFIndirectReference | PDFObject,
+  ): T => {
+    return this.lookupMaybe<T>(ref) || error(`Failed to lookup ref: ${ref}}`);
   };
 }
 

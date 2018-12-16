@@ -8,6 +8,25 @@ import {
 } from 'core/pdf-objects';
 import { PDFPage } from 'core/pdf-structures';
 
+/**
+ * PDFObjectCopier copies PDFObjects from a src index to a dest index.
+ * The primary use case for this is to copy pages between PDFs.
+ *
+ * _Copying_ an object with a PDFObjectCopier is different from _cloning_ an
+ * object with its [[PDFObject.clone]] method:
+ *
+ * ```
+ *   const origObject = ...
+ *   const copiedObject = PDFObjectCopier.for(srcIndex, destIndex).copy(origObject);
+ *   const clonedObject = originalObject.clone();
+ * ```
+ *
+ * Copying an object is equivalent to cloning it and then copying over any other
+ * objects that it references. Note that only dictionaries, arrays, and streams
+ * (or structures build from them) can contain indirect references to other
+ * objects. Copying a PDFObject that is not a dictionary, array, or stream is
+ * supported, but is equivalent to cloning it.
+ */
 class PDFObjectCopier {
   static for = (src: PDFObjectIndex, dest: PDFObjectIndex) =>
     new PDFObjectCopier(src, dest);
@@ -22,13 +41,13 @@ class PDFObjectCopier {
   }
 
   // prettier-ignore
-  copy = <T extends PDFObject>(value: T): T => (
-      value instanceof PDFPage              ? this.copyPDFPage(value)
-    : value instanceof PDFStream            ? this.copyPDFStream(value)
-    : value instanceof PDFDictionary        ? this.copyPDFDict(value)
-    : value instanceof PDFArray             ? this.copyPDFArray(value)
-    : value instanceof PDFIndirectReference ? this.copyPDFIndirectObject(value)
-    : value.clone()
+  copy = <T extends PDFObject>(object: T): T => (
+      object instanceof PDFPage              ? this.copyPDFPage(object)
+    : object instanceof PDFStream            ? this.copyPDFStream(object)
+    : object instanceof PDFDictionary        ? this.copyPDFDict(object)
+    : object instanceof PDFArray             ? this.copyPDFArray(object)
+    : object instanceof PDFIndirectReference ? this.copyPDFIndirectObject(object)
+    : object.clone()
   ) as T;
 
   private copyPDFPage = (originalPage: PDFPage): PDFPage => {
