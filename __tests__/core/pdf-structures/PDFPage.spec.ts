@@ -290,4 +290,18 @@ describe(`PDFPage`, () => {
       );
     });
   });
+
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFPage`, () => {
+      const index = PDFObjectIndex.create();
+      const origPage = PDFPage.create(index, [1, 2]).set(
+        'Contents',
+        PDFArray.fromArray([], index),
+      );
+      const clonedPage = origPage.clone();
+      expect(clonedPage).not.toBe(origPage);
+      expect(clonedPage).toBeInstanceOf(PDFPage);
+      expect(clonedPage.Contents).toBe(origPage.Contents);
+    });
+  });
 });
