@@ -29,7 +29,16 @@ describe(`PDFHexString`, () => {
     );
   });
 
-  describe(`"toString()" method`, () => {
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFHexString`, () => {
+      const origHexString = PDFHexString.fromString('ABC123');
+      const clonedHexString = origHexString.clone();
+      expect(clonedHexString).not.toBe(origHexString);
+      expect(clonedHexString.string).toBe(origHexString.string);
+    });
+  });
+
+  describe(`"toString" method`, () => {
     it(`returns the PDFHexString as a string`, () => {
       const pdfHexString = PDFHexString.fromString('12ABCabc');
       expect(pdfHexString.toString()).toEqual('<12ABCabc>');

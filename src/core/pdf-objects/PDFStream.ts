@@ -21,8 +21,7 @@ class PDFStream extends PDFObject {
     }
   };
 
-  clone = (): PDFStream =>
-    error('Method "clone" is not implemented on PDFStream.');
+  clone = (): PDFStream => error('"clone" is not implemented on PDFStream.');
 }
 
 export default PDFStream;

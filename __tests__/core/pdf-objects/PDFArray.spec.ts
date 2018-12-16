@@ -93,6 +93,23 @@ describe(`PDFArray`, () => {
     });
   });
 
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFArray`, () => {
+      const origArray = PDFArray.fromArray(
+        [PDFString.fromString('test'), PDFNumber.fromNumber(21)],
+        PDFObjectIndex.create(),
+      );
+
+      const clonedArray = origArray.clone();
+
+      expect(clonedArray).not.toBe(origArray);
+      expect(clonedArray.index).toBe(origArray.index);
+      expect(clonedArray.array.length).toBe(origArray.array.length);
+      expect(clonedArray.get(0)).toBe(origArray.get(0));
+      expect(clonedArray.get(1)).toBe(origArray.get(1));
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`returns the PDFArray as a string`, () => {
       const pdfNumber = PDFNumber.fromNumber(9000);

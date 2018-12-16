@@ -1,4 +1,8 @@
 class PDFObject {
+  clone = (): PDFObject => {
+    throw new Error(`clone() is not implemented on ${this.constructor.name}`);
+  };
+
   toString = (): string => {
     throw new Error(
       `toString() is not implemented on ${this.constructor.name}`,
@@ -15,10 +19,6 @@ class PDFObject {
     throw new Error(
       `copyBytesInto() is not implemented on ${this.constructor.name}`,
     );
-  };
-
-  clone = (): PDFObject => {
-    throw new Error(`clone() is not implemented on ${this.constructor.name}`);
   };
 }
 

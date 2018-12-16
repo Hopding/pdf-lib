@@ -194,6 +194,23 @@ describe(`PDFDictionary`, () => {
     });
   });
 
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFDictionary`, () => {
+      const origDict = PDFDictionary.from(
+        { Foo: PDFString.fromString('QuxBaz'), Bar: PDFNumber.fromNumber(21) },
+        PDFObjectIndex.create(),
+      );
+
+      const clonedDict = origDict.clone();
+
+      expect(clonedDict).not.toBe(origDict);
+      expect(clonedDict.index).toBe(origDict.index);
+      expect(clonedDict.map.size).toBe(origDict.map.size);
+      expect(clonedDict.get('Foo')).toBe(origDict.get('Foo'));
+      expect(clonedDict.get('Bar')).toBe(origDict.get('Bar'));
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`returns the PDFDictionary as a string`, () => {
       const pdfNumber = PDFNumber.fromNumber(9000);

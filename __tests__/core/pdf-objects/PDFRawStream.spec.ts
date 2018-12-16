@@ -4,6 +4,7 @@ import {
   PDFNumber,
   PDFRawStream,
   PDFStream,
+  PDFString,
 } from 'core/pdf-objects';
 import { arrayToString, typedArrayFor } from 'utils';
 
@@ -47,6 +48,31 @@ describe(`PDFRawStream`, () => {
         new Uint8Array(),
       ),
     ).toBeInstanceOf(PDFStream);
+  });
+
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFRawStream`, () => {
+      const origRawStream = PDFRawStream.from(
+        PDFDictionary.from(
+          { Foo: PDFString.fromString('Bar') },
+          PDFObjectIndex.create(),
+        ),
+        new Uint8Array([1, 2, 3, 4, 5]),
+      );
+
+      const clonedRawStream = origRawStream.clone();
+
+      expect(clonedRawStream).not.toBe(origRawStream);
+      expect(clonedRawStream.dictionary).not.toBe(origRawStream.dictionary);
+      expect(clonedRawStream.dictionary.index).toBe(
+        origRawStream.dictionary.index,
+      );
+      expect(clonedRawStream.dictionary.get('Foo')).toBe(
+        origRawStream.dictionary.get('Foo'),
+      );
+      expect(clonedRawStream.content).not.toBe(origRawStream.content);
+      expect(clonedRawStream.content).toEqual(origRawStream.content);
+    });
   });
 
   describe(`"bytesSize" method`, () => {

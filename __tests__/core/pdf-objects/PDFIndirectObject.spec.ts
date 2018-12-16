@@ -89,6 +89,18 @@ describe(`PDFIndirectObject`, () => {
     });
   });
 
+  describe(`"clone" method`, () => {
+    it(`returns a shallow clone of the PDFIndirectObject`, () => {
+      const origIndirectObj = PDFIndirectObject.of(
+        PDFString.fromString('FooBar'),
+      ).setReferenceNumbers(0, 1);
+      const clonedIndirectObj = origIndirectObj.clone();
+      expect(clonedIndirectObj).not.toBe(origIndirectObj);
+      expect(clonedIndirectObj.reference).toBe(origIndirectObj.reference);
+      expect(clonedIndirectObj.pdfObject).toBe(origIndirectObj.pdfObject);
+    });
+  });
+
   describe(`"toString" method`, () => {
     it(`returns the PDFIndirectObject as a string`, () => {
       const indirectObj = PDFIndirectObject.of(
