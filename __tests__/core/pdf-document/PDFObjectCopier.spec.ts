@@ -1,13 +1,18 @@
 import { PDFObjectCopier, PDFObjectIndex } from 'core/pdf-document';
 import {
   PDFArray,
+  PDFBoolean,
   PDFDictionary,
+  PDFHexString,
+  PDFIndirectObject,
   PDFIndirectReference,
   PDFName,
+  PDFNull,
   PDFNumber,
   PDFRawStream,
   PDFString,
 } from 'core/pdf-objects';
+import { PDFContentStream, PDFPage, PDFPageTree } from 'core/pdf-structures';
 
 describe(`PDFObjectCopier`, () => {
   it(`copies PDFDictionaries, including their indirect references`, () => {
@@ -41,7 +46,7 @@ describe(`PDFObjectCopier`, () => {
     const copiedDict = PDFObjectCopier.for(srcIndex, destIndex).copy(origDict);
 
     // Assert
-    expect(Array.from(destIndex.index.entries()).length).toBe(2);
+    expect(destIndex.index.size).toBe(2);
 
     expect(copiedDict).not.toBe(origDict);
     expect(copiedDict).toBeInstanceOf(PDFDictionary);
@@ -110,7 +115,7 @@ describe(`PDFObjectCopier`, () => {
     );
 
     // Assert
-    expect(Array.from(destIndex.index.entries()).length).toBe(2);
+    expect(destIndex.index.size).toBe(2);
 
     expect(copiedArray).not.toBe(origArray);
     expect(copiedArray).toBeInstanceOf(PDFArray);
@@ -179,7 +184,7 @@ describe(`PDFObjectCopier`, () => {
     );
 
     // Assert
-    expect(Array.from(destIndex.index.entries()).length).toBe(2);
+    expect(destIndex.index.size).toBe(2);
 
     expect(copiedStream).not.toBe(origStream);
     expect(copiedStream).toBeInstanceOf(PDFRawStream);
@@ -257,7 +262,7 @@ describe(`PDFObjectCopier`, () => {
     const copiedRef = PDFObjectCopier.for(srcIndex, destIndex).copy(origRef);
 
     // Assert
-    expect(Array.from(destIndex.index.entries()).length).toBe(3);
+    expect(destIndex.index.size).toBe(3);
 
     expect(copiedRef).not.toBe(origRef);
     expect(copiedRef).toBeInstanceOf(PDFIndirectReference);
@@ -293,7 +298,168 @@ describe(`PDFObjectCopier`, () => {
     expect(destBar1.get('Baz')).toBeInstanceOf(PDFName);
   });
 
-  // it(`copies `, () => {
-  //
-  // });
+  it(`copies individual PDFPage objects, without bringing along the whole page tree`, () => {
+    // Arrange
+    const srcIndex = PDFObjectIndex.create();
+
+    const contentStreamRef = PDFIndirectReference.forNumbers(21, 0);
+    const origPageRef = srcIndex.nextObjectNumber();
+    const middlePageTreeRef = srcIndex.nextObjectNumber();
+    const rootPageTreeRef = srcIndex.nextObjectNumber();
+
+    const contentStream = PDFContentStream.of(PDFDictionary.from({}, srcIndex));
+
+    const origPage = PDFPage.create(srcIndex, [250, 500])
+      .addContentStreams(contentStreamRef)
+      .set('Parent', middlePageTreeRef);
+
+    const middlePageTree = PDFPageTree.createNode(
+      rootPageTreeRef,
+      PDFArray.fromArray([origPageRef], srcIndex),
+      srcIndex,
+    );
+
+    const rectangle = PDFArray.fromArray(
+      [
+        PDFNumber.fromNumber(1),
+        PDFNumber.fromNumber(2),
+        PDFNumber.fromNumber(3),
+        PDFNumber.fromNumber(4),
+      ],
+      srcIndex,
+    );
+    const rootPageTree = PDFPageTree.createRootNode(
+      PDFArray.fromArray([middlePageTreeRef], srcIndex),
+      srcIndex,
+    )
+      .set('Resources', PDFDictionary.from({}, srcIndex))
+      .set('MediaBox', rectangle)
+      .set('CropBox', rectangle)
+      .set('Rotate', PDFNumber.fromNumber(180));
+
+    srcIndex.assign(contentStreamRef, contentStream);
+    srcIndex.assign(origPageRef, origPage);
+    srcIndex.assign(middlePageTreeRef, middlePageTree);
+    srcIndex.assign(rootPageTreeRef, rootPageTree);
+
+    const destIndex = PDFObjectIndex.create();
+
+    // Act
+    const copiedPage = PDFObjectCopier.for(srcIndex, destIndex).copy(origPage);
+
+    // Assert
+    expect(destIndex.index.size).toBe(1);
+
+    expect(copiedPage).not.toBe(origPage);
+    expect(copiedPage).toBeInstanceOf(PDFPage);
+
+    expect(copiedPage.Contents).not.toBe(origPage.Contents);
+    expect(copiedPage.Contents).toBeInstanceOf(PDFArray);
+    expect(copiedPage.Contents.array.length).toBe(1);
+
+    expect(copiedPage.Contents.get(0)).not.toBe(origPage.Contents.get(0));
+    expect(copiedPage.Contents.get(0)).toBeInstanceOf(PDFIndirectReference);
+
+    expect(copiedPage.get('Resources')).not.toBe(rootPageTree.get('Resources'));
+    expect(copiedPage.get('Resources')).toBeInstanceOf(PDFDictionary);
+
+    expect(copiedPage.get('MediaBox')).not.toBe(rootPageTree.get('MediaBox'));
+    expect(copiedPage.get('MediaBox')).toBeInstanceOf(PDFArray);
+
+    expect(copiedPage.get('CropBox')).not.toBe(rootPageTree.get('CropBox'));
+    expect(copiedPage.get('CropBox')).toBeInstanceOf(PDFArray);
+
+    expect(copiedPage.get('Rotate')).not.toBe(rootPageTree.get('Rotate'));
+    expect(copiedPage.get('Rotate')).toBeInstanceOf(PDFNumber);
+  });
+
+  it(`copies objects with cyclic references`, () => {
+    // Arrange
+    const srcIndex = PDFObjectIndex.create();
+
+    const dictRef = srcIndex.nextObjectNumber();
+    const arrayRef = srcIndex.nextObjectNumber();
+
+    const dict = PDFDictionary.from({ Foo: arrayRef, Bar: dictRef }, srcIndex);
+    const array = PDFArray.fromArray([dictRef, arrayRef], srcIndex);
+
+    srcIndex.assign(dictRef, dict);
+    srcIndex.assign(arrayRef, array);
+
+    const destIndex = PDFObjectIndex.create();
+
+    // Act
+    const copiedDict = PDFObjectCopier.for(srcIndex, destIndex).copy(dict);
+
+    // Assert
+    expect(destIndex.index.size).toBe(srcIndex.index.size);
+  });
+
+  it(`copies all types of PDFObjects`, () => {
+    // Arrange
+    const srcIndex = PDFObjectIndex.create();
+    const destIndex = PDFObjectIndex.create();
+    const copier = PDFObjectCopier.for(srcIndex, destIndex);
+
+    const origArray = PDFArray.fromArray([], srcIndex);
+    const origBool = PDFBoolean.fromBool(true);
+    const origDict = PDFDictionary.from({}, srcIndex);
+    const origHexString = PDFHexString.fromString('ABC123');
+    const origIndirectRef = srcIndex.assignNextObjectNumberTo(origBool);
+    const origIndirectObj = PDFIndirectObject.of(origBool).setReference(
+      origIndirectRef,
+    );
+    const origName = PDFName.from('QuxBaz');
+    const origNull = PDFNull.instance;
+    const origNumber = PDFNumber.fromNumber(21);
+    const origRawStream = PDFRawStream.from(origDict, new Uint8Array([1, 2]));
+    const origString = PDFString.fromString('Stuff and thingz');
+
+    // Act
+    const copiedArray = copier.copy(origArray);
+    const copiedBool = copier.copy(origBool);
+    const copiedDict = copier.copy(origDict);
+    const copiedHexString = copier.copy(origHexString);
+    const copiedIndirectObj = copier.copy(origIndirectObj);
+    const copiedIndirectRef = copier.copy(origIndirectRef);
+    const copiedName = copier.copy(origName);
+    const copiedNull = copier.copy(origNull);
+    const copiedNumber = copier.copy(origNumber);
+    const copiedRawStream = copier.copy(origRawStream);
+    const copiedString = copier.copy(origString);
+
+    // Assert
+    expect(copiedArray).not.toBe(origArray);
+    expect(copiedArray).toBeInstanceOf(PDFArray);
+
+    expect(copiedBool).not.toBe(origBool);
+    expect(copiedBool).toBeInstanceOf(PDFBoolean);
+
+    expect(copiedDict).not.toBe(origDict);
+    expect(copiedDict).toBeInstanceOf(PDFDictionary);
+
+    expect(copiedHexString).not.toBe(origHexString);
+    expect(copiedHexString).toBeInstanceOf(PDFHexString);
+
+    expect(copiedIndirectObj).not.toBe(origIndirectObj);
+    expect(copiedIndirectObj).toBeInstanceOf(PDFIndirectObject);
+
+    expect(copiedIndirectRef).toBe(origIndirectRef);
+    expect(copiedIndirectRef).toBeInstanceOf(PDFIndirectReference);
+
+    expect(copiedName).toBe(origName);
+    expect(copiedName).toBeInstanceOf(PDFName);
+
+    expect(copiedNull).toBe(origNull);
+    expect(copiedNull).toBeInstanceOf(PDFNull);
+
+    expect(copiedNumber).not.toBe(origNumber);
+    expect(copiedNumber).toBeInstanceOf(PDFNumber);
+
+    expect(copiedRawStream).not.toBe(origRawStream);
+    expect(copiedRawStream).toBeInstanceOf(PDFRawStream);
+
+    expect(copiedString).not.toBe(origString);
+    expect(copiedString).toBeInstanceOf(PDFString);
+  });
 });

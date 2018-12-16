@@ -64,7 +64,7 @@ class PDFObjectIndex {
   lookup = <T extends PDFObject = PDFObject>(
     ref: PDFIndirectReference | PDFObject,
   ): T => {
-    return this.lookupMaybe<T>(ref) || error(`Failed to lookup ref: ${ref}}`);
+    return this.lookupMaybe<T>(ref) || error(`Failed to lookup ref: ${ref}`);
   };
 }
 
