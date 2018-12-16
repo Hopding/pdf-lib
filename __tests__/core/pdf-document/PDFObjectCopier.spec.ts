@@ -222,4 +222,74 @@ describe(`PDFObjectCopier`, () => {
     expect(destBar1.get('Baz')).toBe(srcBar1.get('Baz'));
     expect(destBar1.get('Baz')).toBeInstanceOf(PDFName);
   });
+
+  it(`copies PDFIndirectReferences, including their indirect references`, () => {
+    // Arrange
+    const srcIndex = PDFObjectIndex.create();
+    const origRef = PDFIndirectReference.forNumbers(21, 0);
+    srcIndex.assign(
+      origRef,
+      PDFDictionary.from(
+        {
+          Foo: PDFString.fromString('stuff and things'),
+          Bar: PDFIndirectReference.forNumbers(13, 0),
+        },
+        srcIndex,
+      ),
+    );
+
+    srcIndex.assign(
+      PDFIndirectReference.forNumbers(13, 0),
+      PDFArray.fromArray(
+        [PDFNumber.fromNumber(1), PDFIndirectReference.forNumbers(17, 0)],
+        srcIndex,
+      ),
+    );
+
+    srcIndex.assign(
+      PDFIndirectReference.forNumbers(17, 0),
+      PDFDictionary.from({ Baz: PDFName.from('wallykazam') }, srcIndex),
+    );
+
+    const destIndex = PDFObjectIndex.create();
+
+    // Act
+    const copiedRef = PDFObjectCopier.for(srcIndex, destIndex).copy(origRef);
+
+    // Assert
+    expect(Array.from(destIndex.index.entries()).length).toBe(3);
+
+    expect(copiedRef).not.toBe(origRef);
+    expect(copiedRef).toBeInstanceOf(PDFIndirectReference);
+
+    const origDeref = srcIndex.lookup<PDFDictionary>(origRef);
+    const copiedDeref = destIndex.lookup<PDFDictionary>(copiedRef);
+
+    expect(copiedDeref.get('Foo')).not.toBe(origDeref.get('Foo'));
+    expect(copiedDeref.get('Foo')).toBeInstanceOf(PDFString);
+
+    expect(copiedDeref.get('Bar')).not.toBe(origDeref.get('Bar'));
+    expect(copiedDeref.get('Bar')).toBeInstanceOf(PDFIndirectReference);
+
+    const srcBar = srcIndex.lookup<PDFArray>(origDeref.get('Bar'));
+    const destBar = destIndex.lookup<PDFArray>(copiedDeref.get('Bar'));
+
+    expect(destBar).not.toBe(srcBar);
+    expect(destBar).toBeInstanceOf(PDFArray);
+
+    expect(destBar.get(0)).not.toBe(srcBar.get(0));
+    expect(destBar.get(0)).toBeInstanceOf(PDFNumber);
+
+    expect(destBar.get(1)).not.toBe(srcBar.get(1));
+    expect(destBar.get(1)).toBeInstanceOf(PDFIndirectReference);
+
+    const srcBar1 = srcIndex.lookup<PDFDictionary>(srcBar.get(1));
+    const destBar1 = destIndex.lookup<PDFDictionary>(destBar.get(1));
+
+    expect(destBar1).not.toBe(srcBar1);
+    expect(destBar1).toBeInstanceOf(PDFDictionary);
+
+    expect(destBar1.get('Baz')).toBe(srcBar1.get('Baz'));
+    expect(destBar1.get('Baz')).toBeInstanceOf(PDFName);
+  });
 });
