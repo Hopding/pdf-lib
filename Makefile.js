@@ -1,8 +1,8 @@
 // https://github.com/shelljs/shelljs#command-reference
 // https://devhints.io/shelljs
-
 // https://github.com/shelljs/shelljs/wiki/The-make-utility
 require('shelljs/make');
+
 config.fatal = true;
 config.verbose = true;
 
@@ -23,6 +23,10 @@ const relative = require('relative');
 
 /* ============================ Build Project =============================== */
 
+target.clean = () => {
+  rm('-rf', 'compiled');
+};
+
 target.prerelease = () => {
   exec('yarn install --check-files');
   exec('yarn lint');
@@ -32,11 +36,11 @@ target.prerelease = () => {
 target.build = () => {
   target.clean();
   target.compileTS();
-  target.convertAbsoluteImportPathsToRelative();
+  target.convertAbsoluteImportsToRelative();
   target.rollupUMD();
   target.rollupUMDMin();
 
-  cp('-r', 'package.json README.md LICENSE.md', 'compiled/');
+  cp('-r', 'package.json', 'README.md', 'LICENSE.md', 'compiled/');
   rm('-rf', 'compiled/lib/__integration_tests__');
   rm('-rf', 'compiled/es/__integration_tests__');
   mv('compiled/lib/src/*', 'compiled/lib');
@@ -44,19 +48,11 @@ target.build = () => {
   rm('-rf', 'compiled/lib/src', 'compiled/es/src');
 };
 
-/* ========================= Compile TypeScript ============================= */
-
-target.clean = () => {
-  rm('-rf', 'compiled');
-};
-
 target.compileTS = () => {
   target.clean();
   exec('yarn tsc --module CommonJS --outDir compiled/lib');
   exec('yarn tsc --module ES2015 --outDir compiled/es');
 };
-
-/* =============== Convert Absolute Paths to Relative Paths ================= */
 
 target.convertAbsoluteImportsToRelative = () => {
   target.compileTS();
@@ -90,8 +86,6 @@ target.convertAbsoluteImportsToRelative = () => {
     cd('../../..');
   });
 };
-
-/* =============================== Rollup =================================== */
 
 target.rollupUMD = () => {
   target.convertAbsoluteImportsToRelative();
