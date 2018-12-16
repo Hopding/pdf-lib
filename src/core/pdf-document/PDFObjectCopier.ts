@@ -28,16 +28,16 @@ import { PDFPage } from 'core/pdf-structures';
  * supported, but is equivalent to cloning it.
  */
 class PDFObjectCopier {
-  static for = (src: PDFObjectIndex, dest: PDFObjectIndex) =>
-    new PDFObjectCopier(src, dest);
+  static for = (srcIndex: PDFObjectIndex, destIndex: PDFObjectIndex) =>
+    new PDFObjectCopier(srcIndex, destIndex);
 
   private readonly src: PDFObjectIndex;
   private readonly dest: PDFObjectIndex;
   private readonly traversedObjects = new Map<PDFObject, PDFObject>();
 
-  constructor(from: PDFObjectIndex, to: PDFObjectIndex) {
-    this.src = from;
-    this.dest = to;
+  constructor(srcIndex: PDFObjectIndex, destIndex: PDFObjectIndex) {
+    this.src = srcIndex;
+    this.dest = destIndex;
   }
 
   // prettier-ignore

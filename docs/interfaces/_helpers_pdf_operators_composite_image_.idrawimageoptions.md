@@ -15,7 +15,7 @@ Options object with named parameters for the [drawImage](../modules/_helpers_pdf
 **● height**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/image.ts:65](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L65)*
+*Defined in [helpers/pdf-operators/composite/image.ts:44](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/image.ts#L44)*
 
 Default value is `100`.
 
@@ -29,7 +29,7 @@ ___
 **● rotateDegrees**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/image.ts:72](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L72)*
+*Defined in [helpers/pdf-operators/composite/image.ts:51](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/image.ts#L51)*
 
 Default value is `0`.
 
@@ -43,7 +43,7 @@ ___
 **● rotateRadians**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/image.ts:79](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L79)*
+*Defined in [helpers/pdf-operators/composite/image.ts:58](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/image.ts#L58)*
 
 Default value is `0`.
 
@@ -57,7 +57,7 @@ ___
 **● skewDegrees**: * `undefined` &#124; `object`
 *
 
-*Defined in [helpers/pdf-operators/composite/image.ts:87](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L87)*
+*Defined in [helpers/pdf-operators/composite/image.ts:66](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/image.ts#L66)*
 
 Default value is `{ xAxis: 0, yAxis: 0 }`.
 
@@ -71,7 +71,7 @@ ___
 **● skewRadians**: * `undefined` &#124; `object`
 *
 
-*Defined in [helpers/pdf-operators/composite/image.ts:95](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L95)*
+*Defined in [helpers/pdf-operators/composite/image.ts:74](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/image.ts#L74)*
 
 Default value is `{ xAxis: 0, yAxis: 0 }`.
 
@@ -85,7 +85,7 @@ ___
 **● width**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/image.ts:59](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L59)*
+*Defined in [helpers/pdf-operators/composite/image.ts:38](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/image.ts#L38)*
 
 Default value is `100`.
 
@@ -99,7 +99,7 @@ ___
 **● x**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/image.ts:47](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L47)*
+*Defined in [helpers/pdf-operators/composite/image.ts:26](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/image.ts#L26)*
 
 Default value is `0`.
 
@@ -113,7 +113,7 @@ ___
 **● y**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/image.ts:53](https://github.com/Hopding/pdf-lib/blob/fd948bf/src/helpers/pdf-operators/composite/image.ts#L53)*
+*Defined in [helpers/pdf-operators/composite/image.ts:32](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/image.ts#L32)*
 
 Default value is `0`.
 
