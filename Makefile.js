@@ -29,6 +29,25 @@ target.lint = () => {
   exec('tslint --project ./tsconfig.json --fix');
 };
 
+target.docs = () => {
+  rm('-rf', 'docs');
+  exec('typedoc --options typedoc.js src/');
+};
+
+target.runFlamebearerTest = () => {
+  target.clean();
+  rm('-f', 'isolate*.log');
+
+  exec('tsc');
+
+  env.NODE_PATH = './compiled/src';
+  exec('node --prof compiled/__integration_tests__/runners/node/index.js');
+
+  exec('node --prof-process --preprocess -j isolate*.log', {
+    silent: true,
+  }).exec('flamebearer');
+};
+
 /* ============================ Build Project =============================== */
 
 target.clean = () => {
@@ -37,7 +56,7 @@ target.clean = () => {
 
 target.prerelease = () => {
   exec('yarn install --check-files');
-  exec('yarn lint');
+  target.lint();
   exec('yarn test:ci');
 };
 
@@ -58,8 +77,8 @@ target.build = () => {
 
 target.compileTS = () => {
   target.clean();
-  exec('yarn tsc --module CommonJS --outDir compiled/lib');
-  exec('yarn tsc --module ES2015 --outDir compiled/es');
+  exec('tsc --module CommonJS --outDir compiled/lib');
+  exec('tsc --module ES2015 --outDir compiled/es');
 };
 
 target.convertAbsoluteImportsToRelative = () => {
@@ -98,11 +117,11 @@ target.convertAbsoluteImportsToRelative = () => {
 target.rollupUMD = () => {
   target.convertAbsoluteImportsToRelative();
   env.UGLIFY = false;
-  exec(`yarn rollup -c rollup.config.js -o compiled/dist/pdf-lib.js`);
+  exec(`rollup -c rollup.config.js -o compiled/dist/pdf-lib.js`);
 };
 
 target.rollupUMDMin = () => {
   target.convertAbsoluteImportsToRelative();
   env.UGLIFY = true;
-  exec(`yarn rollup -c rollup.config.js -o compiled/dist/pdf-lib.min.js`);
+  exec(`rollup -c rollup.config.js -o compiled/dist/pdf-lib.min.js`);
 };

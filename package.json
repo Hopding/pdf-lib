@@ -8,15 +8,15 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "make": "node Makefile.js",
+    "docs": "node Makefile.js docs",
+    "lint": "node Makefile.js lint",
     "test": "jest --no-coverage --watch",
     "test:ci": "jest --runInBand --no-coverage",
     "test:coverage": "jest",
     "jest:clear-cache": "rm -rf $TMPDIR/jest*",
     "coverage-report": "open coverage/lcov-report/index.html",
-    "docs": "rm -rf docs && yarn typedoc --options typedoc.js src/",
-    "lint": "node Makefile.js lint",
     "it:node": "ts-node --module commonjs -r tsconfig-paths/register __integration_tests__/runners/node/index.ts",
-    "it:node:profile": "rm isolate*.log && gulp build-dev && node --prof compiled/lib/__integration_tests__/runners/node/index.js && node --prof-process --preprocess -j isolate*.log | flamebearer"
+    "it:node:profile": "node Makefile.js runFlamebearerTest"
   },
   "repository": {
     "type": "git",
