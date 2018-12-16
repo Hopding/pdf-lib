@@ -4,10 +4,7 @@ import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
 
-import {
-  PDFIndirectObject,
-  PDFName,
-} from 'core/pdf-objects';
+import { PDFIndirectObject, PDFName } from 'core/pdf-objects';
 import { addStringToBuffer, and, arrayToString, error, not, or } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 

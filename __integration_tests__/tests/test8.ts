@@ -2,11 +2,7 @@ import round from 'lodash/round';
 import sum from 'lodash/sum';
 
 import {
-  drawImage,
-  drawLinesOfText,
-  drawRectangle,
   drawText,
-  PDFContentStream,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
@@ -44,10 +40,6 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.load(
     assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
   );
-
-  const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
-  const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
-  const [PngMario, marioDims] = pdfDoc.embedPNG(assets.images.png.small_mario);
 
   const allDonorPdfBytes: Uint8Array[] = [
     assets.pdfs.normal,
