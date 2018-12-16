@@ -105,7 +105,6 @@ class PDFPage extends PDFDictionary {
   autoNormalizeCTM = true;
 
   /** @hidden */
-  // getParent = () => this.index.lookup(this.get('Parent')) as PDFPageTree;
   get Parent() {
     return this.index.lookup(this.get('Parent')) as PDFPageTree;
   }

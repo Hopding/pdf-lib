@@ -31,13 +31,13 @@ class PDFObjectCopier {
   static for = (src: PDFObjectIndex, dest: PDFObjectIndex) =>
     new PDFObjectCopier(src, dest);
 
-  private readonly from: PDFObjectIndex;
-  private readonly to: PDFObjectIndex;
+  private readonly src: PDFObjectIndex;
+  private readonly dest: PDFObjectIndex;
   private readonly traversedObjects = new Map<PDFObject, PDFObject>();
 
   constructor(from: PDFObjectIndex, to: PDFObjectIndex) {
-    this.from = from;
-    this.to = to;
+    this.src = from;
+    this.dest = to;
   }
 
   // prettier-ignore
@@ -77,7 +77,7 @@ class PDFObjectCopier {
     }
 
     const clonedDict = originalDict.clone();
-    clonedDict.index = this.to;
+    clonedDict.index = this.dest;
     this.traversedObjects.set(originalDict, clonedDict);
 
     originalDict.map.forEach((value, key) => {
@@ -93,7 +93,7 @@ class PDFObjectCopier {
     }
 
     const clonedArray = originalArray.clone();
-    clonedArray.index = this.to;
+    clonedArray.index = this.dest;
     this.traversedObjects.set(originalArray, clonedArray);
 
     originalArray.forEach((value, idx) => {
@@ -109,7 +109,7 @@ class PDFObjectCopier {
     }
 
     const clonedStream = originalStream.clone();
-    clonedStream.dictionary.index = this.to;
+    clonedStream.dictionary.index = this.dest;
     this.traversedObjects.set(originalStream, clonedStream);
 
     originalStream.dictionary.map.forEach((value, key) => {
@@ -125,13 +125,13 @@ class PDFObjectCopier {
     const alreadyMapped = this.traversedObjects.has(ref);
 
     if (!alreadyMapped) {
-      const newRef = this.to.nextObjectNumber();
+      const newRef = this.dest.nextObjectNumber();
       this.traversedObjects.set(ref, newRef);
 
-      const dereferencedValue = this.from.lookup(ref);
+      const dereferencedValue = this.src.lookup(ref);
       const cloned = this.copy(dereferencedValue);
 
-      this.to.assign(newRef, cloned);
+      this.dest.assign(newRef, cloned);
     }
 
     return this.traversedObjects.get(ref) as PDFIndirectReference;

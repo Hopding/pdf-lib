@@ -19,7 +19,7 @@ const createDonorPdf = () => {
   const pdfDoc = PDFDocumentFactory.create();
   const [FontHelvetica] = pdfDoc.embedStandardFont('Helvetica');
 
-  const anotherContentStream = pdfDoc.register(
+  const contentStream = pdfDoc.register(
     pdfDoc.createContentStream(
       drawText(`I am upside down!`, {
         font: 'Helvetica',
@@ -29,11 +29,11 @@ const createDonorPdf = () => {
       }),
     ),
   );
-  const anotherDonorPage = pdfDoc
+  const page = pdfDoc
     .createPage([500, 500])
     .addFontDictionary('Helvetica', FontHelvetica)
-    .addContentStreams(anotherContentStream);
-  pdfDoc.addPage(anotherDonorPage);
+    .addContentStreams(contentStream);
+  pdfDoc.addPage(page);
 
   pdfDoc.catalog.Pages.set('Rotate', PDFNumber.fromNumber(180));
 
