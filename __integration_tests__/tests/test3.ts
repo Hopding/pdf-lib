@@ -1,4 +1,3 @@
-
 import {
   drawImage,
   drawLinesOfText,

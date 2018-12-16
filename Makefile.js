@@ -21,6 +21,14 @@ const relative = require('relative');
   };
 });
 
+/* ==================== Linting / Docs / Perf Testing ======================= */
+
+target.lint = () => {
+  const lintDirs = '{__integration_tests__,__tests__,examples,src}';
+  exec(`prettier --loglevel error --write "${lintDirs}/**/*.{ts,js}"`);
+  exec('tslint --project ./tsconfig.json --fix');
+};
+
 /* ============================ Build Project =============================== */
 
 target.clean = () => {

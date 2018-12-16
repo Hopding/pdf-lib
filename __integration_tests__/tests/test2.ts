@@ -1,4 +1,3 @@
-
 import {
   clip,
   clipEvenOdd,
