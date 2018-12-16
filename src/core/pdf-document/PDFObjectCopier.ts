@@ -43,9 +43,9 @@ class PDFObjectCopier {
   // prettier-ignore
   copy = <T extends PDFObject>(object: T): T => (
       object instanceof PDFPage              ? this.copyPDFPage(object)
-    : object instanceof PDFStream            ? this.copyPDFStream(object)
     : object instanceof PDFDictionary        ? this.copyPDFDict(object)
     : object instanceof PDFArray             ? this.copyPDFArray(object)
+    : object instanceof PDFStream            ? this.copyPDFStream(object)
     : object instanceof PDFIndirectReference ? this.copyPDFIndirectObject(object)
     : object.clone()
   ) as T;
