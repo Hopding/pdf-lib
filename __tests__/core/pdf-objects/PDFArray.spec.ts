@@ -80,7 +80,7 @@ describe(`PDFArray`, () => {
     it(`requires a number as its argument`, () => {
       const pdfArray = PDFArray.fromArray([], PDFObjectIndex.create());
       expect(() => pdfArray.get('0')).toThrowError(
-        'PDFArray.set() requires indexes to be numbers',
+        'PDFArray.get() requires indexes to be numbers',
       );
     });
 
