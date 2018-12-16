@@ -6,7 +6,9 @@ require('shelljs/make');
 config.fatal = true;
 config.verbose = true;
 
+const inquirer = require('inquirer');
 const relative = require('relative');
+const packageJson = require('./package.json');
 
 /* ========================= Help / List Targets ============================ */
 
@@ -20,6 +22,89 @@ const relative = require('relative');
     console.log();
   };
 });
+
+/* =============================== Release ================================== */
+
+const prepareRelease = async () => {
+  target.clean();
+
+  const { integrationTestsHaveBeenRun } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'integrationTestsHaveBeenRun',
+      message: `Have you run the integration tests?`,
+      default: false,
+    },
+  ]);
+
+  if (integrationTestsHaveBeenRun) {
+    exec('yarn install --check-files');
+    target.lint();
+    exec('yarn test:ci');
+    target.build();
+  } else {
+    console.error(
+      'Please run the integration tests with `yarn it:node` before releasing.',
+    );
+  }
+
+  return integrationTestsHaveBeenRun;
+};
+
+target.releaseNext = async () => {
+  const version = `${packageJson.version}@next`;
+  console.log('Releasing version', version);
+
+  const readyForRelease = await prepareRelease();
+  if (!readyForRelease) return;
+
+  cd('compiled');
+  exec('yarn publish --tag next');
+};
+
+target.releaseLatest = async () => {
+  const currentBranch = exec('git rev-parse --abbrev-ref HEAD').stdout.trim();
+  if (currentBranch !== 'master') {
+    console.error('Must be on `master` branch to cut an @latest release.');
+    return;
+  }
+
+  const version = `${packageJson.version}@latest`;
+  console.log('Releasing version', version);
+
+  const readyForRelease = await prepareRelease();
+  if (!readyForRelease) return;
+
+  const { enteredVersion } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'enteredVersion',
+      message: `Enter "${version}" to proceed with the release:`,
+    },
+  ]);
+  if (enteredVersion !== version) {
+    console.error('Entered version does match. Aborting release.');
+    return;
+  }
+
+  cd('compiled');
+  exec('yarn publish --tag latest');
+  cd('..');
+  console.log();
+
+  const tagName = `v${packageJson.version}`;
+  exec(`git commit -am 'Bump version to ${packageJson.version}'`);
+  exec('git push');
+  exec(`git tag ${tagName}`);
+  exec(`git push origin ${tagName}`);
+  console.log('Created git tag:', tagName);
+
+  const zipName = `pdf-lib_${tagName}.zip`;
+  exec(`zip -r ${zipName} compiled`);
+  console.log('Zip archive of', tagName, 'written to', zipName);
+
+  console.log('🎉   Release of', version, 'complete!  🎉');
+};
 
 /* ==================== Linting / Docs / Perf Testing ======================= */
 
@@ -52,12 +137,6 @@ target.runFlamebearerTest = () => {
 
 target.clean = () => {
   rm('-rf', 'compiled');
-};
-
-target.prerelease = () => {
-  exec('yarn install --check-files');
-  target.lint();
-  exec('yarn test:ci');
 };
 
 target.build = () => {

@@ -10,6 +10,8 @@
     "make": "node Makefile.js",
     "docs": "node Makefile.js docs",
     "lint": "node Makefile.js lint",
+    "releaseNext": "node Makefile.js releaseNext",
+    "releaseLatest": "node Makefile.js releaseLatest",
     "test": "jest --no-coverage --watch",
     "test:ci": "jest --runInBand --no-coverage",
     "test:coverage": "jest",
