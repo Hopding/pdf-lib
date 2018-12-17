@@ -85,16 +85,16 @@ const renderTitle = (title: string) => {
 
 const renderChecklist = async (checklist: string[]) => {
   const failed = [] as string[];
-  // for (let i = 0; i < checklist.length; i++) {
-  //   const item = checklist[i];
-  //   await inquirer
-  //     .prompt([
-  //       { type: 'confirm', name: 'confirmed', message: `Confirm that ${item}` },
-  //     ])
-  //     .then(({ confirmed }) => {
-  //       if (!confirmed) failed.push(item);
-  //     });
-  // }
+  for (let i = 0; i < checklist.length; i++) {
+    const item = checklist[i];
+    await inquirer
+      .prompt([
+        { type: 'confirm', name: 'confirmed', message: `Confirm that ${item}` },
+      ])
+      .then(({ confirmed }) => {
+        if (!confirmed) failed.push(item);
+      });
+  }
 
   log();
   if (failed.length === 0) {
