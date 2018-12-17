@@ -19,9 +19,9 @@ You can develop `pdf-lib` on Windows, Mac, or Linux machines. While most of the 
 
 In order to work on `pdf-lib`, please ensure you have installed the following:
 
-* **Node.js** provides the runtime needed to run this project. ([Installation instructions](https://nodejs.org/en/download/)).
-* **Yarn** is the package manager used for this project. ([Installation instructions](https://yarnpkg.com/en/docs/install)).
-* **Git** is the SCM used for this project. ([Installation instructions](https://git-scm.com/downloads))
+* **Node.js** provides the runtime needed to run this project. ([Installation instructions](https://nodejs.org/en/download/) - need `v9.0.0` or greater).
+* **Yarn** is the package manager used for this project. ([Installation instructions](https://yarnpkg.com/en/docs/install) - need `v1.12.0` or greater).
+* **Git** is the SCM used for this project. ([Installation instructions](https://git-scm.com/downloads) - need `2.17.2` or greater)
 
 Next you'll need to clone the project:
 
@@ -114,10 +114,10 @@ For most development, manual compilation isn't necessary. The unit and integrati
 
 Compiling the project will produce 4 artifacts:
 
-* `compiled/lib` - a directory containing a CommonJS version of the project (uses `require` instead of `import`). This folder contains `.js` and [`.d.ts`](https://stackoverflow.com/a/21247316) files, rather than the `.ts` files that the project source is written in.
-* `compiled/es` - a directory containing an ES2015 version of the project (uses `import` instead of `require`). This folder contains `.js` and [`.d.ts`](https://stackoverflow.com/a/21247316) files, rather than the `.ts` files that the project source is written in.
-* `compiled/dist/pdf-lib.js` - a single JavaScript file containing a [UMD](https://www.davidbcalhoun.com/2014/what-is-amd-commonjs-and-umd/) version of the project.
-* `compiled/dist/pdf-lib.min.js` - a single JavaScript file containing a minified [UMD](https://www.davidbcalhoun.com/2014/what-is-amd-commonjs-and-umd/) version of the project.
+* **`compiled/lib`** - a directory containing a CommonJS version of the project (uses `require` instead of `import`). This folder contains `.js` and [`.d.ts`](https://stackoverflow.com/a/21247316) files, rather than the `.ts` files that the project source is written in.
+* **`compiled/es`** - a directory containing an ES2015 version of the project (uses `import` instead of `require`). This folder contains `.js` and [`.d.ts`](https://stackoverflow.com/a/21247316) files, rather than the `.ts` files that the project source is written in.
+* **`compiled/dist/pdf-lib.js`** - a single JavaScript file containing a [UMD](https://www.davidbcalhoun.com/2014/what-is-amd-commonjs-and-umd/) version of the project.
+* **`compiled/dist/pdf-lib.min.js`** - a single JavaScript file containing a minified [UMD](https://www.davidbcalhoun.com/2014/what-is-amd-commonjs-and-umd/) version of the project.
 
 To compile the project, execute the following:
 ```
