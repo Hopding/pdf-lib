@@ -2,16 +2,28 @@ import chalk from 'chalk';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import inquirer from 'inquirer';
+import os from 'os';
 
 import * as tests from '../../tests';
 
 const { log } = console;
 
 // This needs to be more sophisticated to work on Linux and Windows as well.
-const openPdf = (path: string) => execSync(`open ${path}`);
+const openPdf = (path: string) => {
+  if (process.platform === 'darwin') {
+    execSync(`open ${path}`);
+  } else {
+    console.warn(
+      `Note: Automatically opening PDFs currently only works on Macs. If you're using a Windows or Linux machine, please consider contributing to expand support for this feature`,
+    );
+    console.warn(
+      '(https://github.com/Hopding/pdf-lib/blob/master/__integration_tests__/runners/node/index.ts#L11-L20)\n',
+    );
+  }
+};
 
 const writePdfToTmp = (pdf: Uint8Array) => {
-  const path = `/tmp/${Date.now()}.pdf`;
+  const path = `${os.tmpdir()}/${Date.now()}.pdf`;
   fs.writeFileSync(path, pdf);
   return path;
 };

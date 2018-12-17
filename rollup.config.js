@@ -12,7 +12,7 @@ export default {
     format: 'umd',
   },
   plugins: [
-    analyze(),
+    // analyze(),
     nodeResolve({
       jsnext: true,
     }),

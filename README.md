@@ -54,6 +54,7 @@
   * [Copying Pages](#copying-pages)
 * [Installation](#installation)
 * [API Documentation](#api-documentation)
+* [Contributing](#contributing)
 * [Prior Art](#prior-art)
 * [License](#license)
 
@@ -201,6 +202,9 @@ var drawText = PDFLib.drawText;
 
 ## API Documentation
 API documentation is available [here](https://github.com/Hopding/pdf-lib/tree/master/docs).
+
+## Contributing
+We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](https://github.com/Hopding/pdf-lib/blob/master/CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine.
 
 ## Prior Art
 * [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/PDFFontFactory.ts#L64-L68), [PNG embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L19-L23), and [JPG embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L32-L36) was especially useful.

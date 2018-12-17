@@ -35,7 +35,9 @@ const MARIO_PNG = 'MarioPng';
 
 // Now we embed a standard font (Helvetiva), and the custom TrueType font we
 // read in (Ubuntu-R).
-const [helveticaFontRef, helveticaFont] = pdfDoc.embedStandardFont(HELVETIVA_FONT);
+const [helveticaFontRef, helveticaFont] = pdfDoc.embedStandardFont(
+  HELVETIVA_FONT,
+);
 const [ubuntuFontRef] = pdfDoc.embedFont(assets.ubuntuFontBytes);
 
 // Next, we embed the JPG and PNG images we read in.
@@ -88,7 +90,7 @@ const contentStream1 = pdfDoc.createContentStream(
     size: 24,
   }),
   drawText(helveticaFont.encodeText('Olé! - Œ'), {
-    x: PAGE_1_WIDTH * 0.5 -  30,
+    x: PAGE_1_WIDTH * 0.5 - 30,
     y: PAGE_1_HEIGHT - 48 - 30,
     font: HELVETIVA_FONT,
     size: 12,
