@@ -3989,9 +3989,10 @@ pn@^1.1.0:
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
   integrity sha512-2qHaIQr2VLRFoxe2nASzsV6ef4yOOH+Fi9FBOVH6cqeSgUnoyySPZkxzLuzd+RYOQTRpROA0ztTMqxROKSb/nA==
 
-"png-js@git+https://github.com/Hopding/png.js.git#9170c1451881487a625fff1cca6de4fd9949cd51":
-  version "0.1.1"
-  resolved "git+https://github.com/Hopding/png.js.git#9170c1451881487a625fff1cca6de4fd9949cd51"
+png-ts@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/png-ts/-/png-ts-0.0.2.tgz#95dd1d286b9e9a5b521fa351e2a33361faf34e6e"
+  integrity sha512-L9z2YJfhANJZBePahf6GCWAfCu3C/5cULBAZyqYuWR3dz4EdomVh66hxN0KIyJxu4s7zka+elKEHfMyVmrj9cw==
   dependencies:
     pako "^1.0.6"
 

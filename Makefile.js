@@ -8,6 +8,7 @@ config.verbose = true;
 
 const inquirer = require('inquirer');
 const relative = require('relative');
+const { execFileSync } = require('child_process');
 const packageJson = require('./package.json');
 
 /* ========================= Help / List Targets ============================ */
@@ -59,7 +60,7 @@ target.releaseNext = async () => {
   if (!readyForRelease) return;
 
   cd('compiled');
-  exec('yarn publish --tag next');
+  execFileSync('yarn', ['publish', '--tag', 'next'], { stdio: 'inherit' });
 };
 
 target.releaseLatest = async () => {
@@ -88,7 +89,7 @@ target.releaseLatest = async () => {
   }
 
   cd('compiled');
-  exec('yarn publish --tag latest');
+  execFileSync('yarn', ['publish', '--tag', 'latest'], { stdio: 'inherit' });
   cd('..');
   console.log();
 
