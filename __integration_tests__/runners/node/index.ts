@@ -14,7 +14,10 @@ const openPdf = (path: string) => {
     execSync(`open ${path}`);
   } else {
     console.warn(
-      `Automatically opening PDFs currently only works on Macs. If you're using a Windows or Linux machine, please consider contributing to expand support for this feature.\n`,
+      `Note: Automatically opening PDFs currently only works on Macs. If you're using a Windows or Linux machine, please consider contributing to expand support for this feature`,
+    );
+    console.warn(
+      '(https://github.com/Hopding/pdf-lib/blob/master/__integration_tests__/runners/node/index.ts#L11-L20)\n',
     );
   }
 };

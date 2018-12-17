@@ -12,6 +12,7 @@
     "lint": "node Makefile.js lint",
     "releaseNext": "node Makefile.js releaseNext",
     "releaseLatest": "node Makefile.js releaseLatest",
+    "typecheck": "tsc --noEmit",
     "test": "jest --runInBand --no-coverage",
     "testw": "jest --no-coverage --watch",
     "test:coverage": "jest --runInBand",
