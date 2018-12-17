@@ -1,5 +1,5 @@
 import pako from 'pako';
-import PNG from 'png-js';
+import PNG from 'png-ts';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import {
@@ -36,7 +36,7 @@ class PNGXObjectFactory {
       '"data" must be an instance of Uint8Array',
     );
 
-    this.image = new PNG(data);
+    this.image = PNG.load(data);
     this.width = this.image.width;
     this.height = this.image.height;
     this.imgData = this.image.imgData;
@@ -150,7 +150,7 @@ class PNGXObjectFactory {
 
   /** @hidden */
   private splitAlphaChannel = () => {
-    const pixels = this.image.decodePixelsSync();
+    const pixels = this.image.decodePixels();
     const colorByteSize = (this.image.colors * this.image.bits) / 8;
     const pixelCount = this.image.width * this.image.height;
     this.imgData = new Uint8Array(pixelCount * colorByteSize);
@@ -171,12 +171,12 @@ class PNGXObjectFactory {
   /** @hidden */
   private loadIndexedAlphaChannel = () => {
     const transparency = this.image.transparency.indexed;
-    const pixels = this.image.decodePixelsSync();
+    const pixels = this.image.decodePixels();
     this.alphaChannel = new Uint8Array(this.width * this.height);
 
     // Can't use forEach here, because it's missing on React Native Android
     for (let idx = 0; idx < pixels.length; idx++) {
-      this.alphaChannel[idx] = transparency[pixels[idx]];
+      this.alphaChannel[idx] = transparency![pixels[idx]];
     }
     return this.finalize();
   };

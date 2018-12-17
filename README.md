@@ -10,7 +10,7 @@
 <br />
 
 <div align="center">
-  <!-- NPM version -->
+  <!-- NPM Version -->
   <a href="https://www.npmjs.com/package/pdf-lib">
     <img
       src="https://img.shields.io/npm/v/pdf-lib.svg?style=flat-square"
@@ -24,11 +24,11 @@
       alt="CircleCI Build Status"
     />
   </a>
-  <!-- Build Status -->
+  <!-- Prettier Badge -->
   <a href="https://prettier.io/">
     <img
       src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square"
-      alt="Build Status"
+      alt="Prettier Badge"
     />
   </a>
 </div>

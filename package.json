@@ -3,7 +3,7 @@
   "version": "0.5.0",
   "description": "Library for creating and modifying PDF files in JavaScript",
   "main": "lib/index.js",
-  "unpkg": "dist/pdf-lib.js",
+  "unpkg": "dist/pdf-lib.min.js",
   "module": "es/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -40,6 +40,10 @@
     "library"
   ],
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
+  "contributors": [
+    "jerp (https://github.com/jerp)",
+    "Greg Bacchus (https://github.com/gregbacchus)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Hopding/pdf-lib/issues"
@@ -50,7 +54,7 @@
     "fontkit": "git+https://github.com/Hopding/fontkit.git#97eb4f461e849956a595b3e6c8366cd715f71c38",
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
-    "png-js": "git+https://github.com/Hopding/png.js.git#9170c1451881487a625fff1cca6de4fd9949cd51",
+    "png-ts": "^0.0.2",
     "proxy-polyfill": "^0.3.0"
   },
   "devDependencies": {
