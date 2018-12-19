@@ -1,5 +1,4 @@
-import { Buffer } from 'buffer/';
-import fontkit from 'fontkit';
+import fontkit, { Font } from '@pdf-lib/fontkit';
 import isNil from 'lodash/isNil';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
@@ -70,7 +69,7 @@ class PDFFontFactory {
   static for = (fontData: Uint8Array, flagOptions: IFontFlagOptions) =>
     new PDFFontFactory(fontData, flagOptions);
 
-  font: any;
+  font: Font;
   scale: number;
   fontData: Uint8Array;
   flagOptions: IFontFlagOptions;
@@ -83,15 +82,9 @@ class PDFFontFactory {
     );
     validate(flagOptions, isObject, '"flagOptions" must be an Object');
 
-    // This has to work in browser & Node JS environments. And, unfortunately,
-    // the "fontkit" package makes use of Node "Buffer" objects, instead of
-    // standard JS typed arrays. So, for now we'll just use the "buffer" package
-    // to convert the "data" to a "Buffer" object that "fontkit" can work with.
-    const dataBuffer = Buffer.from(fontData as any);
-
     this.fontData = fontData;
     this.flagOptions = flagOptions;
-    this.font = fontkit.create(dataBuffer);
+    this.font = fontkit.create(fontData);
     this.scale = 1000 / this.font.unitsPerEm;
   }
 
