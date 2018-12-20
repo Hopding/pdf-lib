@@ -48,14 +48,14 @@
   dependencies:
     base64-js "^1.1.2"
 
-"@pdf-lib/fontkit@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@pdf-lib/fontkit/-/fontkit-0.0.0.tgz#1edaf7da44a24c614912eb93ad6816559fdf6af6"
-  integrity sha512-iWcQgCsaK1khP53zvkUDeWSl9vSbKHe9/l236DMAYFb44JipQp4Df9Q2+TlxUCcD2bkZKSz17Q5JvXbU3DNPNQ==
+"@pdf-lib/fontkit@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@pdf-lib/fontkit/-/fontkit-0.0.1.tgz#f058e671be872e32795436d6a6ab0294c150016b"
+  integrity sha512-ZbtZ2vCLmX3dxp/kLHVx1hWWFlk/xXDOAYHmSZie2NKmlNRZyeWUCBaOarQ1zrYubjv8nyZTD5XRdGZsgosIAA==
   dependencies:
     "@pdf-lib/brotli" "^0.0.0"
-    "@pdf-lib/restructure" "^0.0.0"
-    "@pdf-lib/unicode-properties" "^0.0.0"
+    "@pdf-lib/restructure" "^0.0.1"
+    "@pdf-lib/unicode-properties" "^0.0.1"
     base64-arraybuffer "^0.1.5"
     clone "^1.0.1"
     deep-equal "^1.0.0"
@@ -65,17 +65,17 @@
     tiny-inflate "^1.0.2"
     unicode-trie "^0.3.0"
 
-"@pdf-lib/restructure@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@pdf-lib/restructure/-/restructure-0.0.0.tgz#28b66c7590b6b18f13ff118e56674fa691208a2d"
-  integrity sha512-dTv36a6hc96WUhDPdMFu2z6mF11hbM1Iv8k6nuRUwU1l7gtI2CiSnpPCnOXGKAz6KSbv3q1yiC48y1HH7kuaEw==
+"@pdf-lib/restructure@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@pdf-lib/restructure/-/restructure-0.0.1.tgz#e38c81b6ddaa8c982e7780620c89bddfb6c53653"
+  integrity sha512-CgCG7w7GiYxBLo8AyjP3viIiyPyYuoZWXczNTxZQtElXWQN5Vw8A2TGcrvwstCwOrJHfT4KeNGpEvLApVYoBuA==
   dependencies:
     browserify-optional "^1.0.0"
 
-"@pdf-lib/unicode-properties@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@pdf-lib/unicode-properties/-/unicode-properties-0.0.0.tgz#ca11ca6c046c08b7fd61ef82bc22f65e1d515cfc"
-  integrity sha512-FuISPyVk0SSDExBQv/Jd6UwiVJA6qMXt1LwdLGu+bKdMIaPZhZAs0ZuHa4DPL4h4a+IvVyCDtxKU3veDtdgfKQ==
+"@pdf-lib/unicode-properties@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@pdf-lib/unicode-properties/-/unicode-properties-0.0.1.tgz#7f4a6a5ad7f9ec889449dcc51317217230b2d01f"
+  integrity sha512-zPhtCnQ4YuR2CX0h7zqBN7dPe/XN2dL71qi7Xh8JQON2IibogLdezwlEn1AIzs3m/+kjeKxXsQClN/D4U2i5NA==
   dependencies:
     base64-arraybuffer "^0.1.5"
     pako "^1.0.6"
