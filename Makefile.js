@@ -41,7 +41,7 @@ const prepareRelease = async () => {
   if (integrationTestsHaveBeenRun) {
     exec('yarn install --check-files');
     target.lint();
-    exec('yarn test:ci');
+    exec('yarn test');
     target.build();
   } else {
     console.error(

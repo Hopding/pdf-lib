@@ -1,6 +1,6 @@
 {
   "name": "pdf-lib",
-  "version": "0.5.0",
+  "version": "0.5.1-rc2",
   "description": "Library for creating and modifying PDF files in JavaScript",
   "main": "lib/index.js",
   "unpkg": "dist/pdf-lib.min.js",
@@ -50,7 +50,7 @@
   },
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "dependencies": {
-    "@pdf-lib/fontkit": "^0.0.0",
+    "@pdf-lib/fontkit": "^0.0.1",
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
     "png-ts": "^0.0.3",
