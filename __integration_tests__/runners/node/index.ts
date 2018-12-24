@@ -76,6 +76,7 @@ const assets = {
     with_newline_whitespace_in_indirect_object_numbers: fs.readFileSync(
       'test-pdfs/agile_software_ukranian.pdf',
     ),
+    with_comments: fs.readFileSync('test-pdfs/with_comments.pdf'),
   },
 };
 
