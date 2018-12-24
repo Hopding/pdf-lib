@@ -73,6 +73,10 @@ const assets = {
     with_missing_endstream_eol_and_polluted_ctm: fs.readFileSync(
       'test-pdfs/receipt.pdf',
     ),
+    with_newline_whitespace_in_indirect_object_numbers: fs.readFileSync(
+      'test-pdfs/agile_software_ukranian.pdf',
+    ),
+    with_comments: fs.readFileSync('test-pdfs/with_comments.pdf'),
   },
 };
 
