@@ -31,6 +31,7 @@ export interface ITestAssets {
     linearized_with_object_streams: Uint8Array;
     with_large_page_count: Uint8Array;
     with_missing_endstream_eol_and_polluted_ctm: Uint8Array;
+    with_newline_whitespace_in_indirect_object_numbers: Uint8Array;
   };
 }
 
