@@ -104,7 +104,7 @@ target.releaseLatest = async () => {
   exec(`zip -r ${zipName} compiled`);
   console.log('Zip archive of', tagName, 'written to', zipName);
 
-  console.log('🎉   Release of', version, 'complete!  🎉');
+  console.log('🎉   Release of', version, 'complete! 🎉');
 };
 
 /* ==================== Linting / Docs / Perf Testing ======================= */

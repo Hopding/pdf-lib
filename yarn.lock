@@ -48,6 +48,13 @@
   dependencies:
     pako "^1.0.6"
 
+"@pdf-lib/standard-fonts@github:Hopding/standard-fonts#663afdd47342e57d0543df628d9abc16ba6935e0":
+  version "0.0.0"
+  resolved "https://codeload.github.com/Hopding/standard-fonts/tar.gz/663afdd47342e57d0543df628d9abc16ba6935e0"
+  dependencies:
+    base64-arraybuffer "^0.1.5"
+    pako "^1.0.6"
+
 "@types/estree@0.0.39":
   version "0.0.39"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
@@ -714,6 +721,11 @@ balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
+
+base64-arraybuffer@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/base64-arraybuffer/-/base64-arraybuffer-0.1.5.tgz#73926771923b5a19747ad666aa5cd4bf9c6e9ce8"
+  integrity sha1-c5JncZI7Whl0etZmqlzUv5xunOg=
 
 base@^0.11.1:
   version "0.11.2"

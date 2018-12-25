@@ -21,10 +21,7 @@
     "it:node": "ts-node --module commonjs -r tsconfig-paths/register __integration_tests__/runners/node/index.ts",
     "it:node:profile": "node Makefile.js runFlamebearerTest"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Hopding/pdf-lib.git"
-  },
+  "repository": "git+https://github.com/Hopding/pdf-lib.git",
   "keywords": [
     "pdf-lib",
     "pdf",
@@ -51,6 +48,7 @@
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "dependencies": {
     "@pdf-lib/fontkit": "^0.0.2",
+    "@pdf-lib/standard-fonts": "github:Hopding/standard-fonts#663afdd47342e57d0543df628d9abc16ba6935e0",
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
     "png-ts": "^0.0.3",

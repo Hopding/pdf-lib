@@ -10,7 +10,7 @@ import {
   PDFDocumentFactory,
   PDFDocumentWriter,
   PDFPage,
-  Standard14Fonts,
+  StandardFonts,
 } from '../../src';
 
 import { ITestAssets, ITestKernel } from '../models';
@@ -53,7 +53,7 @@ const makeOverlayContentStream = (
 
 const makeMiddlePageContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
   pdfDoc.createContentStream(
-    ...flatMap(Standard14Fonts, (font, idx) =>
+    ...flatMap(Object.values(StandardFonts), (font, idx) =>
       drawText(`${idx + 1}. These are the 14 Standard Fonts.`, {
         x: 5,
         y: pageHeight - (idx + 1) * 20,
@@ -96,7 +96,7 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
     .createPage([600, 500])
     .addContentStreams(middlePageContentStreamRef);
 
-  Standard14Fonts.forEach((font) => {
+  Object.values(StandardFonts).forEach((font) => {
     const [fontRef] = pdfDoc.embedStandardFont(font);
     middlePage.addFontDictionary(font, fontRef);
   });

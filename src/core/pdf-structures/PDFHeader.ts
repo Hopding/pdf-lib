@@ -1,6 +1,6 @@
 import isNumber from 'lodash/isNumber';
 
-import { addStringToBuffer, charCode } from 'utils';
+import { addStringToBuffer, toCharCode } from 'utils';
 import { validate } from 'utils/validate';
 
 class PDFHeader {
@@ -27,7 +27,7 @@ class PDFHeader {
       `%PDF-${this.major}.${this.minor}\n`,
       buffer,
     );
-    remaining.set([charCode('%'), 130, 130, 130, 130, charCode('\n')], 0);
+    remaining.set([toCharCode('%'), 130, 130, 130, 130, toCharCode('\n')], 0);
     return remaining.subarray(6);
   };
 }

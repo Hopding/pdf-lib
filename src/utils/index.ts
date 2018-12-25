@@ -73,7 +73,7 @@ export const toBoolean = (boolStr: string) => {
   throw new Error(`"${boolStr}" cannot be converted to a boolean`);
 };
 
-export const charCode = (charStr: string) => {
+export const toCharCode = (charStr: string) => {
   if (charStr.length !== 1) {
     throw new Error('"char" must be exactly one character long');
   }
@@ -81,6 +81,8 @@ export const charCode = (charStr: string) => {
 };
 
 export const charFromCode = (code: number) => String.fromCharCode(code);
+
+export const toHexString = (num: number) => num.toString(16);
 
 export const mergeUint8Arrays = (...arrs: Uint8Array[]) => {
   const totalLength = sum(arrs.map((a) => a.length));
@@ -135,9 +137,9 @@ export const trimArray = (arr: Uint8Array) => {
   return arr.subarray(idx);
 };
 
-const PERCENT_SIGN_CODE = charCode('%');
-const NEWLINE_CODE = charCode('\n');
-const CARRIAGE_RETURN_CODE = charCode('\r');
+const PERCENT_SIGN_CODE = toCharCode('%');
+const NEWLINE_CODE = toCharCode('\n');
+const CARRIAGE_RETURN_CODE = toCharCode('\r');
 const isEOLMarker = (code: number) =>
   code === NEWLINE_CODE || code === CARRIAGE_RETURN_CODE;
 
@@ -207,7 +209,7 @@ export const arrayIndexOneOf = (
   targetStrings: string[],
   startFrom = 0,
 ): [number, string] | void => {
-  const targetArrs = targetStrings.map((str) => str.split('').map(charCode));
+  const targetArrs = targetStrings.map((str) => str.split('').map(toCharCode));
   let currIdx = startFrom;
   let match = null;
 

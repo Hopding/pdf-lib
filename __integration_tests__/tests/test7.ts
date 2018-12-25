@@ -2,10 +2,12 @@ import {
   drawImage,
   drawLinesOfText,
   drawRectangle,
+  drawText,
   PDFContentStream,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
+  StandardFonts,
 } from '../../src';
 
 import { ITestAssets, ITestKernel } from '../models';
@@ -60,25 +62,87 @@ const makeOverlayContentStream = (
 
 // Define the test kernel using the above content stream functions.
 const kernel: ITestKernel = (assets: ITestAssets) => {
-  const pdfDoc = PDFDocumentFactory.load(
-    assets.pdfs.with_missing_endstream_eol_and_polluted_ctm,
+  const pdfDoc = PDFDocumentFactory.create();
+
+  const [FontTimesRoman, TimesRomanFontData] = pdfDoc.embedStandardFont(
+    StandardFonts.TimesRoman,
   );
 
-  const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
-  const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
-  const [PngMario, marioDims] = pdfDoc.embedPNG(assets.images.png.small_mario);
+  const strA = String.fromCharCode(
+    402,
+    8211,
+    8212,
+    8216,
+    8217,
+    8218,
+    8220,
+    8221,
+    8222,
+    8224,
+    8225,
+    8226,
+    8230,
+    8364,
+    8240,
+    8249,
+    8250,
+    710,
+    8482,
+    338,
+    339,
+    732,
+    352,
+    353,
+    376,
+    381,
+    382,
+  );
+  const strB = 'Olé! - Œ - fl0@t';
 
-  const pages = pdfDoc.getPages();
+  const widthA = TimesRomanFontData.widthOfTextAtSize(strA, 25);
+  const heightA = TimesRomanFontData.heightOfTextAtSize(strA, 25);
+  const widthB = TimesRomanFontData.widthOfTextAtSize(strB, 25);
+  const heightB = TimesRomanFontData.heightOfTextAtSize(strB, 25);
 
-  const overlayContentStreamRef = pdfDoc.register(
-    makeOverlayContentStream(pdfDoc, marioDims),
+  const contentStream = pdfDoc.register(
+    pdfDoc.createContentStream(
+      drawText(TimesRomanFontData.encodeText(strA), {
+        font: 'Times-Roman',
+        size: 25,
+        x: 10,
+        y: 400,
+      }),
+      drawRectangle({
+        x: 10 - 1,
+        y: 400 - 1,
+        width: widthA + 2,
+        height: heightA + 2,
+        borderWidth: 1,
+        borderColorRgb: [0.79, 0.25, 1.0],
+      }),
+      drawText(TimesRomanFontData.encodeText(strB), {
+        font: 'Times-Roman',
+        size: 25,
+        x: 10,
+        y: 350,
+      }),
+      drawRectangle({
+        x: 10 - 1,
+        y: 350 - 1,
+        width: widthB + 2,
+        height: heightB + 2,
+        borderWidth: 1,
+        borderColorRgb: [0.79, 0.25, 1.0],
+      }),
+    ),
   );
 
-  pages[0]
+  const page = pdfDoc
+    .createPage([650, 700])
     .addFontDictionary('Times-Roman', FontTimesRoman)
-    .addFontDictionary('Ubuntu', FontUbuntu)
-    .addXObject('Mario', PngMario)
-    .addContentStreams(overlayContentStreamRef);
+    .addContentStreams(contentStream);
+
+  pdfDoc.addPage(page);
 
   return PDFDocumentWriter.saveToBytes(pdfDoc);
 };
@@ -89,10 +153,10 @@ export default {
   description:
     'This tests that PDFs with missing EOL markers before their "endstream" keywords and a modified CTM can be parsed and modified with the default CTM.\nhttps://github.com/Hopding/pdf-lib/issues/12',
   checklist: [
-    'the background of the PDF is a WaveOC USA, Inc. refund receipt.',
-    'an image of Mario running is drawn on top of the receipt.',
-    'the same image of Mario is drawn upside down and skewed.',
-    'a box with solarized text is drawn underneath Mario.',
-    'this box of text is angled upwards and skewed to the right.',
+    // 'the background of the PDF is a WaveOC USA, Inc. refund receipt.',
+    // 'an image of Mario running is drawn on top of the receipt.',
+    // 'the same image of Mario is drawn upside down and skewed.',
+    // 'a box with solarized text is drawn underneath Mario.',
+    // 'this box of text is angled upwards and skewed to the right.',
   ],
 };
