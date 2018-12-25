@@ -1,6 +1,6 @@
 import isString from 'lodash/isString';
 
-import { addStringToBuffer, and, toCharCode } from 'utils';
+import { addStringToBuffer, and, toCharCode, toHexString } from 'utils';
 import { isIdentity, isNotIdentity, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
@@ -62,7 +62,9 @@ class PDFName extends PDFObject {
       .replace('#', '#23')
       .split('')
       .map((char) =>
-        PDFName.isRegularChar(char) ? char : `#${toCharCode(char).toString(16)}`,
+        PDFName.isRegularChar(char)
+          ? char
+          : `#${toHexString(toCharCode(char))}`,
       )
       .join('');
 

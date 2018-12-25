@@ -48,9 +48,9 @@
   dependencies:
     pako "^1.0.6"
 
-"@pdf-lib/standard-fonts@github:Hopding/standard-fonts#663afdd47342e57d0543df628d9abc16ba6935e0":
+"@pdf-lib/standard-fonts@github:Hopding/standard-fonts#b6da4f542d63d7b68805b39f936cb53e9d9e0ff3":
   version "0.0.0"
-  resolved "https://codeload.github.com/Hopding/standard-fonts/tar.gz/663afdd47342e57d0543df628d9abc16ba6935e0"
+  resolved "https://codeload.github.com/Hopding/standard-fonts/tar.gz/b6da4f542d63d7b68805b39f936cb53e9d9e0ff3"
   dependencies:
     base64-arraybuffer "^0.1.5"
     pako "^1.0.6"

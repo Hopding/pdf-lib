@@ -1,7 +1,7 @@
 import isNumber from 'lodash/isNumber';
 import values from 'lodash/values';
 
-import StandardFont, {
+import {
   FontNames as StandardFontNames,
   IFontNames as IStandardFontNames,
 } from '@pdf-lib/standard-fonts';

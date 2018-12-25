@@ -3,8 +3,8 @@ import { PDFTrailer } from 'core/pdf-structures';
 import {
   arrayIndexOf,
   arrayToString,
-  toCharCode,
   error,
+  toCharCode,
   trimArrayAndRemoveComments,
 } from 'utils';
 
@@ -50,7 +50,9 @@ const parseTrailer = (
     error('Failed to parse trailer dictionary');
 
   // Parse the xref offset string value into a PDFNumber
-  const offsetBytes = new Uint8Array(lastXRefOffsetStr.split('').map(toCharCode));
+  const offsetBytes = new Uint8Array(
+    lastXRefOffsetStr.split('').map(toCharCode),
+  );
   const [lastXRefOffset] =
     parseNumber(offsetBytes, parseHandlers) ||
     error('Failed to parse lastXRefOffset of trailer');
@@ -83,7 +85,9 @@ const parseTrailerWithoutDict = (
   const [fullMatch, lastXRefOffsetStr] = result;
 
   // Parse the xref offset string value into a PDFNumber
-  const offsetBytes = new Uint8Array(lastXRefOffsetStr.split('').map(toCharCode));
+  const offsetBytes = new Uint8Array(
+    lastXRefOffsetStr.split('').map(toCharCode),
+  );
   const [lastXRefOffset] =
     parseNumber(offsetBytes, parseHandlers) ||
     error('Failed to parse lastXRefOffset of trailer');
