@@ -1,7 +1,9 @@
 import fontkit, { Font, Subset } from '@pdf-lib/fontkit';
 import isNil from 'lodash/isNil';
+import isNumber from 'lodash/isNumber';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
+import last from 'lodash/last';
 import range from 'lodash/range';
 import pako from 'pako';
 
@@ -71,10 +73,9 @@ class PDFFontFactory {
   scale: number;
   fontData: Uint8Array;
   flagOptions: IFontFlagOptions;
-  subset: Subset;
 
   unicode: number[][];
-  widths: number[];
+  // widths: number[];
 
   constructor(fontData: Uint8Array, flagOptions: IFontFlagOptions) {
     validate(
@@ -88,20 +89,19 @@ class PDFFontFactory {
     this.flagOptions = flagOptions;
     this.font = fontkit.create(fontData);
     this.scale = 1000 / this.font.unitsPerEm;
-    this.subset = this.font.createSubset();
 
     this.unicode = [[0]];
-    this.widths = [this.font.getGlyph(0, []).advanceWidth];
+    // this.widths = [this.font.getGlyph(0, []).advanceWidth];
   }
 
   /*
   TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
   to broaden support to other fonts.
   */
-  embedFontIn = async (
+  embedFontIn = (
     pdfDoc: PDFDocument,
     name?: string,
-  ): Promise<PDFIndirectReference<PDFDictionary>> => {
+  ): PDFIndirectReference<PDFDictionary> => {
     validate(
       pdfDoc,
       isInstance(PDFDocument),
@@ -109,7 +109,9 @@ class PDFFontFactory {
     );
     validate(name, or(isString, isNil), '"name" must be a string or undefined');
 
-    const isCFF = !!(this.subset as any).cff;
+    // TODO: Add .cff to fontkit.d.ts
+    // const isCFF = !!(this.subset as any).cff;
+    const isCFF = !!(this.font as any).cff;
     // if (isCFF) {
     // fontFile.data.Subtype = 'CIDFontType0C';
     // }
@@ -118,16 +120,16 @@ class PDFFontFactory {
     const fontName =
       name || this.font.postscriptName + randSuffix || 'Font' + randSuffix;
 
-    const subsetData = await new Promise<Uint8Array>((resolve) => {
-      const tempData: number[] = [];
-      (this.subset.encodeStream() as any)
-        .on('data', (data: any) => {
-          tempData.push(...data);
-        })
-        .on('end', () => {
-          resolve(new Uint8Array(tempData));
-        });
-    });
+    // const subsetData = await new Promise<Uint8Array>((resolve) => {
+    //   const tempData: number[] = [];
+    //   (this.subset.encodeStream() as any)
+    //     .on('data', (data: any) => {
+    //       tempData.push(...data);
+    //     })
+    //     .on('end', () => {
+    //       resolve(new Uint8Array(tempData));
+    //     });
+    // });
 
     // while (!finished) {
     //   console.log('lewping');
@@ -135,8 +137,8 @@ class PDFFontFactory {
     // const subsetData = new Uint8Array(tempData);
     // console.log('SD:', subsetData!);
 
-    // const deflatedFontData = pako.deflate(this.fontData);
-    const deflatedFontData = pako.deflate(subsetData);
+    const deflatedFontData = pako.deflate(this.fontData);
+    // const deflatedFontData = pako.deflate(subsetData);
     const fontStreamDict = PDFDictionary.from(
       {
         // Subtype: PDFName.from('OpenType'),
@@ -218,6 +220,44 @@ class PDFFontFactory {
     console.log(fontDescriptor.toString());
     console.log();
 
+    const widths: Array<number | number[]> = [];
+    const usedGids = new Set<number>();
+    let prevGid = -2;
+    this.font.characterSet
+      .map((cp) => this.font.glyphForCodePoint(cp))
+      .sort((ga, gb) => ga.id - gb.id)
+      .filter((glyph) => {
+        if (!usedGids.has(glyph.id)) {
+          usedGids.add(glyph.id);
+          return true;
+        }
+        return false;
+      })
+      .forEach((glyph) => {
+        const gid = glyph.id;
+        if (gid - prevGid > 1) {
+          widths.push(gid);
+          widths.push([]);
+        }
+        prevGid = gid;
+
+        const width = glyph.advanceWidth * this.scale;
+
+        (last(widths) as number[]).push(width);
+      });
+
+    const W = PDFArray.fromArray(
+      widths.map((cpOrWidthsArr) =>
+        isNumber(cpOrWidthsArr)
+          ? PDFNumber.fromNumber(cpOrWidthsArr)
+          : PDFArray.fromArray(
+              cpOrWidthsArr.map(PDFNumber.fromNumber),
+              pdfDoc.index,
+            ),
+      ),
+      pdfDoc.index,
+    );
+
     // CIDFont Dictionary...
     const descentFontDict = PDFDictionary.from(
       {
@@ -233,16 +273,17 @@ class PDFFontFactory {
           pdfDoc.index,
         ),
         FontDescriptor: fontDescriptorRef,
-        W: PDFArray.fromArray(
-          [
-            PDFNumber.fromNumber(0),
-            PDFArray.fromArray(
-              this.widths.map(PDFNumber.fromNumber),
-              pdfDoc.index,
-            ),
-          ],
-          pdfDoc.index,
-        ),
+        W,
+        // W: PDFArray.fromArray(
+        //   [
+        //     PDFNumber.fromNumber(0),
+        //     PDFArray.fromArray(
+        //       this.widths.map(PDFNumber.fromNumber),
+        //       pdfDoc.index,
+        //     ),
+        //   ],
+        //   pdfDoc.index,
+        // ),
       },
       pdfDoc.index,
     );
@@ -273,6 +314,7 @@ class PDFFontFactory {
     console.log();
     console.log(fontDictionary.toString());
     console.log();
+
     return pdfDoc.register(fontDictionary);
   };
 
@@ -293,16 +335,35 @@ class PDFFontFactory {
   encodeText = (text: string) => {
     const { glyphs, positions } = this.font.layout(text, []);
 
-    const glyphIds = glyphs.map(({ id, advanceWidth, codePoints }) => {
-      const gid = this.subset.includeGlyph(id) as any;
-      if (!this.widths[gid]) this.widths[gid] = advanceWidth * this.scale;
-      if (!this.unicode[gid]) this.unicode[gid] = codePoints;
-      return gid;
+    // const glyphIds = glyphs.map(({ id, advanceWidth, codePoints }) => {
+    //   const gid = this.subset.includeGlyph(id) as any;
+    //   if (!this.widths[gid]) this.widths[gid] = advanceWidth * this.scale;
+    //   if (!this.unicode[gid]) this.unicode[gid] = codePoints;
+    //   return gid;
+    // });
+    //
+    // // TODO: Might be splitting and joining more than necessary here?
+    // return PDFHexString.fromString(
+    //   glyphIds.map((id) => `0000${id.toString(16)}`.slice(-4)).join(''),
+    // );
+
+    // const glyphIds = glyphs.map(({ id, advanceWidth, codePoints }) => {
+    //   const gid = this.subset.includeGlyph(id) as any;
+    //   if (!this.widths[gid]) this.widths[gid] = advanceWidth * this.scale;
+    //   if (!this.unicode[gid]) this.unicode[gid] = codePoints;
+    //   return gid;
+    // });
+
+    glyphs.forEach(({ id, codePoints }) => {
+      if (!this.unicode[id]) this.unicode[id] = codePoints;
     });
 
     // TODO: Might be splitting and joining more than necessary here?
     return PDFHexString.fromString(
-      glyphIds.map((id) => `0000${id.toString(16)}`.slice(-4)).join(''),
+      glyphs
+        .map((glyph) => glyph.id)
+        .map((id) => `0000${id.toString(16)}`.slice(-4))
+        .join(''),
     );
   };
 }

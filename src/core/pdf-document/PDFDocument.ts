@@ -262,7 +262,7 @@ class PDFDocument {
   embedFont = (
     fontData: Uint8Array,
     fontFlags: IFontFlagOptions = { Nonsymbolic: true },
-  ): any => {
+  ): [PDFIndirectReference<PDFDictionary>, PDFFontFactory] => {
     const fontFactory = PDFFontFactory.for(fontData, fontFlags);
     return [fontFactory.embedFontIn(this), fontFactory];
   };
