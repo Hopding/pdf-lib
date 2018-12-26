@@ -1,4 +1,4 @@
-import fontkit, { Font } from '@pdf-lib/fontkit';
+import fontkit, { Font, Subset } from '@pdf-lib/fontkit';
 import isNil from 'lodash/isNil';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
@@ -9,18 +9,17 @@ import PDFDocument from 'core/pdf-document/PDFDocument';
 import {
   PDFArray,
   PDFDictionary,
+  PDFHexString,
   PDFIndirectReference,
   PDFName,
   PDFNumber,
   PDFRawStream,
+  PDFString,
 } from 'core/pdf-objects';
-import { or, setCharAt } from 'utils';
+import { or, setCharAt, toCharCode, toHexString } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
-
-/** @hidden */
-const unsigned32Bit = '00000000000000000000000000000000';
 
 export interface IFontFlagOptions {
   FixedPitch?: boolean;
@@ -34,26 +33,25 @@ export interface IFontFlagOptions {
   ForceBold?: boolean;
 }
 
-// TODO: Make sure this works correctly. Setting any flag besides
-//       Nonsymbolic to true seems to screw up the font...
-/*
- * Doing this by bit-twiddling a string, and then parsing it, gets around
- * JavaScript converting the results of bit-shifting ops back into 64-bit integers.
- */
 // prettier-ignore
 /** @hidden */
 const fontFlags = (options: IFontFlagOptions) => {
-  let flags = unsigned32Bit;
-  if (options.FixedPitch)  flags = setCharAt(flags, 32 - 1, '1');
-  if (options.Serif)       flags = setCharAt(flags, 32 - 2, '1');
-  if (options.Symbolic)    flags = setCharAt(flags, 32 - 3, '1');
-  if (options.Script)      flags = setCharAt(flags, 32 - 4, '1');
-  if (options.Nonsymbolic) flags = setCharAt(flags, 32 - 6, '1');
-  if (options.Italic)      flags = setCharAt(flags, 32 - 7, '1');
-  if (options.AllCap)      flags = setCharAt(flags, 32 - 17, '1');
-  if (options.SmallCap)    flags = setCharAt(flags, 32 - 18, '1');
-  if (options.ForceBold)   flags = setCharAt(flags, 32 - 19, '1');
-  return parseInt(flags, 2);
+  let flags = 0;
+
+  // tslint:disable-next-line:no-bitwise
+  const flipBit = (bit: number) => { flags |= (1 << (bit - 1)); };
+
+  if (options.FixedPitch)  flipBit(1);
+  if (options.Serif)       flipBit(2);
+  if (options.Symbolic)    flipBit(3);
+  if (options.Script)      flipBit(4);
+  if (options.Nonsymbolic) flipBit(6);
+  if (options.Italic)      flipBit(7);
+  if (options.AllCap)      flipBit(17);
+  if (options.SmallCap)    flipBit(18);
+  if (options.ForceBold)   flipBit(19);
+
+  return flags;
 };
 
 /**
@@ -73,6 +71,10 @@ class PDFFontFactory {
   scale: number;
   fontData: Uint8Array;
   flagOptions: IFontFlagOptions;
+  subset: Subset;
+
+  unicode: number[][];
+  widths: number[];
 
   constructor(fontData: Uint8Array, flagOptions: IFontFlagOptions) {
     validate(
@@ -86,16 +88,20 @@ class PDFFontFactory {
     this.flagOptions = flagOptions;
     this.font = fontkit.create(fontData);
     this.scale = 1000 / this.font.unitsPerEm;
+    this.subset = this.font.createSubset();
+
+    this.unicode = [[0]];
+    this.widths = [this.font.getGlyph(0, []).advanceWidth];
   }
 
   /*
   TODO: This is hardcoded for "Simple Fonts" with non-modified encodings, need
   to broaden support to other fonts.
   */
-  embedFontIn = (
+  embedFontIn = async (
     pdfDoc: PDFDocument,
     name?: string,
-  ): PDFIndirectReference<PDFDictionary> => {
+  ): Promise<PDFIndirectReference<PDFDictionary>> => {
     validate(
       pdfDoc,
       isInstance(PDFDocument),
@@ -103,14 +109,38 @@ class PDFFontFactory {
     );
     validate(name, or(isString, isNil), '"name" must be a string or undefined');
 
+    const isCFF = !!(this.subset as any).cff;
+    // if (isCFF) {
+    // fontFile.data.Subtype = 'CIDFontType0C';
+    // }
+
     const randSuffix = `-rand_${Math.floor(Math.random() * 10000)}`;
     const fontName =
       name || this.font.postscriptName + randSuffix || 'Font' + randSuffix;
 
-    const deflatedFontData = pako.deflate(this.fontData);
+    const subsetData = await new Promise<Uint8Array>((resolve) => {
+      const tempData: number[] = [];
+      (this.subset.encodeStream() as any)
+        .on('data', (data: any) => {
+          tempData.push(...data);
+        })
+        .on('end', () => {
+          resolve(new Uint8Array(tempData));
+        });
+    });
+
+    // while (!finished) {
+    //   console.log('lewping');
+    // }
+    // const subsetData = new Uint8Array(tempData);
+    // console.log('SD:', subsetData!);
+
+    // const deflatedFontData = pako.deflate(this.fontData);
+    const deflatedFontData = pako.deflate(subsetData);
     const fontStreamDict = PDFDictionary.from(
       {
-        Subtype: PDFName.from('OpenType'),
+        // Subtype: PDFName.from('OpenType'),
+        Subtype: PDFName.from('CIDFontType0C'),
         Filter: PDFName.from('FlateDecode'),
         Length: PDFNumber.fromNumber(deflatedFontData.length),
       },
@@ -119,6 +149,30 @@ class PDFFontFactory {
     const fontStream = pdfDoc.register(
       PDFRawStream.from(fontStreamDict, deflatedFontData),
     );
+
+    /* tslint:disable:no-bitwise */
+    const f = this.font as any;
+    const familyClass =
+      ((f['OS/2'] != null ? f['OS/2'].sFamilyClass : undefined) || 0) >> 8;
+    let flags = 0;
+    if (f.post.isFixedPitch) {
+      flags |= 1 << 0;
+    }
+    if (1 <= familyClass && familyClass <= 7) {
+      flags |= 1 << 1;
+    }
+    flags |= 1 << 2; // assume the font uses non-latin characters
+    if (familyClass === 10) {
+      flags |= 1 << 3;
+    }
+    if (f.head.macStyle.italic) {
+      flags |= 1 << 6;
+    }
+    /* tslint:enable:no-bitwise */
+
+    // const familyClass = this.font['OS/2'] ? this.font['OS/2'].sFamilyClass : 0;
+
+    // this.flagOptions.
 
     const {
       italicAngle,
@@ -133,7 +187,8 @@ class PDFFontFactory {
       {
         Type: PDFName.from('FontDescriptor'),
         FontName: PDFName.from(fontName),
-        Flags: PDFNumber.fromNumber(fontFlags(this.flagOptions)),
+        Flags: PDFNumber.fromNumber(flags),
+        // Flags: PDFNumber.fromNumber(fontFlags(this.flagOptions)),
         FontBBox: PDFArray.fromArray(
           [
             PDFNumber.fromNumber(bbox.minX * this.scale),
@@ -151,25 +206,74 @@ class PDFFontFactory {
         // Not sure how to compute/find this, nor is anybody else really:
         // https://stackoverflow.com/questions/35485179/stemv-value-of-the-truetype-font
         StemV: PDFNumber.fromNumber(0),
-        FontFile3: fontStream,
+        // FontFile3: fontStream,
       },
       pdfDoc.index,
     );
+    const fontFileKey = isCFF ? 'FontFile3' : 'FontFile2';
+    fontDescriptor.set(fontFileKey, fontStream);
+    const fontDescriptorRef = pdfDoc.register(fontDescriptor);
 
-    return pdfDoc.register(
-      PDFDictionary.from(
-        {
-          Type: PDFName.from('Font'),
-          Subtype: PDFName.from('OpenType'),
-          BaseFont: PDFName.from(fontName),
-          FirstChar: PDFNumber.fromNumber(0),
-          LastChar: PDFNumber.fromNumber(255),
-          Widths: this.getWidths(pdfDoc.index),
-          FontDescriptor: pdfDoc.register(fontDescriptor),
-        },
-        pdfDoc.index,
-      ),
+    console.log();
+    console.log(fontDescriptor.toString());
+    console.log();
+
+    // CIDFont Dictionary...
+    const descentFontDict = PDFDictionary.from(
+      {
+        Type: PDFName.from('Font'),
+        Subtype: PDFName.from(isCFF ? 'CIDFontType0' : 'CIDFontType2'),
+        BaseFont: PDFName.from(fontName),
+        CIDSystemInfo: PDFDictionary.from(
+          {
+            Registry: PDFString.fromString('Adobe'),
+            Ordering: PDFString.fromString('Identity'),
+            Supplement: PDFNumber.fromNumber(0),
+          },
+          pdfDoc.index,
+        ),
+        FontDescriptor: fontDescriptorRef,
+        W: PDFArray.fromArray(
+          [
+            PDFNumber.fromNumber(0),
+            PDFArray.fromArray(
+              this.widths.map(PDFNumber.fromNumber),
+              pdfDoc.index,
+            ),
+          ],
+          pdfDoc.index,
+        ),
+      },
+      pdfDoc.index,
     );
+    console.log();
+    console.log(descentFontDict.toString());
+    console.log();
+    const descentFontRef = pdfDoc.register(descentFontDict);
+
+    const fontDictionary = PDFDictionary.from(
+      {
+        Type: PDFName.from('Font'),
+        Subtype: PDFName.from('Type0'),
+        BaseFont: PDFName.from(fontName),
+        Encoding: PDFName.from('Identity-H'),
+        DescendantFonts: PDFArray.fromArray([descentFontRef], pdfDoc.index),
+        // TODO: ToUnicode: [...]
+
+        // Type: PDFName.from('Font'),
+        // Subtype: PDFName.from('OpenType'),
+        // BaseFont: PDFName.from(fontName),
+        // FirstChar: PDFNumber.fromNumber(0),
+        // LastChar: PDFNumber.fromNumber(255),
+        // Widths: this.getWidths(pdfDoc.index),
+        // FontDescriptor: pdfDoc.register(fontDescriptor),
+      },
+      pdfDoc.index,
+    );
+    console.log();
+    console.log(fontDictionary.toString());
+    console.log();
+    return pdfDoc.register(fontDictionary);
   };
 
   /** @hidden */
@@ -185,6 +289,22 @@ class PDFFontFactory {
     this.font.characterSet.includes(code)
       ? this.font.glyphForCodePoint(code).advanceWidth * this.scale
       : 0;
+
+  encodeText = (text: string) => {
+    const { glyphs, positions } = this.font.layout(text, []);
+
+    const glyphIds = glyphs.map(({ id, advanceWidth, codePoints }) => {
+      const gid = this.subset.includeGlyph(id) as any;
+      if (!this.widths[gid]) this.widths[gid] = advanceWidth * this.scale;
+      if (!this.unicode[gid]) this.unicode[gid] = codePoints;
+      return gid;
+    });
+
+    // TODO: Might be splitting and joining more than necessary here?
+    return PDFHexString.fromString(
+      glyphIds.map((id) => `0000${id.toString(16)}`.slice(-4)).join(''),
+    );
+  };
 }
 
 export default PDFFontFactory;

@@ -20,21 +20,19 @@ import { toCharCode, toHexString } from 'utils';
 import { isInstance, oneOf, validate } from 'utils/validate';
 
 /**
- * This Factory supports Standard fonts. Note that the apparent
- * hardcoding of values for OpenType fonts does not actually affect TrueType
- * fonts.
+ * This Factory supports Standard fonts.
  *
  * A note of thanks to the developers of https://github.com/foliojs/pdfkit,
  * as this class borrows from:
  * https://github.com/foliojs/pdfkit/blob/f91bdd61c164a72ea06be1a43dc0a412afc3925f/lib/font/afm.coffee
  */
-class PDFFontFactory {
-  static for = (fontName: IFontNames): PDFFontFactory =>
-    new PDFFontFactory(fontName);
+class PDFStandardFontFactory {
+  static for = (fontName: IFontNames): PDFStandardFontFactory =>
+    new PDFStandardFontFactory(fontName);
 
-  encoding: IStandardEncoding;
-  fontName: IFontNames;
   font: Font;
+  fontName: IFontNames;
+  encoding: IStandardEncoding;
 
   constructor(fontName: IFontNames) {
     validate(
@@ -101,8 +99,9 @@ class PDFFontFactory {
   };
 
   heightOfFontAtSize = (size: number) => {
-    const yTop = this.font.Ascender || this.font.FontBBox[3];
-    const yBottom = this.font.Descender || this.font.FontBBox[1];
+    const { Ascender, Descender, FontBBox } = this.font;
+    const yTop = Ascender || FontBBox[3];
+    const yBottom = Descender || FontBBox[1];
     return ((yTop - yBottom) / 1000) * size;
   };
 
@@ -115,18 +114,6 @@ class PDFFontFactory {
       .split('')
       .map(toCharCode)
       .map(this.encoding.encodeUnicodeCodePoint);
-
-  // /** @hidden */
-  // getWidths = () => {
-  //   return this.font.CharMetrics.map((metric) => metric.width);
-  //   // throw new Error('getWidths() Not implemented yet for Standard Font');
-  // };
-  //
-  // getCodePointWidth = () => {
-  //   throw new Error(
-  //     'getCodePointWidth() Not implemented yet for Standard Font',
-  //   );
-  // };
 }
 
-export default PDFFontFactory;
+export default PDFStandardFontFactory;
