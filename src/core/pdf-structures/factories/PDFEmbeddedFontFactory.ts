@@ -1,6 +1,8 @@
 import fontkit, { Font } from '@pdf-lib/fontkit';
 import isNumber from 'lodash/isNumber';
 import last from 'lodash/last';
+import sortBy from 'lodash/sortBy';
+import sortedUniqBy from 'lodash/sortedUniqBy';
 import pako from 'pako';
 
 import PDFDocument from 'core/pdf-document/PDFDocument';
@@ -17,7 +19,6 @@ import {
 import { toHexStringOfMinLength } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
-
 interface IFontFlagOptions {
   fixedPitch?: boolean;
   serif?: boolean;
@@ -31,8 +32,7 @@ interface IFontFlagOptions {
 }
 
 // prettier-ignore
-/** @hidden */
-const fontFlags = (options: IFontFlagOptions) => {
+const makeFontFlags = (options: IFontFlagOptions) => {
   let flags = 0;
 
   // tslint:disable-next-line:no-bitwise
@@ -50,6 +50,9 @@ const fontFlags = (options: IFontFlagOptions) => {
 
   return flags;
 };
+
+const addRandomSuffix = (prefix?: string | null | void) =>
+  `${prefix || 'Font'}-rand_${Math.floor(Math.random() * 10000)}`;
 
 /**
  * This Factory supports TrueType and OpenType fonts. Note that the apparent
@@ -89,14 +92,24 @@ class PDFEmbeddedFontFactory {
       isInstance(PDFDocument),
       'PDFFontFactory.embedFontIn: "pdfDoc" must be an instance of PDFDocument',
     );
+    const fontName = addRandomSuffix(this.font.postscriptName);
+    return this.embedFontDictionaryIn(pdfDoc, fontName);
+  };
 
-    // TODO: Add .cff to fontkit.d.ts
-    const isCFF = !!(this.font as any).cff;
+  encodeText = (text: string) => {
+    const { glyphs } = this.font.layout(text, []);
 
-    const randSuffix = `-rand_${Math.floor(Math.random() * 10000)}`;
-    const fontName =
-      this.font.postscriptName + randSuffix || 'Font' + randSuffix;
+    glyphs.forEach(({ id, codePoints }) => {
+      if (!this.unicode[id]) this.unicode[id] = codePoints;
+    });
 
+    // TODO: Might be splitting and joining more than necessary here?
+    return PDFHexString.fromString(
+      glyphs.map((glyph) => toHexStringOfMinLength(glyph.id, 4)).join(''),
+    );
+  };
+
+  private embedFontStreamIn = (pdfDoc: PDFDocument) => {
     const deflatedFontData = pako.deflate(this.fontData);
     const fontStreamDict = PDFDictionary.from(
       {
@@ -105,22 +118,30 @@ class PDFEmbeddedFontFactory {
       },
       pdfDoc.index,
     );
-    if (isCFF) fontStreamDict.set('Subtype', PDFName.from('CIDFontType0C'));
-    const fontStream = pdfDoc.register(
-      PDFRawStream.from(fontStreamDict, deflatedFontData),
-    );
+    if (this.font.cff) {
+      fontStreamDict.set('Subtype', PDFName.from('CIDFontType0C'));
+    }
+    const fontStream = PDFRawStream.from(fontStreamDict, deflatedFontData);
+    const fontStreamRef = pdfDoc.register(fontStream);
+    return fontStreamRef;
+  };
 
+  private deriveFontFlags = () => {
     // From: https://github.com/foliojs/pdfkit/blob/83f5f7243172a017adcf6a7faa5547c55982c57b/lib/font/embedded.js#L123-L129
-    const ft = this.font as any;
-    const fOS2 = ft['OS/2'];
-    const familyClass = fOS2 ? fOS2.sFamilyClass : 0;
-    const flags = fontFlags({
-      fixedPitch: ft.post.isFixedPitch,
+    const familyClass = this.font['OS/2'] ? this.font['OS/2'].sFamilyClass : 0;
+    const flags = makeFontFlags({
+      fixedPitch: this.font.post.isFixedPitch,
       serif: 1 <= familyClass && familyClass <= 7,
       symbolic: true, // Assume the font uses non-latin characters
       script: familyClass === 10,
-      italic: ft.head.macStyle.italic,
+      italic: this.font.head.macStyle.italic,
     });
+    return PDFNumber.fromNumber(flags);
+  };
+
+  private embedFontDescriptorIn = (pdfDoc: PDFDocument, fontName: string) => {
+    const fontFlags = this.deriveFontFlags();
+    const fontStreamRef = this.embedFontStreamIn(pdfDoc);
 
     const {
       italicAngle,
@@ -135,8 +156,7 @@ class PDFEmbeddedFontFactory {
       {
         Type: PDFName.from('FontDescriptor'),
         FontName: PDFName.from(fontName),
-        Flags: PDFNumber.fromNumber(flags),
-        // Flags: PDFNumber.fromNumber(fontFlags(this.flagOptions)),
+        Flags: fontFlags,
         FontBBox: PDFArray.fromArray(
           [
             PDFNumber.fromNumber(bbox.minX * this.scale),
@@ -157,53 +177,63 @@ class PDFEmbeddedFontFactory {
       },
       pdfDoc.index,
     );
-    const fontFileKey = isCFF ? 'FontFile3' : 'FontFile2';
-    fontDescriptor.set(fontFileKey, fontStream);
+
+    const fontFileKey = this.font.cff ? 'FontFile3' : 'FontFile2';
+    fontDescriptor.set(fontFileKey, fontStreamRef);
+
     const fontDescriptorRef = pdfDoc.register(fontDescriptor);
 
-    const widths: Array<number | number[]> = [];
-    const usedGids = new Set<number>();
+    return fontDescriptorRef;
+  };
+
+  private deriveWidths = (pdfDoc: PDFDocument) => {
+    // Compute a sorted array of uniq glyphs in the font
+    const tempGlyphs = this.font.characterSet.map((cp) =>
+      this.font.glyphForCodePoint(cp),
+    );
+    const glyphs = sortedUniqBy(sortBy(tempGlyphs, 'id'), 'id');
+
+    // Produce a widths array (thank the PDF spec for this awkwardness)
     let prevGid = -2;
-    this.font.characterSet
-      .map((cp) => this.font.glyphForCodePoint(cp))
-      .sort((ga, gb) => ga.id - gb.id)
-      .filter((glyph) => {
-        if (!usedGids.has(glyph.id)) {
-          usedGids.add(glyph.id);
-          return true;
-        }
-        return false;
-      })
-      .forEach((glyph) => {
-        const gid = glyph.id;
-        if (gid - prevGid > 1) {
-          widths.push(gid);
-          widths.push([]);
-        }
-        prevGid = gid;
+    const widths: Array<number | number[]> = [];
+    glyphs.forEach((glyph) => {
+      const gid = glyph.id;
 
-        const width = glyph.advanceWidth * this.scale;
+      if (gid - prevGid > 1) {
+        widths.push(gid);
+        widths.push([]);
+      }
+      prevGid = gid;
 
-        (last(widths) as number[]).push(width);
-      });
+      const width = glyph.advanceWidth * this.scale;
+      (last(widths) as number[]).push(width);
+    });
 
-    const W = PDFArray.fromArray(
-      widths.map((cpOrWidthsArr) =>
-        isNumber(cpOrWidthsArr)
-          ? PDFNumber.fromNumber(cpOrWidthsArr)
+    // Convert the widths array into a PDFArray
+    return PDFArray.fromArray(
+      widths.map((codePointOrWidths) =>
+        isNumber(codePointOrWidths)
+          ? PDFNumber.fromNumber(codePointOrWidths)
           : PDFArray.fromArray(
-              cpOrWidthsArr.map(PDFNumber.fromNumber),
+              codePointOrWidths.map(PDFNumber.fromNumber),
               pdfDoc.index,
             ),
       ),
       pdfDoc.index,
     );
+  };
 
-    // CIDFont Dictionary...
-    const descentFontDict = PDFDictionary.from(
+  private embedCIDFontDictionaryIn = (
+    pdfDoc: PDFDocument,
+    fontName: string,
+  ) => {
+    const fontDescriptorRef = this.embedFontDescriptorIn(pdfDoc, fontName);
+    const widths = this.deriveWidths(pdfDoc);
+
+    const cidFontDict = PDFDictionary.from(
       {
         Type: PDFName.from('Font'),
-        Subtype: PDFName.from(isCFF ? 'CIDFontType0' : 'CIDFontType2'),
+        Subtype: PDFName.from(this.font.cff ? 'CIDFontType0' : 'CIDFontType2'),
         BaseFont: PDFName.from(fontName),
         CIDSystemInfo: PDFDictionary.from(
           {
@@ -214,38 +244,34 @@ class PDFEmbeddedFontFactory {
           pdfDoc.index,
         ),
         FontDescriptor: fontDescriptorRef,
-        W,
+        W: widths,
       },
       pdfDoc.index,
     );
-    const descentFontRef = pdfDoc.register(descentFontDict);
 
-    const fontDictionary = PDFDictionary.from(
+    const cidFontRef = pdfDoc.register(cidFontDict);
+
+    return cidFontRef;
+  };
+
+  private embedFontDictionaryIn = (pdfDoc: PDFDocument, fontName: string) => {
+    const cidFontDictRef = this.embedCIDFontDictionaryIn(pdfDoc, fontName);
+
+    const fontDict = PDFDictionary.from(
       {
         Type: PDFName.from('Font'),
         Subtype: PDFName.from('Type0'),
         BaseFont: PDFName.from(fontName),
         Encoding: PDFName.from('Identity-H'),
-        DescendantFonts: PDFArray.fromArray([descentFontRef], pdfDoc.index),
+        DescendantFonts: PDFArray.fromArray([cidFontDictRef], pdfDoc.index),
         // TODO: ToUnicode: [...]
       },
       pdfDoc.index,
     );
 
-    return pdfDoc.register(fontDictionary);
-  };
+    const fontDictRef = pdfDoc.register(fontDict);
 
-  encodeText = (text: string) => {
-    const { glyphs } = this.font.layout(text, []);
-
-    glyphs.forEach(({ id, codePoints }) => {
-      if (!this.unicode[id]) this.unicode[id] = codePoints;
-    });
-
-    // TODO: Might be splitting and joining more than necessary here?
-    return PDFHexString.fromString(
-      glyphs.map((glyph) => toHexStringOfMinLength(glyph.id, 4)).join(''),
-    );
+    return fontDictRef;
   };
 }
 
