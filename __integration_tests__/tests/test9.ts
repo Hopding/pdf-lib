@@ -3,17 +3,20 @@ import {
   drawLinesOfText,
   drawRectangle,
   drawText,
-  PDFContentStream,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
+  StandardFonts,
 } from '../../src';
 
+import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';
+import PDFStandardFontFactory from 'core/pdf-structures/factories/PDFStandardFontFactory';
 import { ITestAssets, ITestKernel } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,
   marioDims: { width: number; height: number },
+  { ubuntuFont }: { [key: string]: PDFEmbeddedFontFactory },
 ) =>
   pdfDoc.createContentStream(
     ...drawImage('Mario', {
@@ -36,7 +39,7 @@ const makeOverlayContentStream = (
         'This is an image of Mario running.',
         'This image and text was drawn on',
         'top of an existing PDF using pdf-lib!',
-      ],
+      ].map(ubuntuFont.encodeText),
       {
         x: 278,
         y: 342,
@@ -51,10 +54,11 @@ const pageNumberContentStream = (
   pdfDoc: PDFDocument,
   idx: number,
   total: number,
+  { helveticaFont }: { [key: string]: PDFStandardFontFactory },
 ) =>
   pdfDoc.register(
     pdfDoc.createContentStream(
-      drawText(`${idx + 1} / ${total}`, {
+      drawText(helveticaFont.encodeText(`${idx + 1} / ${total}`), {
         font: 'Helvetica',
         x: 10,
         y: 10,
@@ -69,25 +73,31 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
     assets.pdfs.with_newline_whitespace_in_indirect_object_numbers,
   );
 
-  const [FontHelvetica] = pdfDoc.embedStandardFont('Helvetica');
-  const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
+  const [helveticaRef, helveticaFont] = pdfDoc.embedStandardFont(
+    StandardFonts.Helvetica,
+  );
+  const [ubuntuRef, ubuntuFont] = pdfDoc.embedNonstandardFont(
+    assets.fonts.ttf.ubuntu_r,
+  );
   const [PngMario, marioDims] = pdfDoc.embedPNG(assets.images.png.small_mario);
 
   const pages = pdfDoc.getPages();
 
   const overlayContentStreamRef = pdfDoc.register(
-    makeOverlayContentStream(pdfDoc, marioDims),
+    makeOverlayContentStream(pdfDoc, marioDims, { ubuntuFont }),
   );
 
   pages[0]
-    .addFontDictionary('Ubuntu', FontUbuntu)
+    .addFontDictionary('Ubuntu', ubuntuRef)
     .addXObject('Mario', PngMario)
     .addContentStreams(overlayContentStreamRef);
 
   pages.forEach((page, idx) => {
     page
-      .addFontDictionary('Helvetica', FontHelvetica)
-      .addContentStreams(pageNumberContentStream(pdfDoc, idx, pages.length));
+      .addFontDictionary('Helvetica', helveticaRef)
+      .addContentStreams(
+        pageNumberContentStream(pdfDoc, idx, pages.length, { helveticaFont }),
+      );
   });
 
   return PDFDocumentWriter.saveToBytes(pdfDoc);

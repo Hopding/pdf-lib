@@ -5,19 +5,19 @@ import {
   drawLinesOfText,
   drawRectangle,
   drawText,
-  PDFContentStream,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
-  PDFPage,
   StandardFonts,
 } from '../../src';
 
+import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';
 import { ITestAssets, ITestKernel } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,
   marioDims: { width: number; height: number },
+  { ubuntuFont }: { [key: string]: PDFEmbeddedFontFactory },
 ) =>
   pdfDoc.createContentStream(
     ...drawImage('Mario', {
@@ -40,7 +40,7 @@ const makeOverlayContentStream = (
         'This is an image of Mario running.',
         'This image and text was drawn on',
         'top of an existing PDF using pdf-lib!',
-      ],
+      ].map(ubuntuFont.encodeText),
       {
         x: 125,
         y: 325,
@@ -53,6 +53,7 @@ const makeOverlayContentStream = (
 
 const makeMiddlePageContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
   pdfDoc.createContentStream(
+    // TODO: Use encodeText() here...
     ...flatMap(Object.values(StandardFonts), (font, idx) =>
       drawText(`${idx + 1}. These are the 14 Standard Fonts.`, {
         x: 5,
@@ -69,21 +70,21 @@ const makeMiddlePageContentStream = (pdfDoc: PDFDocument, pageHeight: number) =>
 const kernel: ITestKernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.load(assets.pdfs.normal);
 
-  const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
-  const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
+  const [ubuntuRef, ubuntuFont] = pdfDoc.embedNonstandardFont(
+    assets.fonts.ttf.ubuntu_r,
+  );
 
   const [PngMario, marioDims] = pdfDoc.embedPNG(assets.images.png.small_mario);
 
   const pages = pdfDoc.getPages();
 
   const overlayContentStreamRef = pdfDoc.register(
-    makeOverlayContentStream(pdfDoc, marioDims),
+    makeOverlayContentStream(pdfDoc, marioDims, { ubuntuFont }),
   );
 
   pages.forEach((page) => {
     page
-      .addFontDictionary('Times-Roman', FontTimesRoman)
-      .addFontDictionary('Ubuntu', FontUbuntu)
+      .addFontDictionary('Ubuntu', ubuntuRef)
       .addXObject('Mario', PngMario)
       .addContentStreams(overlayContentStreamRef);
   });

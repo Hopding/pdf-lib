@@ -82,7 +82,10 @@ export const toCharCode = (charStr: string) => {
 
 export const charFromCode = (code: number) => String.fromCharCode(code);
 
-export const toHexString = (num: number) => num.toString(16);
+export const toHexStringOfMinLength = (num: number, minLength: number) =>
+  num.toString(16).padStart(minLength, '0');
+
+export const toHexString = (num: number) => toHexStringOfMinLength(num, 2);
 
 export const mergeUint8Arrays = (...arrs: Uint8Array[]) => {
   const totalLength = sum(arrs.map((a) => a.length));

@@ -23,6 +23,7 @@ import {
   PDFPageTree,
 } from 'core/pdf-structures';
 import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
+import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';
 import PDFFontFactory, {
   IFontFlagOptions,
 } from 'core/pdf-structures/factories/PDFFontFactory';
@@ -252,6 +253,8 @@ class PDFDocument {
   /**
    * Embeds the font contained in the specified `Uint8Array` in the document.
    *
+   * @deprecated
+   *
    * @param fontData A `Uint8Array` containing an OpenType (`.otf`) or TrueType
    *                 (`.ttf`) font.
    *
@@ -264,6 +267,16 @@ class PDFDocument {
     fontFlags: IFontFlagOptions = { Nonsymbolic: true },
   ): [PDFIndirectReference<PDFDictionary>, PDFFontFactory] => {
     const fontFactory = PDFFontFactory.for(fontData, fontFlags);
+    return [fontFactory.embedFontIn(this), fontFactory];
+  };
+
+  /**
+   * TODO: Document this...
+   */
+  embedNonstandardFont = (
+    fontData: Uint8Array,
+  ): [PDFIndirectReference<PDFDictionary>, PDFEmbeddedFontFactory] => {
+    const fontFactory = PDFEmbeddedFontFactory.for(fontData);
     return [fontFactory.embedFontIn(this), fontFactory];
   };
 

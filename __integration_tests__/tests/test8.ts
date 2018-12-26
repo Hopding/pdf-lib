@@ -7,17 +7,20 @@ import {
   PDFDocumentFactory,
   PDFDocumentWriter,
   PDFNumber,
+  StandardFonts,
 } from '../../src';
 
 import { ITestAssets, ITestKernel } from '../models';
 
 const createDonorPdf = () => {
   const pdfDoc = PDFDocumentFactory.create();
-  const [FontHelvetica] = pdfDoc.embedStandardFont('Helvetica');
+  const [helveticaRef, helveticaFont] = pdfDoc.embedStandardFont(
+    StandardFonts.Helvetica,
+  );
 
   const contentStream = pdfDoc.register(
     pdfDoc.createContentStream(
-      drawText(`I am upside down!`, {
+      drawText(helveticaFont.encodeText(`I am upside down!`), {
         font: 'Helvetica',
         x: 50,
         y: 225,
@@ -27,7 +30,7 @@ const createDonorPdf = () => {
   );
   const page = pdfDoc
     .createPage([500, 500])
-    .addFontDictionary('Helvetica', FontHelvetica)
+    .addFontDictionary('Helvetica', helveticaRef)
     .addContentStreams(contentStream);
   pdfDoc.addPage(page);
 

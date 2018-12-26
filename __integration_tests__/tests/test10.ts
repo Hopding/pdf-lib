@@ -2,17 +2,18 @@ import {
   drawImage,
   drawLinesOfText,
   drawRectangle,
-  PDFContentStream,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
 } from '../../src';
 
+import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';
 import { ITestAssets, ITestKernel } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,
   marioDims: { width: number; height: number },
+  { ubuntuFont }: { [key: string]: PDFEmbeddedFontFactory },
 ) =>
   pdfDoc.createContentStream(
     ...drawImage('Mario', {
@@ -35,7 +36,7 @@ const makeOverlayContentStream = (
         'This is an image of Mario running.',
         'This image and text was drawn on',
         'top of an existing PDF using pdf-lib!',
-      ],
+      ].map(ubuntuFont.encodeText),
       {
         x: 125,
         y: 125,
@@ -50,17 +51,19 @@ const makeOverlayContentStream = (
 const kernel: ITestKernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.load(assets.pdfs.with_comments);
 
-  const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
+  const [ubuntuRef, ubuntuFont] = pdfDoc.embedNonstandardFont(
+    assets.fonts.ttf.ubuntu_r,
+  );
   const [PngMario, marioDims] = pdfDoc.embedPNG(assets.images.png.small_mario);
 
   const pages = pdfDoc.getPages();
 
   const overlayContentStreamRef = pdfDoc.register(
-    makeOverlayContentStream(pdfDoc, marioDims),
+    makeOverlayContentStream(pdfDoc, marioDims, { ubuntuFont }),
   );
 
   pages[0]
-    .addFontDictionary('Ubuntu', FontUbuntu)
+    .addFontDictionary('Ubuntu', ubuntuRef)
     .addXObject('Mario', PngMario)
     .addContentStreams(overlayContentStreamRef);
 

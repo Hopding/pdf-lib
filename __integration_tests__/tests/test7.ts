@@ -10,7 +10,7 @@ import {
   StandardFonts,
 } from '../../src';
 
-import { ITestAssets, ITestKernel } from '../models';
+import { ITestAssets } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,
@@ -61,11 +61,28 @@ const makeOverlayContentStream = (
   );
 
 // Define the test kernel using the above content stream functions.
-const kernel: ITestKernel = (assets: ITestAssets) => {
+const kernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.create();
 
   const [FontTimesRoman, TimesRomanFontData] = pdfDoc.embedStandardFont(
     StandardFonts.TimesRoman,
+  );
+  const [FontHelvetica, HelveticaFontData] = pdfDoc.embedStandardFont(
+    StandardFonts.Helvetica,
+  );
+  const [FontZapfDingbats, ZapfDingbatsFontData] = pdfDoc.embedStandardFont(
+    StandardFonts.ZapfDingbats,
+  );
+  const [FontSymbol, SymbolFontData] = pdfDoc.embedStandardFont(
+    StandardFonts.Symbol,
+  );
+
+  // const ubuntuFontFactory = PDFFontFactory.for(assets.fonts.ttf.ubuntu_r, {
+  // Nonsymbolic: true,
+  // });
+
+  const [FontUbuntu, UbuntuFontData] = pdfDoc.embedNonstandardFont(
+    assets.fonts.ttf.ubuntu_r,
   );
 
   const strA = String.fromCharCode(
@@ -98,11 +115,20 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
     382,
   );
   const strB = 'Olé! - Œ - fl0@t';
+  const strC = '✂✰❡⑩→';
+  const strD = 'ψℜ∑';
+  const strE = 'Test: Лорем ипсум ₄ ₉ € ₮ ₴ ₹ ℓ № ™ Ω ℮ ⅘ ⅛ ﬀ ﬂ ﬃ ﬄ';
+
+  // TODO: Try eastern font...
 
   const widthA = TimesRomanFontData.widthOfTextAtSize(strA, 25);
-  const heightA = TimesRomanFontData.heightOfTextAtSize(strA, 25);
+  const heightA = TimesRomanFontData.heightOfFontAtSize(25);
   const widthB = TimesRomanFontData.widthOfTextAtSize(strB, 25);
-  const heightB = TimesRomanFontData.heightOfTextAtSize(strB, 25);
+  const heightB = TimesRomanFontData.heightOfFontAtSize(25);
+  const widthC = ZapfDingbatsFontData.widthOfTextAtSize(strC, 25);
+  const heightC = ZapfDingbatsFontData.heightOfFontAtSize(25);
+  const widthD = SymbolFontData.widthOfTextAtSize(strD, 25);
+  const heightD = SymbolFontData.heightOfFontAtSize(25);
 
   const contentStream = pdfDoc.register(
     pdfDoc.createContentStream(
@@ -134,12 +160,58 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
         borderWidth: 1,
         borderColorRgb: [0.79, 0.25, 1.0],
       }),
+      drawText(ZapfDingbatsFontData.encodeText(strC), {
+        font: 'ZapfDingbats',
+        size: 25,
+        x: 10,
+        y: 300,
+      }),
+      drawRectangle({
+        x: 10 - 1,
+        y: 300 - 1,
+        width: widthC + 2,
+        height: heightC + 2,
+        borderWidth: 1,
+        borderColorRgb: [0.79, 0.25, 1.0],
+      }),
+      drawText(SymbolFontData.encodeText(strD), {
+        font: 'Symbol',
+        size: 25,
+        x: 10,
+        y: 250,
+      }),
+      drawRectangle({
+        x: 10 - 1,
+        y: 250 - 1,
+        width: widthD + 2,
+        height: heightD + 2,
+        borderWidth: 1,
+        borderColorRgb: [0.79, 0.25, 1.0],
+      }),
+      drawText(UbuntuFontData.encodeText(strE), {
+        font: 'Ubuntu',
+        size: 25,
+        x: 10,
+        y: 200,
+      }),
+      drawRectangle({
+        x: 10 - 1,
+        y: 200 - 1,
+        width: 50 + 2,
+        height: 25 + 2,
+        borderWidth: 1,
+        borderColorRgb: [0.79, 0.25, 1.0],
+      }),
     ),
   );
 
   const page = pdfDoc
     .createPage([650, 700])
     .addFontDictionary('Times-Roman', FontTimesRoman)
+    .addFontDictionary('Helvetica', FontHelvetica)
+    .addFontDictionary('ZapfDingbats', FontZapfDingbats)
+    .addFontDictionary('Symbol', FontSymbol)
+    .addFontDictionary('Ubuntu', FontUbuntu)
     .addContentStreams(contentStream);
 
   pdfDoc.addPage(page);
