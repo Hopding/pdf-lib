@@ -16,7 +16,7 @@ import {
   PDFRawStream,
   PDFString,
 } from 'core/pdf-objects';
-import { toHexStringOfMinLength } from 'utils';
+import { typedArrayFor, toHexStringOfMinLength } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 
 interface IFontFlagOptions {
@@ -256,6 +256,7 @@ class PDFEmbeddedFontFactory {
 
   private embedFontDictionaryIn = (pdfDoc: PDFDocument, fontName: string) => {
     const cidFontDictRef = this.embedCIDFontDictionaryIn(pdfDoc, fontName);
+    const unicodeCMap = this.embedUnicodeCmapIn(pdfDoc);
 
     const fontDict = PDFDictionary.from(
       {
@@ -264,7 +265,7 @@ class PDFEmbeddedFontFactory {
         BaseFont: PDFName.from(fontName),
         Encoding: PDFName.from('Identity-H'),
         DescendantFonts: PDFArray.fromArray([cidFontDictRef], pdfDoc.index),
-        // TODO: ToUnicode: [...]
+        ToUnicode: unicodeCMap,
       },
       pdfDoc.index,
     );
@@ -273,6 +274,100 @@ class PDFEmbeddedFontFactory {
 
     return fontDictRef;
   };
+
+  private embedUnicodeCmapIn = (pdfDoc: PDFDocument) => {
+    const [a, b] = this.convertCodePointsToUtf16();
+    const streamContents = typedArrayFor(makeCmap(a as any, b));
+
+    // TODO: Compress this...
+    const cmapStreamDict = PDFDictionary.from(
+      { Length: PDFNumber.fromNumber(streamContents.length) },
+      pdfDoc.index,
+    );
+    const cmapStream = PDFRawStream.from(cmapStreamDict, streamContents);
+    const cmapStreamRef = pdfDoc.register(cmapStream);
+
+    return cmapStreamRef;
+  };
+
+  // TODO: Clean this up...
+  private convertCodePointsToUtf16 = () => {
+    // TODO: Extract this into method, because it is shared...
+    const tempGlyphs = this.font.characterSet.map((cp) =>
+      this.font.glyphForCodePoint(cp),
+    );
+    const glyphs = sortedUniqBy(sortBy(tempGlyphs, 'id'), 'id');
+
+    let lastId = glyphs[0].id;
+    const bfRangeRanges: Array<[number, number]> = [[glyphs[0].id, -1]];
+    const bfRangeMappings: string[][] = [[]];
+
+    glyphs.forEach(({ id, codePoints }) => {
+      // Start new section
+      if (id - lastId > 1) {
+        last(bfRangeRanges)![1] = lastId;
+        bfRangeRanges.push([id, -1]);
+        bfRangeMappings.push([]);
+      }
+      lastId = id;
+
+      const encoded: string[] = [];
+      codePoints.forEach((cp) => {
+        if (cp > 0xffff) {
+          cp -= 0x10000;
+          encoded.push(
+            toHexStringOfMinLength(((cp >>> 10) & 0x3ff) | 0xd800, 4),
+          );
+          cp = 0xdc00 | (cp & 0x3ff);
+        }
+        encoded.push(toHexStringOfMinLength(cp, 4));
+      });
+      // TODO: Use PDFHexString...
+      last(bfRangeMappings)!.push(`<${encoded.join(' ')}>`);
+    });
+    last(bfRangeRanges)![1] = lastId;
+
+    const bfRangeRangesStr = bfRangeRanges.map(([first, second]) => [
+      toHexStringOfMinLength(first, 4),
+      toHexStringOfMinLength(second, 4),
+    ]);
+
+    return [bfRangeRangesStr, bfRangeMappings];
+  };
 }
+
+const makeBfRanges = (
+  bfRangeRanges: Array<[string, string]>,
+  bfRangeMappings: string[][],
+) =>
+  bfRangeRanges.map(
+    ([start, end], idx) =>
+      `${bfRangeMappings[idx].length} beginbfrange\n` +
+      `<${start}> <${end}> [${bfRangeMappings[idx].join(' ')}]\n` +
+      `endbfrange`,
+  );
+
+// prettier-ignore
+const makeCmap = (  bfRangeRanges: Array<[string, string]>,
+  bfRangeMappings: string[][],) => `
+/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CIDSystemInfo <<
+  /Registry (Adobe)
+  /Ordering (UCS)
+  /Supplement 0
+>> def
+/CMapName /Adobe-Identity-UCS def
+/CMapType 2 def
+1 begincodespacerange
+<0000><ffff>
+endcodespacerange
+${makeBfRanges(bfRangeRanges, bfRangeMappings).join('\n')}
+endcmap
+CMapName currentdict /CMap defineresource pop
+end
+end
+`.trim();
 
 export default PDFEmbeddedFontFactory;
