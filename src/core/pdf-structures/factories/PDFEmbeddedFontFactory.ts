@@ -2,6 +2,8 @@ import fontkit, { Font, Glyph } from '@pdf-lib/fontkit';
 import first from 'lodash/first';
 import flatten from 'lodash/flatten';
 import sortBy from 'lodash/sortBy';
+import range from 'lodash/range';
+import sum from 'lodash/sum';
 import sortedUniqBy from 'lodash/sortedUniqBy';
 import zip from 'lodash/zip';
 import pako from 'pako';
@@ -104,12 +106,30 @@ class PDFEmbeddedFontFactory {
     return this.embedFontDictionaryIn(pdfDoc, fontName);
   };
 
-  // TODO: Might be splitting and joining more than necessary here?
   encodeText = (text: string) => {
     const { glyphs } = this.font.layout(text, []);
     return PDFHexString.fromString(
       glyphs.map((glyph) => toHexStringOfMinLength(glyph.id, 4)).join(''),
     );
+  };
+
+  widthOfTextAtSize = (text: string, size: number) => {
+    const { glyphs } = this.font.layout(text, []);
+
+    // The advanceWidth takes into account kerning automatically, so we don't
+    // have to do that manually like we do for the standard fonts.
+    const widths = glyphs.map((glyph) => glyph.advanceWidth * this.scale);
+
+    const scale = size / 1000;
+
+    return sum(widths) * scale;
+  };
+
+  heightOfFontAtSize = (size: number) => {
+    const { ascent, descent, bbox } = this.font;
+    const yTop = (ascent || bbox.maxY) * this.scale;
+    const yBottom = (descent || bbox.minY) * this.scale;
+    return ((yTop - yBottom) / 1000) * size;
   };
 
   private embedFontDictionaryIn = (pdfDoc: PDFDocument, fontName: string) => {
