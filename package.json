@@ -47,8 +47,8 @@
   },
   "homepage": "https://github.com/Hopding/pdf-lib#readme",
   "dependencies": {
-    "@pdf-lib/fontkit": "^0.0.2",
-    "@pdf-lib/standard-fonts": "^0.0.0",
+    "@pdf-lib/fontkit": "^0.0.3",
+    "@pdf-lib/standard-fonts": "^0.0.1",
     "lodash": "^4.17.4",
     "pako": "^1.0.6",
     "png-ts": "^0.0.3",

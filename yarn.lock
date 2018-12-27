@@ -41,17 +41,17 @@
   dependencies:
     jsdom "^11.10.0"
 
-"@pdf-lib/fontkit@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@pdf-lib/fontkit/-/fontkit-0.0.2.tgz#c1520c2dc24040d810d115b30396d575e0a52707"
-  integrity sha512-YBPRsp3d1wCOOrA/d4NcaeJpT4ILNcoqjI3usML030wNfPD58+eo1EtbHipw/svWzM9QgqxAX5TjKSxXxWoMBA==
+"@pdf-lib/fontkit@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@pdf-lib/fontkit/-/fontkit-0.0.3.tgz#966f2fcfe64d67aa8ac55d2897c07dbf63fb76f6"
+  integrity sha512-SAbrnK3WjV7yIXlYkyRqS2IK04IEEdXO8/wqhZhf5lW/A6/kaInZuB9AyAx/i8WHagffEp6pIv9PhSZV7vF+KA==
   dependencies:
     pako "^1.0.6"
 
-"@pdf-lib/standard-fonts@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@pdf-lib/standard-fonts/-/standard-fonts-0.0.0.tgz#432d88c22648368be286248ee7130dd1e09d2cf1"
-  integrity sha512-0Fznjksmk4qLhkuotak+G3AM+y69xqA0rRKh/a6ds5okypFPWGsR9J9OoaOLdX7LENOLcnDYs946c9j5cD0zHg==
+"@pdf-lib/standard-fonts@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@pdf-lib/standard-fonts/-/standard-fonts-0.0.1.tgz#4e1ee04ae3d4df8525b0d59b3cc2fd19792e0a09"
+  integrity sha512-jKnj5bnL2ZGJqpbbcrwWo/aOcBUC/HA9MyoT6a5011oNZgtLEUKLW3CZhTawzN7QfA4bCxru7mpmKfAGp0QnAA==
   dependencies:
     base64-arraybuffer "^0.1.5"
     pako "^1.0.6"
