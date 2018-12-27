@@ -282,3 +282,35 @@ export const arrayFindIndexOf = (
 
 export const setCharAt = (str: string, idx: number, newChar: string) =>
   str.substring(0, idx) + newChar + str.substring(idx + 1);
+
+export const mapIntoContiguousGroups = <A, B>(
+  all: A[],
+  indexProvider: (element: A) => number,
+  transformer: (element: A) => B,
+): B[][] => {
+  const sections: B[][] = [];
+  let currSection: B[] = [];
+  let lastIndex = NaN;
+
+  for (const element of all) {
+    const currIndex = indexProvider(element);
+    const breakDetected = currIndex - lastIndex !== 1;
+    const isFirstIteration = isNaN(lastIndex);
+
+    if (breakDetected && !isFirstIteration) {
+      sections.push(currSection);
+      currSection = [];
+    }
+    currSection.push(transformer(element));
+
+    lastIndex = currIndex;
+  }
+
+  sections.push(currSection);
+  return sections;
+};
+
+export const contiguousGroups = <A>(
+  all: A[],
+  indexProvider: (element: A) => number,
+): A[][] => mapIntoContiguousGroups(all, indexProvider, (x) => x);

@@ -2,6 +2,8 @@ import {
   arrayToString,
   trimArrayAndRemoveComments,
   typedArrayFor,
+  contiguousGroups,
+  mapIntoContiguousGroups,
 } from 'utils';
 
 describe(`trimArrayAndRemoveComments`, () => {
@@ -43,5 +45,57 @@ describe(`trimArrayAndRemoveComments`, () => {
     const input = typedArrayFor('% First\n%Second\r% Third\r\nFoo');
     const res = trimArrayAndRemoveComments(input);
     expect(res).toEqual(typedArrayFor('Foo'));
+  });
+});
+
+describe(`mapIntoContiguousGroups`, () => {
+  it(`maps an array of objects into contiguous sections of numbers`, () => {
+    const arr = [
+      { x: -3 },
+      { x: 3 },
+      { x: 1 },
+      { x: 2 },
+      { x: 3 },
+      { x: 7 },
+      { x: 9 },
+      { x: 20 },
+    ];
+    const res = mapIntoContiguousGroups(
+      arr,
+      (obj) => obj.x,
+      (obj) => obj.x ** 2,
+    );
+    expect(res).toEqual([
+      [(-3) ** 2],
+      [3 ** 2],
+      [1 ** 2, 2 ** 2, 3 ** 2],
+      [7 ** 2],
+      [9 ** 2],
+      [20 ** 2],
+    ]);
+  });
+});
+
+describe(`contiguousGroups`, () => {
+  it(`groups an array of objects into contiguous sections`, () => {
+    const arr = [
+      { x: -3 },
+      { x: 3 },
+      { x: 1 },
+      { x: 2 },
+      { x: 3 },
+      { x: 7 },
+      { x: 9 },
+      { x: 20 },
+    ];
+    const res = contiguousGroups(arr, (obj) => obj.x);
+    expect(res).toEqual([
+      [{ x: -3 }],
+      [{ x: 3 }],
+      [{ x: 1 }, { x: 2 }, { x: 3 }],
+      [{ x: 7 }],
+      [{ x: 9 }],
+      [{ x: 20 }],
+    ]);
   });
 });

@@ -1,6 +1,7 @@
 import fontkit, { Font } from '@pdf-lib/fontkit';
 import isNumber from 'lodash/isNumber';
 import last from 'lodash/last';
+import first from 'lodash/first';
 import sortBy from 'lodash/sortBy';
 import sortedUniqBy from 'lodash/sortedUniqBy';
 import pako from 'pako';
@@ -16,7 +17,11 @@ import {
   PDFRawStream,
   PDFString,
 } from 'core/pdf-objects';
-import { typedArrayFor, toHexStringOfMinLength } from 'utils';
+import {
+  typedArrayFor,
+  toHexStringOfMinLength,
+  mapIntoContiguousGroups,
+} from 'utils';
 import { isInstance, validate } from 'utils/validate';
 import { cmapCodePointFormat } from './CMap';
 
@@ -299,24 +304,17 @@ class PDFEmbeddedFontFactory {
     );
     const glyphs = sortedUniqBy(sortBy(tempGlyphs, 'id'), 'id');
 
-    let lastId = glyphs[0].id;
-    const bfRangeRanges: Array<[number, number]> = [[glyphs[0].id, -1]];
-    const bfRangeMappings: string[][] = [[]];
+    const bfRangeRanges = mapIntoContiguousGroups(
+      glyphs,
+      (glyph) => glyph.id,
+      (glyph) => glyph.id,
+    ).map((range) => [first(range)!, last(range)!]);
 
-    glyphs.forEach(({ id, codePoints }) => {
-      // Start new section
-      if (id - lastId > 1) {
-        last(bfRangeRanges)![1] = lastId;
-        bfRangeRanges.push([id, -1]);
-        bfRangeMappings.push([]);
-      }
-      lastId = id;
-
-      const formatted = codePoints.map(cmapCodePointFormat).join('');
-      const cmapValue = `<${formatted}>`;
-      last(bfRangeMappings)!.push(cmapValue);
-    });
-    last(bfRangeRanges)![1] = lastId;
+    const bfRangeMappings = mapIntoContiguousGroups(
+      glyphs,
+      (glyph) => glyph.id,
+      (glyph) => `<${glyph.codePoints.map(cmapCodePointFormat).join('')}>`,
+    );
 
     const bfRangeRangesStr = bfRangeRanges.map(([first, second]) => [
       toHexStringOfMinLength(first, 4),
