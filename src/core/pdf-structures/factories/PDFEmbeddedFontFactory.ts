@@ -18,6 +18,7 @@ import {
 } from 'core/pdf-objects';
 import { typedArrayFor, toHexStringOfMinLength } from 'utils';
 import { isInstance, validate } from 'utils/validate';
+import { cmapCodePointFormat } from './CMap';
 
 interface IFontFlagOptions {
   fixedPitch?: boolean;
@@ -311,19 +312,9 @@ class PDFEmbeddedFontFactory {
       }
       lastId = id;
 
-      const encoded: string[] = [];
-      codePoints.forEach((cp) => {
-        if (cp > 0xffff) {
-          cp -= 0x10000;
-          encoded.push(
-            toHexStringOfMinLength(((cp >>> 10) & 0x3ff) | 0xd800, 4),
-          );
-          cp = 0xdc00 | (cp & 0x3ff);
-        }
-        encoded.push(toHexStringOfMinLength(cp, 4));
-      });
-      // TODO: Use PDFHexString...
-      last(bfRangeMappings)!.push(`<${encoded.join(' ')}>`);
+      const formatted = codePoints.map(cmapCodePointFormat).join('');
+      const cmapValue = `<${formatted}>`;
+      last(bfRangeMappings)!.push(cmapValue);
     });
     last(bfRangeRanges)![1] = lastId;
 
