@@ -3,7 +3,7 @@ import 'core/pdf-objects';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import { PDFHeader } from 'core/pdf-structures';
-import { charCode, mergeUint8Arrays, typedArrayFor } from 'utils';
+import { toCharCode, mergeUint8Arrays, typedArrayFor } from 'utils';
 
 describe(`PDFHeader`, () => {
   it(`requires 2 numbers to be constructed`, () => {
@@ -48,7 +48,14 @@ describe(`PDFHeader`, () => {
       expect(buffer).toEqual(
         mergeUint8Arrays(
           typedArrayFor('%PDF-1.2\n'),
-          new Uint8Array([charCode('%'), 130, 130, 130, 130, charCode('\n')]),
+          new Uint8Array([
+            toCharCode('%'),
+            130,
+            130,
+            130,
+            130,
+            toCharCode('\n'),
+          ]),
         ),
       );
     });
