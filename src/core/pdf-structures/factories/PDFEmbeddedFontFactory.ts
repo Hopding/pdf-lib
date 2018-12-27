@@ -2,6 +2,8 @@ import fontkit, { Font } from '@pdf-lib/fontkit';
 import isNumber from 'lodash/isNumber';
 import last from 'lodash/last';
 import first from 'lodash/first';
+import flatten from 'lodash/flatten';
+import zip from 'lodash/zip';
 import sortBy from 'lodash/sortBy';
 import sortedUniqBy from 'lodash/sortedUniqBy';
 import pako from 'pako';
@@ -24,6 +26,7 @@ import {
 } from 'utils';
 import { isInstance, validate } from 'utils/validate';
 import { cmapCodePointFormat } from './CMap';
+import { RefCountDisposable } from 'rx';
 
 interface IFontFlagOptions {
   fixedPitch?: boolean;
@@ -192,41 +195,36 @@ class PDFEmbeddedFontFactory {
     return fontDescriptorRef;
   };
 
-  private deriveWidths = (pdfDoc: PDFDocument) => {
-    // Compute a sorted array of uniq glyphs in the font
+  // TODO: Could cache this...
+  // Compute a sorted array of uniq glyphs in the font
+  private allGlyphsInFontSortedById = () => {
     const tempGlyphs = this.font.characterSet.map((cp) =>
       this.font.glyphForCodePoint(cp),
     );
     const glyphs = sortedUniqBy(sortBy(tempGlyphs, 'id'), 'id');
+    return glyphs;
+  };
 
-    // Produce a widths array (thank the PDF spec for this awkwardness)
-    let prevGid = -2;
-    const widths: Array<number | number[]> = [];
-    glyphs.forEach((glyph) => {
-      const gid = glyph.id;
+  private deriveWidths = (pdfDoc: PDFDocument) => {
+    const glyphs = this.allGlyphsInFontSortedById();
 
-      if (gid - prevGid > 1) {
-        widths.push(gid);
-        widths.push([]);
-      }
-      prevGid = gid;
+    const sectionDelimiters = mapIntoContiguousGroups(
+      glyphs,
+      (glyph) => glyph.id,
+      (glyph) => PDFNumber.fromNumber(glyph.id),
+    ).map((id) => first(id)!);
 
-      const width = glyph.advanceWidth * this.scale;
-      (last(widths) as number[]).push(width);
-    });
+    const glyphsWidths = mapIntoContiguousGroups(
+      glyphs,
+      (glyph) => glyph.id,
+      (glyph) => PDFNumber.fromNumber(glyph.advanceWidth * this.scale),
+    ).map((groups) => PDFArray.fromArray(groups, pdfDoc.index));
 
-    // Convert the widths array into a PDFArray
-    return PDFArray.fromArray(
-      widths.map((codePointOrWidths) =>
-        isNumber(codePointOrWidths)
-          ? PDFNumber.fromNumber(codePointOrWidths)
-          : PDFArray.fromArray(
-              codePointOrWidths.map(PDFNumber.fromNumber),
-              pdfDoc.index,
-            ),
-      ),
-      pdfDoc.index,
-    );
+    type IWidths = Array<PDFNumber | PDFArray<PDFNumber>>;
+
+    const widths = flatten(zip(sectionDelimiters, glyphsWidths)) as IWidths;
+
+    return PDFArray.fromArray(widths, pdfDoc.index);
   };
 
   private embedCIDFontDictionaryIn = (
@@ -298,17 +296,18 @@ class PDFEmbeddedFontFactory {
 
   // TODO: Clean this up...
   private convertCodePointsToUtf16 = () => {
-    // TODO: Extract this into method, because it is shared...
-    const tempGlyphs = this.font.characterSet.map((cp) =>
-      this.font.glyphForCodePoint(cp),
-    );
-    const glyphs = sortedUniqBy(sortBy(tempGlyphs, 'id'), 'id');
+    const glyphs = this.allGlyphsInFontSortedById();
 
     const bfRangeRanges = mapIntoContiguousGroups(
       glyphs,
       (glyph) => glyph.id,
       (glyph) => glyph.id,
-    ).map((range) => [first(range)!, last(range)!]);
+    )
+      .map((range) => [first(range)!, last(range)!])
+      .map(([start, end]) => [
+        toHexStringOfMinLength(start, 4),
+        toHexStringOfMinLength(end, 4),
+      ]);
 
     const bfRangeMappings = mapIntoContiguousGroups(
       glyphs,
@@ -316,12 +315,7 @@ class PDFEmbeddedFontFactory {
       (glyph) => `<${glyph.codePoints.map(cmapCodePointFormat).join('')}>`,
     );
 
-    const bfRangeRangesStr = bfRangeRanges.map(([first, second]) => [
-      toHexStringOfMinLength(first, 4),
-      toHexStringOfMinLength(second, 4),
-    ]);
-
-    return [bfRangeRangesStr, bfRangeMappings];
+    return [bfRangeRanges, bfRangeMappings];
   };
 }
 
