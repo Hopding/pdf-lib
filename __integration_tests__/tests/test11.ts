@@ -1,4 +1,3 @@
-import chunk from 'lodash/chunk';
 import {
   drawLinesOfText,
   drawText,
@@ -127,15 +126,6 @@ const breakTextIntoLines = (
   return lines;
 };
 
-const breakLinesIntoGroups = (
-  lines: string[],
-  lineHeight: number,
-  maxHeight: number,
-) => {
-  const linesPerGroup = Math.floor(maxHeight / lineHeight);
-  return chunk(lines, linesPerGroup);
-};
-
 const drawLinesContentStream = (
   pdfDoc: PDFDocument,
   lines: string[],
@@ -193,13 +183,6 @@ const addPageWithFonts = (
 // Define the test kernel using the above content stream functions.
 const kernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.create();
-
-  // const [ubuntuRef, ubuntuFont] = pdfDoc.embedNonstandardFont(
-  //   assets.fonts.ttf.ubuntu_r,
-  // );
-  // const [sourceHanRef, sourceHanFont] = pdfDoc.embedNonstandardFont(
-  //   assets.fonts.otf.source_hans_jp,
-  // );
 
   addPageWithFonts(pdfDoc, winAnsiString, 18, 0.25, [
     StandardFonts.TimesRoman,
@@ -299,63 +282,6 @@ const kernel = (assets: ITestAssets) => {
     .addContentStreams(zapfDingbatsContentStreamRef, symbolContentStreamRef);
 
   pdfDoc.addPage(page);
-
-  // // Ubuntu
-  // const ubuntuFontSize = 15;
-  // const ubuntuString = String.fromCodePoint(...ubuntuFont.font.characterSet)
-  //   .split('')
-  //   .join(' ');
-  // const ubuntuLines = breakTextIntoLines(
-  //   ubuntuString,
-  //   ubuntuFontSize,
-  //   ubuntuFont,
-  //   600,
-  // );
-  // const ubuntuContentStreamRef = drawLinesContentStream(
-  //   pdfDoc,
-  //   ubuntuLines,
-  //   ubuntuFont,
-  //   'Ubuntu',
-  //   ubuntuFontSize,
-  //   675,
-  // );
-
-  // const sourceHanFontSize = 20;
-  // const sourceHanString = String.fromCodePoint(
-  //   ...sourceHanFont.font.characterSet,
-  // )
-  //   .split('')
-  //   .join(' ');
-  // const sourceHanLines = breakTextIntoLines(
-  //   sourceHanString,
-  //   sourceHanFontSize,
-  //   sourceHanFont,
-  //   600,
-  // );
-  // const sourceHanLineGroups = breakLinesIntoGroups(
-  //   sourceHanLines,
-  //   sourceHanFont.heightOfFontAtSize(sourceHanFontSize) + 10,
-  //   675,
-  // );
-
-  // sourceHanLineGroups.forEach((lines) => {
-  //   const sourceHanContentStreamRef = pdfDoc.register(
-  //     pdfDoc.createContentStream(
-  //       drawLinesOfText(lines.map(sourceHanFont.encodeText), {
-  //         font: 'SourceHan',
-  //         size: sourceHanFontSize,
-  //         x: 25,
-  //         y: 700 - 25 - sourceHanFontSize,
-  //         lineHeight: sourceHanFont.heightOfFontAtSize(sourceHanFontSize) + 10,
-  //       }),
-  //     ),
-  //   );
-  //   const page = pdfDoc
-  //     .createPage([650, 700])
-  //     .addFontDictionary('SourceHan', sourceHanRef)
-  //     .addContentStreams(sourceHanContentStreamRef);
-  //   pdfDoc.addPage(page);
-  // });
 
   return PDFDocumentWriter.saveToBytes(pdfDoc);
 };
