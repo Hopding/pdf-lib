@@ -105,6 +105,7 @@ const symbolString = String.fromCodePoint(...symbolCodePoints)
   .split('')
   .join(' ');
 
+// Primitive line break algorithm
 const breakTextIntoLines = (
   text: string,
   size: number,
@@ -116,6 +117,12 @@ const breakTextIntoLines = (
   while (textIdx < text.length) {
     let line = '';
     while (textIdx < text.length) {
+      if (text.charAt(textIdx) === '\n') {
+        lines.push(line);
+        textIdx += 1;
+        line = '';
+        continue;
+      }
       const newLine = line + text.charAt(textIdx);
       if (font.widthOfTextAtSize(newLine, size) > maxWidth) break;
       line = newLine;
@@ -184,6 +191,68 @@ const addPageWithFonts = (
 const kernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.create();
 
+  const [helveticaRef, helveticaFont] = pdfDoc.embedStandardFont(
+    StandardFonts.Helvetica,
+  );
+  const [helveticaBoldRef, helveticaBoldFont] = pdfDoc.embedStandardFont(
+    StandardFonts.HelveticaBold,
+  );
+
+  const title = 'Standard 14 Fonts Demo';
+  const description = `
+    The PDF specification requires that PDF readers provide 14 standard fonts. 
+    PDF documents may use these fonts without having to embed the fonts 
+    themselves in the document. The fonts are as follows:
+
+      • Times Roman (serif) in regular, bold, italic, and bold italic variants.
+      • Helvetica (sans-serif) in regular, bold, oblique, and bold oblique variants.
+      • Courier (monospace serif) in regular, bold, oblique, and bold oblique variants.
+      • ZapfDingbats (symbolic) in regular variant.
+      • Symbol (symbolic) in regular variant.
+
+    The Times Roman, Helvetica, and Courier fonts use WinAnsi encoding
+    (Windows-1252). ZapfDingbats and Symbol each use their own special 
+    encodings. 
+
+    Note that none of these fonts support anything near the entire Unicode 
+    character set. The WinAnsi fonts include most glyphs in the Latin alphabet.
+    The ZapfDingbat font includes an odd assortment of glyphs that don't below 
+    to any particular language or region. And the Symbol font includes 
+    mathematical symbols and glyphs for the greek alphabet.
+
+    The following pages contain examples of each of the standard 14 fonts. Each 
+    glyph supported by a given font's encoding is rendered to the page under a
+    header naming the font in use.`;
+  const descriptionLines = breakTextIntoLines(
+    description,
+    16,
+    helveticaFont,
+    600,
+  );
+  const titlePageContentStreamRef = pdfDoc.register(
+    pdfDoc.createContentStream(
+      drawText(helveticaBoldFont.encodeText(title), {
+        font: 'HelveticaBold',
+        size: 35,
+        y: 700 - 100,
+        x: 650 / 2 - helveticaBoldFont.widthOfTextAtSize(title, 35) / 2,
+      }),
+      drawLinesOfText(descriptionLines.map(helveticaFont.encodeText), {
+        font: 'Helvetica',
+        size: 16,
+        y: 525,
+        x: 25,
+      }),
+    ),
+  );
+  const titlePage = pdfDoc
+    .createPage([650, 700])
+    .addFontDictionary('Helvetica', helveticaRef)
+    .addFontDictionary('HelveticaBold', helveticaBoldRef)
+    .addContentStreams(titlePageContentStreamRef);
+  pdfDoc.addPage(titlePage);
+
+  // Times Roman
   addPageWithFonts(pdfDoc, winAnsiString, 18, 0.25, [
     StandardFonts.TimesRoman,
     StandardFonts.TimesRomanBold,
@@ -191,6 +260,7 @@ const kernel = (assets: ITestAssets) => {
     StandardFonts.TimesRomanBoldItalic,
   ]);
 
+  // Helvetica
   addPageWithFonts(pdfDoc, winAnsiString, 16.75, 0.4, [
     StandardFonts.Helvetica,
     StandardFonts.HelveticaBold,
@@ -198,6 +268,7 @@ const kernel = (assets: ITestAssets) => {
     StandardFonts.HelveticaBoldOblique,
   ]);
 
+  // Courier
   addPageWithFonts(pdfDoc, winAnsiString, 14.25, 0.75, [
     StandardFonts.Courier,
     StandardFonts.CourierBold,
@@ -205,9 +276,6 @@ const kernel = (assets: ITestAssets) => {
     StandardFonts.CourierBoldOblique,
   ]);
 
-  const [helveticaRef, helveticaFont] = pdfDoc.embedStandardFont(
-    StandardFonts.Helvetica,
-  );
   let yPos = 700;
 
   // ZapfDingbats
@@ -288,14 +356,23 @@ const kernel = (assets: ITestAssets) => {
 
 export default {
   kernel,
-  title: 'PDF with Missing "endstream" EOL-Marker and Modified CTM Test',
+  title: 'Standard 14 Fonts Test',
   description:
-    'This tests that PDFs with missing EOL markers before their "endstream" keywords and a modified CTM can be parsed and modified with the default CTM.\nhttps://github.com/Hopding/pdf-lib/issues/12',
+    'This tests that each of the standard 14 fonts can be used to display text with the proper encodings.',
   checklist: [
     // 'the background of the PDF is a WaveOC USA, Inc. refund receipt.',
     // 'an image of Mario running is drawn on top of the receipt.',
     // 'the same image of Mario is drawn upside down and skewed.',
     // 'a box with solarized text is drawn underneath Mario.',
     // 'this box of text is angled upwards and skewed to the right.',
+
+    `the PDF contains 5 pages.`,
+    `the first page is titled "Standard 14 Fonts Demo".`,
+    `the first page contains a description of the document.`,
+    `on the second page, the entire WinAnsi character set is rendered in each of the 4 Times Roman font variants.`,
+    `on the third page, the entire WinAnsi character set is rendered in each of the 4 Helvetica font variants.`,
+    `on the fourth page, the entire WinAnsi character set is rendered in each of the 4 Courier font variants.`,
+    `on the fifth page, the entire ZapfDingbats character set is rendered.`,
+    `on the fifth page, the entire Symbol character set is rendered.`,
   ],
 };
