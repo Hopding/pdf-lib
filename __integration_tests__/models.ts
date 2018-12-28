@@ -11,6 +11,7 @@ export interface ITestAssets {
       fantasque_sans_mono_bi: Uint8Array;
       apple_storm_r: Uint8Array;
       hussar_3d_r: Uint8Array;
+      source_hans_jp: Uint8Array;
     };
   };
   images: {
