@@ -10,7 +10,6 @@ import { PDFDictionary, PDFName } from 'core/pdf-objects';
 import PDFOperators from 'core/pdf-operators';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 import { PDFContentStream } from 'core/pdf-structures';
-import PDFPage from 'core/pdf-structures/PDFPage';
 
 import { ITestAssets, ITestKernel } from '../models';
 
@@ -281,7 +280,6 @@ const loremIpsumLines = [
 const drawTextLines = (
   fontName: string,
   fontSize: number,
-  lines: number,
   extraSpace = false,
 ) => [
   Tf.of(fontName, fontSize),
@@ -314,14 +312,14 @@ const makePage2ContentStream = (pdfDoc: PDFDocument, pageSize: number) =>
       rg.of(101 / 255, 123 / 255, 131 / 255),
 
       // Draw 8 paragraphs of text, each in a different font.
-      ...drawTextLines('Ubuntu-R', 20, 5),
-      ...drawTextLines('Fantasque-BI', 25, 5),
-      ...drawTextLines('IndieFlower-R', 25, 5),
-      ...drawTextLines('GreatVibes-R', 30, 5),
-      ...drawTextLines('AppleStorm-R', 25, 5),
-      ...drawTextLines('BioRhyme-R', 15, 5),
-      ...drawTextLines('PressStart2P-R', 15, 5),
-      ...drawTextLines('Hussar3D-R', 25, 5, true),
+      ...drawTextLines('Ubuntu-R', 20),
+      ...drawTextLines('Fantasque-BI', 25),
+      ...drawTextLines('IndieFlower-R', 25),
+      ...drawTextLines('GreatVibes-R', 30),
+      ...drawTextLines('AppleStorm-R', 25),
+      ...drawTextLines('BioRhyme-R', 15),
+      ...drawTextLines('PressStart2P-R', 15),
+      ...drawTextLines('Hussar3D-R', 25, true),
     ),
   );
 
@@ -473,9 +471,9 @@ export default {
     'the lines are shaped like hot dogs, NOT rectangles.',
     'the background color of the lower-right quadrant of page 1 is light gray.',
     'the lower-right quadrant of page 1 contains a dark gray, centered, square.',
-    'the square\'s corners are rounded, NOT sharp.',
+    `the square's corners are rounded, NOT sharp.`,
     'the dark gray square contains a white square.',
-    'the white square\'s edges are flat, NOT sharp.',
+    `the white square's edges are flat, NOT sharp.`,
     'the white square contains a black square with sharp edges.',
     'the background color of page 2 is solarized (a dirty white).',
     'there are 8 paragraphs of text on page 2, each in a different font.',

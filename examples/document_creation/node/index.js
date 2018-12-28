@@ -28,15 +28,15 @@ const pdfDoc = PDFDocumentFactory.create();
 
 // Let's define some constants that we can use to reference the fonts and
 // images later in the script.
-const HELVETIVA_FONT = 'Helvetica';
+const HELVETICA_FONT = 'Helvetica';
 const UBUNTU_FONT = 'Ubuntu';
 const UNICORN_JPG = 'UnicornJpg';
 const MARIO_PNG = 'MarioPng';
 
-// Now we embed a standard font (Helvetiva), and the custom TrueType font we
+// Now we embed a standard font (Helvetica), and the custom TrueType font we
 // read in (Ubuntu-R).
 const [helveticaFontRef, helveticaFont] = pdfDoc.embedStandardFont(
-  HELVETIVA_FONT,
+  HELVETICA_FONT,
 );
 const [ubuntuFontRef] = pdfDoc.embedFont(assets.ubuntuFontBytes);
 
@@ -52,11 +52,11 @@ const [marioPngRef, marioPngDims] = pdfDoc.embedPNG(assets.marioPngBytes);
 const PAGE_1_WIDTH = 600;
 const PAGE_1_HEIGHT = 750;
 
-// Next we create a page, and add the Helvetiva font and JPG image to it. This
+// Next we create a page, and add the Helvetica font and JPG image to it. This
 // allows us to use the font and image in the page's content stream.
 const page1 = pdfDoc
   .createPage([PAGE_1_WIDTH, PAGE_1_HEIGHT])
-  .addFontDictionary(HELVETIVA_FONT, helveticaFontRef)
+  .addFontDictionary(HELVETICA_FONT, helveticaFontRef)
   .addImageObject(UNICORN_JPG, unicornJpgRef);
 
 // Let's define some constants for the JPG image's width and height. We'll use
@@ -86,13 +86,13 @@ const contentStream1 = pdfDoc.createContentStream(
   drawText('This PDF was Created with JavaScript!', {
     x: 85,
     y: PAGE_1_HEIGHT - 48,
-    font: HELVETIVA_FONT,
+    font: HELVETICA_FONT,
     size: 24,
   }),
   drawText(helveticaFont.encodeText('Olé! - Œ'), {
     x: PAGE_1_WIDTH * 0.5 - 30,
     y: PAGE_1_HEIGHT - 48 - 30,
-    font: HELVETIVA_FONT,
+    font: HELVETICA_FONT,
     size: 12,
   }),
   // Now we'll draw the Unicorn image on the page's content stream. We'll
