@@ -1,10 +1,10 @@
 import chunk from 'lodash/chunk';
 import {
   drawLinesOfText,
+  drawText,
   PDFDocumentFactory,
   PDFDocumentWriter,
   StandardFonts,
-  drawText,
 } from '../../src';
 
 import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';

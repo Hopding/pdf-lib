@@ -93,6 +93,14 @@ class PDFEmbeddedFontFactory {
     this.allGlyphsInFontSortedById = sortedUniqBy(sortBy(glyphs, 'id'), 'id');
   }
 
+  /**
+   * Embeds the font into a [[PDFDocument]].
+   *
+   * @param pdfDoc A `PDFDocument` object into which the font will be embedded.
+   *
+   * @returns A `PDFIndirectReference` to the font dictionary that was
+   *          embedded in the `PDFDocument`.
+   */
   embedFontIn = (pdfDoc: PDFDocument): PDFIndirectReference<PDFDictionary> => {
     validate(
       pdfDoc,
@@ -103,6 +111,16 @@ class PDFEmbeddedFontFactory {
     return this.embedFontDictionaryIn(pdfDoc, fontName);
   };
 
+  /**
+   * Encode the JavaScript string into this font. JavaScript encodes strings in
+   * Unicode, but embedded fonts use their own custom encodings. So this method
+   * should be used to encode text before passing the encoded text to one of the
+   * text showing operators, such as [[drawText]] or [[drawLinesOfText]].
+   *
+   * @param text The string of text to be encoded.
+   *
+   * @returns A `PDFHexString` of the encoded text.
+   */
   encodeText = (text: string) => {
     const { glyphs } = this.font.layout(text);
     return PDFHexString.fromString(
@@ -110,6 +128,15 @@ class PDFEmbeddedFontFactory {
     );
   };
 
+  /**
+   * Measures the width of the JavaScript string when displayed as glyphs of
+   * this font of a particular `size`.
+   *
+   * @param text The string of text to be measured.
+   * @param size The size to be used when calculating the text's width.
+   *
+   * @returns A `number` representing the width of the text.
+   */
   widthOfTextAtSize = (text: string, size: number) => {
     const { glyphs } = this.font.layout(text);
 
@@ -122,6 +149,12 @@ class PDFEmbeddedFontFactory {
     return sum(widths) * scale;
   };
 
+  /**
+   * Measures the height of this font at a particular size. Note that the height
+   * of the font is independent of the particular glyphs being displayed, so
+   * this method does not accept a `text` param, like
+   * [[PDFStandardFontFactory.widthOfTextAtSize]] does.
+   */
   heightOfFontAtSize = (size: number) => {
     const { ascent, descent, bbox } = this.font;
     const yTop = (ascent || bbox.maxY) * this.scale;

@@ -253,7 +253,7 @@ class PDFDocument {
   /**
    * Embeds the font contained in the specified `Uint8Array` in the document.
    *
-   * @deprecated
+   * @deprecated Please use [[PDFDocument.embedNonStandardFont]] instead.
    *
    * @param fontData A `Uint8Array` containing an OpenType (`.otf`) or TrueType
    *                 (`.ttf`) font.
@@ -271,7 +271,14 @@ class PDFDocument {
   };
 
   /**
-   * TODO: Document this...
+   * Embeds the font contained in the specified `Uint8Array` in the document.
+   *
+   * @param fontData A `Uint8Array` containing an OpenType (`.otf`) or TrueType
+   *                 (`.ttf`) font.
+   *
+   * @returns A tuple containing (1) the [[PDFIndirectReference]] under which the
+   *          specified font is registered, and (2) a [[PDFEmbeddedFontFactory]]
+   *          object containing font metadata properties and methods.
    */
   embedNonstandardFont = (
     fontData: Uint8Array,

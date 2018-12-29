@@ -51,6 +51,14 @@ class PDFStandardFontFactory {
       : Encodings.WinAnsi;
   }
 
+  /**
+   * Embeds the font into a [[PDFDocument]].
+   *
+   * @param pdfDoc A `PDFDocument` object into which the font will be embedded.
+   *
+   * @returns A `PDFIndirectReference` to the font dictionary that was
+   *          embedded in the `PDFDocument`.
+   */
   embedFontIn = (pdfDoc: PDFDocument): PDFIndirectReference<PDFDictionary> => {
     validate(
       pdfDoc,
@@ -75,6 +83,17 @@ class PDFStandardFontFactory {
     return pdfDoc.register(fontDict);
   };
 
+  /**
+   * Encode the JavaScript string into this font. JavaScript encodes strings in
+   * Unicode, but standard fonts use either WinAnsi, ZapfDingbats, or Symbol
+   * encodings. This method should be used to encode text before passing the
+   * encoded text to one of the text showing operators, such as [[drawText]] or
+   * [[drawLinesOfText]].
+   *
+   * @param text The string of text to be encoded.
+   *
+   * @returns A `PDFHexString` of the encoded text.
+   */
   encodeText = (text: string): PDFHexString =>
     PDFHexString.fromString(
       this.encodeTextAsGlyphs(text)
@@ -83,7 +102,16 @@ class PDFStandardFontFactory {
         .join(''),
     );
 
-  widthOfTextAtSize = (text: string, size: number) => {
+  /**
+   * Measures the width of the JavaScript string when displayed as glyphs of
+   * this font of a particular `size`.
+   *
+   * @param text The string of text to be measured.
+   * @param size The size to be used when calculating the text's width.
+   *
+   * @returns A `number` representing the width of the text.
+   */
+  widthOfTextAtSize = (text: string, size: number): number => {
     const charNames = this.encodeTextAsGlyphs(text).map((glyph) => glyph.name);
 
     const widths = charNames.map((charName, idx) => {
@@ -98,7 +126,13 @@ class PDFStandardFontFactory {
     return sum(widths) * scale;
   };
 
-  heightOfFontAtSize = (size: number) => {
+  /**
+   * Measures the height of this font at a particular size. Note that the height
+   * of the font is independent of the particular glyphs being displayed, so
+   * this method does not accept a `text` param, like
+   * [[PDFStandardFontFactory.widthOfTextAtSize]] does.
+   */
+  heightOfFontAtSize = (size: number): number => {
     const { Ascender, Descender, FontBBox } = this.font;
     const yTop = Ascender || FontBBox[3];
     const yBottom = Descender || FontBBox[1];
