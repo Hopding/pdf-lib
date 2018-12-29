@@ -360,12 +360,6 @@ export default {
   description:
     'This tests that each of the standard 14 fonts can be used to display text with the proper encodings.',
   checklist: [
-    // 'the background of the PDF is a WaveOC USA, Inc. refund receipt.',
-    // 'an image of Mario running is drawn on top of the receipt.',
-    // 'the same image of Mario is drawn upside down and skewed.',
-    // 'a box with solarized text is drawn underneath Mario.',
-    // 'this box of text is angled upwards and skewed to the right.',
-
     `the PDF contains 5 pages.`,
     `the first page is titled "Standard 14 Fonts Demo".`,
     `the first page contains a description of the document.`,

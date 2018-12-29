@@ -1,9 +1,10 @@
 import chunk from 'lodash/chunk';
 import {
   drawLinesOfText,
-  PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
+  StandardFonts,
+  drawText,
 } from '../../src';
 
 import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';
@@ -47,6 +48,12 @@ const breakTextIntoLines = (
   while (textIdx < text.length) {
     let line = '';
     while (textIdx < text.length) {
+      if (text.charAt(textIdx) === '\n') {
+        lines.push(line);
+        textIdx += 1;
+        line = '';
+        continue;
+      }
       const glyph = glyphAtIndex(text, textIdx);
       const newLine = line + glyph;
       if (font.widthOfTextAtSize(newLine, size) > maxWidth) break;
@@ -70,6 +77,57 @@ const breakLinesIntoGroups = (
 // Define the test kernel using the above content stream functions.
 const kernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.create();
+
+  const [helveticaRef, helveticaFont] = pdfDoc.embedStandardFont(
+    StandardFonts.Helvetica,
+  );
+  const [helveticaBoldRef, helveticaBoldFont] = pdfDoc.embedStandardFont(
+    StandardFonts.HelveticaBold,
+  );
+
+  const title = 'Embedded UTF-16 Font Demo';
+  const description = `
+    In addition to the standard 14 fonts provided by PDF readers, the PDF
+    specification allows PDF documents to embed their own fonts. The standard
+    14 fonts only support a very limited latin and symbolic character set, but
+    embedded fonts can support arbitrary character sets and glyphs.
+
+    This document is a demonstration of an embedded font. Specifically, the
+    Source Han Serif Japanese Regular font. The following pages render all
+    characters supported by this font.
+
+    The characters are rendered from greatest to least (ordered by their
+    code points). Take special note of the first 1.25 pages of glyphs, as these
+    glyphs represent UTF-16 code points (the rest of the glyphs in this document
+    are UTF-8).`;
+  const descriptionLines = breakTextIntoLines(
+    description,
+    16,
+    helveticaFont,
+    600,
+  );
+  const titlePageContentStreamRef = pdfDoc.register(
+    pdfDoc.createContentStream(
+      drawText(helveticaBoldFont.encodeText(title), {
+        font: 'HelveticaBold',
+        size: 35,
+        y: 700 - 100,
+        x: 650 / 2 - helveticaBoldFont.widthOfTextAtSize(title, 35) / 2,
+      }),
+      drawLinesOfText(descriptionLines.map(helveticaFont.encodeText), {
+        font: 'Helvetica',
+        size: 16,
+        y: 525,
+        x: 25,
+      }),
+    ),
+  );
+  const titlePage = pdfDoc
+    .createPage([650, 700])
+    .addFontDictionary('Helvetica', helveticaRef)
+    .addFontDictionary('HelveticaBold', helveticaBoldRef)
+    .addContentStreams(titlePageContentStreamRef);
+  pdfDoc.addPage(titlePage);
 
   const [sourceHanRef, sourceHanFont] = pdfDoc.embedNonstandardFont(
     assets.fonts.otf.source_hans_jp,
@@ -115,14 +173,14 @@ const kernel = (assets: ITestAssets) => {
 
 export default {
   kernel,
-  title: 'PDF with Missing "endstream" EOL-Marker and Modified CTM Test',
+  title: 'Embedded Font with UTF-8 and UTF-16 Characters Test',
   description:
-    'This tests that PDFs with missing EOL markers before their "endstream" keywords and a modified CTM can be parsed and modified with the default CTM.\nhttps://github.com/Hopding/pdf-lib/issues/12',
+    'This tests that fonts containing characters outside the "standard" WinAnsi character set can be embedded, and their glyphs rendered correctly.',
   checklist: [
-    // 'the background of the PDF is a WaveOC USA, Inc. refund receipt.',
-    // 'an image of Mario running is drawn on top of the receipt.',
-    // 'the same image of Mario is drawn upside down and skewed.',
-    // 'a box with solarized text is drawn underneath Mario.',
-    // 'this box of text is angled upwards and skewed to the right.',
+    'the PDF contains 34 pages.',
+    `the first page is titled "Embedded UTF-16 Font Demo".`,
+    `the first page contains a description of the document.`,
+    `the remaining 33 pages contain all glyphs from the Source Han Serif Japanese Regular font.`,
+    `the first 1.25 pages contain no unknown glyph markers (usually displayed as boxes with "x"s in them)`,
   ],
 };
