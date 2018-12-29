@@ -62,9 +62,7 @@ const addRandomSuffix = (prefix?: string | null | void) =>
   `${prefix || 'Font'}-rand_${Math.floor(Math.random() * 10000)}`;
 
 /**
- * This Factory supports TrueType and OpenType fonts. Note that the apparent
- * hardcoding of values for OpenType fonts does not actually affect TrueType
- * fonts.
+ * This Factory supports embedded fonts.
  *
  * A note of thanks to the developers of https://github.com/devongovett/pdfkit,
  * as this class borrows heavily from:
@@ -248,13 +246,15 @@ class PDFEmbeddedFontFactory {
   };
 
   private embedUnicodeCmapIn = (pdfDoc: PDFDocument) => {
-    const streamContents = typedArrayFor(
-      createCmap(this.allGlyphsInFontSortedById),
+    const streamContents = pako.deflate(
+      typedArrayFor(createCmap(this.allGlyphsInFontSortedById)),
     );
 
-    // TODO: Compress this...
     const cmapStreamDict = PDFDictionary.from(
-      { Length: PDFNumber.fromNumber(streamContents.length) },
+      {
+        Filter: PDFName.from('FlateDecode'),
+        Length: PDFNumber.fromNumber(streamContents.length),
+      },
       pdfDoc.index,
     );
     const cmapStream = PDFRawStream.from(cmapStreamDict, streamContents);
