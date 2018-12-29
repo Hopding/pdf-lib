@@ -2,7 +2,7 @@ const fs = require('fs');
 const {
   PDFDocumentFactory,
   PDFDocumentWriter,
-  drawText,
+  StandardFonts,
   drawLinesOfText,
   drawImage,
   drawRectangle,
@@ -33,8 +33,12 @@ const MARIO_PNG = 'MarioPng';
 
 // Now we embed a standard font (Courier), and the custom TrueType font we
 // read in (Ubuntu-R).
-const [courierFontRef] = pdfDoc.embedStandardFont('Courier');
-const [ubuntuFontRef] = pdfDoc.embedFont(assets.ubuntuFontBytes);
+const [courierRef, courierFont] = pdfDoc.embedStandardFont(
+  StandardFonts.Courier,
+);
+const [ubuntuRef, ubuntuFont] = pdfDoc.embedNonstandardFont(
+  assets.ubuntuFontBytes,
+);
 
 // Next, we embed the PNG image we read in.
 const [marioPngRef, marioPngDims] = pdfDoc.embedPNG(assets.marioPngBytes);
@@ -51,7 +55,7 @@ const pages = pdfDoc.getPages();
 // Now we'll add the Courier font dictionary and Mario PNG image object that we
 // embedded into the document earlier.
 const existingPage = pages[0]
-  .addFontDictionary(COURIER_FONT, courierFontRef)
+  .addFontDictionary(COURIER_FONT, courierRef)
   .addImageObject(MARIO_PNG, marioPngRef);
 
 // Let's define some constants for the PNG image's width and height. We'll use
@@ -82,13 +86,16 @@ const newContentStream = pdfDoc.createContentStream(
     height: MARIO_PNG_HEIGHT,
   }),
   // Now let's draw 2 lines of red Courier text near the bottom of the page.
-  drawLinesOfText(['This text was added', 'with JavaScript!'], {
-    x: 30,
-    y: 150,
-    font: COURIER_FONT,
-    size: 48,
-    colorRgb: [1, 0, 0],
-  }),
+  drawLinesOfText(
+    ['This text was added', 'with JavaScript!'].map(courierFont.encodeText),
+    {
+      x: 30,
+      y: 150,
+      font: COURIER_FONT,
+      size: 48,
+      colorRgb: [1, 0, 0],
+    },
+  ),
 );
 
 // Here we (1) register the content stream to the PDF document, and (2) add the
@@ -100,7 +107,7 @@ existingPage.addContentStreams(pdfDoc.register(newContentStream));
 // JavaScript runtime (e.g. Node, the browser, or React Native).
 const page1 = pdfDoc
   .createPage([600, 250])
-  .addFontDictionary(UBUNTU_FONT, ubuntuFontRef);
+  .addFontDictionary(UBUNTU_FONT, ubuntuRef);
 
 // Let's define some RGB colors. Note that these arrays are of the form:
 //   [<red_intensity>, <green_intensity>, <blue_intensity>]
@@ -117,7 +124,9 @@ const contentStream1 = pdfDoc.createContentStream(
     colorRgb: PURPLE,
   }),
   drawLinesOfText(
-    ['This is the new first page.', 'It was inserted with JavaScript!'],
+    ['This is the new first page.', 'It was inserted with JavaScript!'].map(
+      ubuntuFont.encodeText,
+    ),
     {
       x: 30,
       y: 130,
@@ -137,7 +146,7 @@ page1.addContentStreams(pdfDoc.register(contentStream1));
 // JavaScript runtime (e.g. Node, the browser, or React Native).
 const page3 = pdfDoc
   .createPage([600, 250])
-  .addFontDictionary(UBUNTU_FONT, ubuntuFontRef);
+  .addFontDictionary(UBUNTU_FONT, ubuntuRef);
 
 const contentStream3 = pdfDoc.createContentStream(
   drawRectangle({
@@ -146,7 +155,9 @@ const contentStream3 = pdfDoc.createContentStream(
     colorRgb: ORANGE,
   }),
   drawLinesOfText(
-    ['This is the new last page.', 'It was inserted with JavaScript!'],
+    ['This is the new last page.', 'It was inserted with JavaScript!'].map(
+      ubuntuFont.encodeText,
+    ),
     {
       x: 30,
       y: 130,

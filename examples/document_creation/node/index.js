@@ -2,6 +2,7 @@ const fs = require('fs');
 const {
   PDFDocumentFactory,
   PDFDocumentWriter,
+  StandardFonts,
   drawText,
   drawLinesOfText,
   drawRectangle,
@@ -36,9 +37,11 @@ const MARIO_PNG = 'MarioPng';
 // Now we embed a standard font (Helvetica), and the custom TrueType font we
 // read in (Ubuntu-R).
 const [helveticaFontRef, helveticaFont] = pdfDoc.embedStandardFont(
-  HELVETICA_FONT,
+  StandardFonts.Helvetica,
 );
-const [ubuntuFontRef] = pdfDoc.embedFont(assets.ubuntuFontBytes);
+const [ubuntuFontRef, ubuntuFont] = pdfDoc.embedNonstandardFont(
+  assets.ubuntuFontBytes,
+);
 
 // Next, we embed the JPG and PNG images we read in.
 const [unicornJpgRef, unicornJpgDims] = pdfDoc.embedJPG(assets.unicornJpgBytes);
@@ -83,7 +86,7 @@ const contentStream1 = pdfDoc.createContentStream(
   // several lower-level PDF operators. Usually, you'll want to work with
   // composite operators - they make things a lot easier! The naming convention
   // for composite operators is "draw<thing_being_drawn>".
-  drawText('This PDF was Created with JavaScript!', {
+  drawText(helveticaFont.encodeText('This PDF was Created with JavaScript!'), {
     x: 85,
     y: PAGE_1_HEIGHT - 48,
     font: HELVETICA_FONT,
@@ -187,7 +190,7 @@ const contentStream2 = pdfDoc.createContentStream(
       'Here is a picture of Mario',
       'running. It was placed in',
       'this PDF using JavaScript!',
-    ],
+    ].map(ubuntuFont.encodeText),
     {
       x: PAGE_2_WIDTH * 0.5 - TEXT_BOX_WIDTH * 0.5 + 10,
       y: PAGE_2_HEIGHT * 0.5 - 38,
