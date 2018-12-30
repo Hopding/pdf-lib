@@ -8,7 +8,7 @@
 
 **ΤBfRange**: *[[`string`, `string`], `string`[]]*
 
-*Defined in [core/pdf-structures/factories/CMap.ts:9](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L9)*
+*Defined in [core/pdf-structures/factories/CMap.ts:9](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L9)*
 
 \[\[start, end\], mappings\]
 
@@ -22,7 +22,7 @@ ___
 
 ▸ **cmapCodePointFormat**(codePoint: *`number`*): `string`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:70](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L70)*
+*Defined in [core/pdf-structures/factories/CMap.ts:70](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L70)*
 
 **Parameters:**
 
@@ -39,7 +39,7 @@ ___
 
 ▸ **cmapHexFormat**(...values: *`string`[]*): `string`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:66](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L66)*
+*Defined in [core/pdf-structures/factories/CMap.ts:66](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L66)*
 
 **Parameters:**
 
@@ -56,7 +56,7 @@ ___
 
 ▸ **cmapHexString**(value: *`number`*): `string`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:68](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L68)*
+*Defined in [core/pdf-structures/factories/CMap.ts:68](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L68)*
 
 **Parameters:**
 
@@ -73,7 +73,7 @@ ___
 
 ▸ **createCmap**(glyphs: *`Glyph`[]*): `string`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:12](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L12)*
+*Defined in [core/pdf-structures/factories/CMap.ts:12](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L12)*
 
 `glyphs` should be an array of unique glyphs sorted by their ID
 
@@ -92,7 +92,7 @@ ___
 
 ▸ **fillBfrangeTemplate**(__namedParameters: *[`any`, `Array`]*): `string`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:36](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L36)*
+*Defined in [core/pdf-structures/factories/CMap.ts:36](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L36)*
 
 **Parameters:**
 
@@ -109,7 +109,7 @@ ___
 
 ▸ **fillCmapTemplate**(bfRanges: *[BfRange](_core_pdf_structures_factories_cmap_.md#bfrange)[]*): `string`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:43](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L43)*
+*Defined in [core/pdf-structures/factories/CMap.ts:43](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L43)*
 
 **Parameters:**
 
@@ -126,7 +126,7 @@ ___
 
 ▸ **highSurrogate**(codePoint: *`number`*): `number`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:94](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L94)*
+*Defined in [core/pdf-structures/factories/CMap.ts:94](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L94)*
 
 **Parameters:**
 
@@ -143,7 +143,7 @@ ___
 
 ▸ **isUtf16CodePoint**(codePoint: *`number`*): `boolean`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:89](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L89)*
+*Defined in [core/pdf-structures/factories/CMap.ts:89](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L89)*
 
 **Parameters:**
 
@@ -160,7 +160,7 @@ ___
 
 ▸ **isUtf8CodePoint**(codePoint: *`number`*): `boolean`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:85](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L85)*
+*Defined in [core/pdf-structures/factories/CMap.ts:85](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L85)*
 
 **Parameters:**
 
@@ -177,7 +177,7 @@ ___
 
 ▸ **lowSurrogate**(codePoint: *`number`*): `number`
 
-*Defined in [core/pdf-structures/factories/CMap.ts:99](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/CMap.ts#L99)*
+*Defined in [core/pdf-structures/factories/CMap.ts:99](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/CMap.ts#L99)*
 
 **Parameters:**
 

@@ -18,7 +18,7 @@ A note of thanks to the developers of [https://github.com/devongovett/pdfkit](ht
 
 ⊕ **new PDFFontFactory**(fontData: *`Uint8Array`*, flagOptions: *[IFontFlagOptions](../interfaces/_core_pdf_structures_factories_pdffontfactory_.ifontflagoptions.md)*): [PDFFontFactory](_core_pdf_structures_factories_pdffontfactory_.pdffontfactory.md)
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:78](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFFontFactory.ts#L78)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:78](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFFontFactory.ts#L78)*
 
 **Parameters:**
 
@@ -39,7 +39,7 @@ ___
 
 **● flagOptions**: *[IFontFlagOptions](../interfaces/_core_pdf_structures_factories_pdffontfactory_.ifontflagoptions.md)*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:78](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFFontFactory.ts#L78)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:78](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFFontFactory.ts#L78)*
 
 ___
 <a id="font"></a>
@@ -48,7 +48,7 @@ ___
 
 **● font**: *`Font`*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:75](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFFontFactory.ts#L75)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:75](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFFontFactory.ts#L75)*
 
 ___
 <a id="fontdata"></a>
@@ -57,7 +57,7 @@ ___
 
 **● fontData**: *`Uint8Array`*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:77](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFFontFactory.ts#L77)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:77](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFFontFactory.ts#L77)*
 
 ___
 <a id="scale"></a>
@@ -66,7 +66,7 @@ ___
 
 **● scale**: *`number`*
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:76](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFFontFactory.ts#L76)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:76](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFFontFactory.ts#L76)*
 
 ___
 
@@ -78,7 +78,7 @@ ___
 
 ▸ **embedFontIn**(pdfDoc: *[PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)*, name?: * `undefined` &#124; `string`*): `PDFIndirectReference`<`PDFDictionary`>
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:98](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFFontFactory.ts#L98)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:98](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFFontFactory.ts#L98)*
 
 **Parameters:**
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **getCodePointWidth**(code: *`number`*): `number`
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:187](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFFontFactory.ts#L187)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:187](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFFontFactory.ts#L187)*
 
 **Parameters:**
 
@@ -113,7 +113,7 @@ ___
 
 ▸ **for**(fontData: *`Uint8Array`*, flagOptions: *[IFontFlagOptions](../interfaces/_core_pdf_structures_factories_pdffontfactory_.ifontflagoptions.md)*): [PDFFontFactory](_core_pdf_structures_factories_pdffontfactory_.pdffontfactory.md)
 
-*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:72](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFFontFactory.ts#L72)*
+*Defined in [core/pdf-structures/factories/PDFFontFactory.ts:72](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFFontFactory.ts#L72)*
 
 **Parameters:**
 

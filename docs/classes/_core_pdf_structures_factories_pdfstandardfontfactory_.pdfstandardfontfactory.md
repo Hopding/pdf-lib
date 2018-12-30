@@ -16,7 +16,7 @@ A note of thanks to the developers of [https://github.com/foliojs/pdfkit](https:
 
 ⊕ **new PDFStandardFontFactory**(fontName: *`IFontNames`*): [PDFStandardFontFactory](_core_pdf_structures_factories_pdfstandardfontfactory_.pdfstandardfontfactory.md)
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:35](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L35)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:35](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L35)*
 
 **Parameters:**
 
@@ -36,7 +36,7 @@ ___
 
 **● encoding**: *`IStandardEncoding`*
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:35](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L35)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:35](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L35)*
 
 ___
 <a id="font"></a>
@@ -45,7 +45,7 @@ ___
 
 **● font**: *`Font`*
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:33](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L33)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:33](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L33)*
 
 ___
 <a id="fontname"></a>
@@ -54,7 +54,7 @@ ___
 
 **● fontName**: *`IFontNames`*
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:34](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L34)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:34](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L34)*
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 ▸ **embedFontIn**(pdfDoc: *[PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md)*): `PDFIndirectReference`<`PDFDictionary`>
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:62](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L62)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:62](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L62)*
 
 Embeds the font into a [PDFDocument](_core_pdf_document_pdfdocument_.pdfdocument.md).
 
@@ -87,7 +87,7 @@ ___
 
 ▸ **encodeText**(text: *`string`*): `PDFHexString`
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:97](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L97)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:97](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L97)*
 
 Encode the JavaScript string into this font. JavaScript encodes strings in Unicode, but standard fonts use either WinAnsi, ZapfDingbats, or Symbol encodings. This method should be used to encode text before passing the encoded text to one of the text showing operators, such as [drawText](../modules/_helpers_pdf_operators_composite_text_.md#drawtext) or [drawLinesOfText](../modules/_helpers_pdf_operators_composite_text_.md#drawlinesoftext).
 
@@ -107,7 +107,7 @@ ___
 
 ▸ **heightOfFontAtSize**(size: *`number`*): `number`
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:135](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L135)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:135](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L135)*
 
 Measures the height of this font at a particular size. Note that the height of the font is independent of the particular glyphs being displayed, so this method does not accept a `text` param, like [PDFStandardFontFactory.widthOfTextAtSize](_core_pdf_structures_factories_pdfstandardfontfactory_.pdfstandardfontfactory.md#widthoftextatsize) does.
 
@@ -126,7 +126,7 @@ ___
 
 ▸ **widthOfTextAtSize**(text: *`string`*, size: *`number`*): `number`
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:114](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L114)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:114](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L114)*
 
 Measures the width of the JavaScript string when displayed as glyphs of this font of a particular `size`.
 
@@ -147,7 +147,7 @@ ___
 
 ▸ **for**(fontName: *`IFontNames`*): [PDFStandardFontFactory](_core_pdf_structures_factories_pdfstandardfontfactory_.pdfstandardfontfactory.md)
 
-*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:30](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L30)*
+*Defined in [core/pdf-structures/factories/PDFStandardFontFactory.ts:30](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFStandardFontFactory.ts#L30)*
 
 **Parameters:**
 

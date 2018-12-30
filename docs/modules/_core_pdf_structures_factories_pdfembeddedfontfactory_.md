@@ -25,7 +25,7 @@
 
 ▸ **addRandomSuffix**(prefix?: * `string` &#124; `null` &#124; `void`*): `string`
 
-*Defined in [core/pdf-structures/factories/PDFEmbeddedFontFactory.ts:61](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFEmbeddedFontFactory.ts#L61)*
+*Defined in [core/pdf-structures/factories/PDFEmbeddedFontFactory.ts:61](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFEmbeddedFontFactory.ts#L61)*
 
 **Parameters:**
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **makeFontFlags**(options: *[IFontFlagOptions](../interfaces/_core_pdf_structures_factories_pdfembeddedfontfactory_.ifontflagoptions.md)*): `number`
 
-*Defined in [core/pdf-structures/factories/PDFEmbeddedFontFactory.ts:42](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/core/pdf-structures/factories/PDFEmbeddedFontFactory.ts#L42)*
+*Defined in [core/pdf-structures/factories/PDFEmbeddedFontFactory.ts:42](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-structures/factories/PDFEmbeddedFontFactory.ts#L42)*
 
 **Parameters:**
 

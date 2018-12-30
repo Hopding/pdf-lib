@@ -8,7 +8,7 @@
 
 ▸ **drawLinesOfText**(lines: * `string`[] &#124; `PDFHexString`[]*, options: *[IDrawLinesOfTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawlinesoftextoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/text.ts:263](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L263)*
+*Defined in [helpers/pdf-operators/composite/text.ts:263](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/helpers/pdf-operators/composite/text.ts#L263)*
 
 Draws multiple lines of text in a content stream.
 
@@ -51,7 +51,7 @@ ___
 
 ▸ **drawText**(line: * `string` &#124; `PDFHexString`*, options: *[IDrawTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawtextoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/text.ts:121](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L121)*
+*Defined in [helpers/pdf-operators/composite/text.ts:121](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/helpers/pdf-operators/composite/text.ts#L121)*
 
 Draws a line of text in a content stream.
 
