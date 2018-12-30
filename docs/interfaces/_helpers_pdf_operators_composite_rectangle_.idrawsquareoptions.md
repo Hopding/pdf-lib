@@ -14,7 +14,7 @@ Options object with named parameters for the [drawSquare](../modules/_helpers_pd
 
 **● borderColorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:236](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L236)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:236](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L236)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -30,7 +30,7 @@ ___
 **● borderWidth**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:210](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L210)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:210](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L210)*
 
 Default value is `15`.
 
@@ -43,7 +43,7 @@ ___
 
 **● colorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:223](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L223)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:223](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L223)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -59,7 +59,7 @@ ___
 **● rotateDegrees**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:243](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L243)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:243](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L243)*
 
 Default value is `0`.
 
@@ -73,7 +73,7 @@ ___
 **● rotateRadians**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:250](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L250)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:250](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L250)*
 
 Default value is `0`.
 
@@ -87,7 +87,7 @@ ___
 **● size**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:204](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L204)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:204](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L204)*
 
 Default value is `100`.
 
@@ -101,7 +101,7 @@ ___
 **● skewDegrees**: * `undefined` &#124; `object`
 *
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:258](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L258)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:258](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L258)*
 
 Default value is `{ xAxis: 0, yAxis: 0 }`.
 
@@ -115,7 +115,7 @@ ___
 **● skewRadians**: * `undefined` &#124; `object`
 *
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:266](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L266)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:266](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L266)*
 
 Default value is `{ xAxis: 0, yAxis: 0 }`.
 
@@ -129,7 +129,7 @@ ___
 **● x**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:192](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L192)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:192](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L192)*
 
 Default value is `0`.
 
@@ -143,7 +143,7 @@ ___
 **● y**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/rectangle.ts:198](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/rectangle.ts#L198)*
+*Defined in [helpers/pdf-operators/composite/rectangle.ts:198](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/rectangle.ts#L198)*
 
 Default value is `0`.
 

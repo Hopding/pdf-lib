@@ -6,9 +6,9 @@
 
 ## `<Const>` drawLinesOfText
 
-▸ **drawLinesOfText**(lines: *`string`[]*, options: *[IDrawLinesOfTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawlinesoftextoptions.md)*): `PDFOperator`[]
+▸ **drawLinesOfText**(lines: * `string`[] &#124; `PDFHexString`[]*, options: *[IDrawLinesOfTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawlinesoftextoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/text.ts:263](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L263)*
+*Defined in [helpers/pdf-operators/composite/text.ts:263](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L263)*
 
 Draws multiple lines of text in a content stream.
 
@@ -39,7 +39,7 @@ const page = pdfDoc
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| lines | `string`[] |  An array of strings to be drawn. |
+| lines |  `string`[] &#124; `PDFHexString`[]|  An array of strings to be drawn. |
 | options | [IDrawLinesOfTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawlinesoftextoptions.md) |  An options object with named parameters. |
 
 **Returns:** `PDFOperator`[]
@@ -49,9 +49,9 @@ ___
 
 ## `<Const>` drawText
 
-▸ **drawText**(line: *`string`*, options: *[IDrawTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawtextoptions.md)*): `PDFOperator`[]
+▸ **drawText**(line: * `string` &#124; `PDFHexString`*, options: *[IDrawTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawtextoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/text.ts:121](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L121)*
+*Defined in [helpers/pdf-operators/composite/text.ts:121](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L121)*
 
 Draws a line of text in a content stream.
 
@@ -80,7 +80,7 @@ const page = pdfDoc
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| line | `string` |  A string of text to draw. |
+| line |  `string` &#124; `PDFHexString`|  A string of text to draw. |
 | options | [IDrawTextOptions](../interfaces/_helpers_pdf_operators_composite_text_.idrawtextoptions.md) |  An options object with named parameters. |
 
 **Returns:** `PDFOperator`[]
