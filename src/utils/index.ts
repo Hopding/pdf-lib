@@ -1,4 +1,5 @@
 /* tslint:disable no-bitwise */
+import padStart from 'lodash/padStart';
 import sum from 'lodash/sum';
 
 export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
@@ -83,7 +84,7 @@ export const toCharCode = (charStr: string) => {
 export const charFromCode = (code: number) => String.fromCharCode(code);
 
 export const toHexStringOfMinLength = (num: number, minLength: number) =>
-  num.toString(16).padStart(minLength, '0');
+  padStart(num.toString(16), minLength, '0');
 
 export const toHexString = (num: number) => toHexStringOfMinLength(num, 2);
 
