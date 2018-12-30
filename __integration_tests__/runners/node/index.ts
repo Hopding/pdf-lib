@@ -51,6 +51,7 @@ const assets = {
       ),
       apple_storm_r: readFont('apple_storm/AppleStormCBo.otf'),
       hussar_3d_r: readFont('hussar_3d/Hussar3DFour.otf'),
+      source_hans_jp: readFont('source_hans_jp/SourceHanSerifJP-Regular.otf'),
     },
   },
   images: {

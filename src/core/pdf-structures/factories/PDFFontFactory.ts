@@ -56,7 +56,10 @@ const fontFlags = (options: IFontFlagOptions) => {
   return parseInt(flags, 2);
 };
 
+// TODO: Remove this class in v1.0.0 - keeping for backwards compatibility.
 /**
+ * @deprecated Please use the [[PDFEmbeddedFontFactory]] instead.
+ *
  * This Factory supports TrueType and OpenType fonts. Note that the apparent
  * hardcoding of values for OpenType fonts does not actually affect TrueType
  * fonts.

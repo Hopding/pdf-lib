@@ -14,7 +14,7 @@ Options object with named parameters for the [drawCircle](../modules/_helpers_pd
 
 **● borderColorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:275](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L275)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:275](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L275)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -30,7 +30,7 @@ ___
 **● borderWidth**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:249](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L249)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:249](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L249)*
 
 Default value is `15`.
 
@@ -43,7 +43,7 @@ ___
 
 **● colorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:262](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L262)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:262](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L262)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -59,7 +59,7 @@ ___
 **● rotateDegrees**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:282](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L282)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:282](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L282)*
 
 Default value is `0`.
 
@@ -73,7 +73,7 @@ ___
 **● rotateRadians**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:289](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L289)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:289](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L289)*
 
 Default value is `0`.
 
@@ -87,7 +87,7 @@ ___
 **● size**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:243](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L243)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:243](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L243)*
 
 Default value is `100`.
 
@@ -101,7 +101,7 @@ ___
 **● skewDegrees**: * `undefined` &#124; `object`
 *
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:297](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L297)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:297](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L297)*
 
 Default value is `{ xAxis: 0, yAxis: 0 }`.
 
@@ -115,7 +115,7 @@ ___
 **● skewRadians**: * `undefined` &#124; `object`
 *
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:305](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L305)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:305](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L305)*
 
 Default value is `{ xAxis: 0, yAxis: 0 }`.
 
@@ -129,7 +129,7 @@ ___
 **● x**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:231](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L231)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:231](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L231)*
 
 Default value is `0`.
 
@@ -143,7 +143,7 @@ ___
 **● y**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:237](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/ellipse.ts#L237)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:237](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/ellipse.ts#L237)*
 
 Default value is `0`.
 

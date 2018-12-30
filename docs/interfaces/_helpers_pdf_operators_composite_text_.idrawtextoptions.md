@@ -14,7 +14,7 @@ Options object with named parameters for the [drawText](../modules/_helpers_pdf_
 
 **● colorRgb**: *`number`[]*
 
-*Defined in [helpers/pdf-operators/composite/text.ts:58](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L58)*
+*Defined in [helpers/pdf-operators/composite/text.ts:58](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L58)*
 
 Default value is `[0, 0, 0]` (black).
 
@@ -30,7 +30,7 @@ ___
 **● font**: * `string` &#124; `PDFName`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:39](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L39)*
+*Defined in [helpers/pdf-operators/composite/text.ts:39](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L39)*
 
 Name of the font to use when drawing the line of text. Should be present in the Font Dictionary of the page to which the content stream containing the `drawText` operator is applied.
 
@@ -42,7 +42,7 @@ ___
 **● rotateDegrees**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:67](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L67)*
+*Defined in [helpers/pdf-operators/composite/text.ts:67](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L67)*
 
 Default value is `0`.
 
@@ -56,7 +56,7 @@ ___
 **● rotateRadians**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:74](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L74)*
+*Defined in [helpers/pdf-operators/composite/text.ts:74](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L74)*
 
 Default value is `0`.
 
@@ -70,7 +70,7 @@ ___
 **● size**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:45](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L45)*
+*Defined in [helpers/pdf-operators/composite/text.ts:45](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L45)*
 
 Default value is `12`.
 
@@ -84,7 +84,7 @@ ___
 **● skewDegrees**: * `undefined` &#124; `object`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:82](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L82)*
+*Defined in [helpers/pdf-operators/composite/text.ts:82](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L82)*
 
 Default value is `{ xAxis: 0, yAxis: 0 }`.
 
@@ -98,7 +98,7 @@ ___
 **● skewRadians**: * `undefined` &#124; `object`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:90](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L90)*
+*Defined in [helpers/pdf-operators/composite/text.ts:90](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L90)*
 
 Default value is `{ xAxis: 0, yAxis: 0 }`.
 
@@ -112,7 +112,7 @@ ___
 **● x**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:27](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L27)*
+*Defined in [helpers/pdf-operators/composite/text.ts:27](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L27)*
 
 Default value is `0`.
 
@@ -126,7 +126,7 @@ ___
 **● y**: * `undefined` &#124; `number`
 *
 
-*Defined in [helpers/pdf-operators/composite/text.ts:33](https://github.com/Hopding/pdf-lib/blob/bdaae3d/src/helpers/pdf-operators/composite/text.ts#L33)*
+*Defined in [helpers/pdf-operators/composite/text.ts:33](https://github.com/Hopding/pdf-lib/blob/21a2bec/src/helpers/pdf-operators/composite/text.ts#L33)*
 
 Default value is `0`.
 

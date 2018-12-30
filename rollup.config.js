@@ -1,5 +1,6 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import json from 'rollup-plugin-json';
 import { terser } from 'rollup-plugin-terser';
 import { plugin as analyze } from 'rollup-plugin-analyzer';
 import visualizer from 'rollup-plugin-visualizer';
@@ -19,6 +20,7 @@ export default {
     //   // sourcemap: true,
     //   open: true,
     // }),
+    json(),
     nodeResolve({
       jsnext: true,
     }),

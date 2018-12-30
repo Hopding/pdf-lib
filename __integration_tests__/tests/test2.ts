@@ -14,16 +14,17 @@ import {
   lineJoin,
   lineTo,
   moveTo,
-  PDFContentStream,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
-  PDFPage,
   popGraphicsState,
   pushGraphicsState,
+  StandardFonts,
   translate,
 } from '../../src';
 
+import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';
+import PDFStandardFontFactory from 'core/pdf-structures/factories/PDFStandardFontFactory';
 import { ITestAssets, ITestKernel } from '../models';
 
 const ipsumLines = [
@@ -32,7 +33,11 @@ const ipsumLines = [
   'Labore nisi officiis quia ipsum qui voluptatem omnis.',
 ];
 
-const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
+const makePage1ContentStream = (
+  pdfDoc: PDFDocument,
+  size: number,
+  { timesRomanFont }: { timesRomanFont: PDFStandardFontFactory },
+) =>
   pdfDoc.createContentStream(
     // Upper-left quadrant
     pushGraphicsState(),
@@ -89,7 +94,9 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
     clipEvenOdd(),
     endPath(),
     drawLinesOfText(
-      [...ipsumLines, ...ipsumLines, ...ipsumLines, ...ipsumLines],
+      [...ipsumLines, ...ipsumLines, ...ipsumLines, ...ipsumLines].map(
+        timesRomanFont.encodeText,
+      ),
       {
         x: 5,
         y: size / 2 - 5 - 25,
@@ -150,55 +157,68 @@ const makePage1ContentStream = (pdfDoc: PDFDocument, size: number) =>
     popGraphicsState(),
   );
 
-const makePage2ContentStream = (pdfDoc: PDFDocument, size: number) =>
+const makePage2ContentStream = (
+  pdfDoc: PDFDocument,
+  size: number,
+  {
+    ubuntuFont,
+    bioRhymeFont,
+    pressStart2PFont,
+    indieFlowerFont,
+    greatVibesFont,
+    fantasqueFont,
+    appleStormFont,
+    hussar3DFont,
+  }: { [key: string]: PDFEmbeddedFontFactory },
+) =>
   pdfDoc.createContentStream(
     drawSquare({
       size,
       colorRgb: [253 / 255, 246 / 255, 227 / 255],
     }),
-    drawLinesOfText(ipsumLines, {
+    drawLinesOfText(ipsumLines.map(ubuntuFont.encodeText), {
       y: size - 20,
       size: 20,
       font: 'Ubuntu-R',
       colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
-    drawLinesOfText(ipsumLines, {
+    drawLinesOfText(ipsumLines.map(fantasqueFont.encodeText), {
       y: size - 105,
       size: 25,
       font: 'Fantasque-BI',
       colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
-    drawLinesOfText(ipsumLines, {
+    drawLinesOfText(ipsumLines.map(indieFlowerFont.encodeText), {
       y: size - 200,
       size: 25,
       font: 'IndieFlower-R',
       colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
-    drawLinesOfText(ipsumLines, {
+    drawLinesOfText(ipsumLines.map(greatVibesFont.encodeText), {
       y: size - 300,
       size: 30,
       font: 'GreatVibes-R',
       colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
-    drawLinesOfText(ipsumLines, {
+    drawLinesOfText(ipsumLines.map(appleStormFont.encodeText), {
       y: size - 425,
       size: 25,
       font: 'AppleStorm-R',
       colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
-    drawLinesOfText(ipsumLines, {
+    drawLinesOfText(ipsumLines.map(bioRhymeFont.encodeText), {
       y: size - 500,
       size: 15,
       font: 'BioRhyme-R',
       colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
-    drawLinesOfText(ipsumLines, {
+    drawLinesOfText(ipsumLines.map(pressStart2PFont.encodeText), {
       y: size - 575,
       size: 15,
       font: 'PressStart2P-R',
       colorRgb: [101 / 255, 123 / 255, 131 / 255],
     }),
-    drawLinesOfText(ipsumLines, {
+    drawLinesOfText(ipsumLines.map(hussar3DFont.encodeText), {
       y: size - 650,
       size: 25,
       font: 'Hussar3D-R',
@@ -264,17 +284,33 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
   // Embed fonts:
   const { ttf, otf } = assets.fonts;
 
-  const [FontUbuntuR] = pdfDoc.embedFont(ttf.ubuntu_r);
-  const [FontBioRhymeR] = pdfDoc.embedFont(ttf.bio_rhyme_r);
-  const [FontPressStart2PR] = pdfDoc.embedFont(ttf.press_start_2p_r);
-  const [FontIndieFlowerR] = pdfDoc.embedFont(ttf.indie_flower_r);
-  const [FontGreatVibesR] = pdfDoc.embedFont(ttf.great_vibes_r);
+  const [ubuntuRef, ubuntuFont] = pdfDoc.embedNonstandardFont(ttf.ubuntu_r);
+  const [bioRhymeRef, bioRhymeFont] = pdfDoc.embedNonstandardFont(
+    ttf.bio_rhyme_r,
+  );
+  const [pressStart2PRef, pressStart2PFont] = pdfDoc.embedNonstandardFont(
+    ttf.press_start_2p_r,
+  );
+  const [indieFlowerRef, indieFlowerFont] = pdfDoc.embedNonstandardFont(
+    ttf.indie_flower_r,
+  );
+  const [greatVibesRef, greatVibesFont] = pdfDoc.embedNonstandardFont(
+    ttf.great_vibes_r,
+  );
 
-  const [FontFantasqueBI] = pdfDoc.embedFont(otf.fantasque_sans_mono_bi);
-  const [FontAppleStormR] = pdfDoc.embedFont(otf.apple_storm_r);
-  const [FontHussar3D] = pdfDoc.embedFont(otf.hussar_3d_r);
+  const [fantasqueRef, fantasqueFont] = pdfDoc.embedNonstandardFont(
+    otf.fantasque_sans_mono_bi,
+  );
+  const [appleStormRef, appleStormFont] = pdfDoc.embedNonstandardFont(
+    otf.apple_storm_r,
+  );
+  const [hussar3DRef, hussar3DFont] = pdfDoc.embedNonstandardFont(
+    otf.hussar_3d_r,
+  );
 
-  const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
+  const [timesRomanRef, timesRomanFont] = pdfDoc.embedStandardFont(
+    StandardFonts.TimesRoman,
+  );
 
   // Embed images:
   const { jpg, png } = assets.images;
@@ -291,28 +327,39 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
 
   // Create pages:
   const page1Size = 750;
-  const page1ContentStream = makePage1ContentStream(pdfDoc, page1Size);
+  const page1ContentStream = makePage1ContentStream(pdfDoc, page1Size, {
+    timesRomanFont,
+  });
   const page1ContentStreamRef = pdfDoc.register(page1ContentStream);
 
   const page1 = pdfDoc
     .createPage([page1Size, page1Size])
-    .addFontDictionary('FontTimesRoman', FontTimesRoman)
+    .addFontDictionary('FontTimesRoman', timesRomanRef)
     .addContentStreams(page1ContentStreamRef);
 
   const page2Size = 750;
-  const page2ContentStream = makePage2ContentStream(pdfDoc, page2Size);
+  const page2ContentStream = makePage2ContentStream(pdfDoc, page2Size, {
+    ubuntuFont,
+    bioRhymeFont,
+    pressStart2PFont,
+    indieFlowerFont,
+    greatVibesFont,
+    fantasqueFont,
+    appleStormFont,
+    hussar3DFont,
+  });
   const page2ContentStreamRef = pdfDoc.register(page2ContentStream);
 
   const page2 = pdfDoc
     .createPage([page2Size, page2Size])
-    .addFontDictionary('Ubuntu-R', FontUbuntuR)
-    .addFontDictionary('BioRhyme-R', FontBioRhymeR)
-    .addFontDictionary('PressStart2P-R', FontPressStart2PR)
-    .addFontDictionary('IndieFlower-R', FontIndieFlowerR)
-    .addFontDictionary('GreatVibes-R', FontGreatVibesR)
-    .addFontDictionary('Fantasque-BI', FontFantasqueBI)
-    .addFontDictionary('AppleStorm-R', FontAppleStormR)
-    .addFontDictionary('Hussar3D-R', FontHussar3D)
+    .addFontDictionary('Ubuntu-R', ubuntuRef)
+    .addFontDictionary('BioRhyme-R', bioRhymeRef)
+    .addFontDictionary('PressStart2P-R', pressStart2PRef)
+    .addFontDictionary('IndieFlower-R', indieFlowerRef)
+    .addFontDictionary('GreatVibes-R', greatVibesRef)
+    .addFontDictionary('Fantasque-BI', fantasqueRef)
+    .addFontDictionary('AppleStorm-R', appleStormRef)
+    .addFontDictionary('Hussar3D-R', hussar3DRef)
     .addContentStreams(page2ContentStreamRef);
 
   const page3Width = 750;
@@ -322,7 +369,7 @@ const kernel: ITestKernel = (assets: ITestAssets) => {
 
   const page3 = pdfDoc
     .createPage([page3Width, page3Height])
-    .addFontDictionary('Ubuntu-R', FontUbuntuR)
+    .addFontDictionary('Ubuntu-R', ubuntuRef)
     .addImageObject('CatRidingUnicorn', JpgCatRidingUnicorn)
     .addImageObject('MinionsLaughing', JpgMinionsLaughing)
     .addImageObject('GreyscaleBird', PngGreyscaleBird)

@@ -1,6 +1,6 @@
 import isString from 'lodash/isString';
 
-import { addStringToBuffer, and, charCode } from 'utils';
+import { addStringToBuffer, and, toCharCode, toHexString } from 'utils';
 import { isIdentity, isNotIdentity, validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
@@ -14,7 +14,7 @@ const pdfNamePool: Map<string, PDFName> = new Map();
 
 class PDFName extends PDFObject {
   static isRegularChar = (char: string) =>
-    charCode(char) >= charCode('!') && charCode(char) <= charCode('~');
+    toCharCode(char) >= toCharCode('!') && toCharCode(char) <= toCharCode('~');
 
   static from = (str: string): PDFName => {
     validate(str, isString, 'PDFName.from() requires string as argument');
@@ -62,7 +62,9 @@ class PDFName extends PDFObject {
       .replace('#', '#23')
       .split('')
       .map((char) =>
-        PDFName.isRegularChar(char) ? char : `#${charCode(char).toString(16)}`,
+        PDFName.isRegularChar(char)
+          ? char
+          : `#${toHexString(toCharCode(char))}`,
       )
       .join('');
 

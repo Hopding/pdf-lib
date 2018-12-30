@@ -5,18 +5,18 @@ import {
   drawLinesOfText,
   drawRectangle,
   drawText,
-  PDFContentStream,
   PDFDocument,
   PDFDocumentFactory,
   PDFDocumentWriter,
-  PDFPage,
 } from '../../src';
 
+import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';
 import { ITestAssets, ITestKernel } from '../models';
 
 const makeOverlayContentStream = (
   pdfDoc: PDFDocument,
   marioDims: { width: number; height: number },
+  { ubuntuFont }: { [key: string]: PDFEmbeddedFontFactory },
 ) =>
   pdfDoc.createContentStream(
     ...drawImage('Mario', {
@@ -39,7 +39,7 @@ const makeOverlayContentStream = (
         'This is an image of Mario running.',
         'This image and text was drawn on',
         'top of an existing PDF using pdf-lib!',
-      ],
+      ].map(ubuntuFont.encodeText),
       {
         x: 125,
         y: 325,
@@ -50,49 +50,55 @@ const makeOverlayContentStream = (
     ),
   );
 
-const makeNewPageContentStream = (pdfDoc: PDFDocument) =>
+const makeNewPageContentStream = (
+  pdfDoc: PDFDocument,
+  { ubuntuFont }: { [key: string]: PDFEmbeddedFontFactory },
+) =>
   pdfDoc.createContentStream(
-    ...drawText('This page was interleaved by pdf-lib!', {
-      x: 45,
-      y: 65,
-      size: 24,
-      font: 'Ubuntu',
-      colorRgb: [0.7, 0.4, 0.9],
-    }),
+    ...drawText(
+      ubuntuFont.encodeText('This page was interleaved by pdf-lib!'),
+      {
+        x: 45,
+        y: 65,
+        size: 24,
+        font: 'Ubuntu',
+        colorRgb: [0.7, 0.4, 0.9],
+      },
+    ),
   );
 
 // Define the test kernel using the above content stream functions.
 const kernel: ITestKernel = (assets: ITestAssets) => {
   const pdfDoc = PDFDocumentFactory.load(assets.pdfs.with_large_page_count);
 
-  const [FontTimesRoman] = pdfDoc.embedStandardFont('Times-Roman');
-  const [FontUbuntu] = pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
+  const [ubuntuRef, ubuntuFont] = pdfDoc.embedNonstandardFont(
+    assets.fonts.ttf.ubuntu_r,
+  );
 
   const [PngMario, marioDims] = pdfDoc.embedPNG(assets.images.png.small_mario);
 
   const pages = pdfDoc.getPages();
 
   const overlayContentStreamRef = pdfDoc.register(
-    makeOverlayContentStream(pdfDoc, marioDims),
+    makeOverlayContentStream(pdfDoc, marioDims, { ubuntuFont }),
   );
 
   pages.forEach((page) => {
     page
-      .addFontDictionary('Times-Roman', FontTimesRoman)
-      .addFontDictionary('Ubuntu', FontUbuntu)
+      .addFontDictionary('Ubuntu', ubuntuRef)
       .addXObject('Mario', PngMario)
       .addContentStreams(overlayContentStreamRef);
   });
 
   const newPageContentStreamRef = pdfDoc.register(
-    makeNewPageContentStream(pdfDoc),
+    makeNewPageContentStream(pdfDoc, { ubuntuFont }),
   );
 
   // Interleave new pages between all existing ones
   range(pages.length).forEach((idx) => {
     const newPage = pdfDoc
       .createPage([500, 150])
-      .addFontDictionary('Ubuntu', FontUbuntu)
+      .addFontDictionary('Ubuntu', ubuntuRef)
       .addContentStreams(newPageContentStreamRef);
     pdfDoc.insertPage(2 * idx + 1, newPage);
   });

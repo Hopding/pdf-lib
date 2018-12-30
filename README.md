@@ -52,6 +52,7 @@
   * [Document Creation](#document-creation)
   * [Document Modification](#document-modification)
   * [Copying Pages](#copying-pages)
+  * [Embed Font and Measure Text](#embed-font-and-measure-text)
 * [Installation](#installation)
 * [API Documentation](#api-documentation)
 * [Contributing](#contributing)
@@ -78,6 +79,8 @@ There are other good open source JavaScript PDF libraries available. However, mo
 * Draw Images
 * Draw Vector Graphics
 * Embed Fonts
+  * _**New:**_ UTF-8 and UTF-16 character sets are supported
+  * _**New:**_ Measure width and height of text
 * Embed Images
 
 ## Usage Examples
@@ -85,21 +88,23 @@ More detailed examples are available [here](https://github.com/Hopding/pdf-lib/t
 
 ### Document Creation
 ```javascript
-import { PDFDocumentFactory, PDFDocumentWriter, drawText } from 'pdf-lib';
+import { PDFDocumentFactory, PDFDocumentWriter, StandardFonts, drawText } from 'pdf-lib';
 
 const pdfDoc = PDFDocumentFactory.create();
-const [timesRomanFont] = pdfDoc.embedStandardFont('Times-Roman');
+const [timesRomanRef, timesRomanFont] = pdfDoc.embedStandardFont(
+  StandardFonts.TimesRoman,
+);
 
 const page = pdfDoc
   .createPage([350, 500])
-  .addFontDictionary('Times-Roman', timesRomanFont);
+  .addFontDictionary('TimesRoman', timesRomanRef);
 
 const contentStream = pdfDoc.createContentStream(
-  drawText('Creating PDFs in JavaScript is awesome!', {
+  drawText(timesRomanFont.encodeText('Creating PDFs in JavaScript is awesome!'), {
     x: 50,
     y: 450,
     size: 15,
-    font: 'Times-Roman',
+    font: 'TimesRoman',
     colorRgb: [0, 0.53, 0.71],
   }),
 );
@@ -113,7 +118,7 @@ const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 
 ### Document Modification
 ```javascript
-import { PDFDocumentFactory, PDFDocumentWriter, drawText } from 'pdf-lib';
+import { PDFDocumentFactory, PDFDocumentWriter, StandardFonts, drawText } from 'pdf-lib';
 
 // This should be a Uint8Array.
 // This data can be obtained in a number of different ways.
@@ -122,15 +127,17 @@ import { PDFDocumentFactory, PDFDocumentWriter, drawText } from 'pdf-lib';
 const existingPdfDocBytes = ...
 
 const pdfDoc = PDFDocumentFactory.load(existingPdfDocBytes);
-const [helveticaFont] = pdfDoc.embedStandardFont('Helvetica');
+const [helveticaRef, helveticaFont] = pdfDoc.embedStandardFont(
+  StandardFonts.Helvetica,
+);
 
 const pages = pdfDoc.getPages();
 const page  = pages[0];
 
-page.addFontDictionary('Helvetica', helveticaFont);
+page.addFontDictionary('Helvetica', helveticaRef);
 
 const contentStream = pdfDoc.createContentStream(
-  drawText('This text was added to the PDF with JavaScript!', {
+  drawText(helveticaFont.encodeText('This text was added to the PDF with JavaScript!'), {
     x: 25,
     y: 25,
     size: 24,
@@ -165,6 +172,59 @@ const pdfDoc = PDFDocumentFactory.create();
 // Copy over the pages from the donor documents into our new document
 pdfDoc.addPage(firstDonorPage);
 pdfDoc.insertPage(0, secondDonorPage);
+
+const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
+```
+
+### Embed Font and Measure Text
+This example demonstrates the use of the `font.widthOfTextAtSize()` and 
+`font.heightOfFontAtSize()` methods for a `font` embedded with 
+`pdfDoc.embedNonstandardFont`. But note that these methods also exist on standard 
+fonts embedded with `pdfDoc.embedStandardFont`.
+```javascript
+import { PDFDocumentFactory, PDFDocumentWriter, drawText, drawRectangle } from 'pdf-lib';
+
+// This should be a Uint8Array.
+// This data can be obtained in a number of different ways.
+// If your running in a Node environment, you could use fs.readFile().
+// In the browser, you could make a fetch() call and use res.arrayBuffer().
+const fontBytes = ...
+
+const pdfDoc = PDFDocumentFactory.create();
+const [fontRef, font] = pdfDoc.embedNonstandardFont(fontBytes);
+
+const page = pdfDoc
+  .createPage([350, 500])
+  .addFontDictionary('FontName', fontRef);
+
+const text = 'This is text in an embedded font!';
+const textSize = 15;
+const textWidth = font.widthOfTextAtSize(text, textSize);
+const textHeight = font.heightOfFontAtSize(textSize);
+
+const contentStream = pdfDoc.createContentStream(
+  // Draw text on page
+  drawText(font.encodeText(text), {
+    x: 50,
+    y: 450,
+    size: textSize,
+    font: 'FontName',
+    colorRgb: [0, 0.53, 0.71],
+  }),
+  // Draw a box around the text
+  drawRectangle({
+    x: 50,
+    y: 450,
+    width: textWidth,
+    height: textHeight,
+    borderColorRgb: [1],
+    borderWidth: 0.5,
+  }),
+);
+
+page.addContentStreams(pdfDoc.register(contentStream));
+
+pdfDoc.addPage(page);
 
 const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 ```

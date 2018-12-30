@@ -1,7 +1,7 @@
 import flatMap from 'lodash/flatMap';
 import get from 'lodash/get';
 
-import { PDFName } from 'core/pdf-objects';
+import { PDFHexString, PDFName } from 'core/pdf-objects';
 import PDFOperator from 'core/pdf-operators/PDFOperator';
 import PDFTextObject from 'core/pdf-operators/text/PDFTextObject';
 
@@ -119,7 +119,7 @@ export interface IDrawTextOptions {
  * @param options An options object with named parameters.
  */
 export const drawText = (
-  line: string,
+  line: string | PDFHexString,
   options: IDrawTextOptions,
 ): PDFOperator[] => [
   PDFTextObject.of(
@@ -261,7 +261,7 @@ export interface IDrawLinesOfTextOptions {
  * @param options An options object with named parameters.
  */
 export const drawLinesOfText = (
-  lines: string[],
+  lines: string[] | PDFHexString[],
   options: IDrawLinesOfTextOptions,
 ): PDFOperator[] => [
   PDFTextObject.of(
@@ -287,6 +287,9 @@ export const drawLinesOfText = (
       options.x || 0,
       options.y || 0,
     ),
-    ...flatMap(lines, (line) => [text(line), nextLine()]),
+    ...flatMap(lines, (line: string | PDFHexString) => [
+      text(line),
+      nextLine(),
+    ]),
   ),
 ];

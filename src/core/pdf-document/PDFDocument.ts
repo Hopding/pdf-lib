@@ -1,11 +1,13 @@
 import isNumber from 'lodash/isNumber';
 import values from 'lodash/values';
 
+import {
+  FontNames as StandardFontNames,
+  IFontNames as IStandardFontNames,
+} from '@pdf-lib/standard-fonts';
+
 import PDFObjectCopier from 'core/pdf-document/PDFObjectCopier';
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
-import Standard14Fonts, {
-  IStandard14FontsUnion,
-} from 'core/pdf-document/Standard14Fonts';
 import {
   PDFDictionary,
   PDFIndirectReference,
@@ -21,7 +23,7 @@ import {
   PDFPageTree,
 } from 'core/pdf-structures';
 import JPEGXObjectFactory from 'core/pdf-structures/factories/JPEGXObjectFactory';
-import PDFFontEncoder from 'core/pdf-structures/factories/PDFFontEncoder';
+import PDFEmbeddedFontFactory from 'core/pdf-structures/factories/PDFEmbeddedFontFactory';
 import PDFFontFactory, {
   IFontFlagOptions,
 } from 'core/pdf-structures/factories/PDFFontFactory';
@@ -235,13 +237,13 @@ class PDFDocument {
    *          specified font is registered.
    */
   embedStandardFont = (
-    fontName: IStandard14FontsUnion,
-  ): [PDFIndirectReference<PDFDictionary>, PDFFontEncoder] => {
+    fontName: IStandardFontNames,
+  ): [PDFIndirectReference<PDFDictionary>, PDFStandardFontFactory] => {
     validate(
       fontName,
-      oneOf(...Standard14Fonts),
+      oneOf(...values(StandardFontNames)),
       'PDFDocument.embedStandardFont: "fontName" must be one of the Standard 14 Fonts: ' +
-        values(Standard14Fonts).join(', '),
+        values(StandardFontNames).join(', '),
     );
 
     const standardFontFactory = PDFStandardFontFactory.for(fontName);
@@ -250,6 +252,8 @@ class PDFDocument {
 
   /**
    * Embeds the font contained in the specified `Uint8Array` in the document.
+   *
+   * @deprecated Please use [[PDFDocument.embedNonStandardFont]] instead.
    *
    * @param fontData A `Uint8Array` containing an OpenType (`.otf`) or TrueType
    *                 (`.ttf`) font.
@@ -263,6 +267,23 @@ class PDFDocument {
     fontFlags: IFontFlagOptions = { Nonsymbolic: true },
   ): [PDFIndirectReference<PDFDictionary>, PDFFontFactory] => {
     const fontFactory = PDFFontFactory.for(fontData, fontFlags);
+    return [fontFactory.embedFontIn(this), fontFactory];
+  };
+
+  /**
+   * Embeds the font contained in the specified `Uint8Array` in the document.
+   *
+   * @param fontData A `Uint8Array` containing an OpenType (`.otf`) or TrueType
+   *                 (`.ttf`) font.
+   *
+   * @returns A tuple containing (1) the [[PDFIndirectReference]] under which the
+   *          specified font is registered, and (2) a [[PDFEmbeddedFontFactory]]
+   *          object containing font metadata properties and methods.
+   */
+  embedNonstandardFont = (
+    fontData: Uint8Array,
+  ): [PDFIndirectReference<PDFDictionary>, PDFEmbeddedFontFactory] => {
+    const fontFactory = PDFEmbeddedFontFactory.for(fontData);
     return [fontFactory.embedFontIn(this), fontFactory];
   };
 

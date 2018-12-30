@@ -1,3 +1,13 @@
+import sum from 'lodash/sum';
+
+import {
+  Encodings,
+  Font,
+  FontNames,
+  IEncoding as IStandardEncoding,
+  IFontNames,
+} from '@pdf-lib/standard-fonts';
+
 import PDFDocument from 'core/pdf-document/PDFDocument';
 import {
   PDFDictionary,
@@ -6,122 +16,138 @@ import {
   PDFName,
 } from 'core/pdf-objects';
 import values from 'lodash/values';
+import { toCharCode, toHexString } from 'utils';
 import { isInstance, oneOf, validate } from 'utils/validate';
 
-import Standard14Fonts, {
-  IStandard14FontsUnion,
-} from 'core/pdf-document/Standard14Fonts';
-
-import IPDFFontEncoder from 'core/pdf-structures/factories/PDFFontEncoder';
-
-const UnicodeToWinAnsiMap: { [index: number]: number } = {
-  402: 131, // ƒ
-  8211: 150, // –
-  8212: 151, // —
-  8216: 145, // ‘
-  8217: 146, // ’
-  8218: 130, // ‚
-  8220: 147, // “
-  8221: 148, // ”
-  8222: 132, // „
-  8224: 134, // †
-  8225: 135, // ‡
-  8226: 149, // •
-  8230: 133, // …
-  8364: 128, // €
-  8240: 137, // ‰
-  8249: 139, // ‹
-  8250: 155, // ›
-  710: 136, // ˆ
-  8482: 153, // ™
-  338: 140, // Œ
-  339: 156, // œ
-  732: 152, // ˜
-  352: 138, // Š
-  353: 154, // š
-  376: 159, // Ÿ
-  381: 142, // Ž
-  382: 158, // ž
-};
-
 /**
- * This Factory supports Standard fonts. Note that the apparent
- * hardcoding of values for OpenType fonts does not actually affect TrueType
- * fonts.
+ * This Factory supports Standard fonts.
  *
  * A note of thanks to the developers of https://github.com/foliojs/pdfkit,
  * as this class borrows from:
  * https://github.com/foliojs/pdfkit/blob/f91bdd61c164a72ea06be1a43dc0a412afc3925f/lib/font/afm.coffee
  */
-class PDFStandardFontFactory implements IPDFFontEncoder {
-  static for = (fontName: IStandard14FontsUnion): PDFStandardFontFactory =>
+class PDFStandardFontFactory {
+  static for = (fontName: IFontNames): PDFStandardFontFactory =>
     new PDFStandardFontFactory(fontName);
 
-  fontName: IStandard14FontsUnion;
+  font: Font;
+  fontName: IFontNames;
+  encoding: IStandardEncoding;
 
-  constructor(fontName: IStandard14FontsUnion) {
+  constructor(fontName: IFontNames) {
     validate(
       fontName,
-      oneOf(...Standard14Fonts),
-      'PDFDocument.embedStandardFont: "fontName" must be one of the Standard 14 Fonts: ' +
-        values(Standard14Fonts).join(', '),
+      oneOf(...values(FontNames)),
+      'PDFDocument.embedFont: "fontName" must be one of the Standard 14 Fonts: ' +
+        values(FontNames).join(', '),
     );
     this.fontName = fontName;
+    this.font = Font.load(fontName);
+
+    // prettier-ignore
+    this.encoding =
+        fontName === FontNames.ZapfDingbats ? Encodings.ZapfDingbats
+      : fontName === FontNames.Symbol       ? Encodings.Symbol
+      : Encodings.WinAnsi;
   }
-  encodeText = (text: string): PDFHexString =>
-    PDFHexString.fromString(
-      text
-        .split('')
-        .map((char) => char.charCodeAt(0))
-        .map((charCode) => UnicodeToWinAnsiMap[charCode] || charCode)
-        .map((charCode) => charCode.toString(16))
-        .join(''),
-    );
 
-  /*
-      TODO:
-      A Type 1 font dictionary may contain the entries listed in Table 111.
-      Some entries are optional for the standard 14 fonts listed under 9.6.2.2,
-        "Standard Type 1 Fonts (Standard 14 Fonts)", but are required otherwise.
-
-      NOTE: For compliance sake, these standard 14 font dictionaries need to be
-            updated to include the following entries:
-              • FirstChar
-              • LastChar
-              • Widths
-              • FontDescriptor
-            See "Table 111 – Entries in a Type 1 font dictionary (continued)"
-            for details on this...
-    */
+  /**
+   * Embeds the font into a [[PDFDocument]].
+   *
+   * @param pdfDoc A `PDFDocument` object into which the font will be embedded.
+   *
+   * @returns A `PDFIndirectReference` to the font dictionary that was
+   *          embedded in the `PDFDocument`.
+   */
   embedFontIn = (pdfDoc: PDFDocument): PDFIndirectReference<PDFDictionary> => {
     validate(
       pdfDoc,
       isInstance(PDFDocument),
       'PDFFontFactory.embedFontIn: "pdfDoc" must be an instance of PDFDocument',
     );
-    return pdfDoc.register(
-      PDFDictionary.from(
-        {
-          Type: PDFName.from('Font'),
-          Subtype: PDFName.from('Type1'),
-          Encoding: PDFName.from('WinAnsiEncoding'),
-          BaseFont: PDFName.from(this.fontName),
-        },
-        pdfDoc.index,
-      ),
+
+    const fontDict = PDFDictionary.from(
+      {
+        Type: PDFName.from('Font'),
+        Subtype: PDFName.from('Type1'),
+        BaseFont: PDFName.from(this.font.FontName),
+      },
+      pdfDoc.index,
     );
+
+    // ZapfDingbats and Symbol don't have explicit Encoding entries
+    if (this.encoding === Encodings.WinAnsi) {
+      fontDict.set('Encoding', PDFName.from('WinAnsiEncoding'));
+    }
+
+    return pdfDoc.register(fontDict);
   };
 
-  /** @hidden */
-  getWidths = () => {
-    throw new Error('getWidths() Not implemented yet for Standard Font');
+  /**
+   * Encode the JavaScript string into this font. JavaScript encodes strings in
+   * Unicode, but standard fonts use either WinAnsi, ZapfDingbats, or Symbol
+   * encodings. This method should be used to encode text before passing the
+   * encoded text to one of the text showing operators, such as [[drawText]] or
+   * [[drawLinesOfText]].
+   *
+   * @param text The string of text to be encoded.
+   *
+   * @returns A `PDFHexString` of the encoded text.
+   */
+  encodeText = (text: string): PDFHexString =>
+    PDFHexString.fromString(
+      this.encodeTextAsGlyphs(text)
+        .map((glyph) => glyph.code)
+        .map(toHexString)
+        .join(''),
+    );
+
+  /**
+   * Measures the width of the JavaScript string when displayed as glyphs of
+   * this font of a particular `size`.
+   *
+   * @param text The string of text to be measured.
+   * @param size The size to be used when calculating the text's width.
+   *
+   * @returns A `number` representing the width of the text.
+   */
+  widthOfTextAtSize = (text: string, size: number): number => {
+    const charNames = this.encodeTextAsGlyphs(text).map((glyph) => glyph.name);
+
+    const widths = charNames.map((charName, idx) => {
+      const left = charName;
+      const right = charNames[idx + 1];
+      const kernAmount = this.font.getXAxisKerningForPair(left, right) || 0;
+      return this.widthOfGlyph(left) + kernAmount;
+    });
+
+    const scale = size / 1000;
+
+    return sum(widths) * scale;
   };
 
-  getCodePointWidth = () => {
-    throw new Error(
-      'getCodePointWidth() Not implemented yet for Standard Font',
-    );
+  /**
+   * Measures the height of this font at a particular size. Note that the height
+   * of the font is independent of the particular glyphs being displayed, so
+   * this method does not accept a `text` param, like
+   * [[PDFStandardFontFactory.widthOfTextAtSize]] does.
+   */
+  heightOfFontAtSize = (size: number): number => {
+    const { Ascender, Descender, FontBBox } = this.font;
+    const yTop = Ascender || FontBBox[3];
+    const yBottom = Descender || FontBBox[1];
+    return ((yTop - yBottom) / 1000) * size;
   };
+
+  // We'll default to 250 if our font metrics don't specify a width
+  private widthOfGlyph = (glyphName: string) =>
+    this.font.getWidthOfGlyph(glyphName) || 250;
+
+  private encodeTextAsGlyphs = (text: string) =>
+    text
+      .split('')
+      .map(toCharCode)
+      .map(this.encoding.encodeUnicodeCodePoint);
 }
 
 export default PDFStandardFontFactory;

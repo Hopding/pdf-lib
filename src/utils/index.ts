@@ -1,4 +1,5 @@
 /* tslint:disable no-bitwise */
+import padStart from 'lodash/padStart';
 import sum from 'lodash/sum';
 
 export type Predicate<A, B = true> = (a: A, b?: B) => boolean;
@@ -73,7 +74,7 @@ export const toBoolean = (boolStr: string) => {
   throw new Error(`"${boolStr}" cannot be converted to a boolean`);
 };
 
-export const charCode = (charStr: string) => {
+export const toCharCode = (charStr: string) => {
   if (charStr.length !== 1) {
     throw new Error('"char" must be exactly one character long');
   }
@@ -81,6 +82,11 @@ export const charCode = (charStr: string) => {
 };
 
 export const charFromCode = (code: number) => String.fromCharCode(code);
+
+export const toHexStringOfMinLength = (num: number, minLength: number) =>
+  padStart(num.toString(16), minLength, '0');
+
+export const toHexString = (num: number) => toHexStringOfMinLength(num, 2);
 
 export const mergeUint8Arrays = (...arrs: Uint8Array[]) => {
   const totalLength = sum(arrs.map((a) => a.length));
@@ -135,9 +141,9 @@ export const trimArray = (arr: Uint8Array) => {
   return arr.subarray(idx);
 };
 
-const PERCENT_SIGN_CODE = charCode('%');
-const NEWLINE_CODE = charCode('\n');
-const CARRIAGE_RETURN_CODE = charCode('\r');
+const PERCENT_SIGN_CODE = toCharCode('%');
+const NEWLINE_CODE = toCharCode('\n');
+const CARRIAGE_RETURN_CODE = toCharCode('\r');
 const isEOLMarker = (code: number) =>
   code === NEWLINE_CODE || code === CARRIAGE_RETURN_CODE;
 
@@ -207,7 +213,7 @@ export const arrayIndexOneOf = (
   targetStrings: string[],
   startFrom = 0,
 ): [number, string] | void => {
-  const targetArrs = targetStrings.map((str) => str.split('').map(charCode));
+  const targetArrs = targetStrings.map((str) => str.split('').map(toCharCode));
   let currIdx = startFrom;
   let match = null;
 
@@ -277,3 +283,35 @@ export const arrayFindIndexOf = (
 
 export const setCharAt = (str: string, idx: number, newChar: string) =>
   str.substring(0, idx) + newChar + str.substring(idx + 1);
+
+export const mapIntoContiguousGroups = <A, B>(
+  all: A[],
+  indexProvider: (element: A) => number,
+  transformer: (element: A) => B,
+): B[][] => {
+  const sections: B[][] = [];
+  let currSection: B[] = [];
+  let lastIndex = NaN;
+
+  for (const element of all) {
+    const currIndex = indexProvider(element);
+    const breakDetected = currIndex - lastIndex !== 1;
+    const isFirstIteration = isNaN(lastIndex);
+
+    if (breakDetected && !isFirstIteration) {
+      sections.push(currSection);
+      currSection = [];
+    }
+    currSection.push(transformer(element));
+
+    lastIndex = currIndex;
+  }
+
+  sections.push(currSection);
+  return sections;
+};
+
+export const contiguousGroups = <A>(
+  all: A[],
+  indexProvider: (element: A) => number,
+): A[][] => mapIntoContiguousGroups(all, indexProvider, (x) => x);
