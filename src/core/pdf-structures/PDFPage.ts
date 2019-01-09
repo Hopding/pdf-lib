@@ -121,17 +121,23 @@ class PDFPage extends PDFDictionary {
     >;
   }
 
-  /* Convert "Contents" to array if it exists and is not already */
-  // TODO: See is this is inefficient...
-  /** @hidden */
+  /**
+   * Converts the `Contents` entry in this PDFPage to a [[PDFArray]], if it
+   * exists and is not already a direct [[PDFArray]]. Therefore, this method
+   * only has an effect if `Contents` is a `PDFIndirectReference<PDFStream>` or
+   * `PDFIndirectReference<PDFArray<PDFStream>>`.
+   */
   normalizeContents = () => {
-    const Contents = this.getMaybe('Contents');
-    if (Contents) {
-      const contents: PDFObject = this.index.lookup(Contents);
-      if (!(contents instanceof PDFArray)) {
-        this.set('Contents', PDFArray.fromArray([Contents], this.index));
+    const actualContents = this.getMaybe('Contents');
+    if (actualContents instanceof PDFIndirectReference) {
+      const lookedUpContents = this.index.lookup(actualContents);
+      if (lookedUpContents instanceof PDFArray) {
+        this.set('Contents', lookedUpContents.clone());
+      } else {
+        this.set('Contents', PDFArray.fromArray([actualContents], this.index));
       }
     }
+    return this;
   };
 
   /**
