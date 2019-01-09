@@ -104,7 +104,7 @@ describe(`PDFPage`, () => {
   });
 
   describe(`"normalizeContents" method`, () => {
-    it(`converts non-PDFArray "Contents" entries to PDFArrays`, () => {
+    it(`converts PDFIndirectReference<PDFStream> "Contents" entries to PDFArrays`, () => {
       const { cm, s, S } = PDFOperators;
 
       const index = PDFObjectIndex.create();
@@ -118,11 +118,39 @@ describe(`PDFPage`, () => {
 
       const page = PDFPage.create(index, [1, 2]);
       page.set('Contents', PDFIndirectReference.forNumbers(1, 2));
-      expect(page.Contents).not.toBeInstanceOf(PDFArray);
+      expect(page.get('Contents')).not.toBeInstanceOf(PDFArray);
 
       page.normalizeContents();
 
-      expect(page.Contents).toBeInstanceOf(PDFArray);
+      expect(page.get('Contents')).toBeInstanceOf(PDFArray);
+      expect(index.lookup(page.Contents.get(0))).toBe(contentStream);
+    });
+
+    it(`converts PDFIndirectReference<PDFArray<PDFIndirectReference<PDFStream>>> "Contents" entries to PDFArrays`, () => {
+      const { cm, s, S } = PDFOperators;
+
+      const index = PDFObjectIndex.create();
+
+      const contentStream = PDFContentStream.of(
+        PDFDictionary.from({}, index),
+        s.operator,
+        cm.of(1, 2, 3, 4, 5, 6),
+        S.operator,
+      );
+      const contentStreamRef = PDFIndirectReference.forNumbers(1, 2);
+      index.assign(contentStreamRef, contentStream);
+
+      const contentsArray = PDFArray.fromArray([contentStreamRef], index);
+      const contentsArrayRef = PDFIndirectReference.forNumbers(2, 3);
+      index.assign(contentsArrayRef, contentsArray);
+
+      const page = PDFPage.create(index, [1, 2]);
+      page.set('Contents', contentsArrayRef);
+      expect(page.get('Contents')).not.toBeInstanceOf(PDFArray);
+
+      page.normalizeContents();
+
+      expect(page.get('Contents')).toBeInstanceOf(PDFArray);
       expect(index.lookup(page.Contents.get(0))).toBe(contentStream);
     });
   });
