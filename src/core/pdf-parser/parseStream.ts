@@ -33,9 +33,17 @@ const parseStream = (
   // Check that the next bytes comprise the beginning of a stream
   const trimmed = trimArrayAndRemoveComments(input);
 
+  // The first two cases we check for are valid according to the PDF spec
+  // ('stream\n' and 'stream\r\n') but the third ('stream\r') is not:
+  //   > The keyword stream that follows the stream dictionary shall be followed
+  //   > by an end-of-line marker consisting of either a CARRIAGE RETURN and a
+  //   > LINE FEED or just a LINE FEED, **and not by a CARRIAGE RETURN alone.**
+  // However, some PDFs in the wild only use carriage returns, so we have to
+  // check for them here in the third case.
   let startstreamIdx;
   if (arrayToString(trimmed, 0, 7) === 'stream\n') startstreamIdx = 7;
   else if (arrayToString(trimmed, 0, 8) === 'stream\r\n') startstreamIdx = 8;
+  else if (arrayToString(trimmed, 0, 7) === 'stream\r') startstreamIdx = 7;
   if (!startstreamIdx) return undefined;
 
   /*
