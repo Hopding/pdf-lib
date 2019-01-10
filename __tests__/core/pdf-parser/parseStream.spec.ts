@@ -77,6 +77,15 @@ describe(`parseStream`, () => {
       expect(res).toEqual([expect.any(PDFRawStream), expect.any(Uint8Array)]);
     });
 
+    it(`can parse PDF Stream objects with only a carriage return following the "stream" keyword`, () => {
+      const input = typedArrayFor(
+        `stream\r Stuff and Things \nendstreamendobj`,
+      );
+      const index = PDFObjectIndex.create();
+      const res = parseStream(input, PDFDictionary.from({}, index), index);
+      expect(res).toEqual([expect.any(PDFRawStream), expect.any(Uint8Array)]);
+    });
+
     it(`can parse PDF Stream objects with a carriage return preceding the "endstream" keyword`, () => {
       const input = typedArrayFor(
         `stream\r\n Stuff and Things \rendstreamendobj`,
