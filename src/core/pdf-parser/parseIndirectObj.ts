@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-unused-variable
-import { PDFIndirectObject, PDFObject } from 'core/pdf-objects';
+import { PDFIndirectObject } from 'core/pdf-objects';
 import {
   arrayIndexOf,
   arrayToString,
@@ -47,31 +47,30 @@ const parseIndirectObj = (
   );
   if (!result) return undefined;
 
-  // eslint-disable-next-line no-unused-vars
   const [_fullMatch, objNum, genNum] = result;
 
-  // Extract the bytes making up the object itself
-  const endobjIdx = arrayIndexOf(trimmed, 'endobj', objIdx)!;
-  const content = trimArrayAndRemoveComments(
-    trimmed.subarray(objIdx + 3, endobjIdx),
-  );
+  // Remove the indirect object "header" from the trimmed input
+  const afterHeader = trimArrayAndRemoveComments(trimmed.subarray(objIdx + 3));
 
-  // Try to parse the object bytes
+  // Try to parse the object contents bytes
   const [contentObj, r] =
-    parseDictOrStream(content, index, parseHandlers) ||
-    parseArray(content, index, parseHandlers) ||
-    parseName(content, parseHandlers) ||
-    parseString(content, parseHandlers) ||
-    parseIndirectRef(content, parseHandlers) ||
-    parseNumber(content, parseHandlers) ||
-    parseHexString(content, parseHandlers) ||
-    parseBool(content, parseHandlers) ||
-    parseNull(content, parseHandlers) ||
+    parseDictOrStream(afterHeader, index, parseHandlers) ||
+    parseArray(afterHeader, index, parseHandlers) ||
+    parseName(afterHeader, parseHandlers) ||
+    parseString(afterHeader, parseHandlers) ||
+    parseIndirectRef(afterHeader, parseHandlers) ||
+    parseNumber(afterHeader, parseHandlers) ||
+    parseHexString(afterHeader, parseHandlers) ||
+    parseBool(afterHeader, parseHandlers) ||
+    parseNull(afterHeader, parseHandlers) ||
     error('Failed to parse object contents');
 
-  if (trimArrayAndRemoveComments(r).length > 0) {
-    error('Incorrectly parsed object contents');
-  }
+  const trimmedRemaining = trimArrayAndRemoveComments(r);
+
+  // Make sure we're now at the end of the object
+  const endobjIdx = arrayIndexOf(trimmedRemaining, 'endobj');
+  if (endobjIdx === undefined) throw new Error('Invalid Indirect Object');
+  if (endobjIdx !== 0) throw new Error('Incorrectly parsed object contents');
 
   const indirectObj = PDFIndirectObject.of(contentObj).setReferenceNumbers(
     Number(objNum),
@@ -80,7 +79,7 @@ const parseIndirectObj = (
   if (parseHandlers.onParseIndirectObj) {
     parseHandlers.onParseIndirectObj(indirectObj);
   }
-  return [indirectObj, trimmed.subarray(endobjIdx + 6)];
+  return [indirectObj, trimmedRemaining.subarray(6)];
 };
 
 export default parseIndirectObj;
