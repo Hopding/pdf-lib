@@ -1,4 +1,10 @@
-import { PDFDictionary, PDFName, PDFRawStream } from 'core/pdf-objects';
+import {
+  PDFDictionary,
+  PDFIndirectReference,
+  PDFName,
+  PDFNumber,
+  PDFRawStream,
+} from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
 import {
   arrayIndexOf,
@@ -46,18 +52,36 @@ const parseStream = (
   else if (arrayToString(trimmed, 0, 7) === 'stream\r') startstreamIdx = 7;
   if (!startstreamIdx) return undefined;
 
-  /*
-  TODO: Make this more efficient by using the "Length" entry of the stream
-  dictionary to jump to the end of the stream, instead of traversing each byte.
-  */
-  // Locate the end of the stream
-  const endstreamMatchTuple = arrayIndexOneOf(trimmed, [
-    '\nendstream',
-    '\rendstream',
-    'endstream',
-  ]);
-  if (!endstreamMatchTuple) error('Invalid Stream!');
-  const [endstreamIdx, endstreamMatch] = endstreamMatchTuple!;
+  /* ===================== Try to find the stream's end ===================== */
+  const Length = dict.getMaybe<PDFIndirectReference | PDFNumber>('Length');
+
+  let endstreamMatchTuple: [number, string] | void;
+  const endstreamKeywords = ['\nendstream', '\rendstream', 'endstream'];
+
+  // TODO: Enhance parser to support indirect Length references. Right now this
+  //       only works if the Length entry is a direct number.
+
+  // Try to use the Length entry to find the end of the stream
+  if (Length && Length instanceof PDFNumber) {
+    const startAt = Length.number + startstreamIdx;
+    const maybeTuple = arrayIndexOneOf(trimmed, endstreamKeywords, startAt);
+    if (maybeTuple && maybeTuple[0] === startAt + 1) {
+      endstreamMatchTuple = maybeTuple;
+    }
+  }
+
+  // If the Length entry isn't present, is an indirect reference, or is
+  // an invalid value, then we'll try to find the end of the stream by brute
+  // force. We'll scan each byte from the start of the stream until we find
+  // the `endstream` keyword.
+  if (!endstreamMatchTuple) {
+    const maybeTuple = arrayIndexOneOf(trimmed, endstreamKeywords, 0);
+    if (maybeTuple) endstreamMatchTuple = maybeTuple;
+  }
+  /* ======================================================================== */
+
+  if (!endstreamMatchTuple) throw new Error('Invalid Stream!');
+  const [endstreamIdx, endstreamMatch] = endstreamMatchTuple;
 
   /*
   TODO: See if it makes sense to .slice() the stream contents, even though this
