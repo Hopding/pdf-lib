@@ -41,10 +41,10 @@
   dependencies:
     jsdom "^11.10.0"
 
-"@pdf-lib/fontkit@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@pdf-lib/fontkit/-/fontkit-0.0.3.tgz#966f2fcfe64d67aa8ac55d2897c07dbf63fb76f6"
-  integrity sha512-SAbrnK3WjV7yIXlYkyRqS2IK04IEEdXO8/wqhZhf5lW/A6/kaInZuB9AyAx/i8WHagffEp6pIv9PhSZV7vF+KA==
+"@pdf-lib/fontkit@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@pdf-lib/fontkit/-/fontkit-0.0.4.tgz#90dffd52b0c2cdb7e84e866fc2b8e43bb7303773"
+  integrity sha512-MfwaMqLKRuXXOuTisAUiie+cBH/Wo50SPBDQB5tmVqEHpJGkyh7eYi/xPgFugtPHEeWP6INUk5t9L7IAbV7jmw==
   dependencies:
     pako "^1.0.6"
 

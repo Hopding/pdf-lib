@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-unused-variable
-import { PDFIndirectObject } from 'core/pdf-objects';
+import { PDFIndirectObject, PDFObject } from 'core/pdf-objects';
 import {
   arrayIndexOf,
   arrayToString,
