@@ -151,6 +151,12 @@ class PDFParser {
     };
   };
 
+  private updateMaxObjectNumber = (ref: PDFIndirectReference) => {
+    if (ref.objectNumber > this.maxObjectNumber) {
+      this.maxObjectNumber = ref.objectNumber;
+    }
+  };
+
   private handleArray = (array: PDFArray) => {
     this.arrays.push(array);
   };
@@ -167,6 +173,7 @@ class PDFParser {
       } else {
         this.body.set(indirectObj.getReference(), indirectObj);
       }
+      this.updateMaxObjectNumber(indirectObj.reference);
     });
   };
 
@@ -176,10 +183,7 @@ class PDFParser {
     } else {
       this.body.set(indirectObj.getReference(), indirectObj);
     }
-
-    if (indirectObj.reference.objectNumber > this.maxObjectNumber) {
-      this.maxObjectNumber = indirectObj.reference.objectNumber;
-    }
+    this.updateMaxObjectNumber(indirectObj.reference);
   };
 
   private handleHeader = (header: PDFHeader) => {
