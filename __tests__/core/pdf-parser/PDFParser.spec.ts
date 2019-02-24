@@ -3,7 +3,6 @@ import pako from 'pako';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import {
-  PDFArray,
   PDFDictionary,
   PDFIndirectReference,
   PDFRawStream,
@@ -103,7 +102,7 @@ describe(`PDFParser`, () => {
     expect(res.dictionaries).toHaveLength(14);
     expect(res.updates).toHaveLength(1);
     expect(res).toEqual({
-      maxObjectNumber: 5,
+      maxObjectNumber: 13,
       catalog: expect.any(PDFCatalog),
       arrays: expect.any(Array),
       dictionaries: expect.any(Array),
