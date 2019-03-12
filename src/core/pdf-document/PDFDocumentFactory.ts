@@ -90,7 +90,7 @@ class PDFDocumentFactory {
 
   // TODO: Need to throw out objects with "free" obj numbers...
   /** @hidden */
-  private static normalize = ({
+  protected static normalize = ({
     dictionaries,
     arrays,
     original: { body },
