@@ -1,0 +1,42 @@
+{
+  "name": "pdf-lib-browser-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify -d index.js -o dist/index.js",
+    "watch": "watchify -d index.js -o dist/index.js",
+    "start": "npm run watch & http-server ."
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "sourceMap": true
+        }
+      ]
+    ]
+  },
+  "babel": {
+    "presets": [
+      "@babel/env"
+    ],
+    "plugins": []
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pdf-lib": "0.6.1",
+    "watchify": "^3.11.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "7",
+    "@babel/core": "7",
+    "@babel/preset-env": "7",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "http-server": "^0.11.1"
+  }
+}
