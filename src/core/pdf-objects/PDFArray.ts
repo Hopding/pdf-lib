@@ -104,6 +104,8 @@ class PDFArray<T extends PDFObject = PDFObject> extends PDFObject {
     remaining = addStringToBuffer(']', remaining);
     return remaining;
   };
+
+  size = () => this.array.length;
 }
 
 export default PDFArray;

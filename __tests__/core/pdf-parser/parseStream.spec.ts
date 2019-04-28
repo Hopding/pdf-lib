@@ -3,11 +3,11 @@ import pako from 'pako';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 import {
+  PDFArray,
   PDFDictionary,
   PDFName,
   PDFNumber,
   PDFRawStream,
-  PDFStream,
 } from 'core/pdf-objects';
 import parseDict from 'core/pdf-parser/parseDict';
 import parseStream from 'core/pdf-parser/parseStream';
@@ -195,6 +195,58 @@ describe(`parseStream`, () => {
         },
         index,
       );
+      expect(() => parseStream(input, errDict, index)).toThrowError();
+    });
+
+    it(`when parsing "object" streams with an array as Filter`, () => {
+      const errDict = PDFDictionary.from(
+        {
+          Type: PDFName.from('ObjStm'),
+          Filter: PDFArray.fromArray([PDFName.from('FlateDecode')], index),
+          Length: PDFNumber.fromNumber(objectStream.length),
+          N: PDFNumber.fromNumber(3),
+          First: PDFNumber.fromNumber(18),
+        },
+        index,
+      );
+      const res = parseStream(input, errDict, index);
+
+      expect(res).toEqual([
+        expect.any(PDFObjectStream),
+        expect.any(Uint8Array),
+      ]);
+    });
+
+    it(`throws an error when the Filter array contains more than one element`, () => {
+      const errDict = PDFDictionary.from(
+        {
+          Type: PDFName.from('ObjStm'),
+          Filter: PDFArray.fromArray(
+            [PDFName.from('FlateDecode'), PDFName.from('FlateDecode')],
+            index,
+          ),
+          Length: PDFNumber.fromNumber(objectStream.length),
+          N: PDFNumber.fromNumber(3),
+          First: PDFNumber.fromNumber(18),
+        },
+        index,
+      );
+
+      expect(() => parseStream(input, errDict, index)).toThrowError();
+    });
+
+    it(`throws an error if the only one element in array if not FlateDecode`, () => {
+      const errDict = PDFDictionary.from(
+        {
+          Type: PDFName.from('ObjStm'),
+          Filter: PDFArray.fromArray([PDFName.from('wrong')], index),
+          Length: PDFNumber.fromNumber(objectStream.length),
+          N: PDFNumber.fromNumber(3),
+          First: PDFNumber.fromNumber(18),
+        },
+        index,
+      );
+
       expect(() => parseStream(input, errDict, index)).toThrowError();
     });
 

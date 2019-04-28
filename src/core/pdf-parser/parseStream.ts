@@ -1,8 +1,10 @@
 import {
+  PDFArray,
   PDFDictionary,
   PDFIndirectReference,
   PDFName,
   PDFNumber,
+  PDFObject,
   PDFRawStream,
 } from 'core/pdf-objects';
 import { PDFObjectStream } from 'core/pdf-structures';
@@ -99,6 +101,20 @@ const parseStream = (
   return [contents, trimmed.subarray(endstreamIdx + endstreamMatch.length)];
 };
 
+const validateObjStmFilter = (filter: PDFObject | void) => {
+  if (filter instanceof PDFName && filter === PDFName.from('FlateDecode')) {
+    return true;
+  }
+  if (
+    filter instanceof PDFArray &&
+    filter.size() === 1 &&
+    filter.get(0) === PDFName.from('FlateDecode')
+  ) {
+    return true;
+  }
+  return false;
+};
+
 /**
  * Accepts an array of bytes and a PDFDictionary as input. Checks to see if the
  * first characters in the trimmed input make up a PDF Stream.
@@ -124,7 +140,8 @@ export default (
 
   // If it's an Object Stream, parse it and return the indirect objects it contains
   if (dict.getMaybe('Type') === PDFName.from('ObjStm')) {
-    if (dict.getMaybe('Filter') !== PDFName.from('FlateDecode')) {
+    const filter = dict.getMaybe('Filter');
+    if (!validateObjStmFilter(filter)) {
       error(`Cannot decode "${dict.get('Filter')}" Object Streams`);
     }
 
