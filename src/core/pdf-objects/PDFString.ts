@@ -18,11 +18,7 @@ class PDFString extends PDFObject {
 
   clone = () => PDFString.fromString(this.string);
 
-  toString = (): string =>
-    `(${this.string
-      .replace(/\\/g, '\\\\')
-      .replace(/\(/g, '\\(')
-      .replace(/\)/g, '\\)')})`;
+  toString = (): string => `(${this.string})`;
 
   bytesSize = () => this.toString().length;
 
