@@ -39,21 +39,21 @@ describe(`PDFString`, () => {
       expect(pdfString.toString()).toBe('(FooBar)');
     });
 
-    it(`escapes backslashes`, () => {
+    it(`does not escape backslashes`, () => {
       const pdfString = PDFString.fromString('Foo\\Bar\\Qux');
-      expect(pdfString.toString()).toBe('(Foo\\\\Bar\\\\Qux)');
+      expect(pdfString.toString()).toBe('(Foo\\Bar\\Qux)');
     });
 
-    it(`escapes nested parenthesis`, () => {
+    it(`does not escape nested parenthesis`, () => {
       const pdfString = PDFString.fromString('(Foo((Bar))Qux)');
-      expect(pdfString.toString()).toBe('(\\(Foo\\(\\(Bar\\)\\)Qux\\))');
+      expect(pdfString.toString()).toBe('((Foo((Bar))Qux))');
     });
   });
 
   describe(`"bytesSize" method`, () => {
     it(`returns the size of the PDFString in bytes`, () => {
       const pdfString = PDFString.fromString('Foo\\Bar\\Qux');
-      expect(pdfString.bytesSize()).toEqual(15);
+      expect(pdfString.bytesSize()).toEqual(13);
     });
   });
 
@@ -62,7 +62,7 @@ describe(`PDFString`, () => {
       const pdfString = PDFString.fromString('Foo\\Bar\\Qux');
       const buffer = new Uint8Array(pdfString.bytesSize());
       pdfString.copyBytesInto(buffer);
-      expect(buffer).toEqual(typedArrayFor('(Foo\\\\Bar\\\\Qux)'));
+      expect(buffer).toEqual(typedArrayFor('(Foo\\Bar\\Qux)'));
     });
   });
 });
