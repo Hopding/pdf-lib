@@ -58,11 +58,11 @@ const parseIndirectObj = (
     parseArray(afterHeader, index, parseHandlers) ||
     parseName(afterHeader, parseHandlers) ||
     parseString(afterHeader, parseHandlers) ||
-    parseIndirectRef(afterHeader, parseHandlers) ||
-    parseNumber(afterHeader, parseHandlers) ||
     parseHexString(afterHeader, parseHandlers) ||
     parseBool(afterHeader, parseHandlers) ||
     parseNull(afterHeader, parseHandlers) ||
+    parseIndirectRef(afterHeader, parseHandlers) ||
+    parseNumber(afterHeader, parseHandlers) ||
     error('Failed to parse object contents');
 
   const trimmedRemaining = trimArrayAndRemoveComments(r);
