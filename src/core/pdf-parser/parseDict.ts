@@ -72,11 +72,11 @@ const parseDict = (
       parseDict(remainder, index, parseHandlers) ||
       parseArray(remainder, index, parseHandlers) ||
       parseString(remainder, parseHandlers) ||
-      parseIndirectRef(remainder, parseHandlers) ||
-      parseNumber(remainder, parseHandlers) ||
       parseHexString(remainder, parseHandlers) ||
       parseBool(remainder, parseHandlers) ||
       parseNull(remainder, parseHandlers) ||
+      parseIndirectRef(remainder, parseHandlers) ||
+      parseNumber(remainder, parseHandlers) ||
       error('Failed to parse dictionary value');
 
     pdfDict.set(key, pdfObject);

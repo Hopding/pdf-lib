@@ -49,11 +49,11 @@ const parseArray = (
       parseDict(remainder, index, parseHandlers) ||
       parseArray(remainder, index, parseHandlers) ||
       parseString(remainder, parseHandlers) ||
-      parseIndirectRef(remainder, parseHandlers) ||
-      parseNumber(remainder, parseHandlers) ||
       parseHexString(remainder, parseHandlers) ||
       parseBool(remainder, parseHandlers) ||
       parseNull(remainder, parseHandlers) ||
+      parseIndirectRef(remainder, parseHandlers) ||
+      parseNumber(remainder, parseHandlers) ||
       error('Failed to parse array element');
 
     pdfArray.push(pdfObject);
