@@ -21,8 +21,8 @@ class PDFXRefTableFactory {
 
     offsets.forEach((info, idx) => {
       // Add new subsection if needed...
-      const prevObjectMeta = offsets[idx - 1] || info;
-      if (info.objectNumber - prevObjectMeta.objectNumber > 1) {
+      const prevObjectMeta = offsets[idx - 1];
+      if (idx === 0 || info.objectNumber - prevObjectMeta.objectNumber > 1) {
         subsection = new Subsection().setFirstObjNum(info.objectNumber);
         table.addSubsection(subsection);
       }

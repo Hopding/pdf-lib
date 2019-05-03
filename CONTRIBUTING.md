@@ -12,6 +12,7 @@
 * [Compiling the Project](#compiling-the-project)
 * [Running the Linter](#running-the-linter)
 * [Running the Type Checker](#running-the-type-checker)
+* [Debugging Tips](#debugging-tips)
 
 ## Local Setup And Prerequisites
 
@@ -200,3 +201,17 @@ $ tsc --noEmit
 ```
 
 This means your code is correctly typed. If the command fails, then your code has incorrect or missing types somewhere.
+
+## Debugging Tips
+
+Oftentimes when dealing with object offsets and cross references tables/streams, you'll have to deal with byte offsets within a file. The following command can be used (on Linux and Mac machines) to view a given number of bytes at a particular offset:
+
+```bash
+cat foo.pdf | tail -c +OFFSET | head -c NUM_BYTES
+```
+
+For example, to view the first 100 bytes following the offset 560477 (aka the byte range 560477-560577), you can run:
+
+```bash
+cat foo.pdf | tail -c +560477 | head -c 100
+```
