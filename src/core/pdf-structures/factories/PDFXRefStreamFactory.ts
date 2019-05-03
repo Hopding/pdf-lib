@@ -57,7 +57,7 @@ class PDFXRefStreamFactory {
 
     merged.forEach((obj, idx) => {
       const shouldStartNewSection =
-        idx !== 0 && obj.objectNumber - merged[idx - 1].objectNumber > 1;
+        idx === 0 || obj.objectNumber - merged[idx - 1].objectNumber > 1;
 
       if (shouldStartNewSection) {
         xrefSections.push({ firstObjectNumber: obj.objectNumber, size: 1 });
