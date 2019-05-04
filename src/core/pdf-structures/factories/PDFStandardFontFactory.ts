@@ -139,6 +139,19 @@ class PDFStandardFontFactory {
     return ((yTop - yBottom) / 1000) * size;
   };
 
+  /**
+   * Measures the size of this font at a particular height. Note that the size
+   * of the font is independent of the particular glyphs being displayed, so
+   * this method does not accept a `text` param, like
+   * [[PDFStandardFontFactory.widthOfTextAtSize]] does.
+   */
+  sizeOfFontAtHeight = (height: number): number => {
+    const { Ascender, Descender, FontBBox } = this.font;
+    const yTop = Ascender || FontBBox[3];
+    const yBottom = Descender || FontBBox[1];
+    return (1000 * height) / (yTop - yBottom);
+  };
+
   // We'll default to 250 if our font metrics don't specify a width
   private widthOfGlyph = (glyphName: string) =>
     this.font.getWidthOfGlyph(glyphName) || 250;

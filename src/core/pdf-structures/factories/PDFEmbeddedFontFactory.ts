@@ -153,13 +153,26 @@ class PDFEmbeddedFontFactory {
    * Measures the height of this font at a particular size. Note that the height
    * of the font is independent of the particular glyphs being displayed, so
    * this method does not accept a `text` param, like
-   * [[PDFStandardFontFactory.widthOfTextAtSize]] does.
+   * [[PDFEmbeddedFontFactory.widthOfTextAtSize]] does.
    */
   heightOfFontAtSize = (size: number) => {
     const { ascent, descent, bbox } = this.font;
     const yTop = (ascent || bbox.maxY) * this.scale;
     const yBottom = (descent || bbox.minY) * this.scale;
     return ((yTop - yBottom) / 1000) * size;
+  };
+
+  /**
+   * Measures the size of this font at a particular height. Note that the size
+   * of the font is independent of the particular glyphs being displayed, so
+   * this method does not accept a `text` param, like
+   * [[PDFEmbeddedFontFactory.widthOfTextAtSize]] does.
+   */
+  sizeOfFontAtHeight = (height: number): number => {
+    const { ascent, descent, bbox } = this.font;
+    const yTop = (ascent || bbox.maxY) * this.scale;
+    const yBottom = (descent || bbox.minY) * this.scale;
+    return (1000 * height) / (yTop - yBottom);
   };
 
   private embedFontDictionaryIn = (pdfDoc: PDFDocument, fontName: string) => {
