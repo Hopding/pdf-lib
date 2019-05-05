@@ -8,7 +8,7 @@
 
 ▸ **drawCircle**(options: *[IDrawCircleOptions](../interfaces/_helpers_pdf_operators_composite_ellipse_.idrawcircleoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:333](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/helpers/pdf-operators/composite/ellipse.ts#L333)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:333](https://github.com/Hopding/pdf-lib/blob/20e93f6/src/helpers/pdf-operators/composite/ellipse.ts#L333)*
 
 Draws a circle in a content stream.
 
@@ -47,7 +47,7 @@ ___
 
 ▸ **drawEllipse**(options: *[IDrawEllipseOptions](../interfaces/_helpers_pdf_operators_composite_ellipse_.idrawellipseoptions.md)*): `PDFOperator`[]
 
-*Defined in [helpers/pdf-operators/composite/ellipse.ts:185](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/helpers/pdf-operators/composite/ellipse.ts#L185)*
+*Defined in [helpers/pdf-operators/composite/ellipse.ts:185](https://github.com/Hopding/pdf-lib/blob/20e93f6/src/helpers/pdf-operators/composite/ellipse.ts#L185)*
 
 Draws an ellipse in a content stream.
 

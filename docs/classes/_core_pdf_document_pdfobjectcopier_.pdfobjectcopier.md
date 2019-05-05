@@ -24,7 +24,7 @@ Copying an object is equivalent to cloning it and then copying over any other ob
 
 ⊕ **new PDFObjectCopier**(srcIndex: *`PDFObjectIndex`*, destIndex: *`PDFObjectIndex`*): [PDFObjectCopier](_core_pdf_document_pdfobjectcopier_.pdfobjectcopier.md)
 
-*Defined in [core/pdf-document/PDFObjectCopier.ts:36](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-document/PDFObjectCopier.ts#L36)*
+*Defined in [core/pdf-document/PDFObjectCopier.ts:36](https://github.com/Hopding/pdf-lib/blob/20e93f6/src/core/pdf-document/PDFObjectCopier.ts#L36)*
 
 **Parameters:**
 
@@ -45,7 +45,7 @@ ___
 
 ▸ **copy**T(object: *`T`*): `T`
 
-*Defined in [core/pdf-document/PDFObjectCopier.ts:44](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-document/PDFObjectCopier.ts#L44)*
+*Defined in [core/pdf-document/PDFObjectCopier.ts:44](https://github.com/Hopding/pdf-lib/blob/20e93f6/src/core/pdf-document/PDFObjectCopier.ts#L44)*
 
 **Type parameters:**
 
@@ -65,7 +65,7 @@ ___
 
 ▸ **for**(srcIndex: *`PDFObjectIndex`*, destIndex: *`PDFObjectIndex`*): [PDFObjectCopier](_core_pdf_document_pdfobjectcopier_.pdfobjectcopier.md)
 
-*Defined in [core/pdf-document/PDFObjectCopier.ts:31](https://github.com/Hopding/pdf-lib/blob/0d3a994/src/core/pdf-document/PDFObjectCopier.ts#L31)*
+*Defined in [core/pdf-document/PDFObjectCopier.ts:31](https://github.com/Hopding/pdf-lib/blob/20e93f6/src/core/pdf-document/PDFObjectCopier.ts#L31)*
 
 **Parameters:**
 
