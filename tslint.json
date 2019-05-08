@@ -1,0 +1,28 @@
+{
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "rules": {
+    "curly": [true, "ignore-same-line"],
+    "import-blacklist": [true, "lodash"],
+    "max-line-length": false,
+    "member-access": [true, "no-public"],
+    "no-console": false,
+    "prefer-for-of": false,
+    "quotemark": [true, "single"],
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "trailing-comma": [
+      true,
+      {
+        "esSpecCompliant": true,
+        "multiline": { "functions": "ignore" }
+      }
+    ],
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-pascal-case",
+        "allow-leading-underscore"
+      ]
+    }
+  }
+}

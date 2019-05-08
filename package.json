@@ -1,0 +1,60 @@
+{
+  "name": "pdf-lib",
+  "version": "1.0.0-beta.1",
+  "description": "Create and modify PDF files with JavaScript",
+  "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
+  "contributors": [
+    "jerp (https://github.com/jerp)",
+    "Greg Bacchus (https://github.com/gregbacchus)",
+    "Mickael Lecoq (https://github.com/mlecoq)"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "yarn lint:prettier && yarn lint:tslint",
+    "lint:tslint": "tslint --project tsconfig.json --fix",
+    "lint:prettier": "prettier --write './src/**/*.{ts,js,json}' --loglevel error",
+    "build": "yarn build:cjs && yarn build:es && yarn build:umd && yarn build:umd:min",
+    "build:cjs": "ttsc --module commonjs --outDir lib",
+    "build:es": "ttsc --module ES2015 --outDir es",
+    "build:umd": "rollup --config rollup.config.js --file dist/pdf-lib.js",
+    "build:umd:min": "rollup --config rollup.config.js --file dist/pdf-lib.min.js --environment MINIFY"
+  },
+  "types": "lib/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "unpkg": "dist/pdf-lib.min.js",
+  "dependencies": {
+    "tslib": "^1.9.3"
+  },
+  "devDependencies": {
+    "prettier": "^1.17.0",
+    "rollup": "^1.11.3",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-terser": "^4.0.4",
+    "ts-transformer-imports": "^0.4.2",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "ttypescript": "^1.5.6",
+    "typescript": "^3.4.5"
+  },
+  "license": "MIT",
+  "private": false,
+  "repository": "git+https://github.com/Hopding/pdf-lib.git",
+  "bugs": {
+    "url": "https://github.com/Hopding/pdf-lib/issues"
+  },
+  "keywords": [
+    "pdf-lib",
+    "pdf",
+    "document",
+    "create",
+    "modify",
+    "creation",
+    "modification",
+    "edit",
+    "editing",
+    "typescript",
+    "javascript",
+    "library"
+  ]
+}
