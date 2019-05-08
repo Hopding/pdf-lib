@@ -1,6 +1,8 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
+    "only-arrow-functions": true,
+    "arrow-return-shorthand": [true, "multiline"],
     "curly": [true, "ignore-same-line"],
     "import-blacklist": [true, "lodash"],
     "max-line-length": false,
