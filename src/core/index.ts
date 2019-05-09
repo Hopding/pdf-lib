@@ -11,3 +11,4 @@ export { default as PDFHexString } from 'src/core/objects/PDFHexString';
 export { default as PDFName } from 'src/core/objects/PDFName';
 export { default as PDFNull } from 'src/core/objects/PDFNull';
 export { default as PDFArray } from 'src/core/objects/PDFArray';
+export { default as PDFDict } from 'src/core/objects/PDFDict';

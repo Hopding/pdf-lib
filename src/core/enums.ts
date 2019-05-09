@@ -1,4 +1,5 @@
 export const enum CharCodes {
+  Newline = 10,
   a = 97,
   e = 101,
   f = 102,
