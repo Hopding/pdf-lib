@@ -55,10 +55,12 @@ class PDFName extends PDFObject {
     return this.encodedName.length;
   }
 
-  copyBytesInto(buffer: Uint8Array, offset: number): void {
-    for (let idx = 0, len = this.encodedName.length; idx < len; idx++) {
+  copyBytesInto(buffer: Uint8Array, offset: number): number {
+    const length = this.encodedName.length;
+    for (let idx = 0; idx < length; idx++) {
       buffer[offset++] = toCharCode(this.encodedName[idx]);
     }
+    return length;
   }
 }
 

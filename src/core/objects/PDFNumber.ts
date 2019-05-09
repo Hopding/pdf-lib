@@ -26,10 +26,12 @@ class PDFNumber extends PDFObject {
     return this.stringValue.length;
   }
 
-  copyBytesInto(buffer: Uint8Array, offset: number): void {
-    for (let idx = 0, len = this.stringValue.length; idx < len; idx++) {
+  copyBytesInto(buffer: Uint8Array, offset: number): number {
+    const length = this.stringValue.length;
+    for (let idx = 0; idx < length; idx++) {
       buffer[offset++] = this.stringValue.charCodeAt(idx);
     }
+    return length;
   }
 }
 

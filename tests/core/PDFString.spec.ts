@@ -37,7 +37,7 @@ describe(`PDFString`, () => {
 
   it(`can be serialized`, () => {
     const buffer = new Uint8Array(20).fill(toCharCode(' '));
-    PDFString.of(')(b\\a/))z(').copyBytesInto(buffer, 3);
+    expect(PDFString.of(')(b\\a/))z(').copyBytesInto(buffer, 3)).toBe(12);
     expect(buffer).toEqual(typedArrayFor('   ()(b\\a/))z()     '));
   });
 });

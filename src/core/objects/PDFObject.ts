@@ -13,7 +13,7 @@ class PDFObject {
     throw new MethodNotImplementedError(this.constructor.name, 'sizeInBytes');
   }
 
-  copyBytesInto(_buffer: Uint8Array, _offset: number): void {
+  copyBytesInto(_buffer: Uint8Array, _offset: number): number {
     throw new MethodNotImplementedError(this.constructor.name, 'copyBytesInto');
   }
 }

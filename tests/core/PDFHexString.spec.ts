@@ -31,7 +31,7 @@ describe(`PDFHexString`, () => {
 
   it(`can be serialized`, () => {
     const buffer = new Uint8Array(11).fill(toCharCode(' '));
-    PDFHexString.of('901FA').copyBytesInto(buffer, 3);
+    expect(PDFHexString.of('901FA').copyBytesInto(buffer, 3)).toBe(7);
     expect(buffer).toEqual(typedArrayFor('   <901FA> '));
   });
 });

@@ -28,18 +28,20 @@ class PDFBool extends PDFObject {
     return this.value ? 4 : 5;
   }
 
-  copyBytesInto(buffer: Uint8Array, offset: number): void {
+  copyBytesInto(buffer: Uint8Array, offset: number): number {
     if (this.value) {
       buffer[offset++] = CharCodes.t;
       buffer[offset++] = CharCodes.r;
       buffer[offset++] = CharCodes.u;
       buffer[offset++] = CharCodes.e;
+      return 4;
     } else {
       buffer[offset++] = CharCodes.f;
       buffer[offset++] = CharCodes.a;
       buffer[offset++] = CharCodes.l;
       buffer[offset++] = CharCodes.s;
       buffer[offset++] = CharCodes.e;
+      return 5;
     }
   }
 }

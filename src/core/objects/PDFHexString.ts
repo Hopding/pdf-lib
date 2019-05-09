@@ -23,12 +23,14 @@ class PDFHexString extends PDFObject {
     return this.value.length + 2;
   }
 
-  copyBytesInto(buffer: Uint8Array, offset: number) {
+  copyBytesInto(buffer: Uint8Array, offset: number): number {
+    const length = this.value.length;
     buffer[offset++] = CharCodes.LessThan;
-    for (let idx = 0, len = this.value.length; idx < len; idx++) {
+    for (let idx = 0; idx < length; idx++) {
       buffer[offset++] = this.value.charCodeAt(idx);
     }
     buffer[offset++] = CharCodes.GreaterThan;
+    return length + 2;
   }
 }
 

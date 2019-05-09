@@ -66,15 +66,15 @@ describe(`PDFName`, () => {
 
   it(`can be serialized`, () => {
     const buffer1 = new Uint8Array(23).fill(toCharCode(' '));
-    PDFName.of('\0\t\n\f\r ').copyBytesInto(buffer1, 3);
+    expect(PDFName.of('\0\t\n\f\r ').copyBytesInto(buffer1, 3)).toBe(19);
     expect(buffer1).toEqual(typedArrayFor('   /#00#09#0A#0C#0D#20 '));
 
     const buffer2 = new Uint8Array(17).fill(toCharCode(' '));
-    PDFName.of('Lime Green').copyBytesInto(buffer2, 1);
+    expect(PDFName.of('Lime Green').copyBytesInto(buffer2, 1)).toBe(13);
     expect(buffer2).toEqual(typedArrayFor(' /Lime#20Green   '));
 
     const buffer3 = new Uint8Array(7).fill(toCharCode(' '));
-    PDFName.of('A#42').copyBytesInto(buffer3, 4);
+    expect(PDFName.of('A#42').copyBytesInto(buffer3, 4)).toBe(3);
     expect(buffer3).toEqual(typedArrayFor('    /AB'));
   });
 });
