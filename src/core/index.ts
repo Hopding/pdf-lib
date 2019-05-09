@@ -14,3 +14,5 @@ export { default as PDFArray } from 'src/core/objects/PDFArray';
 export { default as PDFDict } from 'src/core/objects/PDFDict';
 export { default as PDFRef } from 'src/core/objects/PDFRef';
 export { default as PDFInvalidObject } from 'src/core/objects/PDFInvalidObject';
+export { default as PDFStream } from 'src/core/objects/PDFStream';
+export { default as PDFRawStream } from 'src/core/objects/PDFRawStream';

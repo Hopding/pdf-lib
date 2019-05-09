@@ -27,6 +27,10 @@ class PDFName extends PDFObject {
     return instance;
   };
 
+  /* tslint:disable member-ordering */
+  static readonly Length = PDFName.of('Length');
+  /* tslint:enable member-ordering */
+
   private readonly encodedName: string;
 
   private constructor(enforcer: any, name: string) {
