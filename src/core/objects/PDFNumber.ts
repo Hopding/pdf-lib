@@ -1,4 +1,4 @@
-import { numberToString } from 'src/utils';
+import { numberToString } from 'src/utils/index';
 
 import PDFObject from 'src/core/objects/PDFObject';
 

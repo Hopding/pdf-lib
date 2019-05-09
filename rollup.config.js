@@ -1,3 +1,4 @@
+import resolve from 'rollup-plugin-node-resolve';
 import json from 'rollup-plugin-json';
 import { terser } from 'rollup-plugin-terser';
 
@@ -9,5 +10,5 @@ export default {
     name: 'PDFLib',
     format: 'umd',
   },
-  plugins: [json(), MINIFY === 'true' && terser()],
+  plugins: [resolve(), json(), MINIFY === 'true' && terser()],
 };
