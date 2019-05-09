@@ -1,5 +1,5 @@
 import { PDFString } from 'src/core';
-import { charCode, typedArrayFor } from 'src/utils';
+import { toCharCode, typedArrayFor } from 'src/utils';
 
 describe(`PDFString`, () => {
   it(`can be constructed from PDFString.of(...)`, () => {
@@ -36,7 +36,7 @@ describe(`PDFString`, () => {
   });
 
   it(`can be serialized`, () => {
-    const buffer = new Uint8Array(20).fill(charCode(' '));
+    const buffer = new Uint8Array(20).fill(toCharCode(' '));
     PDFString.of(')(b\\a/))z(').copyBytesInto(buffer, 3);
     expect(buffer).toEqual(typedArrayFor('   ()(b\\a/))z()     '));
   });
