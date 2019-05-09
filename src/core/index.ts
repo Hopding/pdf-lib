@@ -13,3 +13,4 @@ export { default as PDFNull } from 'src/core/objects/PDFNull';
 export { default as PDFArray } from 'src/core/objects/PDFArray';
 export { default as PDFDict } from 'src/core/objects/PDFDict';
 export { default as PDFRef } from 'src/core/objects/PDFRef';
+export { default as PDFInvalidObject } from 'src/core/objects/PDFInvalidObject';
