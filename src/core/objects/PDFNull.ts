@@ -14,11 +14,12 @@ class PDFNull extends PDFObject {
     return 4;
   }
 
-  copyBytesInto(buffer: Uint8Array, offset: number) {
+  copyBytesInto(buffer: Uint8Array, offset: number): number {
     buffer[offset++] = CharCodes.n;
     buffer[offset++] = CharCodes.u;
     buffer[offset++] = CharCodes.l;
     buffer[offset++] = CharCodes.l;
+    return 4;
   }
 }
 

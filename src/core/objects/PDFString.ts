@@ -26,12 +26,14 @@ class PDFString extends PDFObject {
     return this.value.length + 2;
   }
 
-  copyBytesInto(buffer: Uint8Array, offset: number): void {
+  copyBytesInto(buffer: Uint8Array, offset: number): number {
+    const length = this.value.length;
     buffer[offset++] = CharCodes.LeftParen;
-    for (let idx = 0, len = this.value.length; idx < len; idx++) {
+    for (let idx = 0; idx < length; idx++) {
       buffer[offset++] = this.value.charCodeAt(idx);
     }
     buffer[offset++] = CharCodes.RightParen;
+    return length + 2;
   }
 }
 

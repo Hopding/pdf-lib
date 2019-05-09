@@ -1,5 +1,5 @@
 import { PDFNull } from 'src/core';
-import { typedArrayFor, toCharCode } from 'src/utils';
+import { toCharCode, typedArrayFor } from 'src/utils';
 
 describe(`PDFNull`, () => {
   it(`cannot be publicly constructed`, () => {
@@ -20,7 +20,7 @@ describe(`PDFNull`, () => {
 
   it(`can be serialized`, () => {
     const buffer = new Uint8Array(8).fill(toCharCode(' '));
-    PDFNull.copyBytesInto(buffer, 3);
+    expect(PDFNull.copyBytesInto(buffer, 3)).toBe(4);
     expect(buffer).toEqual(typedArrayFor('   null '));
   });
 });
