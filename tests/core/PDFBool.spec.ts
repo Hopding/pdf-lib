@@ -24,15 +24,13 @@ describe(`PDFBool`, () => {
   });
 
   it(`can be serialized when true`, () => {
-    const buffer = new Uint8Array(8);
-    buffer.fill(charCode(' '));
+    const buffer = new Uint8Array(8).fill(charCode(' '));
     PDFBool.True.copyBytesInto(buffer, 3);
     expect(buffer).toEqual(typedArrayFor('   true '));
   });
 
   it(`can be serialized when false`, () => {
-    const buffer = new Uint8Array(9);
-    buffer.fill(charCode(' '));
+    const buffer = new Uint8Array(9).fill(charCode(' '));
     PDFBool.False.copyBytesInto(buffer, 1);
     expect(buffer).toEqual(typedArrayFor(' false   '));
   });
