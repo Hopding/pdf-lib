@@ -3,6 +3,7 @@ export const enum CharCodes {
   e = 101,
   f = 102,
   l = 108,
+  n = 110,
   r = 114,
   s = 115,
   t = 116,
