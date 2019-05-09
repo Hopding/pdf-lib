@@ -9,6 +9,7 @@
     "member-access": [true, "no-public"],
     "no-console": false,
     "prefer-for-of": false,
+    "object-literal-sort-keys": false,
     "quotemark": [true, "single"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
     "trailing-comma": [
