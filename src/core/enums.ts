@@ -9,4 +9,6 @@ export const enum CharCodes {
   u = 117,
   LeftParen = 40,
   RightParen = 41,
+  LessThan = 60,
+  GreaterThan = 62,
 }
