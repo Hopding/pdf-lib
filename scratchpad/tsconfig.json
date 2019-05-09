@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./**/*"],
+  "compilerOptions": {
+    "outDir": "./build",
+    "rootDir": null,
+    "rootDirs": ["../src", "../scratchpad"]
+  }
+}
