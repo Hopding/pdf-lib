@@ -1,5 +1,5 @@
 import { PDFHexString } from 'src/core';
-import { charCode, typedArrayFor } from 'src/utils';
+import { toCharCode, typedArrayFor } from 'src/utils';
 
 describe(`PDFHexString`, () => {
   it(`can be constructed from PDFHexString.of(...)`, () => {
@@ -30,7 +30,7 @@ describe(`PDFHexString`, () => {
   });
 
   it(`can be serialized`, () => {
-    const buffer = new Uint8Array(11).fill(charCode(' '));
+    const buffer = new Uint8Array(11).fill(toCharCode(' '));
     PDFHexString.of('901FA').copyBytesInto(buffer, 3);
     expect(buffer).toEqual(typedArrayFor('   <901FA> '));
   });
