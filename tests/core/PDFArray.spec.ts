@@ -2,6 +2,7 @@ import {
   PDFArray,
   PDFBool,
   PDFContext,
+  PDFDict,
   PDFHexString,
   PDFName,
   PDFNull,
@@ -26,8 +27,12 @@ describe(`PDFArray`, () => {
   const pdfNumber = PDFNumber.of(-24.179);
   const pdfString = PDFString.of('foobar');
 
+  const pdfSubDict = PDFDict.withContext(context);
+  pdfSubDict.set(PDFName.of('Foo'), PDFName.of('Bar'));
+
   const pdfSubArray = PDFArray.withContext(context);
   pdfSubArray.push(PDFBool.True);
+  pdfSubArray.push(pdfSubDict);
 
   pdfArray.push(pdfBool);
   pdfArray.push(pdfHexString);
@@ -58,21 +63,21 @@ describe(`PDFArray`, () => {
 
   it(`can be converted to a string`, () => {
     expect(String(pdfArray)).toBe(
-      '[ true <ABC123> /Foo#23Bar! null -24.179 (foobar) [ true ] ]',
+      '[ true <ABC123> /Foo#23Bar! null -24.179 (foobar) [ true <<\n/Foo /Bar\n>> ] ]',
     );
   });
 
   it(`can provide its size in bytes`, () => {
-    expect(pdfArray.sizeInBytes()).toBe(60);
+    expect(pdfArray.sizeInBytes()).toBe(76);
   });
 
   it(`can be serialized`, () => {
-    const buffer = new Uint8Array(64).fill(toCharCode(' '));
+    const buffer = new Uint8Array(80).fill(toCharCode(' '));
     pdfArray.copyBytesInto(buffer, 3);
 
     expect(buffer).toEqual(
       typedArrayFor(
-        '   [ true <ABC123> /Foo#23Bar! null -24.179 (foobar) [ true ] ] ',
+        '   [ true <ABC123> /Foo#23Bar! null -24.179 (foobar) [ true <<\n/Foo /Bar\n>> ] ] ',
       ),
     );
   });

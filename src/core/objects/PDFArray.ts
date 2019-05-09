@@ -14,9 +14,6 @@ class PDFArray extends PDFObject {
     this.context = context;
   }
 
-  // TODO: Remove this
-  dummy = () => this.context;
-
   size(): number {
     return this.array.length;
   }
