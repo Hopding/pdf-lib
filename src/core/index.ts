@@ -7,3 +7,4 @@ export { default as PDFNumber } from 'src/core/objects/PDFNumber';
 export { default as PDFString } from 'src/core/objects/PDFString';
 export { default as PDFHexString } from 'src/core/objects/PDFHexString';
 export { default as PDFName } from 'src/core/objects/PDFName';
+export { default as PDFNull } from 'src/core/objects/PDFNull';
