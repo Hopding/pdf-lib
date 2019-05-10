@@ -5,6 +5,8 @@ export { default as PDFContext } from 'src/core/PDFContext';
 export { default as PDFWriter } from 'src/core/PDFWriter';
 
 export { default as PDFHeader } from 'src/core/document/PDFHeader';
+export { default as PDFTrailer } from 'src/core/document/PDFTrailer';
+export { default as PDFTrailerDict } from 'src/core/document/PDFTrailerDict';
 
 export { default as PDFObject } from 'src/core/objects/PDFObject';
 export { default as PDFBool } from 'src/core/objects/PDFBool';

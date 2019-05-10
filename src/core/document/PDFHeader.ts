@@ -5,10 +5,10 @@ class PDFHeader {
   static forVersion = (major: number, minor: number) =>
     new PDFHeader(major, minor);
 
-  readonly major: string;
-  readonly minor: string;
+  private readonly major: string;
+  private readonly minor: string;
 
-  constructor(major: number, minor: number) {
+  private constructor(major: number, minor: number) {
     this.major = String(major);
     this.minor = String(minor);
   }
@@ -23,6 +23,8 @@ class PDFHeader {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
+    const initialOffset = offset;
+
     buffer[offset++] = CharCodes.Percent;
     buffer[offset++] = CharCodes.P;
     buffer[offset++] = CharCodes.D;
@@ -42,7 +44,7 @@ class PDFHeader {
     buffer[offset++] = 129;
     buffer[offset++] = 129;
 
-    return 12 + this.major.length + this.minor.length;
+    return offset - initialOffset;
   }
 }
 
