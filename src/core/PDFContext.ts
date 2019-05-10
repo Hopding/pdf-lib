@@ -47,6 +47,10 @@ class PDFContext {
     return ref;
   }
 
+  enumerateIndirectObjects(): Array<[PDFRef, PDFObject]> {
+    return Array.from(this.indirectObjects.entries());
+  }
+
   obj(literal: null): typeof PDFNull;
   obj(literal: string): PDFString;
   obj(literal: number): PDFNumber;

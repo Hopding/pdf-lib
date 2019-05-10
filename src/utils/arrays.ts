@@ -1,3 +1,5 @@
+import { charFromCode } from './strings';
+
 export const typedArrayFor = (value: string): Uint8Array => {
   const length = value.length;
   const typedArray = new Uint8Array(length);
@@ -32,4 +34,12 @@ export const mergeIntoTypedArray = (...arrays: Array<string | Uint8Array>) => {
   }
 
   return merged;
+};
+
+export const arrayAsString = (array: Uint8Array): string => {
+  let str = '';
+  for (let idx = 0, len = array.length; idx < len; idx++) {
+    str += charFromCode(array[idx]);
+  }
+  return str;
 };

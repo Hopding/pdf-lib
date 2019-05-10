@@ -1,4 +1,4 @@
-import { PDFBool, PDFContext, PDFName } from 'src/core';
+import { PDFBool, PDFContext, PDFName, PDFWriter } from 'src/core';
 
 const context = PDFContext.create();
 
@@ -11,3 +11,9 @@ console.log();
 console.log(b.toString());
 console.log();
 console.log(c.toString());
+
+context.register(a);
+context.register(b);
+context.register(c);
+
+PDFWriter.forContext(context).serializeToPDF();
