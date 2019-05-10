@@ -4,6 +4,8 @@ export * from 'src/core/enums';
 export { default as PDFContext } from 'src/core/PDFContext';
 export { default as PDFWriter } from 'src/core/PDFWriter';
 
+export { default as PDFHeader } from 'src/core/document/PDFHeader';
+
 export { default as PDFObject } from 'src/core/objects/PDFObject';
 export { default as PDFBool } from 'src/core/objects/PDFBool';
 export { default as PDFNumber } from 'src/core/objects/PDFNumber';
