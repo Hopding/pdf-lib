@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest --config jest.json",
     "testw": "jest --config jest.json --watch --notify",
+    "testc": "jest --config jest.json --coverage && open coverage/index.html",
     "lint": "yarn lint:prettier && yarn lint:tslint:src && yarn lint:tslint:tests",
     "lint:tslint:src": "tslint --project tsconfig.json --fix",
     "lint:tslint:tests": "tslint --project tests/tsconfig.json --fix",
