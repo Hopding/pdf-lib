@@ -1,6 +1,6 @@
 import { PDFBool, PDFContext, PDFName } from 'src/core';
 
-const context = new PDFContext();
+const context = PDFContext.create();
 
 const a = context.obj([{ foo: true, bar: PDFBool.False }, PDFName.of('test')]);
 const b = context.obj('foobar!');

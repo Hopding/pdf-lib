@@ -8,7 +8,7 @@ import {
 import { mergeIntoTypedArray, toCharCode } from 'src/utils';
 
 describe(`PDFRawStream`, () => {
-  const context = new PDFContext();
+  const context = PDFContext.create();
   const dict = PDFDict.withContext(context);
   dict.set(PDFName.Length, PDFNumber.of(7));
   const data = new Uint8Array([12, 39, 92, 38, 38, 28, 49]);

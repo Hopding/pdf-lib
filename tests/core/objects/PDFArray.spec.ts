@@ -13,7 +13,7 @@ import {
 import { toCharCode, typedArrayFor } from 'src/utils';
 
 describe(`PDFArray`, () => {
-  const context = new PDFContext();
+  const context = PDFContext.create();
 
   it(`can be constructed with PDFArray.withContext(...)`, () => {
     expect(PDFArray.withContext(context)).toBeInstanceOf(PDFArray);

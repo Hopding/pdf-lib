@@ -9,6 +9,7 @@
     "Mickael Lecoq (https://github.com/mlecoq)"
   ],
   "scripts": {
+    "clean": "rimraf tsBuildInfo.json build cjs dist es scratchpad/build",
     "typecheck": "tsc --noEmit",
     "test": "jest --config jest.json",
     "testw": "jest --config jest.json --watch --notify",
@@ -22,8 +23,8 @@
     "build:es": "ttsc --module ES2015 --outDir es",
     "build:umd": "rollup --config rollup.config.js --file dist/pdf-lib.js",
     "build:umd:min": "rollup --config rollup.config.js --file dist/pdf-lib.min.js --environment MINIFY",
-    "scratchpad:start": "tsc --build scratchpad/tsconfig.json --watch",
-    "scratchpad:run": "NODE_PATH=scratchpad/build node scratchpad/build/scratchpad/index.js"
+    "scratchpad:start": "ttsc --build scratchpad/tsconfig.json --watch",
+    "scratchpad:run": "node scratchpad/build/scratchpad/index.js"
   },
   "types": "cjs/index.d.ts",
   "main": "cjs/index.js",
@@ -37,6 +38,7 @@
     "@zerollup/ts-transform-paths": "^1.7.1",
     "jest": "^24.8.0",
     "prettier": "^1.17.0",
+    "rimraf": "^2.6.3",
     "rollup": "^1.11.3",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^4.2.3",
