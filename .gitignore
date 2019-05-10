@@ -1,5 +1,6 @@
 scratchpad/build/
 node_modules/
+coverage/
 build/
 dist/
 cjs/
