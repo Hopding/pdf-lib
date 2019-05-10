@@ -13,7 +13,7 @@
     "interface-name": false,
     "quotemark": [true, "single"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
-    "ban": [true, ["Object", "values"]],
+    "ban": [true, ["Object", "values"], ["Object", "entries"]],
     "trailing-comma": [
       true,
       {

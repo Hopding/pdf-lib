@@ -12,9 +12,69 @@ import {
 } from 'src/core';
 
 describe(`PDFContext`, () => {
-  const context = new PDFContext();
+  it(`retains assigned objects`, () => {
+    const context = PDFContext.create();
+
+    const pdfBool = PDFBool.True;
+    const pdfHexString = PDFHexString.of('ABC123');
+    const pdfName = PDFName.of('Foo#Bar!');
+    const pdfNull = PDFNull;
+    const pdfNumber = PDFNumber.of(-24.179);
+    const pdfString = PDFString.of('foobar');
+    const pdfDict = context.obj({ Foo: PDFName.of('Bar') });
+    const pdfArray = context.obj([PDFBool.True, pdfDict]);
+
+    context.assign(PDFRef.of(0), pdfBool);
+    context.assign(PDFRef.of(1), pdfHexString);
+    context.assign(PDFRef.of(2), pdfName);
+    context.assign(PDFRef.of(3), pdfNull);
+    context.assign(PDFRef.of(4), pdfNumber);
+    context.assign(PDFRef.of(5), pdfString);
+    context.assign(PDFRef.of(6), pdfDict);
+    context.assign(PDFRef.of(7), pdfArray);
+
+    expect(context.lookup(PDFRef.of(0))).toBe(pdfBool);
+    expect(context.lookup(PDFRef.of(1))).toBe(pdfHexString);
+    expect(context.lookup(PDFRef.of(2))).toBe(pdfName);
+    expect(context.lookup(PDFRef.of(3))).toBe(pdfNull);
+    expect(context.lookup(PDFRef.of(4))).toBe(pdfNumber);
+    expect(context.lookup(PDFRef.of(5))).toBe(pdfString);
+    expect(context.lookup(PDFRef.of(6))).toBe(pdfDict);
+    expect(context.lookup(PDFRef.of(7))).toBe(pdfArray);
+  });
+
+  it(`does not use object number 0 during registration`, () => {
+    const context = PDFContext.create();
+    expect(context.register(PDFBool.True)).toBe(PDFRef.of(1));
+  });
+
+  it(`returns the given object during lookup if it is not a PDFRef`, () => {
+    const context = PDFContext.create();
+    const pdfNumber = PDFNumber.of(21);
+    expect(context.lookup(pdfNumber)).toBe(pdfNumber);
+  });
+
+  it(`assigns the next highest object number during registration`, () => {
+    const context = PDFContext.create();
+
+    const pdfBool = PDFBool.True;
+    const pdfName = PDFName.of('FooBar');
+    const pdfNumber = PDFNumber.of(-21.436);
+
+    const boolRef = context.register(pdfBool);
+    expect(boolRef).toBe(PDFRef.of(1));
+    expect(context.lookup(boolRef)).toBe(pdfBool);
+
+    context.assign(PDFRef.of(9000), pdfName);
+
+    const numberRef = context.register(pdfNumber);
+    expect(numberRef).toBe(PDFRef.of(9001));
+    expect(context.lookup(numberRef)).toBe(pdfNumber);
+  });
 
   describe(`literal conversions`, () => {
+    const context = PDFContext.create();
+
     it(`converts null literals to the PDFNull instance`, () => {
       expect(context.obj(null)).toBe(PDFNull);
     });

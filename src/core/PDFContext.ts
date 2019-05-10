@@ -5,6 +5,7 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFNull from 'src/core/objects/PDFNull';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
+import PDFRef from 'src/core/objects/PDFRef';
 import PDFString from 'src/core/objects/PDFString';
 
 interface LiteralObject {
@@ -18,6 +19,34 @@ interface LiteralArray {
 type Literal = LiteralObject | LiteralArray | string | number | boolean | null;
 
 class PDFContext {
+  static create = () => new PDFContext();
+
+  private readonly indirectObjects: Map<PDFRef, PDFObject>;
+  private largestObjectNumber: number;
+
+  private constructor() {
+    this.indirectObjects = new Map();
+    this.largestObjectNumber = 0;
+  }
+
+  assign(ref: PDFRef, object: PDFObject): void {
+    this.indirectObjects.set(ref, object);
+    if (ref.objectNumber > this.largestObjectNumber) {
+      this.largestObjectNumber = ref.objectNumber;
+    }
+  }
+
+  register(object: PDFObject): PDFRef {
+    const ref = PDFRef.of(this.largestObjectNumber + 1);
+    this.assign(ref, object);
+    return ref;
+  }
+
+  lookup(ref: PDFRef | PDFObject): PDFObject | void {
+    if (ref instanceof PDFRef) return this.indirectObjects.get(ref);
+    return ref;
+  }
+
   obj(literal: null): typeof PDFNull;
   obj(literal: string): PDFString;
   obj(literal: number): PDFNumber;
