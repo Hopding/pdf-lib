@@ -1,8 +1,13 @@
-import { PDFBool, PDFContext, PDFDict, PDFName } from 'src/core';
+import { PDFBool, PDFContext, PDFName } from 'src/core';
 
 const context = new PDFContext();
-const dict = PDFDict.withContext(context);
 
-dict.set(PDFName.of('FooBar!'), PDFBool.True);
+const a = context.obj([{ foo: true, bar: PDFBool.False }, PDFName.of('test')]);
+const b = context.obj('foobar!');
+const c = context.obj({ foo: 'bar', wut: PDFName.of('Hello!') });
 
-console.log(dict.toString());
+console.log(a.toString());
+console.log();
+console.log(b.toString());
+console.log();
+console.log(c.toString());

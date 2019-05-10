@@ -10,8 +10,10 @@
     "no-console": false,
     "prefer-for-of": false,
     "object-literal-sort-keys": false,
+    "interface-name": false,
     "quotemark": [true, "single"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "ban": [true, ["Object", "values"]],
     "trailing-comma": [
       true,
       {
