@@ -7,6 +7,7 @@ import {
   PDFName,
   PDFNull,
   PDFNumber,
+  PDFRef,
   PDFString,
 } from 'src/core';
 import { toCharCode, typedArrayFor } from 'src/utils';
@@ -34,6 +35,8 @@ describe(`PDFArray`, () => {
   pdfSubArray.push(PDFBool.True);
   pdfSubArray.push(pdfSubDict);
 
+  const pdfRef = PDFRef.of(21, 92);
+
   pdfArray.push(pdfBool);
   pdfArray.push(pdfHexString);
   pdfArray.push(pdfName);
@@ -41,9 +44,10 @@ describe(`PDFArray`, () => {
   pdfArray.push(pdfNumber);
   pdfArray.push(pdfString);
   pdfArray.push(pdfSubArray);
+  pdfArray.push(pdfRef);
 
   it(`retains pushed objects`, () => {
-    expect(pdfArray.size()).toBe(7);
+    expect(pdfArray.size()).toBe(8);
 
     expect(pdfArray.get(0)).toBe(pdfBool);
     expect(pdfArray.get(1)).toBe(pdfHexString);
@@ -52,6 +56,7 @@ describe(`PDFArray`, () => {
     expect(pdfArray.get(4)).toBe(pdfNumber);
     expect(pdfArray.get(5)).toBe(pdfString);
     expect(pdfArray.get(6)).toBe(pdfSubArray);
+    expect(pdfArray.get(7)).toBe(pdfRef);
   });
 
   it(`can be cloned`, () => {
@@ -63,21 +68,20 @@ describe(`PDFArray`, () => {
 
   it(`can be converted to a string`, () => {
     expect(String(pdfArray)).toBe(
-      '[ true <ABC123> /Foo#23Bar! null -24.179 (foobar) [ true <<\n/Foo /Bar\n>> ] ]',
+      '[ true <ABC123> /Foo#23Bar! null -24.179 (foobar) [ true <<\n/Foo /Bar\n>> ] 21 92 R ]',
     );
   });
 
   it(`can provide its size in bytes`, () => {
-    expect(pdfArray.sizeInBytes()).toBe(76);
+    expect(pdfArray.sizeInBytes()).toBe(84);
   });
 
   it(`can be serialized`, () => {
-    const buffer = new Uint8Array(80).fill(toCharCode(' '));
-    pdfArray.copyBytesInto(buffer, 3);
-
+    const buffer = new Uint8Array(88).fill(toCharCode(' '));
+    expect(pdfArray.copyBytesInto(buffer, 3)).toBe(84);
     expect(buffer).toEqual(
       typedArrayFor(
-        '   [ true <ABC123> /Foo#23Bar! null -24.179 (foobar) [ true <<\n/Foo /Bar\n>> ] ] ',
+        '   [ true <ABC123> /Foo#23Bar! null -24.179 (foobar) [ true <<\n/Foo /Bar\n>> ] 21 92 R ] ',
       ),
     );
   });

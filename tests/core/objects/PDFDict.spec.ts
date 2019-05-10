@@ -7,6 +7,7 @@ import {
   PDFName,
   PDFNull,
   PDFNumber,
+  PDFRef,
   PDFString,
 } from 'src/core';
 import { toCharCode, typedArrayFor } from 'src/utils';
@@ -26,6 +27,7 @@ describe(`PDFDict`, () => {
   const pdfNull = PDFNull;
   const pdfNumber = PDFNumber.of(-24.179);
   const pdfString = PDFString.of('foobar');
+  const pdfRef = PDFRef.of(21, 92);
 
   pdfDict.set(PDFName.of('Boolean'), pdfBool);
   pdfDict.set(PDFName.of('HexString'), pdfHexString);
@@ -33,6 +35,7 @@ describe(`PDFDict`, () => {
   pdfDict.set(PDFName.of('Null'), pdfNull);
   pdfDict.set(PDFName.of('Number'), pdfNumber);
   pdfDict.set(PDFName.of('String'), pdfString);
+  pdfDict.set(PDFName.of('Ref'), pdfRef);
 
   const pdfArray = PDFArray.withContext(context);
   pdfArray.push(PDFBool.True);
@@ -44,7 +47,7 @@ describe(`PDFDict`, () => {
   pdfDict.set(PDFName.of('Dictionary'), pdfSubDict);
 
   it(`retains entered objects`, () => {
-    expect(pdfDict.entries()).toHaveLength(7);
+    expect(pdfDict.entries()).toHaveLength(8);
 
     expect(pdfDict.get(PDFName.of('Boolean'))).toBe(pdfBool);
     expect(pdfDict.get(PDFName.of('HexString'))).toBe(pdfHexString);
@@ -52,6 +55,7 @@ describe(`PDFDict`, () => {
     expect(pdfDict.get(PDFName.of('Null'))).toBe(pdfNull);
     expect(pdfDict.get(PDFName.of('Number'))).toBe(pdfNumber);
     expect(pdfDict.get(PDFName.of('String'))).toBe(pdfString);
+    expect(pdfDict.get(PDFName.of('Ref'))).toBe(pdfRef);
     expect(pdfDict.get(PDFName.of('Dictionary'))).toBe(pdfSubDict);
     expect(pdfSubDict.get(PDFName.of('Array'))).toBe(pdfArray);
   });
@@ -72,6 +76,7 @@ describe(`PDFDict`, () => {
 /Null null
 /Number -24.179
 /String (foobar)
+/Ref 21 92 R
 /Dictionary <<
 /Array [ true null ]
 >>
@@ -80,12 +85,12 @@ describe(`PDFDict`, () => {
   });
 
   it(`can provide its size in bytes`, () => {
-    expect(pdfDict.sizeInBytes()).toBe(140);
+    expect(pdfDict.sizeInBytes()).toBe(153);
   });
 
   it(`can be serialized`, () => {
-    const buffer = new Uint8Array(144).fill(toCharCode(' '));
-    expect(pdfDict.copyBytesInto(buffer, 3)).toBe(140);
+    const buffer = new Uint8Array(157).fill(toCharCode(' '));
+    expect(pdfDict.copyBytesInto(buffer, 3)).toBe(153);
     expect(buffer).toEqual(
       typedArrayFor(
         `   <<
@@ -95,6 +100,7 @@ describe(`PDFDict`, () => {
 /Null null
 /Number -24.179
 /String (foobar)
+/Ref 21 92 R
 /Dictionary <<
 /Array [ true null ]
 >>
