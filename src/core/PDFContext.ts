@@ -21,8 +21,9 @@ type Literal = LiteralObject | LiteralArray | string | number | boolean | null;
 class PDFContext {
   static create = () => new PDFContext();
 
+  largestObjectNumber: number;
+
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
-  private largestObjectNumber: number;
 
   private constructor() {
     this.indirectObjects = new Map();
