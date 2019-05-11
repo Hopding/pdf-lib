@@ -1,3 +1,4 @@
+import fs from 'fs';
 import {
   CharCodes,
   PDFContext,
@@ -5,23 +6,49 @@ import {
   PDFHeader,
   PDFName,
   PDFObject,
+  PDFRawStream,
   PDFRef,
   PDFTrailer,
   PDFTrailerDict,
   // PDFWriter,
 } from 'src/core';
+import { typedArrayFor } from 'src/utils';
+
+console.time('Scratchpad');
 
 const context = PDFContext.create();
 
 const header = PDFHeader.forVersion(1, 7);
 
-const pagesRef = PDFRef.of(2);
+const data = typedArrayFor(`
+  BT
+    /F1 24 Tf
+    100 100 Td 
+    (Hello World) Tj
+  ET
+`);
+
+const contentStream = PDFRawStream.of(
+  context.obj({ Length: data.length }),
+  data,
+);
+const contentStreamRef = context.register(contentStream);
+
+const fontDict = context.obj({
+  Type: PDFName.of('Font'),
+  Subtype: PDFName.of('Type1'),
+  Name: PDFName.of('F1'),
+  BaseFont: PDFName.of('Helvetica'),
+  Encoding: PDFName.of('MacRomanEncoding'),
+});
+const fontDictRef = context.register(fontDict);
 
 const page = context.obj({
   Type: PDFName.of('Page'),
-  Parent: pagesRef,
+  // Parent: pagesRef,
   MediaBox: [0, 0, 612, 792],
-  Contents: [],
+  Contents: contentStreamRef,
+  Resources: { Font: { F1: fontDictRef } },
 });
 const pageRef = context.register(page);
 
@@ -30,7 +57,8 @@ const pages = context.obj({
   Kids: [pageRef],
   Count: 1,
 });
-context.assign(pagesRef, pages);
+const pagesRef = context.register(pages);
+page.set(PDFName.of('Parent'), pagesRef);
 
 const catalog = context.obj({
   Type: PDFName.of('Catalog'),
@@ -116,6 +144,7 @@ buffOffset += trailerDict.copyBytesInto(buffer, buffOffset);
 buffer[buffOffset++] = CharCodes.Newline;
 buffOffset += trailer.copyBytesInto(buffer, buffOffset);
 
-import fs from 'fs';
+console.timeEnd('Scratchpad');
+
 fs.writeFileSync('./out.pdf', buffer);
 console.log('File written to ./out.pdf');
