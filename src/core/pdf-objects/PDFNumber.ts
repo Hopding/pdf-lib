@@ -2,6 +2,7 @@ import isFinite from 'lodash/isFinite';
 import isString from 'lodash/isString';
 
 import { addStringToBuffer } from 'utils';
+import { numberToString } from 'utils/numbers';
 import { validate } from 'utils/validate';
 
 import PDFObject from './PDFObject';
@@ -19,18 +20,20 @@ class PDFNumber extends PDFObject {
   };
 
   number: number;
+  private stringValue: string;
 
   constructor(num: number) {
     super();
     validate(num, isFinite, 'Can only construct PDFNumbers from Numbers');
     this.number = num;
+    this.stringValue = numberToString(num);
   }
 
   clone = () => PDFNumber.fromNumber(this.number);
 
-  toString = (): string => this.number.toString();
+  toString = (): string => this.stringValue;
 
-  bytesSize = () => this.toString().length;
+  bytesSize = () => this.stringValue.length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
