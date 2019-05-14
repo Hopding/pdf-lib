@@ -1,16 +1,9 @@
-import {
-  PDFContext,
-  PDFDict,
-  PDFName,
-  PDFNumber,
-  PDFRawStream,
-} from 'src/core';
+import { PDFContext, PDFDict, PDFRawStream } from 'src/core';
 import { mergeIntoTypedArray, toCharCode } from 'src/utils';
 
 describe(`PDFRawStream`, () => {
   const context = PDFContext.create();
   const dict = PDFDict.withContext(context);
-  dict.set(PDFName.Length, PDFNumber.of(7));
   const data = new Uint8Array([12, 39, 92, 38, 38, 28, 49]);
 
   it(`can be constructed from PDFRawStream.of(...)`, () => {

@@ -1,3 +1,5 @@
+import pako from 'pako';
+
 import {
   PDFArray,
   PDFBool,
@@ -10,6 +12,7 @@ import {
   PDFRef,
   PDFString,
 } from 'src/core';
+import { mergeIntoTypedArray } from 'src/utils';
 
 describe(`PDFContext`, () => {
   it(`retains assigned objects`, () => {
@@ -72,6 +75,26 @@ describe(`PDFContext`, () => {
     expect(context.lookup(numberRef)).toBe(pdfNumber);
   });
 
+  it(`stream creation`, () => {
+    const context = PDFContext.create();
+
+    const stream = context.stream('stuff and things!');
+    const buffer = new Uint8Array(stream.sizeInBytes());
+    stream.copyBytesInto(buffer, 0);
+
+    expect(buffer).toEqual(
+      mergeIntoTypedArray(
+        '<<\n',
+        '/Filter /FlateDecode\n',
+        '/Length 25\n',
+        '>>\n',
+        'stream\n',
+        pako.deflate('stuff and things!'),
+        '\nendstream',
+      ),
+    );
+  });
+
   describe(`literal conversions`, () => {
     const context = PDFContext.create();
 
@@ -79,9 +102,9 @@ describe(`PDFContext`, () => {
       expect(context.obj(null)).toBe(PDFNull);
     });
 
-    it(`converts string literals to PDFString instances`, () => {
-      expect(context.obj('foobar')).toBeInstanceOf(PDFString);
-      expect(context.obj('foobar').toString()).toBe('(foobar)');
+    it(`converts string literals to PDFName instances`, () => {
+      expect(context.obj('foobar')).toBeInstanceOf(PDFName);
+      expect(context.obj('foobar').toString()).toBe('/foobar');
     });
 
     it(`converts number literals to PDFNumber instances`, () => {
@@ -99,14 +122,13 @@ describe(`PDFContext`, () => {
         PDFRef.of(21),
         true,
         PDFHexString.of('ABC123'),
-        PDFName.of('Foo#Bar!'),
+        'Foo#Bar!',
         [null, -24.179],
-        'foobar',
         { Foo: PDFName.of('Bar') },
       ];
       expect(context.obj(array)).toBeInstanceOf(PDFArray);
       expect(context.obj(array).toString()).toEqual(
-        '[ 21 0 R true <ABC123> /Foo#23Bar! [ null -24.179 ] (foobar) <<\n/Foo /Bar\n>> ]',
+        '[ 21 0 R true <ABC123> /Foo#23Bar! [ null -24.179 ] <<\n/Foo /Bar\n>> ]',
       );
     });
 
@@ -115,10 +137,9 @@ describe(`PDFContext`, () => {
         Ref: PDFRef.of(21),
         Boolean: true,
         HexString: PDFHexString.of('ABC123'),
-        Name: PDFName.of('Foo#Bar!'),
         Null: null,
         Number: -24.179,
-        String: 'foobar',
+        Name: 'Foo#Bar!',
         Dictionary: { Array: [true, null] },
       };
       expect(context.obj(dict)).toBeInstanceOf(PDFDict);
@@ -127,10 +148,9 @@ describe(`PDFContext`, () => {
 /Ref 21 0 R
 /Boolean true
 /HexString <ABC123>
-/Name /Foo#23Bar!
 /Null null
 /Number -24.179
-/String (foobar)
+/Name /Foo#23Bar!
 /Dictionary <<
 /Array [ true null ]
 >>

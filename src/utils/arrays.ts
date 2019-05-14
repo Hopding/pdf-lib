@@ -1,6 +1,7 @@
 import { charFromCode } from './strings';
 
-export const typedArrayFor = (value: string): Uint8Array => {
+export const typedArrayFor = (value: string | Uint8Array): Uint8Array => {
+  if (value instanceof Uint8Array) return value;
   const length = value.length;
   const typedArray = new Uint8Array(length);
   for (let idx = 0; idx < length; idx++) {

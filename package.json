@@ -31,10 +31,12 @@
   "module": "es/index.js",
   "unpkg": "dist/pdf-lib.min.js",
   "dependencies": {
+    "pako": "^1.0.10",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
     "@types/jest": "^24.0.12",
+    "@types/pako": "^1.0.1",
     "@zerollup/ts-transform-paths": "^1.7.1",
     "jest": "^24.8.0",
     "prettier": "^1.17.0",
