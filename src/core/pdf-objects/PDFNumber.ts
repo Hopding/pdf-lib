@@ -20,20 +20,18 @@ class PDFNumber extends PDFObject {
   };
 
   number: number;
-  private stringValue: string;
 
   constructor(num: number) {
     super();
     validate(num, isFinite, 'Can only construct PDFNumbers from Numbers');
     this.number = num;
-    this.stringValue = numberToString(num);
   }
 
   clone = () => PDFNumber.fromNumber(this.number);
 
-  toString = (): string => this.stringValue;
+  toString = (): string => numberToString(this.number);
 
-  bytesSize = () => this.stringValue.length;
+  bytesSize = () => numberToString(this.number).length;
 
   copyBytesInto = (buffer: Uint8Array): Uint8Array =>
     addStringToBuffer(this.toString(), buffer);
