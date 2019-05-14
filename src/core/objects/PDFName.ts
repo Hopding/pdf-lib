@@ -29,6 +29,7 @@ class PDFName extends PDFObject {
 
   /* tslint:disable member-ordering */
   static readonly Length = PDFName.of('Length');
+  static readonly FlateDecode = PDFName.of('FlateDecode');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;

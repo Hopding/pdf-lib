@@ -1,6 +1,8 @@
 import { CharCodes } from 'src/core/enums';
 import { MethodNotImplementedError } from 'src/core/errors';
 import PDFDict from 'src/core/objects/PDFDict';
+import PDFName from 'src/core/objects/PDFName';
+import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
 
 class PDFStream extends PDFObject {
@@ -30,10 +32,12 @@ class PDFStream extends PDFObject {
   }
 
   sizeInBytes(): number {
+    this.updateLength();
     return this.dict.sizeInBytes() + this.getContentsSize() + 18;
   }
 
   toString(): string {
+    this.updateLength();
     let streamString = this.dict.toString();
     streamString += '\nstream\n';
     streamString += this.getContentsString();
@@ -44,6 +48,7 @@ class PDFStream extends PDFObject {
   copyBytesInto(buffer: Uint8Array, offset: number): number {
     const initialOffset = offset;
 
+    this.updateLength();
     offset += this.dict.copyBytesInto(buffer, offset);
     buffer[offset++] = CharCodes.Newline;
 
@@ -72,6 +77,11 @@ class PDFStream extends PDFObject {
     buffer[offset++] = CharCodes.m;
 
     return offset - initialOffset;
+  }
+
+  private updateLength() {
+    const contentsSize = this.getContentsSize();
+    this.dict.set(PDFName.Length, PDFNumber.of(contentsSize));
   }
 }
 

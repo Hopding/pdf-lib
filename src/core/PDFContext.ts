@@ -1,3 +1,5 @@
+import pako from 'pako';
+
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
 import PDFDict from 'src/core/objects/PDFDict';
@@ -5,8 +7,9 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFNull from 'src/core/objects/PDFNull';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
+import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
-import PDFString from 'src/core/objects/PDFString';
+import { typedArrayFor } from 'src/utils';
 
 interface LiteralObject {
   [name: string]: Literal | PDFObject;
@@ -53,11 +56,11 @@ class PDFContext {
   }
 
   obj(literal: null): typeof PDFNull;
-  obj(literal: string): PDFString;
+  obj(literal: string): PDFName;
   obj(literal: number): PDFNumber;
   obj(literal: boolean): PDFBool;
-  obj(literal: LiteralArray): PDFArray;
   obj(literal: LiteralObject): PDFDict;
+  obj(literal: LiteralArray): PDFArray;
 
   obj(literal: Literal) {
     if (literal instanceof PDFObject) {
@@ -65,7 +68,7 @@ class PDFContext {
     } else if (literal === null) {
       return PDFNull;
     } else if (typeof literal === 'string') {
-      return PDFString.of(literal);
+      return PDFName.of(literal);
     } else if (typeof literal === 'number') {
       return PDFNumber.of(literal);
     } else if (typeof literal === 'boolean') {
@@ -86,6 +89,13 @@ class PDFContext {
       }
       return dict;
     }
+  }
+
+  stream(contents: string | Uint8Array): PDFRawStream {
+    return PDFRawStream.of(
+      this.obj({ Filter: PDFName.FlateDecode }),
+      pako.deflate(typedArrayFor(contents)),
+    );
   }
 }
 

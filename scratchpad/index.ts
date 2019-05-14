@@ -6,13 +6,11 @@ import {
   PDFHeader,
   PDFName,
   PDFObject,
-  PDFRawStream,
   PDFRef,
   PDFTrailer,
   PDFTrailerDict,
   // PDFWriter,
-} from 'src/core';
-import { typedArrayFor } from 'src/utils';
+} from 'src/index';
 
 console.time('Scratchpad');
 
@@ -20,18 +18,13 @@ const context = PDFContext.create();
 
 const header = PDFHeader.forVersion(1, 7);
 
-const data = typedArrayFor(`
+const contentStream = context.stream(`
   BT
     /F1 24 Tf
     100 100 Td 
     (Hello World) Tj
   ET
 `);
-
-const contentStream = PDFRawStream.of(
-  context.obj({ Length: data.length }),
-  data,
-);
 const contentStreamRef = context.register(contentStream);
 
 const fontDict = context.obj({
