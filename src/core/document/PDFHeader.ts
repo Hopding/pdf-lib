@@ -1,4 +1,4 @@
-import { CharCodes } from 'src/core/enums';
+import CharCodes from 'src/core/CharCodes';
 import { charFromCode } from 'src/utils';
 
 class PDFHeader {

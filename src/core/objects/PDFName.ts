@@ -1,4 +1,4 @@
-import { CharCodes } from 'src/core/enums';
+import CharCodes from 'src/core/CharCodes';
 import { PrivateConstructorError } from 'src/core/errors';
 import PDFObject from 'src/core/objects/PDFObject';
 import { charFromHexCode, toCharCode, toHexString } from 'src/utils';

@@ -1,6 +1,6 @@
+import CharCodes from 'src/core/CharCodes';
+import PDFRef from 'src/core/objects/PDFRef';
 import { padStart } from 'src/utils';
-import { PDFRef } from '..';
-import { CharCodes } from '../enums';
 
 export interface Entry {
   ref: PDFRef;

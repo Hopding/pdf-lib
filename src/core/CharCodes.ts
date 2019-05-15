@@ -1,4 +1,4 @@
-export const enum CharCodes {
+enum CharCodes {
   Newline = 10,
   Space = 32,
   ExclamationPoint = 33,
@@ -35,3 +35,5 @@ export const enum CharCodes {
   x = 120,
   Tilde = 126,
 }
+
+export default CharCodes;

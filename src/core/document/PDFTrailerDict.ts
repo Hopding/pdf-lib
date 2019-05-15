@@ -1,5 +1,5 @@
+import CharCodes from 'src/core/CharCodes';
 import PDFDict from 'src/core/objects/PDFDict';
-import { CharCodes } from '../enums';
 
 class PDFTrailerDict {
   static of = (dict: PDFDict) => new PDFTrailerDict(dict);
