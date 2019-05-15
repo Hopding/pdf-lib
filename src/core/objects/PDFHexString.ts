@@ -1,5 +1,5 @@
+import CharCodes from 'src/core/CharCodes';
 import PDFObject from 'src/core/objects/PDFObject';
-import { CharCodes } from '../enums';
 
 class PDFHexString extends PDFObject {
   static of = (value: string) => new PDFHexString(value);

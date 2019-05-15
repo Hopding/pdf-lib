@@ -1,4 +1,4 @@
-import { CharCodes } from 'src/core/enums';
+import CharCodes from 'src/core/CharCodes';
 import PDFObject from 'src/core/objects/PDFObject';
 
 class PDFString extends PDFObject {

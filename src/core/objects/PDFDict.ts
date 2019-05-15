@@ -1,7 +1,7 @@
+import CharCodes from 'src/core/CharCodes';
 import PDFName from 'src/core/objects/PDFName';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFContext from 'src/core/PDFContext';
-import { CharCodes } from '../enums';
 
 class PDFDict extends PDFObject {
   static withContext = (context: PDFContext) => new PDFDict(context);

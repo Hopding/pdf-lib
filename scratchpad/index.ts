@@ -22,22 +22,22 @@ const contentStream = context.stream(`
   BT
     /F1 24 Tf
     100 100 Td 
-    (Hello World) Tj
+    (Hello World and stuff) Tj
   ET
 `);
 const contentStreamRef = context.register(contentStream);
 
 const fontDict = context.obj({
-  Type: PDFName.of('Font'),
-  Subtype: PDFName.of('Type1'),
-  Name: PDFName.of('F1'),
-  BaseFont: PDFName.of('Helvetica'),
-  Encoding: PDFName.of('MacRomanEncoding'),
+  Type: 'Font',
+  Subtype: 'Type1',
+  Name: 'F1',
+  BaseFont: 'Helvetica',
+  Encoding: 'MacRomanEncoding',
 });
 const fontDictRef = context.register(fontDict);
 
 const page = context.obj({
-  Type: PDFName.of('Page'),
+  Type: 'Page',
   // Parent: pagesRef,
   MediaBox: [0, 0, 612, 792],
   Contents: contentStreamRef,
@@ -46,7 +46,7 @@ const page = context.obj({
 const pageRef = context.register(page);
 
 const pages = context.obj({
-  Type: PDFName.of('Pages'),
+  Type: 'Pages',
   Kids: [pageRef],
   Count: 1,
 });
@@ -54,7 +54,7 @@ const pagesRef = context.register(pages);
 page.set(PDFName.of('Parent'), pagesRef);
 
 const catalog = context.obj({
-  Type: PDFName.of('Catalog'),
+  Type: 'Catalog',
   Pages: pagesRef,
 });
 const catalogRef = context.register(catalog);

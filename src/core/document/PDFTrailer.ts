@@ -1,4 +1,4 @@
-import { CharCodes } from '../enums';
+import CharCodes from 'src/core/CharCodes';
 
 class PDFTrailer {
   static forLastCrossRefSectionOffset = (offset: number) =>
