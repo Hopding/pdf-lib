@@ -1,12 +1,13 @@
-// import CharCodes from 'src/core/CharCodes';
+import CharCodes from 'src/core/CharCodes';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
+import PDFContext from 'src/core/PDFContext';
 import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars } from 'src/core/syntax/Numeric';
-import { CharCodes } from '..';
-import PDFContext from '../PDFContext';
 
+// TODO: Handle updated objects
+// TODO: Handle deleted objects
 class PDFParser extends PDFObjectParser {
   static forBytes = (pdfBytes: Uint8Array, context = PDFContext.create()) =>
     new PDFParser(pdfBytes, context);
@@ -32,7 +33,6 @@ class PDFParser extends PDFObjectParser {
 
     throw new Error('FIX ME!');
   }
-
   parseIndirectObject(): PDFRef {
     this.skipWhitespace();
     const objectNumber = this.parseRawInt();
@@ -102,7 +102,7 @@ class PDFParser extends PDFObjectParser {
     if (!this.matchKeyword(Keywords.trailer)) return;
     this.skipWhitespace();
 
-    const dict = this.parseObject();
+    const dict = this.parseDict();
 
     console.log('TRAILER DICT:', dict.toString());
   }
@@ -121,16 +121,17 @@ class PDFParser extends PDFObjectParser {
     this.skipWhitespace();
   }
 
-  // Note: a single PDF can have multiple sections because of updates
   parseDocumentSection(): void {
-    // while (!this.bytes.done()) {
     this.parseIndirectObjects();
     this.maybeParseCrossRefSection();
     this.maybeParseTrailerDict();
     this.maybeParseTrailer();
-    // }
-    // console.log('DONE?', this.bytes.done());
-    // console.log(this.bytes);
+  }
+
+  parseDocument(): PDFHeader {
+    const header = this.parseHeader();
+    while (!this.bytes.done()) this.parseDocumentSection();
+    return header;
   }
 
   /**
