@@ -13,7 +13,15 @@
     "interface-name": false,
     "quotemark": [true, "single"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
-    "ban": [true, ["Object", "values"], ["Object", "entries"]],
+    "ban": [
+      true,
+      ["Object", "values"],
+      ["Object", "entries"],
+      {
+        "name": ["*", "toHaveLength"],
+        "message": "expect(...).toHaveLength(...) can stall when the assertion fails"
+      }
+    ],
     "trailing-comma": [
       true,
       {

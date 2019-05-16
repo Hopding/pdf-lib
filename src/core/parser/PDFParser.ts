@@ -1,23 +1,36 @@
 import CharCodes from 'src/core/CharCodes';
 import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
+import PDFTrailer from 'src/core/document/PDFTrailer';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
 import PDFContext from 'src/core/PDFContext';
 import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars } from 'src/core/syntax/Numeric';
 
-// TODO: Handle updated objects
-// TODO: Handle deleted objects
 class PDFParser extends PDFObjectParser {
-  static forBytes = (pdfBytes: Uint8Array, context = PDFContext.create()) =>
+  static forBytes = (pdfBytes: Uint8Array, context: PDFContext) =>
     new PDFParser(pdfBytes, context);
+
+  alreadyParsed = false;
 
   constructor(pdfBytes: Uint8Array, context: PDFContext) {
     super(pdfBytes, context);
   }
 
-  parseHeader(): PDFHeader {
+  parseDocumentIntoContext(): PDFHeader {
+    if (this.alreadyParsed) throw new Error('PDF already parsed! FIX ME!');
+    this.alreadyParsed = true;
+
+    const header = this.parseHeader();
+    while (!this.bytes.done()) {
+      this.parseDocumentSection();
+    }
+
+    return header;
+  }
+
+  private parseHeader(): PDFHeader {
     while (!this.bytes.done()) {
       if (this.matchKeyword(Keywords.header)) {
         const major = this.parseRawInt();
@@ -34,7 +47,8 @@ class PDFParser extends PDFObjectParser {
 
     throw new Error('FIX ME!');
   }
-  parseIndirectObject(): PDFRef {
+
+  private parseIndirectObject(): PDFRef {
     this.skipWhitespace();
     const objectNumber = this.parseRawInt();
 
@@ -56,7 +70,7 @@ class PDFParser extends PDFObjectParser {
     return ref;
   }
 
-  parseIndirectObjects(): void {
+  private parseIndirectObjects(): void {
     this.skipWhitespace();
     while (!this.bytes.done() && DigitChars.includes(this.bytes.peek())) {
       this.parseIndirectObject();
@@ -64,7 +78,7 @@ class PDFParser extends PDFObjectParser {
     }
   }
 
-  maybeParseCrossRefSection(): PDFCrossRefSection | void {
+  private maybeParseCrossRefSection(): PDFCrossRefSection | void {
     this.skipWhitespace();
     if (!this.matchKeyword(Keywords.xref)) return;
     this.skipWhitespace();
@@ -85,6 +99,7 @@ class PDFParser extends PDFObjectParser {
         if (this.bytes.next() === CharCodes.n) {
           xref.addEntry(ref, firstInt);
         } else {
+          this.context.delete(ref);
           xref.addDeletedEntry(ref, firstInt);
         }
         objectNumber += 1;
@@ -97,41 +112,32 @@ class PDFParser extends PDFObjectParser {
     return xref;
   }
 
-  maybeParseTrailerDict(): void {
+  private maybeParseTrailerDict(): void {
     this.skipWhitespace();
     if (!this.matchKeyword(Keywords.trailer)) return;
     this.skipWhitespace();
-
-    const dict = this.parseDict();
-
-    console.log('TRAILER DICT:', dict.toString());
+    this.context.trailer = this.parseDict();
   }
 
-  maybeParseTrailer(): void {
+  private maybeParseTrailer(): PDFTrailer | void {
     this.skipWhitespace();
     if (!this.matchKeyword(Keywords.startxref)) return;
     this.skipWhitespace();
 
     const offset = this.parseRawInt();
 
-    console.log('OFFSET:', offset);
-
     this.skipWhitespace();
     this.matchKeyword(Keywords.eof);
     this.skipWhitespace();
+
+    return PDFTrailer.forLastCrossRefSectionOffset(offset);
   }
 
-  parseDocumentSection(): void {
+  private parseDocumentSection(): void {
     this.parseIndirectObjects();
     this.maybeParseCrossRefSection();
     this.maybeParseTrailerDict();
     this.maybeParseTrailer();
-  }
-
-  parseDocument(): PDFHeader {
-    const header = this.parseHeader();
-    while (!this.bytes.done()) this.parseDocumentSection();
-    return header;
   }
 
   /**

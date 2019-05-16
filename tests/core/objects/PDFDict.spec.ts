@@ -47,7 +47,7 @@ describe(`PDFDict`, () => {
   pdfDict.set(PDFName.of('Dictionary'), pdfSubDict);
 
   it(`retains entered objects`, () => {
-    expect(pdfDict.entries()).toHaveLength(8);
+    expect(pdfDict.entries().length).toBe(8);
 
     expect(pdfDict.get(PDFName.of('Boolean'))).toBe(pdfBool);
     expect(pdfDict.get(PDFName.of('HexString'))).toBe(pdfHexString);

@@ -30,6 +30,7 @@ class PDFContext {
   static create = () => new PDFContext();
 
   largestObjectNumber: number;
+  trailer: PDFDict | void = undefined;
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
 
@@ -49,6 +50,10 @@ class PDFContext {
     const ref = PDFRef.of(this.largestObjectNumber + 1);
     this.assign(ref, object);
     return ref;
+  }
+
+  delete(ref: PDFRef): boolean {
+    return this.indirectObjects.delete(ref);
   }
 
   lookup(ref: PDFRef | PDFObject): PDFObject | void {
