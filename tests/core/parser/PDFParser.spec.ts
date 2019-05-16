@@ -1,11 +1,13 @@
 import {
   PDFArray,
   PDFBool,
+  PDFDict,
   PDFHexString,
   PDFName,
   PDFNull,
   PDFNumber,
   PDFParser,
+  PDFRawStream,
   PDFRef,
   PDFString,
   typedArrayFor,
@@ -64,6 +66,43 @@ describe(`PDFParser`, () => {
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFArray);
     expect(object.toString()).toBe('[ true /FooBar false ]');
+  });
+
+  it(`can parse empty dictionaries`, () => {
+    const input = typedArrayFor('<<>>');
+    const parser = PDFParser.forBytes(input);
+    const object = parser.parseObject();
+    expect(object).toBeInstanceOf(PDFDict);
+    expect(object.toString()).toBe('<<\n>>');
+  });
+
+  it(`can parse non-empty dictionaries`, () => {
+    const input = typedArrayFor(
+      '<</Foo/Bar /Qux <<>> /Another <<  /Test []  >>>>',
+    );
+    const parser = PDFParser.forBytes(input);
+    const object = parser.parseObject();
+    expect(object).toBeInstanceOf(PDFDict);
+    expect(object.toString()).toBe(
+      '<<\n/Foo /Bar\n/Qux <<\n>>\n/Another <<\n/Test [ ]\n>>\n>>',
+    );
+  });
+
+  it(`can parse streams`, () => {
+    const input = typedArrayFor(
+      '<< >>stream\nstream foobar endstream\nendstream',
+    );
+    const parser = PDFParser.forBytes(input);
+    const object = parser.parseObject();
+    expect(object).toBeInstanceOf(PDFRawStream);
+
+    const buffer = new Uint8Array(object.sizeInBytes());
+    object.copyBytesInto(buffer, 0);
+    expect(buffer).toEqual(
+      typedArrayFor(
+        '<<\n/Length 23\n>>\nstream\nstream foobar endstream\nendstream',
+      ),
+    );
   });
 
   it(`can parse refs`, () => {
