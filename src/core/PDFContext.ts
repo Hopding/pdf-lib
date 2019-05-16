@@ -21,6 +21,11 @@ interface LiteralArray {
 
 type Literal = LiteralObject | LiteralArray | string | number | boolean | null;
 
+const byAscendingObjectNumber = (
+  [a]: [PDFRef, PDFObject],
+  [b]: [PDFRef, PDFObject],
+) => a.objectNumber - b.objectNumber;
+
 class PDFContext {
   static create = () => new PDFContext();
 
@@ -52,7 +57,9 @@ class PDFContext {
   }
 
   enumerateIndirectObjects(): Array<[PDFRef, PDFObject]> {
-    return Array.from(this.indirectObjects.entries());
+    return Array.from(this.indirectObjects.entries()).sort(
+      byAscendingObjectNumber,
+    );
   }
 
   obj(literal: null): typeof PDFNull;
