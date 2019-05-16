@@ -45,6 +45,10 @@ class ByteStream {
     return this.bytes[this.idx + steps];
   }
 
+  peekAt(offset: number) {
+    return this.bytes[offset];
+  }
+
   done(): boolean {
     return this.idx >= this.length;
   }
