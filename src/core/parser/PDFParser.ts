@@ -1,11 +1,15 @@
 import CharCodes from 'src/core/CharCodes';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
+// import PDFDict from 'src/core/objects/PDFDict';
+import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNull from 'src/core/objects/PDFNull';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFRef from 'src/core/objects/PDFRef';
+// import PDFStream from 'src/core/objects/PDFStream';
+import PDFString from 'src/core/objects/PDFString';
 import ByteStream from 'src/core/parser/ByteStream';
 import PDFContext from 'src/core/PDFContext';
 import { charFromCode } from 'src/utils';
@@ -42,6 +46,7 @@ const Keywords = {
   null: [CharCodes.n, CharCodes.u, CharCodes.l, CharCodes.l],
 };
 
+// TODO: Skip comments!
 class PDFParser {
   static forBytes = (pdfBytes: Uint8Array) => new PDFParser(pdfBytes);
 
@@ -64,13 +69,17 @@ class PDFParser {
 
     const byte = this.bytes.peek();
 
-    if (NumericChars.includes(byte)) return this.parseNumberOrRef();
-
-    // if (NumericChars.includes(byte)) return this.parseNumber();
-
-    this.bytes.next();
+    if (
+      byte === CharCodes.LessThan &&
+      this.bytes.peekAhead(1) === CharCodes.LessThan
+    ) {
+      // return this.parseDictOrStream();
+    }
+    if (byte === CharCodes.LessThan) return this.parseHexString();
+    if (byte === CharCodes.LeftParen) return this.parseString();
     if (byte === CharCodes.ForwardSlash) return this.parseName();
     if (byte === CharCodes.LeftSquareBracket) return this.parseArray();
+    if (NumericChars.includes(byte)) return this.parseNumberOrRef();
 
     throw new Error('FIX ME!' + JSON.stringify(this.bytes.position()));
   }
@@ -116,8 +125,58 @@ class PDFParser {
     return PDFNumber.of(firstNum);
   }
 
+  // TODO: Maybe update PDFHexString.of() logic to remove whitespace and validate input?
+  private parseHexString(): PDFHexString {
+    this.bytes.next(); // Move past the leading '<'
+
+    let value = '';
+
+    while (!this.bytes.done() && this.bytes.peek() !== CharCodes.GreaterThan) {
+      value += charFromCode(this.bytes.next());
+    }
+
+    // TODO: Assert presence of '>' here, throw error if not present
+    this.bytes.next(); // Move past the ending '>'
+
+    return PDFHexString.of(value);
+  }
+
+  private parseString(): PDFString {
+    let nestingLvl = 0;
+    let isEscaped = false;
+    let value = '';
+
+    while (!this.bytes.done()) {
+      const byte = this.bytes.next();
+      value += charFromCode(byte);
+
+      // Check for unescaped parenthesis
+      if (!isEscaped) {
+        if (byte === CharCodes.LeftParen) nestingLvl += 1;
+        if (byte === CharCodes.RightParen) nestingLvl -= 1;
+      }
+
+      // Track whether current character is being escaped or not
+      if (byte === CharCodes.BackSlash) {
+        isEscaped = !isEscaped;
+      } else if (isEscaped) {
+        isEscaped = false;
+      }
+
+      // Once (if) the unescaped parenthesis balance out, return their contents
+      if (nestingLvl === 0) {
+        // Remove the outer parens so they aren't part of the contents
+        return PDFString.of(value.substring(1, value.length - 1));
+      }
+    }
+
+    throw new Error('FIX ME!');
+  }
+
   // TODO: Compare performance of string concatenation to charFromCode(...bytes)
   private parseName(): PDFName {
+    this.bytes.next(); // Skip the leading '/'
+
     let name = '';
     while (!this.bytes.done()) {
       const byte = this.bytes.peek();
@@ -136,6 +195,8 @@ class PDFParser {
   }
 
   private parseArray(): PDFArray {
+    this.bytes.next(); // Move past the leading '['
+
     const pdfArray = PDFArray.withContext(this.context);
     while (this.bytes.peek() !== CharCodes.RightSquareBracket) {
       const element = this.parseObject();
@@ -145,6 +206,10 @@ class PDFParser {
     this.bytes.next();
     return pdfArray;
   }
+
+  // private parseDict(): PDFDict {}
+
+  // private parseDictOrStream(): PDFDict | PDFStream {}
 
   private skipWhitespace(): void {
     while (!this.bytes.done() && WhitespaceChars.includes(this.bytes.peek())) {

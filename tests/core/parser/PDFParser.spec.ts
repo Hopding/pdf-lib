@@ -1,11 +1,13 @@
 import {
   PDFArray,
   PDFBool,
+  PDFHexString,
   PDFName,
   PDFNull,
   PDFNumber,
   PDFParser,
   PDFRef,
+  PDFString,
   typedArrayFor,
 } from 'src/index';
 
@@ -120,5 +122,40 @@ describe(`PDFParser`, () => {
       expect(parser.parseObject().toString()).toBe('-2');
       expect(parser.parseObject().toString()).toBe('-0.1');
     });
+  });
+
+  it(`can parse hex strings`, () => {
+    const parser = PDFParser.forBytes(
+      typedArrayFor('<01\n23\r45\f67\t89\0ab cdefABCDEF>'),
+    );
+    const object = parser.parseObject();
+    expect(object).toBeInstanceOf(PDFHexString);
+    expect(object.toString()).toBe('<01\n23\r45\f67\t89\0ab cdefABCDEF>');
+  });
+
+  it(`can parse literal strings`, () => {
+    const parser = PDFParser.forBytes(typedArrayFor('(testing)'));
+    const object = parser.parseObject();
+    expect(object).toBeInstanceOf(PDFString);
+    expect(object.toString()).toBe('(testing)');
+  });
+
+  it(`can parse literal strings with nested parenthesis`, () => {
+    const parser = PDFParser.forBytes(typedArrayFor('(FOO(BAR(QUX)(BAZ)))'));
+    const object = parser.parseObject();
+    expect(object).toBeInstanceOf(PDFString);
+    expect(object.toString()).toBe('(FOO(BAR(QUX)(BAZ)))');
+  });
+
+  it(`respects escaped parenthesis`, () => {
+    const parser = PDFParser.forBytes(typedArrayFor('(FOO\\(BAR)'));
+    const object = parser.parseObject();
+    expect(object).toBeInstanceOf(PDFString);
+    expect(object.toString()).toBe('(FOO\\(BAR)');
+  });
+
+  it(`respects escaped backslashes`, () => {
+    const parser = PDFParser.forBytes(typedArrayFor('(FOO\\\\(BAR)'));
+    expect(() => parser.parseObject()).toThrow();
   });
 });
