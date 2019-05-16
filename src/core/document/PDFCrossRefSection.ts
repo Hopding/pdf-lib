@@ -9,13 +9,24 @@ export interface Entry {
 }
 
 class PDFCrossRefSection {
-  static create = () => new PDFCrossRefSection();
+  static create = () =>
+    new PDFCrossRefSection({
+      ref: PDFRef.of(0, 65535),
+      offset: 0,
+      deleted: true,
+    });
 
-  private subsections: Entry[][] = [
-    [{ ref: PDFRef.of(0, 65535), offset: 0, deleted: true }],
-  ];
-  private chunkIdx = 0;
-  private chunkLength = 1;
+  static createEmpty = () => new PDFCrossRefSection();
+
+  private subsections: Entry[][];
+  private chunkIdx: number;
+  private chunkLength: number;
+
+  private constructor(firstEntry: Entry | void) {
+    this.subsections = firstEntry ? [[firstEntry]] : [];
+    this.chunkIdx = 0;
+    this.chunkLength = firstEntry ? 1 : 0;
+  }
 
   addEntry(ref: PDFRef, offset: number): void {
     this.append({ ref, offset, deleted: false });
@@ -129,6 +140,13 @@ class PDFCrossRefSection {
   }
 
   private append(currEntry: Entry): void {
+    if (this.chunkLength === 0) {
+      this.subsections.push([currEntry]);
+      this.chunkIdx = 0;
+      this.chunkLength = 1;
+      return;
+    }
+
     const chunk = this.subsections[this.chunkIdx];
     const prevEntry = chunk[this.chunkLength - 1];
 
