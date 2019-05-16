@@ -7,8 +7,6 @@ import { charFromCode } from 'src/utils';
 // TODO: Skip comments!
 // TODO: Throw error if eof is reached before finishing object parse...
 class BaseParser {
-  static forBytes = (pdfBytes: Uint8Array) => new BaseParser(pdfBytes);
-
   protected readonly bytes: ByteStream;
 
   constructor(pdfBytes: Uint8Array) {
