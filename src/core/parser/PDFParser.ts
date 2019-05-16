@@ -8,6 +8,7 @@ import PDFObject from 'src/core/objects/PDFObject';
 import PDFRef from 'src/core/objects/PDFRef';
 import ByteStream from 'src/core/parser/ByteStream';
 import PDFContext from 'src/core/PDFContext';
+import { charFromCode } from 'src/utils';
 
 const WhitespaceChars = [
   CharCodes.Null,
@@ -31,12 +32,9 @@ const DigitChars = [
   CharCodes.Nine,
 ];
 
-const NumericChars = [
-  CharCodes.Plus,
-  CharCodes.Minus,
-  CharCodes.Period,
-  ...DigitChars,
-];
+const NumericPrefixChars = [CharCodes.Period, CharCodes.Plus, CharCodes.Minus];
+
+const NumericChars = [...NumericPrefixChars, ...DigitChars];
 
 const Keywords = {
   true: [CharCodes.t, CharCodes.r, CharCodes.u, CharCodes.e],
@@ -77,24 +75,28 @@ class PDFParser {
     throw new Error('FIX ME!' + JSON.stringify(this.bytes.position()));
   }
 
+  // TODO: Maybe handle exponential format?
+  // TODO: Compare performance of string concatenation to charFromCode(...bytes)
   private parseRawNumber(): number {
     let value = '';
-    while (!this.bytes.done() && NumericChars.includes(this.bytes.peek())) {
-      value += String.fromCharCode(this.bytes.next());
+
+    // Parse integer-part, the leading (+ | - | . | 0-9)
+    while (!this.bytes.done()) {
+      const byte = this.bytes.peek();
+      if (!NumericChars.includes(byte)) break;
+      value += charFromCode(this.bytes.next());
+      if (byte === CharCodes.Period) break;
     }
+
+    // Parse decimal-part, the trailing (0-9)
+    while (!this.bytes.done()) {
+      const byte = this.bytes.peek();
+      if (!DigitChars.includes(byte)) break;
+      value += charFromCode(this.bytes.next());
+    }
+
     return Number(value);
   }
-
-  // TODO: Handle smashed numbers: 0.01.123 => [0.01, 0.0123]
-  // TODO: Maybe handle exponential format?
-  // TODO: Compare performance of string concatenation to String.fromCharCode(...bytes)
-  // private parseNumber(): PDFNumber {
-  //   let value = '';
-  //   while (!this.bytes.done() && NumericChars.includes(this.bytes.peek())) {
-  //     value += String.fromCharCode(this.bytes.next());
-  //   }
-  //   return PDFNumber.of(Number(value));
-  // }
 
   private parseNumberOrRef(): PDFNumber | PDFRef {
     const firstNum = this.parseRawNumber();
@@ -114,7 +116,7 @@ class PDFParser {
     return PDFNumber.of(firstNum);
   }
 
-  // TODO: Compare performance of string concatenation to String.fromCharCode(...bytes)
+  // TODO: Compare performance of string concatenation to charFromCode(...bytes)
   private parseName(): PDFName {
     let name = '';
     while (!this.bytes.done()) {
@@ -126,7 +128,7 @@ class PDFParser {
       ) {
         break;
       }
-      name += String.fromCharCode(byte);
+      name += charFromCode(byte);
       this.bytes.next();
     }
     if (name.length === 0) throw new Error('FIX ME!');

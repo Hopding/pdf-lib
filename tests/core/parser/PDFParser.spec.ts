@@ -108,5 +108,17 @@ describe(`PDFParser`, () => {
         expect(object.toString()).toBe(output);
       });
     });
+
+    it(`can parse numbers mashed together`, () => {
+      const input = typedArrayFor('0.01.123+2.1-3..1-2.-.1');
+      const parser = PDFParser.forBytes(input);
+      expect(parser.parseObject().toString()).toBe('0.01');
+      expect(parser.parseObject().toString()).toBe('0.123');
+      expect(parser.parseObject().toString()).toBe('2.1');
+      expect(parser.parseObject().toString()).toBe('-3');
+      expect(parser.parseObject().toString()).toBe('0.1');
+      expect(parser.parseObject().toString()).toBe('-2');
+      expect(parser.parseObject().toString()).toBe('-0.1');
+    });
   });
 });
