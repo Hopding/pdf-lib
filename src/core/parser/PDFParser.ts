@@ -1,4 +1,5 @@
 import CharCodes from 'src/core/CharCodes';
+import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
@@ -63,19 +64,13 @@ class PDFParser extends PDFObjectParser {
     }
   }
 
-  // TODO: Optimize this...
-  maybeParseCrossRefSection(): void {
+  maybeParseCrossRefSection(): PDFCrossRefSection | void {
     this.skipWhitespace();
     if (!this.matchKeyword(Keywords.xref)) return;
     this.skipWhitespace();
 
-    const subsections: Array<
-      Array<{
-        firstInt: number;
-        secondInt: number;
-        deleted: number;
-      }>
-    > = [];
+    let objectNumber = -1;
+    const xref = PDFCrossRefSection.createEmpty();
 
     while (DigitChars.includes(this.bytes.peek())) {
       const firstInt = this.parseRawInt();
@@ -86,15 +81,20 @@ class PDFParser extends PDFObjectParser {
 
       const byte = this.bytes.peek();
       if (byte === CharCodes.n || byte === CharCodes.f) {
-        const entry = { firstInt, secondInt, deleted: this.bytes.next() };
-        subsections[subsections.length - 1].push(entry);
+        const ref = PDFRef.of(objectNumber, secondInt);
+        if (this.bytes.next() === CharCodes.n) {
+          xref.addEntry(ref, firstInt);
+        } else {
+          xref.addDeletedEntry(ref, firstInt);
+        }
+        objectNumber += 1;
       } else {
-        subsections.push([]);
+        objectNumber = firstInt;
       }
       this.skipWhitespace();
     }
 
-    console.log('SUBSECTIONS:', subsections);
+    return xref;
   }
 
   maybeParseTrailerDict(): void {
