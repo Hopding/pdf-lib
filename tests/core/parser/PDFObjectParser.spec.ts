@@ -1,6 +1,7 @@
 import {
   PDFArray,
   PDFBool,
+  PDFContext,
   PDFDict,
   PDFHexString,
   PDFName,
@@ -18,35 +19,40 @@ import {
 describe(`PDFObjectParser`, () => {
   it(`can parse true boolean values`, () => {
     const input = typedArrayFor('true');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBe(PDFBool.True);
   });
 
   it(`can parse false boolean values`, () => {
     const input = typedArrayFor('false');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBe(PDFBool.False);
   });
 
   it(`can parse null values`, () => {
     const input = typedArrayFor('null');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBe(PDFNull);
   });
 
   it(`can parse true boolean values`, () => {
     const input = typedArrayFor('true');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBe(PDFBool.True);
   });
 
   it(`can parse name values`, () => {
     const input = typedArrayFor('/Foo#23Bar!');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFName);
     expect(object).toBe(PDFName.of('Foo#Bar!'));
@@ -54,7 +60,8 @@ describe(`PDFObjectParser`, () => {
 
   it(`can parse empty name values`, () => {
     const input = typedArrayFor(`/ `);
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBe(PDFName.of(''));
   });
@@ -63,7 +70,8 @@ describe(`PDFObjectParser`, () => {
     (nameTerminator) => {
       it(`terminates PDF Names on ${JSON.stringify(nameTerminator)}`, () => {
         const input = typedArrayFor(`/Foo${nameTerminator}Bar`);
-        const parser = PDFObjectParser.forBytes(input);
+        const context = PDFContext.create();
+        const parser = PDFObjectParser.forBytes(input, context);
         const object = parser.parseObject();
         expect(object).toBe(PDFName.of(`Foo`));
       });
@@ -72,7 +80,8 @@ describe(`PDFObjectParser`, () => {
 
   it(`can parse empty arrays`, () => {
     const input = typedArrayFor('[]');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFArray);
     expect(object.toString()).toBe('[ ]');
@@ -80,7 +89,8 @@ describe(`PDFObjectParser`, () => {
 
   it(`can parse non-empty arrays`, () => {
     const input = typedArrayFor('[  true   /FooBar false ]');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFArray);
     expect(object.toString()).toBe('[ true /FooBar false ]');
@@ -88,7 +98,8 @@ describe(`PDFObjectParser`, () => {
 
   it(`can parse empty dictionaries`, () => {
     const input = typedArrayFor('<<>>');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFDict);
     expect(object.toString()).toBe('<<\n>>');
@@ -98,7 +109,8 @@ describe(`PDFObjectParser`, () => {
     const input = typedArrayFor(
       '<</Foo/Bar /Qux <<>> /Another <<  /Test []  >>>>',
     );
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFDict);
     expect(object.toString()).toBe(
@@ -110,7 +122,8 @@ describe(`PDFObjectParser`, () => {
     const input = typedArrayFor(
       '<< >>stream\nstream foobar endstream\nendstream',
     );
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFRawStream);
 
@@ -125,14 +138,16 @@ describe(`PDFObjectParser`, () => {
 
   it(`can parse refs`, () => {
     const input = typedArrayFor('0 1 R');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
     const object = parser.parseObject();
     expect(object).toBe(PDFRef.of(0, 1));
   });
 
   it(`can parse a number, then a ref, then a number`, () => {
     const input = typedArrayFor('0 21 0 R 42');
-    const parser = PDFObjectParser.forBytes(input);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
 
     const object1 = parser.parseObject();
     expect(object1).toBeInstanceOf(PDFNumber);
@@ -161,7 +176,8 @@ describe(`PDFObjectParser`, () => {
       ['0.', '0'],
     ].forEach(([input, output]) => {
       it(`can parse ${input}`, () => {
-        const parser = PDFObjectParser.forBytes(typedArrayFor(input));
+        const context = PDFContext.create();
+        const parser = PDFObjectParser.forBytes(typedArrayFor(input), context);
         const object = parser.parseObject();
         expect(object).toBeInstanceOf(PDFNumber);
         expect(object.toString()).toBe(output);
@@ -170,7 +186,8 @@ describe(`PDFObjectParser`, () => {
 
     it(`can parse numbers mashed together`, () => {
       const input = typedArrayFor('0.01.123+2.1-3..1-2.-.1');
-      const parser = PDFObjectParser.forBytes(input);
+      const context = PDFContext.create();
+      const parser = PDFObjectParser.forBytes(input, context);
       expect(parser.parseObject().toString()).toBe('0.01');
       expect(parser.parseObject().toString()).toBe('0.123');
       expect(parser.parseObject().toString()).toBe('2.1');
@@ -182,8 +199,10 @@ describe(`PDFObjectParser`, () => {
   });
 
   it(`can parse hex strings`, () => {
+    const context = PDFContext.create();
     const parser = PDFObjectParser.forBytes(
       typedArrayFor('<01\n23\r45\f67\t89\0ab cdefABCDEF>'),
+      context,
     );
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFHexString);
@@ -191,15 +210,21 @@ describe(`PDFObjectParser`, () => {
   });
 
   it(`can parse literal strings`, () => {
-    const parser = PDFObjectParser.forBytes(typedArrayFor('(testing)'));
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(
+      typedArrayFor('(testing)'),
+      context,
+    );
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFString);
     expect(object.toString()).toBe('(testing)');
   });
 
   it(`can parse literal strings with nested parenthesis`, () => {
+    const context = PDFContext.create();
     const parser = PDFObjectParser.forBytes(
       typedArrayFor('(FOO(BAR(QUX)(BAZ)))'),
+      context,
     );
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFString);
@@ -207,14 +232,22 @@ describe(`PDFObjectParser`, () => {
   });
 
   it(`respects escaped parenthesis`, () => {
-    const parser = PDFObjectParser.forBytes(typedArrayFor('(FOO\\(BAR)'));
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(
+      typedArrayFor('(FOO\\(BAR)'),
+      context,
+    );
     const object = parser.parseObject();
     expect(object).toBeInstanceOf(PDFString);
     expect(object.toString()).toBe('(FOO\\(BAR)');
   });
 
   it(`respects escaped backslashes`, () => {
-    const parser = PDFObjectParser.forBytes(typedArrayFor('(FOO\\\\(BAR)'));
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(
+      typedArrayFor('(FOO\\\\(BAR)'),
+      context,
+    );
     expect(() => parser.parseObject()).toThrow();
   });
 });

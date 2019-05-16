@@ -21,7 +21,7 @@ const header = PDFHeader.forVersion(1, 7);
 const contentStream = context.stream(`
   BT
     /F1 24 Tf
-    100 100 Td 
+    100 100 Td
     (Hello World and stuff) Tj
   ET
 `);
