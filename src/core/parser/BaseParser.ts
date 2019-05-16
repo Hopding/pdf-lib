@@ -15,6 +15,18 @@ class BaseParser {
     this.bytes = ByteStream.of(pdfBytes);
   }
 
+  protected parseRawInt(): number {
+    let value = '';
+
+    while (!this.bytes.done()) {
+      const byte = this.bytes.peek();
+      if (!DigitChars.includes(byte)) break;
+      value += charFromCode(this.bytes.next());
+    }
+
+    return Number(value);
+  }
+
   // TODO: Maybe handle exponential format?
   // TODO: Compare performance of string concatenation to charFromCode(...bytes)
   protected parseRawNumber(): number {

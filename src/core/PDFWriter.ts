@@ -1,11 +1,4 @@
-import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
-import { PDFObject } from './index';
-
-const byAscendingObjectNumber = (
-  [a]: [PDFRef, PDFObject],
-  [b]: [PDFRef, PDFObject],
-) => a.objectNumber - b.objectNumber;
 
 class PDFWriter {
   static forContext = (context: PDFContext) => new PDFWriter(context);
@@ -16,9 +9,7 @@ class PDFWriter {
   }
 
   serializeToPDF(): Uint8Array {
-    const indirectObjects = this.context
-      .enumerateIndirectObjects()
-      .sort(byAscendingObjectNumber);
+    const indirectObjects = this.context.enumerateIndirectObjects();
 
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
       console.log(indirectObjects[idx][0].objectNumber);

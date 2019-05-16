@@ -25,4 +25,5 @@ export { default as PDFInvalidObject } from 'src/core/objects/PDFInvalidObject';
 export { default as PDFStream } from 'src/core/objects/PDFStream';
 export { default as PDFRawStream } from 'src/core/objects/PDFRawStream';
 
+export { default as PDFObjectParser } from 'src/core/parser/PDFObjectParser';
 export { default as PDFParser } from 'src/core/parser/PDFParser';

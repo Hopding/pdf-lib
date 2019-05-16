@@ -1,229 +1,156 @@
-import CharCodes from 'src/core/CharCodes';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFBool from 'src/core/objects/PDFBool';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNull from 'src/core/objects/PDFNull';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
+// import CharCodes from 'src/core/CharCodes';
+import PDFHeader from 'src/core/document/PDFHeader';
 import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFString from 'src/core/objects/PDFString';
-import BaseParser from 'src/core/parser/BaseParser';
-import PDFContext from 'src/core/PDFContext';
-import { EndstreamEolChars, Keywords } from 'src/core/syntax/Keywords';
-import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
-import { charFromCode } from 'src/utils';
+import PDFObjectParser from 'src/core/parser/PDFObjectParser';
+import { Keywords } from 'src/core/syntax/Keywords';
+import { DigitChars } from 'src/core/syntax/Numeric';
+import { CharCodes } from '..';
+import PDFContext from '../PDFContext';
 
-// TODO: Skip comments!
-// TODO: Throw error if eof is reached before finishing object parse...
-class PDFParser extends BaseParser {
-  static forBytes = (pdfBytes: Uint8Array) => new PDFParser(pdfBytes);
+class PDFParser extends PDFObjectParser {
+  static forBytes = (pdfBytes: Uint8Array, context = PDFContext.create()) =>
+    new PDFParser(pdfBytes, context);
 
-  private readonly context: PDFContext;
-
-  constructor(pdfBytes: Uint8Array) {
-    super(pdfBytes);
-    this.context = PDFContext.create();
+  constructor(pdfBytes: Uint8Array, context: PDFContext) {
+    super(pdfBytes, context);
   }
 
-  // TODO: Is it possible to reduce duplicate parsing for ref lookaheads?
-  // TODO: Maybe throw parsing error
-  parseObject(): PDFObject {
-    this.skipWhitespace();
-
-    if (this.matchKeyword(Keywords.true)) return PDFBool.True;
-    if (this.matchKeyword(Keywords.false)) return PDFBool.False;
-    if (this.matchKeyword(Keywords.null)) return PDFNull;
-
-    const byte = this.bytes.peek();
-
-    if (
-      byte === CharCodes.LessThan &&
-      this.bytes.peekAhead(1) === CharCodes.LessThan
-    ) {
-      return this.parseDictOrStream();
-    }
-    if (byte === CharCodes.LessThan) return this.parseHexString();
-    if (byte === CharCodes.LeftParen) return this.parseString();
-    if (byte === CharCodes.ForwardSlash) return this.parseName();
-    if (byte === CharCodes.LeftSquareBracket) return this.parseArray();
-    if (NumericChars.includes(byte)) return this.parseNumberOrRef();
-
-    throw new Error('FIX ME!' + JSON.stringify(this.bytes.position()));
-  }
-
-  private parseNumberOrRef(): PDFNumber | PDFRef {
-    const firstNum = this.parseRawNumber();
-    this.skipWhitespace();
-
-    const lookaheadStart = this.bytes.offset();
-    if (DigitChars.includes(this.bytes.peek())) {
-      const secondNum = this.parseRawNumber();
-      this.skipWhitespace();
-      if (this.bytes.peek() === CharCodes.R) {
-        this.bytes.next();
-        return PDFRef.of(firstNum, secondNum);
-      }
-    }
-
-    this.bytes.moveTo(lookaheadStart);
-    return PDFNumber.of(firstNum);
-  }
-
-  // TODO: Maybe update PDFHexString.of() logic to remove whitespace and validate input?
-  private parseHexString(): PDFHexString {
-    this.bytes.next(); // Move past the leading '<'
-
-    let value = '';
-
-    while (!this.bytes.done() && this.bytes.peek() !== CharCodes.GreaterThan) {
-      value += charFromCode(this.bytes.next());
-    }
-
-    // TODO: Assert presence of '>' here, throw error if not present
-    this.bytes.next(); // Move past the ending '>'
-
-    return PDFHexString.of(value);
-  }
-
-  private parseString(): PDFString {
-    let nestingLvl = 0;
-    let isEscaped = false;
-    let value = '';
-
+  parseHeader(): PDFHeader {
     while (!this.bytes.done()) {
-      const byte = this.bytes.next();
-      value += charFromCode(byte);
+      if (this.matchKeyword(Keywords.header)) {
+        const major = this.parseRawInt();
 
-      // Check for unescaped parenthesis
-      if (!isEscaped) {
-        if (byte === CharCodes.LeftParen) nestingLvl += 1;
-        if (byte === CharCodes.RightParen) nestingLvl -= 1;
-      }
+        // TODO: Assert this is a '.'
+        this.bytes.next(); // Skip the '.' separator
 
-      // Track whether current character is being escaped or not
-      if (byte === CharCodes.BackSlash) {
-        isEscaped = !isEscaped;
-      } else if (isEscaped) {
-        isEscaped = false;
-      }
-
-      // Once (if) the unescaped parenthesis balance out, return their contents
-      if (nestingLvl === 0) {
-        // Remove the outer parens so they aren't part of the contents
-        return PDFString.of(value.substring(1, value.length - 1));
+        const minor = this.parseRawInt();
+        const header = PDFHeader.forVersion(major, minor);
+        this.skipBinaryHeaderComment();
+        return header;
       }
     }
 
     throw new Error('FIX ME!');
   }
 
-  // TODO: Compare performance of string concatenation to charFromCode(...bytes)
-  // TODO: Handle all termination chars: https://github.com/Hopding/pdf-lib/blob/master/__tests__/core/pdf-parser/parseName.spec.ts#L36
-  private parseName(): PDFName {
-    this.bytes.next(); // Skip the leading '/'
+  parseIndirectObject(): PDFRef {
+    this.skipWhitespace();
+    const objectNumber = this.parseRawInt();
 
-    let name = '';
-    while (!this.bytes.done()) {
+    this.skipWhitespace();
+    const generationNumber = this.parseRawInt();
+
+    this.skipWhitespace();
+    if (!this.matchKeyword(Keywords.obj)) throw new Error('FIX ME!');
+
+    this.skipWhitespace();
+    const object = this.parseObject();
+
+    this.skipWhitespace();
+    if (!this.matchKeyword(Keywords.endobj)) throw new Error('FIX ME!');
+
+    const ref = PDFRef.of(objectNumber, generationNumber);
+    this.context.assign(ref, object);
+
+    return ref;
+  }
+
+  parseIndirectObjects(): void {
+    this.skipWhitespace();
+    while (!this.bytes.done() && DigitChars.includes(this.bytes.peek())) {
+      this.parseIndirectObject();
+      this.skipWhitespace();
+    }
+  }
+
+  // TODO: Optimize this...
+  maybeParseCrossRefSection(): void {
+    this.skipWhitespace();
+    if (!this.matchKeyword(Keywords.xref)) return;
+    this.skipWhitespace();
+
+    const subsections: Array<
+      Array<{
+        firstInt: number;
+        secondInt: number;
+        deleted: number;
+      }>
+    > = [];
+
+    while (DigitChars.includes(this.bytes.peek())) {
+      const firstInt = this.parseRawInt();
+      this.skipWhitespace();
+
+      const secondInt = this.parseRawInt();
+      this.skipWhitespace();
+
       const byte = this.bytes.peek();
-      if (
-        byte === CharCodes.ForwardSlash ||
-        byte < CharCodes.ExclamationPoint ||
-        byte > CharCodes.Tilde
-      ) {
-        break;
+      if (byte === CharCodes.n || byte === CharCodes.f) {
+        const entry = { firstInt, secondInt, deleted: this.bytes.next() };
+        subsections[subsections.length - 1].push(entry);
+      } else {
+        subsections.push([]);
       }
-      name += charFromCode(byte);
+      this.skipWhitespace();
+    }
+
+    console.log('SUBSECTIONS:', subsections);
+  }
+
+  maybeParseTrailerDict(): void {
+    this.skipWhitespace();
+    if (!this.matchKeyword(Keywords.trailer)) return;
+    this.skipWhitespace();
+
+    const dict = this.parseObject();
+
+    console.log('TRAILER DICT:', dict.toString());
+  }
+
+  maybeParseTrailer(): void {
+    this.skipWhitespace();
+    if (!this.matchKeyword(Keywords.startxref)) return;
+    this.skipWhitespace();
+
+    const offset = this.parseRawInt();
+
+    console.log('OFFSET:', offset);
+
+    this.skipWhitespace();
+    this.matchKeyword(Keywords.eof);
+    this.skipWhitespace();
+  }
+
+  // Note: a single PDF can have multiple sections because of updates
+  parseDocumentSection(): void {
+    // while (!this.bytes.done()) {
+    this.parseIndirectObjects();
+    this.maybeParseCrossRefSection();
+    this.maybeParseTrailerDict();
+    this.maybeParseTrailer();
+    // }
+    // console.log('DONE?', this.bytes.done());
+    // console.log(this.bytes);
+  }
+
+  /**
+   * Skips the binary comment following a PDF header. The specification
+   * defines this binary comment (section 7.5.2 File Header) as a sequence of 4
+   * or more bytes that are 128 or greater, and which are preceded by a "%".
+   *
+   * This would imply that to strip out this binary comment, we could check for
+   * a sequence of bytes starting with "%", and remove all subsequent bytes that
+   * are 128 or greater. This works for many documents that properly comply with
+   * the spec. But in the wild, there are PDFs that omit the leading "%", and
+   * include bytes that are less than 128 (e.g. 0 or 1). So in order to parse
+   * these headers correctly, we just throw out all bytes leading up to the
+   * first digit. (we assume the first digit is the object number of the first
+   * indirect object)
+   */
+  private skipBinaryHeaderComment(): void {
+    while (!this.bytes.done() && !DigitChars.includes(this.bytes.peek())) {
       this.bytes.next();
     }
-    if (name.length === 0) throw new Error('FIX ME!');
-    return PDFName.of(name);
-  }
-
-  private parseArray(): PDFArray {
-    this.bytes.next(); // Move past the leading '['
-
-    const pdfArray = PDFArray.withContext(this.context);
-    while (this.bytes.peek() !== CharCodes.RightSquareBracket) {
-      const element = this.parseObject();
-      pdfArray.push(element);
-      this.skipWhitespace();
-    }
-    this.bytes.next();
-    return pdfArray;
-  }
-
-  private parseDict(): PDFDict {
-    this.bytes.next(); // Skip the first '<'
-    this.bytes.next(); // Skip the second '<'
-
-    const pdfDict = PDFDict.withContext(this.context);
-
-    while (
-      !this.bytes.done() &&
-      this.bytes.peek() !== CharCodes.GreaterThan &&
-      this.bytes.peekAhead(1) !== CharCodes.GreaterThan
-    ) {
-      this.skipWhitespace();
-      const key = this.parseName();
-      const value = this.parseObject();
-      pdfDict.set(key, value);
-      this.skipWhitespace();
-    }
-
-    this.skipWhitespace();
-    this.bytes.next(); // Skip the first '>'
-    this.bytes.next(); // Skip the second '>'
-
-    return pdfDict;
-  }
-
-  private parseDictOrStream(): PDFDict | PDFStream {
-    const dict = this.parseDict();
-
-    this.skipWhitespace();
-    if (this.matchKeyword(Keywords.stream)) {
-      // Move past EOL markers
-      const byte = this.bytes.peek();
-      if (byte === CharCodes.Newline) this.bytes.next();
-      if (byte === CharCodes.CarriageReturn) {
-        this.bytes.next();
-        if (this.bytes.peek() === CharCodes.Newline) this.bytes.next();
-      }
-
-      // this.matchKeyword([CharCodes.Newline]) ||
-      //   this.matchKeyword([CharCodes.CarriageReturn, CharCodes.Newline]) ||
-      //   this.matchKeyword(CharCodes.CarriageReturn);
-
-      const contentsStart = this.bytes.offset();
-
-      // TODO: Try to use dict's `Length` entry, but use this as backup...
-
-      // Move to end of stream, while handling nested streams
-      let nestingLvl = 1;
-      while (!this.bytes.done()) {
-        if (this.matchKeyword(Keywords.stream)) nestingLvl += 1;
-        if (this.matchKeyword(Keywords.endstream)) nestingLvl -= 1;
-        if (nestingLvl === 0) break;
-        this.bytes.next();
-      }
-
-      let contentsEnd = this.bytes.offset() - Keywords.endstream.length;
-
-      // `endstream` should be prefixed with \n or \r, so let's account for that
-      if (EndstreamEolChars.includes(this.bytes.peekAt(contentsEnd - 1))) {
-        contentsEnd -= 1;
-      }
-
-      const contents = this.bytes.slice(contentsStart, contentsEnd);
-
-      return PDFRawStream.of(dict, contents);
-    }
-
-    return dict;
   }
 }
 
