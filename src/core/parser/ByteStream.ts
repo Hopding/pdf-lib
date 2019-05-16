@@ -41,6 +41,10 @@ class ByteStream {
     return this.bytes[this.idx];
   }
 
+  peekAhead(steps: number) {
+    return this.bytes[this.idx + steps];
+  }
+
   done(): boolean {
     return this.idx >= this.length;
   }
