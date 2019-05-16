@@ -14,6 +14,7 @@ import PDFString from 'src/core/objects/PDFString';
 import BaseParser from 'src/core/parser/BaseParser';
 import PDFContext from 'src/core/PDFContext';
 import { EndstreamEolChars, Keywords } from 'src/core/syntax/Keywords';
+import { NameTerminatorChars } from 'src/core/syntax/NameTerminators';
 import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
 import { charFromCode } from 'src/utils';
 
@@ -56,7 +57,7 @@ class PDFObjectParser extends BaseParser {
     throw new Error('FIX ME!' + JSON.stringify(this.bytes.position()));
   }
 
-  private parseNumberOrRef(): PDFNumber | PDFRef {
+  protected parseNumberOrRef(): PDFNumber | PDFRef {
     const firstNum = this.parseRawNumber();
     this.skipWhitespace();
 
@@ -75,7 +76,7 @@ class PDFObjectParser extends BaseParser {
   }
 
   // TODO: Maybe update PDFHexString.of() logic to remove whitespace and validate input?
-  private parseHexString(): PDFHexString {
+  protected parseHexString(): PDFHexString {
     this.bytes.next(); // Move past the leading '<'
 
     let value = '';
@@ -90,7 +91,7 @@ class PDFObjectParser extends BaseParser {
     return PDFHexString.of(value);
   }
 
-  private parseString(): PDFString {
+  protected parseString(): PDFString {
     let nestingLvl = 0;
     let isEscaped = false;
     let value = '';
@@ -123,15 +124,14 @@ class PDFObjectParser extends BaseParser {
   }
 
   // TODO: Compare performance of string concatenation to charFromCode(...bytes)
-  // TODO: Handle all termination chars: https://github.com/Hopding/pdf-lib/blob/master/__tests__/core/pdf-parser/parseName.spec.ts#L36
-  private parseName(): PDFName {
+  protected parseName(): PDFName {
     this.bytes.next(); // Skip the leading '/'
 
     let name = '';
     while (!this.bytes.done()) {
       const byte = this.bytes.peek();
       if (
-        byte === CharCodes.ForwardSlash ||
+        NameTerminatorChars.includes(byte) ||
         byte < CharCodes.ExclamationPoint ||
         byte > CharCodes.Tilde
       ) {
@@ -147,7 +147,7 @@ class PDFObjectParser extends BaseParser {
     return PDFName.of(name);
   }
 
-  private parseArray(): PDFArray {
+  protected parseArray(): PDFArray {
     this.bytes.next(); // Move past the leading '['
 
     const pdfArray = PDFArray.withContext(this.context);
@@ -160,7 +160,7 @@ class PDFObjectParser extends BaseParser {
     return pdfArray;
   }
 
-  private parseDict(): PDFDict {
+  protected parseDict(): PDFDict {
     this.bytes.next(); // Skip the first '<'
     this.bytes.next(); // Skip the second '<'
 
@@ -185,7 +185,7 @@ class PDFObjectParser extends BaseParser {
     return pdfDict;
   }
 
-  private parseDictOrStream(): PDFDict | PDFStream {
+  protected parseDictOrStream(): PDFDict | PDFStream {
     const dict = this.parseDict();
 
     this.skipWhitespace();

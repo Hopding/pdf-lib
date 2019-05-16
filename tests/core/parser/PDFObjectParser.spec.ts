@@ -59,6 +59,17 @@ describe(`PDFObjectParser`, () => {
     expect(object).toBe(PDFName.of(''));
   });
 
+  ['\0', '\t', '\n', '\f', '\r', ' ', ']', '[', '<', '>', '(', '/'].forEach(
+    (nameTerminator) => {
+      it(`terminates PDF Names on ${JSON.stringify(nameTerminator)}`, () => {
+        const input = typedArrayFor(`/Foo${nameTerminator}Bar`);
+        const parser = PDFObjectParser.forBytes(input);
+        const object = parser.parseObject();
+        expect(object).toBe(PDFName.of(`Foo`));
+      });
+    },
+  );
+
   it(`can parse empty arrays`, () => {
     const input = typedArrayFor('[]');
     const parser = PDFObjectParser.forBytes(input);
