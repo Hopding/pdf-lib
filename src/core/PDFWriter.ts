@@ -7,15 +7,7 @@ import PDFContext from 'src/core/PDFContext';
 
 // TODO: Unit test this!
 class PDFWriter {
-  static forContext = (context: PDFContext) => new PDFWriter(context);
-
-  private readonly context: PDFContext;
-
-  private constructor(context: PDFContext) {
-    this.context = context;
-  }
-
-  serializeToPDF(): Uint8Array {
+  static serializeContextToBuffer(context: PDFContext): Uint8Array {
     const {
       size,
       header,
@@ -23,7 +15,7 @@ class PDFWriter {
       xref,
       trailerDict,
       trailer,
-    } = this.computeBufferSize();
+    } = PDFWriter.computeBufferSize(context);
 
     let offset = 0;
     const buffer = new Uint8Array(size);
@@ -82,8 +74,8 @@ class PDFWriter {
     return buffer;
   }
 
-  private computeBufferSize() {
-    const { catalogRef, largestObjectNumber } = this.context;
+  private static computeBufferSize(context: PDFContext) {
+    const { catalogRef, largestObjectNumber } = context;
     if (!catalogRef) throw new Error('FIX ME!');
 
     const header = PDFHeader.forVersion(1, 7);
@@ -91,7 +83,7 @@ class PDFWriter {
     let size = header.sizeInBytes() + 2;
 
     const xref = PDFCrossRefSection.create();
-    const indirectObjects = this.context.enumerateIndirectObjects();
+    const indirectObjects = context.enumerateIndirectObjects();
 
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
       const [ref, object] = indirectObjects[idx];
@@ -107,7 +99,7 @@ class PDFWriter {
     size += xref.sizeInBytes() + 1;
 
     const trailerDict = PDFTrailerDict.of(
-      this.context.obj({ Size: largestObjectNumber + 1, Root: catalogRef }),
+      context.obj({ Size: largestObjectNumber + 1, Root: catalogRef }),
     );
     size += trailerDict.sizeInBytes() + 2;
 

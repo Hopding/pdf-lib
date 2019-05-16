@@ -30,8 +30,8 @@ class PDFContext {
   static create = () => new PDFContext();
 
   largestObjectNumber: number;
-  catalogRef: PDFRef | void = undefined;
-  trailer: PDFDict | void = undefined;
+  catalogRef: PDFRef | undefined = undefined;
+  trailer: PDFDict | undefined = undefined;
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
 
