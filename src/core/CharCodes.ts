@@ -53,6 +53,8 @@ enum CharCodes {
   t = 116,
   u = 117,
   x = 120,
+  LeftCurly = 123,
+  RightCurly = 125,
   Tilde = 126,
 }
 
