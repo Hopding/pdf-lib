@@ -1,7 +1,5 @@
 import CharCodes from 'src/core/CharCodes';
 
-export const EndstreamEolChars = [CharCodes.Newline, CharCodes.CarriageReturn];
-
 export const Keywords = {
   header: [
     CharCodes.Percent,
