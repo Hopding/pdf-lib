@@ -13,9 +13,10 @@ import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import BaseParser from 'src/core/parser/BaseParser';
 import PDFContext from 'src/core/PDFContext';
+import { DelimiterChars } from 'src/core/syntax/Delimiters';
 import { EndstreamEolChars, Keywords } from 'src/core/syntax/Keywords';
-import { NameTerminatorChars } from 'src/core/syntax/NameTerminators';
 import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
+import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';
 
 // TODO: Skip comments!
@@ -131,9 +132,10 @@ class PDFObjectParser extends BaseParser {
     while (!this.bytes.done()) {
       const byte = this.bytes.peek();
       if (
-        NameTerminatorChars.includes(byte) ||
         byte < CharCodes.ExclamationPoint ||
-        byte > CharCodes.Tilde
+        byte > CharCodes.Tilde ||
+        WhitespaceChars.includes(byte) ||
+        DelimiterChars.includes(byte)
       ) {
         break;
       }
@@ -217,7 +219,7 @@ class PDFObjectParser extends BaseParser {
 
       let contentsEnd = this.bytes.offset() - Keywords.endstream.length;
 
-      // `endstream` should be prefixed with \n or \r, so let's account for that
+      // `endstream` should be prefixed with \r\n or \n or \r, so let's account for that
       if (EndstreamEolChars.includes(this.bytes.peekAt(contentsEnd - 1))) {
         contentsEnd -= 1;
       }

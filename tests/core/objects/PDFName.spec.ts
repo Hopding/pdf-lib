@@ -35,6 +35,30 @@ describe(`PDFName`, () => {
     expect(PDFName.of('A#42')).toBe(PDFName.of('AB'));
   });
 
+  it(`encodes hashes, whitespace, and delimiters when serialized`, () => {
+    expect(PDFName.of('Foo#').toString()).toBe('/Foo#23');
+
+    // Note that the \0 shouldn't ever be written into a name,
+    // but we'll support it for parsing flexibility sake
+    expect(PDFName.of('Foo\0').toString()).toBe('/Foo#00');
+    expect(PDFName.of('Foo\t').toString()).toBe('/Foo#09');
+    expect(PDFName.of('Foo\n').toString()).toBe('/Foo#0A');
+    expect(PDFName.of('Foo\f').toString()).toBe('/Foo#0C');
+    expect(PDFName.of('Foo\r').toString()).toBe('/Foo#0D');
+    expect(PDFName.of('Foo ').toString()).toBe('/Foo#20');
+
+    expect(PDFName.of('Foo(').toString()).toBe('/Foo#28');
+    expect(PDFName.of('Foo)').toString()).toBe('/Foo#29');
+    expect(PDFName.of('Foo<').toString()).toBe('/Foo#3C');
+    expect(PDFName.of('Foo>').toString()).toBe('/Foo#3E');
+    expect(PDFName.of('Foo[').toString()).toBe('/Foo#5B');
+    expect(PDFName.of('Foo]').toString()).toBe('/Foo#5D');
+    expect(PDFName.of('Foo{').toString()).toBe('/Foo#7B');
+    expect(PDFName.of('Foo}').toString()).toBe('/Foo#7D');
+    expect(PDFName.of('Foo/').toString()).toBe('/Foo#2F');
+    expect(PDFName.of('Foo%').toString()).toBe('/Foo#25');
+  });
+
   it(`can be cloned`, () => {
     expect(PDFName.of('foobar').clone()).toBe(PDFName.of('foobar'));
     expect(PDFName.of('Lime#20Green').clone()).toBe(PDFName.of('Lime Green'));
@@ -46,7 +70,7 @@ describe(`PDFName`, () => {
     expect(String(PDFName.of('\0\t\n\f\r '))).toBe('/#00#09#0A#0C#0D#20');
     expect(String(PDFName.of('Foo#Bar'))).toBe('/Foo#23Bar');
     expect(String(PDFName.of('paired()parentheses'))).toBe(
-      '/paired()parentheses',
+      '/paired#28#29parentheses',
     );
     expect(String(PDFName.of('The_Key_of_F#23_Minor'))).toBe(
       '/The_Key_of_F#23_Minor',
@@ -59,7 +83,7 @@ describe(`PDFName`, () => {
     expect(PDFName.of('Lime Green').sizeInBytes()).toBe(13);
     expect(PDFName.of('\0\t\n\f\r ').sizeInBytes()).toBe(19);
     expect(PDFName.of('Foo#Bar').sizeInBytes()).toBe(10);
-    expect(PDFName.of('paired()parentheses').sizeInBytes()).toBe(20);
+    expect(PDFName.of('paired()parentheses').sizeInBytes()).toBe(24);
     expect(PDFName.of('The_Key_of_F#23_Minor').sizeInBytes()).toBe(22);
     expect(PDFName.of('A#42').sizeInBytes()).toBe(3);
   });

@@ -1,15 +1,19 @@
 import CharCodes from 'src/core/CharCodes';
 import { PrivateConstructorError } from 'src/core/errors';
 import PDFObject from 'src/core/objects/PDFObject';
+import { DelimiterChars } from 'src/core/syntax/Delimiters';
+import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromHexCode, toCharCode, toHexString } from 'src/utils';
 
 const decodeName = (name: string) =>
   name.replace(/#(\d{2})/g, (_, hex) => charFromHexCode(hex));
 
+const IrregularChars = [CharCodes.Hash, ...WhitespaceChars, ...DelimiterChars];
+
 const isRegularChar = (charCode: number) =>
-  charCode !== CharCodes.Hash &&
   charCode >= CharCodes.ExclamationPoint &&
-  charCode <= CharCodes.Tilde;
+  charCode <= CharCodes.Tilde &&
+  !IrregularChars.includes(charCode);
 
 const ENFORCER = {};
 const pool = new Map<string, PDFName>();
@@ -63,7 +67,7 @@ class PDFName extends PDFObject {
   copyBytesInto(buffer: Uint8Array, offset: number): number {
     const length = this.encodedName.length;
     for (let idx = 0; idx < length; idx++) {
-      buffer[offset++] = toCharCode(this.encodedName[idx]);
+      buffer[offset++] = this.encodedName.charCodeAt(idx);
     }
     return length;
   }
