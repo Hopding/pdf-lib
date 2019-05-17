@@ -14,10 +14,12 @@ import PDFString from 'src/core/objects/PDFString';
 import BaseParser from 'src/core/parser/BaseParser';
 import PDFContext from 'src/core/PDFContext';
 import { DelimiterChars } from 'src/core/syntax/Delimiters';
-import { EndstreamEolChars, Keywords } from 'src/core/syntax/Keywords';
+import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
 import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';
+
+const { Newline, CarriageReturn } = CharCodes;
 
 // TODO: Skip comments!
 // TODO: Throw error if eof is reached before finishing object parse...
@@ -191,45 +193,42 @@ class PDFObjectParser extends BaseParser {
     const dict = this.parseDict();
 
     this.skipWhitespace();
-    if (this.matchKeyword(Keywords.stream)) {
-      // Move past EOL markers
-      const byte = this.bytes.peek();
-      if (byte === CharCodes.Newline) this.bytes.next();
-      if (byte === CharCodes.CarriageReturn) {
-        this.bytes.next();
-        if (this.bytes.peek() === CharCodes.Newline) this.bytes.next();
-      }
+    if (!this.matchKeyword(Keywords.stream)) return dict;
 
-      // this.matchKeyword([CharCodes.Newline]) ||
-      //   this.matchKeyword([CharCodes.CarriageReturn, CharCodes.Newline]) ||
-      //   this.matchKeyword(CharCodes.CarriageReturn);
-
-      const contentsStart = this.bytes.offset();
-
-      // TODO: Try to use dict's `Length` entry, but use this as backup...
-
-      // Move to end of stream, while handling nested streams
-      let nestingLvl = 1;
-      while (!this.bytes.done()) {
-        if (this.matchKeyword(Keywords.stream)) nestingLvl += 1;
-        if (this.matchKeyword(Keywords.endstream)) nestingLvl -= 1;
-        if (nestingLvl === 0) break;
-        this.bytes.next();
-      }
-
-      let contentsEnd = this.bytes.offset() - Keywords.endstream.length;
-
-      // `endstream` should be prefixed with \r\n or \n or \r, so let's account for that
-      if (EndstreamEolChars.includes(this.bytes.peekAt(contentsEnd - 1))) {
-        contentsEnd -= 1;
-      }
-
-      const contents = this.bytes.slice(contentsStart, contentsEnd);
-
-      return PDFRawStream.of(dict, contents);
+    // Move past the EOL marker following `stream` (\r\n or \r or \n)
+    const byte = this.bytes.peek();
+    if (byte === Newline) this.bytes.next();
+    if (byte === CarriageReturn) {
+      this.bytes.next();
+      if (this.bytes.peek() === Newline) this.bytes.next();
     }
 
-    return dict;
+    const start = this.bytes.offset();
+
+    // TODO: Try to use dict's `Length` entry, but use this as backup...
+
+    // Move to end of stream, while handling nested streams
+    let nestingLvl = 1;
+    while (!this.bytes.done()) {
+      if (this.matchKeyword(Keywords.stream)) nestingLvl += 1;
+      if (this.matchKeyword(Keywords.endstream)) nestingLvl -= 1;
+      if (nestingLvl === 0) break;
+      this.bytes.next();
+    }
+
+    let end = this.bytes.offset() - Keywords.endstream.length;
+
+    // Move back our `end` marker to account for the EOL marker that should
+    // be in front of `endstream` (\r\n or \r or \n)
+    const twoBack = this.bytes.peekAt(end - 2);
+    const oneBack = this.bytes.peekAt(end - 1);
+    if (twoBack === CarriageReturn && oneBack === Newline) end -= 2;
+    else if (oneBack === CarriageReturn) end -= 1;
+    else if (oneBack === Newline) end -= 1;
+
+    const contents = this.bytes.slice(start, end);
+
+    return PDFRawStream.of(dict, contents);
   }
 }
 

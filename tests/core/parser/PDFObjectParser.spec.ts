@@ -66,17 +66,16 @@ describe(`PDFObjectParser`, () => {
     expect(object).toBe(PDFName.of(''));
   });
 
-  ['\0', '\t', '\n', '\f', '\r', ' ', ']', '[', '<', '>', '(', '/'].forEach(
-    (nameTerminator) => {
-      it(`terminates PDF Names on ${JSON.stringify(nameTerminator)}`, () => {
-        const input = typedArrayFor(`/Foo${nameTerminator}Bar`);
-        const context = PDFContext.create();
-        const parser = PDFObjectParser.forBytes(input, context);
-        const object = parser.parseObject();
-        expect(object).toBe(PDFName.of(`Foo`));
-      });
-    },
-  );
+  const whitespace = ['\0', '\t', '\n', '\f', '\r'];
+  const delimiters = ['(', ')', '<', '>', '[', ']', '{', '}', '/', '%'];
+
+  [...whitespace, ...delimiters].forEach((nameTerminator) => {
+    const input = typedArrayFor(`/Foo${nameTerminator}Bar`);
+    const context = PDFContext.create();
+    const parser = PDFObjectParser.forBytes(input, context);
+    const object = parser.parseObject();
+    expect(object).toBe(PDFName.of(`Foo`));
+  });
 
   it(`can parse empty arrays`, () => {
     const input = typedArrayFor('[]');
@@ -118,22 +117,40 @@ describe(`PDFObjectParser`, () => {
     );
   });
 
-  it(`can parse streams`, () => {
-    const input = typedArrayFor(
-      '<< >>stream\nstream foobar endstream\nendstream',
-    );
-    const context = PDFContext.create();
-    const parser = PDFObjectParser.forBytes(input, context);
-    const object = parser.parseObject();
-    expect(object).toBeInstanceOf(PDFRawStream);
-
-    const buffer = new Uint8Array(object.sizeInBytes());
-    object.copyBytesInto(buffer, 0);
-    expect(buffer).toEqual(
-      typedArrayFor(
+  describe(`parsing streams`, () => {
+    [
+      [
+        '<< >>\nstream\nstream foobar endstream\nendstream',
         '<<\n/Length 23\n>>\nstream\nstream foobar endstream\nendstream',
-      ),
-    );
+      ],
+      [
+        '<</Length 2>>\r\nstream\r\nquxbaz\r\nendstream',
+        '<<\n/Length 6\n>>\nstream\nquxbaz\nendstream',
+      ],
+      [
+        '<<>>streamfoobarendstream',
+        '<<\n/Length 6\n>>\nstream\nfoobar\nendstream',
+      ],
+      [
+        '<<>>\rstream\rstuff\rendstream',
+        '<<\n/Length 5\n>>\nstream\nstuff\nendstream',
+      ],
+      [
+        '<<>>\n\rstream\n\rthingz\n\rendstream',
+        '<<\n/Length 8\n>>\nstream\n\rthingz\n\nendstream',
+      ],
+    ].forEach(([input, output]) => {
+      it(`can parse ${JSON.stringify(input)}`, () => {
+        const context = PDFContext.create();
+        const parser = PDFObjectParser.forBytes(typedArrayFor(input), context);
+        const object = parser.parseObject();
+        expect(object).toBeInstanceOf(PDFRawStream);
+
+        const buffer = new Uint8Array(object.sizeInBytes());
+        object.copyBytesInto(buffer, 0);
+        expect(buffer).toEqual(typedArrayFor(output));
+      });
+    });
   });
 
   it(`can parse refs`, () => {
