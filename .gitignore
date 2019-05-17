@@ -7,4 +7,6 @@ cjs/
 es/
 
 tsBuildInfo.json
+flamegraph.html
+isolate*.log
 out.pdf

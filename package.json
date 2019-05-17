@@ -9,7 +9,7 @@
     "Mickael Lecoq (https://github.com/mlecoq)"
   ],
   "scripts": {
-    "clean": "rimraf tsBuildInfo.json build cjs dist es scratchpad/build",
+    "clean": "rimraf tsBuildInfo.json build cjs dist es scratchpad/build isolate*.log",
     "typecheck": "tsc --noEmit",
     "test": "jest --config jest.json",
     "testw": "jest --config jest.json --watch --notify",
@@ -24,7 +24,8 @@
     "build:umd": "rollup --config rollup.config.js --file dist/pdf-lib.js",
     "build:umd:min": "rollup --config rollup.config.js --file dist/pdf-lib.min.js --environment MINIFY",
     "scratchpad:start": "ttsc --build scratchpad/tsconfig.json --watch",
-    "scratchpad:run": "node scratchpad/build/scratchpad/index.js"
+    "scratchpad:run": "node scratchpad/build/scratchpad/index.js",
+    "scratchpad:flame": "rimraf isolate*.log && node --prof scratchpad/build/scratchpad/index.js && node --prof-process --preprocess -j isolate*.log | flamebearer"
   },
   "types": "cjs/index.d.ts",
   "main": "cjs/index.js",
@@ -38,6 +39,7 @@
     "@types/jest": "^24.0.13",
     "@types/pako": "^1.0.1",
     "@zerollup/ts-transform-paths": "^1.7.1",
+    "flamebearer": "^1.1.3",
     "jest": "^24.8.0",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
