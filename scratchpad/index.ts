@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { PDFContext, PDFName, PDFParser, PDFRef, PDFWriter } from 'src/index';
 
-console.time('Scratchpad');
+// console.time('Scratchpad');
 
 // const context = PDFContext.create();
 
@@ -9,7 +9,7 @@ console.time('Scratchpad');
 //   BT
 //     /F1 24 Tf
 //     100 100 Td
-//     (Hello World and stuff OMG!) Tj
+//     (Hello World and stuff!) Tj
 //   ET
 // `);
 // const contentStreamRef = context.register(contentStream);
@@ -25,7 +25,6 @@ console.time('Scratchpad');
 
 // const page = context.obj({
 //   Type: 'Page',
-//   // Parent: pagesRef,
 //   MediaBox: [0, 0, 612, 792],
 //   Contents: contentStreamRef,
 //   Resources: { Font: { F1: fontDictRef } },
@@ -44,18 +43,19 @@ console.time('Scratchpad');
 //   Type: 'Catalog',
 //   Pages: pagesRef,
 // });
-// const catalogRef = context.register(catalog);
+// context.catalogRef = context.register(catalog);
 
-const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
+// const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
+// const pdfBytes = fs.readFileSync('./assets/pdfs/F1040V_tax_form.pdf');
+// const pdfBytes = fs.readFileSync('./pdf_specification.pdf');
+const pdfBytes = fs.readFileSync('./out.pdf');
 
+console.time('Scratchpad');
 const context = PDFContext.create();
-const parser = PDFParser.forBytes(pdfBytes, context);
-parser.parseDocumentIntoContext();
-
+PDFParser.forBytes(pdfBytes, context).parseDocumentIntoContext();
 context.catalogRef = context.trailer!.get(PDFName.of('Root')) as PDFRef;
 
 const buffer = PDFWriter.serializeContextToBuffer(context);
-
 console.timeEnd('Scratchpad');
 
 fs.writeFileSync('./out.pdf', buffer);

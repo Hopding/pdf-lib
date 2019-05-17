@@ -3,7 +3,7 @@ import PDFDict from 'src/core/objects/PDFDict';
 
 class PDFTrailerDict {
   static of = (dict: PDFDict) => new PDFTrailerDict(dict);
-  private readonly dict: PDFDict;
+  readonly dict: PDFDict;
 
   private constructor(dict: PDFDict) {
     this.dict = dict;

@@ -3,6 +3,8 @@ import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
 import PDFTrailerDict from 'src/core/document/PDFTrailerDict';
+import PDFName from 'src/core/objects/PDFName';
+import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFContext from 'src/core/PDFContext';
 
 // TODO: Unit test this!
@@ -83,6 +85,7 @@ class PDFWriter {
     let size = header.sizeInBytes() + 2;
 
     const xref = PDFCrossRefSection.create();
+
     const indirectObjects = context.enumerateIndirectObjects();
 
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
@@ -98,9 +101,14 @@ class PDFWriter {
     const xrefOffset = size;
     size += xref.sizeInBytes() + 1;
 
-    const trailerDict = PDFTrailerDict.of(
-      context.obj({ Size: largestObjectNumber + 1, Root: catalogRef }),
+    context.trailer.set(
+      PDFName.of('Size'),
+      PDFNumber.of(largestObjectNumber + 1),
     );
+    context.trailer.set(PDFName.of('Root'), catalogRef);
+    context.trailer.delete(PDFName.of('Prev'));
+
+    const trailerDict = PDFTrailerDict.of(context.trailer);
     size += trailerDict.sizeInBytes() + 2;
 
     const trailer = PDFTrailer.forLastCrossRefSectionOffset(xrefOffset);

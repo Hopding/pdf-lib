@@ -30,14 +30,17 @@ class PDFContext {
   static create = () => new PDFContext();
 
   largestObjectNumber: number;
-  catalogRef: PDFRef | undefined = undefined;
-  trailer: PDFDict | undefined = undefined;
+  trailer: PDFDict;
+  catalogRef: PDFRef;
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
 
   private constructor() {
-    this.indirectObjects = new Map();
     this.largestObjectNumber = 0;
+    this.trailer = PDFDict.withContext(this);
+    this.catalogRef = PDFRef.of(-1, -1);
+
+    this.indirectObjects = new Map();
   }
 
   assign(ref: PDFRef, object: PDFObject): void {
