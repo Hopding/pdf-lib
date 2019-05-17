@@ -27,6 +27,10 @@ class PDFDict extends PDFObject {
     return this.dict.get(key);
   }
 
+  delete(key: PDFName): boolean {
+    return this.dict.delete(key);
+  }
+
   clone(): PDFDict {
     const clone = PDFDict.withContext(this.context);
     const entries = this.entries();
