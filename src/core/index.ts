@@ -1,5 +1,5 @@
 export * from 'src/core/errors';
-export { default as CharCodes } from 'src/core/CharCodes';
+export { default as CharCodes } from 'src/core/syntax/CharCodes';
 
 export { default as PDFContext } from 'src/core/PDFContext';
 export { default as PDFWriter } from 'src/core/PDFWriter';
