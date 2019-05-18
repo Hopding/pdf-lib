@@ -1,7 +1,7 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import PDFName from 'src/core/objects/PDFName';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFContext from 'src/core/PDFContext';
+import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFDict extends PDFObject {
   static withContext = (context: PDFContext) => new PDFDict(context);

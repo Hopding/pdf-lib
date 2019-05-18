@@ -1,6 +1,6 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFContext from 'src/core/PDFContext';
+import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFArray extends PDFObject {
   static withContext = (context: PDFContext) => new PDFArray(context);

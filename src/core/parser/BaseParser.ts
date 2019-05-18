@@ -1,5 +1,5 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import ByteStream from 'src/core/parser/ByteStream';
+import CharCodes from 'src/core/syntax/CharCodes';
 import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
 import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';

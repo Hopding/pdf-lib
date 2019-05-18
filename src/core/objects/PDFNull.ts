@@ -1,5 +1,5 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import PDFObject from 'src/core/objects/PDFObject';
+import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFNull extends PDFObject {
   clone(): PDFNull {
