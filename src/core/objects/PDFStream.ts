@@ -1,9 +1,9 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import { MethodNotImplementedError } from 'src/core/errors';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
+import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFStream extends PDFObject {
   protected readonly dict: PDFDict;

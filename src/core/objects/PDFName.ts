@@ -1,6 +1,6 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import { PrivateConstructorError } from 'src/core/errors';
 import PDFObject from 'src/core/objects/PDFObject';
+import CharCodes from 'src/core/syntax/CharCodes';
 import { DelimiterChars } from 'src/core/syntax/Delimiters';
 import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromHexCode, toCharCode, toHexString } from 'src/utils';

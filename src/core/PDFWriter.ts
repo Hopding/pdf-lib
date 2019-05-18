@@ -1,4 +1,3 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
@@ -6,6 +5,7 @@ import PDFTrailerDict from 'src/core/document/PDFTrailerDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFContext from 'src/core/PDFContext';
+import CharCodes from 'src/core/syntax/CharCodes';
 
 // TODO: Unit test this!
 class PDFWriter {

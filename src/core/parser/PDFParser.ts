@@ -1,10 +1,10 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
 import PDFContext from 'src/core/PDFContext';
+import CharCodes from 'src/core/syntax/CharCodes';
 import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars } from 'src/core/syntax/Numeric';
 

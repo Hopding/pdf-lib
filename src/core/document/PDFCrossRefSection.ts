@@ -1,5 +1,5 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import PDFRef from 'src/core/objects/PDFRef';
+import CharCodes from 'src/core/syntax/CharCodes';
 import { padStart } from 'src/utils';
 
 export interface Entry {

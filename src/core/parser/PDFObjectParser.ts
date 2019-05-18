@@ -1,4 +1,3 @@
-import CharCodes from 'src/core/syntax/CharCodes';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
 import PDFDict from 'src/core/objects/PDFDict';
@@ -13,6 +12,7 @@ import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import BaseParser from 'src/core/parser/BaseParser';
 import PDFContext from 'src/core/PDFContext';
+import CharCodes from 'src/core/syntax/CharCodes';
 import { DelimiterChars } from 'src/core/syntax/Delimiters';
 import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
