@@ -1,6 +1,6 @@
 import PDFRef from 'src/core/objects/PDFRef';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { padStart } from 'src/utils';
+import { copyStringIntoBuffer, padStart } from 'src/utils';
 
 export interface Entry {
   ref: PDFRef;
@@ -87,56 +87,61 @@ class PDFCrossRefSection {
     buffer[offset++] = CharCodes.f;
     buffer[offset++] = CharCodes.Newline;
 
-    for (
-      let rangeIdx = 0, rangeLen = this.subsections.length;
-      rangeIdx < rangeLen;
-      rangeIdx++
-    ) {
-      const range = this.subsections[rangeIdx];
+    offset += this.copySubsectionsIntoBuffer(this.subsections, buffer, offset);
 
-      const firstObjectNumber = String(range[0].ref.objectNumber);
-      for (let idx = 0, len = firstObjectNumber.length; idx < len; idx++) {
-        buffer[offset++] = firstObjectNumber.charCodeAt(idx);
-      }
+    return offset - initialOffset;
+  }
+
+  private copySubsectionsIntoBuffer(
+    subsections: Entry[][],
+    buffer: Uint8Array,
+    offset: number,
+  ): number {
+    const initialOffset = offset;
+    const length = subsections.length;
+
+    for (let idx = 0; idx < length; idx++) {
+      const subsection = this.subsections[idx];
+
+      const firstObjectNumber = String(subsection[0].ref.objectNumber);
+      offset += copyStringIntoBuffer(firstObjectNumber, buffer, offset);
       buffer[offset++] = CharCodes.Space;
 
-      const rangeLength = String(range.length);
-      for (let idx = 0, len = rangeLength.length; idx < len; idx++) {
-        buffer[offset++] = rangeLength.charCodeAt(idx);
-      }
+      const rangeLength = String(subsection.length);
+      offset += copyStringIntoBuffer(rangeLength, buffer, offset);
       buffer[offset++] = CharCodes.Newline;
 
-      for (
-        let entryIdx = 0, entryLen = range.length;
-        entryIdx < entryLen;
-        entryIdx++
-      ) {
-        const entry = range[entryIdx];
-
-        const entryOffset = padStart(String(entry.offset), 10, '0');
-        for (let idx = 0, len = entryOffset.length; idx < len; idx++) {
-          buffer[offset++] = entryOffset.charCodeAt(idx);
-        }
-        buffer[offset++] = CharCodes.Space;
-
-        const entryGen = padStart(String(entry.ref.generationNumber), 5, '0');
-        for (let idx = 0, len = entryGen.length; idx < len; idx++) {
-          buffer[offset++] = entryGen.charCodeAt(idx);
-        }
-        buffer[offset++] = CharCodes.Space;
-
-        if (entry.deleted) {
-          buffer[offset++] = CharCodes.f;
-        } else {
-          buffer[offset++] = CharCodes.n;
-        }
-
-        buffer[offset++] = CharCodes.Space;
-        buffer[offset++] = CharCodes.Newline;
-      }
+      offset += this.copyEntriesIntoBuffer(subsection, buffer, offset);
     }
 
     return offset - initialOffset;
+  }
+
+  private copyEntriesIntoBuffer(
+    entries: Entry[],
+    buffer: Uint8Array,
+    offset: number,
+  ): number {
+    const length = entries.length;
+
+    for (let idx = 0; idx < length; idx++) {
+      const entry = entries[idx];
+
+      const entryOffset = padStart(String(entry.offset), 10, '0');
+      offset += copyStringIntoBuffer(entryOffset, buffer, offset);
+      buffer[offset++] = CharCodes.Space;
+
+      const entryGen = padStart(String(entry.ref.generationNumber), 5, '0');
+      offset += copyStringIntoBuffer(entryGen, buffer, offset);
+      buffer[offset++] = CharCodes.Space;
+
+      buffer[offset++] = entry.deleted ? CharCodes.f : CharCodes.n;
+
+      buffer[offset++] = CharCodes.Space;
+      buffer[offset++] = CharCodes.Newline;
+    }
+
+    return 20 * length;
   }
 
   private append(currEntry: Entry): void {

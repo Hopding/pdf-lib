@@ -16,3 +16,15 @@ export const padStart = (value: string, length: number, padChar: string) => {
   }
   return padding + value;
 };
+
+export const copyStringIntoBuffer = (
+  str: string,
+  buffer: Uint8Array,
+  offset: number,
+): number => {
+  const length = str.length;
+  for (let idx = 0; idx < length; idx++) {
+    buffer[offset++] = str.charCodeAt(idx);
+  }
+  return length;
+};

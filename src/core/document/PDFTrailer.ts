@@ -1,4 +1,5 @@
 import CharCodes from 'src/core/syntax/CharCodes';
+import { copyStringIntoBuffer } from 'src/utils';
 
 class PDFTrailer {
   static forLastCrossRefSectionOffset = (offset: number) =>
@@ -32,9 +33,7 @@ class PDFTrailer {
     buffer[offset++] = CharCodes.f;
     buffer[offset++] = CharCodes.Newline;
 
-    for (let idx = 0, len = this.lastXRefOffset.length; idx < len; idx++) {
-      buffer[offset++] = this.lastXRefOffset.charCodeAt(idx);
-    }
+    offset += copyStringIntoBuffer(this.lastXRefOffset, buffer, offset);
 
     buffer[offset++] = CharCodes.Newline;
     buffer[offset++] = CharCodes.Percent;

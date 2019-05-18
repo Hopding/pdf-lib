@@ -47,8 +47,8 @@ import { PDFContext, PDFName, PDFParser, PDFRef, PDFWriter } from 'src/index';
 
 // const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
 // const pdfBytes = fs.readFileSync('./assets/pdfs/F1040V_tax_form.pdf');
-// const pdfBytes = fs.readFileSync('./pdf_specification.pdf');
-const pdfBytes = fs.readFileSync('./out.pdf');
+const pdfBytes = fs.readFileSync('./pdf_specification.pdf');
+// const pdfBytes = fs.readFileSync('./out.pdf');
 
 console.time('Scratchpad');
 const context = PDFContext.create();

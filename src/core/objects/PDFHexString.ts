@@ -1,5 +1,6 @@
 import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
+import { copyStringIntoBuffer } from 'src/utils';
 
 class PDFHexString extends PDFObject {
   static of = (value: string) => new PDFHexString(value);
@@ -24,13 +25,10 @@ class PDFHexString extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
-    const length = this.value.length;
     buffer[offset++] = CharCodes.LessThan;
-    for (let idx = 0; idx < length; idx++) {
-      buffer[offset++] = this.value.charCodeAt(idx);
-    }
+    offset += copyStringIntoBuffer(this.value, buffer, offset);
     buffer[offset++] = CharCodes.GreaterThan;
-    return length + 2;
+    return this.value.length + 2;
   }
 }
 

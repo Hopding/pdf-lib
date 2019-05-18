@@ -1,5 +1,6 @@
 import { PrivateConstructorError } from 'src/core/errors';
 import PDFObject from 'src/core/objects/PDFObject';
+import { copyStringIntoBuffer } from 'src/utils';
 
 const ENFORCER = {};
 const pool = new Map<string, PDFRef>();
@@ -46,9 +47,7 @@ class PDFRef extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
-    for (let idx = 0, len = this.tag.length; idx < len; idx++) {
-      buffer[offset++] = this.tag.charCodeAt(idx);
-    }
+    offset += copyStringIntoBuffer(this.tag, buffer, offset);
     return this.tag.length;
   }
 }

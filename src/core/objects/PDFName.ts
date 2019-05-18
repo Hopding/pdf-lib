@@ -3,7 +3,12 @@ import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { DelimiterChars } from 'src/core/syntax/Delimiters';
 import { WhitespaceChars } from 'src/core/syntax/Whitespace';
-import { charFromHexCode, toCharCode, toHexString } from 'src/utils';
+import {
+  charFromHexCode,
+  copyStringIntoBuffer,
+  toCharCode,
+  toHexString,
+} from 'src/utils';
 
 const decodeName = (name: string) =>
   name.replace(/#(\d{2})/g, (_, hex) => charFromHexCode(hex));
@@ -65,11 +70,8 @@ class PDFName extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
-    const length = this.encodedName.length;
-    for (let idx = 0; idx < length; idx++) {
-      buffer[offset++] = this.encodedName.charCodeAt(idx);
-    }
-    return length;
+    offset += copyStringIntoBuffer(this.encodedName, buffer, offset);
+    return this.encodedName.length;
   }
 }
 
