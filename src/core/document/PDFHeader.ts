@@ -1,5 +1,5 @@
 import CharCodes from 'src/core/syntax/CharCodes';
-import { charFromCode } from 'src/utils';
+import { charFromCode, copyStringIntoBuffer } from 'src/utils';
 
 class PDFHeader {
   static forVersion = (major: number, minor: number) =>
@@ -30,14 +30,12 @@ class PDFHeader {
     buffer[offset++] = CharCodes.D;
     buffer[offset++] = CharCodes.F;
     buffer[offset++] = CharCodes.Dash;
-    for (let idx = 0, len = this.major.length; idx < len; idx++) {
-      buffer[offset++] = this.major.charCodeAt(idx);
-    }
+
+    offset += copyStringIntoBuffer(this.major, buffer, offset);
     buffer[offset++] = CharCodes.Period;
-    for (let idx = 0, len = this.minor.length; idx < len; idx++) {
-      buffer[offset++] = this.minor.charCodeAt(idx);
-    }
+    offset += copyStringIntoBuffer(this.minor, buffer, offset);
     buffer[offset++] = CharCodes.Newline;
+
     buffer[offset++] = CharCodes.Percent;
     buffer[offset++] = 129;
     buffer[offset++] = 129;

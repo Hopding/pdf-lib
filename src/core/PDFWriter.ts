@@ -6,6 +6,7 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
+import { copyStringIntoBuffer } from 'src/utils';
 
 // TODO: Unit test this!
 class PDFWriter {
@@ -26,24 +27,15 @@ class PDFWriter {
     buffer[offset++] = CharCodes.Newline;
     buffer[offset++] = CharCodes.Newline;
 
-    // TODO: Make copyStringIntoBuffer() utility!
-    for (
-      let ioIdx = 0, ioLen = indirectObjects.length;
-      ioIdx < ioLen;
-      ioIdx++
-    ) {
-      const [ref, object] = indirectObjects[ioIdx];
+    for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
+      const [ref, object] = indirectObjects[idx];
 
-      const objNum = String(ref.objectNumber);
-      for (let idx = 0, len = objNum.length; idx < len; idx++) {
-        buffer[offset++] = objNum.charCodeAt(idx);
-      }
+      const objectNumber = String(ref.objectNumber);
+      offset += copyStringIntoBuffer(objectNumber, buffer, offset);
       buffer[offset++] = CharCodes.Space;
 
-      const genNum = String(ref.generationNumber);
-      for (let idx = 0, len = genNum.length; idx < len; idx++) {
-        buffer[offset++] = genNum.charCodeAt(idx);
-      }
+      const generationNumber = String(ref.generationNumber);
+      offset += copyStringIntoBuffer(generationNumber, buffer, offset);
       buffer[offset++] = CharCodes.Space;
 
       buffer[offset++] = CharCodes.o;

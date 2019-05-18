@@ -1,4 +1,4 @@
-import { numberToString } from 'src/utils/index';
+import { numberToString, copyStringIntoBuffer } from 'src/utils/index';
 
 import PDFObject from 'src/core/objects/PDFObject';
 
@@ -27,11 +27,8 @@ class PDFNumber extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
-    const length = this.stringValue.length;
-    for (let idx = 0; idx < length; idx++) {
-      buffer[offset++] = this.stringValue.charCodeAt(idx);
-    }
-    return length;
+    offset += copyStringIntoBuffer(this.stringValue, buffer, offset);
+    return this.stringValue.length;
   }
 }
 

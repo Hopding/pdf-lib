@@ -1,5 +1,6 @@
 import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
+import { copyStringIntoBuffer } from 'src/utils';
 
 class PDFString extends PDFObject {
   // The PDF spec allows newlines and parens to appear directly within a literal
@@ -27,13 +28,10 @@ class PDFString extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
-    const length = this.value.length;
     buffer[offset++] = CharCodes.LeftParen;
-    for (let idx = 0; idx < length; idx++) {
-      buffer[offset++] = this.value.charCodeAt(idx);
-    }
+    offset += copyStringIntoBuffer(this.value, buffer, offset);
     buffer[offset++] = CharCodes.RightParen;
-    return length + 2;
+    return this.value.length + 2;
   }
 }
 
