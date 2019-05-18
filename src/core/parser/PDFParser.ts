@@ -18,6 +18,7 @@ class PDFParser extends PDFObjectParser {
     super(pdfBytes, context);
   }
 
+  // TODO: Refactor to: `parseDocument(): PDFContext {...}` and set `catalogRef`
   parseDocumentIntoContext(): PDFHeader {
     if (this.alreadyParsed) throw new Error('PDF already parsed! FIX ME!');
     this.alreadyParsed = true;
