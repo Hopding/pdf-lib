@@ -37,7 +37,7 @@ class PDFObjectParser extends BaseParser {
   // TODO: Is it possible to reduce duplicate parsing for ref lookaheads?
   // TODO: Maybe throw parsing error
   parseObject(): PDFObject {
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
 
     if (this.matchKeyword(Keywords.true)) return PDFBool.True;
     if (this.matchKeyword(Keywords.false)) return PDFBool.False;
@@ -62,12 +62,12 @@ class PDFObjectParser extends BaseParser {
 
   protected parseNumberOrRef(): PDFNumber | PDFRef {
     const firstNum = this.parseRawNumber();
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
 
     const lookaheadStart = this.bytes.offset();
     if (DigitChars.includes(this.bytes.peek())) {
       const secondNum = this.parseRawNumber();
-      this.skipWhitespace();
+      this.skipWhitespaceAndComments();
       if (this.bytes.peek() === CharCodes.R) {
         this.bytes.next();
         return PDFRef.of(firstNum, secondNum);
@@ -158,7 +158,7 @@ class PDFObjectParser extends BaseParser {
     while (this.bytes.peek() !== CharCodes.RightSquareBracket) {
       const element = this.parseObject();
       pdfArray.push(element);
-      this.skipWhitespace();
+      this.skipWhitespaceAndComments();
     }
     this.bytes.next();
     return pdfArray;
@@ -175,14 +175,14 @@ class PDFObjectParser extends BaseParser {
       this.bytes.peek() !== CharCodes.GreaterThan &&
       this.bytes.peekAhead(1) !== CharCodes.GreaterThan
     ) {
-      this.skipWhitespace();
+      this.skipWhitespaceAndComments();
       const key = this.parseName();
       const value = this.parseObject();
       pdfDict.set(key, value);
-      this.skipWhitespace();
+      this.skipWhitespaceAndComments();
     }
 
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     this.bytes.next(); // Skip the first '>'
     this.bytes.next(); // Skip the second '>'
 
@@ -192,7 +192,7 @@ class PDFObjectParser extends BaseParser {
   protected parseDictOrStream(): PDFDict | PDFStream {
     const dict = this.parseDict();
 
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     if (!this.matchKeyword(Keywords.stream)) return dict;
 
     // Move past the EOL marker following `stream` (\r\n or \r or \n)

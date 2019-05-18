@@ -1,11 +1,5 @@
 import CharCodes from 'src/core/syntax/CharCodes';
 
-const LineEndings = [
-  CharCodes.Newline,
-  CharCodes.FormFeed,
-  CharCodes.CarriageReturn,
-];
-
 // TODO: See how line/col tracking affects performance
 class ByteStream {
   static of = (bytes: Uint8Array) => new ByteStream(bytes);
@@ -28,7 +22,7 @@ class ByteStream {
 
   next(): number {
     const byte = this.bytes[this.idx++];
-    if (LineEndings.includes(byte)) {
+    if (byte === CharCodes.Newline || byte === CharCodes.CarriageReturn) {
       this.line += 1;
       this.column = 0;
     } else {

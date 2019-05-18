@@ -4,6 +4,8 @@ import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
 import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';
 
+const { Newline, CarriageReturn } = CharCodes;
+
 // TODO: Skip comments!
 // TODO: Throw error if eof is reached before finishing object parse...
 class BaseParser {
@@ -52,6 +54,21 @@ class BaseParser {
     while (!this.bytes.done() && WhitespaceChars.includes(this.bytes.peek())) {
       this.bytes.next();
     }
+  }
+
+  protected skipComment(): boolean {
+    if (this.bytes.peek() !== CharCodes.Percent) return false;
+    while (!this.bytes.done()) {
+      const byte = this.bytes.peek();
+      if (byte === Newline || byte === CarriageReturn) return true;
+      this.bytes.next();
+    }
+    throw new Error('FIX ME!');
+  }
+
+  protected skipWhitespaceAndComments(): void {
+    this.skipWhitespace();
+    if (this.skipComment()) this.skipWhitespace();
   }
 
   protected matchKeyword(keyword: number[]): boolean {

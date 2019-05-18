@@ -32,6 +32,21 @@ describe(`PDFParser`, () => {
     expect(context.enumerateIndirectObjects().length).toBe(135);
   });
 
+  it(`can parse PDF files with comments`, () => {
+    const pdfBytes = fs.readFileSync('./assets/pdfs/with_comments.pdf');
+
+    const context = PDFContext.create();
+    const parser = PDFParser.forBytes(pdfBytes, context);
+
+    expect(context.enumerateIndirectObjects().length).toBe(0);
+
+    const header = parser.parseDocumentIntoContext();
+
+    expect(header).toBeInstanceOf(PDFHeader);
+    expect(header.toString()).toEqual('%PDF-1.7\n%');
+    expect(context.enumerateIndirectObjects().length).toBe(30);
+  });
+
   it(`prevents double parsing`, () => {
     const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
 
