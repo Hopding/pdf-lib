@@ -2,6 +2,8 @@ import fs from 'fs';
 
 import { PDFContext, PDFHeader, PDFParser } from 'src/index';
 
+// TODO: Write explicit tests for whitespace, comments, and stuff preceding header...
+// TODO: Copy relevant tests for document structures from https://github.com/Hopding/pdf-lib/tree/master/__tests__/core/pdf-parser
 describe(`PDFParser`, () => {
   it(`can parse PDF files without object streams or update sections`, () => {
     const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');

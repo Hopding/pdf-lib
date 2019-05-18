@@ -63,12 +63,13 @@ class BaseParser {
       if (byte === Newline || byte === CarriageReturn) return true;
       this.bytes.next();
     }
-    throw new Error('FIX ME!');
+    return true;
   }
 
   protected skipWhitespaceAndComments(): void {
     this.skipWhitespace();
-    if (this.skipComment()) this.skipWhitespace();
+    // if (this.skipComment()) this.skipWhitespace();
+    while (this.skipComment()) this.skipWhitespace();
   }
 
   protected matchKeyword(keyword: number[]): boolean {

@@ -127,6 +127,7 @@ class PDFObjectParser extends BaseParser {
   }
 
   // TODO: Compare performance of string concatenation to charFromCode(...bytes)
+  // TODO: Maybe preallocate small Uint8Array if can use charFromCode?
   protected parseName(): PDFName {
     this.bytes.next(); // Skip the leading '/'
 
@@ -145,14 +146,12 @@ class PDFObjectParser extends BaseParser {
       this.bytes.next();
     }
 
-    // Actually, "null" names (Just "/") are allowed
-    // if (name.length === 0) throw new Error('FIX ME!');
-
     return PDFName.of(name);
   }
 
   protected parseArray(): PDFArray {
     this.bytes.next(); // Move past the leading '['
+    this.skipWhitespaceAndComments();
 
     const pdfArray = PDFArray.withContext(this.context);
     while (this.bytes.peek() !== CharCodes.RightSquareBracket) {
@@ -165,8 +164,8 @@ class PDFObjectParser extends BaseParser {
   }
 
   protected parseDict(): PDFDict {
-    this.bytes.next(); // Skip the first '<'
-    this.bytes.next(); // Skip the second '<'
+    this.bytes.assertNext(CharCodes.LessThan);
+    this.bytes.assertNext(CharCodes.LessThan);
 
     const pdfDict = PDFDict.withContext(this.context);
 
@@ -183,8 +182,8 @@ class PDFObjectParser extends BaseParser {
     }
 
     this.skipWhitespaceAndComments();
-    this.bytes.next(); // Skip the first '>'
-    this.bytes.next(); // Skip the second '>'
+    this.bytes.assertNext(CharCodes.GreaterThan);
+    this.bytes.assertNext(CharCodes.GreaterThan);
 
     return pdfDict;
   }

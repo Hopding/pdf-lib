@@ -31,6 +31,11 @@ class ByteStream {
     return byte;
   }
 
+  assertNext(expected: number): number {
+    if (this.peek() !== expected) throw new Error('FIX ME!');
+    return this.next();
+  }
+
   peek(): number {
     return this.bytes[this.idx];
   }
