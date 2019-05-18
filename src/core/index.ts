@@ -2,7 +2,7 @@ export * from 'src/core/errors';
 export { default as CharCodes } from 'src/core/syntax/CharCodes';
 
 export { default as PDFContext } from 'src/core/PDFContext';
-export { default as PDFWriter } from 'src/core/PDFWriter';
+export { default as PDFWriter } from 'src/core/writers/PDFWriter';
 
 export { default as PDFHeader } from 'src/core/document/PDFHeader';
 export { default as PDFTrailer } from 'src/core/document/PDFTrailer';

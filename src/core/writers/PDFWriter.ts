@@ -8,7 +8,6 @@ import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer } from 'src/utils';
 
-// TODO: Unit test this!
 class PDFWriter {
   static serializeContextToBuffer(context: PDFContext): Uint8Array {
     const {
@@ -69,9 +68,6 @@ class PDFWriter {
   }
 
   private static computeBufferSize(context: PDFContext) {
-    const { catalogRef, largestObjectNumber } = context;
-    if (!catalogRef) throw new Error('FIX ME!');
-
     const header = PDFHeader.forVersion(1, 7);
 
     let size = header.sizeInBytes() + 2;
@@ -84,24 +80,24 @@ class PDFWriter {
       const [ref, object] = indirectObjects[idx];
       xref.addEntry(ref, size);
 
-      const refSize = ref.sizeInBytes() + 2 + 1;
-      const objectSize = object.sizeInBytes() + 1 + 6 + 2;
+      const refSize = ref.sizeInBytes() + 3; // 'R' -> 'obj\n'
+      const objectSize = object.sizeInBytes() + 9; // '\nendobj\n\n'
 
       size += refSize + objectSize;
     }
 
     const xrefOffset = size;
-    size += xref.sizeInBytes() + 1;
+    size += xref.sizeInBytes() + 1; // '\n'
 
     context.trailer.set(
       PDFName.of('Size'),
-      PDFNumber.of(largestObjectNumber + 1),
+      PDFNumber.of(context.largestObjectNumber + 1),
     );
-    context.trailer.set(PDFName.of('Root'), catalogRef);
+    context.trailer.set(PDFName.of('Root'), context.catalogRef);
     context.trailer.delete(PDFName.of('Prev'));
 
     const trailerDict = PDFTrailerDict.of(context.trailer);
-    size += trailerDict.sizeInBytes() + 2;
+    size += trailerDict.sizeInBytes() + 2; // '\n\n'
 
     const trailer = PDFTrailer.forLastCrossRefSectionOffset(xrefOffset);
     size += trailer.sizeInBytes();

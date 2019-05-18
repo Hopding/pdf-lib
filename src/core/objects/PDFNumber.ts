@@ -1,4 +1,4 @@
-import { numberToString, copyStringIntoBuffer } from 'src/utils/index';
+import { copyStringIntoBuffer, numberToString } from 'src/utils/index';
 
 import PDFObject from 'src/core/objects/PDFObject';
 
