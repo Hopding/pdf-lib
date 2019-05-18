@@ -1,4 +1,4 @@
-import CharCodes from 'src/core/CharCodes';
+import CharCodes from 'src/core/syntax/CharCodes';
 import PDFRef from 'src/core/objects/PDFRef';
 import { padStart } from 'src/utils';
 

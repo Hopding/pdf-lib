@@ -1,4 +1,4 @@
-import CharCodes from 'src/core/CharCodes';
+import CharCodes from 'src/core/syntax/CharCodes';
 import PDFDict from 'src/core/objects/PDFDict';
 
 class PDFTrailerDict {

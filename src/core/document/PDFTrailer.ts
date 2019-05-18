@@ -1,4 +1,4 @@
-import CharCodes from 'src/core/CharCodes';
+import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFTrailer {
   static forLastCrossRefSectionOffset = (offset: number) =>

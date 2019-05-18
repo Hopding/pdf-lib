@@ -1,4 +1,4 @@
-import CharCodes from 'src/core/CharCodes';
+import CharCodes from 'src/core/syntax/CharCodes';
 import { PrivateConstructorError } from 'src/core/errors';
 import PDFObject from 'src/core/objects/PDFObject';
 

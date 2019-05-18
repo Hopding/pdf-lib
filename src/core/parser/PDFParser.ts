@@ -1,4 +1,4 @@
-import CharCodes from 'src/core/CharCodes';
+import CharCodes from 'src/core/syntax/CharCodes';
 import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';

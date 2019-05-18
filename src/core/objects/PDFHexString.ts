@@ -1,4 +1,4 @@
-import CharCodes from 'src/core/CharCodes';
+import CharCodes from 'src/core/syntax/CharCodes';
 import PDFObject from 'src/core/objects/PDFObject';
 
 class PDFHexString extends PDFObject {
