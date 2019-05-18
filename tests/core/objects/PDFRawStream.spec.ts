@@ -19,7 +19,7 @@ describe(`PDFRawStream`, () => {
 
   it(`can be converted to a string`, () => {
     expect(String(PDFRawStream.of(dict, data))).toEqual(
-      '<<\n/Length 7\n>>\nstream\n<7 bytes>\nendstream',
+      `<<\n/Length 7\n>>\nstream\n\f'\\&&\u001c1\nendstream`,
     );
   });
 

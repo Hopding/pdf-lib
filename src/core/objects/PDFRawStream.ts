@@ -1,4 +1,5 @@
 import PDFStream from 'src/core/objects/PDFStream';
+import { arrayAsString } from 'src/utils';
 import { PDFDict } from '..';
 
 class PDFRawStream extends PDFStream {
@@ -17,7 +18,7 @@ class PDFRawStream extends PDFStream {
   }
 
   getContentsString(): string {
-    return `<${this.contents.length} bytes>`;
+    return arrayAsString(this.contents);
   }
 
   getContents(): Uint8Array {
