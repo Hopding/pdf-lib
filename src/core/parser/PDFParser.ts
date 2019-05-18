@@ -19,13 +19,19 @@ class PDFParser extends PDFObjectParser {
   }
 
   // TODO: Refactor to: `parseDocument(): PDFContext {...}` and set `catalogRef`
+  // TODO: Handle XRef Stream trailers!
   parseDocumentIntoContext(): PDFHeader {
     if (this.alreadyParsed) throw new Error('PDF already parsed! FIX ME!');
     this.alreadyParsed = true;
 
     const header = this.parseHeader();
+
+    let prevOffset;
     while (!this.bytes.done()) {
       this.parseDocumentSection();
+      const offset = this.bytes.offset();
+      if (offset === prevOffset) throw new Error('PARSER IS STUCK. FIX ME!');
+      prevOffset = offset;
     }
 
     return header;
@@ -50,19 +56,19 @@ class PDFParser extends PDFObjectParser {
   }
 
   private parseIndirectObject(): PDFRef {
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     const objectNumber = this.parseRawInt();
 
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     const generationNumber = this.parseRawInt();
 
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     if (!this.matchKeyword(Keywords.obj)) throw new Error('FIX ME!');
 
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     const object = this.parseObject();
 
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     if (!this.matchKeyword(Keywords.endobj)) throw new Error('FIX ME!');
 
     const ref = PDFRef.of(objectNumber, generationNumber);
@@ -72,27 +78,27 @@ class PDFParser extends PDFObjectParser {
   }
 
   private parseIndirectObjects(): void {
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     while (!this.bytes.done() && DigitChars.includes(this.bytes.peek())) {
       this.parseIndirectObject();
-      this.skipWhitespace();
+      this.skipWhitespaceAndComments();
     }
   }
 
   private maybeParseCrossRefSection(): PDFCrossRefSection | void {
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     if (!this.matchKeyword(Keywords.xref)) return;
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
 
     let objectNumber = -1;
     const xref = PDFCrossRefSection.createEmpty();
 
-    while (DigitChars.includes(this.bytes.peek())) {
+    while (!this.bytes.done() && DigitChars.includes(this.bytes.peek())) {
       const firstInt = this.parseRawInt();
-      this.skipWhitespace();
+      this.skipWhitespaceAndComments();
 
       const secondInt = this.parseRawInt();
-      this.skipWhitespace();
+      this.skipWhitespaceAndComments();
 
       const byte = this.bytes.peek();
       if (byte === CharCodes.n || byte === CharCodes.f) {
@@ -107,29 +113,29 @@ class PDFParser extends PDFObjectParser {
       } else {
         objectNumber = firstInt;
       }
-      this.skipWhitespace();
+      this.skipWhitespaceAndComments();
     }
 
     return xref;
   }
 
   private maybeParseTrailerDict(): void {
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     if (!this.matchKeyword(Keywords.trailer)) return;
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     this.context.trailer = this.parseDict();
   }
 
   private maybeParseTrailer(): PDFTrailer | void {
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     if (!this.matchKeyword(Keywords.startxref)) return;
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
 
     const offset = this.parseRawInt();
 
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
     this.matchKeyword(Keywords.eof);
-    this.skipWhitespace();
+    this.skipWhitespaceAndComments();
 
     return PDFTrailer.forLastCrossRefSectionOffset(offset);
   }
