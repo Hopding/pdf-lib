@@ -6,7 +6,6 @@ import { charFromCode } from 'src/utils';
 
 const { Newline, CarriageReturn } = CharCodes;
 
-// TODO: Skip comments!
 // TODO: Throw error if eof is reached before finishing object parse...
 class BaseParser {
   protected readonly bytes: ByteStream;

@@ -1,12 +1,19 @@
 import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
+import {
+  MissingKeywordError,
+  MissingPDFHeaderError,
+  ReparseError,
+  StalledParserError,
+} from 'src/core/errors';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars } from 'src/core/syntax/Numeric';
+import PDFInvalidObject from '../objects/PDFInvalidObject';
 
 class PDFParser extends PDFObjectParser {
   static forBytes = (pdfBytes: Uint8Array) => new PDFParser(pdfBytes);
@@ -19,7 +26,7 @@ class PDFParser extends PDFObjectParser {
 
   // TODO: Handle XRef Stream trailers!
   parseDocument(): PDFContext {
-    if (this.alreadyParsed) throw new Error('PDF already parsed! FIX ME!');
+    if (this.alreadyParsed) throw new ReparseError();
     this.alreadyParsed = true;
 
     this.context.header = this.parseHeader();
@@ -28,7 +35,9 @@ class PDFParser extends PDFObjectParser {
     while (!this.bytes.done()) {
       this.parseDocumentSection();
       const offset = this.bytes.offset();
-      if (offset === prevOffset) throw new Error('PARSER IS STUCK. FIX ME!');
+      if (offset === prevOffset) {
+        throw new StalledParserError(this.bytes.position());
+      }
       prevOffset = offset;
     }
 
@@ -39,10 +48,7 @@ class PDFParser extends PDFObjectParser {
     while (!this.bytes.done()) {
       if (this.matchKeyword(Keywords.header)) {
         const major = this.parseRawInt();
-
-        // TODO: Assert this is a '.'
-        this.bytes.next(); // Skip the '.' separator
-
+        this.bytes.assertNext(CharCodes.Period);
         const minor = this.parseRawInt();
         const header = PDFHeader.forVersion(major, minor);
         this.skipBinaryHeaderComment();
@@ -51,10 +57,10 @@ class PDFParser extends PDFObjectParser {
       this.bytes.next();
     }
 
-    throw new Error('FIX ME!');
+    throw new MissingPDFHeaderError(this.bytes.position());
   }
 
-  private parseIndirectObject(): PDFRef {
+  private parseIndirectObjectHeader(): PDFRef {
     this.skipWhitespaceAndComments();
     const objectNumber = this.parseRawInt();
 
@@ -62,15 +68,50 @@ class PDFParser extends PDFObjectParser {
     const generationNumber = this.parseRawInt();
 
     this.skipWhitespaceAndComments();
-    if (!this.matchKeyword(Keywords.obj)) throw new Error('FIX ME!');
+    if (!this.matchKeyword(Keywords.obj)) {
+      throw new MissingKeywordError(this.bytes.position(), Keywords.obj);
+    }
+
+    return PDFRef.of(objectNumber, generationNumber);
+  }
+
+  private parseIndirectObject(): PDFRef {
+    const ref = this.parseIndirectObjectHeader();
 
     this.skipWhitespaceAndComments();
     const object = this.parseObject();
 
     this.skipWhitespaceAndComments();
-    if (!this.matchKeyword(Keywords.endobj)) throw new Error('FIX ME!');
+    if (!this.matchKeyword(Keywords.endobj)) {
+      throw new MissingKeywordError(this.bytes.position(), Keywords.endobj);
+    }
 
-    const ref = PDFRef.of(objectNumber, generationNumber);
+    this.context.assign(ref, object);
+
+    return ref;
+  }
+
+  // TODO: Improve and clean this up
+  private tryToParseInvalidIndirectObject() {
+    const ref = this.parseIndirectObjectHeader();
+
+    this.skipWhitespaceAndComments();
+    const start = this.bytes.offset();
+
+    let failed = true;
+    while (!this.bytes.done()) {
+      if (this.matchKeyword(Keywords.endobj)) {
+        failed = false;
+      }
+      if (!failed) break;
+      this.bytes.next();
+    }
+
+    if (failed) throw new Error('FIX ME');
+
+    const end = this.bytes.offset() - Keywords.endobj.length;
+
+    const object = PDFInvalidObject.of(this.bytes.slice(start, end));
     this.context.assign(ref, object);
 
     return ref;
@@ -79,7 +120,14 @@ class PDFParser extends PDFObjectParser {
   private parseIndirectObjects(): void {
     this.skipWhitespaceAndComments();
     while (!this.bytes.done() && DigitChars.includes(this.bytes.peek())) {
-      this.parseIndirectObject();
+      const initialOffset = this.bytes.offset();
+      try {
+        this.parseIndirectObject();
+      } catch (e) {
+        // TODO: Add tracing/logging mechanism to track when this happens!
+        this.bytes.moveTo(initialOffset);
+        this.tryToParseInvalidIndirectObject();
+      }
       this.skipWhitespaceAndComments();
     }
   }
