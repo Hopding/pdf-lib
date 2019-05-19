@@ -37,7 +37,7 @@ export const mergeIntoTypedArray = (...arrays: Array<string | Uint8Array>) => {
   return merged;
 };
 
-export const arrayAsString = (array: Uint8Array): string => {
+export const arrayAsString = (array: Uint8Array | number[]): string => {
   let str = '';
   for (let idx = 0, len = array.length; idx < len; idx++) {
     str += charFromCode(array[idx]);

@@ -1,6 +1,13 @@
 import fs from 'fs';
 
-import { PDFHeader, PDFParser, typedArrayFor } from 'src/index';
+import {
+  PDFHeader,
+  PDFInvalidObject,
+  PDFParser,
+  PDFRef,
+  ReparseError,
+  typedArrayFor,
+} from 'src/index';
 
 describe(`PDFParser`, () => {
   it(`throws an error when the PDF is missing a header`, () => {
@@ -34,6 +41,19 @@ describe(`PDFParser`, () => {
     `;
     const parser = PDFParser.forBytes(typedArrayFor(input));
     expect(() => parser.parseDocument()).toThrow();
+  });
+
+  it(`handles invalid indirect objects`, () => {
+    const input = `
+    %PDF-1.7
+    22 0 obj <</Type/Outlines/First ## 0 R/Last ** 0 R/Count 2>> endobj
+  `;
+    const parser = PDFParser.forBytes(typedArrayFor(input));
+    const context = parser.parseDocument();
+
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+    const object = context.lookup(PDFRef.of(22));
+    expect(object).toBeInstanceOf(PDFInvalidObject);
   });
 
   it(`can parse PDF files with comments and stuff preceding the header`, () => {
@@ -101,6 +121,6 @@ describe(`PDFParser`, () => {
     const parser = PDFParser.forBytes(pdfBytes);
 
     expect(() => parser.parseDocument()).not.toThrow();
-    expect(() => parser.parseDocument()).toThrow('PDF already parsed! FIX ME!');
+    expect(() => parser.parseDocument()).toThrow(new ReparseError());
   });
 });

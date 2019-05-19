@@ -1,3 +1,4 @@
+import { NextByteAssertionError } from 'src/core/errors';
 import CharCodes from 'src/core/syntax/CharCodes';
 
 // TODO: See how line/col tracking affects performance
@@ -22,7 +23,7 @@ class ByteStream {
 
   next(): number {
     const byte = this.bytes[this.idx++];
-    if (byte === CharCodes.Newline || byte === CharCodes.CarriageReturn) {
+    if (byte === CharCodes.Newline) {
       this.line += 1;
       this.column = 0;
     } else {
@@ -32,7 +33,9 @@ class ByteStream {
   }
 
   assertNext(expected: number): number {
-    if (this.peek() !== expected) throw new Error('FIX ME!');
+    if (this.peek() !== expected) {
+      throw new NextByteAssertionError(this.position(), expected, this.peek());
+    }
     return this.next();
   }
 
@@ -60,8 +63,8 @@ class ByteStream {
     return this.bytes.slice(start, end);
   }
 
-  position(): { line: number; column: number } {
-    return { line: this.line, column: this.column };
+  position(): { line: number; column: number; offset: number } {
+    return { line: this.line, column: this.column, offset: this.idx };
   }
 }
 

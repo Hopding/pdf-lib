@@ -18,6 +18,7 @@ import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
 import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';
+import { PDFObjectParsingError, UnbalancedParenthesisError } from '../errors';
 
 const { Newline, CarriageReturn } = CharCodes;
 
@@ -55,7 +56,7 @@ class PDFObjectParser extends BaseParser {
     if (byte === CharCodes.LeftSquareBracket) return this.parseArray();
     if (NumericChars.includes(byte)) return this.parseNumberOrRef();
 
-    throw new Error('FIX ME!' + JSON.stringify(this.bytes.position()));
+    throw new PDFObjectParsingError(this.bytes.position(), byte);
   }
 
   protected parseNumberOrRef(): PDFNumber | PDFRef {
@@ -67,7 +68,7 @@ class PDFObjectParser extends BaseParser {
       const secondNum = this.parseRawNumber();
       this.skipWhitespaceAndComments();
       if (this.bytes.peek() === CharCodes.R) {
-        this.bytes.next();
+        this.bytes.assertNext(CharCodes.R);
         return PDFRef.of(firstNum, secondNum);
       }
     }
@@ -78,16 +79,13 @@ class PDFObjectParser extends BaseParser {
 
   // TODO: Maybe update PDFHexString.of() logic to remove whitespace and validate input?
   protected parseHexString(): PDFHexString {
-    this.bytes.next(); // Move past the leading '<'
-
     let value = '';
 
+    this.bytes.assertNext(CharCodes.LessThan);
     while (!this.bytes.done() && this.bytes.peek() !== CharCodes.GreaterThan) {
       value += charFromCode(this.bytes.next());
     }
-
-    // TODO: Assert presence of '>' here, throw error if not present
-    this.bytes.next(); // Move past the ending '>'
+    this.bytes.assertNext(CharCodes.GreaterThan);
 
     return PDFHexString.of(value);
   }
@@ -121,13 +119,13 @@ class PDFObjectParser extends BaseParser {
       }
     }
 
-    throw new Error('FIX ME!');
+    throw new UnbalancedParenthesisError(this.bytes.position());
   }
 
   // TODO: Compare performance of string concatenation to charFromCode(...bytes)
   // TODO: Maybe preallocate small Uint8Array if can use charFromCode?
   protected parseName(): PDFName {
-    this.bytes.next(); // Skip the leading '/'
+    this.bytes.assertNext(CharCodes.ForwardSlash);
 
     let name = '';
     while (!this.bytes.done()) {
@@ -148,7 +146,7 @@ class PDFObjectParser extends BaseParser {
   }
 
   protected parseArray(): PDFArray {
-    this.bytes.next(); // Move past the leading '['
+    this.bytes.assertNext(CharCodes.LeftSquareBracket);
     this.skipWhitespaceAndComments();
 
     const pdfArray = PDFArray.withContext(this.context);
@@ -157,7 +155,7 @@ class PDFObjectParser extends BaseParser {
       pdfArray.push(element);
       this.skipWhitespaceAndComments();
     }
-    this.bytes.next();
+    this.bytes.assertNext(CharCodes.RightSquareBracket);
     return pdfArray;
   }
 
@@ -212,6 +210,9 @@ class PDFObjectParser extends BaseParser {
       if (nestingLvl === 0) break;
       this.bytes.next();
     }
+
+    // TODO: Create proper error object for this
+    if (nestingLvl !== 0) throw new Error('FIX ME!');
 
     let end = this.bytes.offset() - Keywords.endstream.length;
 
