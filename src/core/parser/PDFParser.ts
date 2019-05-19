@@ -9,22 +9,20 @@ import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars } from 'src/core/syntax/Numeric';
 
 class PDFParser extends PDFObjectParser {
-  static forBytes = (pdfBytes: Uint8Array, context: PDFContext) =>
-    new PDFParser(pdfBytes, context);
+  static forBytes = (pdfBytes: Uint8Array) => new PDFParser(pdfBytes);
 
   alreadyParsed = false;
 
-  constructor(pdfBytes: Uint8Array, context: PDFContext) {
-    super(pdfBytes, context);
+  constructor(pdfBytes: Uint8Array) {
+    super(pdfBytes, PDFContext.create());
   }
 
-  // TODO: Refactor to: `parseDocument(): PDFContext {...}` and set `catalogRef`
   // TODO: Handle XRef Stream trailers!
-  parseDocumentIntoContext(): PDFHeader {
+  parseDocument(): PDFContext {
     if (this.alreadyParsed) throw new Error('PDF already parsed! FIX ME!');
     this.alreadyParsed = true;
 
-    const header = this.parseHeader();
+    this.context.header = this.parseHeader();
 
     let prevOffset;
     while (!this.bytes.done()) {
@@ -34,7 +32,7 @@ class PDFParser extends PDFObjectParser {
       prevOffset = offset;
     }
 
-    return header;
+    return this.context;
   }
 
   private parseHeader(): PDFHeader {
@@ -50,6 +48,7 @@ class PDFParser extends PDFObjectParser {
         this.skipBinaryHeaderComment();
         return header;
       }
+      this.bytes.next();
     }
 
     throw new Error('FIX ME!');

@@ -1,5 +1,6 @@
 import pako from 'pako';
 
+import PDFHeader from 'src/core/document/PDFHeader';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
 import PDFDict from 'src/core/objects/PDFDict';
@@ -32,6 +33,7 @@ class PDFContext {
   largestObjectNumber: number;
   trailer: PDFDict;
   catalogRef: PDFRef;
+  header: PDFHeader;
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
 
@@ -39,6 +41,7 @@ class PDFContext {
     this.largestObjectNumber = 0;
     this.trailer = PDFDict.withContext(this);
     this.catalogRef = PDFRef.of(-1, -1);
+    this.header = PDFHeader.forVersion(1, 7);
 
     this.indirectObjects = new Map();
   }

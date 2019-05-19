@@ -21,7 +21,6 @@ import { charFromCode } from 'src/utils';
 
 const { Newline, CarriageReturn } = CharCodes;
 
-// TODO: Skip comments!
 // TODO: Throw error if eof is reached before finishing object parse...
 class PDFObjectParser extends BaseParser {
   static forBytes = (pdfBytes: Uint8Array, context: PDFContext) =>
@@ -35,7 +34,6 @@ class PDFObjectParser extends BaseParser {
   }
 
   // TODO: Is it possible to reduce duplicate parsing for ref lookaheads?
-  // TODO: Maybe throw parsing error
   parseObject(): PDFObject {
     this.skipWhitespaceAndComments();
 

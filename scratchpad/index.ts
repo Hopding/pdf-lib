@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PDFContext, PDFName, PDFParser, PDFRef, PDFWriter } from 'src/index';
+import { PDFName, PDFParser, PDFRef, PDFWriter } from 'src/index';
 
 // console.time('Scratchpad');
 
@@ -45,15 +45,17 @@ import { PDFContext, PDFName, PDFParser, PDFRef, PDFWriter } from 'src/index';
 // });
 // context.catalogRef = context.register(catalog);
 
-const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
+// const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
 // const pdfBytes = fs.readFileSync('./assets/pdfs/F1040V_tax_form.pdf');
 // const pdfBytes = fs.readFileSync('./assets/pdfs/with_comments.pdf');
+const pdfBytes = fs.readFileSync(
+  './assets/pdfs/pdf20examples/PDF 2.0 with offset start.pdf',
+);
 // const pdfBytes = fs.readFileSync('./pdf_specification.pdf');
 // const pdfBytes = fs.readFileSync('./out.pdf');
 
 console.time('Scratchpad');
-const context = PDFContext.create();
-PDFParser.forBytes(pdfBytes, context).parseDocumentIntoContext();
+const context = PDFParser.forBytes(pdfBytes).parseDocument();
 context.catalogRef = context.trailer!.get(PDFName.of('Root')) as PDFRef;
 
 const buffer = PDFWriter.serializeContextToBuffer(context);
