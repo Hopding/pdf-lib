@@ -68,7 +68,6 @@ class BaseParser {
 
   protected skipWhitespaceAndComments(): void {
     this.skipWhitespace();
-    // if (this.skipComment()) this.skipWhitespace();
     while (this.skipComment()) this.skipWhitespace();
   }
 
