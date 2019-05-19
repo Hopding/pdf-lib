@@ -1,12 +1,5 @@
-import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
-import {
-  PDFIndirectObject,
-  PDFIndirectReference,
-  PDFNumber,
-  PDFNumber,
-  PDFString,
-} from 'core/pdf-objects';
-import { typedArrayFor } from 'utils';
+import { PDFNumber } from 'core/pdf-objects';
+import { toCharCode, typedArrayFor } from 'utils';
 
 describe(`PDFNumber`, () => {
   it(`requires a number to be constructed`, () => {
@@ -66,5 +59,47 @@ describe(`PDFNumber`, () => {
       pdfNumber.copyBytesInto(buffer);
       expect(buffer).toEqual(typedArrayFor('9000'));
     });
+  });
+
+  it(`can be converted to a string`, () => {
+    expect(String(PDFNumber.fromNumber(21))).toEqual('21');
+    expect(String(PDFNumber.fromNumber(-43))).toEqual('-43');
+    expect(String(PDFNumber.fromNumber(3.403e38))).toEqual(
+      '340300000000000000000000000000000000000',
+    );
+    expect(String(PDFNumber.fromNumber(-3.403e38))).toEqual(
+      '-340300000000000000000000000000000000000',
+    );
+    expect(String(PDFNumber.fromNumber(-3.403e-38))).toEqual(
+      '-0.000000000000000000000000000000000000034030000000000005',
+    );
+  });
+
+  it(`can provide its size in bytes`, () => {
+    expect(PDFNumber.fromNumber(21).bytesSize()).toBe(2);
+    expect(PDFNumber.fromNumber(-43).bytesSize()).toBe(3);
+    expect(PDFNumber.fromNumber(3.403e38).bytesSize()).toBe(39);
+    expect(PDFNumber.fromNumber(-3.403e38).bytesSize()).toBe(40);
+  });
+
+  it(`can be serialized`, () => {
+    const buffer1 = new Uint8Array(8).fill(toCharCode(' '));
+    PDFNumber.fromNumber(21).copyBytesInto(buffer1);
+
+    expect(buffer1).toEqual(typedArrayFor('21      '));
+
+    const buffer2 = new Uint8Array(40).fill(toCharCode(' '));
+    PDFNumber.fromNumber(-3.403e38).copyBytesInto(buffer2);
+    expect(buffer2).toEqual(
+      typedArrayFor('-340300000000000000000000000000000000000'),
+    );
+
+    const buffer3 = new Uint8Array(64).fill(toCharCode(' '));
+    PDFNumber.fromNumber(-3.403e-38).copyBytesInto(buffer3);
+    expect(buffer3).toEqual(
+      typedArrayFor(
+        '-0.000000000000000000000000000000000000034030000000000005       ',
+      ),
+    );
   });
 });
