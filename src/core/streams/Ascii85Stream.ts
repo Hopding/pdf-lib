@@ -6,18 +6,18 @@
  * under the Apache 2.0 open source license.
  */
 
-const { DecodeStream } = require('src/core/streams/DecodeStream');
+import { DecodeStream } from 'src/core/streams/DecodeStream';
+import Stream from 'src/core/streams/Stream';
 
-function isSpace(ch) {
-  return ch === 0x20 || ch === 0x09 || ch === 0x0d || ch === 0x0a;
-}
+const isSpace = (ch: number) =>
+  ch === 0x20 || ch === 0x09 || ch === 0x0d || ch === 0x0a;
 
-/* tslint:disable */
-// prettier-ignore
-var Ascii85Stream = (function Ascii85StreamClosure() {
-  function Ascii85Stream(str, maybeLength) {
+class Ascii85Stream extends (DecodeStream as any) {
+  constructor(str: Stream, maybeLength?: number) {
+    super(maybeLength);
+
     this.str = str;
-    this.dict = str.dict;
+    // this.dict = str.dict;
     this.input = new Uint8Array(5);
 
     // Most streams increase in size when decoded, but Ascii85 streams
@@ -25,19 +25,16 @@ var Ascii85Stream = (function Ascii85StreamClosure() {
     if (maybeLength) {
       maybeLength = 0.8 * maybeLength;
     }
-    DecodeStream.call(this, maybeLength);
   }
 
-  Ascii85Stream.prototype = Object.create(DecodeStream.prototype);
+  readBlock() {
+    const TILDA_CHAR = 0x7e; // '~'
+    const Z_LOWER_CHAR = 0x7a; // 'z'
+    const EOF = -1;
 
-  Ascii85Stream.prototype.readBlock = function Ascii85Stream_readBlock() {
-    var TILDA_CHAR = 0x7E; // '~'
-    var Z_LOWER_CHAR = 0x7A; // 'z'
-    var EOF = -1;
+    const str = this.str;
 
-    var str = this.str;
-
-    var c = str.getByte();
+    let c = str.getByte();
     while (isSpace(c)) {
       c = str.getByte();
     }
@@ -47,8 +44,9 @@ var Ascii85Stream = (function Ascii85StreamClosure() {
       return;
     }
 
-    var bufferLength = this.bufferLength, buffer;
-    var i;
+    const bufferLength = this.bufferLength;
+    let buffer;
+    let i;
 
     // special code for z
     if (c === Z_LOWER_CHAR) {
@@ -58,7 +56,7 @@ var Ascii85Stream = (function Ascii85StreamClosure() {
       }
       this.bufferLength += 4;
     } else {
-      var input = this.input;
+      const input = this.input;
       input[0] = c;
       for (i = 1; i < 5; ++i) {
         c = str.getByte();
@@ -82,19 +80,17 @@ var Ascii85Stream = (function Ascii85StreamClosure() {
         }
         this.eof = true;
       }
-      var t = 0;
+      let t = 0;
       for (i = 0; i < 5; ++i) {
         t = t * 85 + (input[i] - 0x21);
       }
 
       for (i = 3; i >= 0; --i) {
-        buffer[bufferLength + i] = t & 0xFF;
+        buffer[bufferLength + i] = t & 0xff;
         t >>= 8;
       }
     }
-  };
+  }
+}
 
-  return Ascii85Stream;
-})();
-
-module.exports = { Ascii85Stream };
+export default Ascii85Stream;
