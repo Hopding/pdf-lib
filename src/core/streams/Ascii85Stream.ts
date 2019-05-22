@@ -6,13 +6,16 @@
  * under the Apache 2.0 open source license.
  */
 
-import { DecodeStream } from 'src/core/streams/DecodeStream';
+import DecodeStream from 'src/core/streams/DecodeStream';
 import Stream from 'src/core/streams/Stream';
 
 const isSpace = (ch: number) =>
   ch === 0x20 || ch === 0x09 || ch === 0x0d || ch === 0x0a;
 
-class Ascii85Stream extends (DecodeStream as any) {
+class Ascii85Stream extends DecodeStream {
+  str: Stream;
+  input: Uint8Array;
+
   constructor(str: Stream, maybeLength?: number) {
     super(maybeLength);
 
