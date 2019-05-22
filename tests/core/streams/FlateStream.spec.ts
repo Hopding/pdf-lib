@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { FlateStream } from 'src/core/streams/FlateStream';
+import FlateStream from 'src/core/streams/FlateStream';
 import Stream from 'src/core/streams/Stream';
 
 const DIR = `tests/core/streams/data/flate`;
