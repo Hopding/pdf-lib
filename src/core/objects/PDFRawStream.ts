@@ -6,7 +6,7 @@ class PDFRawStream extends PDFStream {
   static of = (dict: PDFDict, contents: Uint8Array) =>
     new PDFRawStream(dict, contents);
 
-  private readonly contents: Uint8Array;
+  readonly contents: Uint8Array;
 
   private constructor(dict: PDFDict, contents: Uint8Array) {
     super(dict);

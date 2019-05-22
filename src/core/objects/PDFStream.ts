@@ -6,7 +6,7 @@ import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFStream extends PDFObject {
-  protected readonly dict: PDFDict;
+  readonly dict: PDFDict;
 
   constructor(dict: PDFDict) {
     super();

@@ -3,10 +3,10 @@
     /* Basic Options */
     "target": "es5",
     "module": "commonjs",
-    "allowJs": false,
+    "allowJs": true,
     "checkJs": false,
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "sourceMap": true,
     "outDir": "./build",
     "rootDir": "./src",
