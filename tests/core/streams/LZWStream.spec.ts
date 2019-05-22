@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { LZWStream } from 'src/core/streams/LZWStream';
+import LZWStream from 'src/core/streams/LZWStream';
 import Stream from 'src/core/streams/Stream';
 
 const DIR = `tests/core/streams/data/lzw`;
