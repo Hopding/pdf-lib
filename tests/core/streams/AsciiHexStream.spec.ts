@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { AsciiHexStream } from 'src/core/streams/AsciiHexStream';
+import AsciiHexStream from 'src/core/streams/AsciiHexStream';
 import Stream from 'src/core/streams/Stream';
 
 const DIR = `tests/core/streams/data/asciihex`;
