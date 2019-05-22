@@ -6,14 +6,30 @@
  * under the Apache 2.0 open source license.
  */
 
-import { DecodeStream } from 'src/core/streams/DecodeStream';
+import DecodeStream from 'src/core/streams/DecodeStream';
 import Stream from 'src/core/streams/Stream';
 
-class LZWStream extends (DecodeStream as any) {
+class LZWStream extends DecodeStream {
+  str: Stream;
+  cachedData: number;
+  bitsCached: number;
+  lzwState: {
+    earlyChange: 0 | 1;
+    codeLength: number;
+    nextCode: number;
+    dictionaryValues: Uint8Array;
+    dictionaryLengths: Uint16Array;
+    dictionaryPrevCodes: Uint16Array;
+    currentSequence: Uint8Array;
+    currentSequenceLength: number;
+    prevCode?: number | null;
+  };
+  lastCode?: number | null;
+
   constructor(
     str: Stream,
     maybeLength: number | undefined,
-    earlyChange: number,
+    earlyChange: 0 | 1,
   ) {
     super(maybeLength);
 
@@ -89,8 +105,8 @@ class LZWStream extends (DecodeStream as any) {
     for (i = 0; i < blockSize; i++) {
       const code = this.readBits(codeLength);
       const hasPrev = currentSequenceLength > 0;
-      if (code === null || code < 256) {
-        currentSequence[0] = code;
+      if (!code || code < 256) {
+        currentSequence[0] = code as number;
         currentSequenceLength = 1;
       } else if (code >= 258) {
         if (code < nextCode) {
@@ -114,8 +130,8 @@ class LZWStream extends (DecodeStream as any) {
       }
 
       if (hasPrev) {
-        dictionaryPrevCodes[nextCode] = prevCode;
-        dictionaryLengths[nextCode] = dictionaryLengths[prevCode] + 1;
+        dictionaryPrevCodes[nextCode] = prevCode as number;
+        dictionaryLengths[nextCode] = dictionaryLengths[prevCode as number] + 1;
         dictionaryValues[nextCode] = currentSequence[0];
         nextCode++;
         codeLength =

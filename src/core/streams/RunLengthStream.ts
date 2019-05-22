@@ -6,10 +6,10 @@
  * under the Apache 2.0 open source license.
  */
 
-import { DecodeStream } from 'src/core/streams/DecodeStream';
+import DecodeStream from 'src/core/streams/DecodeStream';
 import Stream from 'src/core/streams/Stream';
 
-class RunLengthStream extends (DecodeStream as any) {
+class RunLengthStream extends DecodeStream {
   str: Stream;
 
   constructor(str: Stream, maybeLength?: number) {

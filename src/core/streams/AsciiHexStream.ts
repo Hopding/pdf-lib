@@ -6,10 +6,13 @@
  * under the Apache 2.0 open source license.
  */
 
-import { DecodeStream } from 'src/core/streams/DecodeStream';
+import DecodeStream from 'src/core/streams/DecodeStream';
 import Stream from 'src/core/streams/Stream';
 
-class AsciiHexStream extends (DecodeStream as any) {
+class AsciiHexStream extends DecodeStream {
+  str: Stream;
+  firstDigit: number;
+
   constructor(str: Stream, maybeLength?: number) {
     super(maybeLength);
 
