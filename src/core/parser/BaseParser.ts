@@ -55,6 +55,14 @@ class BaseParser {
     }
   }
 
+  protected skipLine(): void {
+    while (!this.bytes.done()) {
+      const byte = this.bytes.peek();
+      if (byte === Newline || byte === CarriageReturn) return;
+      this.bytes.next();
+    }
+  }
+
   protected skipComment(): boolean {
     if (this.bytes.peek() !== CharCodes.Percent) return false;
     while (!this.bytes.done()) {

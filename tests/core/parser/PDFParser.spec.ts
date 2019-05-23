@@ -1,6 +1,8 @@
 import fs from 'fs';
 
 import {
+  CharCodes,
+  mergeIntoTypedArray,
   PDFHeader,
   PDFInvalidObject,
   PDFParser,
@@ -43,6 +45,18 @@ describe(`PDFParser`, () => {
     expect(() => parser.parseDocument()).toThrow();
   });
 
+  it(`handles invalid binary comments after header`, () => {
+    const input = mergeIntoTypedArray(
+      '%PDF-1.7\n',
+      new Uint8Array([128, 1, 2, 3, 4, 5, 129, 130, 131, CharCodes.Newline]),
+      '1 0 obj\n',
+      ' . (foobar)\n',
+      'foo',
+    );
+    const parser = PDFParser.forBytes(typedArrayFor(input));
+    expect(() => parser.parseDocument()).toThrow();
+  });
+
   it(`handles invalid indirect objects`, () => {
     const input = `
     %PDF-1.7
@@ -67,6 +81,19 @@ describe(`PDFParser`, () => {
     expect(context.header).toBeInstanceOf(PDFHeader);
     expect(context.header.toString()).toEqual('%PDF-2.0\n%');
     expect(context.enumerateIndirectObjects().length).toBe(8);
+  });
+
+  it(`can parse PDF files with comments stuff following the header`, () => {
+    const pdfBytes = fs.readFileSync(
+      './assets/pdfs/stuff_following_header.pdf',
+    );
+
+    const parser = PDFParser.forBytes(pdfBytes);
+    const context = parser.parseDocument();
+
+    expect(context.header).toBeInstanceOf(PDFHeader);
+    expect(context.header.toString()).toEqual('%PDF-1.4\n%');
+    expect(context.enumerateIndirectObjects().length).toBe(12);
   });
 
   it(`can parse PDF files with missing xref table, trailer dict, and trailer`, () => {
