@@ -10,14 +10,13 @@ import DecodeStream from 'src/core/streams/DecodeStream';
 import Stream from 'src/core/streams/Stream';
 
 class AsciiHexStream extends DecodeStream {
-  str: Stream;
-  firstDigit: number;
+  private stream: Stream;
+  private firstDigit: number;
 
-  constructor(str: Stream, maybeLength?: number) {
+  constructor(stream: Stream, maybeLength?: number) {
     super(maybeLength);
 
-    this.str = str;
-    // this.dict = str.dict;
+    this.stream = stream;
 
     this.firstDigit = -1;
 
@@ -28,9 +27,9 @@ class AsciiHexStream extends DecodeStream {
     }
   }
 
-  readBlock() {
+  protected readBlock() {
     const UPSTREAM_BLOCK_SIZE = 8000;
-    const bytes = this.str.getBytes(UPSTREAM_BLOCK_SIZE);
+    const bytes = this.stream.getBytes(UPSTREAM_BLOCK_SIZE);
     if (!bytes.length) {
       this.eof = true;
       return;
