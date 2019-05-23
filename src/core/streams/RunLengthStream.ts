@@ -10,21 +10,19 @@ import DecodeStream from 'src/core/streams/DecodeStream';
 import Stream from 'src/core/streams/Stream';
 
 class RunLengthStream extends DecodeStream {
-  str: Stream;
+  private stream: Stream;
 
-  constructor(str: Stream, maybeLength?: number) {
+  constructor(stream: Stream, maybeLength?: number) {
     super(maybeLength);
-
-    this.str = str;
-    // this.dict = str.dict;
+    this.stream = stream;
   }
 
-  readBlock() {
+  protected readBlock() {
     // The repeatHeader has following format. The first byte defines type of run
     // and amount of bytes to repeat/copy: n = 0 through 127 - copy next n bytes
     // (in addition to the second byte from the header), n = 129 through 255 -
     // duplicate the second byte from the header (257 - n) times, n = 128 - end.
-    const repeatHeader = this.str.getBytes(2);
+    const repeatHeader = this.stream.getBytes(2);
     if (!repeatHeader || repeatHeader.length < 2 || repeatHeader[0] === 128) {
       this.eof = true;
       return;
@@ -38,7 +36,7 @@ class RunLengthStream extends DecodeStream {
       buffer = this.ensureBuffer(bufferLength + n + 1);
       buffer[bufferLength++] = repeatHeader[1];
       if (n > 0) {
-        const source = this.str.getBytes(n);
+        const source = this.stream.getBytes(n);
         buffer.set(source, bufferLength);
         bufferLength += n;
       }

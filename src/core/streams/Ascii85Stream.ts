@@ -13,14 +13,13 @@ const isSpace = (ch: number) =>
   ch === 0x20 || ch === 0x09 || ch === 0x0d || ch === 0x0a;
 
 class Ascii85Stream extends DecodeStream {
-  str: Stream;
-  input: Uint8Array;
+  private stream: Stream;
+  private input: Uint8Array;
 
-  constructor(str: Stream, maybeLength?: number) {
+  constructor(stream: Stream, maybeLength?: number) {
     super(maybeLength);
 
-    this.str = str;
-    // this.dict = str.dict;
+    this.stream = stream;
     this.input = new Uint8Array(5);
 
     // Most streams increase in size when decoded, but Ascii85 streams
@@ -30,16 +29,16 @@ class Ascii85Stream extends DecodeStream {
     }
   }
 
-  readBlock() {
+  protected readBlock() {
     const TILDA_CHAR = 0x7e; // '~'
     const Z_LOWER_CHAR = 0x7a; // 'z'
     const EOF = -1;
 
-    const str = this.str;
+    const stream = this.stream;
 
-    let c = str.getByte();
+    let c = stream.getByte();
     while (isSpace(c)) {
-      c = str.getByte();
+      c = stream.getByte();
     }
 
     if (c === EOF || c === TILDA_CHAR) {
@@ -62,9 +61,9 @@ class Ascii85Stream extends DecodeStream {
       const input = this.input;
       input[0] = c;
       for (i = 1; i < 5; ++i) {
-        c = str.getByte();
+        c = stream.getByte();
         while (isSpace(c)) {
-          c = str.getByte();
+          c = stream.getByte();
         }
 
         input[i] = c;

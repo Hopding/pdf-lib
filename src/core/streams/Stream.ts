@@ -7,25 +7,16 @@
  */
 
 class Stream {
-  bytes: Uint8Array;
-  start: number;
-  pos: number;
-  end: number;
+  private bytes: Uint8Array;
+  private start: number;
+  private pos: number;
+  private end: number;
 
-  constructor(
-    arrayBuffer: ArrayBuffer | Uint8Array,
-    start?: number,
-    length?: number /* dict */,
-  ) {
-    this.bytes =
-      arrayBuffer instanceof Uint8Array
-        ? arrayBuffer
-        : new Uint8Array(arrayBuffer);
+  constructor(buffer: Uint8Array, start?: number, length?: number) {
+    this.bytes = buffer;
     this.start = start || 0;
     this.pos = this.start;
     this.end = !!start && !!length ? start + length : this.bytes.length;
-    // this.end = start + length || this.bytes.length;
-    // this.dict = dict;
   }
 
   get length() {
@@ -109,8 +100,8 @@ class Stream {
     this.start = this.pos;
   }
 
-  makeSubStream(start: number, length: number /*dict*/) {
-    return new Stream(this.bytes.buffer, start, length /*dict*/);
+  makeSubStream(start: number, length: number) {
+    return new Stream(this.bytes, start, length);
   }
 }
 

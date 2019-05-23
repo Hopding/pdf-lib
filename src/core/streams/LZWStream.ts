@@ -10,10 +10,10 @@ import DecodeStream from 'src/core/streams/DecodeStream';
 import Stream from 'src/core/streams/Stream';
 
 class LZWStream extends DecodeStream {
-  str: Stream;
-  cachedData: number;
-  bitsCached: number;
-  lzwState: {
+  private stream: Stream;
+  private cachedData: number;
+  private bitsCached: number;
+  private lzwState: {
     earlyChange: 0 | 1;
     codeLength: number;
     nextCode: number;
@@ -24,17 +24,15 @@ class LZWStream extends DecodeStream {
     currentSequenceLength: number;
     prevCode?: number | null;
   };
-  lastCode?: number | null;
 
   constructor(
-    str: Stream,
+    stream: Stream,
     maybeLength: number | undefined,
     earlyChange: 0 | 1,
   ) {
     super(maybeLength);
 
-    this.str = str;
-    // this.dict = str.dict;
+    this.stream = stream;
     this.cachedData = 0;
     this.bitsCached = 0;
 
@@ -56,25 +54,7 @@ class LZWStream extends DecodeStream {
     this.lzwState = lzwState;
   }
 
-  readBits(n: number) {
-    let bitsCached = this.bitsCached;
-    let cachedData = this.cachedData;
-    while (bitsCached < n) {
-      const c = this.str.getByte();
-      if (c === -1) {
-        this.eof = true;
-        return null;
-      }
-      cachedData = (cachedData << 8) | c;
-      bitsCached += 8;
-    }
-    this.bitsCached = bitsCached -= n;
-    this.cachedData = cachedData;
-    this.lastCode = null;
-    return (cachedData >>> bitsCached) & ((1 << n) - 1);
-  }
-
-  readBlock() {
+  protected readBlock() {
     const blockSize = 512;
 
     let estimatedDecodedSize = blockSize * 2;
@@ -161,6 +141,23 @@ class LZWStream extends DecodeStream {
     lzwState.currentSequenceLength = currentSequenceLength;
 
     this.bufferLength = currentBufferLength;
+  }
+
+  private readBits(n: number) {
+    let bitsCached = this.bitsCached;
+    let cachedData = this.cachedData;
+    while (bitsCached < n) {
+      const c = this.stream.getByte();
+      if (c === -1) {
+        this.eof = true;
+        return null;
+      }
+      cachedData = (cachedData << 8) | c;
+      bitsCached += 8;
+    }
+    this.bitsCached = bitsCached -= n;
+    this.cachedData = cachedData;
+    return (cachedData >>> bitsCached) & ((1 << n) - 1);
   }
 }
 
