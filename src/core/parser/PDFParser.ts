@@ -205,12 +205,17 @@ class PDFParser extends PDFObjectParser {
    * the spec. But in the wild, there are PDFs that omit the leading "%", and
    * include bytes that are less than 128 (e.g. 0 or 1). So in order to parse
    * these headers correctly, we just throw out all bytes leading up to the
-   * first digit. (we assume the first digit is the object number of the first
-   * indirect object)
+   * first indirect object header.
    */
   private skipBinaryHeaderComment(): void {
-    while (!this.bytes.done() && !DigitChars.includes(this.bytes.peek())) {
-      this.bytes.next();
+    this.skipWhitespaceAndComments();
+    try {
+      const initialOffset = this.bytes.offset();
+      this.parseIndirectObjectHeader();
+      this.bytes.moveTo(initialOffset);
+    } catch (e) {
+      this.skipLine();
+      this.skipWhitespaceAndComments();
     }
   }
 }
