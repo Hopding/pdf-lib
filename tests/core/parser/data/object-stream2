@@ -1,0 +1,10 @@
+1 0 2 16 3 33 4 40 5 59 6 66 7 71 8 81 9 85
+<< /Foo /Bar >>
+[1 (two) /Three]
+/QuxBaz
+(Look, a string!)
+21 0 R
+-.123
+<ABC123>
+true
+null

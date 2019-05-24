@@ -1,4 +1,3 @@
-import { PDFName } from 'src/core';
 import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
@@ -9,6 +8,7 @@ import {
   StalledParserError,
 } from 'src/core/errors';
 import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
+import PDFName from 'src/core/objects/PDFName';
 import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
 import ByteStream from 'src/core/parser/ByteStream';
