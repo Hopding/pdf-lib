@@ -57,6 +57,10 @@ class PDFName extends PDFObject {
     this.encodedName = encodedName;
   }
 
+  value(): string {
+    return this.encodedName;
+  }
+
   clone(): PDFName {
     return this;
   }
