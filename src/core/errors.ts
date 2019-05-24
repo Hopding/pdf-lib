@@ -19,10 +19,10 @@ export class UnexpectedObjectTypeError extends Error {
   constructor(expected: any | any[], actual: any) {
     const expectedTypes = Array.isArray(expected)
       ? expected.map(({ name }) => name)
-      : expected.name;
+      : [expected.name];
     const msg =
       `Expected instance of ${expectedTypes.join(' or ')}, ` +
-      `but got instance of ${actual.constructor.name}`;
+      `but got instance of ${actual ? actual.constructor.name : actual}`;
     super(msg);
   }
 }

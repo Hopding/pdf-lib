@@ -1,6 +1,7 @@
 import pako from 'pako';
 
 import PDFHeader from 'src/core/document/PDFHeader';
+import { UnexpectedObjectTypeError } from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
 import PDFDict from 'src/core/objects/PDFDict';
@@ -82,7 +83,9 @@ class PDFContext {
 
   lookup(ref: LookupKey, type?: any) {
     const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
-    if (type && !(result instanceof type)) throw new Error('FIX ME!');
+    if (type && !(result instanceof type)) {
+      throw new UnexpectedObjectTypeError(type, result);
+    }
     return result;
   }
 
