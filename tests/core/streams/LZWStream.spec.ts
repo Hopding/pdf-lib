@@ -12,12 +12,9 @@ describe(`LZWStream`, () => {
       const encoded = new Uint8Array(fs.readFileSync(`${DIR}/${file}.encoded`));
       const decoded = new Uint8Array(fs.readFileSync(`${DIR}/${file}.decoded`));
 
-      const stream = new LZWStream(new Stream(encoded), undefined, 0) as any;
+      const stream = new LZWStream(new Stream(encoded), undefined, 0);
 
-      const array = [];
-      while (stream.peekByte() !== -1) array.push(stream.getByte());
-
-      expect(new Uint8Array(array)).toEqual(decoded);
+      expect(stream.decode()).toEqual(decoded);
     });
   });
 });

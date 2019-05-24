@@ -7,13 +7,13 @@
  */
 
 import DecodeStream from 'src/core/streams/DecodeStream';
-import Stream from 'src/core/streams/Stream';
+import { StreamType } from 'src/core/streams/Stream';
 
 class AsciiHexStream extends DecodeStream {
-  private stream: Stream;
+  private stream: StreamType;
   private firstDigit: number;
 
-  constructor(stream: Stream, maybeLength?: number) {
+  constructor(stream: StreamType, maybeLength?: number) {
     super(maybeLength);
 
     this.stream = stream;

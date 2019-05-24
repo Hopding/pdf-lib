@@ -16,7 +16,7 @@
 
 /* tslint:disable  no-conditional-assignment */
 import DecodeStream from 'src/core/streams/DecodeStream';
-import Stream from 'src/core/streams/Stream';
+import { StreamType } from 'src/core/streams/Stream';
 
 // prettier-ignore
 const codeLenCodeMap = new Int32Array([
@@ -116,11 +116,11 @@ const fixedDistCodeTab = [new Int32Array([
 ]), 5] as [Int32Array, number];
 
 class FlateStream extends DecodeStream {
-  private stream: Stream;
+  private stream: StreamType;
   private codeSize: number;
   private codeBuf: number;
 
-  constructor(stream: Stream, maybeLength?: number) {
+  constructor(stream: StreamType, maybeLength?: number) {
     super(maybeLength);
 
     this.stream = stream;

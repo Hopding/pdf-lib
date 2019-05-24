@@ -1,5 +1,5 @@
 import { MethodNotImplementedError } from 'src/core/errors';
-import Stream from 'src/core/streams/Stream';
+import Stream, { StreamType } from 'src/core/streams/Stream';
 
 /*
  * Copyright 2012 Mozilla Foundation
@@ -18,7 +18,7 @@ const emptyBuffer = new Uint8Array(0);
 /**
  * Super class for the decoding streams
  */
-class DecodeStream {
+class DecodeStream implements StreamType {
   protected bufferLength: number;
   protected buffer: Uint8Array;
   protected eof: boolean;
@@ -117,14 +117,6 @@ class DecodeStream {
     return bytes;
   }
 
-  makeSubStream(start: number, length: number /* dict */) {
-    const end = start + length;
-    while (this.bufferLength <= end && !this.eof) {
-      this.readBlock();
-    }
-    return new Stream(this.buffer, start, length /* dict */);
-  }
-
   skip(n: number) {
     if (!n) {
       n = 1;
@@ -134,6 +126,19 @@ class DecodeStream {
 
   reset() {
     this.pos = 0;
+  }
+
+  makeSubStream(start: number, length: number /* dict */) {
+    const end = start + length;
+    while (this.bufferLength <= end && !this.eof) {
+      this.readBlock();
+    }
+    return new Stream(this.buffer, start, length /* dict */);
+  }
+
+  decode(): Uint8Array {
+    while (!this.eof) this.readBlock();
+    return this.buffer.subarray(0, this.bufferLength);
   }
 
   protected readBlock(): void {

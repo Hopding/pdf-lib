@@ -7,13 +7,14 @@ import {
   ReparseError,
   StalledParserError,
 } from 'src/core/errors';
+import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
 import PDFRef from 'src/core/objects/PDFRef';
+import ByteStream from 'src/core/parser/ByteStream';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars } from 'src/core/syntax/Numeric';
-import PDFInvalidObject from '../objects/PDFInvalidObject';
 
 class PDFParser extends PDFObjectParser {
   static forBytes = (pdfBytes: Uint8Array) => new PDFParser(pdfBytes);
@@ -21,10 +22,11 @@ class PDFParser extends PDFObjectParser {
   alreadyParsed = false;
 
   constructor(pdfBytes: Uint8Array) {
-    super(pdfBytes, PDFContext.create());
+    super(ByteStream.of(pdfBytes), PDFContext.create());
   }
 
   // TODO: Handle XRef Stream trailers!
+  // TODO: Throw error if missing trailer or catalog!
   parseDocument(): PDFContext {
     if (this.alreadyParsed) throw new ReparseError();
     this.alreadyParsed = true;

@@ -1,6 +1,15 @@
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
+import PDFBool from 'src/core/objects/PDFBool';
+import PDFDict from 'src/core/objects/PDFDict';
+import PDFName from 'src/core/objects/PDFName';
+import PDFNull from 'src/core/objects/PDFNull';
+import PDFNumber from 'src/core/objects/PDFNumber';
+import PDFStream from 'src/core/objects/PDFStream';
+import PDFHexString from 'src/core/objects/PDFHexString';
+import PDFRef from 'src/core/objects/PDFRef';
+import PDFString from 'src/core/objects/PDFString';
 
 class PDFArray extends PDFObject {
   static withContext = (context: PDFContext) => new PDFArray(context);
@@ -24,6 +33,22 @@ class PDFArray extends PDFObject {
 
   get(index: number): PDFObject {
     return this.array[index];
+  }
+
+  lookup(index: number): PDFObject | undefined;
+  lookup(index: number, type: typeof PDFArray): PDFArray;
+  lookup(index: number, type: typeof PDFBool): PDFBool;
+  lookup(index: number, type: typeof PDFDict): PDFDict;
+  lookup(index: number, type: typeof PDFHexString): PDFHexString;
+  lookup(index: number, type: typeof PDFName): PDFName;
+  lookup(index: number, type: typeof PDFNull): typeof PDFNull;
+  lookup(index: number, type: typeof PDFNumber): PDFNumber;
+  lookup(index: number, type: typeof PDFStream): PDFStream;
+  lookup(index: number, type: typeof PDFRef): PDFRef;
+  lookup(index: number, type: typeof PDFString): PDFString;
+
+  lookup(index: number, type?: any) {
+    return this.context.lookup(this.get(index), type) as any;
   }
 
   clone(): PDFArray {

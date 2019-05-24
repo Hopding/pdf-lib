@@ -57,6 +57,21 @@ describe(`PDFParser`, () => {
     expect(() => parser.parseDocument()).toThrow();
   });
 
+  it.skip(`does not stall when stuff follows the last %%EOL`, () => {
+    const input = `
+      %PDF-1.7
+      1 0 obj
+        (foobar)
+      endobj
+      startxref
+      127
+      %%EOL
+      @@@@@@@@@@@@@@@@@@
+    `;
+    const parser = PDFParser.forBytes(typedArrayFor(input));
+    expect(() => parser.parseDocument()).not.toThrow();
+  });
+
   it(`handles invalid indirect objects`, () => {
     const input = `
     %PDF-1.7

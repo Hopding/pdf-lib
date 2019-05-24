@@ -6,7 +6,27 @@
  * under the Apache 2.0 open source license.
  */
 
-class Stream {
+export interface StreamType {
+  isEmpty: boolean;
+  getByte(): number;
+  getUint16(): number;
+  getInt32(): number;
+  getBytes(
+    length: number,
+    forceClamped?: boolean,
+  ): Uint8Array | Uint8ClampedArray;
+  peekByte(): number;
+  peekBytes(
+    length: number,
+    forceClamped?: boolean,
+  ): Uint8Array | Uint8ClampedArray;
+  skip(n: number): void;
+  reset(): void;
+  makeSubStream(start: number, length: number): StreamType;
+  decode(): Uint8Array;
+}
+
+class Stream implements StreamType {
   private bytes: Uint8Array;
   private start: number;
   private pos: number;
@@ -102,6 +122,10 @@ class Stream {
 
   makeSubStream(start: number, length: number) {
     return new Stream(this.bytes, start, length);
+  }
+
+  decode(): Uint8Array {
+    return this.bytes;
   }
 }
 

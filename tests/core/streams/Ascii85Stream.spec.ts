@@ -12,12 +12,9 @@ describe(`Ascii85Stream`, () => {
       const encoded = new Uint8Array(fs.readFileSync(`${DIR}/${file}.encoded`));
       const decoded = new Uint8Array(fs.readFileSync(`${DIR}/${file}.decoded`));
 
-      const stream = new Ascii85Stream(new Stream(encoded)) as any;
+      const stream = new Ascii85Stream(new Stream(encoded));
 
-      const array = [];
-      while (stream.peekByte() !== -1) array.push(stream.getByte());
-
-      expect(new Uint8Array(array)).toEqual(decoded);
+      expect(stream.decode()).toEqual(decoded);
     });
   });
 });

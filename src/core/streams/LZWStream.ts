@@ -7,10 +7,10 @@
  */
 
 import DecodeStream from 'src/core/streams/DecodeStream';
-import Stream from 'src/core/streams/Stream';
+import { StreamType } from 'src/core/streams/Stream';
 
 class LZWStream extends DecodeStream {
-  private stream: Stream;
+  private stream: StreamType;
   private cachedData: number;
   private bitsCached: number;
   private lzwState: {
@@ -26,7 +26,7 @@ class LZWStream extends DecodeStream {
   };
 
   constructor(
-    stream: Stream,
+    stream: StreamType,
     maybeLength: number | undefined,
     earlyChange: 0 | 1,
   ) {

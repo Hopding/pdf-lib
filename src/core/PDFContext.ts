@@ -4,13 +4,18 @@ import PDFHeader from 'src/core/document/PDFHeader';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
 import PDFDict from 'src/core/objects/PDFDict';
+import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNull from 'src/core/objects/PDFNull';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
+import PDFStream from 'src/core/objects/PDFStream';
+import PDFString from 'src/core/objects/PDFString';
 import { typedArrayFor } from 'src/utils';
+
+type LookupKey = PDFRef | PDFObject | undefined;
 
 interface LiteralObject {
   [name: string]: Literal | PDFObject;
@@ -63,9 +68,22 @@ class PDFContext {
     return this.indirectObjects.delete(ref);
   }
 
-  lookup(ref: PDFRef | PDFObject): PDFObject | void {
-    if (ref instanceof PDFRef) return this.indirectObjects.get(ref);
-    return ref;
+  lookup(ref: LookupKey): PDFObject | undefined;
+  lookup(ref: LookupKey, type: typeof PDFArray): PDFArray;
+  lookup(ref: LookupKey, type: typeof PDFBool): PDFBool;
+  lookup(ref: LookupKey, type: typeof PDFDict): PDFDict;
+  lookup(ref: LookupKey, type: typeof PDFHexString): PDFHexString;
+  lookup(ref: LookupKey, type: typeof PDFName): PDFName;
+  lookup(ref: LookupKey, type: typeof PDFNull): typeof PDFNull;
+  lookup(ref: LookupKey, type: typeof PDFNumber): PDFNumber;
+  lookup(ref: LookupKey, type: typeof PDFStream): PDFStream;
+  lookup(ref: LookupKey, type: typeof PDFRef): PDFRef;
+  lookup(ref: LookupKey, type: typeof PDFString): PDFString;
+
+  lookup(ref: LookupKey, type?: any) {
+    const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
+    if (type && !(result instanceof type)) throw new Error('FIX ME!');
+    return result;
   }
 
   enumerateIndirectObjects(): Array<[PDFRef, PDFObject]> {
