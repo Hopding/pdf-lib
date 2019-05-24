@@ -2,12 +2,21 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
+import PDFArray from 'src/core/objects/PDFArray';
+import PDFNull from 'src/core/objects/PDFNull';
+import PDFBool from 'src/core/objects/PDFBool';
+import PDFHexString from 'src/core/objects/PDFHexString';
+import PDFNumber from 'src/core/objects/PDFNumber';
+import PDFRef from 'src/core/objects/PDFRef';
+import PDFString from 'src/core/objects/PDFString';
+import PDFStream from 'src/core/objects/PDFStream';
 
 class PDFDict extends PDFObject {
   static withContext = (context: PDFContext) => new PDFDict(context);
 
+  readonly context: PDFContext;
+
   private readonly dict: Map<PDFName, PDFObject>;
-  private readonly context: PDFContext;
 
   private constructor(context: PDFContext) {
     super();
@@ -25,6 +34,22 @@ class PDFDict extends PDFObject {
 
   get(key: PDFName): PDFObject | undefined {
     return this.dict.get(key);
+  }
+
+  lookup(key: PDFName): PDFObject | undefined;
+  lookup(key: PDFName, type: typeof PDFArray): PDFArray;
+  lookup(key: PDFName, type: typeof PDFBool): PDFBool;
+  lookup(key: PDFName, type: typeof PDFDict): PDFDict;
+  lookup(key: PDFName, type: typeof PDFHexString): PDFHexString;
+  lookup(key: PDFName, type: typeof PDFName): PDFName;
+  lookup(key: PDFName, type: typeof PDFNull): typeof PDFNull;
+  lookup(key: PDFName, type: typeof PDFNumber): PDFNumber;
+  lookup(key: PDFName, type: typeof PDFStream): PDFStream;
+  lookup(key: PDFName, type: typeof PDFRef): PDFRef;
+  lookup(key: PDFName, type: typeof PDFString): PDFString;
+
+  lookup(key: PDFName, type?: any) {
+    return this.context.lookup(this.get(key), type) as any;
   }
 
   delete(key: PDFName): boolean {

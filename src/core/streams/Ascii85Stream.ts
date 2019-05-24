@@ -7,16 +7,16 @@
  */
 
 import DecodeStream from 'src/core/streams/DecodeStream';
-import Stream from 'src/core/streams/Stream';
+import { StreamType } from 'src/core/streams/Stream';
 
 const isSpace = (ch: number) =>
   ch === 0x20 || ch === 0x09 || ch === 0x0d || ch === 0x0a;
 
 class Ascii85Stream extends DecodeStream {
-  private stream: Stream;
+  private stream: StreamType;
   private input: Uint8Array;
 
-  constructor(stream: Stream, maybeLength?: number) {
+  constructor(stream: StreamType, maybeLength?: number) {
     super(maybeLength);
 
     this.stream = stream;

@@ -7,12 +7,12 @@
  */
 
 import DecodeStream from 'src/core/streams/DecodeStream';
-import Stream from 'src/core/streams/Stream';
+import { StreamType } from 'src/core/streams/Stream';
 
 class RunLengthStream extends DecodeStream {
-  private stream: Stream;
+  private stream: StreamType;
 
-  constructor(stream: Stream, maybeLength?: number) {
+  constructor(stream: StreamType, maybeLength?: number) {
     super(maybeLength);
     this.stream = stream;
   }

@@ -10,8 +10,8 @@ const { Newline, CarriageReturn } = CharCodes;
 class BaseParser {
   protected readonly bytes: ByteStream;
 
-  constructor(pdfBytes: Uint8Array) {
-    this.bytes = ByteStream.of(pdfBytes);
+  constructor(bytes: ByteStream) {
+    this.bytes = bytes;
   }
 
   protected parseRawInt(): number {

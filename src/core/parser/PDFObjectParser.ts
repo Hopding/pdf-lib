@@ -1,3 +1,7 @@
+import {
+  PDFObjectParsingError,
+  UnbalancedParenthesisError,
+} from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
 import PDFDict from 'src/core/objects/PDFDict';
@@ -11,6 +15,7 @@ import PDFRef from 'src/core/objects/PDFRef';
 import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import BaseParser from 'src/core/parser/BaseParser';
+import ByteStream from 'src/core/parser/ByteStream';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { DelimiterChars } from 'src/core/syntax/Delimiters';
@@ -18,19 +23,21 @@ import { Keywords } from 'src/core/syntax/Keywords';
 import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
 import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';
-import { PDFObjectParsingError, UnbalancedParenthesisError } from '../errors';
 
 const { Newline, CarriageReturn } = CharCodes;
 
 // TODO: Throw error if eof is reached before finishing object parse...
 class PDFObjectParser extends BaseParser {
-  static forBytes = (pdfBytes: Uint8Array, context: PDFContext) =>
-    new PDFObjectParser(pdfBytes, context);
+  static forBytes = (bytes: Uint8Array, context: PDFContext) =>
+    new PDFObjectParser(ByteStream.of(bytes), context);
+
+  static forByteStream = (byteStream: ByteStream, context: PDFContext) =>
+    new PDFObjectParser(byteStream, context);
 
   protected readonly context: PDFContext;
 
-  constructor(pdfBytes: Uint8Array, context: PDFContext) {
-    super(pdfBytes);
+  constructor(byteStream: ByteStream, context: PDFContext) {
+    super(byteStream);
     this.context = context;
   }
 
