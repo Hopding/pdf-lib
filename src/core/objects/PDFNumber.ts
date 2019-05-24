@@ -14,6 +14,10 @@ class PDFNumber extends PDFObject {
     this.stringValue = numberToString(value);
   }
 
+  value(): number {
+    return this.numberValue;
+  }
+
   clone(): PDFNumber {
     return PDFNumber.of(this.numberValue);
   }

@@ -15,9 +15,28 @@ export class PrivateConstructorError extends Error {
   }
 }
 
+export class UnexpectedObjectTypeError extends Error {
+  constructor(expected: any | any[], actual: any) {
+    const expectedTypes = Array.isArray(expected)
+      ? expected.map(({ name }) => name)
+      : expected.name;
+    const msg =
+      `Expected instance of ${expectedTypes.join(' or ')}, ` +
+      `but got instance of ${actual.constructor.name}`;
+    super(msg);
+  }
+}
+
+export class UnsupportedEncodingError extends Error {
+  constructor(encoding: string) {
+    const msg = `${encoding} stream encoding not supported`;
+    super(msg);
+  }
+}
+
 export class ReparseError extends Error {
-  constructor() {
-    const msg = `Cannot call PDFParser.parseDocument() more than once`;
+  constructor(className: string, methodName: string) {
+    const msg = `Cannot call ${className}.${methodName}() more than once`;
     super(msg);
   }
 }

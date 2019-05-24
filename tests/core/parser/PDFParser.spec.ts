@@ -143,7 +143,7 @@ describe(`PDFParser`, () => {
 
     expect(context.header).toBeInstanceOf(PDFHeader);
     expect(context.header.toString()).toEqual('%PDF-1.7\n%');
-    expect(context.enumerateIndirectObjects().length).toBe(135);
+    expect(context.enumerateIndirectObjects().length).toBe(134);
   });
 
   it(`can parse PDF files with comments`, () => {
@@ -154,7 +154,7 @@ describe(`PDFParser`, () => {
 
     expect(context.header).toBeInstanceOf(PDFHeader);
     expect(context.header.toString()).toEqual('%PDF-1.7\n%');
-    expect(context.enumerateIndirectObjects().length).toBe(30);
+    expect(context.enumerateIndirectObjects().length).toBe(144);
   });
 
   it(`prevents double parsing`, () => {
@@ -163,6 +163,8 @@ describe(`PDFParser`, () => {
     const parser = PDFParser.forBytes(pdfBytes);
 
     expect(() => parser.parseDocument()).not.toThrow();
-    expect(() => parser.parseDocument()).toThrow(new ReparseError());
+    expect(() => parser.parseDocument()).toThrow(
+      new ReparseError('PDFParser', 'parseDocument'),
+    );
   });
 });

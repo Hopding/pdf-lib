@@ -1,3 +1,4 @@
+import { PDFName } from 'src/core';
 import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
@@ -8,9 +9,11 @@ import {
   StalledParserError,
 } from 'src/core/errors';
 import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
+import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
 import ByteStream from 'src/core/parser/ByteStream';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
+import PDFObjectStreamParser from 'src/core/parser/PDFObjectStreamParser';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { Keywords } from 'src/core/syntax/Keywords';
@@ -19,7 +22,7 @@ import { DigitChars } from 'src/core/syntax/Numeric';
 class PDFParser extends PDFObjectParser {
   static forBytes = (pdfBytes: Uint8Array) => new PDFParser(pdfBytes);
 
-  alreadyParsed = false;
+  private alreadyParsed = false;
 
   constructor(pdfBytes: Uint8Array) {
     super(ByteStream.of(pdfBytes), PDFContext.create());
@@ -28,7 +31,9 @@ class PDFParser extends PDFObjectParser {
   // TODO: Handle XRef Stream trailers!
   // TODO: Throw error if missing trailer or catalog!
   parseDocument(): PDFContext {
-    if (this.alreadyParsed) throw new ReparseError();
+    if (this.alreadyParsed) {
+      throw new ReparseError('PDFParser', 'parseDocument');
+    }
     this.alreadyParsed = true;
 
     this.context.header = this.parseHeader();
@@ -88,7 +93,14 @@ class PDFParser extends PDFObjectParser {
       throw new MissingKeywordError(this.bytes.position(), Keywords.endobj);
     }
 
-    this.context.assign(ref, object);
+    if (
+      object instanceof PDFRawStream &&
+      object.dict.lookup(PDFName.of('Type')) === PDFName.of('ObjStm')
+    ) {
+      PDFObjectStreamParser.forStream(object).parseIntoContext();
+    } else {
+      this.context.assign(ref, object);
+    }
 
     return ref;
   }
