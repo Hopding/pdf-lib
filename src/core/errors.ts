@@ -1,4 +1,5 @@
 // tslint:disable: max-classes-per-file
+import PDFObject from 'src/core/objects/PDFObject';
 import { arrayAsString } from 'src/utils';
 
 export class MethodNotImplementedError extends Error {
@@ -37,6 +38,13 @@ export class UnsupportedEncodingError extends Error {
 export class ReparseError extends Error {
   constructor(className: string, methodName: string) {
     const msg = `Cannot call ${className}.${methodName}() more than once`;
+    super(msg);
+  }
+}
+
+export class MissingCatalogError extends Error {
+  constructor(ref?: PDFObject) {
+    const msg = `Missing catalog (ref=${ref})`;
     super(msg);
   }
 }

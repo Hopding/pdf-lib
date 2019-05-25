@@ -131,7 +131,7 @@ describe(`PDFWriter`, () => {
       Type: 'Catalog',
       Pages: pagesRef,
     });
-    context.catalogRef = context.register(catalog);
+    context.trailerInfo.Root = context.register(catalog);
 
     const buffer = PDFWriter.serializeContextToBuffer(context);
 
