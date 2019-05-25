@@ -26,7 +26,14 @@ interface LiteralArray {
   [index: number]: Literal | PDFObject;
 }
 
-type Literal = LiteralObject | LiteralArray | string | number | boolean | null;
+type Literal =
+  | LiteralObject
+  | LiteralArray
+  | string
+  | number
+  | boolean
+  | null
+  | undefined;
 
 const byAscendingObjectNumber = (
   [a]: [PDFRef, PDFObject],
@@ -37,17 +44,20 @@ class PDFContext {
   static create = () => new PDFContext();
 
   largestObjectNumber: number;
-  trailer: PDFDict;
-  catalogRef: PDFRef;
   header: PDFHeader;
+  trailerInfo: {
+    Root?: PDFObject;
+    Encrypt?: PDFObject;
+    Info?: PDFObject;
+    ID?: PDFObject;
+  };
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
 
   private constructor() {
     this.largestObjectNumber = 0;
-    this.trailer = PDFDict.withContext(this);
-    this.catalogRef = PDFRef.of(-1, -1);
     this.header = PDFHeader.forVersion(1, 7);
+    this.trailerInfo = {};
 
     this.indirectObjects = new Map();
   }
@@ -95,7 +105,7 @@ class PDFContext {
     );
   }
 
-  obj(literal: null): typeof PDFNull;
+  obj(literal: null | undefined): typeof PDFNull;
   obj(literal: string): PDFName;
   obj(literal: number): PDFNumber;
   obj(literal: boolean): PDFBool;
@@ -105,7 +115,7 @@ class PDFContext {
   obj(literal: Literal) {
     if (literal instanceof PDFObject) {
       return literal;
-    } else if (literal === null) {
+    } else if (literal === null || literal === undefined) {
       return PDFNull;
     } else if (typeof literal === 'string') {
       return PDFName.of(literal);
@@ -125,7 +135,7 @@ class PDFContext {
       for (let idx = 0, len = keys.length; idx < len; idx++) {
         const key = keys[idx];
         const value = (literal as LiteralObject)[key] as any;
-        dict.set(PDFName.of(key), this.obj(value));
+        if (value !== undefined) dict.set(PDFName.of(key), this.obj(value));
       }
       return dict;
     }

@@ -2,8 +2,6 @@ import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
 import PDFTrailerDict from 'src/core/document/PDFTrailerDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer } from 'src/utils';
@@ -89,14 +87,15 @@ class PDFWriter {
     const xrefOffset = size;
     size += xref.sizeInBytes() + 1; // '\n'
 
-    context.trailer.set(
-      PDFName.of('Size'),
-      PDFNumber.of(context.largestObjectNumber + 1),
+    const trailerDict = PDFTrailerDict.of(
+      context.obj({
+        Size: context.largestObjectNumber + 1,
+        Root: context.trailerInfo.Root,
+        Encrypt: context.trailerInfo.Encrypt,
+        Info: context.trailerInfo.Info,
+        ID: context.trailerInfo.ID,
+      }),
     );
-    context.trailer.set(PDFName.of('Root'), context.catalogRef);
-    context.trailer.delete(PDFName.of('Prev'));
-
-    const trailerDict = PDFTrailerDict.of(context.trailer);
     size += trailerDict.sizeInBytes() + 2; // '\n\n'
 
     const trailer = PDFTrailer.forLastCrossRefSectionOffset(xrefOffset);

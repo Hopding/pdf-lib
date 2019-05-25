@@ -7,6 +7,7 @@ import {
   PDFInvalidObject,
   PDFParser,
   PDFRef,
+  PDFString,
   ReparseError,
   typedArrayFor,
 } from 'src/index';
@@ -85,6 +86,28 @@ describe(`PDFParser`, () => {
     expect(object).toBeInstanceOf(PDFInvalidObject);
   });
 
+  it(`handles xref sections with empty subsections`, () => {
+    const input = `
+    %PDF-1.7
+    22 0 obj
+      (foo)
+    endobj
+    xref
+    0 0
+    trailer
+    << >>
+    startxref
+    21
+    %%EOF
+  `;
+    const parser = PDFParser.forBytes(typedArrayFor(input));
+    const context = parser.parseDocument();
+
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+    const object = context.lookup(PDFRef.of(22));
+    expect(object).toBeInstanceOf(PDFString);
+  });
+
   it(`can parse PDF files with comments and stuff preceding the header`, () => {
     const pdfBytes = fs.readFileSync(
       './assets/pdfs/pdf20examples/PDF 2.0 with offset start.pdf',
@@ -143,7 +166,7 @@ describe(`PDFParser`, () => {
 
     expect(context.header).toBeInstanceOf(PDFHeader);
     expect(context.header.toString()).toEqual('%PDF-1.7\n%');
-    expect(context.enumerateIndirectObjects().length).toBe(134);
+    expect(context.enumerateIndirectObjects().length).toBe(131);
   });
 
   it(`can parse PDF files with comments`, () => {
@@ -154,7 +177,7 @@ describe(`PDFParser`, () => {
 
     expect(context.header).toBeInstanceOf(PDFHeader);
     expect(context.header.toString()).toEqual('%PDF-1.7\n%');
-    expect(context.enumerateIndirectObjects().length).toBe(144);
+    expect(context.enumerateIndirectObjects().length).toBe(143);
   });
 
   it(`prevents double parsing`, () => {

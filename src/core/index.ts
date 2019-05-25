@@ -30,3 +30,6 @@ export {
   default as PDFObjectStreamParser,
 } from 'src/core/parser/PDFObjectStreamParser';
 export { default as PDFParser } from 'src/core/parser/PDFParser';
+export {
+  default as PDFXRefStreamParser,
+} from 'src/core/parser/PDFXRefStreamParser';

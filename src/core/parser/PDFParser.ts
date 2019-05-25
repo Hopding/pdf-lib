@@ -14,6 +14,7 @@ import PDFRef from 'src/core/objects/PDFRef';
 import ByteStream from 'src/core/parser/ByteStream';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
 import PDFObjectStreamParser from 'src/core/parser/PDFObjectStreamParser';
+import PDFXRefStreamParser from 'src/core/parser/PDFXRefStreamParser';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { Keywords } from 'src/core/syntax/Keywords';
@@ -28,8 +29,6 @@ class PDFParser extends PDFObjectParser {
     super(ByteStream.of(pdfBytes), PDFContext.create());
   }
 
-  // TODO: Handle XRef Stream trailers!
-  // TODO: Throw error if missing trailer or catalog!
   parseDocument(): PDFContext {
     if (this.alreadyParsed) {
       throw new ReparseError('PDFParser', 'parseDocument');
@@ -98,6 +97,11 @@ class PDFParser extends PDFObjectParser {
       object.dict.lookup(PDFName.of('Type')) === PDFName.of('ObjStm')
     ) {
       PDFObjectStreamParser.forStream(object).parseIntoContext();
+    } else if (
+      object instanceof PDFRawStream &&
+      object.dict.lookup(PDFName.of('Type')) === PDFName.of('XRef')
+    ) {
+      PDFXRefStreamParser.forStream(object).parseIntoContext();
     } else {
       this.context.assign(ref, object);
     }
@@ -167,7 +171,7 @@ class PDFParser extends PDFObjectParser {
         if (this.bytes.next() === CharCodes.n) {
           xref.addEntry(ref, firstInt);
         } else {
-          this.context.delete(ref);
+          // this.context.delete(ref);
           xref.addDeletedEntry(ref, firstInt);
         }
         objectNumber += 1;
@@ -184,7 +188,15 @@ class PDFParser extends PDFObjectParser {
     this.skipWhitespaceAndComments();
     if (!this.matchKeyword(Keywords.trailer)) return;
     this.skipWhitespaceAndComments();
-    this.context.trailer = this.parseDict();
+
+    const dict = this.parseDict();
+
+    this.context.trailerInfo = {
+      Root: dict.get(PDFName.of('Root')),
+      Encrypt: dict.get(PDFName.of('Encrypt')),
+      Info: dict.get(PDFName.of('Info')),
+      ID: dict.get(PDFName.of('ID')),
+    };
   }
 
   private maybeParseTrailer(): PDFTrailer | void {
