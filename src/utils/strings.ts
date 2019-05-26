@@ -30,3 +30,6 @@ export const copyStringIntoBuffer = (
   }
   return length;
 };
+
+export const addRandomSuffix = (prefix: string, suffixLength = 4) =>
+  `${prefix}-${Math.floor(Math.random() * 10 ** suffixLength)}`;

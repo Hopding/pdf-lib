@@ -16,6 +16,9 @@ export {
 export {
   default as StandardFontEmbedder,
 } from 'src/core/embedders/StandardFontEmbedder';
+export {
+  default as CustomFontEmbedder,
+} from 'src/core/embedders/CustomFontEmbedder';
 
 export { default as PDFObject } from 'src/core/objects/PDFObject';
 export { default as PDFBool } from 'src/core/objects/PDFBool';

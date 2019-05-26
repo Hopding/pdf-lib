@@ -146,11 +146,21 @@ class PDFContext {
     }
   }
 
-  stream(contents: string | Uint8Array): PDFRawStream {
-    return PDFRawStream.of(
-      this.obj({ Filter: PDFName.FlateDecode }),
-      pako.deflate(typedArrayFor(contents)),
-    );
+  stream(
+    contents: string | Uint8Array,
+    dict: LiteralObject = {},
+  ): PDFRawStream {
+    return PDFRawStream.of(this.obj(dict), typedArrayFor(contents));
+  }
+
+  flateStream(
+    contents: string | Uint8Array,
+    dict: LiteralObject = {},
+  ): PDFRawStream {
+    return this.stream(pako.deflate(typedArrayFor(contents)), {
+      ...dict,
+      Filter: 'FlateDecode',
+    });
   }
 }
 
