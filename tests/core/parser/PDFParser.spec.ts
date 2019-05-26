@@ -24,7 +24,7 @@ describe(`PDFParser`, () => {
     expect(() => parser.parseDocument()).toThrow();
   });
 
-  it(`throws an error when the 'endobj' keyword is missing`, () => {
+  it(`does not throw an error when the 'endobj' keyword is missing`, () => {
     const input = `
       %PDF-1.7
       1 0 obj
@@ -32,7 +32,8 @@ describe(`PDFParser`, () => {
       foo
     `;
     const parser = PDFParser.forBytes(typedArrayFor(input));
-    expect(() => parser.parseDocument()).toThrow();
+    const context = parser.parseDocument();
+    expect(context.lookup(PDFRef.of(1))).toBeInstanceOf(PDFString);
   });
 
   it(`handles invalid binary comments after header`, () => {
@@ -201,5 +202,18 @@ describe(`PDFParser`, () => {
     expect(context.header.toString()).toEqual('%PDF-1.5\n%');
     expect(context.trailerInfo.Root).toBe(PDFRef.of(2, 0));
     expect(context.enumerateIndirectObjects().length).toBe(28);
+  });
+
+  it(`can parse files containing indirect objects missing their 'endobj' keyword`, () => {
+    const pdfBytes = fs.readFileSync(
+      './assets/pdfs/missing_endobj_keyword.pdf',
+    );
+
+    const parser = PDFParser.forBytes(pdfBytes);
+    const context = parser.parseDocument();
+
+    expect(context.header).toBeInstanceOf(PDFHeader);
+    expect(context.header.toString()).toEqual('%PDF-1.3\n%');
+    expect(context.enumerateIndirectObjects().length).toBe(7);
   });
 });
