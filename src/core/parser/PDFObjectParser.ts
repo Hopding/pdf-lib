@@ -18,6 +18,7 @@ import BaseParser from 'src/core/parser/BaseParser';
 import ByteStream from 'src/core/parser/ByteStream';
 import PDFContext from 'src/core/PDFContext';
 import PDFCatalog from 'src/core/structures/PDFCatalog';
+import PDFPageTree from 'src/core/structures/PDFPageTree';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { DelimiterChars } from 'src/core/syntax/Delimiters';
 import { Keywords } from 'src/core/syntax/Keywords';
@@ -193,6 +194,8 @@ class PDFObjectParser extends BaseParser {
 
     if (Type === PDFName.of('Catalog')) {
       return PDFCatalog.fromMapWithContext(dict, this.context);
+    } else if (Type === PDFName.of('Pages')) {
+      return PDFPageTree.fromMapWithContext(dict, this.context);
     } else {
       return PDFDict.fromMapWithContext(dict, this.context);
     }
