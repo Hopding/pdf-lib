@@ -24,17 +24,6 @@ describe(`PDFParser`, () => {
     expect(() => parser.parseDocument()).toThrow();
   });
 
-  it(`throws an error when the 'obj' keyword is missing`, () => {
-    const input = `
-      %PDF-1.7
-      1 0 foo
-        (foobar)
-      endobj
-    `;
-    const parser = PDFParser.forBytes(typedArrayFor(input));
-    expect(() => parser.parseDocument()).toThrow();
-  });
-
   it(`throws an error when the 'endobj' keyword is missing`, () => {
     const input = `
       %PDF-1.7
@@ -58,7 +47,7 @@ describe(`PDFParser`, () => {
     expect(() => parser.parseDocument()).toThrow();
   });
 
-  it.skip(`does not stall when stuff follows the last %%EOL`, () => {
+  it(`does not stall when stuff follows the last %%EOL`, () => {
     const input = `
       %PDF-1.7
       1 0 obj
@@ -189,5 +178,16 @@ describe(`PDFParser`, () => {
     expect(() => parser.parseDocument()).toThrow(
       new ReparseError('PDFParser', 'parseDocument'),
     );
+  });
+
+  it(`can parse PDF files with binary jibberish between indirect objects`, () => {
+    const pdfBytes = fs.readFileSync('./assets/pdfs/giraffe.pdf');
+
+    const parser = PDFParser.forBytes(pdfBytes);
+    const context = parser.parseDocument();
+
+    expect(context.header).toBeInstanceOf(PDFHeader);
+    expect(context.header.toString()).toEqual('%PDF-1.6\n%');
+    expect(context.enumerateIndirectObjects().length).toBe(208);
   });
 });

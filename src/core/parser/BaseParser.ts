@@ -1,3 +1,4 @@
+import { NumberParsingError } from 'src/core/errors';
 import ByteStream from 'src/core/parser/ByteStream';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
@@ -23,7 +24,13 @@ class BaseParser {
       value += charFromCode(this.bytes.next());
     }
 
-    return Number(value);
+    const numberValue = Number(value);
+
+    if (!value || !isFinite(numberValue)) {
+      throw new NumberParsingError(this.bytes.position(), value);
+    }
+
+    return numberValue;
   }
 
   // TODO: Maybe handle exponential format?
@@ -46,7 +53,13 @@ class BaseParser {
       value += charFromCode(this.bytes.next());
     }
 
-    return Number(value);
+    const numberValue = Number(value);
+
+    if (!value || !isFinite(numberValue)) {
+      throw new NumberParsingError(this.bytes.position(), value);
+    }
+
+    return numberValue;
   }
 
   protected skipWhitespace(): void {
