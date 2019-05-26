@@ -190,4 +190,16 @@ describe(`PDFParser`, () => {
     expect(context.header.toString()).toEqual('%PDF-1.6\n%');
     expect(context.enumerateIndirectObjects().length).toBe(208);
   });
+
+  it(`can fix incorrect values for /Root`, () => {
+    const pdfBytes = fs.readFileSync('./assets/pdfs/invalid_root_ref.pdf');
+
+    const parser = PDFParser.forBytes(pdfBytes);
+    const context = parser.parseDocument();
+
+    expect(context.header).toBeInstanceOf(PDFHeader);
+    expect(context.header.toString()).toEqual('%PDF-1.5\n%');
+    expect(context.trailerInfo.Root).toBe(PDFRef.of(2, 0));
+    expect(context.enumerateIndirectObjects().length).toBe(28);
+  });
 });
