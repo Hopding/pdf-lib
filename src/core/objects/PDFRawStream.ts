@@ -1,6 +1,6 @@
+import PDFDict from 'src/core/objects/PDFDict';
 import PDFStream from 'src/core/objects/PDFStream';
 import { arrayAsString } from 'src/utils';
-import { PDFDict } from '..';
 
 class PDFRawStream extends PDFStream {
   static of = (dict: PDFDict, contents: Uint8Array) =>
