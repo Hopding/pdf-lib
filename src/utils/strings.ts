@@ -1,5 +1,7 @@
 export const toCharCode = (character: string) => character.charCodeAt(0);
 
+export const toCodePoint = (character: string) => character.codePointAt(0);
+
 export const toHexStringOfMinLength = (num: number, minLength: number) =>
   padStart(num.toString(16), minLength, '0').toUpperCase();
 
