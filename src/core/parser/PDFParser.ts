@@ -7,8 +7,10 @@ import {
   ReparseError,
   StalledParserError,
 } from 'src/core/errors';
+import PDFDict from 'src/core/objects/PDFDict';
 import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
 import PDFName from 'src/core/objects/PDFName';
+import PDFObject from 'src/core/objects/PDFObject';
 import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
 import ByteStream from 'src/core/parser/ByteStream';
@@ -47,7 +49,27 @@ class PDFParser extends PDFObjectParser {
       prevOffset = offset;
     }
 
+    this.maybeRecoverRoot();
+
     return this.context;
+  }
+
+  private maybeRecoverRoot(): void {
+    const isValidCatalog = (obj?: PDFObject) =>
+      obj instanceof PDFDict &&
+      obj.lookup(PDFName.of('Type')) === PDFName.of('Catalog');
+
+    const catalog = this.context.lookup(this.context.trailerInfo.Root);
+
+    if (!isValidCatalog(catalog)) {
+      const indirectObjects = this.context.enumerateIndirectObjects();
+      for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
+        const [ref, object] = indirectObjects[idx];
+        if (isValidCatalog(object)) {
+          this.context.trailerInfo.Root = ref;
+        }
+      }
+    }
   }
 
   private parseHeader(): PDFHeader {
