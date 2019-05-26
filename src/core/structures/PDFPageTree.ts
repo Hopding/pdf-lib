@@ -10,7 +10,7 @@ class PDFPageTree extends PDFDict {
     context: PDFContext,
     kids: PDFRef | PDFArray,
     count: PDFRef | PDFNumber,
-    parent?: PDFRef | PDFDict,
+    parent?: PDFRef,
   ) => {
     const dict = new Map();
     dict.set(PDFName.of('Type'), PDFName.of('Pages'));
@@ -23,8 +23,8 @@ class PDFPageTree extends PDFDict {
   static fromMapWithContext = (map: DictMap, context: PDFContext) =>
     new PDFPageTree(map, context);
 
-  Parent(): PDFDict | undefined {
-    return this.lookup(PDFName.of('Parent')) as PDFDict | undefined;
+  Parent(): PDFPageTree | undefined {
+    return this.lookup(PDFName.of('Parent')) as PDFPageTree | undefined;
   }
 
   Kids(): PDFArray {
@@ -33,6 +33,12 @@ class PDFPageTree extends PDFDict {
 
   Count(): PDFNumber {
     return this.lookup(PDFName.of('Count'), PDFNumber);
+  }
+
+  ascend(visitor: (node: PDFPageTree) => any): void {
+    visitor(this);
+    const Parent = this.Parent();
+    if (Parent) Parent.ascend(visitor);
   }
 }
 
