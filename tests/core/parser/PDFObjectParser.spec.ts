@@ -1,3 +1,4 @@
+import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
 import {
   mergeIntoTypedArray,
   PDFArray,
@@ -455,6 +456,7 @@ describe(`PDFObjectParser`, () => {
       expectParse('<< >>').toBeInstanceOf(PDFDict);
       expectParse('<< /Type /Catalog >>').toBeInstanceOf(PDFCatalog);
       expectParse('<< /Type /Pages >>').toBeInstanceOf(PDFPageTree);
+      expectParse('<< /Type /Page >>').toBeInstanceOf(PDFPageLeaf);
     });
 
     it(`throws an error when closing delimiter is missing`, () => {

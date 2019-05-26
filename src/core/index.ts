@@ -27,6 +27,7 @@ export { default as PDFRawStream } from 'src/core/objects/PDFRawStream';
 
 export { default as PDFCatalog } from 'src/core/structures/PDFCatalog';
 export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
+export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
 
 export { default as PDFObjectParser } from 'src/core/parser/PDFObjectParser';
 export {

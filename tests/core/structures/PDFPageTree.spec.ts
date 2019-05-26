@@ -57,8 +57,6 @@ describe(`PDFPageTree`, () => {
   it(`returns its Parent, Kids, and Count entry values when they are direct objects`, () => {
     const context = PDFContext.create();
 
-    const parent = context.obj({});
-
     const kids = context.obj([]);
 
     const count = context.obj(0);
@@ -67,11 +65,51 @@ describe(`PDFPageTree`, () => {
       context,
       kids,
       count,
-      parent,
     );
 
-    expect(pageTree.Parent()).toBe(parent);
+    expect(pageTree.Parent()).toBeUndefined();
     expect(pageTree.Kids()).toBe(kids);
     expect(pageTree.Count()).toBe(count);
+  });
+
+  it(`can be ascended`, () => {
+    const context = PDFContext.create();
+
+    const kidsRef1 = PDFRef.of(1);
+    const kidsRef2 = PDFRef.of(2);
+    const kidsRef3 = PDFRef.of(3);
+
+    const countRef1 = PDFRef.of(4);
+    const countRef2 = PDFRef.of(5);
+    const countRef3 = PDFRef.of(6);
+
+    const pageTree1 = PDFPageTree.withContextAndKidsAndCount(
+      context,
+      kidsRef1,
+      countRef1,
+    );
+    const pageTree1Ref = context.register(pageTree1);
+
+    const pageTree2 = PDFPageTree.withContextAndKidsAndCount(
+      context,
+      kidsRef2,
+      countRef2,
+      pageTree1Ref,
+    );
+    const pageTree2Ref = context.register(pageTree2);
+
+    const pageTree3 = PDFPageTree.withContextAndKidsAndCount(
+      context,
+      kidsRef3,
+      countRef3,
+      pageTree2Ref,
+    );
+
+    const visitations: PDFPageTree[] = [];
+    pageTree3.ascend((node) => {
+      visitations.push(node);
+    });
+
+    expect(visitations).toEqual([pageTree3, pageTree2, pageTree1]);
   });
 });
