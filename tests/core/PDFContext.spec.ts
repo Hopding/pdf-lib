@@ -78,7 +78,7 @@ describe(`PDFContext`, () => {
   it(`stream creation`, () => {
     const context = PDFContext.create();
 
-    const stream = context.stream('stuff and things!');
+    const stream = context.flateStream('stuff and things!');
     const buffer = new Uint8Array(stream.sizeInBytes());
     stream.copyBytesInto(buffer, 0);
 

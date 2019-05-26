@@ -32,6 +32,7 @@
   "module": "es/index.js",
   "unpkg": "dist/pdf-lib.min.js",
   "dependencies": {
+    "@pdf-lib/fontkit": "^0.0.4",
     "@pdf-lib/standard-fonts": "^0.0.4",
     "pako": "^1.0.10",
     "tslib": "^1.9.3"

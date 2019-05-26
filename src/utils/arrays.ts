@@ -44,3 +44,19 @@ export const arrayAsString = (array: Uint8Array | number[]): string => {
   }
   return str;
 };
+
+export const byAscendingId = <T extends { id: any }>(a: T, b: T) => a.id - b.id;
+
+export const sortedUniq = <T>(array: T[], indexer: (elem: T) => any): T[] => {
+  const uniq: T[] = [];
+
+  for (let idx = 0, len = array.length; idx < len; idx++) {
+    const curr = array[idx];
+    const prev = array[idx - 1];
+    if (idx === 0 || indexer(curr) !== indexer(prev)) {
+      uniq.push(curr);
+    }
+  }
+
+  return uniq;
+};

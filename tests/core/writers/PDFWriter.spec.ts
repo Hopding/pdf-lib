@@ -98,7 +98,7 @@ describe(`PDFWriter`, () => {
   it(`serializes PDFContext objects using Indirect Objects and a Cross Reference table`, () => {
     const context = PDFContext.create();
 
-    const contentStream = context.stream(contentStreamText);
+    const contentStream = context.flateStream(contentStreamText);
     const contentStreamRef = PDFRef.of(9000);
     context.assign(contentStreamRef, contentStream);
 
