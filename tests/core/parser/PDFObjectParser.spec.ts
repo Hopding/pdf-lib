@@ -1,8 +1,8 @@
-import PDFCatalog from 'src/core/structures/PDFCatalog';
 import {
   mergeIntoTypedArray,
   PDFArray,
   PDFBool,
+  PDFCatalog,
   PDFContext,
   PDFDict,
   PDFHexString,
@@ -10,6 +10,7 @@ import {
   PDFNull,
   PDFNumber,
   PDFObjectParser,
+  PDFPageTree,
   PDFRawStream,
   PDFRef,
   PDFString,
@@ -453,6 +454,7 @@ describe(`PDFObjectParser`, () => {
     it(`returns the correct subclass based on the dictionary's 'Type'`, () => {
       expectParse('<< >>').toBeInstanceOf(PDFDict);
       expectParse('<< /Type /Catalog >>').toBeInstanceOf(PDFCatalog);
+      expectParse('<< /Type /Pages >>').toBeInstanceOf(PDFPageTree);
     });
 
     it(`throws an error when closing delimiter is missing`, () => {
