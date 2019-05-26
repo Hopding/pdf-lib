@@ -57,6 +57,15 @@ interface Position {
   offset: number;
 }
 
+export class NumberParsingError extends Error {
+  constructor(pos: Position, value: string) {
+    const msg =
+      `Failed to parse number ` +
+      `(line:${pos.line} col:${pos.column} offset=${pos.offset}): "${value}"`;
+    super(msg);
+  }
+}
+
 export class PDFParsingError extends Error {
   constructor(pos: Position, details: string) {
     const msg =

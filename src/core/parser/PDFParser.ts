@@ -81,6 +81,17 @@ class PDFParser extends PDFObjectParser {
     return PDFRef.of(objectNumber, generationNumber);
   }
 
+  private matchIndirectObjectHeader(): boolean {
+    const initialOffset = this.bytes.offset();
+    try {
+      this.parseIndirectObjectHeader();
+      return true;
+    } catch (e) {
+      this.bytes.moveTo(initialOffset);
+      return false;
+    }
+  }
+
   private parseIndirectObject(): PDFRef {
     const ref = this.parseIndirectObjectHeader();
 
@@ -147,6 +158,9 @@ class PDFParser extends PDFObjectParser {
         this.tryToParseInvalidIndirectObject();
       }
       this.skipWhitespaceAndComments();
+
+      // TODO: Can this be done only when needed, to avoid harming performance?
+      this.skipJibberish();
     }
   }
 
@@ -218,6 +232,36 @@ class PDFParser extends PDFObjectParser {
     this.maybeParseCrossRefSection();
     this.maybeParseTrailerDict();
     this.maybeParseTrailer();
+
+    // TODO: Can this be done only when needed, to avoid harming performance?
+    this.skipJibberish();
+  }
+
+  /**
+   * This operation is not necessary for valid PDF files. But some invalid PDFs
+   * contain jibberish in between indirect objects. This method is designed to
+   * skip past that jibberish, should it exist, until it reaches the next
+   * indirect object header, an xref table section, or the file trailer.
+   */
+  private skipJibberish(): void {
+    this.skipWhitespaceAndComments();
+    while (!this.bytes.done()) {
+      const initialOffset = this.bytes.offset();
+      const byte = this.bytes.peek();
+      const isAlphaNumeric = byte >= CharCodes.Space && byte <= CharCodes.Tilde;
+      if (isAlphaNumeric) {
+        if (
+          this.matchKeyword(Keywords.xref) ||
+          this.matchKeyword(Keywords.trailer) ||
+          this.matchKeyword(Keywords.startxref) ||
+          this.matchIndirectObjectHeader()
+        ) {
+          this.bytes.moveTo(initialOffset);
+          break;
+        }
+      }
+      this.bytes.next();
+    }
   }
 
   /**
