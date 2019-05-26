@@ -11,16 +11,21 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 
+export type DictMap = Map<PDFName, PDFObject>;
+
 class PDFDict extends PDFObject {
-  static withContext = (context: PDFContext) => new PDFDict(context);
+  static withContext = (context: PDFContext) => new PDFDict(new Map(), context);
+
+  static fromMapWithContext = (map: DictMap, context: PDFContext) =>
+    new PDFDict(map, context);
 
   readonly context: PDFContext;
 
-  private readonly dict: Map<PDFName, PDFObject>;
+  private readonly dict: DictMap;
 
-  private constructor(context: PDFContext) {
+  protected constructor(map: Map<PDFName, PDFObject>, context: PDFContext) {
     super();
-    this.dict = new Map();
+    this.dict = map;
     this.context = context;
   }
 

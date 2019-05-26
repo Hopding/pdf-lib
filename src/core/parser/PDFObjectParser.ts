@@ -4,7 +4,7 @@ import {
 } from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
-import PDFDict from 'src/core/objects/PDFDict';
+import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNull from 'src/core/objects/PDFNull';
@@ -17,6 +17,7 @@ import PDFString from 'src/core/objects/PDFString';
 import BaseParser from 'src/core/parser/BaseParser';
 import ByteStream from 'src/core/parser/ByteStream';
 import PDFContext from 'src/core/PDFContext';
+import PDFCatalog from 'src/core/structures/PDFCatalog';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { DelimiterChars } from 'src/core/syntax/Delimiters';
 import { Keywords } from 'src/core/syntax/Keywords';
@@ -170,7 +171,7 @@ class PDFObjectParser extends BaseParser {
     this.bytes.assertNext(CharCodes.LessThan);
     this.bytes.assertNext(CharCodes.LessThan);
 
-    const pdfDict = PDFDict.withContext(this.context);
+    const dict: DictMap = new Map();
 
     while (
       !this.bytes.done() &&
@@ -180,7 +181,7 @@ class PDFObjectParser extends BaseParser {
       this.skipWhitespaceAndComments();
       const key = this.parseName();
       const value = this.parseObject();
-      pdfDict.set(key, value);
+      dict.set(key, value);
       this.skipWhitespaceAndComments();
     }
 
@@ -188,7 +189,13 @@ class PDFObjectParser extends BaseParser {
     this.bytes.assertNext(CharCodes.GreaterThan);
     this.bytes.assertNext(CharCodes.GreaterThan);
 
-    return pdfDict;
+    const Type = dict.get(PDFName.of('Type'));
+
+    if (Type === PDFName.of('Catalog')) {
+      return PDFCatalog.fromMapWithContext(dict, this.context);
+    } else {
+      return PDFDict.fromMapWithContext(dict, this.context);
+    }
   }
 
   protected parseDictOrStream(): PDFDict | PDFStream {

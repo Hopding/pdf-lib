@@ -1,3 +1,4 @@
+import PDFCatalog from 'src/core/structures/PDFCatalog';
 import {
   mergeIntoTypedArray,
   PDFArray,
@@ -449,11 +450,16 @@ describe(`PDFObjectParser`, () => {
       );
     });
 
+    it(`returns the correct subclass based on the dictionary's 'Type'`, () => {
+      expectParse('<< >>').toBeInstanceOf(PDFDict);
+      expectParse('<< /Type /Catalog >>').toBeInstanceOf(PDFCatalog);
+    });
+
     it(`throws an error when closing delimiter is missing`, () => {
       expect(() => parse('<</Foo/Bar')).toThrow();
     });
 
-    it(`throws an error for mismatches delimiters`, () => {
+    it(`throws an error for mismatched delimiters`, () => {
       expect(() => parse('<<>')).toThrow();
     });
 
