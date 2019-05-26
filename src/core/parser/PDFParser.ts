@@ -121,9 +121,12 @@ class PDFParser extends PDFObjectParser {
     const object = this.parseObject();
 
     this.skipWhitespaceAndComments();
-    if (!this.matchKeyword(Keywords.endobj)) {
-      throw new MissingKeywordError(this.bytes.position(), Keywords.endobj);
-    }
+    // if (!this.matchKeyword(Keywords.endobj)) {
+    // throw new MissingKeywordError(this.bytes.position(), Keywords.endobj);
+    // }
+
+    // TODO: Log a warning if this fails...
+    this.matchKeyword(Keywords.endobj);
 
     if (
       object instanceof PDFRawStream &&
