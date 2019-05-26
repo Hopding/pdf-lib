@@ -1,3 +1,5 @@
+export { FontNames as StandardFonts } from '@pdf-lib/standard-fonts';
+
 export * from 'src/core/errors';
 export { default as CharCodes } from 'src/core/syntax/CharCodes';
 
@@ -10,6 +12,10 @@ export { default as PDFTrailerDict } from 'src/core/document/PDFTrailerDict';
 export {
   default as PDFCrossRefSection,
 } from 'src/core/document/PDFCrossRefSection';
+
+export {
+  default as StandardFontEmbedder,
+} from 'src/core/embedders/StandardFontEmbedder';
 
 export { default as PDFObject } from 'src/core/objects/PDFObject';
 export { default as PDFBool } from 'src/core/objects/PDFBool';
