@@ -69,8 +69,13 @@ class PDFContext {
     }
   }
 
+  nextRef(): PDFRef {
+    this.largestObjectNumber += 1;
+    return PDFRef.of(this.largestObjectNumber);
+  }
+
   register(object: PDFObject): PDFRef {
-    const ref = PDFRef.of(this.largestObjectNumber + 1);
+    const ref = this.nextRef();
     this.assign(ref, object);
     return ref;
   }
