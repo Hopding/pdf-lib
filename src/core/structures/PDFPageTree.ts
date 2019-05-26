@@ -6,16 +6,11 @@ import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 
 class PDFPageTree extends PDFDict {
-  static withContextAndKidsAndCount = (
-    context: PDFContext,
-    kids: PDFRef | PDFArray,
-    count: PDFRef | PDFNumber,
-    parent?: PDFRef,
-  ) => {
+  static withContext = (context: PDFContext, parent?: PDFRef) => {
     const dict = new Map();
     dict.set(PDFName.of('Type'), PDFName.of('Pages'));
-    dict.set(PDFName.of('Kids'), kids);
-    dict.set(PDFName.of('Count'), count);
+    dict.set(PDFName.of('Kids'), context.obj([]));
+    dict.set(PDFName.of('Count'), context.obj(0));
     if (parent) dict.set(PDFName.of('Parent'), parent);
     return new PDFPageTree(dict, context);
   };
@@ -33,6 +28,15 @@ class PDFPageTree extends PDFDict {
 
   Count(): PDFNumber {
     return this.lookup(PDFName.of('Count'), PDFNumber);
+  }
+
+  pushLeafNode(leafRef: PDFRef): void {
+    const Kids = this.Kids();
+    Kids.push(leafRef);
+    this.ascend((node) => {
+      const Count = node.Count();
+      node.set(PDFName.of('Count'), PDFNumber.of(Count.value() + 1));
+    });
   }
 
   ascend(visitor: (node: PDFPageTree) => any): void {
