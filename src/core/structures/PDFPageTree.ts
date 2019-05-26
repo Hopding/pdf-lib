@@ -30,6 +30,11 @@ class PDFPageTree extends PDFDict {
     return this.lookup(PDFName.of('Count'), PDFNumber);
   }
 
+  pushTreeNode(treeRef: PDFRef): void {
+    const Kids = this.Kids();
+    Kids.push(treeRef);
+  }
+
   pushLeafNode(leafRef: PDFRef): void {
     const Kids = this.Kids();
     Kids.push(leafRef);
