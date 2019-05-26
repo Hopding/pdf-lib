@@ -36,9 +36,7 @@ describe(`PDFPageLeaf`, () => {
   it(`returns its Parent, Contents, Annots, BleedBox, TrimBox, Resources, MediaBox, CropBox, and Rotate entry values when they are references`, () => {
     const context = PDFContext.create();
 
-    const kids = context.obj([]);
-    const count = context.obj(1);
-    const parent = PDFPageTree.withContextAndKidsAndCount(context, kids, count);
+    const parent = PDFPageTree.withContext(context);
     const parentRef = context.register(parent);
 
     const contents = context.obj([]);
@@ -66,6 +64,10 @@ describe(`PDFPageLeaf`, () => {
     const rotateRef = context.register(rotate);
 
     const pageLeaf = PDFPageLeaf.withContextAndParent(context, parentRef);
+    const pageLeafRef = context.register(pageLeaf);
+
+    parent.pushLeafNode(pageLeafRef);
+
     pageLeaf.set(PDFName.of('Contents'), contentsRef);
     pageLeaf.set(PDFName.of('Annots'), annotsRef);
     pageLeaf.set(PDFName.of('BleedBox'), bleedBoxRef);
@@ -89,9 +91,7 @@ describe(`PDFPageLeaf`, () => {
   it(`returns its Parent, Contents, Annots, BleedBox, TrimBox, Resources, MediaBox, CropBox, and Rotate entry values when they are direct objects`, () => {
     const context = PDFContext.create();
 
-    const kids = context.obj([]);
-    const count = context.obj(1);
-    const parent = PDFPageTree.withContextAndKidsAndCount(context, kids, count);
+    const parent = PDFPageTree.withContext(context);
     const parentRef = context.register(parent);
 
     const contents = context.obj([]);
@@ -111,6 +111,10 @@ describe(`PDFPageLeaf`, () => {
     const rotate = context.obj(270);
 
     const pageLeaf = PDFPageLeaf.withContextAndParent(context, parentRef);
+    const pageLeafRef = context.register(pageLeaf);
+
+    parent.pushLeafNode(pageLeafRef);
+
     pageLeaf.set(PDFName.of('Contents'), contents);
     pageLeaf.set(PDFName.of('Annots'), annots);
     pageLeaf.set(PDFName.of('BleedBox'), bleedBox);
@@ -146,9 +150,7 @@ describe(`PDFPageLeaf`, () => {
     const rotate = context.obj(270);
     const rotateRef = context.register(rotate);
 
-    const kids = context.obj([]);
-    const count = context.obj(1);
-    const parent = PDFPageTree.withContextAndKidsAndCount(context, kids, count);
+    const parent = PDFPageTree.withContext(context);
     const parentRef = context.register(parent);
 
     parent.set(PDFName.of('Resources'), resourcesRef);
@@ -157,6 +159,10 @@ describe(`PDFPageLeaf`, () => {
     parent.set(PDFName.of('Rotate'), rotateRef);
 
     const pageLeaf = PDFPageLeaf.withContextAndParent(context, parentRef);
+    const pageLeafRef = context.register(pageLeaf);
+
+    parent.pushLeafNode(pageLeafRef);
+
     pageLeaf.delete(PDFName.of('Resources'));
     pageLeaf.delete(PDFName.of('MediaBox'));
 
@@ -170,28 +176,16 @@ describe(`PDFPageLeaf`, () => {
   it(`can be ascended`, () => {
     const context = PDFContext.create();
 
-    const kidsRef1 = PDFRef.of(1);
-    const kidsRef2 = PDFRef.of(2);
-
-    const countRef1 = PDFRef.of(4);
-    const countRef2 = PDFRef.of(5);
-
-    const pageTree1 = PDFPageTree.withContextAndKidsAndCount(
-      context,
-      kidsRef1,
-      countRef1,
-    );
+    const pageTree1 = PDFPageTree.withContext(context);
     const pageTree1Ref = context.register(pageTree1);
 
-    const pageTree2 = PDFPageTree.withContextAndKidsAndCount(
-      context,
-      kidsRef2,
-      countRef2,
-      pageTree1Ref,
-    );
+    const pageTree2 = PDFPageTree.withContext(context, pageTree1Ref);
     const pageTree2Ref = context.register(pageTree2);
+    pageTree1.pushTreeNode(pageTree2Ref);
 
     const pageLeaf = PDFPageLeaf.withContextAndParent(context, pageTree2Ref);
+    const pageLeafRef = context.register(pageLeaf);
+    pageTree2.pushLeafNode(pageLeafRef);
 
     const visitations: Array<PDFPageLeaf | PDFPageTree> = [];
     pageLeaf.ascend((node) => {
