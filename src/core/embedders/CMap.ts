@@ -6,25 +6,28 @@ import { toHexStringOfMinLength } from 'src/utils';
 type BfRange = [[string, string], string[]];
 
 /** `glyphs` should be an array of unique glyphs sorted by their ID */
-export const createCmap = (glyphs: Glyph[]) => {
+export const createCmap = (glyphs: Glyph[], glyphId: (g?: Glyph) => number) => {
   const bfRanges: BfRange[] = [];
 
   let mappings: string[] = [];
-  let first: number = glyphs[0].id;
+  let first: number = glyphId(glyphs[0]);
 
   for (let idx = 0, len = glyphs.length; idx < len; idx++) {
     const currGlyph = glyphs[idx];
     const prevGlyph = glyphs[idx - 1];
 
-    if (idx !== 0 && currGlyph.id - prevGlyph.id !== 1) {
-      const last = prevGlyph.id;
+    const currGlyphId = glyphId(currGlyph);
+    const prevGlyphId = glyphId(prevGlyph);
+
+    if (idx !== 0 && currGlyphId - prevGlyphId !== 1) {
+      const last = prevGlyphId;
       const delimiters: [string, string] = [
         cmapHexFormat(cmapHexString(first)),
         cmapHexFormat(cmapHexString(last)),
       ];
       bfRanges.push([delimiters, mappings]);
 
-      first = currGlyph.id;
+      first = currGlyphId;
       mappings = [];
     }
 
@@ -33,7 +36,7 @@ export const createCmap = (glyphs: Glyph[]) => {
     );
   }
 
-  const last = glyphs[glyphs.length - 1].id;
+  const last = glyphId(glyphs[glyphs.length - 1]);
   const delimiters: [string, string] = [
     cmapHexFormat(cmapHexString(first)),
     cmapHexFormat(cmapHexString(last)),

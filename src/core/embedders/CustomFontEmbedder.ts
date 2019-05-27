@@ -9,6 +9,7 @@ import PDFContext from 'src/core/PDFContext';
 import {
   addRandomSuffix,
   byAscendingId,
+  Cache,
   sortedUniq,
   toHexStringOfMinLength,
 } from 'src/utils';
@@ -20,28 +21,30 @@ class CustomFontEmbedder {
   readonly scale: number;
   readonly fontData: Uint8Array;
 
-  private readonly allGlyphsInFontSortedById: Glyph[];
+  protected fontName: string;
+  protected glyphCache: Cache<Glyph[]>;
 
-  private constructor(fontData: Uint8Array) {
+  protected constructor(fontData: Uint8Array) {
     this.font = fontkit.create(fontData);
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;
 
+    this.fontName = '';
+    this.glyphCache = Cache.populatedBy(this.allGlyphsInFontSortedById);
+  }
+
+  allGlyphsInFontSortedById = (): Glyph[] => {
     const glyphs: Glyph[] = new Array(this.font.characterSet.length);
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {
       const codePoint = this.font.characterSet[idx];
       glyphs[idx] = this.font.glyphForCodePoint(codePoint);
     }
+    return sortedUniq(glyphs.sort(byAscendingId), (g) => g.id);
+  };
 
-    this.allGlyphsInFontSortedById = sortedUniq(
-      glyphs.sort(byAscendingId),
-      (g) => g.id,
-    );
-  }
-
-  embedIntoContext(context: PDFContext): PDFRef {
-    const fontName = addRandomSuffix(this.font.postscriptName || 'Font');
-    return this.embedFontDict(context, fontName);
+  embedIntoContext(context: PDFContext): Promise<PDFRef> {
+    this.fontName = addRandomSuffix(this.font.postscriptName || 'Font');
+    return this.embedFontDict(context);
   }
 
   encodeText(text: string): PDFHexString {
@@ -53,14 +56,14 @@ class CustomFontEmbedder {
     return PDFHexString.of(hexCodes.join(''));
   }
 
-  private embedFontDict(context: PDFContext, fontName: string): PDFRef {
-    const cidFontDictRef = this.embedCIDFontDict(context, fontName);
+  protected async embedFontDict(context: PDFContext): Promise<PDFRef> {
+    const cidFontDictRef = await this.embedCIDFontDict(context);
     const unicodeCMapRef = this.embedUnicodeCmap(context);
 
     const fontDict = context.obj({
       Type: 'Font',
       Subtype: 'Type0',
-      BaseFont: fontName,
+      BaseFont: this.fontName,
       Encoding: 'Identity-H',
       DescendantFonts: [cidFontDictRef],
       ToUnicode: unicodeCMapRef,
@@ -69,13 +72,17 @@ class CustomFontEmbedder {
     return context.register(fontDict);
   }
 
-  private embedCIDFontDict(context: PDFContext, fontName: string): PDFRef {
-    const fontDescriptorRef = this.embedFontDescriptor(context, fontName);
+  protected isCFF(): boolean {
+    return this.font.cff;
+  }
+
+  protected async embedCIDFontDict(context: PDFContext): Promise<PDFRef> {
+    const fontDescriptorRef = await this.embedFontDescriptor(context);
 
     const cidFontDict = context.obj({
       Type: 'Font',
-      Subtype: this.font.cff ? 'CIDFontType0' : 'CIDFontType2',
-      BaseFont: fontName,
+      Subtype: this.isCFF() ? 'CIDFontType0' : 'CIDFontType2',
+      BaseFont: this.fontName,
       CIDSystemInfo: {
         Registry: PDFString.of('Adobe'),
         Ordering: PDFString.of('Identity'),
@@ -88,8 +95,8 @@ class CustomFontEmbedder {
     return context.register(cidFontDict);
   }
 
-  private embedFontDescriptor(context: PDFContext, fontName: string): PDFRef {
-    const fontStreamRef = this.embedFontStream(context);
+  protected async embedFontDescriptor(context: PDFContext): Promise<PDFRef> {
+    const fontStreamRef = await this.embedFontStream(context);
 
     const { scale } = this;
     const { italicAngle, ascent, descent, capHeight, xHeight } = this.font;
@@ -97,7 +104,7 @@ class CustomFontEmbedder {
 
     const fontDescriptor = context.obj({
       Type: 'FontDescriptor',
-      FontName: fontName,
+      FontName: this.fontName,
       Flags: deriveFontFlags(this.font),
       FontBBox: [minX * scale, minY * scale, maxX * scale, maxY * scale],
       ItalicAngle: italicAngle,
@@ -116,21 +123,29 @@ class CustomFontEmbedder {
     return context.register(fontDescriptor);
   }
 
-  private embedFontStream(context: PDFContext): PDFRef {
-    const fontStream = context.flateStream(this.fontData, {
+  protected async serializeFont(): Promise<Uint8Array> {
+    return this.fontData;
+  }
+
+  protected async embedFontStream(context: PDFContext): Promise<PDFRef> {
+    const fontStream = context.flateStream(await this.serializeFont(), {
       Subtype: 'CIDFontType0C',
     });
     return context.register(fontStream);
   }
 
-  private embedUnicodeCmap(context: PDFContext): PDFRef {
-    const cmap = createCmap(this.allGlyphsInFontSortedById);
+  protected embedUnicodeCmap(context: PDFContext): PDFRef {
+    const cmap = createCmap(this.glyphCache.access(), this.glyphId.bind(this));
     const cmapStream = context.flateStream(cmap);
     return context.register(cmapStream);
   }
 
-  private computeWidths(): Array<number | number[]> {
-    const glyphs = this.allGlyphsInFontSortedById;
+  protected glyphId(glyph?: Glyph): number {
+    return glyph ? glyph.id : -1;
+  }
+
+  protected computeWidths(): Array<number | number[]> {
+    const glyphs = this.glyphCache.access();
 
     const widths: Array<number | number[]> = [];
     const currSection: number[] = [];
@@ -139,11 +154,14 @@ class CustomFontEmbedder {
       const currGlyph = glyphs[idx];
       const prevGlyph = glyphs[idx - 1];
 
+      const currGlyphId = this.glyphId(currGlyph);
+      const prevGlyphId = this.glyphId(prevGlyph);
+
       if (idx === 0) {
-        widths.push(currGlyph.id);
-      } else if (currGlyph.id - prevGlyph.id !== 1) {
+        widths.push(currGlyphId);
+      } else if (currGlyphId - prevGlyphId !== 1) {
         widths.push(currSection);
-        widths.push(currGlyph.id);
+        widths.push(currGlyphId);
       }
 
       currSection.push(currGlyph.advanceWidth * this.scale);
