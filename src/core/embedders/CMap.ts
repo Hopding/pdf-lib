@@ -9,39 +9,31 @@ type BfRange = [[string, string], string[]];
 export const createCmap = (glyphs: Glyph[], glyphId: (g?: Glyph) => number) => {
   const bfRanges: BfRange[] = [];
 
-  let mappings: string[] = [];
   let first: number = glyphId(glyphs[0]);
+  let mappings: string[] = [];
 
   for (let idx = 0, len = glyphs.length; idx < len; idx++) {
     const currGlyph = glyphs[idx];
-    const prevGlyph = glyphs[idx - 1];
+    const nextGlyph = glyphs[idx + 1];
 
     const currGlyphId = glyphId(currGlyph);
-    const prevGlyphId = glyphId(prevGlyph);
+    const nextGlyphId = glyphId(nextGlyph);
 
-    if (idx !== 0 && currGlyphId - prevGlyphId !== 1) {
-      const last = prevGlyphId;
+    const { codePoints } = currGlyph;
+    mappings.push(cmapHexFormat(...codePoints.map(cmapCodePointFormat)));
+
+    if (idx !== 0 && nextGlyphId - currGlyphId !== 1) {
+      const last = currGlyphId;
       const delimiters: [string, string] = [
         cmapHexFormat(cmapHexString(first)),
         cmapHexFormat(cmapHexString(last)),
       ];
       bfRanges.push([delimiters, mappings]);
 
-      first = currGlyphId;
+      first = nextGlyphId;
       mappings = [];
     }
-
-    mappings.push(
-      cmapHexFormat(...currGlyph.codePoints.map(cmapCodePointFormat)),
-    );
   }
-
-  const last = glyphId(glyphs[glyphs.length - 1]);
-  const delimiters: [string, string] = [
-    cmapHexFormat(cmapHexString(first)),
-    cmapHexFormat(cmapHexString(last)),
-  ];
-  bfRanges.push([delimiters, mappings]);
 
   return fillCmapTemplate(bfRanges);
 };
