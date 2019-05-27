@@ -36,23 +36,10 @@ class StandardFontEmbedder {
     this.font = Font.load(fontName);
   }
 
-  embedIntoContext(context: PDFContext): PDFRef {
-    const fontDict = context.obj({
-      Type: 'Font',
-      Subtype: 'Type1',
-      BaseFont: this.font.FontName,
-
-      Encoding:
-        this.encoding === Encodings.WinAnsi ? 'WinAnsiEncoding' : undefined,
-    });
-
-    return context.register(fontDict);
-  }
-
   /**
    * Encode the JavaScript string into this font. (JavaScript encodes strings in
    * Unicode, but standard fonts use either WinAnsi, ZapfDingbats, or Symbol
-   * encodings.)
+   * encodings)
    */
   encodeText(text: string): PDFHexString {
     const glyphs = this.encodeTextAsGlyphs(text);
@@ -75,7 +62,6 @@ class StandardFontEmbedder {
     }
 
     const scale = size / 1000;
-
     return totalWidth * scale;
   }
 
@@ -91,6 +77,19 @@ class StandardFontEmbedder {
     const yTop = Ascender || FontBBox[3];
     const yBottom = Descender || FontBBox[1];
     return (1000 * height) / (yTop - yBottom);
+  }
+
+  embedIntoContext(context: PDFContext): PDFRef {
+    const fontDict = context.obj({
+      Type: 'Font',
+      Subtype: 'Type1',
+      BaseFont: this.font.FontName,
+
+      Encoding:
+        this.encoding === Encodings.WinAnsi ? 'WinAnsiEncoding' : undefined,
+    });
+
+    return context.register(fontDict);
   }
 
   private widthOfGlyph(glyphName: string): number {
