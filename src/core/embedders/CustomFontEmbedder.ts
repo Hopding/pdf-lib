@@ -33,20 +33,10 @@ class CustomFontEmbedder {
     this.glyphCache = Cache.populatedBy(this.allGlyphsInFontSortedById);
   }
 
-  allGlyphsInFontSortedById = (): Glyph[] => {
-    const glyphs: Glyph[] = new Array(this.font.characterSet.length);
-    for (let idx = 0, len = glyphs.length; idx < len; idx++) {
-      const codePoint = this.font.characterSet[idx];
-      glyphs[idx] = this.font.glyphForCodePoint(codePoint);
-    }
-    return sortedUniq(glyphs.sort(byAscendingId), (g) => g.id);
-  };
-
-  embedIntoContext(context: PDFContext): Promise<PDFRef> {
-    this.fontName = addRandomSuffix(this.font.postscriptName || 'Font');
-    return this.embedFontDict(context);
-  }
-
+  /**
+   * Encode the JavaScript string into this font. (JavaScript encodes strings in
+   * Unicode, but embedded fonts use their own custom encodings)
+   */
   encodeText(text: string): PDFHexString {
     const { glyphs } = this.font.layout(text);
     const hexCodes = new Array(glyphs.length);
@@ -54,6 +44,37 @@ class CustomFontEmbedder {
       hexCodes[idx] = toHexStringOfMinLength(glyphs[idx].id, 4);
     }
     return PDFHexString.of(hexCodes.join(''));
+  }
+
+  // The advanceWidth takes into account kerning automatically, so we don't
+  // have to do that manually like we do for the standard fonts.
+  widthOfTextAtSize(text: string, size: number): number {
+    const { glyphs } = this.font.layout(text);
+    let totalWidth = 0;
+    for (let idx = 0, len = glyphs.length; idx < len; idx++) {
+      totalWidth += glyphs[idx].advanceWidth * this.scale;
+    }
+    const scale = size / 1000;
+    return totalWidth * scale;
+  }
+
+  heightOfFontAtSize(size: number): number {
+    const { ascent, descent, bbox } = this.font;
+    const yTop = (ascent || bbox.maxY) * this.scale;
+    const yBottom = (descent || bbox.minY) * this.scale;
+    return ((yTop - yBottom) / 1000) * size;
+  }
+
+  sizeOfFontAtHeight(height: number): number {
+    const { ascent, descent, bbox } = this.font;
+    const yTop = (ascent || bbox.maxY) * this.scale;
+    const yBottom = (descent || bbox.minY) * this.scale;
+    return (1000 * height) / (yTop - yBottom);
+  }
+
+  embedIntoContext(context: PDFContext): Promise<PDFRef> {
+    this.fontName = addRandomSuffix(this.font.postscriptName || 'Font');
+    return this.embedFontDict(context);
   }
 
   protected async embedFontDict(context: PDFContext): Promise<PDFRef> {
@@ -171,6 +192,15 @@ class CustomFontEmbedder {
 
     return widths;
   }
+
+  private allGlyphsInFontSortedById = (): Glyph[] => {
+    const glyphs: Glyph[] = new Array(this.font.characterSet.length);
+    for (let idx = 0, len = glyphs.length; idx < len; idx++) {
+      const codePoint = this.font.characterSet[idx];
+      glyphs[idx] = this.font.glyphForCodePoint(codePoint);
+    }
+    return sortedUniq(glyphs.sort(byAscendingId), (g) => g.id);
+  };
 }
 
 export default CustomFontEmbedder;
