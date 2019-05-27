@@ -23,7 +23,7 @@ describe(`createCmap`, () => {
       glyphs.sort(byAscendingId),
       (g) => g.id,
     );
-    const cmap = createCmap(allGlyphsInFontSortedById);
+    const cmap = createCmap(allGlyphsInFontSortedById, (g) => (g ? g.id : -1));
 
     expect(cmap).toEqual(String(ubuntuFontCmap));
   });
