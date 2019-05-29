@@ -5,38 +5,6 @@ import { isInstance, validate } from 'utils/validate';
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-const VALID_KEYS = Object.freeze([
-  'Type',
-  'Version',
-  'Extensions',
-  'Pages',
-  'PageLabels',
-  'Names',
-  'Dests',
-  'ViewerPreferences',
-  'PageLayout',
-  'PageMode',
-  'Outlines',
-  'Threads',
-  'OpenAction',
-  'AA',
-  'URI',
-  'AcroForm',
-  'Metadata',
-  'StructTreeRoot',
-  'MarkInfo',
-  'Lang',
-  'SpiderInfo',
-  'OutputIntents',
-  'PieceInfo',
-  'OCProperties',
-  'Perms',
-  'Legal',
-  'Requirements',
-  'Collection',
-  'NeedsRendering',
-]);
-
 class PDFCatalog extends PDFDictionary {
   static create = (
     pageTree: PDFIndirectReference<PDFPageTree>,
@@ -59,11 +27,11 @@ class PDFCatalog extends PDFDictionary {
   static fromObject = (
     object: { [key: string]: PDFObject },
     index: PDFObjectIndex,
-  ): PDFCatalog => new PDFCatalog(object, index, VALID_KEYS);
+  ): PDFCatalog => new PDFCatalog(object, index);
 
   static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
-    return new PDFCatalog(dict.map, dict.index, VALID_KEYS);
+    return new PDFCatalog(dict.map, dict.index);
   };
 
   get Pages() {
