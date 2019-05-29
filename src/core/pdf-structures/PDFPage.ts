@@ -22,44 +22,7 @@ import {
 
 import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
-/** @hidden */
-const VALID_KEYS = Object.freeze([
-  'Type',
-  'Parent',
-  'LastModified',
-  'Resources',
-  'MediaBox',
-  'CropBox',
-  'BleedBox',
-  'TrimBox',
-  'ArtBox',
-  'BoxColorInfo',
-  'Contents',
-  'Rotate',
-  'Group',
-  'Thumb',
-  'B',
-  'Dur',
-  'Trans',
-  'Annots',
-  'AA',
-  'Metadata',
-  'PieceInfo',
-  'StructParents',
-  'ID',
-  'PZ',
-  'SeparationInfo',
-  'Tabs',
-  'TemplateInstantiated',
-  'PresSteps',
-  'UserUnit',
-  'VP',
-]);
-
 class PDFPage extends PDFDictionary {
-  /** @hidden */
-  static validKeys = VALID_KEYS;
-
   /** @hidden */
   static readonly INHERITABLE_ENTRIES = [
     'Resources',
@@ -91,7 +54,6 @@ class PDFPage extends PDFDictionary {
         MediaBox: PDFArray.fromArray(mediaBox.map(PDFNumber.fromNumber), index),
       },
       index,
-      VALID_KEYS,
     );
     if (resources) page.set('Resources', resources);
     return page;
@@ -99,7 +61,7 @@ class PDFPage extends PDFDictionary {
 
   static fromDict = (dict: PDFDictionary) => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
-    return new PDFPage(dict.map, dict.index, VALID_KEYS);
+    return new PDFPage(dict.map, dict.index);
   };
 
   autoNormalizeCTM = true;
