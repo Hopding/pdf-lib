@@ -24,7 +24,7 @@ const contentStream = pdfDoc.register(
       y: 50,
       width:  pngDims.width  * 0.5, // Make the image 50% smaller
       height: pngDims.height * 0.5, // Make the image 50% smaller
-      rotateDegrees: 180            // Draw the image upside down
+      rotateDegrees: 180,           // Draw the image upside down
       skewDegrees: { xAxis: 30, yAxis: 30 } // Skew both axes by 30 degrees
     }),
   ),
