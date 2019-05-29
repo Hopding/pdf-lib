@@ -4,6 +4,11 @@ import CustomFontEmbedder from 'src/core/embedders/CustomFontEmbedder';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import { Cache, mergeUint8Arrays, toHexStringOfMinLength } from 'src/utils';
 
+/**
+ * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as
+ * this class borrows from:
+ *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
+ */
 class CustomFontSubsetEmbedder extends CustomFontEmbedder {
   static for = (fontData: Uint8Array) => new CustomFontSubsetEmbedder(fontData);
 
