@@ -30,11 +30,12 @@ const ChannelToColorSpace: { [idx: number]: ColorSpace | undefined } = {
 class JpegEmbedder {
   static for = (imageData: Uint8Array) => new JpegEmbedder(imageData);
 
-  readonly imageData: Uint8Array;
   readonly bitsPerComponent: number;
   readonly height: number;
   readonly width: number;
   readonly colorSpace: ColorSpace;
+
+  private readonly imageData: Uint8Array;
 
   private constructor(imageData: Uint8Array) {
     this.imageData = imageData;
