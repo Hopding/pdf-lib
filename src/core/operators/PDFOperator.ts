@@ -4,6 +4,7 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFString from 'src/core/objects/PDFString';
 import PDFOperatorNames from 'src/core/operators/PDFOperatorNames';
+import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer } from 'src/utils';
 
@@ -26,10 +27,10 @@ class PDFOperator {
     this.args = args || [];
   }
 
-  clone(): PDFOperator {
+  clone(context?: PDFContext): PDFOperator {
     const args = new Array(this.args.length);
     for (let idx = 0, len = args.length; idx < len; idx++) {
-      args[idx] = this.args[idx].clone();
+      args[idx] = this.args[idx].clone(context);
     }
     return PDFOperator.of(this.name, args);
   }

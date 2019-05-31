@@ -1,5 +1,6 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFStream from 'src/core/objects/PDFStream';
+import PDFContext from 'src/core/PDFContext';
 import { arrayAsString } from 'src/utils';
 
 class PDFRawStream extends PDFStream {
@@ -13,8 +14,8 @@ class PDFRawStream extends PDFStream {
     this.contents = contents;
   }
 
-  clone(): PDFRawStream {
-    return PDFRawStream.of(this.dict.clone(), this.contents.slice());
+  clone(context?: PDFContext): PDFRawStream {
+    return PDFRawStream.of(this.dict.clone(context), this.contents.slice());
   }
 
   getContentsString(): string {

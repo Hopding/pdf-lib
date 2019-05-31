@@ -9,6 +9,13 @@ import PDFContext from 'src/core/PDFContext';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
 
 class PDFPageLeaf extends PDFDict {
+  static readonly InheritableEntries = [
+    'Resources',
+    'MediaBox',
+    'CropBox',
+    'Rotate',
+  ];
+
   static withContextAndParent = (context: PDFContext, parent: PDFRef) => {
     const dict = new Map();
     dict.set(PDFName.of('Type'), PDFName.of('Page'));
@@ -21,8 +28,21 @@ class PDFPageLeaf extends PDFDict {
   static fromMapWithContext = (map: DictMap, context: PDFContext) =>
     new PDFPageLeaf(map, context);
 
+  clone(context?: PDFContext): PDFPageLeaf {
+    const clone = PDFPageLeaf.fromMapWithContext(
+      new Map(),
+      context || this.context,
+    );
+    const entries = this.entries();
+    for (let idx = 0, len = entries.length; idx < len; idx++) {
+      const [key, value] = entries[idx];
+      clone.set(key, value);
+    }
+    return clone;
+  }
+
   Parent(): PDFPageTree {
-    return this.lookup(PDFName.of('Parent'), PDFDict) as PDFPageTree;
+    return this.lookup(PDFName.of('Parent')) as PDFPageTree;
   }
 
   Contents(): PDFStream | PDFArray | undefined {
@@ -74,7 +94,8 @@ class PDFPageLeaf extends PDFDict {
 
   ascend(visitor: (node: PDFPageTree | PDFPageLeaf) => any): void {
     visitor(this);
-    this.Parent().ascend(visitor);
+    const Parent = this.Parent();
+    if (Parent) Parent.ascend(visitor);
   }
 }
 

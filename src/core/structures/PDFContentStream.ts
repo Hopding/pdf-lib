@@ -1,6 +1,7 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFStream from 'src/core/objects/PDFStream';
 import PDFOperator from 'src/core/operators/PDFOperator';
+import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFContentStream extends PDFStream {
@@ -14,12 +15,12 @@ class PDFContentStream extends PDFStream {
     this.operators = operators;
   }
 
-  clone(): PDFContentStream {
+  clone(context?: PDFContext): PDFContentStream {
     const operators = new Array(this.operators.length);
     for (let idx = 0, len = this.operators.length; idx < len; idx++) {
-      operators[idx] = this.operators[idx].clone();
+      operators[idx] = this.operators[idx].clone(context);
     }
-    return PDFContentStream.of(this.dict.clone(), operators);
+    return PDFContentStream.of(this.dict.clone(context), operators);
   }
 
   getContentsString(): string {
