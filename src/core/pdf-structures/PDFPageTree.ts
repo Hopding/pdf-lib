@@ -16,8 +16,6 @@ import PDFObjectIndex from 'core/pdf-document/PDFObjectIndex';
 
 export type Kid = PDFPageTree | PDFPage;
 
-const VALID_KEYS = Object.freeze(['Type', 'Parent', 'Kids', 'Count']);
-
 class PDFPageTree extends PDFDictionary {
   static createRootNode = (
     kids: PDFArray<PDFIndirectReference<Kid>>,
@@ -54,7 +52,7 @@ class PDFPageTree extends PDFDictionary {
 
   static fromDict = (dict: PDFDictionary): PDFPageTree => {
     validate(dict, isInstance(PDFDictionary), '"dict" must be a PDFDictionary');
-    return new PDFPageTree(dict.map, dict.index, VALID_KEYS);
+    return new PDFPageTree(dict.map, dict.index);
   };
 
   get Kids() {

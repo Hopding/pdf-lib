@@ -181,17 +181,6 @@ describe(`PDFDictionary`, () => {
       expect(pdfDict.get(PDFName.from('foo'))).toEqual(expect.any(PDFString));
       expect(pdfDict.get('qux')).toEqual(expect.any(PDFBoolean));
     });
-
-    it(`throws an error if the key is invalid`, () => {
-      const pdfDict = new PDFDictionary(
-        { AString: PDFString.fromString('Foo') },
-        PDFObjectIndex.create(),
-        ['Foo', 'Bar'],
-      );
-      expect(() =>
-        pdfDict.set('Qux', PDFString.fromString('Baz')),
-      ).toThrowError('Invalid key: "Qux"');
-    });
   });
 
   describe(`"clone" method`, () => {

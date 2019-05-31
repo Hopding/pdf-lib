@@ -20,12 +20,10 @@ class PDFDictionary extends PDFObject {
 
   map: Map<PDFName, any>;
   index: PDFObjectIndex;
-  validKeys?: ReadonlyArray<string>;
 
   constructor(
     object: { [key: string]: PDFObject } | Map<PDFName, any>,
     index: PDFObjectIndex,
-    validKeys?: ReadonlyArray<string>,
   ) {
     super();
     validate(
@@ -40,13 +38,12 @@ class PDFDictionary extends PDFObject {
     );
 
     this.index = index;
-    this.validKeys = validKeys;
 
     if (object instanceof Map) {
       this.map = object;
     } else {
       this.map = new Map();
-      forEach(object, (val, key) => this.set(key, val, false));
+      forEach(object, (val, key) => this.set(key, val));
     }
   }
 
@@ -68,7 +65,7 @@ class PDFDictionary extends PDFObject {
     return this.getMaybe(key) || error(`Missing PDFDictionary entry "${key}".`);
   };
 
-  set = (key: string | PDFName, val: PDFObject, validateKeys = true) => {
+  set = (key: string | PDFName, val: PDFObject) => {
     validate(
       key,
       or(isString, isInstance(PDFName)),
@@ -81,13 +78,6 @@ class PDFDictionary extends PDFObject {
     );
 
     const keyName = key instanceof PDFName ? key : PDFName.from(key);
-    if (
-      validateKeys &&
-      this.validKeys &&
-      !this.validKeys.includes(keyName.key)
-    ) {
-      error(`Invalid key: "${keyName.key}"`);
-    }
     this.map.set(keyName, val);
 
     return this;
