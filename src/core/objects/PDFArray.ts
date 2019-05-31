@@ -31,6 +31,10 @@ class PDFArray extends PDFObject {
     this.array.push(object);
   }
 
+  set(idx: number, object: PDFObject): void {
+    this.array[idx] = object;
+  }
+
   get(index: number): PDFObject {
     return this.array[index];
   }
@@ -51,8 +55,8 @@ class PDFArray extends PDFObject {
     return this.context.lookup(this.get(index), type) as any;
   }
 
-  clone(): PDFArray {
-    const clone = PDFArray.withContext(this.context);
+  clone(context?: PDFContext): PDFArray {
+    const clone = PDFArray.withContext(context || this.context);
     for (let idx = 0, len = this.size(); idx < len; idx++) {
       clone.push(this.array[idx]);
     }

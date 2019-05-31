@@ -3,6 +3,7 @@ import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
+import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFStream extends PDFObject {
@@ -11,6 +12,10 @@ class PDFStream extends PDFObject {
   constructor(dict: PDFDict) {
     super();
     this.dict = dict;
+  }
+
+  clone(_context?: PDFContext): PDFStream {
+    throw new MethodNotImplementedError(this.constructor.name, 'clone');
   }
 
   getContentsString(): string {
