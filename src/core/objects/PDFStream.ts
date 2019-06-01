@@ -36,13 +36,18 @@ class PDFStream extends PDFObject {
     );
   }
 
+  updateDict(): void {
+    const contentsSize = this.getContentsSize();
+    this.dict.set(PDFName.Length, PDFNumber.of(contentsSize));
+  }
+
   sizeInBytes(): number {
-    this.updateLength();
+    this.updateDict();
     return this.dict.sizeInBytes() + this.getContentsSize() + 18;
   }
 
   toString(): string {
-    this.updateLength();
+    this.updateDict();
     let streamString = this.dict.toString();
     streamString += '\nstream\n';
     streamString += this.getContentsString();
@@ -51,9 +56,9 @@ class PDFStream extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
+    this.updateDict();
     const initialOffset = offset;
 
-    this.updateLength();
     offset += this.dict.copyBytesInto(buffer, offset);
     buffer[offset++] = CharCodes.Newline;
 
@@ -82,11 +87,6 @@ class PDFStream extends PDFObject {
     buffer[offset++] = CharCodes.m;
 
     return offset - initialOffset;
-  }
-
-  private updateLength() {
-    const contentsSize = this.getContentsSize();
-    this.dict.set(PDFName.Length, PDFNumber.of(contentsSize));
   }
 }
 
