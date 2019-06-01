@@ -8,6 +8,10 @@ export interface Entry {
   deleted: boolean;
 }
 
+/**
+ * Entries should be added using the [[addEntry]] and [[addDeletedEntry]]
+ * methods **in order of ascending object number**.
+ */
 class PDFCrossRefSection {
   static create = () =>
     new PDFCrossRefSection({

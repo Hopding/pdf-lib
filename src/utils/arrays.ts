@@ -1,6 +1,6 @@
 import { charFromCode } from './strings';
 
-export const last = <T>(array: T[] | Uint8Array) => array[array.length - 1];
+export const last = <T>(array: T[]): T => array[array.length - 1];
 
 export const typedArrayFor = (value: string | Uint8Array): Uint8Array => {
   if (value instanceof Uint8Array) return value;
