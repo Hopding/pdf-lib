@@ -41,11 +41,14 @@ export { default as PDFStream } from 'src/core/objects/PDFStream';
 export { default as PDFRawStream } from 'src/core/objects/PDFRawStream';
 
 export { default as PDFCatalog } from 'src/core/structures/PDFCatalog';
-export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
-export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
 export {
   default as PDFContentStream,
 } from 'src/core/structures/PDFContentStream';
+export {
+  default as PDFObjectStream,
+} from 'src/core/structures/PDFObjectStream';
+export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
+export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
 
 export { default as PDFOperator } from 'src/core/operators/PDFOperator';
 export {
