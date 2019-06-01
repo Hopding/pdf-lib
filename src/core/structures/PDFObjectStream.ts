@@ -1,4 +1,3 @@
-import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
@@ -11,27 +10,32 @@ import { copyStringIntoBuffer, last } from 'src/utils';
 export type IndirectObject = [PDFRef, PDFObject];
 
 class PDFObjectStream extends PDFStream {
-  static of = (dict: PDFDict, objects: IndirectObject[]) =>
-    new PDFObjectStream(dict, objects);
+  static withContextAndObjects = (
+    context: PDFContext,
+    objects: IndirectObject[],
+  ) => new PDFObjectStream(context, objects);
 
   private readonly objects: IndirectObject[];
   private readonly offsets: Array<[number, number]>;
   private readonly offsetsString: string;
 
-  private constructor(dict: PDFDict, objects: IndirectObject[]) {
-    super(dict);
+  private constructor(context: PDFContext, objects: IndirectObject[]) {
+    super(context.obj({}));
 
     this.objects = objects;
     this.offsets = this.computeObjectOffsets();
     this.offsetsString = this.computeOffsetsString();
 
-    dict.set(PDFName.of('Type'), PDFName.of('ObjStm'));
-    dict.set(PDFName.of('N'), PDFNumber.of(this.objects.length));
-    dict.set(PDFName.of('First'), PDFNumber.of(this.offsetsString.length));
+    this.dict.set(PDFName.of('Type'), PDFName.of('ObjStm'));
+    this.dict.set(PDFName.of('N'), PDFNumber.of(this.objects.length));
+    this.dict.set(PDFName.of('First'), PDFNumber.of(this.offsetsString.length));
   }
 
   clone(context?: PDFContext): PDFObjectStream {
-    return PDFObjectStream.of(this.dict.clone(context), this.objects.slice());
+    return PDFObjectStream.withContextAndObjects(
+      context || this.dict.context,
+      this.objects.slice(),
+    );
   }
 
   getContentsString(): string {
