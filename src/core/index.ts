@@ -45,6 +45,9 @@ export {
   default as PDFContentStream,
 } from 'src/core/structures/PDFContentStream';
 export {
+  default as PDFCrossRefStream,
+} from 'src/core/structures/PDFCrossRefStream';
+export {
   default as PDFObjectStream,
 } from 'src/core/structures/PDFObjectStream';
 export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';

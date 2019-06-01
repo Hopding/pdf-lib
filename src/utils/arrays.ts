@@ -1,6 +1,6 @@
 import { charFromCode } from './strings';
 
-export const last = <T>(array: T[]): T => array[array.length - 1];
+export const last = <T>(array: T[] | Uint8Array) => array[array.length - 1];
 
 export const typedArrayFor = (value: string | Uint8Array): Uint8Array => {
   if (value instanceof Uint8Array) return value;
@@ -78,4 +78,28 @@ export const sortedUniq = <T>(array: T[], indexer: (elem: T) => any): T[] => {
   }
 
   return uniq;
+};
+
+// Arrays and TypedArrays in JS both have .reverse() methods, which would seem
+// to negate the need for this function. However, not all runtimes support this
+// method (e.g. React Native). This function compensates for that fact.
+export const reverseArray = (array: Uint8Array) => {
+  const arrayLen = array.length;
+  for (let idx = 0, len = Math.floor(arrayLen / 2); idx < len; idx++) {
+    const leftIdx = idx;
+    const rightIdx = arrayLen - idx - 1;
+    const temp = array[idx];
+
+    array[leftIdx] = array[rightIdx];
+    array[rightIdx] = temp;
+  }
+  return array;
+};
+
+export const sum = (array: number[] | Uint8Array): number => {
+  let total = 0;
+  for (let idx = 0, len = array.length; idx < len; idx++) {
+    total += array[idx];
+  }
+  return total;
 };

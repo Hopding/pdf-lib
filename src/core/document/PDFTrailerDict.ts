@@ -3,6 +3,7 @@ import CharCodes from 'src/core/syntax/CharCodes';
 
 class PDFTrailerDict {
   static of = (dict: PDFDict) => new PDFTrailerDict(dict);
+
   readonly dict: PDFDict;
 
   private constructor(dict: PDFDict) {

@@ -5,12 +5,12 @@ import {
   PDFObjectStream,
   PDFRef,
   PDFString,
-} from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+  toCharCode,
+  typedArrayFor,
+} from 'src/index';
 
 describe(`PDFObjectStream`, () => {
   const context = PDFContext.create();
-  const dict = context.obj({});
 
   const objects: Array<[PDFRef, PDFObject]> = [
     [context.nextRef(), context.obj([])],
@@ -25,18 +25,22 @@ describe(`PDFObjectStream`, () => {
   ];
 
   it(`can be constructed from PDFObjectStream.of(...)`, () => {
-    expect(PDFObjectStream.of(dict, objects)).toBeInstanceOf(PDFObjectStream);
+    expect(
+      PDFObjectStream.withContextAndObjects(context, objects),
+    ).toBeInstanceOf(PDFObjectStream);
   });
 
   it(`can be cloned`, () => {
-    const original = PDFObjectStream.of(dict, objects);
+    const original = PDFObjectStream.withContextAndObjects(context, objects);
     const clone = original.clone();
     expect(clone).not.toBe(original);
     expect(String(clone)).toBe(String(original));
   });
 
   it(`can be converted to a string`, () => {
-    expect(String(PDFObjectStream.of(dict, objects))).toEqual(
+    expect(
+      String(PDFObjectStream.withContextAndObjects(context, objects)),
+    ).toEqual(
       '<<\n/Type /ObjStm\n/N 9\n/First 42\n/Length 108\n>>\n' +
         'stream\n' +
         '1 0 2 4 3 9 4 15 5 24 6 31 7 39 8 44 9 47 \n' +
@@ -54,11 +58,13 @@ describe(`PDFObjectStream`, () => {
   });
 
   it(`can provide its size in bytes`, () => {
-    expect(PDFObjectStream.of(dict, objects).sizeInBytes()).toBe(172);
+    expect(
+      PDFObjectStream.withContextAndObjects(context, objects).sizeInBytes(),
+    ).toBe(172);
   });
 
   it(`can be serialized`, () => {
-    const stream = PDFObjectStream.of(dict, objects);
+    const stream = PDFObjectStream.withContextAndObjects(context, objects);
     const buffer = new Uint8Array(stream.sizeInBytes() + 3).fill(
       toCharCode(' '),
     );
