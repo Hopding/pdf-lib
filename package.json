@@ -11,7 +11,7 @@
   "scripts": {
     "clean": "rimraf build cjs dist es scratchpad/build coverage tsBuildInfo.json isolate*.log flamegraph.html out.pdf",
     "typecheck": "tsc --noEmit",
-    "test": "jest --config jest.json",
+    "test": "jest --config jest.json --runInBand",
     "testw": "jest --config jest.json --watch --notify",
     "testc": "jest --config jest.json --coverage && open coverage/index.html",
     "lint": "yarn lint:prettier && yarn lint:tslint:src && yarn lint:tslint:tests",
