@@ -1,7 +1,7 @@
 import fontkit, { Font, Glyph } from '@pdf-lib/fontkit';
 
 import { createCmap } from 'src/core/embedders/CMap';
-import { deriveFontFlags } from 'src/core/embedders/fontFlags';
+import { deriveFontFlags } from 'src/core/embedders/FontFlags';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFString from 'src/core/objects/PDFString';
