@@ -2,12 +2,31 @@ import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
 import PDFTrailerDict from 'src/core/document/PDFTrailerDict';
+import PDFObject from 'src/core/objects/PDFObject';
+import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer } from 'src/utils';
 
+export interface SerializationInfo {
+  size: number;
+  header: PDFHeader;
+  indirectObjects: Array<[PDFRef, PDFObject]>;
+  xref?: PDFCrossRefSection;
+  trailerDict?: PDFTrailerDict;
+  trailer: PDFTrailer;
+}
+
 class PDFWriter {
-  static serializeContextToBuffer(context: PDFContext): Uint8Array {
+  static forContext = (context: PDFContext) => new PDFWriter(context);
+
+  protected readonly context: PDFContext;
+
+  protected constructor(context: PDFContext) {
+    this.context = context;
+  }
+
+  serializeToBuffer(): Uint8Array {
     const {
       size,
       header,
@@ -15,7 +34,7 @@ class PDFWriter {
       xref,
       trailerDict,
       trailer,
-    } = PDFWriter.computeBufferSize(context);
+    } = this.computeBufferSize();
 
     let offset = 0;
     const buffer = new Uint8Array(size);
@@ -53,47 +72,57 @@ class PDFWriter {
       buffer[offset++] = CharCodes.Newline;
     }
 
-    offset += xref.copyBytesInto(buffer, offset);
-    buffer[offset++] = CharCodes.Newline;
+    if (xref) {
+      offset += xref.copyBytesInto(buffer, offset);
+      buffer[offset++] = CharCodes.Newline;
+    }
 
-    offset += trailerDict.copyBytesInto(buffer, offset);
-    buffer[offset++] = CharCodes.Newline;
-    buffer[offset++] = CharCodes.Newline;
+    if (trailerDict) {
+      offset += trailerDict.copyBytesInto(buffer, offset);
+      buffer[offset++] = CharCodes.Newline;
+      buffer[offset++] = CharCodes.Newline;
+    }
 
     offset += trailer.copyBytesInto(buffer, offset);
 
     return buffer;
   }
 
-  private static computeBufferSize(context: PDFContext) {
+  protected computeIndirectObjectSize([ref, object]: [
+    PDFRef,
+    PDFObject
+  ]): number {
+    const refSize = ref.sizeInBytes() + 3; // 'R' -> 'obj\n'
+    const objectSize = object.sizeInBytes() + 9; // '\nendobj\n\n'
+    return refSize + objectSize;
+  }
+
+  protected computeBufferSize(): SerializationInfo {
     const header = PDFHeader.forVersion(1, 7);
 
     let size = header.sizeInBytes() + 2;
 
     const xref = PDFCrossRefSection.create();
 
-    const indirectObjects = context.enumerateIndirectObjects();
+    const indirectObjects = this.context.enumerateIndirectObjects();
 
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
-      const [ref, object] = indirectObjects[idx];
+      const indirectObject = indirectObjects[idx];
+      const [ref] = indirectObject;
       xref.addEntry(ref, size);
-
-      const refSize = ref.sizeInBytes() + 3; // 'R' -> 'obj\n'
-      const objectSize = object.sizeInBytes() + 9; // '\nendobj\n\n'
-
-      size += refSize + objectSize;
+      size += this.computeIndirectObjectSize(indirectObject);
     }
 
     const xrefOffset = size;
     size += xref.sizeInBytes() + 1; // '\n'
 
     const trailerDict = PDFTrailerDict.of(
-      context.obj({
-        Size: context.largestObjectNumber + 1,
-        Root: context.trailerInfo.Root,
-        Encrypt: context.trailerInfo.Encrypt,
-        Info: context.trailerInfo.Info,
-        ID: context.trailerInfo.ID,
+      this.context.obj({
+        Size: this.context.largestObjectNumber + 1,
+        Root: this.context.trailerInfo.Root,
+        Encrypt: this.context.trailerInfo.Encrypt,
+        Info: this.context.trailerInfo.Info,
+        ID: this.context.trailerInfo.ID,
       }),
     );
     size += trailerDict.sizeInBytes() + 2; // '\n\n'
