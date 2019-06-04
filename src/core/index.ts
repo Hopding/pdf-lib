@@ -6,6 +6,7 @@ export { default as CharCodes } from 'src/core/syntax/CharCodes';
 export { default as PDFContext } from 'src/core/PDFContext';
 export { default as PDFObjectCopier } from 'src/core/PDFObjectCopier';
 export { default as PDFWriter } from 'src/core/writers/PDFWriter';
+export { default as PDFStreamWriter } from 'src/core/writers/PDFStreamWriter';
 
 export { default as PDFHeader } from 'src/core/document/PDFHeader';
 export { default as PDFTrailer } from 'src/core/document/PDFTrailer';
