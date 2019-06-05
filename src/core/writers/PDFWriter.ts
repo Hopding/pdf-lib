@@ -2,6 +2,7 @@ import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
 import PDFTrailerDict from 'src/core/document/PDFTrailerDict';
+import PDFDict from 'src/core/objects/PDFDict';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
@@ -97,6 +98,16 @@ class PDFWriter {
     return refSize + objectSize;
   }
 
+  protected createTrailerDict(): PDFDict {
+    return this.context.obj({
+      Size: this.context.largestObjectNumber + 1,
+      Root: this.context.trailerInfo.Root,
+      Encrypt: this.context.trailerInfo.Encrypt,
+      Info: this.context.trailerInfo.Info,
+      ID: this.context.trailerInfo.ID,
+    });
+  }
+
   protected computeBufferSize(): SerializationInfo {
     const header = PDFHeader.forVersion(1, 7);
 
@@ -116,15 +127,7 @@ class PDFWriter {
     const xrefOffset = size;
     size += xref.sizeInBytes() + 1; // '\n'
 
-    const trailerDict = PDFTrailerDict.of(
-      this.context.obj({
-        Size: this.context.largestObjectNumber + 1,
-        Root: this.context.trailerInfo.Root,
-        Encrypt: this.context.trailerInfo.Encrypt,
-        Info: this.context.trailerInfo.Info,
-        ID: this.context.trailerInfo.ID,
-      }),
-    );
+    const trailerDict = PDFTrailerDict.of(this.createTrailerDict());
     size += trailerDict.sizeInBytes() + 2; // '\n\n'
 
     const trailer = PDFTrailer.forLastCrossRefSectionOffset(xrefOffset);
