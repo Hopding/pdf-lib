@@ -52,6 +52,7 @@ const parseStream = (
   if (arrayToString(trimmed, 0, 7) === 'stream\n') startstreamIdx = 7;
   else if (arrayToString(trimmed, 0, 8) === 'stream\r\n') startstreamIdx = 8;
   else if (arrayToString(trimmed, 0, 7) === 'stream\r') startstreamIdx = 7;
+  else if (arrayToString(trimmed, 0, 9) === 'stream \r\n') startstreamIdx = 9;
   if (!startstreamIdx) return undefined;
 
   /* ===================== Try to find the stream's end ===================== */
