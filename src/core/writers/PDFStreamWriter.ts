@@ -42,7 +42,6 @@ class PDFStreamWriter extends PDFWriter {
 
       const shouldNotCompress =
         ref === this.context.trailerInfo.Encrypt ||
-        ref === this.context.trailerInfo.Root ||
         object instanceof PDFStream ||
         ref.generationNumber !== 0;
 
@@ -71,9 +70,6 @@ class PDFStreamWriter extends PDFWriter {
         this.context,
         chunk,
       );
-
-      // const prevRef = objectStreamRefs[idx - 1];
-      // if (prevRef) objectStream.dict.set(PDFName.of('Extends'), prevRef);
 
       xrefStream.addUncompressedEntry(ref, size);
       size += this.computeIndirectObjectSize([ref, objectStream]);

@@ -230,11 +230,12 @@ class PDFParser extends PDFObjectParser {
 
     const dict = this.parseDict();
 
-    this.context.trailerInfo = {
-      Root: dict.get(PDFName.of('Root')),
-      Encrypt: dict.get(PDFName.of('Encrypt')),
-      Info: dict.get(PDFName.of('Info')),
-      ID: dict.get(PDFName.of('ID')),
+    const { context } = this;
+    context.trailerInfo = {
+      Root: dict.get(PDFName.of('Root')) || context.trailerInfo.Root,
+      Encrypt: dict.get(PDFName.of('Encrypt')) || context.trailerInfo.Encrypt,
+      Info: dict.get(PDFName.of('Info')) || context.trailerInfo.Info,
+      ID: dict.get(PDFName.of('ID')) || context.trailerInfo.ID,
     };
   }
 
