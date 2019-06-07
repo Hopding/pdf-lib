@@ -204,6 +204,7 @@ class PDFObjectParser extends BaseParser {
     }
   }
 
+  // TODO: Handle 'stream \r\n' (https://github.com/Hopding/pdf-lib/issues/119)
   protected parseDictOrStream(): PDFDict | PDFStream {
     const dict = this.parseDict();
 
