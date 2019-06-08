@@ -509,6 +509,16 @@ describe(`PDFObjectParser`, () => {
       });
     });
 
+    // Note that the ' \r\n' sequence following the 'stream' keyword is
+    // technically invalid (per the specification). But some PDFs have it, so
+    // we will support it anyways.
+    it(`handles streams with a space, carriage return, and a newline following the 'stream' keyword`, () => {
+      expectParse(`<<>>\r\nstream \r\n Stuff and Things \nendstream`);
+      expectParseStr(`<<>>\r\nstream \r\n Stuff and Things \nendstream`).toBe(
+        '<<\n/Length 18\n>>\nstream\n Stuff and Things \nendstream',
+      );
+    });
+
     it(`handles streams with a carriage return and a newline following the 'stream' keyword`, () => {
       expectParse(`<<>>\r\nstream\r\n Stuff and Things \nendstream`);
       expectParseStr(`<<>>\r\nstream\r\n Stuff and Things \nendstream`).toBe(
