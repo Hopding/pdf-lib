@@ -1,5 +1,28 @@
 import CharCodes from 'src/core/syntax/CharCodes';
 
+const { Space, CarriageReturn, Newline } = CharCodes;
+
+const stream = [
+  CharCodes.s,
+  CharCodes.t,
+  CharCodes.r,
+  CharCodes.e,
+  CharCodes.a,
+  CharCodes.m,
+];
+
+const endstream = [
+  CharCodes.e,
+  CharCodes.n,
+  CharCodes.d,
+  CharCodes.s,
+  CharCodes.t,
+  CharCodes.r,
+  CharCodes.e,
+  CharCodes.a,
+  CharCodes.m,
+];
+
 export const Keywords = {
   header: [
     CharCodes.Percent,
@@ -48,23 +71,13 @@ export const Keywords = {
   true: [CharCodes.t, CharCodes.r, CharCodes.u, CharCodes.e],
   false: [CharCodes.f, CharCodes.a, CharCodes.l, CharCodes.s, CharCodes.e],
   null: [CharCodes.n, CharCodes.u, CharCodes.l, CharCodes.l],
-  stream: [
-    CharCodes.s,
-    CharCodes.t,
-    CharCodes.r,
-    CharCodes.e,
-    CharCodes.a,
-    CharCodes.m,
-  ],
-  endstream: [
-    CharCodes.e,
-    CharCodes.n,
-    CharCodes.d,
-    CharCodes.s,
-    CharCodes.t,
-    CharCodes.r,
-    CharCodes.e,
-    CharCodes.a,
-    CharCodes.m,
-  ],
+  stream,
+  streamEOF1: [...stream, Space, CarriageReturn, Newline],
+  streamEOF2: [...stream, CarriageReturn, Newline],
+  streamEOF3: [...stream, CarriageReturn],
+  streamEOF4: [...stream, Newline],
+  endstream,
+  EOF1endstream: [CarriageReturn, Newline, ...endstream],
+  EOF2endstream: [CarriageReturn, ...endstream],
+  EOF3endstream: [Newline, ...endstream],
 };

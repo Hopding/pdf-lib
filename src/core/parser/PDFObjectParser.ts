@@ -27,8 +27,6 @@ import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
 import { WhitespaceChars } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';
 
-const { Newline, CarriageReturn } = CharCodes;
-
 // TODO: Throw error if eof is reached before finishing object parse...
 class PDFObjectParser extends BaseParser {
   static forBytes = (bytes: Uint8Array, context: PDFContext) =>
@@ -204,19 +202,19 @@ class PDFObjectParser extends BaseParser {
     }
   }
 
-  // TODO: Handle 'stream \r\n' (https://github.com/Hopding/pdf-lib/issues/119)
   protected parseDictOrStream(): PDFDict | PDFStream {
     const dict = this.parseDict();
 
     this.skipWhitespaceAndComments();
-    if (!this.matchKeyword(Keywords.stream)) return dict;
 
-    // Move past the EOL marker following `stream` (\r\n or \r or \n)
-    const byte = this.bytes.peek();
-    if (byte === Newline) this.bytes.next();
-    if (byte === CarriageReturn) {
-      this.bytes.next();
-      if (this.bytes.peek() === Newline) this.bytes.next();
+    if (
+      !this.matchKeyword(Keywords.streamEOF1) &&
+      !this.matchKeyword(Keywords.streamEOF2) &&
+      !this.matchKeyword(Keywords.streamEOF3) &&
+      !this.matchKeyword(Keywords.streamEOF4) &&
+      !this.matchKeyword(Keywords.stream)
+    ) {
+      return dict;
     }
 
     const start = this.bytes.offset();
@@ -225,25 +223,29 @@ class PDFObjectParser extends BaseParser {
 
     // Move to end of stream, while handling nested streams
     let nestingLvl = 1;
+    let end = this.bytes.offset();
+
     while (!this.bytes.done()) {
-      if (this.matchKeyword(Keywords.stream)) nestingLvl += 1;
-      if (this.matchKeyword(Keywords.endstream)) nestingLvl -= 1;
+      end = this.bytes.offset();
+
+      if (this.matchKeyword(Keywords.stream)) {
+        nestingLvl += 1;
+      } else if (
+        this.matchKeyword(Keywords.EOF1endstream) ||
+        this.matchKeyword(Keywords.EOF2endstream) ||
+        this.matchKeyword(Keywords.EOF3endstream) ||
+        this.matchKeyword(Keywords.endstream)
+      ) {
+        nestingLvl -= 1;
+      } else {
+        this.bytes.next();
+      }
+
       if (nestingLvl === 0) break;
-      this.bytes.next();
     }
 
     // TODO: Create proper error object for this
     if (nestingLvl !== 0) throw new Error('FIX ME!');
-
-    let end = this.bytes.offset() - Keywords.endstream.length;
-
-    // Move back our `end` marker to account for the EOL marker that should
-    // be in front of `endstream` (\r\n or \r or \n)
-    const twoBack = this.bytes.peekAt(end - 2);
-    const oneBack = this.bytes.peekAt(end - 1);
-    if (twoBack === CarriageReturn && oneBack === Newline) end -= 2;
-    else if (oneBack === CarriageReturn) end -= 1;
-    else if (oneBack === Newline) end -= 1;
 
     const contents = this.bytes.slice(start, end);
 
