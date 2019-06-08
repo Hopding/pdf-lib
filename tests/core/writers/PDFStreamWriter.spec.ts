@@ -53,7 +53,11 @@ describe(`PDFStreamWriter`, () => {
     });
     context.trailerInfo.Root = context.register(catalog);
 
-    const buffer = PDFStreamWriter.forContext(context, 2).serializeToBuffer();
+    const buffer = PDFStreamWriter.forContext(
+      context,
+      false,
+      2,
+    ).serializeToBuffer();
 
     expect(buffer.length).toBe(expectedPdfBytes.length);
     expect(buffer).toEqual(expectedPdfBytes);

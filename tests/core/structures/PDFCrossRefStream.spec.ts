@@ -1,3 +1,5 @@
+import pako from 'pako';
+
 import {
   mergeIntoTypedArray,
   PDFContext,
@@ -11,15 +13,17 @@ describe(`PDFCrossRefStream`, () => {
   const dict = context.obj({});
 
   it(`can be constructed from PDFCrossRefStream.create(...)`, () => {
-    expect(PDFCrossRefStream.create(dict)).toBeInstanceOf(PDFCrossRefStream);
+    expect(PDFCrossRefStream.create(dict, false)).toBeInstanceOf(
+      PDFCrossRefStream,
+    );
   });
 
-  const stream1 = PDFCrossRefStream.create(dict);
+  const stream1 = PDFCrossRefStream.create(dict, false);
   stream1.addDeletedEntry(PDFRef.of(1, 2), 11);
   stream1.addUncompressedEntry(PDFRef.of(2, 40), 30);
   stream1.addCompressedEntry(PDFRef.of(21), PDFRef.of(5), 691);
 
-  const stream2 = PDFCrossRefStream.create(dict);
+  const stream2 = PDFCrossRefStream.create(dict, false);
   stream2.addUncompressedEntry(PDFRef.of(2), 300);
   stream2.addCompressedEntry(PDFRef.of(3), PDFRef.of(10), 0);
   stream2.addUncompressedEntry(PDFRef.of(9000), 600);
@@ -102,6 +106,38 @@ describe(`PDFCrossRefStream`, () => {
         '  <<\n/Type /XRef\n/Length 25\n/W [ 1 2 2 ]\n/Index [ 0 1 2 2 9000 2 ]\n>>\n',
         'stream\n',
         expectedEntries,
+        '\nendstream ',
+      ),
+    );
+  });
+
+  it(`can be serialized when encoded`, () => {
+    const stream = PDFCrossRefStream.create(dict, true);
+    stream.addUncompressedEntry(PDFRef.of(2), 300);
+    stream.addCompressedEntry(PDFRef.of(3), PDFRef.of(10), 0);
+    stream.addUncompressedEntry(PDFRef.of(9000), 600);
+    stream.addCompressedEntry(PDFRef.of(9001), PDFRef.of(10), 1);
+
+    const buffer = new Uint8Array(stream.sizeInBytes() + 3).fill(
+      toCharCode(' '),
+    );
+
+    // prettier-ignore
+    const expectedEntries = new Uint8Array([
+      0,  0,   0,  255,  255,
+      1,  1,  44,    0,    0,
+      2,  0,  10,    0,    0,
+      1,  2,  88,    0,    0,
+      2,  0,  10,    0,    1,
+    ]);
+    const encodedEntries = pako.deflate(expectedEntries);
+
+    expect(stream.copyBytesInto(buffer, 2)).toBe(135);
+    expect(buffer).toEqual(
+      mergeIntoTypedArray(
+        '  <<\n/Type /XRef\n/Length 29\n/W [ 1 2 2 ]\n/Index [ 0 1 2 2 9000 2 ]\n/Filter /FlateDecode\n>>\n',
+        'stream\n',
+        encodedEntries,
         '\nendstream ',
       ),
     );

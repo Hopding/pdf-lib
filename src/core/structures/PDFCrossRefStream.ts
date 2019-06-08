@@ -1,8 +1,8 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
 import PDFContext from 'src/core/PDFContext';
+import PDFFlateStream from 'src/core/structures/PDFFlateStream';
 import { bytesFor, Cache, reverseArray, sizeInBytes, sum } from 'src/utils';
 
 export enum EntryType {
@@ -39,23 +39,23 @@ export type EntryTuple = [number, number, number];
  * [[addUncompressedEntry]], and [[addCompressedEntry]] methods
  * **in order of ascending object number**.
  */
-class PDFCrossRefStream extends PDFStream {
-  static create = (dict: PDFDict) => {
-    const stream = new PDFCrossRefStream(dict);
+class PDFCrossRefStream extends PDFFlateStream {
+  static create = (dict: PDFDict, encode = true) => {
+    const stream = new PDFCrossRefStream(dict, [], encode);
     stream.addDeletedEntry(PDFRef.of(0, 65535), 0);
     return stream;
   };
 
-  static of = (dict: PDFDict, entries: Entry[]) =>
-    new PDFCrossRefStream(dict, entries);
+  static of = (dict: PDFDict, entries: Entry[], encode = true) =>
+    new PDFCrossRefStream(dict, entries, encode);
 
   private readonly entries: Entry[];
   private readonly entryTuplesCache: Cache<EntryTuple[]>;
   private readonly maxByteWidthsCache: Cache<[number, number, number]>;
   private readonly indexCache: Cache<number[]>;
 
-  private constructor(dict: PDFDict, entries?: Entry[]) {
-    super(dict);
+  private constructor(dict: PDFDict, entries?: Entry[], encode = true) {
+    super(dict, encode);
 
     this.entries = entries || [];
     this.entryTuplesCache = Cache.populatedBy(this.computeEntryTuples);
@@ -71,6 +71,7 @@ class PDFCrossRefStream extends PDFStream {
     this.entryTuplesCache.invalidate();
     this.maxByteWidthsCache.invalidate();
     this.indexCache.invalidate();
+    this.contentsCache.invalidate();
   }
 
   addUncompressedEntry(ref: PDFRef, offset: number) {
@@ -79,6 +80,7 @@ class PDFCrossRefStream extends PDFStream {
     this.entryTuplesCache.invalidate();
     this.maxByteWidthsCache.invalidate();
     this.indexCache.invalidate();
+    this.contentsCache.invalidate();
   }
 
   addCompressedEntry(ref: PDFRef, objectStreamRef: PDFRef, index: number) {
@@ -87,10 +89,12 @@ class PDFCrossRefStream extends PDFStream {
     this.entryTuplesCache.invalidate();
     this.maxByteWidthsCache.invalidate();
     this.indexCache.invalidate();
+    this.contentsCache.invalidate();
   }
 
   clone(context?: PDFContext): PDFCrossRefStream {
-    return PDFCrossRefStream.of(this.dict.clone(context), this.entries.slice());
+    const { dict, entries, encode } = this;
+    return PDFCrossRefStream.of(dict.clone(context), entries.slice(), encode);
   }
 
   getContentsString(): string {
@@ -123,10 +127,10 @@ class PDFCrossRefStream extends PDFStream {
     return value;
   }
 
-  getContents(): Uint8Array {
+  getUnencodedContents(): Uint8Array {
     const entryTuples = this.entryTuplesCache.access();
     const byteWidths = this.maxByteWidthsCache.access();
-    const buffer = new Uint8Array(this.getContentsSize());
+    const buffer = new Uint8Array(this.getUnencodedContentsSize());
 
     let offset = 0;
     for (
@@ -154,7 +158,7 @@ class PDFCrossRefStream extends PDFStream {
     return buffer;
   }
 
-  getContentsSize(): number {
+  getUnencodedContentsSize(): number {
     const byteWidths = this.maxByteWidthsCache.access();
     const entryWidth = sum(byteWidths);
     return entryWidth * this.entries.length;
