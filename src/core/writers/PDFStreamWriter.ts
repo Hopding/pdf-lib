@@ -12,13 +12,23 @@ import PDFWriter from 'src/core/writers/PDFWriter';
 import { last } from 'src/utils';
 
 class PDFStreamWriter extends PDFWriter {
-  static forContext = (context: PDFContext, objectsPerStream = 50) =>
-    new PDFStreamWriter(context, objectsPerStream);
+  static forContext = (
+    context: PDFContext,
+    encodeStreams = true,
+    objectsPerStream = 50,
+  ) => new PDFStreamWriter(context, encodeStreams, objectsPerStream);
 
+  private readonly encodeStreams: boolean;
   private readonly objectsPerStream: number;
 
-  private constructor(context: PDFContext, objectsPerStream: number) {
+  private constructor(
+    context: PDFContext,
+    encodeStreams: boolean,
+    objectsPerStream: number,
+  ) {
     super(context);
+
+    this.encodeStreams = encodeStreams;
     this.objectsPerStream = objectsPerStream;
   }
 
@@ -29,7 +39,10 @@ class PDFStreamWriter extends PDFWriter {
 
     let size = header.sizeInBytes() + 2;
 
-    const xrefStream = PDFCrossRefStream.create(this.createTrailerDict());
+    const xrefStream = PDFCrossRefStream.create(
+      this.createTrailerDict(),
+      this.encodeStreams,
+    );
 
     const uncompressedObjects: Array<[PDFRef, PDFObject]> = [];
     const compressedObjects: Array<Array<[PDFRef, PDFObject]>> = [];
@@ -69,6 +82,7 @@ class PDFStreamWriter extends PDFWriter {
       const objectStream = PDFObjectStream.withContextAndObjects(
         this.context,
         chunk,
+        this.encodeStreams,
       );
 
       xrefStream.addUncompressedEntry(ref, size);

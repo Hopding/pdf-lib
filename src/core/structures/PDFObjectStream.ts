@@ -2,25 +2,30 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
 import PDFContext from 'src/core/PDFContext';
+import PDFFlateStream from 'src/core/structures/PDFFlateStream';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer, last } from 'src/utils';
 
 export type IndirectObject = [PDFRef, PDFObject];
 
-class PDFObjectStream extends PDFStream {
+class PDFObjectStream extends PDFFlateStream {
   static withContextAndObjects = (
     context: PDFContext,
     objects: IndirectObject[],
-  ) => new PDFObjectStream(context, objects);
+    encode = true,
+  ) => new PDFObjectStream(context, objects, encode);
 
   private readonly objects: IndirectObject[];
   private readonly offsets: Array<[number, number]>;
   private readonly offsetsString: string;
 
-  private constructor(context: PDFContext, objects: IndirectObject[]) {
-    super(context.obj({}));
+  private constructor(
+    context: PDFContext,
+    objects: IndirectObject[],
+    encode = true,
+  ) {
+    super(context.obj({}), encode);
 
     this.objects = objects;
     this.offsets = this.computeObjectOffsets();
@@ -35,6 +40,7 @@ class PDFObjectStream extends PDFStream {
     return PDFObjectStream.withContextAndObjects(
       context || this.dict.context,
       this.objects.slice(),
+      this.encode,
     );
   }
 
@@ -47,8 +53,8 @@ class PDFObjectStream extends PDFStream {
     return value;
   }
 
-  getContents(): Uint8Array {
-    const buffer = new Uint8Array(this.getContentsSize());
+  getUnencodedContents(): Uint8Array {
+    const buffer = new Uint8Array(this.getUnencodedContentsSize());
     let offset = copyStringIntoBuffer(this.offsetsString, buffer, 0);
     for (let idx = 0, len = this.objects.length; idx < len; idx++) {
       const [, object] = this.objects[idx];
@@ -58,7 +64,7 @@ class PDFObjectStream extends PDFStream {
     return buffer;
   }
 
-  getContentsSize(): number {
+  getUnencodedContentsSize(): number {
     return (
       this.offsetsString.length +
       last(this.offsets)[1] +

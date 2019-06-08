@@ -1,4 +1,7 @@
+import pako from 'pako';
+
 import {
+  mergeIntoTypedArray,
   PDFContentStream,
   PDFContext,
   PDFDict,
@@ -23,20 +26,20 @@ describe(`PDFContentStream`, () => {
   ];
 
   it(`can be constructed from PDFContentStream.of(...)`, () => {
-    expect(PDFContentStream.of(dict, operators)).toBeInstanceOf(
+    expect(PDFContentStream.of(dict, operators, false)).toBeInstanceOf(
       PDFContentStream,
     );
   });
 
   it(`can be cloned`, () => {
-    const original = PDFContentStream.of(dict, operators);
+    const original = PDFContentStream.of(dict, operators, false);
     const clone = original.clone();
     expect(clone).not.toBe(original);
     expect(String(clone)).toBe(String(original));
   });
 
   it(`can be converted to a string`, () => {
-    expect(String(PDFContentStream.of(dict, operators))).toEqual(
+    expect(String(PDFContentStream.of(dict, operators, false))).toEqual(
       '<<\n/Length 55\n>>\n' +
         'stream\n' +
         'BT\n' +
@@ -49,11 +52,11 @@ describe(`PDFContentStream`, () => {
   });
 
   it(`can provide its size in bytes`, () => {
-    expect(PDFContentStream.of(dict, operators).sizeInBytes()).toBe(89);
+    expect(PDFContentStream.of(dict, operators, false).sizeInBytes()).toBe(89);
   });
 
   it(`can be serialized`, () => {
-    const stream = PDFContentStream.of(dict, operators);
+    const stream = PDFContentStream.of(dict, operators, false);
     const buffer = new Uint8Array(stream.sizeInBytes() + 3).fill(
       toCharCode(' '),
     );
@@ -68,6 +71,30 @@ describe(`PDFContentStream`, () => {
           '(Hello World and stuff!) Tj\n' +
           'ET\n' +
           '\nendstream ',
+      ),
+    );
+  });
+
+  it(`can be serialized when encoded`, () => {
+    const contents =
+      'BT\n' +
+      '/F1 24 Tf\n' +
+      '100 100 Td\n' +
+      '(Hello World and stuff!) Tj\n' +
+      'ET\n';
+    const encodedContents = pako.deflate(contents);
+
+    const stream = PDFContentStream.of(dict, operators, true);
+    const buffer = new Uint8Array(stream.sizeInBytes() + 3).fill(
+      toCharCode(' '),
+    );
+    expect(stream.copyBytesInto(buffer, 2)).toBe(115);
+    expect(buffer).toEqual(
+      mergeIntoTypedArray(
+        '  <<\n/Length 60\n/Filter /FlateDecode\n>>\n',
+        'stream\n',
+        encodedContents,
+        '\nendstream ',
       ),
     );
   });
