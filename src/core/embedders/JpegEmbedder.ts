@@ -73,7 +73,7 @@ class JpegEmbedder {
     this.colorSpace = channelName;
   }
 
-  embedIntoContext(context: PDFContext): PDFRef {
+  embedIntoContext(context: PDFContext, ref?: PDFRef): PDFRef {
     const xObject = context.stream(this.imageData, {
       Type: 'XObject',
       Subtype: 'Image',
@@ -83,7 +83,13 @@ class JpegEmbedder {
       ColorSpace: this.colorSpace,
       Filter: 'DCTDecode',
     });
-    return context.register(xObject);
+
+    if (ref) {
+      context.assign(ref, xObject);
+      return ref;
+    } else {
+      return context.register(xObject);
+    }
   }
 }
 

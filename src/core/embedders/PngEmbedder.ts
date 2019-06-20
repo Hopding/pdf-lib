@@ -45,7 +45,7 @@ class PngEmbedder {
     }
   }
 
-  embedIntoContext(context: PDFContext): PDFRef {
+  embedIntoContext(context: PDFContext, ref?: PDFRef): PDFRef {
     const SMask = this.embedAlphaChannel(context);
 
     const { palette } = this.image;
@@ -53,8 +53,8 @@ class PngEmbedder {
     let ColorSpace: string | any[] = this.image.colorSpace;
     if (palette.length !== 0) {
       const stream = context.stream(new Uint8Array(palette));
-      const ref = context.register(stream);
-      ColorSpace = ['Indexed', 'DeviceRGB', palette.length / 3 - 1, ref];
+      const streamRef = context.register(stream);
+      ColorSpace = ['Indexed', 'DeviceRGB', palette.length / 3 - 1, streamRef];
     }
 
     let DecodeParms;
@@ -79,7 +79,12 @@ class PngEmbedder {
       ColorSpace,
     });
 
-    return context.register(xObject);
+    if (ref) {
+      context.assign(ref, xObject);
+      return ref;
+    } else {
+      return context.register(xObject);
+    }
   }
 
   private embedAlphaChannel(context: PDFContext): PDFRef | undefined {

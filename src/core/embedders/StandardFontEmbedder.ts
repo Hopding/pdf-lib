@@ -25,6 +25,7 @@ class StandardFontEmbedder {
 
   readonly font: Font;
   readonly encoding: Encoding;
+  readonly fontName: string;
 
   private constructor(fontName: FontNames) {
     // prettier-ignore
@@ -34,6 +35,7 @@ class StandardFontEmbedder {
       : Encodings.WinAnsi
     );
     this.font = Font.load(fontName);
+    this.fontName = this.font.FontName;
   }
 
   /**
@@ -79,7 +81,7 @@ class StandardFontEmbedder {
     return (1000 * height) / (yTop - yBottom);
   }
 
-  embedIntoContext(context: PDFContext): PDFRef {
+  embedIntoContext(context: PDFContext, ref?: PDFRef): PDFRef {
     const fontDict = context.obj({
       Type: 'Font',
       Subtype: 'Type1',
@@ -89,7 +91,12 @@ class StandardFontEmbedder {
         this.encoding === Encodings.WinAnsi ? 'WinAnsiEncoding' : undefined,
     });
 
-    return context.register(fontDict);
+    if (ref) {
+      context.assign(ref, fontDict);
+      return ref;
+    } else {
+      return context.register(fontDict);
+    }
   }
 
   private widthOfGlyph(glyphName: string): number {

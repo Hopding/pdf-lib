@@ -21,6 +21,23 @@ class PDFCatalog extends PDFDict {
   Pages(): PDFPageTree {
     return this.lookup(PDFName.of('Pages'), PDFDict) as PDFPageTree;
   }
+
+  /**
+   * Inserts the given ref as a leaf node of this catalog's page tree at the
+   * specified index (zero-based). Also increments the `Count` of each node in
+   * the page tree hierarchy to accomodate the new page.
+   *
+   * Returns the ref of the PDFPageTree node into which `leafRef` was inserted.
+   */
+  insertLeafNode(leafRef: PDFRef, index: number): PDFRef {
+    const pagesRef = this.get(PDFName.of('Pages')) as PDFRef;
+    const maybeParentRef = this.Pages().insertLeafNode(leafRef, index);
+    return maybeParentRef || pagesRef;
+  }
+
+  removeLeafNode(index: number): void {
+    this.Pages().removeLeafNode(index);
+  }
 }
 
 export default PDFCatalog;

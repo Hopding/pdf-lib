@@ -1,30 +1,25 @@
 import './create';
 
 // import fs from 'fs';
-// import {
-//   PDFCatalog,
-//   PDFContentStream,
-//   PDFName,
-//   PDFNumber,
-//   PDFOperator,
-//   PDFOperatorNames as Ops,
-//   PDFPageLeaf,
-//   PDFParser,
-//   PDFRef,
-//   PDFWriter,
-//   StandardFontEmbedder,
-//   StandardFonts,
-// } from 'src/index';
+// import { PDFDocument } from 'src/index';
 
 // console.time('Scratchpad');
 
-// const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
-// // const pdfBytes = fs.readFileSync('./assets/pdfs/F1040V_tax_form.pdf');
-// // const pdfBytes = fs.readFileSync('./assets/pdfs/with_comments.pdf');
-// // const pdfBytes = fs.readFileSync(
+// // const pdfBytes2 = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
+// // const pdfBytes1 = fs.readFileSync('./assets/pdfs/F1040V_tax_form.pdf');
+// // const pdfBytes1 = fs.readFileSync('./assets/pdfs/giraffe.pdf');
+// // const pdfBytes1 = fs.readFileSync('./assets/pdfs/with_comments.pdf');
+// // const pdfBytes1 = fs.readFileSync(
 // // './assets/pdfs/pdf20examples/PDF 2.0 with offset start.pdf',
 // // );
-// // const pdfBytes = fs.readFileSync('./pdf_specification.pdf');
+// // const pdfBytes1 = fs.readFileSync('./pdf_specification.pdf');
+// // const pdfBytes1 = fs.readFileSync('/Users/user/Desktop/20180508_00024.pdf');
+// // const pdfBytes1 = fs.readFileSync(
+// // '/Users/user/Desktop/Din_Microsoft-fakturaoversikt.pdf',
+// // );
+// const pdfBytes1 = fs.readFileSync(
+//   '/Users/user/github/pdf-lib-old/pdf_specification.pdf',
+// );
 // // const pdfBytes = fs.readFileSync('./out.pdf');
 
 // // const PATHS = String(fs.readFileSync('/Users/user/Desktop/PDF_FILES_TEMP.txt'))
@@ -41,45 +36,42 @@ import './create';
 // //   }
 // // });
 
-// const context = PDFParser.forBytes(pdfBytes).parseDocument();
+// const main = async () => {
+//   // const pdfDoc = PDFDocument.load(pdfBytes1);
 
-// /* Add Page */
-// const helveticaEmbedder = StandardFontEmbedder.for(StandardFonts.Helvetica);
+//   // const pages = pdfDoc.getPages();
 
-// const operators = [
-//   PDFOperator.of(Ops.BeginText),
-//   PDFOperator.of(Ops.SetFontAndSize, [PDFName.of('F1'), PDFNumber.of(24)]),
-//   PDFOperator.of(Ops.MoveText, [PDFNumber.of(100), PDFNumber.of(100)]),
-//   PDFOperator.of(Ops.ShowText, [
-//     helveticaEmbedder.encodeText('Hello World and stuff!'),
-//   ]),
-//   PDFOperator.of(Ops.EndText),
-// ];
-// const contentStreamDict = context.obj({});
-// const contentStream = PDFContentStream.of(contentStreamDict, operators);
-// const contentStreamRef = context.register(contentStream);
+//   // const firstPage = pages[122 - 1];
 
-// const helveticaFontRef = helveticaEmbedder.embedIntoContext(context);
+//   // firstPage.setFontSize(24);
+//   // firstPage.moveTo(100, 100);
+//   // firstPage.drawText('Hello World and stuff!');
 
-// const catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
+//   // const page = pdfDoc.insertPage(1 - 1);
 
-// const pageTreeRef = catalog.get(PDFName.of('Pages')) as PDFRef;
-// const pageTree = catalog.Pages();
+//   // page.setFontSize(24);
+//   // page.moveTo(100, 100);
+//   // page.drawText('Hello World and stuff!');
 
-// const pageLeaf = PDFPageLeaf.withContextAndParent(context, pageTreeRef);
-// pageLeaf.set(PDFName.of('Contents'), contentStreamRef);
-// pageLeaf.set(
-//   PDFName.of('Resources'),
-//   context.obj({ Font: { F1: helveticaFontRef } }),
-// );
-// const pageRef = context.register(pageLeaf);
+//   // const donorPdfDoc = PDFDocument.load(pdfBytes2);
+//   // const donorPage = donorPdfDoc.getPages()[0];
+//   // pdfDoc.insertPage(pages.length, donorPage);
 
-// pageTree.pushLeafNode(pageRef);
+//   // // pdfDoc.insertPage(1);
+//   // pdfDoc.removePage(123 - 1);
 
-// /************/
+//   const pdfDoc = PDFDocument.load(pdfBytes1);
 
-// const buffer = PDFWriter.serializeContextToBuffer(context);
-// console.timeEnd('Scratchpad');
+//   pdfDoc.insertPage(1 - 1);
+//   pdfDoc.removePage(122 - 1);
 
-// fs.writeFileSync('./out.pdf', buffer);
-// console.log('File written to ./out.pdf');
+//   // pdfDoc.removePage(3 - 1);
+
+//   const buffer = await pdfDoc.save();
+//   console.timeEnd('Scratchpad');
+
+//   fs.writeFileSync('./out.pdf', buffer);
+//   console.log('File written to ./out.pdf');
+// };
+
+// main();

@@ -25,16 +25,18 @@ class CustomFontEmbedder {
   readonly font: Font;
   readonly scale: number;
   readonly fontData: Uint8Array;
+  readonly fontName: string;
 
-  protected fontName: string;
+  protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
   protected constructor(fontData: Uint8Array) {
     this.font = fontkit.create(fontData);
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;
+    this.fontName = this.font.postscriptName || 'Font';
 
-    this.fontName = '';
+    this.baseFontName = '';
     this.glyphCache = Cache.populatedBy(this.allGlyphsInFontSortedById);
   }
 
@@ -77,25 +79,33 @@ class CustomFontEmbedder {
     return (1000 * height) / (yTop - yBottom);
   }
 
-  embedIntoContext(context: PDFContext): Promise<PDFRef> {
-    this.fontName = addRandomSuffix(this.font.postscriptName || 'Font');
-    return this.embedFontDict(context);
+  embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
+    this.baseFontName = addRandomSuffix(this.fontName);
+    return this.embedFontDict(context, ref);
   }
 
-  protected async embedFontDict(context: PDFContext): Promise<PDFRef> {
+  protected async embedFontDict(
+    context: PDFContext,
+    ref?: PDFRef,
+  ): Promise<PDFRef> {
     const cidFontDictRef = await this.embedCIDFontDict(context);
     const unicodeCMapRef = this.embedUnicodeCmap(context);
 
     const fontDict = context.obj({
       Type: 'Font',
       Subtype: 'Type0',
-      BaseFont: this.fontName,
+      BaseFont: this.baseFontName,
       Encoding: 'Identity-H',
       DescendantFonts: [cidFontDictRef],
       ToUnicode: unicodeCMapRef,
     });
 
-    return context.register(fontDict);
+    if (ref) {
+      context.assign(ref, fontDict);
+      return ref;
+    } else {
+      return context.register(fontDict);
+    }
   }
 
   protected isCFF(): boolean {
@@ -108,7 +118,7 @@ class CustomFontEmbedder {
     const cidFontDict = context.obj({
       Type: 'Font',
       Subtype: this.isCFF() ? 'CIDFontType0' : 'CIDFontType2',
-      BaseFont: this.fontName,
+      BaseFont: this.baseFontName,
       CIDSystemInfo: {
         Registry: PDFString.of('Adobe'),
         Ordering: PDFString.of('Identity'),
@@ -130,7 +140,7 @@ class CustomFontEmbedder {
 
     const fontDescriptor = context.obj({
       Type: 'FontDescriptor',
-      FontName: this.fontName,
+      FontName: this.baseFontName,
       Flags: deriveFontFlags(this.font),
       FontBBox: [minX * scale, minY * scale, maxX * scale, maxY * scale],
       ItalicAngle: italicAngle,

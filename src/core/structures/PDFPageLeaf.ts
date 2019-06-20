@@ -28,6 +28,8 @@ class PDFPageLeaf extends PDFDict {
   static fromMapWithContext = (map: DictMap, context: PDFContext) =>
     new PDFPageLeaf(map, context);
 
+  private normalized = false;
+
   clone(context?: PDFContext): PDFPageLeaf {
     const clone = PDFPageLeaf.fromMapWithContext(
       new Map(),
@@ -92,10 +94,61 @@ class PDFPageLeaf extends PDFDict {
     return attribute;
   }
 
+  setParent(parentRef: PDFRef): void {
+    this.set(PDFName.of('Parent'), parentRef);
+  }
+
+  addContentStream(contentStreamRef: PDFRef): void {
+    this.assertNormalized();
+    let Contents = this.Contents();
+    if (!Contents) {
+      Contents = this.context.obj([]);
+      this.set(PDFName.of('Contents'), Contents);
+    }
+    (Contents as PDFArray).push(contentStreamRef);
+  }
+
+  setFontDictionary(name: PDFName, fontDictRef: PDFRef): void {
+    this.assertNormalized();
+    const Font = this.Resources().lookup(PDFName.of('Font'), PDFDict);
+    Font.set(name, fontDictRef);
+  }
+
+  setXObject(name: PDFName, xObjectRef: PDFRef): void {
+    this.assertNormalized();
+    const XObject = this.Resources().lookup(PDFName.of('XObject'), PDFDict);
+    XObject.set(name, xObjectRef);
+  }
+
   ascend(visitor: (node: PDFPageTree | PDFPageLeaf) => any): void {
     visitor(this);
     const Parent = this.Parent();
     if (Parent) Parent.ascend(visitor);
+  }
+
+  normalize(): void {
+    const { context } = this;
+
+    const contentsRef = this.get(PDFName.of('Contents'));
+    const contents = this.context.lookup(contentsRef);
+    if (contents instanceof PDFStream) {
+      this.set(PDFName.of('Contents'), context.obj([contentsRef]));
+    }
+
+    const Resources = this.Resources() || context.obj({});
+    this.set(PDFName.of('Resources'), Resources);
+
+    const Font = Resources.lookup(PDFName.of('Font')) || context.obj({});
+    Resources.set(PDFName.of('Font'), Font);
+
+    const XObject = Resources.lookup(PDFName.of('XObject')) || context.obj({});
+    Resources.set(PDFName.of('XObject'), XObject);
+
+    this.normalized = true;
+  }
+
+  assertNormalized(): void {
+    if (!this.normalized) throw new Error('FIX ME!!!');
   }
 }
 
