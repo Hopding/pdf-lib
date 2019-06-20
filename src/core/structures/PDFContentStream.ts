@@ -15,6 +15,10 @@ class PDFContentStream extends PDFFlateStream {
     this.operators = operators;
   }
 
+  push(...operators: PDFOperator[]): void {
+    this.operators.push(...operators);
+  }
+
   clone(context?: PDFContext): PDFContentStream {
     const operators = new Array(this.operators.length);
     for (let idx = 0, len = this.operators.length; idx < len; idx++) {

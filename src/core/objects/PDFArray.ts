@@ -31,6 +31,14 @@ class PDFArray extends PDFObject {
     this.array.push(object);
   }
 
+  insert(index: number, object: PDFObject): void {
+    this.array.splice(index, 0, object);
+  }
+
+  remove(index: number): void {
+    this.array.splice(index, 1);
+  }
+
   set(idx: number, object: PDFObject): void {
     this.array[idx] = object;
   }

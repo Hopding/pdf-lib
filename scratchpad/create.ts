@@ -1,58 +1,79 @@
 import fs from 'fs';
-import {
-  PDFCatalog,
-  PDFContentStream,
-  PDFContext,
-  PDFName,
-  PDFNumber,
-  PDFOperator,
-  PDFOperatorNames as Ops,
-  PDFPageLeaf,
-  PDFPageTree,
-  PDFWriter,
-  StandardFontEmbedder,
-  StandardFonts,
-} from 'src/index';
+import { PDFDocument, StandardFonts } from 'src/index';
 
-console.time('Scratchpad');
+const main = async () => {
+  console.time('Scratchpad');
 
-const helveticaEmbedder = StandardFontEmbedder.for(StandardFonts.Helvetica);
+  const ubuntuFontBytes = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-R.ttf');
 
-const context = PDFContext.create();
+  const catRidingUnicornBytes = fs.readFileSync(
+    'assets/images/cat_riding_unicorn.jpg',
+  );
+  const greyscaleBirdBytes = fs.readFileSync(
+    'assets/images/greyscale_bird.png',
+  );
+  const minionsBananaAlphaBytes = fs.readFileSync(
+    'assets/images/minions_banana_alpha.png',
+  );
+  const minionsBananaNoAlphaBytes = fs.readFileSync(
+    'assets/images/minions_banana_no_alpha.png',
+  );
 
-const operators = [
-  PDFOperator.of(Ops.BeginText),
-  PDFOperator.of(Ops.SetFontAndSize, [PDFName.of('F1'), PDFNumber.of(24)]),
-  PDFOperator.of(Ops.MoveText, [PDFNumber.of(100), PDFNumber.of(100)]),
-  PDFOperator.of(Ops.ShowText, [
-    helveticaEmbedder.encodeText('Hello World and stuff!'),
-  ]),
-  PDFOperator.of(Ops.EndText),
-];
-const contentStreamDict = context.obj({});
-const contentStream = PDFContentStream.of(contentStreamDict, operators);
-const contentStreamRef = context.register(contentStream);
+  const pdfDoc = PDFDocument.create();
 
-const helveticaFontRef = helveticaEmbedder.embedIntoContext(context);
+  const page = pdfDoc.insertPage(0);
 
-const pageTree = PDFPageTree.withContext(context);
-const pageTreeRef = context.register(pageTree);
+  const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
+  const ubuntuFont = pdfDoc.embedFont(ubuntuFontBytes);
 
-const pageLeaf = PDFPageLeaf.withContextAndParent(context, pageTreeRef);
-pageLeaf.set(PDFName.of('Contents'), contentStreamRef);
-pageLeaf.set(
-  PDFName.of('Resources'),
-  context.obj({ Font: { F1: helveticaFontRef } }),
-);
-const pageRef = context.register(pageLeaf);
+  const catRidingUnicornJpg = pdfDoc.embedJpg(catRidingUnicornBytes);
+  const greyscaleBirdPng = pdfDoc.embedPng(greyscaleBirdBytes);
+  const minionsBananaAlphaPng = pdfDoc.embedPng(minionsBananaAlphaBytes);
+  const minionsBananaNoAlphaPng = pdfDoc.embedPng(minionsBananaNoAlphaBytes);
 
-pageTree.pushLeafNode(pageRef);
+  page.moveTo(25, 25);
+  page.drawImage(greyscaleBirdPng, greyscaleBirdPng.scale(0.75));
+  page.moveTo(25, 25);
+  page.drawImage(minionsBananaAlphaPng, minionsBananaAlphaPng.scale(0.25));
+  page.moveTo(25, 325);
+  page.drawImage(minionsBananaNoAlphaPng, minionsBananaNoAlphaPng.scale(0.25));
+  page.moveTo(25, 450);
+  page.drawImage(catRidingUnicornJpg, catRidingUnicornJpg.scale(0.25));
 
-const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
-context.trailerInfo.Root = context.register(catalog);
+  page.setFontSize(24);
+  page.setFont(helveticaFont);
+  page.moveTo(100, 100);
+  page.drawText('Hello World and stuff!');
+  page.setFont(ubuntuFont);
+  page.moveTo(100, 300);
+  page.drawText('Ubuntu - Hello World and stuff!');
 
-const buffer = PDFWriter.serializeContextToBuffer(context);
-console.timeEnd('Scratchpad');
+  page.setFontSize(50);
+  page.moveTo(100, 100);
+  page.drawText('Foo Bar Qux Baz!!!');
 
-fs.writeFileSync('./out.pdf', buffer);
-console.log('File written to ./out.pdf');
+  /*******************/
+
+  const pdfBytes2 = fs.readFileSync('./assets/pdfs/F1040V_tax_form.pdf');
+
+  const donorPdfDoc = PDFDocument.load(pdfBytes2);
+  const donorPage = donorPdfDoc.getPages()[0];
+  pdfDoc.insertPage(1, donorPage);
+
+  const buffer = await pdfDoc.save();
+  console.timeEnd('Scratchpad');
+
+  fs.writeFileSync('./out.pdf', buffer);
+  console.log('File written to ./out.pdf');
+};
+
+main();
+
+// (async () => {
+//   const fs = require('fs');
+//   const pdfDoc = PDFDocument.create();
+//   pdfDoc.addPage().drawText('This is a test...');
+//   const buffer = await pdfDoc.save();
+//   fs.writeFileSync('./out.pdf', buffer);
+//   console.log('File written to ./out.pdf');
+// })();
