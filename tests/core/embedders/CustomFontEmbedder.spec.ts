@@ -5,6 +5,7 @@ import {
   PDFContext,
   PDFDict,
   PDFHexString,
+  PDFRef,
 } from 'src/index';
 
 const ubuntuFont = fs.readFileSync('./assets/fonts/ubuntu/Ubuntu-R.ttf');
@@ -15,7 +16,12 @@ describe(`CustomFontEmbedder`, () => {
     expect(embedder).toBeInstanceOf(CustomFontEmbedder);
   });
 
-  it(`can embed standard font dictionaries into PDFContexts`, async () => {
+  it(`exposes the font's name`, () => {
+    const embedder = CustomFontEmbedder.for(new Uint8Array(ubuntuFont));
+    expect(embedder.fontName).toBe('Ubuntu');
+  });
+
+  it(`can embed font dictionaries into PDFContexts without a predefined ref`, async () => {
     const context = PDFContext.create();
     const embedder = CustomFontEmbedder.for(new Uint8Array(ubuntuFont));
 
@@ -23,6 +29,18 @@ describe(`CustomFontEmbedder`, () => {
     const ref = await embedder.embedIntoContext(context);
     expect(context.enumerateIndirectObjects().length).toBe(5);
     expect(context.lookup(ref)).toBeInstanceOf(PDFDict);
+  });
+
+  it(`can embed font dictionaries into PDFContexts with a predefined ref`, async () => {
+    const context = PDFContext.create();
+    const predefinedRef = PDFRef.of(9999);
+    const embedder = CustomFontEmbedder.for(new Uint8Array(ubuntuFont));
+
+    expect(context.enumerateIndirectObjects().length).toBe(0);
+    const ref = await embedder.embedIntoContext(context, predefinedRef);
+    expect(context.enumerateIndirectObjects().length).toBe(5);
+    expect(context.lookup(predefinedRef)).toBeInstanceOf(PDFDict);
+    expect(ref).toBe(predefinedRef);
   });
 
   it(`can encode text strings into PDFHexString objects`, () => {

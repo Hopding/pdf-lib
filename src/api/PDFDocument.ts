@@ -1,22 +1,22 @@
 import PDFFont from 'src/api/PDFFont';
+import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
 import {
   CustomFontSubsetEmbedder,
+  JpegEmbedder,
   PDFCatalog,
   PDFContext,
   PDFObjectCopier,
   PDFPageLeaf,
   PDFPageTree,
   PDFParser,
+  PDFStreamWriter,
+  PDFWriter,
+  PngEmbedder,
   StandardFontEmbedder,
   StandardFonts,
-  JpegEmbedder,
-  PngEmbedder,
-  PDFWriter,
-  PDFStreamWriter,
 } from 'src/core';
 import { Cache } from 'src/utils';
-import PDFImage from 'src/api/PDFImage';
 
 class PDFDocument {
   static load = (bytes: Uint8Array) => {

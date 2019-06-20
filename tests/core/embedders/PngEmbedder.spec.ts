@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PDFContext, PDFRawStream, PngEmbedder } from 'src/core';
+import { PDFContext, PDFRawStream, PDFRef, PngEmbedder } from 'src/core';
 
 const greyscalePng = fs.readFileSync('./assets/images/greyscale_bird.png');
 const rgbaPng = fs.readFileSync('./assets/images/minions_banana_alpha.png');
@@ -9,6 +9,18 @@ describe(`PngEmbedder`, () => {
   it(`can be constructed with PngEmbedder.for(...)`, () => {
     const embedder = PngEmbedder.for(greyscalePng);
     expect(embedder).toBeInstanceOf(PngEmbedder);
+  });
+
+  it(`can embed PNG images into PDFContexts with a predefined ref`, () => {
+    const context = PDFContext.create();
+    const predefinedRef = PDFRef.of(9999);
+    const embedder = PngEmbedder.for(greyscalePng);
+
+    expect(context.enumerateIndirectObjects().length).toBe(0);
+    const ref = embedder.embedIntoContext(context, predefinedRef);
+    expect(context.enumerateIndirectObjects().length).toBe(2);
+    expect(context.lookup(predefinedRef)).toBeInstanceOf(PDFRawStream);
+    expect(ref).toBe(predefinedRef);
   });
 
   it(`can embed greyscale PNG images into PDFContexts`, () => {

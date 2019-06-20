@@ -2,6 +2,7 @@ import pako from 'pako';
 
 import {
   mergeIntoTypedArray,
+  moveText,
   PDFContentStream,
   PDFContext,
   PDFDict,
@@ -10,6 +11,8 @@ import {
   PDFOperator,
   PDFOperatorNames as Ops,
   PDFString,
+  popGraphicsState,
+  pushGraphicsState,
   toCharCode,
   typedArrayFor,
 } from 'src/index';
@@ -28,6 +31,19 @@ describe(`PDFContentStream`, () => {
   it(`can be constructed from PDFContentStream.of(...)`, () => {
     expect(PDFContentStream.of(dict, operators, false)).toBeInstanceOf(
       PDFContentStream,
+    );
+  });
+
+  it(`allows operators to be pushed to the end of the stream`, () => {
+    const stream = PDFContentStream.of(dict, [pushGraphicsState()], false);
+    stream.push(moveText(21, 99), popGraphicsState());
+    expect(String(stream)).toEqual(
+      '<<\n/Length 13\n>>\n' +
+        'stream\n' +
+        'q\n' +
+        '21 99 Td\n' +
+        'Q\n' +
+        '\nendstream',
     );
   });
 

@@ -59,6 +59,39 @@ describe(`PDFArray`, () => {
     expect(pdfArray.get(7)).toBe(pdfRef);
   });
 
+  it(`allows objects to be assigned to specific indices`, () => {
+    const array = PDFArray.withContext(PDFContext.create());
+    array.push(PDFName.of('a'));
+    array.push(PDFName.of('b'));
+    array.push(PDFName.of('c'));
+    array.set(1, PDFName.of('z'));
+    expect(array.get(1)).toBe(PDFName.of('z'));
+    expect(array.size()).toBe(3);
+  });
+
+  it(`allows objects to be inserted at specific indices`, () => {
+    const array = PDFArray.withContext(PDFContext.create());
+    array.push(PDFName.of('a'));
+    array.push(PDFName.of('b'));
+    array.push(PDFName.of('c'));
+    array.insert(1, PDFName.of('z'));
+    expect(array.get(0)).toBe(PDFName.of('a'));
+    expect(array.get(1)).toBe(PDFName.of('z'));
+    expect(array.get(2)).toBe(PDFName.of('b'));
+    expect(array.size()).toBe(4);
+  });
+
+  it(`allows objects to be removed from specific indices`, () => {
+    const array = PDFArray.withContext(PDFContext.create());
+    array.push(PDFName.of('a'));
+    array.push(PDFName.of('b'));
+    array.push(PDFName.of('c'));
+    array.remove(1);
+    expect(array.get(0)).toBe(PDFName.of('a'));
+    expect(array.get(1)).toBe(PDFName.of('c'));
+    expect(array.size()).toBe(2);
+  });
+
   it(`can be cloned`, () => {
     const original = pdfArray;
     const clone = original.clone();
