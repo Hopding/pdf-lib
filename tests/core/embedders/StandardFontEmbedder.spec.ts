@@ -2,6 +2,7 @@ import {
   PDFContext,
   PDFDict,
   PDFHexString,
+  PDFRef,
   StandardFontEmbedder,
   StandardFonts,
 } from 'src/index';
@@ -12,7 +13,12 @@ describe(`StandardFontEmbedder`, () => {
     expect(embedder).toBeInstanceOf(StandardFontEmbedder);
   });
 
-  it(`can embed standard font dictionaries into PDFContexts`, () => {
+  it(`exposes the font's name`, () => {
+    const embedder = StandardFontEmbedder.for(StandardFonts.HelveticaOblique);
+    expect(embedder.fontName).toBe('Helvetica-Oblique');
+  });
+
+  it(`can embed standard font dictionaries into PDFContexts without a predefined ref`, () => {
     const context = PDFContext.create();
     const embedder = StandardFontEmbedder.for(StandardFonts.Courier);
 
@@ -20,6 +26,18 @@ describe(`StandardFontEmbedder`, () => {
     const ref = embedder.embedIntoContext(context);
     expect(context.enumerateIndirectObjects().length).toBe(1);
     expect(context.lookup(ref)).toBeInstanceOf(PDFDict);
+  });
+
+  it(`can embed standard font dictionaries into PDFContexts with a predefined ref`, () => {
+    const context = PDFContext.create();
+    const predefinedRef = PDFRef.of(9999);
+    const embedder = StandardFontEmbedder.for(StandardFonts.Courier);
+
+    expect(context.enumerateIndirectObjects().length).toBe(0);
+    const ref = embedder.embedIntoContext(context, predefinedRef);
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+    expect(context.lookup(predefinedRef)).toBeInstanceOf(PDFDict);
+    expect(ref).toBe(predefinedRef);
   });
 
   it(`can encode text strings into PDFHexString objects`, () => {

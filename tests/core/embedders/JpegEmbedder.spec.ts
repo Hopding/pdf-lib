@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { JpegEmbedder, PDFContext, PDFRawStream } from 'src/core';
+import { JpegEmbedder, PDFContext, PDFRawStream, PDFRef } from 'src/core';
 
 const catUnicornJpg = fs.readFileSync('./assets/images/cat_riding_unicorn.jpg');
 const minionsLaughing = fs.readFileSync('./assets/images/minions_laughing.jpg');
@@ -10,7 +10,7 @@ describe(`JpegEmbedder`, () => {
     expect(embedder).toBeInstanceOf(JpegEmbedder);
   });
 
-  it(`can embed JPEG images into PDFContexts`, () => {
+  it(`can embed JPEG images into PDFContexts without a predefined ref`, () => {
     const context = PDFContext.create();
     const embedder = JpegEmbedder.for(catUnicornJpg);
 
@@ -18,6 +18,18 @@ describe(`JpegEmbedder`, () => {
     const ref = embedder.embedIntoContext(context);
     expect(context.enumerateIndirectObjects().length).toBe(1);
     expect(context.lookup(ref)).toBeInstanceOf(PDFRawStream);
+  });
+
+  it(`can embed JPEG images into PDFContexts with a predefined ref`, () => {
+    const context = PDFContext.create();
+    const predefinedRef = PDFRef.of(9999);
+    const embedder = JpegEmbedder.for(catUnicornJpg);
+
+    expect(context.enumerateIndirectObjects().length).toBe(0);
+    const ref = embedder.embedIntoContext(context, predefinedRef);
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+    expect(context.lookup(predefinedRef)).toBeInstanceOf(PDFRawStream);
+    expect(ref).toBe(predefinedRef);
   });
 
   it(`can extract properties of JPEG images (1)`, () => {
