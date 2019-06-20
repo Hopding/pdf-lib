@@ -173,6 +173,72 @@ describe(`PDFPageLeaf`, () => {
     expect(pageLeaf.Rotate()).toBe(rotate);
   });
 
+  it(`can set its Parent`, () => {
+    const context = PDFContext.create();
+    const parentRef = PDFRef.of(1);
+    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
+    pageTree.setParent(PDFRef.of(21));
+    expect(pageTree.get(PDFName.of('Parent'))).toBe(PDFRef.of(21));
+  });
+
+  it(`can add content stream refs`, () => {
+    const context = PDFContext.create();
+    const parentRef = PDFRef.of(1);
+    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
+    pageTree.normalize();
+
+    pageTree.addContentStream(PDFRef.of(21));
+    expect(pageTree.Contents()!.toString()).toBe('[ 21 0 R ]');
+    pageTree.addContentStream(PDFRef.of(99));
+    expect(pageTree.Contents()!.toString()).toBe('[ 21 0 R 99 0 R ]');
+  });
+
+  it(`can set font dictionary refs`, () => {
+    const context = PDFContext.create();
+    const parentRef = PDFRef.of(1);
+    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
+    pageTree.normalize();
+
+    const Font = PDFName.of('Font');
+    pageTree.setFontDictionary(PDFName.of('Foo'), PDFRef.of(21));
+    expect(
+      pageTree
+        .Resources()
+        .get(Font)!
+        .toString(),
+    ).toBe('<<\n/Foo 21 0 R\n>>');
+    pageTree.setFontDictionary(PDFName.of('Bar'), PDFRef.of(99));
+    expect(
+      pageTree
+        .Resources()
+        .get(Font)!
+        .toString(),
+    ).toBe('<<\n/Foo 21 0 R\n/Bar 99 0 R\n>>');
+  });
+
+  it(`can set XObject refs`, () => {
+    const context = PDFContext.create();
+    const parentRef = PDFRef.of(1);
+    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
+    pageTree.normalize();
+
+    const XObject = PDFName.of('XObject');
+    pageTree.setXObject(PDFName.of('Foo'), PDFRef.of(21));
+    expect(
+      pageTree
+        .Resources()
+        .get(XObject)!
+        .toString(),
+    ).toBe('<<\n/Foo 21 0 R\n>>');
+    pageTree.setXObject(PDFName.of('Bar'), PDFRef.of(99));
+    expect(
+      pageTree
+        .Resources()
+        .get(XObject)!
+        .toString(),
+    ).toBe('<<\n/Foo 21 0 R\n/Bar 99 0 R\n>>');
+  });
+
   it(`can be ascended`, () => {
     const context = PDFContext.create();
 
@@ -193,5 +259,34 @@ describe(`PDFPageLeaf`, () => {
     });
 
     expect(visitations).toEqual([pageLeaf, pageTree2, pageTree1]);
+  });
+
+  it(`can be normalized`, () => {
+    const context = PDFContext.create();
+    const parentRef = PDFRef.of(1);
+    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
+    const stream = context.stream('foo');
+    const streamRef = PDFRef.of(21);
+    context.assign(streamRef, stream);
+    pageTree.set(PDFName.of('Contents'), streamRef);
+
+    expect(pageTree.Contents()).toBe(stream);
+    expect(pageTree.Resources().toString()).toBe('<<\n>>');
+
+    pageTree.normalize();
+
+    expect(pageTree.Contents()!.toString()).toBe('[ 21 0 R ]');
+    expect(pageTree.Resources().toString()).toBe(
+      '<<\n/Font <<\n>>\n/XObject <<\n>>\n>>',
+    );
+  });
+
+  it(`can assert that it has been normalized`, () => {
+    const context = PDFContext.create();
+    const parentRef = PDFRef.of(1);
+    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
+    expect(() => pageTree.assertNormalized()).toThrow();
+    pageTree.normalize();
+    expect(() => pageTree.assertNormalized()).not.toThrow();
   });
 });
