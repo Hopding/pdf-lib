@@ -1,12 +1,5 @@
 import { Color, rgb } from 'src/api/colors';
-import { drawLinesOfText } from 'src/api/operations';
-import {
-  drawObject,
-  popGraphicsState,
-  pushGraphicsState,
-  scale,
-  translate,
-} from 'src/api/operators';
+import { drawImage, drawLinesOfText } from 'src/api/operations';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
@@ -114,19 +107,50 @@ class PDFPage {
   }
 
   // TODO: Reuse image XObject name if we've already added this image to Resources.XObjects
-  drawImage(image: PDFImage, size?: { width: number; height: number }): void {
-    if (!size) size = image.scale(1);
+  drawImage(
+    image: PDFImage,
+    options: {
+      x?: number | PDFNumber;
+      y?: number | PDFNumber;
+      width?: number | PDFNumber;
+      height?: number | PDFNumber;
+      rotate?: Rotation;
+      xSkew?: Rotation;
+      ySkew?: Rotation;
+    } = {},
+  ): void {
+    // if (!size) size = image.scale(1);
     const contentStream = this.getContentStream();
     const xObjectKey = addRandomSuffix('Image', 4);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
+
+    // contentStream.push(
+    //   pushGraphicsState(),
+    //   translate(this.x, this.y),
+    //   scale(size.width, size.height),
+    //   drawObject(xObjectKey),
+    //   popGraphicsState(),
+    // );
     contentStream.push(
-      pushGraphicsState(),
-      translate(this.x, this.y),
-      scale(size.width, size.height),
-      drawObject(xObjectKey),
-      popGraphicsState(),
+      ...drawImage(xObjectKey, {
+        x: options.x || this.x,
+        y: options.y || this.y,
+        width: options.width || image.size().width,
+        height: options.height || image.size().height,
+        rotate: options.rotate || degrees(0),
+        xSkew: options.xSkew || degrees(0),
+        ySkew: options.ySkew || degrees(0),
+      }),
     );
   }
+
+  // x: number | PDFNumber;
+  // y: number | PDFNumber;
+  // width: number | PDFNumber;
+  // height: number | PDFNumber;
+  // rotate: Rotation;
+  // xSkew: Rotation;
+  // ySkew: Rotation;
 
   private preprocessText(text: string): string[] {
     return text
