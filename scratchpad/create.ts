@@ -38,8 +38,14 @@ const main = async () => {
   page.drawImage(minionsBananaAlphaPng, minionsBananaAlphaPng.scale(0.25));
   page.moveTo(25, 325);
   page.drawImage(minionsBananaNoAlphaPng, minionsBananaNoAlphaPng.scale(0.25));
-  page.moveTo(25, 450);
-  page.drawImage(catRidingUnicornJpg, catRidingUnicornJpg.scale(0.25));
+  page.drawImage(catRidingUnicornJpg, {
+    ...catRidingUnicornJpg.scale(0.25),
+    x: 25,
+    y: 450,
+    rotate: degrees(5),
+    xSkew: degrees(15),
+    ySkew: degrees(15),
+  });
 
   page.setFontSize(24);
   page.setFont(helveticaFont);

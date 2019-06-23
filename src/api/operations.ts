@@ -1,15 +1,22 @@
 import { Color, setFillingColor } from 'src/api/colors';
 import {
   beginText,
+  drawObject,
   endText,
   nextLine,
+  popGraphicsState,
+  pushGraphicsState,
   rotateAndSkewTextRadiansAndTranslate,
+  rotateRadians,
+  scale,
   setFontAndSize,
   setLineHeight,
   showText,
+  skewRadians,
+  translate,
 } from 'src/api/operators';
 import { Rotation, toRadians } from 'src/api/rotations';
-import { PDFHexString, PDFName, PDFNumber } from 'src/core';
+import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
 
 export const drawText = (
   line: PDFHexString,
@@ -23,7 +30,7 @@ export const drawText = (
     x: number | PDFNumber;
     y: number | PDFNumber;
   },
-) => [
+): PDFOperator[] => [
   beginText(),
   setFillingColor(options.color),
   setFontAndSize(options.font, options.size),
@@ -51,7 +58,7 @@ export const drawLinesOfText = (
     y: number | PDFNumber;
     lineHeight: number | PDFNumber;
   },
-) => {
+): PDFOperator[] => {
   const operators = [
     beginText(),
     setFillingColor(options.color),
@@ -73,3 +80,24 @@ export const drawLinesOfText = (
   operators.push(endText());
   return operators;
 };
+
+export const drawImage = (
+  name: string | PDFName,
+  options: {
+    x: number | PDFNumber;
+    y: number | PDFNumber;
+    width: number | PDFNumber;
+    height: number | PDFNumber;
+    rotate: Rotation;
+    xSkew: Rotation;
+    ySkew: Rotation;
+  },
+): PDFOperator[] => [
+  pushGraphicsState(),
+  translate(options.x, options.y),
+  rotateRadians(toRadians(options.rotate)),
+  scale(options.width, options.height),
+  skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
+  drawObject(name),
+  popGraphicsState(),
+];
