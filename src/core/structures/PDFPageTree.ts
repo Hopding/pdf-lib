@@ -99,8 +99,8 @@ class PDFPageTree extends PDFDict {
     let kidIdx = 0;
     let currIndex = 0;
     while (currIndex < index) {
-      if (kidIdx >= kidSize) {
-        throw new Error(`Index out of bounds: ${kidIdx}/${kidSize}`);
+      if (kidIdx >= kidSize - 1) {
+        throw new Error(`Index out of bounds: ${kidIdx}/${kidSize - 1}`);
       }
 
       const kidRef = Kids.get(kidIdx++) as PDFRef;

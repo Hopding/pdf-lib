@@ -7,7 +7,7 @@ import PDFPageTree from 'src/core/structures/PDFPageTree';
 class PDFCatalog extends PDFDict {
   static withContextAndPages = (
     context: PDFContext,
-    pages: PDFRef | PDFPageTree,
+    pages: PDFPageTree | PDFRef,
   ) => {
     const dict = new Map();
     dict.set(PDFName.of('Type'), PDFName.of('Catalog'));

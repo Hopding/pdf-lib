@@ -3,6 +3,7 @@ import {
   PDFContext,
   PDFDict,
   PDFName,
+  PDFPageLeaf,
   PDFPageTree,
   PDFRef,
 } from 'src/index';
@@ -43,5 +44,65 @@ describe(`PDFCatalog`, () => {
     const catalog = PDFCatalog.withContextAndPages(context, pages);
 
     expect(catalog.Pages()).toBe(pages);
+  });
+
+  it(`can insert leaf nodes`, () => {
+    const context = PDFContext.create();
+
+    const pageTree1 = PDFPageTree.withContext(context);
+    const pageTreeRef1 = context.register(pageTree1);
+
+    const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef1);
+
+    const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
+    const leafRef1 = context.register(leaf1);
+
+    const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
+    const leafRef2 = context.register(leaf2);
+
+    pageTree1.pushLeafNode(leafRef1);
+    pageTree1.pushLeafNode(leafRef2);
+
+    expect(pageTree1.Count().value()).toBe(2);
+    expect(pageTree1.Kids().get(1)).toBe(leafRef2);
+    expect(pageTree1.Kids().get(2)).toBe(undefined);
+
+    const newLeaf = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
+    const newLeafRef = context.register(newLeaf);
+    const insertionRef = catalog.insertLeafNode(newLeafRef, 2);
+
+    expect(pageTree1.Count().value()).toBe(3);
+
+    expect(insertionRef).toBe(pageTreeRef1);
+    expect(pageTree1.Kids().get(1)).toBe(leafRef2);
+    expect(pageTree1.Kids().get(2)).toBe(newLeafRef);
+  });
+
+  it(`can remove leaf nodes`, () => {
+    const context = PDFContext.create();
+
+    const pageTree1 = PDFPageTree.withContext(context);
+    const pageTreeRef1 = context.register(pageTree1);
+
+    const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef1);
+
+    const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
+    const leafRef1 = context.register(leaf1);
+
+    const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
+    const leafRef2 = context.register(leaf2);
+
+    pageTree1.pushLeafNode(leafRef1);
+    pageTree1.pushLeafNode(leafRef2);
+
+    expect(pageTree1.Count().value()).toBe(2);
+    expect(pageTree1.Kids().get(0)).toBe(leafRef1);
+    expect(pageTree1.Kids().get(1)).toBe(leafRef2);
+
+    catalog.removeLeafNode(1);
+
+    expect(pageTree1.Count().value()).toBe(1);
+    expect(pageTree1.Kids().get(0)).toBe(leafRef1);
+    expect(pageTree1.Kids().get(1)).toBe(undefined);
   });
 });
