@@ -1,5 +1,10 @@
 import { Color, rgb } from 'src/api/colors';
-import { drawImage, drawLinesOfText } from 'src/api/operations';
+import {
+  drawEllipse,
+  drawImage,
+  drawLinesOfText,
+  drawRectangle,
+} from 'src/api/operations';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
@@ -33,10 +38,10 @@ class PDFPage {
   private fontKey?: string;
   private font?: PDFFont;
   private fontSize = 24;
+  private fontColor = rgb(0, 0, 0) as Color;
   private lineHeight = 24;
   private x = 0;
   private y = 0;
-  private fillingColor = rgb(0, 0, 0);
   private contentStream?: PDFContentStream;
   private contentStreamRef?: PDFRef;
 
@@ -57,6 +62,14 @@ class PDFPage {
 
   setFontSize(fontSize: number): void {
     this.fontSize = fontSize;
+  }
+
+  setFontColor(fontColor: Color): void {
+    this.fontColor = fontColor;
+  }
+
+  setLineHeight(lineHeight: number): void {
+    this.lineHeight = lineHeight;
   }
 
   moveTo(x: number, y: number): void {
@@ -91,7 +104,7 @@ class PDFPage {
     const contentStream = this.getContentStream();
     contentStream.push(
       ...drawLinesOfText(encodedLines, {
-        color: options.color || this.fillingColor,
+        color: options.color || this.fontColor,
         font: fontKey,
         size: options.size || this.fontSize,
         rotate: options.rotate || degrees(0),
@@ -119,18 +132,10 @@ class PDFPage {
       ySkew?: Rotation;
     } = {},
   ): void {
-    // if (!size) size = image.scale(1);
-    const contentStream = this.getContentStream();
     const xObjectKey = addRandomSuffix('Image', 4);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
-    // contentStream.push(
-    //   pushGraphicsState(),
-    //   translate(this.x, this.y),
-    //   scale(size.width, size.height),
-    //   drawObject(xObjectKey),
-    //   popGraphicsState(),
-    // );
+    const contentStream = this.getContentStream();
     contentStream.push(
       ...drawImage(xObjectKey, {
         x: options.x || this.x,
@@ -144,13 +149,63 @@ class PDFPage {
     );
   }
 
-  // x: number | PDFNumber;
-  // y: number | PDFNumber;
-  // width: number | PDFNumber;
-  // height: number | PDFNumber;
-  // rotate: Rotation;
-  // xSkew: Rotation;
-  // ySkew: Rotation;
+  drawRectangle(
+    options: {
+      x?: number | PDFNumber;
+      y?: number | PDFNumber;
+      width?: number | PDFNumber;
+      height?: number | PDFNumber;
+      rotate?: Rotation;
+      xSkew?: Rotation;
+      ySkew?: Rotation;
+      borderWidth?: number | PDFNumber;
+      color?: Color;
+      borderColor?: Color;
+    } = {},
+  ): void {
+    const contentStream = this.getContentStream();
+    if (!options.color && !options.borderColor) options.color = rgb(0, 0, 0);
+    contentStream.push(
+      ...drawRectangle({
+        x: options.x || this.x,
+        y: options.y || this.y,
+        width: options.width || 150,
+        height: options.height || 100,
+        rotate: options.rotate || degrees(0),
+        xSkew: options.xSkew || degrees(0),
+        ySkew: options.ySkew || degrees(0),
+        borderWidth: options.borderWidth || 0,
+        color: options.color || undefined,
+        borderColor: options.borderColor || undefined,
+      }),
+    );
+  }
+
+  drawEllipse(
+    options: {
+      x?: number | PDFNumber;
+      y?: number | PDFNumber;
+      xScale?: number | PDFNumber;
+      yScale?: number | PDFNumber;
+      color?: Color;
+      borderColor?: Color;
+      borderWidth?: number | PDFNumber;
+    } = {},
+  ): void {
+    const contentStream = this.getContentStream();
+    if (!options.color && !options.borderColor) options.color = rgb(0, 0, 0);
+    contentStream.push(
+      ...drawEllipse({
+        x: options.x || this.x,
+        y: options.y || this.y,
+        xScale: options.xScale || 100,
+        yScale: options.yScale || 100,
+        color: options.color || undefined,
+        borderColor: options.borderColor || undefined,
+        borderWidth: options.borderWidth || 0,
+      }),
+    );
+  }
 
   private preprocessText(text: string): string[] {
     return text
