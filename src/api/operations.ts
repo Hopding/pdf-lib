@@ -1,8 +1,15 @@
-import { Color, setFillingColor } from 'src/api/colors';
+import { Color, setFillingColor, setStrokingColor } from 'src/api/colors';
 import {
+  appendBezierCurve,
   beginText,
+  closePath,
   drawObject,
   endText,
+  fill,
+  fillAndStroke,
+  lineTo,
+  lineWidth,
+  moveTo,
   nextLine,
   popGraphicsState,
   pushGraphicsState,
@@ -13,10 +20,12 @@ import {
   setLineHeight,
   showText,
   skewRadians,
+  stroke,
   translate,
 } from 'src/api/operators';
 import { Rotation, toRadians } from 'src/api/rotations';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
+import { asNumber } from './objects';
 
 export const drawText = (
   line: PDFHexString,
@@ -101,3 +110,109 @@ export const drawImage = (
   drawObject(name),
   popGraphicsState(),
 ];
+
+export const drawRectangle = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  rotate: Rotation;
+  xSkew: Rotation;
+  ySkew: Rotation;
+}) =>
+  [
+    pushGraphicsState(),
+    options.color && setFillingColor(options.color),
+    options.borderColor && setStrokingColor(options.borderColor),
+    lineWidth(options.borderWidth),
+    translate(options.x, options.y),
+    rotateRadians(toRadians(options.rotate)),
+    skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
+    moveTo(0, 0),
+    lineTo(0, options.height),
+    lineTo(options.width, options.height),
+    lineTo(options.width, 0),
+    closePath(),
+
+    // prettier-ignore
+    options.color && options.borderWidth ? fillAndStroke()
+  : options.color                      ? fill()
+  : options.borderColor                ? stroke()
+  : closePath(),
+
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
+
+const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
+
+// const drawEllipsePath = ({
+//   x = 0,
+//   y = 0,
+//   xScale = 100,
+//   yScale = 100,
+// }): PDFOperator[] => {
+
+export const drawEllipsePath = (config: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  xScale: number | PDFNumber;
+  yScale: number | PDFNumber;
+}): PDFOperator[] => {
+  let x = asNumber(config.x);
+  let y = asNumber(config.y);
+  const xScale = asNumber(config.xScale);
+  const yScale = asNumber(config.yScale);
+
+  x -= xScale;
+  y -= yScale;
+
+  const ox = xScale * KAPPA;
+  const oy = yScale * KAPPA;
+  const xe = x + xScale * 2;
+  const ye = y + yScale * 2;
+  const xm = x + xScale;
+  const ym = y + yScale;
+
+  return [
+    pushGraphicsState(),
+    moveTo(x, ym),
+    appendBezierCurve(x, ym - oy, xm - ox, y, xm, y),
+    appendBezierCurve(xm + ox, y, xe, ym - oy, xe, ym),
+    appendBezierCurve(xe, ym + oy, xm + ox, ye, xm, ye),
+    appendBezierCurve(xm - ox, ye, x, ym + oy, x, ym),
+    popGraphicsState(),
+  ];
+};
+
+export const drawEllipse = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  xScale: number | PDFNumber;
+  yScale: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  borderWidth: number | PDFNumber;
+}) =>
+  [
+    pushGraphicsState(),
+    options.color && setFillingColor(options.color),
+    options.borderColor && setStrokingColor(options.borderColor),
+    lineWidth(options.borderWidth),
+    ...drawEllipsePath({
+      x: options.x,
+      y: options.y,
+      xScale: options.xScale,
+      yScale: options.yScale,
+    }),
+
+    // prettier-ignore
+    options.color && options.borderWidth ? fillAndStroke()
+  : options.color                      ? fill()
+  : options.borderColor                ? stroke()
+  : closePath(),
+
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];

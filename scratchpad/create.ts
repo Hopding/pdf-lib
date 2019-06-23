@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { degrees, PDFDocument, rgb, StandardFonts } from 'src/index';
+import { cmyk, degrees, PDFDocument, rgb, StandardFonts } from 'src/index';
 
 const main = async () => {
   console.time('Scratchpad');
@@ -69,13 +69,48 @@ const main = async () => {
     lineHeight: 100,
   });
 
+  const page2 = pdfDoc.addPage();
+  page2.moveTo(50, 50);
+  page2.drawRectangle();
+  page2.drawRectangle({
+    x: 50,
+    y: 200,
+    borderColor: cmyk(0, 1, 0, 0),
+    borderWidth: 5,
+  });
+  page2.drawRectangle({
+    x: 100,
+    y: 400,
+    color: cmyk(1, 0, 0, 0),
+    borderColor: cmyk(0, 1, 0, 0),
+    borderWidth: 5,
+    width: 300,
+    height: 200,
+    rotate: degrees(15),
+    xSkew: degrees(15),
+    ySkew: degrees(15),
+  });
+
+  const page3 = pdfDoc.addPage();
+  page3.moveTo(100, 100);
+  page3.drawEllipse();
+  page3.drawEllipse({
+    x: 250,
+    y: 300,
+    color: cmyk(1, 0, 0, 0),
+    borderColor: cmyk(0, 1, 0, 0),
+    borderWidth: 5,
+    xScale: 200,
+    yScale: 50,
+  });
+
   /*******************/
 
   const pdfBytes2 = fs.readFileSync('./assets/pdfs/F1040V_tax_form.pdf');
 
   const donorPdfDoc = PDFDocument.load(pdfBytes2);
   const donorPage = donorPdfDoc.getPages()[0];
-  pdfDoc.insertPage(1, donorPage);
+  pdfDoc.addPage(donorPage);
 
   const buffer = await pdfDoc.save();
   console.timeEnd('Scratchpad');
