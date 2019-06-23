@@ -1,4 +1,5 @@
 import { Color, setFillingColor, setStrokingColor } from 'src/api/colors';
+import { asNumber } from 'src/api/objects';
 import {
   appendBezierCurve,
   beginText,
@@ -25,20 +26,21 @@ import {
 } from 'src/api/operators';
 import { Rotation, toRadians } from 'src/api/rotations';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
-import { asNumber } from './objects';
+
+export interface DrawTextOptions {
+  color: Color;
+  font: string | PDFName;
+  size: number | PDFNumber;
+  rotate: Rotation;
+  xSkew: Rotation;
+  ySkew: Rotation;
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+}
 
 export const drawText = (
   line: PDFHexString,
-  options: {
-    color: Color;
-    font: string | PDFName;
-    size: number | PDFNumber;
-    rotate: Rotation;
-    xSkew: Rotation;
-    ySkew: Rotation;
-    x: number | PDFNumber;
-    y: number | PDFNumber;
-  },
+  options: DrawTextOptions,
 ): PDFOperator[] => [
   beginText(),
   setFillingColor(options.color),
@@ -54,19 +56,13 @@ export const drawText = (
   endText(),
 ];
 
+export interface DrawLinesOfTextOptions extends DrawTextOptions {
+  lineHeight: number | PDFNumber;
+}
+
 export const drawLinesOfText = (
   lines: PDFHexString[],
-  options: {
-    color: Color;
-    font: string | PDFName;
-    size: number | PDFNumber;
-    rotate: Rotation;
-    xSkew: Rotation;
-    ySkew: Rotation;
-    x: number | PDFNumber;
-    y: number | PDFNumber;
-    lineHeight: number | PDFNumber;
-  },
+  options: DrawLinesOfTextOptions,
 ): PDFOperator[] => {
   const operators = [
     beginText(),
@@ -147,13 +143,6 @@ export const drawRectangle = (options: {
   ].filter(Boolean) as PDFOperator[];
 
 const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
-
-// const drawEllipsePath = ({
-//   x = 0,
-//   y = 0,
-//   xScale = 100,
-//   yScale = 100,
-// }): PDFOperator[] => {
 
 export const drawEllipsePath = (config: {
   x: number | PDFNumber;
