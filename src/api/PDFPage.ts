@@ -8,12 +8,19 @@ import {
 import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
-import { degrees, Rotation } from 'src/api/rotations';
+import {
+  DrawCircleOptions,
+  DrawEllipseOptions,
+  DrawImageOptions,
+  DrawRectangleOptions,
+  DrawSquareOptions,
+  DrawTextOptions,
+} from 'src/api/PDFPageOptions';
+import { degrees } from 'src/api/rotations';
 import {
   PDFContentStream,
   PDFHexString,
   PDFName,
-  PDFNumber,
   PDFPageLeaf,
   PDFRef,
   StandardFonts,
@@ -77,20 +84,7 @@ class PDFPage {
     this.y = y;
   }
 
-  drawText(
-    text: string,
-    options: {
-      color?: Color;
-      font?: PDFFont;
-      size?: number | PDFNumber;
-      rotate?: Rotation;
-      xSkew?: Rotation;
-      ySkew?: Rotation;
-      x?: number | PDFNumber;
-      y?: number | PDFNumber;
-      lineHeight?: number | PDFNumber;
-    } = {},
-  ): void {
+  drawText(text: string, options: DrawTextOptions = {}): void {
     const [originalFont] = this.getFont();
     if (options.font) this.setFont(options.font);
     const [font, fontKey] = this.getFont();
@@ -120,18 +114,7 @@ class PDFPage {
   }
 
   // TODO: Reuse image XObject name if we've already added this image to Resources.XObjects
-  drawImage(
-    image: PDFImage,
-    options: {
-      x?: number | PDFNumber;
-      y?: number | PDFNumber;
-      width?: number | PDFNumber;
-      height?: number | PDFNumber;
-      rotate?: Rotation;
-      xSkew?: Rotation;
-      ySkew?: Rotation;
-    } = {},
-  ): void {
+  drawImage(image: PDFImage, options: DrawImageOptions = {}): void {
     const xObjectKey = addRandomSuffix('Image', 4);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
@@ -149,20 +132,7 @@ class PDFPage {
     );
   }
 
-  drawRectangle(
-    options: {
-      x?: number | PDFNumber;
-      y?: number | PDFNumber;
-      width?: number | PDFNumber;
-      height?: number | PDFNumber;
-      rotate?: Rotation;
-      xSkew?: Rotation;
-      ySkew?: Rotation;
-      borderWidth?: number | PDFNumber;
-      color?: Color;
-      borderColor?: Color;
-    } = {},
-  ): void {
+  drawRectangle(options: DrawRectangleOptions = {}): void {
     const contentStream = this.getContentStream();
     if (!options.color && !options.borderColor) options.color = rgb(0, 0, 0);
     contentStream.push(
@@ -181,17 +151,12 @@ class PDFPage {
     );
   }
 
-  drawEllipse(
-    options: {
-      x?: number | PDFNumber;
-      y?: number | PDFNumber;
-      xScale?: number | PDFNumber;
-      yScale?: number | PDFNumber;
-      color?: Color;
-      borderColor?: Color;
-      borderWidth?: number | PDFNumber;
-    } = {},
-  ): void {
+  drawSquare(options: DrawSquareOptions = {}): void {
+    const { size } = options;
+    this.drawRectangle({ ...options, width: size, height: size });
+  }
+
+  drawEllipse(options: DrawEllipseOptions = {}): void {
     const contentStream = this.getContentStream();
     if (!options.color && !options.borderColor) options.color = rgb(0, 0, 0);
     contentStream.push(
@@ -205,6 +170,11 @@ class PDFPage {
         borderWidth: options.borderWidth || 0,
       }),
     );
+  }
+
+  drawCircle(options: DrawCircleOptions = {}): void {
+    const { scale } = options;
+    this.drawEllipse({ ...options, xScale: scale, yScale: scale });
   }
 
   private preprocessText(text: string): string[] {
