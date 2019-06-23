@@ -1,21 +1,21 @@
+import { Color, rgb } from 'src/api/colors';
+import { drawLinesOfText } from 'src/api/operations';
 import {
-  beginText,
   drawObject,
-  endText,
-  moveText,
   popGraphicsState,
   pushGraphicsState,
   scale,
-  setFontAndSize,
-  showText,
   translate,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
+import { degrees, Rotation } from 'src/api/rotations';
 import {
   PDFContentStream,
+  PDFHexString,
   PDFName,
+  PDFNumber,
   PDFPageLeaf,
   PDFRef,
   StandardFonts,
@@ -40,8 +40,10 @@ class PDFPage {
   private fontKey?: string;
   private font?: PDFFont;
   private fontSize = 24;
+  private lineHeight = 24;
   private x = 0;
   private y = 0;
+  private fillingColor = rgb(0, 0, 0);
   private contentStream?: PDFContentStream;
   private contentStreamRef?: PDFRef;
 
@@ -53,6 +55,7 @@ class PDFPage {
     leafNode.normalize();
   }
 
+  // TODO: Reuse image Font name if we've already added this image to Resources.Fonts
   setFont(font: PDFFont): void {
     this.font = font;
     this.fontKey = addRandomSuffix(this.font.name);
@@ -68,16 +71,46 @@ class PDFPage {
     this.y = y;
   }
 
-  drawText(text: string): void {
-    const contentStream = this.getContentStream();
+  drawText(
+    text: string,
+    options: {
+      color?: Color;
+      font?: PDFFont;
+      size?: number | PDFNumber;
+      rotate?: Rotation;
+      xSkew?: Rotation;
+      ySkew?: Rotation;
+      x?: number | PDFNumber;
+      y?: number | PDFNumber;
+      lineHeight?: number | PDFNumber;
+    } = {},
+  ): void {
+    const [originalFont] = this.getFont();
+    if (options.font) this.setFont(options.font);
     const [font, fontKey] = this.getFont();
+
+    const preprocessedLines = this.preprocessText(text);
+    const encodedLines = new Array(preprocessedLines.length) as PDFHexString[];
+    for (let idx = 0, len = preprocessedLines.length; idx < len; idx++) {
+      encodedLines[idx] = font.encodeText(preprocessedLines[idx]);
+    }
+
+    const contentStream = this.getContentStream();
     contentStream.push(
-      beginText(),
-      setFontAndSize(fontKey, this.fontSize),
-      moveText(this.x, this.y),
-      showText(font.encodeText(text)),
-      endText(),
+      ...drawLinesOfText(encodedLines, {
+        color: options.color || this.fillingColor,
+        font: fontKey,
+        size: options.size || this.fontSize,
+        rotate: options.rotate || degrees(0),
+        xSkew: options.xSkew || degrees(0),
+        ySkew: options.ySkew || degrees(0),
+        x: options.x || this.x,
+        y: options.y || this.y,
+        lineHeight: options.lineHeight || this.lineHeight,
+      }),
     );
+
+    if (options.font) this.setFont(originalFont);
   }
 
   // TODO: Reuse image XObject name if we've already added this image to Resources.XObjects
@@ -93,6 +126,13 @@ class PDFPage {
       drawObject(xObjectKey),
       popGraphicsState(),
     );
+  }
+
+  private preprocessText(text: string): string[] {
+    return text
+      .replace(/\t/g, '    ')
+      .replace(/[\b\v]/g, '')
+      .split(/[\r\n\f]/);
   }
 
   private getFont(): [PDFFont, string] {

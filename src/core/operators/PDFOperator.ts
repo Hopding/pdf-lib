@@ -7,8 +7,10 @@ import PDFOperatorNames from 'src/core/operators/PDFOperatorNames';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer } from 'src/utils';
+import { PDFObject } from '..';
 
 export type PDFOperatorArg =
+  | string
   | PDFName
   | PDFArray
   | PDFNumber
@@ -30,7 +32,8 @@ class PDFOperator {
   clone(context?: PDFContext): PDFOperator {
     const args = new Array(this.args.length);
     for (let idx = 0, len = args.length; idx < len; idx++) {
-      args[idx] = this.args[idx].clone(context);
+      const arg = this.args[idx];
+      args[idx] = arg instanceof PDFObject ? arg.clone(context) : arg;
     }
     return PDFOperator.of(this.name, args);
   }
@@ -47,7 +50,8 @@ class PDFOperator {
   sizeInBytes(): number {
     let size = 0;
     for (let idx = 0, len = this.args.length; idx < len; idx++) {
-      size += this.args[idx].sizeInBytes() + 1;
+      const arg = this.args[idx];
+      size += (arg instanceof PDFObject ? arg.sizeInBytes() : arg.length) + 1;
     }
     size += this.name.length;
     return size;
@@ -57,7 +61,12 @@ class PDFOperator {
     const initialOffset = offset;
 
     for (let idx = 0, len = this.args.length; idx < len; idx++) {
-      offset += this.args[idx].copyBytesInto(buffer, offset);
+      const arg = this.args[idx];
+      if (arg instanceof PDFObject) {
+        offset += arg.copyBytesInto(buffer, offset);
+      } else {
+        offset += copyStringIntoBuffer(arg, buffer, offset);
+      }
       buffer[offset++] = CharCodes.Space;
     }
 
