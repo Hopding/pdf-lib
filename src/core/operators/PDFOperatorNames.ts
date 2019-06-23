@@ -2,9 +2,9 @@ const enum PDFOperatorNames {
   // Non Stroking Color Operators
   NonStrokingColor = 'sc',
   NonStrokingColorN = 'scn',
-  NonStrokingRgb = 'rg',
-  NonStrokingGray = 'g',
-  NonStrokingCmyk = 'k',
+  NonStrokingColorRgb = 'rg',
+  NonStrokingColorGray = 'g',
+  NonStrokingColorCmyk = 'k',
   NonStrokingColorspace = 'cs',
 
   // Stroking Color Operators
@@ -71,7 +71,7 @@ const enum PDFOperatorNames {
   SetCharacterSpacing = 'Tc',
   SetFontAndSize = 'Tf',
   SetTextHorizontalScaling = 'Tz',
-  SetTextLeading = 'TL',
+  SetTextLineHeight = 'TL',
   SetTextRenderingMode = 'Tr',
   SetTextRise = 'Ts',
   SetWordSpacing = 'Tw',

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PDFDocument, StandardFonts } from 'src/index';
+import { degrees, PDFDocument, rgb, StandardFonts } from 'src/index';
 
 const main = async () => {
   console.time('Scratchpad');
@@ -23,6 +23,7 @@ const main = async () => {
 
   const page = pdfDoc.insertPage(0);
 
+  const timesRomanItalicFont = pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
   const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
   const ubuntuFont = pdfDoc.embedFont(ubuntuFontBytes);
 
@@ -50,7 +51,17 @@ const main = async () => {
 
   page.setFontSize(50);
   page.moveTo(100, 100);
-  page.drawText('Foo Bar Qux Baz!!!');
+  page.drawText('Qux Baz!!!\nFoo\tBar\b\v!!!', {
+    color: rgb(1, 0, 0),
+    font: timesRomanItalicFont,
+    size: 100,
+    x: 150,
+    y: 150,
+    rotate: degrees(45),
+    xSkew: degrees(-30),
+    ySkew: degrees(-30),
+    lineHeight: 100,
+  });
 
   /*******************/
 
