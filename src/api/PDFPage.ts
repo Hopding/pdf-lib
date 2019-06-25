@@ -21,6 +21,8 @@ import {
   PDFContentStream,
   PDFHexString,
   PDFName,
+  PDFNumber,
+  PDFOperator,
   PDFPageLeaf,
   PDFRef,
   StandardFonts,
@@ -60,6 +62,40 @@ class PDFPage {
     leafNode.normalize();
   }
 
+  setSize(width: number, height: number): void {
+    const mediaBox = this.node.MediaBox().clone();
+    mediaBox.set(2, this.doc.context.obj(width));
+    mediaBox.set(3, this.doc.context.obj(height));
+    this.node.set(PDFName.of('MediaBox'), mediaBox);
+  }
+
+  setWidth(width: number): void {
+    this.setSize(width, this.getSize().height);
+  }
+
+  setHeight(height: number): void {
+    this.setSize(this.getSize().width, height);
+  }
+
+  getSize(): { width: number; height: number } {
+    const mediaBox = this.node.MediaBox();
+    const width =
+      mediaBox.lookup(2, PDFNumber).value() -
+      mediaBox.lookup(0, PDFNumber).value();
+    const height =
+      mediaBox.lookup(3, PDFNumber).value() -
+      mediaBox.lookup(1, PDFNumber).value();
+    return { width, height };
+  }
+
+  getWidth(): number {
+    return this.getSize().width;
+  }
+
+  getHeight(): number {
+    return this.getSize().height;
+  }
+
   // TODO: Reuse image Font name if we've already added this image to Resources.Fonts
   setFont(font: PDFFont): void {
     this.font = font;
@@ -79,9 +115,34 @@ class PDFPage {
     this.lineHeight = lineHeight;
   }
 
+  getPosition(): { x: number; y: number } {
+    return { x: this.x, y: this.y };
+  }
+
   moveTo(x: number, y: number): void {
     this.x = x;
     this.y = y;
+  }
+
+  moveDown(yDecrease: number): void {
+    this.y -= yDecrease;
+  }
+
+  moveUp(yIncrease: number): void {
+    this.y += yIncrease;
+  }
+
+  moveLeft(xDecrease: number): void {
+    this.x -= xDecrease;
+  }
+
+  moveRight(xIncrease: number): void {
+    this.x += xIncrease;
+  }
+
+  pushOperators(...operator: PDFOperator[]): void {
+    const contentStream = this.getContentStream();
+    contentStream.push(...operator);
   }
 
   drawText(text: string, options: DrawTextOptions = {}): void {
@@ -134,7 +195,9 @@ class PDFPage {
 
   drawRectangle(options: DrawRectangleOptions = {}): void {
     const contentStream = this.getContentStream();
-    if (!options.color && !options.borderColor) options.color = rgb(0, 0, 0);
+    if (!('color' in options) && !('borderColor' in options)) {
+      options.color = rgb(0, 0, 0);
+    }
     contentStream.push(
       ...drawRectangle({
         x: options.x || this.x,
@@ -158,7 +221,9 @@ class PDFPage {
 
   drawEllipse(options: DrawEllipseOptions = {}): void {
     const contentStream = this.getContentStream();
-    if (!options.color && !options.borderColor) options.color = rgb(0, 0, 0);
+    if (!('color' in options) && !('borderColor' in options)) {
+      options.color = rgb(0, 0, 0);
+    }
     contentStream.push(
       ...drawEllipse({
         x: options.x || this.x,
@@ -173,8 +238,8 @@ class PDFPage {
   }
 
   drawCircle(options: DrawCircleOptions = {}): void {
-    const { scale } = options;
-    this.drawEllipse({ ...options, xScale: scale, yScale: scale });
+    const { size } = options;
+    this.drawEllipse({ ...options, xScale: size, yScale: size });
   }
 
   private preprocessText(text: string): string[] {

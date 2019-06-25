@@ -184,7 +184,7 @@ class CustomFontEmbedder {
     const glyphs = this.glyphCache.access();
 
     const widths: Array<number | number[]> = [];
-    const currSection: number[] = [];
+    let currSection: number[] = [];
 
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {
       const currGlyph = glyphs[idx];
@@ -198,6 +198,7 @@ class CustomFontEmbedder {
       } else if (currGlyphId - prevGlyphId !== 1) {
         widths.push(currSection);
         widths.push(currGlyphId);
+        currSection = [];
       }
 
       currSection.push(currGlyph.advanceWidth * this.scale);
