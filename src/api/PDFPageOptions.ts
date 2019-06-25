@@ -62,7 +62,7 @@ export interface DrawEllipseOptions {
 export interface DrawCircleOptions {
   x?: number;
   y?: number;
-  scale?: number;
+  size?: number;
   color?: Color;
   borderColor?: Color;
   borderWidth?: number;

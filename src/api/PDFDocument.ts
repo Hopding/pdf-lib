@@ -1,6 +1,7 @@
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
+import { PageSizes } from 'src/api/sizes';
 import {
   CustomFontSubsetEmbedder,
   JpegEmbedder,
@@ -59,14 +60,16 @@ class PDFDocument {
     this.catalog.removeLeafNode(index);
   }
 
-  addPage(page?: PDFPage): PDFPage {
+  addPage(page?: PDFPage | [number, number]): PDFPage {
     const pages = this.getPages();
     return this.insertPage(pages.length, page);
   }
 
-  insertPage(index: number, page?: PDFPage): PDFPage {
-    if (!page) {
+  insertPage(index: number, page?: PDFPage | [number, number]): PDFPage {
+    if (!page || Array.isArray(page)) {
+      const dims = Array.isArray(page) ? page : PageSizes.A4;
       page = PDFPage.create(this);
+      page.setSize(...dims);
     } else if (page.doc !== this) {
       const copier = PDFObjectCopier.for(page.doc.context, this.context);
       const copiedPage = copier.copy(page.node);
