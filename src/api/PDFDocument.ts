@@ -3,6 +3,7 @@ import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
 import { PageSizes } from 'src/api/sizes';
 import {
+  CustomFontEmbedder,
   CustomFontSubsetEmbedder,
   JpegEmbedder,
   PDFCatalog,
@@ -86,11 +87,17 @@ class PDFDocument {
     return page;
   }
 
-  embedFont(font: StandardFonts | Uint8Array): PDFFont {
+  embedFont(
+    font: StandardFonts | Uint8Array,
+    options: { subset?: boolean } = {},
+  ): PDFFont {
+    const { subset } = options;
+
+    // prettier-ignore
     const embedder =
-      font instanceof Uint8Array
-        ? CustomFontSubsetEmbedder.for(font)
-        : StandardFontEmbedder.for(font);
+        font instanceof Uint8Array && subset ? CustomFontSubsetEmbedder.for(font)
+      : font instanceof Uint8Array           ? CustomFontEmbedder.for(font)
+      : StandardFontEmbedder.for(font);
 
     const ref = this.context.nextRef();
     const pdfFont = PDFFont.of(ref, this, embedder);

@@ -155,7 +155,7 @@ export default async (assets: Assets) => {
 
   const { fonts } = assets;
 
-  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r);
+  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 20,
     size: 20,
@@ -171,7 +171,9 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const indieFlowerFont = pdfDoc.embedFont(fonts.ttf.indie_flower_r);
+  const indieFlowerFont = pdfDoc.embedFont(fonts.ttf.indie_flower_r, {
+    subset: true,
+  });
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 200,
     size: 25,
@@ -179,7 +181,9 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const greatVibesFont = pdfDoc.embedFont(fonts.ttf.great_vibes_r);
+  const greatVibesFont = pdfDoc.embedFont(fonts.ttf.great_vibes_r, {
+    subset: true,
+  });
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 300,
     size: 30,
@@ -195,7 +199,9 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const bioRhymeFont = pdfDoc.embedFont(fonts.ttf.bio_rhyme_r);
+  const bioRhymeFont = pdfDoc.embedFont(fonts.ttf.bio_rhyme_r, {
+    subset: true,
+  });
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 500,
     size: 15,
@@ -203,7 +209,9 @@ export default async (assets: Assets) => {
     lineHeight: 15,
   });
 
-  const pressStart2PFont = pdfDoc.embedFont(fonts.ttf.press_start_2p_r);
+  const pressStart2PFont = pdfDoc.embedFont(fonts.ttf.press_start_2p_r, {
+    subset: true,
+  });
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 575,
     size: 15,
