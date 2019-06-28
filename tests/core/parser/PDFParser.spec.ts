@@ -138,7 +138,7 @@ describe(`PDFParser`, () => {
   });
 
   it(`can parse PDF files without object streams or update sections`, () => {
-    const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
+    const pdfBytes = fs.readFileSync('./assets/pdfs/normal.pdf');
 
     const parser = PDFParser.forBytes(pdfBytes);
     const context = parser.parseDocument();
@@ -149,7 +149,7 @@ describe(`PDFParser`, () => {
   });
 
   it(`can parse PDF files with update sections`, () => {
-    const pdfBytes = fs.readFileSync('./assets/pdfs/F1040V_tax_form.pdf');
+    const pdfBytes = fs.readFileSync('./assets/pdfs/with_update_sections.pdf');
 
     const parser = PDFParser.forBytes(pdfBytes);
     const context = parser.parseDocument();
@@ -171,7 +171,7 @@ describe(`PDFParser`, () => {
   });
 
   it(`prevents double parsing`, () => {
-    const pdfBytes = fs.readFileSync('./assets/pdfs/D-2210_tax_form.pdf');
+    const pdfBytes = fs.readFileSync('./assets/pdfs/normal.pdf');
 
     const parser = PDFParser.forBytes(pdfBytes);
 
