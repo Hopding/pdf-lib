@@ -91,7 +91,7 @@ class PDFDocument {
     font: StandardFonts | Uint8Array,
     options: { subset?: boolean } = {},
   ): PDFFont {
-    const { subset } = options;
+    const { subset = false } = options;
 
     // prettier-ignore
     const embedder =
@@ -125,6 +125,8 @@ class PDFDocument {
   async save(
     options: { useObjectStreams?: boolean } = {},
   ): Promise<Uint8Array> {
+    const { useObjectStreams = true } = options;
+
     // Embed fonts
     for (let idx = 0, len = this.fonts.length; idx < len; idx++) {
       const font = this.fonts[idx];
@@ -137,7 +139,7 @@ class PDFDocument {
       await image.embed();
     }
 
-    const Writer = options.useObjectStreams ? PDFStreamWriter : PDFWriter;
+    const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context).serializeToBuffer();
   }
 

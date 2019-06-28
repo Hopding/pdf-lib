@@ -4,6 +4,7 @@ import os from 'os';
 import readline from 'readline';
 
 import test1 from './tests/test1';
+import test2 from './tests/test2';
 
 const cli = readline.createInterface({
   input: process.stdin,
@@ -71,7 +72,9 @@ const assets = {
   pdfs: {
     normal: readPdf('D-2210_tax_form.pdf'),
     // with_update_sections: readPdf('fd/form/F1040V.pdf'),
-    // linearized_with_object_streams: readPdf('ef/inst/ef_ins_1040.pdf'),
+    linearized_with_object_streams: readPdf(
+      'linearized_with_object_streams.pdf',
+    ),
     // with_large_page_count: fs.readFileSync('pdf_specification.pdf'),
     // with_missing_endstream_eol_and_polluted_ctm: fs.readFileSync(
     //   'test-pdfs/receipt.pdf',
@@ -86,7 +89,7 @@ const assets = {
 export type Assets = typeof assets;
 
 const main = async () => {
-  const tests = [test1, test1];
+  const tests = [test1, test2];
 
   let idx = 1;
   for (const test of tests) {
