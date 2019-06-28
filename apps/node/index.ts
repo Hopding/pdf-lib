@@ -5,6 +5,7 @@ import readline from 'readline';
 
 import test1 from './tests/test1';
 import test2 from './tests/test2';
+import test3 from './tests/test3';
 
 const cli = readline.createInterface({
   input: process.stdin,
@@ -71,7 +72,7 @@ const assets = {
   },
   pdfs: {
     normal: readPdf('D-2210_tax_form.pdf'),
-    // with_update_sections: readPdf('fd/form/F1040V.pdf'),
+    with_update_sections: readPdf('with_update_sections.pdf'),
     linearized_with_object_streams: readPdf(
       'linearized_with_object_streams.pdf',
     ),
@@ -89,7 +90,7 @@ const assets = {
 export type Assets = typeof assets;
 
 const main = async () => {
-  const tests = [test1, test2];
+  const tests = [test1, test2, test3];
 
   let idx = 1;
   for (const test of tests) {

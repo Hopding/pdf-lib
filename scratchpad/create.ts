@@ -1,4 +1,4 @@
-import { PDFDocument, rgb } from 'src/index';
+import { degrees, PDFDocument, rgb, StandardFonts } from 'src/index';
 
 // import { default as opentype } from 'opentype.js';
 
@@ -165,7 +165,7 @@ const assets = {
   },
   pdfs: {
     normal: readPdf('D-2210_tax_form.pdf'),
-    // with_update_sections: readPdf('fd/form/F1040V.pdf'),
+    with_update_sections: readPdf('with_update_sections.pdf'),
     linearized_with_object_streams: readPdf(
       'linearized_with_object_streams.pdf',
     ),
@@ -181,56 +181,62 @@ const assets = {
 };
 
 (async () => {
-  const pdfDoc = PDFDocument.load(assets.pdfs.linearized_with_object_streams);
+  const { pdfs, images } = assets;
 
-  const { fonts, images } = assets;
-  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
-  const smallMarioImage = pdfDoc.embedPng(images.png.small_mario);
-  const smallMarioDims = smallMarioImage.scale(0.18);
+  const pdfDoc = PDFDocument.load(pdfs.with_update_sections);
 
-  const pages = pdfDoc.getPages();
+  const helveticaFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const catRidingUnicornImage = pdfDoc.embedJpg(images.jpg.cat_riding_unicorn);
+  const catRidingUnicornDims = catRidingUnicornImage.scale(0.13);
 
-  const lines = [
-    'This is an image of Mario running.',
-    'This image and text was drawn on',
-    'top of an existing PDF using pdf-lib!',
-  ];
-  const fontSize = 24;
-  const solarizedWhite = rgb(253 / 255, 246 / 255, 227 / 255);
-  const solarizedGray = rgb(101 / 255, 123 / 255, 131 / 255);
+  const page0 = pdfDoc.insertPage(0, [305, 250]);
+  const page1 = pdfDoc.getPages()[1];
+  const page2 = pdfDoc.addPage([305, 125]);
 
-  const textWidth = ubuntuFont.widthOfTextAtSize(lines[2], fontSize);
+  const hotPink = rgb(1, 0, 1);
+  const red = rgb(1, 0, 0);
 
-  pages.forEach((page) => {
-    const { width, height } = page.getSize();
-    const centerX = width / 2;
-    const centerY = height / 2;
-    page.drawImage(smallMarioImage, {
-      ...smallMarioDims,
-      x: centerX - smallMarioDims.width / 2,
-      y: centerY + 15,
-    });
-    const boxHeight = (fontSize + 5) * lines.length;
-    page.drawRectangle({
-      x: centerX - textWidth / 2 - 5,
-      y: centerY - 15 - boxHeight + fontSize + 3,
-      width: textWidth + 10,
-      height: boxHeight,
-      color: solarizedWhite,
-      borderColor: solarizedGray,
-      borderWidth: 3,
-    });
-    page.setFont(ubuntuFont);
-    page.setFontColor(solarizedGray);
-    page.drawText(lines.join('\n'), {
-      x: centerX - textWidth / 2,
-      y: centerY - 15,
-    });
+  page0.drawText('This is the new first page!', {
+    x: 5,
+    y: 200,
+    font: helveticaFont,
+    color: hotPink,
+  });
+  page0.drawImage(catRidingUnicornImage, {
+    ...catRidingUnicornDims,
+    x: 30,
+    y: 30,
   });
 
-  pdfDoc.removePage(1);
+  const lastPageText = 'This is the last page!';
+  const lastPageTextWidth = helveticaFont.widthOfTextAtSize(lastPageText, 24);
 
-  /********************** Serialization **********************/
+  const page1Text = 'pdf-lib is awesome!';
+  const page1TextWidth = helveticaFont.widthOfTextAtSize(page1Text, 70);
+  page1.setFontSize(70);
+  page1.drawText('pdf-lib is awesome!', {
+    x: page1.getWidth() / 2 - page1TextWidth / 2 + 45,
+    y: page1.getHeight() / 2 + 45,
+    color: red,
+    rotate: degrees(-30),
+    xSkew: degrees(15),
+    ySkew: degrees(15),
+  });
+
+  page2.setFontSize(24);
+  page2.drawText('This is the last page!', {
+    x: 30,
+    y: 60,
+    font: helveticaFont,
+    color: hotPink,
+  });
+  page2.drawRectangle({
+    x: 30,
+    y: 50,
+    width: lastPageTextWidth,
+    height: 5,
+    color: hotPink,
+  });
 
   const buffer = await pdfDoc.save();
 
