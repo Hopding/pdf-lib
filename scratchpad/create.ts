@@ -1,4 +1,4 @@
-import { degrees, PDFDocument, rgb, StandardFonts } from 'src/index';
+import { PDFDocument, PDFPage, radians, StandardFonts } from 'src/index';
 
 // import { default as opentype } from 'opentype.js';
 
@@ -164,7 +164,7 @@ const assets = {
     },
   },
   pdfs: {
-    normal: readPdf('D-2210_tax_form.pdf'),
+    normal: readPdf('normal.pdf'),
     with_update_sections: readPdf('with_update_sections.pdf'),
     linearized_with_object_streams: readPdf(
       'linearized_with_object_streams.pdf',
@@ -183,62 +183,53 @@ const assets = {
 (async () => {
   const { pdfs, images } = assets;
 
-  const pdfDoc = PDFDocument.load(pdfs.with_update_sections);
+  const pdfDoc = PDFDocument.load(pdfs.normal);
 
-  const helveticaFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const catRidingUnicornImage = pdfDoc.embedJpg(images.jpg.cat_riding_unicorn);
-  const catRidingUnicornDims = catRidingUnicornImage.scale(0.13);
+  const minionsLaughingImage = pdfDoc.embedJpg(images.jpg.minions_laughing);
+  const minionsLaughingDims = minionsLaughingImage.scale(0.6);
 
-  const page0 = pdfDoc.insertPage(0, [305, 250]);
-  const page1 = pdfDoc.getPages()[1];
-  const page2 = pdfDoc.addPage([305, 125]);
+  const firstPage = pdfDoc.getPages()[0];
+  const middlePage = pdfDoc.insertPage(1, [600, 500]);
+  const lastPage = pdfDoc.getPages()[2];
 
-  const hotPink = rgb(1, 0, 1);
-  const red = rgb(1, 0, 0);
+  const fontSize = 20;
+  middlePage.setFontSize(fontSize);
+  middlePage.moveTo(0, middlePage.getHeight());
 
-  page0.drawText('This is the new first page!', {
-    x: 5,
-    y: 200,
-    font: helveticaFont,
-    color: hotPink,
-  });
-  page0.drawImage(catRidingUnicornImage, {
-    ...catRidingUnicornDims,
-    x: 30,
-    y: 30,
-  });
+  Object.keys(StandardFonts).forEach((fontName: any, idx) => {
+    middlePage.moveDown(fontSize);
+    const font = pdfDoc.embedFont(StandardFonts[fontName] as StandardFonts);
+    middlePage.setFont(font);
 
-  const lastPageText = 'This is the last page!';
-  const lastPageTextWidth = helveticaFont.widthOfTextAtSize(lastPageText, 24);
+    // prettier-ignore
+    const text = (
+        fontName === StandardFonts.Symbol ? `${idx + 1}. Τηεσε αρε τηε 14 Στανδαρδ Φοντσ.`
+      : fontName === StandardFonts.ZapfDingbats ? `✑✔✎ ✴❈❅▲❅ ❁❒❅ ▼❈❅ ✑✔ ✳▼❁■❄❁❒❄ ✦❏■▼▲✎`
+      : `${idx + 1}. These are the 14 Standard Fonts.`
+    );
 
-  const page1Text = 'pdf-lib is awesome!';
-  const page1TextWidth = helveticaFont.widthOfTextAtSize(page1Text, 70);
-  page1.setFontSize(70);
-  page1.drawText('pdf-lib is awesome!', {
-    x: page1.getWidth() / 2 - page1TextWidth / 2 + 45,
-    y: page1.getHeight() / 2 + 45,
-    color: red,
-    rotate: degrees(-30),
-    xSkew: degrees(15),
-    ySkew: degrees(15),
+    middlePage.drawText(text, {
+      rotate: radians(-Math.PI / 6),
+      xSkew: radians(Math.PI / 10),
+      ySkew: radians(Math.PI / 10),
+    });
   });
 
-  page2.setFontSize(24);
-  page2.drawText('This is the last page!', {
-    x: 30,
-    y: 60,
-    font: helveticaFont,
-    color: hotPink,
-  });
-  page2.drawRectangle({
-    x: 30,
-    y: 50,
-    width: lastPageTextWidth,
-    height: 5,
-    color: hotPink,
-  });
+  const stampImage = (page: PDFPage) => {
+    const { width, height } = page.getSize();
+    const centerX = width / 2;
+    const centerY = height / 2;
+    page.drawImage(minionsLaughingImage, {
+      ...minionsLaughingDims,
+      x: centerX - minionsLaughingDims.width / 2,
+      y: centerY - minionsLaughingDims.height / 2,
+    });
+  };
 
-  const buffer = await pdfDoc.save();
+  stampImage(firstPage);
+  stampImage(lastPage);
+
+  const buffer = await pdfDoc.save({ useObjectStreams: false });
 
   fs.writeFileSync('./out.pdf', buffer);
   console.log('File written to ./out.pdf');
