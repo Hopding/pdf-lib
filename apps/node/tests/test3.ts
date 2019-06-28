@@ -35,7 +35,7 @@ export default async (assets: Assets) => {
   const page1Text = 'pdf-lib is awesome!';
   const page1TextWidth = helveticaFont.widthOfTextAtSize(page1Text, 70);
   page1.setFontSize(70);
-  page1.drawText('pdf-lib is awesome!', {
+  page1.drawText(page1Text, {
     x: page1.getWidth() / 2 - page1TextWidth / 2 + 45,
     y: page1.getHeight() / 2 + 45,
     color: red,

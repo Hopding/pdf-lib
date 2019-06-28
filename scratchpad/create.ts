@@ -1,4 +1,4 @@
-import { PDFDocument, PDFPage, radians, StandardFonts } from 'src/index';
+import { PDFDocument, rgb, StandardFonts } from 'src/index';
 
 // import { default as opentype } from 'opentype.js';
 
@@ -169,7 +169,7 @@ const assets = {
     linearized_with_object_streams: readPdf(
       'linearized_with_object_streams.pdf',
     ),
-    // with_large_page_count: fs.readFileSync('pdf_specification.pdf'),
+    with_large_page_count: readPdf('with_large_page_count.pdf'),
     // with_missing_endstream_eol_and_polluted_ctm: fs.readFileSync(
     //   'test-pdfs/receipt.pdf',
     // ),
@@ -183,53 +183,45 @@ const assets = {
 (async () => {
   const { pdfs, images } = assets;
 
-  const pdfDoc = PDFDocument.load(pdfs.normal);
+  const pdfDoc = PDFDocument.load(pdfs.with_large_page_count);
 
-  const minionsLaughingImage = pdfDoc.embedJpg(images.jpg.minions_laughing);
-  const minionsLaughingDims = minionsLaughingImage.scale(0.6);
+  const timesRomanFont = pdfDoc.embedFont(StandardFonts.TimesRomanBoldItalic);
+  const minionsBananaImage = pdfDoc.embedPng(images.png.minions_banana_alpha);
+  const minionsBananaDims = minionsBananaImage.scale(0.5);
 
-  const firstPage = pdfDoc.getPages()[0];
-  const middlePage = pdfDoc.insertPage(1, [600, 500]);
-  const lastPage = pdfDoc.getPages()[2];
+  const pages = pdfDoc.getPages();
 
-  const fontSize = 20;
-  middlePage.setFontSize(fontSize);
-  middlePage.moveTo(0, middlePage.getHeight());
-
-  Object.keys(StandardFonts).forEach((fontName: any, idx) => {
-    middlePage.moveDown(fontSize);
-    const font = pdfDoc.embedFont(StandardFonts[fontName] as StandardFonts);
-    middlePage.setFont(font);
-
-    // prettier-ignore
-    const text = (
-        fontName === StandardFonts.Symbol ? `${idx + 1}. Τηεσε αρε τηε 14 Στανδαρδ Φοντσ.`
-      : fontName === StandardFonts.ZapfDingbats ? `✑✔✎ ✴❈❅▲❅ ❁❒❅ ▼❈❅ ✑✔ ✳▼❁■❄❁❒❄ ✦❏■▼▲✎`
-      : `${idx + 1}. These are the 14 Standard Fonts.`
-    );
-
-    middlePage.drawText(text, {
-      rotate: radians(-Math.PI / 6),
-      xSkew: radians(Math.PI / 10),
-      ySkew: radians(Math.PI / 10),
+  pages.forEach((page) => {
+    const { width, height } = page.getSize();
+    page.drawImage(minionsBananaImage, {
+      ...minionsBananaDims,
+      x: width / 2 - minionsBananaDims.width / 2,
+      y: height / 2 - minionsBananaDims.height / 2,
     });
   });
 
-  const stampImage = (page: PDFPage) => {
-    const { width, height } = page.getSize();
-    const centerX = width / 2;
-    const centerY = height / 2;
-    page.drawImage(minionsLaughingImage, {
-      ...minionsLaughingDims,
-      x: centerX - minionsLaughingDims.width / 2,
-      y: centerY - minionsLaughingDims.height / 2,
+  // Interleave new pages between all existing ones
+  pages.forEach((_, idx) => {
+    const newPage = pdfDoc.insertPage(2 * idx + 1, [500, 150]);
+
+    const fontSize = 24;
+    const { width, height } = newPage.getSize();
+
+    newPage.setFont(timesRomanFont);
+    newPage.setFontSize(fontSize);
+
+    const text = 'This page was interleaved by pdf-lib!';
+    const textWidth = timesRomanFont.widthOfTextAtSize(text, fontSize);
+    const textHeight = timesRomanFont.heightAtSize(fontSize);
+
+    newPage.drawText(text, {
+      x: width / 2 - textWidth / 2,
+      y: height / 2 - textHeight / 2,
+      color: rgb(0.7, 0.4, 0.9),
     });
-  };
+  });
 
-  stampImage(firstPage);
-  stampImage(lastPage);
-
-  const buffer = await pdfDoc.save({ useObjectStreams: false });
+  const buffer = await pdfDoc.save();
 
   fs.writeFileSync('./out.pdf', buffer);
   console.log('File written to ./out.pdf');
