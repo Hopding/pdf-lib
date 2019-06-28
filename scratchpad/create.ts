@@ -166,7 +166,9 @@ const assets = {
   pdfs: {
     normal: readPdf('D-2210_tax_form.pdf'),
     // with_update_sections: readPdf('fd/form/F1040V.pdf'),
-    // linearized_with_object_streams: readPdf('ef/inst/ef_ins_1040.pdf'),
+    linearized_with_object_streams: readPdf(
+      'linearized_with_object_streams.pdf',
+    ),
     // with_large_page_count: fs.readFileSync('pdf_specification.pdf'),
     // with_missing_endstream_eol_and_polluted_ctm: fs.readFileSync(
     //   'test-pdfs/receipt.pdf',
@@ -178,99 +180,59 @@ const assets = {
   },
 };
 
-const ipsumLines = [
-  'Eligendi est pariatur quidem in non excepturi et.',
-  'Consectetur non tenetur magnam est corporis tempor.',
-  'Labore nisi officiis quia ipsum qui voluptatem omnis.',
-];
-
 (async () => {
-  const pdfDoc = PDFDocument.create();
+  const pdfDoc = PDFDocument.load(assets.pdfs.linearized_with_object_streams);
 
-  const size = 750;
-
-  const page = pdfDoc.addPage([size, size]);
-
-  page.drawSquare({ size, color: rgb(253 / 255, 246 / 255, 227 / 255) });
-  page.setFontColor(rgb(101 / 255, 123 / 255, 131 / 255));
-
-  const { fonts } = assets;
-
+  const { fonts, images } = assets;
   const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
-  page.drawText(ipsumLines.join('\n'), {
-    y: size - 20,
-    size: 20,
-    font: ubuntuFont,
-    lineHeight: 20,
+  const smallMarioImage = pdfDoc.embedPng(images.png.small_mario);
+  const smallMarioDims = smallMarioImage.scale(0.18);
+
+  const pages = pdfDoc.getPages();
+
+  const lines = [
+    'This is an image of Mario running.',
+    'This image and text was drawn on',
+    'top of an existing PDF using pdf-lib!',
+  ];
+  const fontSize = 24;
+  const solarizedWhite = rgb(253 / 255, 246 / 255, 227 / 255);
+  const solarizedGray = rgb(101 / 255, 123 / 255, 131 / 255);
+
+  const textWidth = ubuntuFont.widthOfTextAtSize(lines[2], fontSize);
+
+  pages.forEach((page) => {
+    const { width, height } = page.getSize();
+    const centerX = width / 2;
+    const centerY = height / 2;
+    page.drawImage(smallMarioImage, {
+      ...smallMarioDims,
+      x: centerX - smallMarioDims.width / 2,
+      y: centerY + 15,
+    });
+    const boxHeight = (fontSize + 5) * lines.length;
+    page.drawRectangle({
+      x: centerX - textWidth / 2 - 5,
+      y: centerY - 15 - boxHeight + fontSize + 3,
+      width: textWidth + 10,
+      height: boxHeight,
+      color: solarizedWhite,
+      borderColor: solarizedGray,
+      borderWidth: 3,
+    });
+    page.setFont(ubuntuFont);
+    page.setFontColor(solarizedGray);
+    page.drawText(lines.join('\n'), {
+      x: centerX - textWidth / 2,
+      y: centerY - 15,
+    });
   });
 
-  const fantasqueFont = pdfDoc.embedFont(fonts.otf.fantasque_sans_mono_bi);
-  page.drawText(ipsumLines.join('\n'), {
-    y: size - 105,
-    size: 25,
-    font: fantasqueFont,
-    lineHeight: 25,
-  });
-
-  const indieFlowerFont = pdfDoc.embedFont(fonts.ttf.indie_flower_r, {
-    subset: true,
-  });
-  page.drawText(ipsumLines.join('\n'), {
-    y: size - 200,
-    size: 25,
-    font: indieFlowerFont,
-    lineHeight: 25,
-  });
-
-  const greatVibesFont = pdfDoc.embedFont(fonts.ttf.great_vibes_r, {
-    subset: true,
-  });
-  page.drawText(ipsumLines.join('\n'), {
-    y: size - 300,
-    size: 30,
-    font: greatVibesFont,
-    lineHeight: 30,
-  });
-
-  const appleStormFont = pdfDoc.embedFont(fonts.otf.apple_storm_r);
-  page.drawText(ipsumLines.join('\n'), {
-    y: size - 425,
-    size: 25,
-    font: appleStormFont,
-    lineHeight: 25,
-  });
-
-  const bioRhymeFont = pdfDoc.embedFont(fonts.ttf.bio_rhyme_r, {
-    subset: true,
-  });
-  page.drawText(ipsumLines.join('\n'), {
-    y: size - 500,
-    size: 15,
-    font: bioRhymeFont,
-    lineHeight: 15,
-  });
-
-  const pressStart2PFont = pdfDoc.embedFont(fonts.ttf.press_start_2p_r, {
-    subset: true,
-  });
-  page.drawText(ipsumLines.join('\n'), {
-    y: size - 575,
-    size: 15,
-    font: pressStart2PFont,
-    lineHeight: 15,
-  });
-
-  const hussar3DFont = pdfDoc.embedFont(fonts.otf.hussar_3d_r);
-  page.drawText(ipsumLines.join('\n'), {
-    y: size - 650,
-    size: 25,
-    font: hussar3DFont,
-    lineHeight: 25,
-  });
+  pdfDoc.removePage(1);
 
   /********************** Serialization **********************/
 
-  const buffer = await pdfDoc.save({ useObjectStreams: false });
+  const buffer = await pdfDoc.save();
 
   fs.writeFileSync('./out.pdf', buffer);
   console.log('File written to ./out.pdf');
