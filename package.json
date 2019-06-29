@@ -27,7 +27,7 @@
     "scratchpad:run": "node scratchpad/build/scratchpad/index.js",
     "scratchpad:flame": "rimraf isolate*.log && node --prof scratchpad/build/scratchpad/index.js && node --prof-process --preprocess -j isolate*.log | flamebearer",
     "apps:node": "ttsc --build apps/node/tsconfig.json && node apps/node-build/index.js",
-    "apps:web": "http-server .",
+    "apps:web": "http-server -c-1 .",
     "apps:web:mac": "bash -c 'sleep 1 && open http://localhost:8080/apps/web/test1.html' & yarn apps:web"
   },
   "types": "cjs/index.d.ts",

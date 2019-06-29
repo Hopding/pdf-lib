@@ -4,14 +4,11 @@ import {
   clipEvenOdd,
   closePath,
   cmyk,
-  dashPattern,
   degrees,
   drawRectangle,
   endPath,
   grayscale,
-  lineCap,
   LineCapStyle,
-  lineJoin,
   LineJoinStyle,
   lineTo,
   moveTo,
@@ -19,6 +16,9 @@ import {
   popGraphicsState,
   pushGraphicsState,
   rgb,
+  setDashPattern,
+  setLineCap,
+  setLineJoin,
   StandardFonts,
 } from '../../..';
 
@@ -106,8 +106,8 @@ export default async (assets: Assets) => {
   page1.drawSquare({ size: size / 2, color: cmyk(1, 0, 0, 0) });
   page1.pushOperators(
     pushGraphicsState(),
-    dashPattern([25], 25),
-    lineCap(LineCapStyle.Round),
+    setDashPattern([25], 25),
+    setLineCap(LineCapStyle.Round),
   );
   page1.drawCircle({
     x: size / 4,
@@ -121,7 +121,7 @@ export default async (assets: Assets) => {
   // Lower-right quadrant
   page1.moveTo(size / 2, 0);
   page1.drawSquare({ size: size / 2, color: grayscale(0.8) });
-  page1.pushOperators(pushGraphicsState(), lineJoin(LineJoinStyle.Round));
+  page1.pushOperators(pushGraphicsState(), setLineJoin(LineJoinStyle.Round));
   page1.drawSquare({
     x: size / 2 + size / 4,
     y: 25,
@@ -130,7 +130,7 @@ export default async (assets: Assets) => {
     borderColor: grayscale(0.6),
     borderWidth: 15,
   });
-  page1.pushOperators(lineJoin(LineJoinStyle.Bevel));
+  page1.pushOperators(setLineJoin(LineJoinStyle.Bevel));
   page1.drawSquare({
     x: size / 2 + 54,
     y: size / 4 + 1,

@@ -72,13 +72,13 @@ export const skewDegrees = (xSkewAngle: NumberT, ySkewAngle: NumberT) =>
     degreesToRadians(asNumber(ySkewAngle)),
   );
 
-export const dashPattern = (dashArray: NumberT[], dashPhase: NumberT) =>
+export const setDashPattern = (dashArray: NumberT[], dashPhase: NumberT) =>
   PDFOperator.of(Ops.SetLineDashPattern, [
     `[${dashArray.map(asPDFNumber).join(' ')}]`,
     asPDFNumber(dashPhase),
   ]);
 
-export const restoreDashPattern = () => dashPattern([], 0);
+export const restoreDashPattern = () => setDashPattern([], 0);
 
 export enum LineCapStyle {
   Butt = 0,
@@ -86,7 +86,7 @@ export enum LineCapStyle {
   Projecting = 2,
 }
 
-export const lineCap = (style: LineCapStyle) =>
+export const setLineCap = (style: LineCapStyle) =>
   PDFOperator.of(Ops.SetLineCapStyle, [asPDFNumber(style)]);
 
 export enum LineJoinStyle {
@@ -95,14 +95,14 @@ export enum LineJoinStyle {
   Bevel = 2,
 }
 
-export const lineJoin = (style: LineJoinStyle) =>
+export const setLineJoin = (style: LineJoinStyle) =>
   PDFOperator.of(Ops.SetLineJoinStyle, [asPDFNumber(style)]);
 
 export const pushGraphicsState = () => PDFOperator.of(Ops.PushGraphicsState);
 
 export const popGraphicsState = () => PDFOperator.of(Ops.PopGraphicsState);
 
-export const lineWidth = (width: NumberT) =>
+export const setLineWidth = (width: NumberT) =>
   PDFOperator.of(Ops.SetLineWidth, [asPDFNumber(width)]);
 
 /* ==================== Path Construction Operators ==================== */
