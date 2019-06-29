@@ -5,6 +5,7 @@ import readline from 'readline';
 
 import test1 from './tests/test1';
 import test10 from './tests/test10';
+import test11 from './tests/test11';
 import test2 from './tests/test2';
 import test3 from './tests/test3';
 import test4 from './tests/test4';
@@ -101,7 +102,8 @@ const main = async () => {
 
   // prettier-ignore
   const allTests = [
-    test1, test2, test3, test4, test5, test6, test7, test8, test9, test10
+    test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
+    test11
   ];
 
   const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
@@ -119,7 +121,8 @@ const main = async () => {
   }
 
   console.log('Done!');
-  cli.close();
 };
 
-main();
+main().finally(() => {
+  cli.close();
+});
