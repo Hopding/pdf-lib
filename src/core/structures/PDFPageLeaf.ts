@@ -22,18 +22,32 @@ class PDFPageLeaf extends PDFDict {
     dict.set(PDFName.of('Parent'), parent);
     dict.set(PDFName.of('Resources'), context.obj({}));
     dict.set(PDFName.of('MediaBox'), context.obj([0, 0, 612, 792]));
-    return new PDFPageLeaf(dict, context);
+    return new PDFPageLeaf(dict, context, false);
   };
 
-  static fromMapWithContext = (map: DictMap, context: PDFContext) =>
-    new PDFPageLeaf(map, context);
+  static fromMapWithContext = (
+    map: DictMap,
+    context: PDFContext,
+    autoNormalizeCTM = true,
+  ) => new PDFPageLeaf(map, context, autoNormalizeCTM);
 
   private normalized = false;
+  private readonly autoNormalizeCTM: boolean;
+
+  private constructor(
+    map: DictMap,
+    context: PDFContext,
+    autoNormalizeCTM = true,
+  ) {
+    super(map, context);
+    this.autoNormalizeCTM = autoNormalizeCTM;
+  }
 
   clone(context?: PDFContext): PDFPageLeaf {
     const clone = PDFPageLeaf.fromMapWithContext(
       new Map(),
       context || this.context,
+      this.autoNormalizeCTM,
     );
     const entries = this.entries();
     for (let idx = 0, len = entries.length; idx < len; idx++) {
@@ -99,7 +113,7 @@ class PDFPageLeaf extends PDFDict {
   }
 
   addContentStream(contentStreamRef: PDFRef): void {
-    this.assertNormalized();
+    this.normalize();
     let Contents = this.Contents();
     if (!Contents) {
       Contents = this.context.obj([]);
@@ -109,13 +123,13 @@ class PDFPageLeaf extends PDFDict {
   }
 
   setFontDictionary(name: PDFName, fontDictRef: PDFRef): void {
-    this.assertNormalized();
+    this.normalize();
     const Font = this.Resources().lookup(PDFName.of('Font'), PDFDict);
     Font.set(name, fontDictRef);
   }
 
   setXObject(name: PDFName, xObjectRef: PDFRef): void {
-    this.assertNormalized();
+    this.normalize();
     const XObject = this.Resources().lookup(PDFName.of('XObject'), PDFDict);
     XObject.set(name, xObjectRef);
   }
@@ -127,6 +141,8 @@ class PDFPageLeaf extends PDFDict {
   }
 
   normalize(): void {
+    if (this.normalized) return;
+
     const { context } = this;
 
     const contentsRef = this.get(PDFName.of('Contents'));
@@ -135,7 +151,15 @@ class PDFPageLeaf extends PDFDict {
       this.set(PDFName.of('Contents'), context.obj([contentsRef]));
     }
 
-    const Resources = this.Resources() || context.obj({});
+    if (this.autoNormalizeCTM) {
+      const contentsArray = this.lookup(PDFName.of('Contents'), PDFArray);
+      contentsArray.insert(0, this.context.getPushGraphicsStateContentStream());
+      contentsArray.push(this.context.getPopGraphicsStateContentStream());
+    }
+
+    const Resources = this.get(PDFName.of('Resources'))
+      ? this.Resources()
+      : context.obj({});
     this.set(PDFName.of('Resources'), Resources);
 
     const Font = Resources.lookup(PDFName.of('Font')) || context.obj({});
@@ -145,10 +169,6 @@ class PDFPageLeaf extends PDFDict {
     Resources.set(PDFName.of('XObject'), XObject);
 
     this.normalized = true;
-  }
-
-  assertNormalized(): void {
-    if (!this.normalized) throw new Error('FIX ME!!!');
   }
 }
 

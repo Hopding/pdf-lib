@@ -8,6 +8,7 @@ import test2 from './tests/test2';
 import test3 from './tests/test3';
 import test4 from './tests/test4';
 import test5 from './tests/test5';
+import test6 from './tests/test6';
 
 const cli = readline.createInterface({
   input: process.stdin,
@@ -79,9 +80,9 @@ const assets = {
       'linearized_with_object_streams.pdf',
     ),
     with_large_page_count: readPdf('with_large_page_count.pdf'),
-    // with_missing_endstream_eol_and_polluted_ctm: fs.readFileSync(
-    //   'test-pdfs/receipt.pdf',
-    // ),
+    with_missing_endstream_eol_and_polluted_ctm: readPdf(
+      'with_missing_endstream_eol_and_polluted_ctm.pdf',
+    ),
     // with_newline_whitespace_in_indirect_object_numbers: fs.readFileSync(
     //   'test-pdfs/agile_software_ukranian.pdf',
     // ),
@@ -92,9 +93,13 @@ const assets = {
 export type Assets = typeof assets;
 
 const main = async () => {
-  const tests = [test1, test2, test3, test4, test5];
+  const testIdx = process.argv[2] ? Number(process.argv[2]) : undefined;
 
-  let idx = 1;
+  const allTests = [test1, test2, test3, test4, test5, test6];
+
+  const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
+
+  let idx = testIdx || 1;
   for (const test of tests) {
     console.log(`Running test #${idx}`);
     const pdfBytes = await test(assets);

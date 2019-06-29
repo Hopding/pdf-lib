@@ -261,7 +261,7 @@ describe(`PDFPageLeaf`, () => {
     expect(visitations).toEqual([pageLeaf, pageTree2, pageTree1]);
   });
 
-  it(`can be normalized`, () => {
+  it(`can be normalized with autoNormalizeCTM=false`, () => {
     const context = PDFContext.create();
     const parentRef = PDFRef.of(1);
     const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
@@ -281,12 +281,27 @@ describe(`PDFPageLeaf`, () => {
     );
   });
 
-  it(`can assert that it has been normalized`, () => {
+  it(`can be normalized with autoNormalizeCTM=true`, () => {
     const context = PDFContext.create();
-    const parentRef = PDFRef.of(1);
-    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
-    expect(() => pageTree.assertNormalized()).toThrow();
+    const map = new Map();
+    const pageTree = PDFPageLeaf.fromMapWithContext(map, context);
+    const stream = context.stream('foo');
+    const streamRef = PDFRef.of(21);
+    context.assign(streamRef, stream);
+    pageTree.set(PDFName.of('Contents'), streamRef);
+
+    expect(pageTree.Contents()).toBe(stream);
+    expect(pageTree.get(PDFName.of('Resources'))).toBeUndefined();
+
     pageTree.normalize();
-    expect(() => pageTree.assertNormalized()).not.toThrow();
+
+    const pushRef = context.getPushGraphicsStateContentStream();
+    const popRef = context.getPopGraphicsStateContentStream();
+    expect(pageTree.Contents()!.toString()).toBe(
+      `[ ${pushRef} 21 0 R ${popRef} ]`,
+    );
+    expect(pageTree.Resources().toString()).toBe(
+      '<<\n/Font <<\n>>\n/XObject <<\n>>\n>>',
+    );
   });
 });

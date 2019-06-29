@@ -14,6 +14,9 @@ import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
+import PDFOperator from 'src/core/operators/PDFOperator';
+import Ops from 'src/core/operators/PDFOperatorNames';
+import PDFContentStream from 'src/core/structures/PDFContentStream';
 import { typedArrayFor } from 'src/utils';
 
 type LookupKey = PDFRef | PDFObject | undefined;
@@ -53,6 +56,9 @@ class PDFContext {
   };
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
+
+  private pushGraphicsStateContentStreamRef?: PDFRef;
+  private popGraphicsStateContentStreamRef?: PDFRef;
 
   private constructor() {
     this.largestObjectNumber = 0;
@@ -161,6 +167,40 @@ class PDFContext {
       ...dict,
       Filter: 'FlateDecode',
     });
+  }
+
+  /*
+   * Reference to PDFContentStream that contains a single PDFOperator: `q`.
+   * Used by [[PDFPageLeaf]] instances to ensure that when content streams are
+   * added to a modified PDF, they start in the default, unchanged graphics
+   * state.
+   */
+  getPushGraphicsStateContentStream(): PDFRef {
+    if (this.pushGraphicsStateContentStreamRef) {
+      return this.pushGraphicsStateContentStreamRef;
+    }
+    const dict = this.obj({});
+    const op = PDFOperator.of(Ops.PushGraphicsState);
+    const stream = PDFContentStream.of(dict, [op]);
+    this.pushGraphicsStateContentStreamRef = this.register(stream);
+    return this.pushGraphicsStateContentStreamRef;
+  }
+
+  /*
+   * Reference to PDFContentStream that contains a single PDFOperator: `Q`.
+   * Used by [[PDFPageLeaf]] instances to ensure that when content streams are
+   * added to a modified PDF, they start in the default, unchanged graphics
+   * state.
+   */
+  getPopGraphicsStateContentStream(): PDFRef {
+    if (this.popGraphicsStateContentStreamRef) {
+      return this.popGraphicsStateContentStreamRef;
+    }
+    const dict = this.obj({});
+    const op = PDFOperator.of(Ops.PopGraphicsState);
+    const stream = PDFContentStream.of(dict, [op]);
+    this.popGraphicsStateContentStreamRef = this.register(stream);
+    return this.popGraphicsStateContentStreamRef;
   }
 }
 
