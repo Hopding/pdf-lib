@@ -9,6 +9,7 @@ import test3 from './tests/test3';
 import test4 from './tests/test4';
 import test5 from './tests/test5';
 import test6 from './tests/test6';
+import test7 from './tests/test7';
 
 const cli = readline.createInterface({
   input: process.stdin,
@@ -95,7 +96,7 @@ export type Assets = typeof assets;
 const main = async () => {
   const testIdx = process.argv[2] ? Number(process.argv[2]) : undefined;
 
-  const allTests = [test1, test2, test3, test4, test5, test6];
+  const allTests = [test1, test2, test3, test4, test5, test6, test7];
 
   const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
 

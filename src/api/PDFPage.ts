@@ -16,7 +16,7 @@ import {
   DrawSquareOptions,
   DrawTextOptions,
 } from 'src/api/PDFPageOptions';
-import { degrees } from 'src/api/rotations';
+import { degrees, Rotation, toDegrees } from 'src/api/rotations';
 import {
   PDFContentStream,
   PDFHexString,
@@ -60,6 +60,17 @@ class PDFPage {
     this.doc = doc;
 
     leafNode.normalize();
+  }
+
+  // TODO: Validate is multiple of 90 degrees!
+  setRotation(angle: Rotation): void {
+    const degreesAngle = toDegrees(angle);
+    this.node.set(PDFName.of('Rotate'), this.doc.context.obj(degreesAngle));
+  }
+
+  getRotation(): number {
+    const Rotate = this.node.Rotate();
+    return Rotate ? Rotate.value() : 0;
   }
 
   setSize(width: number, height: number): void {

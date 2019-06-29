@@ -95,9 +95,9 @@ class PDFPageLeaf extends PDFDict {
     return this.context.lookup(maybeArrayOrRef) as PDFArray | undefined;
   }
 
-  Rotate(): PDFNumber {
+  Rotate(): PDFNumber | undefined {
     const numberOrRef = this.getInheritableAttribute(PDFName.of('Rotate'));
-    return this.context.lookup(numberOrRef, PDFNumber);
+    return this.context.lookup(numberOrRef) as PDFNumber | undefined;
   }
 
   getInheritableAttribute(name: PDFName): PDFObject | undefined {
