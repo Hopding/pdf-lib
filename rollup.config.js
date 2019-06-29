@@ -10,6 +10,7 @@ export default {
   output: {
     name: 'PDFLib',
     format: 'umd',
+    sourcemap: true,
   },
   plugins: [resolve(), commonjs(), json(), MINIFY === 'true' && terser()],
 };

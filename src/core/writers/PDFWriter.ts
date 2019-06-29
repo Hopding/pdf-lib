@@ -91,7 +91,7 @@ class PDFWriter {
 
   protected computeIndirectObjectSize([ref, object]: [
     PDFRef,
-    PDFObject
+    PDFObject,
   ]): number {
     const refSize = ref.sizeInBytes() + 3; // 'R' -> 'obj\n'
     const objectSize = object.sizeInBytes() + 9; // '\nendobj\n\n'
