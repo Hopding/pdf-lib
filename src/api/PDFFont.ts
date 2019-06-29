@@ -44,6 +44,17 @@ class PDFFont {
     return this.embedder.sizeOfFontAtHeight(height);
   }
 
+  getCharacterSet(): number[] {
+    if (this.embedder instanceof StandardFontEmbedder) {
+      // TODO: Update @pdf-lib/standard fonts to export encoding.characterSet
+      return Object.keys((this.embedder.encoding as any).unicodeMappings)
+        .map(Number)
+        .sort((a, b) => a - b);
+    } else {
+      return this.embedder.font.characterSet;
+    }
+  }
+
   // TODO: Cleanup orphan embedded objects if a font is embedded multiple times...
   async embed(): Promise<void> {
     if (this.modified) {
