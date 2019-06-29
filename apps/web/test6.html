@@ -7,6 +7,10 @@
     <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
     <title>Test 6</title>
     <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js"
+    ></script>
   </head>
 
   <body>
@@ -44,6 +48,8 @@
       ]);
 
       const pdfDoc = PDFDocument.load(inputPdfBytes);
+
+      pdfDoc.registerFontkit(fontkit);
 
       const ubuntuFont = pdfDoc.embedFont(ubuntuBytes, { subset: true });
       const smallMarioImage = pdfDoc.embedPng(smallMarioBytes);

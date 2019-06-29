@@ -1,4 +1,4 @@
-import fontkit, { Font, Glyph } from '@pdf-lib/fontkit';
+import { Font, Fontkit, Glyph } from 'src/types/fontkit';
 
 import { createCmap } from 'src/core/embedders/CMap';
 import { deriveFontFlags } from 'src/core/embedders/FontFlags';
@@ -20,7 +20,8 @@ import {
  *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
  */
 class CustomFontEmbedder {
-  static for = (fontData: Uint8Array) => new CustomFontEmbedder(fontData);
+  static for = (fontkit: Fontkit, fontData: Uint8Array) =>
+    new CustomFontEmbedder(fontkit, fontData);
 
   readonly font: Font;
   readonly scale: number;
@@ -30,7 +31,7 @@ class CustomFontEmbedder {
   protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
-  protected constructor(fontData: Uint8Array) {
+  protected constructor(fontkit: Fontkit, fontData: Uint8Array) {
     this.font = fontkit.create(fontData);
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;

@@ -2,7 +2,7 @@ import { Color } from 'src/api/colors';
 import PDFFont from 'src/api/PDFFont';
 import { Rotation } from 'src/api/rotations';
 
-export interface DrawTextOptions {
+export interface PDFPageDrawTextOptions {
   color?: Color;
   font?: PDFFont;
   size?: number;
@@ -14,7 +14,7 @@ export interface DrawTextOptions {
   lineHeight?: number;
 }
 
-export interface DrawImageOptions {
+export interface PDFPageDrawImageOptions {
   x?: number;
   y?: number;
   width?: number;
@@ -24,7 +24,7 @@ export interface DrawImageOptions {
   ySkew?: Rotation;
 }
 
-export interface DrawRectangleOptions {
+export interface PDFPageDrawRectangleOptions {
   x?: number;
   y?: number;
   width?: number;
@@ -37,7 +37,7 @@ export interface DrawRectangleOptions {
   borderColor?: Color;
 }
 
-export interface DrawSquareOptions {
+export interface PDFPageDrawSquareOptions {
   x?: number;
   y?: number;
   size?: number;
@@ -49,7 +49,7 @@ export interface DrawSquareOptions {
   borderColor?: Color;
 }
 
-export interface DrawEllipseOptions {
+export interface PDFPageDrawEllipseOptions {
   x?: number;
   y?: number;
   xScale?: number;
@@ -59,7 +59,7 @@ export interface DrawEllipseOptions {
   borderWidth?: number;
 }
 
-export interface DrawCircleOptions {
+export interface PDFPageDrawCircleOptions {
   x?: number;
   y?: number;
   size?: number;
