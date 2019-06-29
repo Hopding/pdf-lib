@@ -21,6 +21,7 @@ import {
   setLineJoin,
   StandardFonts,
 } from '../../..';
+import fontkit from '@pdf-lib/fontkit';
 
 const ipsumLines = [
   'Eligendi est pariatur quidem in non excepturi et.',
@@ -30,6 +31,8 @@ const ipsumLines = [
 
 export default async (assets: Assets) => {
   const pdfDoc = PDFDocument.create();
+
+  pdfDoc.registerFontkit(fontkit);
 
   const timesRomanFont = pdfDoc.embedFont(StandardFonts.TimesRoman);
 

@@ -1,6 +1,6 @@
 import { Assets } from '..';
-import { last, PDFDocument, StandardFonts } from '../../..';
-import PDFFont from '../../../cjs/api/PDFFont';
+import { last, PDFDocument, PDFFont, StandardFonts } from '../../..';
+import fontkit from '@pdf-lib/fontkit';
 
 // JavaScript's String.charAt() method doesn work on strings containing UTF-16
 // characters (with high and low surrogate pairs), such as 💩 (poo emoji). This
@@ -77,6 +77,8 @@ export default async (assets: Assets) => {
   const { fonts } = assets;
 
   const pdfDoc = PDFDocument.create();
+
+  pdfDoc.registerFontkit(fontkit);
 
   const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
   const helveticaBoldFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);

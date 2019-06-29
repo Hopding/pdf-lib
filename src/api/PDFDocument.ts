@@ -18,6 +18,7 @@ import {
   StandardFontEmbedder,
   StandardFonts,
 } from 'src/core';
+import { Fontkit } from 'src/types/fontkit';
 import { Cache } from 'src/utils';
 
 class PDFDocument {
@@ -38,6 +39,7 @@ class PDFDocument {
   readonly context: PDFContext;
   readonly catalog: PDFCatalog;
 
+  private fontkit?: Fontkit;
   private readonly pageCache: Cache<PDFPage[]>;
   private readonly pageMap: Map<PDFPageLeaf, PDFPage>;
   private readonly fonts: PDFFont[];
@@ -51,6 +53,10 @@ class PDFDocument {
     this.pageMap = new Map();
     this.fonts = [];
     this.images = [];
+  }
+
+  registerFontkit(fontkit: Fontkit): void {
+    this.fontkit = fontkit;
   }
 
   getPages(): PDFPage[] {
@@ -108,11 +114,15 @@ class PDFDocument {
   ): PDFFont {
     const { subset = false } = options;
 
-    // prettier-ignore
-    const embedder =
-        font instanceof Uint8Array && subset ? CustomFontSubsetEmbedder.for(font)
-      : font instanceof Uint8Array           ? CustomFontEmbedder.for(font)
-      : StandardFontEmbedder.for(font);
+    let embedder: CustomFontEmbedder | StandardFontEmbedder;
+    if (font instanceof Uint8Array) {
+      const fontkit = this.assertFontkit();
+      embedder = subset
+        ? CustomFontSubsetEmbedder.for(fontkit, font)
+        : CustomFontEmbedder.for(fontkit, font);
+    } else {
+      embedder = StandardFontEmbedder.for(font);
+    }
 
     const ref = this.context.nextRef();
     const pdfFont = PDFFont.of(ref, this, embedder);
@@ -158,6 +168,13 @@ class PDFDocument {
     await this.flush();
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context).serializeToBuffer();
+  }
+
+  private assertFontkit(): Fontkit {
+    if (!this.fontkit) {
+      throw new Error('FIX ME!!! Fontkit not registered... See docs url...');
+    }
+    return this.fontkit;
   }
 
   private computePages = (): PDFPage[] => {

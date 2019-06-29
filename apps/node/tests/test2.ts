@@ -1,3 +1,4 @@
+import fontkit from '@pdf-lib/fontkit';
 import { Assets } from '..';
 import { PDFDocument, rgb } from '../../..';
 
@@ -5,6 +6,8 @@ export default async (assets: Assets) => {
   const { fonts, images, pdfs } = assets;
 
   const pdfDoc = PDFDocument.load(pdfs.linearized_with_object_streams);
+
+  pdfDoc.registerFontkit(fontkit);
 
   const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
   const smallMarioImage = pdfDoc.embedPng(images.png.small_mario);

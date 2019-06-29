@@ -1,3 +1,4 @@
+import fontkit from '@pdf-lib/fontkit';
 import { Assets } from '..';
 import { degrees, PDFDocument, rgb } from '../../..';
 
@@ -7,6 +8,8 @@ export default async (assets: Assets) => {
   const pdfDoc = PDFDocument.load(
     pdfs.with_missing_endstream_eol_and_polluted_ctm,
   );
+
+  pdfDoc.registerFontkit(fontkit);
 
   const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
   const smallMarioImage = pdfDoc.embedPng(images.png.small_mario);

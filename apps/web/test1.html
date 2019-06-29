@@ -7,6 +7,10 @@
     <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
     <title>Test 1</title>
     <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js"
+    ></script>
   </head>
 
   <body>
@@ -63,6 +67,8 @@
       } = PDFLib;
 
       const pdfDoc = PDFDocument.create();
+
+      pdfDoc.registerFontkit(fontkit);
 
       const timesRomanFont = pdfDoc.embedFont(StandardFonts.TimesRoman);
 

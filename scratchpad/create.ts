@@ -1,3 +1,4 @@
+import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import { cmyk, degrees, PDFDocument, rgb, StandardFonts } from 'src/index';
 
@@ -20,6 +21,8 @@ const main = async () => {
   );
 
   const pdfDoc = PDFDocument.create();
+
+  pdfDoc.registerFontkit(fontkit);
 
   const page = pdfDoc.insertPage(0);
 

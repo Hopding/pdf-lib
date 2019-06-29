@@ -9,12 +9,12 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import {
-  DrawCircleOptions,
-  DrawEllipseOptions,
-  DrawImageOptions,
-  DrawRectangleOptions,
-  DrawSquareOptions,
-  DrawTextOptions,
+  PDFPageDrawCircleOptions,
+  PDFPageDrawEllipseOptions,
+  PDFPageDrawImageOptions,
+  PDFPageDrawRectangleOptions,
+  PDFPageDrawSquareOptions,
+  PDFPageDrawTextOptions,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
 import {
@@ -164,7 +164,7 @@ class PDFPage {
     contentStream.push(...operator);
   }
 
-  drawText(text: string, options: DrawTextOptions = {}): void {
+  drawText(text: string, options: PDFPageDrawTextOptions = {}): void {
     const [originalFont] = this.getFont();
     if (options.font) this.setFont(options.font);
     const [font, fontKey] = this.getFont();
@@ -194,7 +194,7 @@ class PDFPage {
   }
 
   // TODO: Reuse image XObject name if we've already added this image to Resources.XObjects
-  drawImage(image: PDFImage, options: DrawImageOptions = {}): void {
+  drawImage(image: PDFImage, options: PDFPageDrawImageOptions = {}): void {
     const xObjectKey = addRandomSuffix('Image', 4);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
@@ -212,7 +212,7 @@ class PDFPage {
     );
   }
 
-  drawRectangle(options: DrawRectangleOptions = {}): void {
+  drawRectangle(options: PDFPageDrawRectangleOptions = {}): void {
     const contentStream = this.getContentStream();
     if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
@@ -233,12 +233,12 @@ class PDFPage {
     );
   }
 
-  drawSquare(options: DrawSquareOptions = {}): void {
+  drawSquare(options: PDFPageDrawSquareOptions = {}): void {
     const { size } = options;
     this.drawRectangle({ ...options, width: size, height: size });
   }
 
-  drawEllipse(options: DrawEllipseOptions = {}): void {
+  drawEllipse(options: PDFPageDrawEllipseOptions = {}): void {
     const contentStream = this.getContentStream();
     if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
@@ -256,7 +256,7 @@ class PDFPage {
     );
   }
 
-  drawCircle(options: DrawCircleOptions = {}): void {
+  drawCircle(options: PDFPageDrawCircleOptions = {}): void {
     const { size } = options;
     this.drawEllipse({ ...options, xScale: size, yScale: size });
   }
