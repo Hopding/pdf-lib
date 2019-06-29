@@ -3,6 +3,7 @@ import pako from 'pako';
 import {
   PDFArray,
   PDFBool,
+  PDFContentStream,
   PDFContext,
   PDFDict,
   PDFHexString,
@@ -157,5 +158,37 @@ describe(`PDFContext`, () => {
 >>`,
       );
     });
+  });
+
+  it(`can provide a reference to a "pushGraphicsState" content stream`, () => {
+    const context = PDFContext.create();
+    expect(context.enumerateIndirectObjects().length).toBe(0);
+
+    const ref1 = context.getPushGraphicsStateContentStream();
+    expect(ref1).toBeInstanceOf(PDFRef);
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+
+    const ref2 = context.getPushGraphicsStateContentStream();
+    expect(ref2).toBeInstanceOf(PDFRef);
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+
+    expect(ref1).toBe(ref2);
+    expect(context.lookup(ref1)).toBeInstanceOf(PDFContentStream);
+  });
+
+  it(`can provide a reference to a "popGraphicsState" content stream`, () => {
+    const context = PDFContext.create();
+    expect(context.enumerateIndirectObjects().length).toBe(0);
+
+    const ref1 = context.getPopGraphicsStateContentStream();
+    expect(ref1).toBeInstanceOf(PDFRef);
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+
+    const ref2 = context.getPopGraphicsStateContentStream();
+    expect(ref2).toBeInstanceOf(PDFRef);
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+
+    expect(ref1).toBe(ref2);
+    expect(context.lookup(ref1)).toBeInstanceOf(PDFContentStream);
   });
 });

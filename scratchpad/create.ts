@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, StandardFonts } from 'src/index';
+import { degrees, PDFDocument, rgb } from 'src/index';
 
 // import { default as opentype } from 'opentype.js';
 
@@ -170,9 +170,9 @@ const assets = {
       'linearized_with_object_streams.pdf',
     ),
     with_large_page_count: readPdf('with_large_page_count.pdf'),
-    // with_missing_endstream_eol_and_polluted_ctm: fs.readFileSync(
-    //   'test-pdfs/receipt.pdf',
-    // ),
+    with_missing_endstream_eol_and_polluted_ctm: readPdf(
+      'with_missing_endstream_eol_and_polluted_ctm.pdf',
+    ),
     // with_newline_whitespace_in_indirect_object_numbers: fs.readFileSync(
     //   'test-pdfs/agile_software_ukranian.pdf',
     // ),
@@ -181,44 +181,64 @@ const assets = {
 };
 
 (async () => {
-  const { pdfs, images } = assets;
+  const { pdfs, images, fonts } = assets;
 
-  const pdfDoc = PDFDocument.load(pdfs.with_large_page_count);
+  const pdfDoc = PDFDocument.load(
+    pdfs.with_missing_endstream_eol_and_polluted_ctm,
+  );
 
-  const timesRomanFont = pdfDoc.embedFont(StandardFonts.TimesRomanBoldItalic);
-  const minionsBananaImage = pdfDoc.embedPng(images.png.minions_banana_alpha);
-  const minionsBananaDims = minionsBananaImage.scale(0.5);
+  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
+  const smallMarioImage = pdfDoc.embedPng(images.png.small_mario);
+  const smallMarioDims = smallMarioImage.scale(0.15);
 
-  const pages = pdfDoc.getPages();
+  const page = pdfDoc.getPages()[0];
 
-  pages.forEach((page) => {
-    const { width, height } = page.getSize();
-    page.drawImage(minionsBananaImage, {
-      ...minionsBananaDims,
-      x: width / 2 - minionsBananaDims.width / 2,
-      y: height / 2 - minionsBananaDims.height / 2,
-    });
+  const lines = [
+    'This is an image of Mario running.',
+    'This image and text was drawn on',
+    'top of an existing PDF using pdf-lib!',
+  ];
+  const fontSize = 24;
+  const solarizedWhite = rgb(253 / 255, 246 / 255, 227 / 255);
+  const solarizedGray = rgb(101 / 255, 123 / 255, 131 / 255);
+
+  const textWidth = ubuntuFont.widthOfTextAtSize(lines[2], fontSize);
+
+  const { width, height } = page.getSize();
+  const centerX = width / 2;
+  const centerY = height / 2;
+  page.drawImage(smallMarioImage, {
+    ...smallMarioDims,
+    x: centerX - smallMarioDims.width / 2,
+    y: centerY - 15,
   });
-
-  // Interleave new pages between all existing ones
-  pages.forEach((_, idx) => {
-    const newPage = pdfDoc.insertPage(2 * idx + 1, [500, 150]);
-
-    const fontSize = 24;
-    const { width, height } = newPage.getSize();
-
-    newPage.setFont(timesRomanFont);
-    newPage.setFontSize(fontSize);
-
-    const text = 'This page was interleaved by pdf-lib!';
-    const textWidth = timesRomanFont.widthOfTextAtSize(text, fontSize);
-    const textHeight = timesRomanFont.heightAtSize(fontSize);
-
-    newPage.drawText(text, {
-      x: width / 2 - textWidth / 2,
-      y: height / 2 - textHeight / 2,
-      color: rgb(0.7, 0.4, 0.9),
-    });
+  page.drawImage(smallMarioImage, {
+    ...smallMarioDims,
+    x: centerX + smallMarioDims.width / 2,
+    y: centerY,
+    rotate: degrees(180),
+    xSkew: degrees(35),
+    ySkew: degrees(35),
+  });
+  const boxHeight = (fontSize + 5) * lines.length;
+  page.drawRectangle({
+    x: centerX - textWidth / 2 - 5,
+    y: centerY - 60 - boxHeight + fontSize + 3,
+    width: textWidth + 10,
+    height: boxHeight,
+    color: solarizedWhite,
+    borderColor: solarizedGray,
+    borderWidth: 3,
+    rotate: degrees(10),
+    ySkew: degrees(15),
+  });
+  page.setFont(ubuntuFont);
+  page.setFontColor(solarizedGray);
+  page.drawText(lines.join('\n'), {
+    x: centerX - textWidth / 2,
+    y: centerY - 60,
+    rotate: degrees(10),
+    ySkew: degrees(15),
   });
 
   const buffer = await pdfDoc.save();
