@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 4</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test3.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test5.html'">
+        Next
+      </button>
+    </div>
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    const fetchAsset = (asset) =>
+      fetch(`/assets/${asset}`)
+        .then((res) => res.arrayBuffer())
+        .then((res) => new Uint8Array(res));
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const { PDFDocument, PDFPage, radians, StandardFonts } = PDFLib;
+
+      const [inputPdfBytes, minionsLaughingBytes] = await Promise.all([
+        fetchAsset('pdfs/normal.pdf'),
+        fetchAsset('images/minions_laughing.jpg'),
+      ]);
+
+      const pdfDoc = PDFDocument.load(inputPdfBytes);
+
+      const minionsLaughingImage = pdfDoc.embedJpg(minionsLaughingBytes);
+      const minionsLaughingDims = minionsLaughingImage.scale(0.6);
+
+      const firstPage = pdfDoc.getPages()[0];
+      const middlePage = pdfDoc.insertPage(1, [600, 500]);
+      const lastPage = pdfDoc.getPages()[2];
+
+      const fontSize = 20;
+      middlePage.setFontSize(fontSize);
+      middlePage.moveTo(0, middlePage.getHeight());
+
+      Object.keys(StandardFonts).forEach((fontName, idx) => {
+        middlePage.moveDown(fontSize);
+        const font = pdfDoc.embedFont(StandardFonts[fontName]);
+        middlePage.setFont(font);
+
+        // prettier-ignore
+        const text = (
+            fontName === StandardFonts.Symbol ? `${idx + 1}. Τηεσε αρε τηε 14 Στανδαρδ Φοντσ.`
+          : fontName === StandardFonts.ZapfDingbats ? `✑✔✎ ✴❈❅▲❅ ❁❒❅ ▼❈❅ ✑✔ ✳▼❁■❄❁❒❄ ✦❏■▼▲✎`
+          : `${idx + 1}. These are the 14 Standard Fonts.`
+        );
+
+        middlePage.drawText(text, {
+          rotate: radians(-Math.PI / 6),
+          xSkew: radians(Math.PI / 10),
+          ySkew: radians(Math.PI / 10),
+        });
+      });
+
+      const stampImage = (page) => {
+        const { width, height } = page.getSize();
+        const centerX = width / 2;
+        const centerY = height / 2;
+        page.drawImage(minionsLaughingImage, {
+          ...minionsLaughingDims,
+          x: centerX - minionsLaughingDims.width / 2,
+          y: centerY - minionsLaughingDims.height / 2,
+        });
+      };
+
+      stampImage(firstPage);
+      stampImage(lastPage);
+
+      const pdfBytes = await pdfDoc.save();
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>
