@@ -1,4 +1,5 @@
 import { asNumber, asPDFName, asPDFNumber } from 'src/api/objects';
+import { degreesToRadians } from 'src/api/rotations';
 import {
   PDFHexString,
   PDFName,
@@ -18,8 +19,6 @@ export const clipEvenOdd = () => PDFOperator.of(Ops.ClipEvenOdd);
 /* ==================== Graphics State Operators ==================== */
 
 const { cos, sin, tan } = Math;
-
-export const degreesToRadians = (degrees: number) => (degrees * Math.PI) / 180;
 
 export const concatTransformationMatrix = (
   a: NumberT,

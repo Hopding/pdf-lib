@@ -72,10 +72,11 @@ class PDFDocument {
       page = PDFPage.create(this);
       page.setSize(...dims);
     } else if (page.doc !== this) {
-      const copier = PDFObjectCopier.for(page.doc.context, this.context);
-      const copiedPage = copier.copy(page.node);
-      const ref = this.context.register(copiedPage);
-      page = PDFPage.of(copiedPage, ref, this);
+      // const copier = PDFObjectCopier.for(page.doc.context, this.context);
+      // const copiedPage = copier.copy(page.node);
+      // const ref = this.context.register(copiedPage);
+      // page = PDFPage.of(copiedPage, ref, this);
+      throw new Error('FIX ME!!! (hint to use PDFDocument.copyPagesFrom()');
     }
 
     const parentRef = this.catalog.insertLeafNode(page.ref, index);
@@ -85,6 +86,20 @@ class PDFDocument {
     this.pageCache.invalidate();
 
     return page;
+  }
+
+  async copyPages(srcDoc: PDFDocument, pages: number[]): Promise<PDFPage[]> {
+    await srcDoc.flush();
+    const copier = PDFObjectCopier.for(srcDoc.context, this.context);
+    const srcPages = srcDoc.getPages();
+    const copiedPages: PDFPage[] = new Array(pages.length);
+    for (let idx = 0, len = pages.length; idx < len; idx++) {
+      const srcPage = srcPages[pages[idx]];
+      const copiedPage = copier.copy(srcPage.node);
+      const ref = this.context.register(copiedPage);
+      copiedPages[idx] = PDFPage.of(copiedPage, ref, this);
+    }
+    return copiedPages;
   }
 
   embedFont(
@@ -122,11 +137,7 @@ class PDFDocument {
     return pdfImage;
   }
 
-  async save(
-    options: { useObjectStreams?: boolean } = {},
-  ): Promise<Uint8Array> {
-    const { useObjectStreams = true } = options;
-
+  async flush(): Promise<void> {
     // Embed fonts
     for (let idx = 0, len = this.fonts.length; idx < len; idx++) {
       const font = this.fonts[idx];
@@ -138,7 +149,13 @@ class PDFDocument {
       const image = this.images[idx];
       await image.embed();
     }
+  }
 
+  async save(
+    options: { useObjectStreams?: boolean } = {},
+  ): Promise<Uint8Array> {
+    const { useObjectStreams = true } = options;
+    await this.flush();
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context).serializeToBuffer();
   }

@@ -1,4 +1,4 @@
-import { degrees, PDFDocument, rgb } from 'src/index';
+import { degrees, PDFDocument, StandardFonts } from 'src/index';
 
 // import { default as opentype } from 'opentype.js';
 
@@ -180,69 +180,64 @@ const assets = {
   },
 };
 
+const createDonorPdf = () => {
+  const pdfDoc = PDFDocument.create();
+  const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  const page = pdfDoc.addPage([500, 500]);
+
+  page.moveTo(50, 225);
+  page.setFont(helveticaFont);
+  page.setFontSize(50);
+  page.drawText('I am upside down!');
+  page.setRotation(degrees(180));
+
+  return pdfDoc;
+};
+
 (async () => {
-  const { pdfs, images, fonts } = assets;
+  const { pdfs } = assets;
 
   const pdfDoc = PDFDocument.load(
     pdfs.with_missing_endstream_eol_and_polluted_ctm,
   );
 
-  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
-  const smallMarioImage = pdfDoc.embedPng(images.png.small_mario);
-  const smallMarioDims = smallMarioImage.scale(0.15);
-
-  const page = pdfDoc.getPages()[0];
-
-  const lines = [
-    'This is an image of Mario running.',
-    'This image and text was drawn on',
-    'top of an existing PDF using pdf-lib!',
+  const allDonorPdfBytes: Uint8Array[] = [
+    assets.pdfs.normal,
+    assets.pdfs.with_update_sections,
+    assets.pdfs.linearized_with_object_streams,
+    assets.pdfs.with_large_page_count,
   ];
-  const fontSize = 24;
-  const solarizedWhite = rgb(253 / 255, 246 / 255, 227 / 255);
-  const solarizedGray = rgb(101 / 255, 123 / 255, 131 / 255);
 
-  const textWidth = ubuntuFont.widthOfTextAtSize(lines[2], fontSize);
+  for (let idx = 0, len = allDonorPdfBytes.length; idx < len; idx++) {
+    const donorBytes = allDonorPdfBytes[idx];
+    const donorPdf = PDFDocument.load(donorBytes);
+    const [donorPage] = await pdfDoc.copyPages(donorPdf, [0]);
+    pdfDoc.addPage(donorPage);
+  }
 
-  const { width, height } = page.getSize();
-  const centerX = width / 2;
-  const centerY = height / 2;
-  page.drawImage(smallMarioImage, {
-    ...smallMarioDims,
-    x: centerX - smallMarioDims.width / 2,
-    y: centerY - 15,
-  });
-  page.drawImage(smallMarioImage, {
-    ...smallMarioDims,
-    x: centerX + smallMarioDims.width / 2,
-    y: centerY,
-    rotate: degrees(180),
-    xSkew: degrees(35),
-    ySkew: degrees(35),
-  });
-  const boxHeight = (fontSize + 5) * lines.length;
-  page.drawRectangle({
-    x: centerX - textWidth / 2 - 5,
-    y: centerY - 60 - boxHeight + fontSize + 3,
-    width: textWidth + 10,
-    height: boxHeight,
-    color: solarizedWhite,
-    borderColor: solarizedGray,
-    borderWidth: 3,
-    rotate: degrees(10),
-    ySkew: degrees(15),
-  });
-  page.setFont(ubuntuFont);
-  page.setFontColor(solarizedGray);
-  page.drawText(lines.join('\n'), {
-    x: centerX - textWidth / 2,
-    y: centerY - 60,
-    rotate: degrees(10),
-    ySkew: degrees(15),
-  });
+  const anotherDonorPdf = createDonorPdf();
+  const [anotherDonorPage] = await pdfDoc.copyPages(anotherDonorPdf, [0]);
+  pdfDoc.insertPage(1, anotherDonorPage);
 
-  const buffer = await pdfDoc.save();
+  const savedBytes = await pdfDoc.save();
+  const sizeOfCreatedPdf = savedBytes.length;
 
-  fs.writeFileSync('./out.pdf', buffer);
+  let sizeOfAllDonorPdfs = (await anotherDonorPdf.save()).length;
+  for (let idx = 0, len = allDonorPdfBytes.length; idx < len; idx++) {
+    sizeOfAllDonorPdfs += allDonorPdfBytes[idx].length;
+  }
+
+  console.log();
+  console.log(
+    'Since pdf-lib only copies the minimum necessary resources from a donor PDF needed to show a copied page, the size of the PDF we create from copied pages should be smaller than the size of all the donor PDFs added together:',
+  );
+  console.log();
+  console.log(
+    '  sizeOfRecipientPdf / sizeOfAllDonorPdfs = ',
+    (sizeOfCreatedPdf / sizeOfAllDonorPdfs).toFixed(2),
+  );
+
+  fs.writeFileSync('./out.pdf', savedBytes);
   console.log('File written to ./out.pdf');
 })();
