@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, StandardFonts } from 'src/index';
+import { PDFDocument, rgb } from 'src/index';
 
 // import { default as opentype } from 'opentype.js';
 
@@ -176,38 +176,57 @@ const assets = {
     with_newline_whitespace_in_indirect_object_numbers: readPdf(
       'with_newline_whitespace_in_indirect_object_numbers.pdf',
     ),
-    // with_comments: fs.readFileSync('test-pdfs/with_comments.pdf'),
+    with_comments: readPdf('with_comments.pdf'),
   },
 };
 
 (async () => {
-  const { pdfs } = assets;
+  const { pdfs, fonts, images } = assets;
 
-  const pdfDoc = PDFDocument.load(
-    pdfs.with_newline_whitespace_in_indirect_object_numbers,
-  );
+  const pdfDoc = PDFDocument.load(pdfs.with_comments);
 
-  const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
+  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
+  const smallMarioImage = pdfDoc.embedPng(images.png.small_mario);
+  const smallMarioDims = smallMarioImage.scale(0.15);
 
   const pages = pdfDoc.getPages();
 
-  const [firstPage] = pages;
+  const lines = [
+    'This is an image of Mario running.',
+    'This image and text was drawn on',
+    'top of an existing PDF using pdf-lib!',
+  ];
+  const fontSize = 24;
+  const solarizedWhite = rgb(253 / 255, 246 / 255, 227 / 255);
+  const solarizedGray = rgb(101 / 255, 123 / 255, 131 / 255);
 
-  const { width, height } = firstPage.getSize();
-  const text = 'pdf-lib is awesome!';
-  const textWidth = helveticaFont.widthOfTextAtSize(text, 75);
-  firstPage.moveTo(width / 2 - textWidth / 2, height - 100);
-  firstPage.setFont(helveticaFont);
-  firstPage.setFontSize(75);
-  firstPage.setFontColor(rgb(1, 0, 0));
-  firstPage.drawText(text);
+  const textWidth = ubuntuFont.widthOfTextAtSize(lines[2], fontSize);
 
-  pages.forEach((page, idx) => {
-    page.moveTo(10, 10);
-    page.setFont(helveticaFont);
-    page.setFontSize(17);
-    page.setFontColor(rgb(1, 0, 0));
-    page.drawText(`${idx + 1} / ${pages.length}`);
+  pages.forEach((page) => {
+    const { width, height } = page.getSize();
+    const centerX = width / 2;
+    const centerY = height / 2 - 250;
+    page.drawImage(smallMarioImage, {
+      ...smallMarioDims,
+      x: centerX - smallMarioDims.width / 2,
+      y: centerY + 15,
+    });
+    const boxHeight = (fontSize + 5) * lines.length;
+    page.drawRectangle({
+      x: centerX - textWidth / 2 - 5,
+      y: centerY - 15 - boxHeight + fontSize + 3,
+      width: textWidth + 10,
+      height: boxHeight,
+      color: solarizedWhite,
+      borderColor: solarizedGray,
+      borderWidth: 3,
+    });
+    page.setFont(ubuntuFont);
+    page.setFontColor(solarizedGray);
+    page.drawText(lines.join('\n'), {
+      x: centerX - textWidth / 2,
+      y: centerY - 15,
+    });
   });
 
   const buffer = await pdfDoc.save();
