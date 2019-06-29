@@ -1,4 +1,4 @@
-import { degrees, PDFDocument, StandardFonts } from 'src/index';
+import { PDFDocument, rgb, StandardFonts } from 'src/index';
 
 // import { default as opentype } from 'opentype.js';
 
@@ -173,71 +173,45 @@ const assets = {
     with_missing_endstream_eol_and_polluted_ctm: readPdf(
       'with_missing_endstream_eol_and_polluted_ctm.pdf',
     ),
-    // with_newline_whitespace_in_indirect_object_numbers: fs.readFileSync(
-    //   'test-pdfs/agile_software_ukranian.pdf',
-    // ),
+    with_newline_whitespace_in_indirect_object_numbers: readPdf(
+      'with_newline_whitespace_in_indirect_object_numbers.pdf',
+    ),
     // with_comments: fs.readFileSync('test-pdfs/with_comments.pdf'),
   },
-};
-
-const createDonorPdf = () => {
-  const pdfDoc = PDFDocument.create();
-  const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
-
-  const page = pdfDoc.addPage([500, 500]);
-
-  page.moveTo(50, 225);
-  page.setFont(helveticaFont);
-  page.setFontSize(50);
-  page.drawText('I am upside down!');
-  page.setRotation(degrees(180));
-
-  return pdfDoc;
 };
 
 (async () => {
   const { pdfs } = assets;
 
   const pdfDoc = PDFDocument.load(
-    pdfs.with_missing_endstream_eol_and_polluted_ctm,
+    pdfs.with_newline_whitespace_in_indirect_object_numbers,
   );
 
-  const allDonorPdfBytes: Uint8Array[] = [
-    assets.pdfs.normal,
-    assets.pdfs.with_update_sections,
-    assets.pdfs.linearized_with_object_streams,
-    assets.pdfs.with_large_page_count,
-  ];
+  const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  for (let idx = 0, len = allDonorPdfBytes.length; idx < len; idx++) {
-    const donorBytes = allDonorPdfBytes[idx];
-    const donorPdf = PDFDocument.load(donorBytes);
-    const [donorPage] = await pdfDoc.copyPages(donorPdf, [0]);
-    pdfDoc.addPage(donorPage);
-  }
+  const pages = pdfDoc.getPages();
 
-  const anotherDonorPdf = createDonorPdf();
-  const [anotherDonorPage] = await pdfDoc.copyPages(anotherDonorPdf, [0]);
-  pdfDoc.insertPage(1, anotherDonorPage);
+  const [firstPage] = pages;
 
-  const savedBytes = await pdfDoc.save();
-  const sizeOfCreatedPdf = savedBytes.length;
+  const { width, height } = firstPage.getSize();
+  const text = 'pdf-lib is awesome!';
+  const textWidth = helveticaFont.widthOfTextAtSize(text, 75);
+  firstPage.moveTo(width / 2 - textWidth / 2, height - 100);
+  firstPage.setFont(helveticaFont);
+  firstPage.setFontSize(75);
+  firstPage.setFontColor(rgb(1, 0, 0));
+  firstPage.drawText(text);
 
-  let sizeOfAllDonorPdfs = (await anotherDonorPdf.save()).length;
-  for (let idx = 0, len = allDonorPdfBytes.length; idx < len; idx++) {
-    sizeOfAllDonorPdfs += allDonorPdfBytes[idx].length;
-  }
+  pages.forEach((page, idx) => {
+    page.moveTo(10, 10);
+    page.setFont(helveticaFont);
+    page.setFontSize(17);
+    page.setFontColor(rgb(1, 0, 0));
+    page.drawText(`${idx + 1} / ${pages.length}`);
+  });
 
-  console.log();
-  console.log(
-    'Since pdf-lib only copies the minimum necessary resources from a donor PDF needed to show a copied page, the size of the PDF we create from copied pages should be smaller than the size of all the donor PDFs added together:',
-  );
-  console.log();
-  console.log(
-    '  sizeOfRecipientPdf / sizeOfAllDonorPdfs = ',
-    (sizeOfCreatedPdf / sizeOfAllDonorPdfs).toFixed(2),
-  );
+  const buffer = await pdfDoc.save();
 
-  fs.writeFileSync('./out.pdf', savedBytes);
+  fs.writeFileSync('./out.pdf', buffer);
   console.log('File written to ./out.pdf');
 })();

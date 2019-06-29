@@ -10,6 +10,7 @@ import test4 from './tests/test4';
 import test5 from './tests/test5';
 import test6 from './tests/test6';
 import test7 from './tests/test7';
+import test8 from './tests/test8';
 
 const cli = readline.createInterface({
   input: process.stdin,
@@ -84,9 +85,9 @@ const assets = {
     with_missing_endstream_eol_and_polluted_ctm: readPdf(
       'with_missing_endstream_eol_and_polluted_ctm.pdf',
     ),
-    // with_newline_whitespace_in_indirect_object_numbers: fs.readFileSync(
-    //   'test-pdfs/agile_software_ukranian.pdf',
-    // ),
+    with_newline_whitespace_in_indirect_object_numbers: readPdf(
+      'with_newline_whitespace_in_indirect_object_numbers.pdf',
+    ),
     // with_comments: fs.readFileSync('test-pdfs/with_comments.pdf'),
   },
 };
@@ -96,7 +97,7 @@ export type Assets = typeof assets;
 const main = async () => {
   const testIdx = process.argv[2] ? Number(process.argv[2]) : undefined;
 
-  const allTests = [test1, test2, test3, test4, test5, test6, test7];
+  const allTests = [test1, test2, test3, test4, test5, test6, test7, test8];
 
   const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
 
