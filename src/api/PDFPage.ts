@@ -130,6 +130,14 @@ class PDFPage {
     return { x: this.x, y: this.y };
   }
 
+  getX(): number {
+    return this.x;
+  }
+
+  getY(): number {
+    return this.y;
+  }
+
   moveTo(x: number, y: number): void {
     this.x = x;
     this.y = y;
