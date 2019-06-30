@@ -1,8 +1,7 @@
 import { PrivateConstructorError } from 'src/core/errors';
 import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { DelimiterChars } from 'src/core/syntax/Delimiters';
-import { WhitespaceChars } from 'src/core/syntax/Whitespace';
+import { IsIrregular } from 'src/core/syntax/Irregular';
 import {
   charFromHexCode,
   copyStringIntoBuffer,
@@ -13,12 +12,10 @@ import {
 const decodeName = (name: string) =>
   name.replace(/#(\d{2})/g, (_, hex) => charFromHexCode(hex));
 
-const IrregularChars = [CharCodes.Hash, ...WhitespaceChars, ...DelimiterChars];
-
 const isRegularChar = (charCode: number) =>
   charCode >= CharCodes.ExclamationPoint &&
   charCode <= CharCodes.Tilde &&
-  !IrregularChars.includes(charCode);
+  !IsIrregular[charCode];
 
 const ENFORCER = {};
 const pool = new Map<string, PDFName>();

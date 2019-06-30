@@ -22,10 +22,10 @@ import PDFCatalog from 'src/core/structures/PDFCatalog';
 import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { DelimiterChars } from 'src/core/syntax/Delimiters';
+import { IsDelimiter } from 'src/core/syntax/Delimiters';
 import { Keywords } from 'src/core/syntax/Keywords';
-import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
-import { WhitespaceChars } from 'src/core/syntax/Whitespace';
+import { IsDigit, IsNumeric } from 'src/core/syntax/Numeric';
+import { IsWhitespace } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';
 
 // TODO: Throw error if eof is reached before finishing object parse...
@@ -63,7 +63,7 @@ class PDFObjectParser extends BaseParser {
     if (byte === CharCodes.LeftParen) return this.parseString();
     if (byte === CharCodes.ForwardSlash) return this.parseName();
     if (byte === CharCodes.LeftSquareBracket) return this.parseArray();
-    if (NumericChars.includes(byte)) return this.parseNumberOrRef();
+    if (IsNumeric[byte]) return this.parseNumberOrRef();
 
     throw new PDFObjectParsingError(this.bytes.position(), byte);
   }
@@ -73,7 +73,7 @@ class PDFObjectParser extends BaseParser {
     this.skipWhitespaceAndComments();
 
     const lookaheadStart = this.bytes.offset();
-    if (DigitChars.includes(this.bytes.peek())) {
+    if (IsDigit[this.bytes.peek()]) {
       const secondNum = this.parseRawNumber();
       this.skipWhitespaceAndComments();
       if (this.bytes.peek() === CharCodes.R) {
@@ -142,8 +142,8 @@ class PDFObjectParser extends BaseParser {
       if (
         byte < CharCodes.ExclamationPoint ||
         byte > CharCodes.Tilde ||
-        WhitespaceChars.includes(byte) ||
-        DelimiterChars.includes(byte)
+        IsWhitespace[byte] ||
+        IsDelimiter[byte]
       ) {
         break;
       }

@@ -1,8 +1,8 @@
 import { NumberParsingError } from 'src/core/errors';
 import ByteStream from 'src/core/parser/ByteStream';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { DigitChars, NumericChars } from 'src/core/syntax/Numeric';
-import { WhitespaceChars } from 'src/core/syntax/Whitespace';
+import { IsDigit, IsNumeric } from 'src/core/syntax/Numeric';
+import { IsWhitespace } from 'src/core/syntax/Whitespace';
 import { charFromCode } from 'src/utils';
 
 const { Newline, CarriageReturn } = CharCodes;
@@ -20,7 +20,7 @@ class BaseParser {
 
     while (!this.bytes.done()) {
       const byte = this.bytes.peek();
-      if (!DigitChars.includes(byte)) break;
+      if (!IsDigit[byte]) break;
       value += charFromCode(this.bytes.next());
     }
 
@@ -41,7 +41,7 @@ class BaseParser {
     // Parse integer-part, the leading (+ | - | . | 0-9)
     while (!this.bytes.done()) {
       const byte = this.bytes.peek();
-      if (!NumericChars.includes(byte)) break;
+      if (!IsNumeric[byte]) break;
       value += charFromCode(this.bytes.next());
       if (byte === CharCodes.Period) break;
     }
@@ -49,7 +49,7 @@ class BaseParser {
     // Parse decimal-part, the trailing (0-9)
     while (!this.bytes.done()) {
       const byte = this.bytes.peek();
-      if (!DigitChars.includes(byte)) break;
+      if (!IsDigit[byte]) break;
       value += charFromCode(this.bytes.next());
     }
 
@@ -63,7 +63,7 @@ class BaseParser {
   }
 
   protected skipWhitespace(): void {
-    while (!this.bytes.done() && WhitespaceChars.includes(this.bytes.peek())) {
+    while (!this.bytes.done() && IsWhitespace[this.bytes.peek()]) {
       this.bytes.next();
     }
   }
