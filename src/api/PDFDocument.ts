@@ -19,10 +19,16 @@ import {
   StandardFonts,
 } from 'src/core';
 import { Fontkit } from 'src/types/fontkit';
-import { Cache } from 'src/utils';
+import {
+  Cache,
+  canBeConvertedToUint8Array,
+  isStandardFont,
+  toUint8Array,
+} from 'src/utils';
 
 class PDFDocument {
-  static load = (bytes: Uint8Array) => {
+  static load = (pdf: string | Uint8Array | ArrayBuffer) => {
+    const bytes = toUint8Array(pdf);
     const context = PDFParser.forBytes(bytes).parseDocument();
     return new PDFDocument(context);
   };
@@ -109,19 +115,22 @@ class PDFDocument {
   }
 
   embedFont(
-    font: StandardFonts | Uint8Array,
+    font: StandardFonts | string | Uint8Array | ArrayBuffer,
     options: { subset?: boolean } = {},
   ): PDFFont {
     const { subset = false } = options;
 
     let embedder: CustomFontEmbedder | StandardFontEmbedder;
-    if (font instanceof Uint8Array) {
+    if (isStandardFont(font)) {
+      embedder = StandardFontEmbedder.for(font);
+    } else if (canBeConvertedToUint8Array(font)) {
+      const bytes = toUint8Array(font);
       const fontkit = this.assertFontkit();
       embedder = subset
-        ? CustomFontSubsetEmbedder.for(fontkit, font)
-        : CustomFontEmbedder.for(fontkit, font);
+        ? CustomFontSubsetEmbedder.for(fontkit, bytes)
+        : CustomFontEmbedder.for(fontkit, bytes);
     } else {
-      embedder = StandardFontEmbedder.for(font);
+      throw new Error('FIX ME!!!');
     }
 
     const ref = this.context.nextRef();
@@ -131,16 +140,18 @@ class PDFDocument {
     return pdfFont;
   }
 
-  embedJpg(jpg: Uint8Array): PDFImage {
-    const embedder = JpegEmbedder.for(jpg);
+  embedJpg(jpg: string | Uint8Array | ArrayBuffer): PDFImage {
+    const bytes = toUint8Array(jpg);
+    const embedder = JpegEmbedder.for(bytes);
     const ref = this.context.nextRef();
     const pdfImage = PDFImage.of(ref, this, embedder);
     this.images.push(pdfImage);
     return pdfImage;
   }
 
-  embedPng(png: Uint8Array): PDFImage {
-    const embedder = PngEmbedder.for(png);
+  embedPng(png: string | Uint8Array | ArrayBuffer): PDFImage {
+    const bytes = toUint8Array(png);
+    const embedder = PngEmbedder.for(bytes);
     const ref = this.context.nextRef();
     const pdfImage = PDFImage.of(ref, this, embedder);
     this.images.push(pdfImage);

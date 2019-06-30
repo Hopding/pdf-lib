@@ -4,7 +4,7 @@ import { PDFDocument, PDFPage, radians, StandardFonts } from '../../..';
 export default async (assets: Assets) => {
   const { pdfs, images } = assets;
 
-  const pdfDoc = PDFDocument.load(pdfs.normal);
+  const pdfDoc = PDFDocument.load(pdfs.normal_base64);
 
   const minionsLaughingImage = pdfDoc.embedJpg(images.jpg.minions_laughing);
   const minionsLaughingDims = minionsLaughingImage.scale(0.6);

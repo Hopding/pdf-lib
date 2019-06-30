@@ -23,10 +23,11 @@
   </body>
 
   <script type="text/javascript">
-    const fetchAsset = (asset) =>
-      fetch(`/assets/${asset}`)
-        .then((res) => res.arrayBuffer())
-        .then((res) => new Uint8Array(res));
+    const fetchBinaryAsset = (asset) =>
+      fetch(`/assets/${asset}`).then((res) => res.arrayBuffer());
+
+    const fetchStringAsset = (asset) =>
+      fetch(`/assets/${asset}`).then((res) => res.text());
 
     const renderInIframe = (pdfBytes) => {
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -37,12 +38,12 @@
     async function test() {
       const { degrees, PDFDocument, rgb, StandardFonts } = PDFLib;
 
-      const [inputPdfBytes, catRidingUnicornBytes] = await Promise.all([
-        fetchAsset('pdfs/with_update_sections.pdf'),
-        fetchAsset('images/cat_riding_unicorn.jpg'),
+      const [inputPdfBase64, catRidingUnicornBytes] = await Promise.all([
+        fetchStringAsset('pdfs/with_update_sections.pdf.base64.uri'),
+        fetchBinaryAsset('images/cat_riding_unicorn.jpg'),
       ]);
 
-      const pdfDoc = PDFDocument.load(inputPdfBytes);
+      const pdfDoc = PDFDocument.load(inputPdfBase64);
 
       const helveticaFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const catRidingUnicornImage = pdfDoc.embedJpg(catRidingUnicornBytes);

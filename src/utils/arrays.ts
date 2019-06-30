@@ -1,4 +1,5 @@
-import { charFromCode } from './strings';
+import { decodeFromBase64DataUri } from 'src/utils/base64';
+import { charFromCode } from 'src/utils/strings';
 
 export const last = <T>(array: T[]): T => array[array.length - 1];
 
@@ -102,4 +103,23 @@ export const sum = (array: number[] | Uint8Array): number => {
     total += array[idx];
   }
   return total;
+};
+
+export const canBeConvertedToUint8Array = (
+  input: any,
+): input is string | ArrayBuffer | Uint8Array =>
+  input instanceof Uint8Array ||
+  input instanceof ArrayBuffer ||
+  typeof input === 'string';
+
+export const toUint8Array = (input: string | ArrayBuffer | Uint8Array) => {
+  if (typeof input === 'string') {
+    return decodeFromBase64DataUri(input);
+  } else if (input instanceof ArrayBuffer) {
+    return new Uint8Array(input);
+  } else if (input instanceof Uint8Array) {
+    return input;
+  } else {
+    throw new Error('FIX ME!!! Invalid input...');
+  }
 };
