@@ -21,7 +21,7 @@ import PDFXRefStreamParser from 'src/core/parser/PDFXRefStreamParser';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { Keywords } from 'src/core/syntax/Keywords';
-import { DigitChars } from 'src/core/syntax/Numeric';
+import { IsDigit } from 'src/core/syntax/Numeric';
 
 class PDFParser extends PDFObjectParser {
   static forBytes = (pdfBytes: Uint8Array) => new PDFParser(pdfBytes);
@@ -176,7 +176,7 @@ class PDFParser extends PDFObjectParser {
 
   private parseIndirectObjects(): void {
     this.skipWhitespaceAndComments();
-    while (!this.bytes.done() && DigitChars.includes(this.bytes.peek())) {
+    while (!this.bytes.done() && IsDigit[this.bytes.peek()]) {
       const initialOffset = this.bytes.offset();
       try {
         this.parseIndirectObject();
@@ -200,7 +200,7 @@ class PDFParser extends PDFObjectParser {
     let objectNumber = -1;
     const xref = PDFCrossRefSection.createEmpty();
 
-    while (!this.bytes.done() && DigitChars.includes(this.bytes.peek())) {
+    while (!this.bytes.done() && IsDigit[this.bytes.peek()]) {
       const firstInt = this.parseRawInt();
       this.skipWhitespaceAndComments();
 
