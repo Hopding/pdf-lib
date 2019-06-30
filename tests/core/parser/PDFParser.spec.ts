@@ -5,6 +5,7 @@ import {
   mergeIntoTypedArray,
   PDFHeader,
   PDFInvalidObject,
+  PDFPageLeaf,
   PDFParser,
   PDFRef,
   PDFString,
@@ -215,5 +216,39 @@ describe(`PDFParser`, () => {
     expect(context.header).toBeInstanceOf(PDFHeader);
     expect(context.header.toString()).toEqual('%PDF-1.3\n%');
     expect(context.enumerateIndirectObjects().length).toBe(7);
+  });
+
+  it(`can parse files with containing large arrays with most 'null' values`, () => {
+    const pdfBytes = fs.readFileSync('./assets/pdfs/bixby_guide.pdf');
+
+    const parser = PDFParser.forBytes(pdfBytes);
+    const context = parser.parseDocument();
+
+    expect(context.header).toBeInstanceOf(PDFHeader);
+    expect(context.header.toString()).toEqual('%PDF-1.4\n%');
+
+    const objects = context.enumerateIndirectObjects();
+    expect(objects.length).toBe(26079);
+    expect(
+      objects.filter(([_ref, obj]) => obj instanceof PDFPageLeaf).length,
+    ).toBe(176);
+  });
+
+  it(`can parse files with invalid stream EOLs: "stream \r\n`, () => {
+    const pdfBytes = fs.readFileSync(
+      './assets/pdfs/with_invalid_stream_EOL.pdf',
+    );
+
+    const parser = PDFParser.forBytes(pdfBytes);
+    const context = parser.parseDocument();
+
+    expect(context.header).toBeInstanceOf(PDFHeader);
+    expect(context.header.toString()).toEqual('%PDF-1.3\n%');
+
+    const objects = context.enumerateIndirectObjects();
+    expect(objects.length).toBe(11);
+    expect(
+      objects.filter(([_ref, obj]) => obj instanceof PDFPageLeaf).length,
+    ).toBe(2);
   });
 });
