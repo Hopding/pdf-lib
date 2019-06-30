@@ -58,8 +58,6 @@ class PDFPage {
     this.node = leafNode;
     this.ref = ref;
     this.doc = doc;
-
-    leafNode.normalize();
   }
 
   // TODO: Validate is multiple of 90 degrees!
