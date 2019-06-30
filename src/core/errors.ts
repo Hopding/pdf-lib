@@ -89,6 +89,20 @@ export class PDFObjectParsingError extends PDFParsingError {
   }
 }
 
+export class PDFInvalidObjectParsingError extends PDFParsingError {
+  constructor(pos: Position) {
+    const msg = `Failed to parse invalid PDF object`;
+    super(pos, msg);
+  }
+}
+
+export class PDFStreamParsingError extends PDFParsingError {
+  constructor(pos: Position) {
+    const msg = `Failed to parse PDF stream`;
+    super(pos, msg);
+  }
+}
+
 export class UnbalancedParenthesisError extends PDFParsingError {
   constructor(pos: Position) {
     const msg = `Failed to parse PDF literal string due to unbalanced parenthesis`;

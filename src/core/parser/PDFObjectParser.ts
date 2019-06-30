@@ -1,5 +1,6 @@
 import {
   PDFObjectParsingError,
+  PDFStreamParsingError,
   UnbalancedParenthesisError,
 } from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
@@ -203,6 +204,8 @@ class PDFObjectParser extends BaseParser {
   }
 
   protected parseDictOrStream(): PDFDict | PDFStream {
+    const startPos = this.bytes.position();
+
     const dict = this.parseDict();
 
     this.skipWhitespaceAndComments();
@@ -244,8 +247,7 @@ class PDFObjectParser extends BaseParser {
       if (nestingLvl === 0) break;
     }
 
-    // TODO: Create proper error object for this
-    if (nestingLvl !== 0) throw new Error('FIX ME!');
+    if (nestingLvl !== 0) throw new PDFStreamParsingError(startPos);
 
     const contents = this.bytes.slice(start, end);
 
