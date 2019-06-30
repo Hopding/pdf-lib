@@ -52,6 +52,7 @@ const assets = {
   fonts: {
     ttf: {
       ubuntu_r: readFont('ubuntu/Ubuntu-R.ttf'),
+      ubuntu_r_base64: String(readFont('ubuntu/Ubuntu-R.ttf.base64')),
       bio_rhyme_r: readFont('bio_rhyme/BioRhymeExpanded-Regular.ttf'),
       press_start_2p_r: readFont('press_start_2p/PressStart2P-Regular.ttf'),
       indie_flower_r: readFont('indie_flower/IndieFlower.ttf'),
@@ -69,10 +70,16 @@ const assets = {
   images: {
     jpg: {
       cat_riding_unicorn: readImage('cat_riding_unicorn.jpg'),
+      cat_riding_unicorn_base64: String(
+        readImage('cat_riding_unicorn.jpg.base64'),
+      ),
       minions_laughing: readImage('minions_laughing.jpg'),
     },
     png: {
       greyscale_bird: readImage('greyscale_bird.png'),
+      greyscale_bird_base64_uri: String(
+        readImage('greyscale_bird.png.base64.uri'),
+      ),
       minions_banana_alpha: readImage('minions_banana_alpha.png'),
       minions_banana_no_alpha: readImage('minions_banana_no_alpha.png'),
       small_mario: readImage('small_mario.png'),
@@ -80,7 +87,11 @@ const assets = {
   },
   pdfs: {
     normal: readPdf('normal.pdf'),
+    normal_base64: String(readPdf('normal.pdf.base64')),
     with_update_sections: readPdf('with_update_sections.pdf'),
+    with_update_sections_base64_uri: String(
+      readPdf('with_update_sections.pdf.base64.uri'),
+    ),
     linearized_with_object_streams: readPdf(
       'linearized_with_object_streams.pdf',
     ),
@@ -98,31 +109,33 @@ const assets = {
 export type Assets = typeof assets;
 
 const main = async () => {
-  const testIdx = process.argv[2] ? Number(process.argv[2]) : undefined;
+  try {
+    const testIdx = process.argv[2] ? Number(process.argv[2]) : undefined;
 
-  // prettier-ignore
-  const allTests = [
+    // prettier-ignore
+    const allTests = [
     test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
     test11
   ];
 
-  const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
+    const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
 
-  let idx = testIdx || 1;
-  for (const test of tests) {
-    console.log(`Running test #${idx}`);
-    const pdfBytes = await test(assets);
-    const path = writePdfToTmp(pdfBytes);
-    console.log(`> PDF file written to: ${path}`);
-    openPdf(path);
-    idx += 1;
-    await promptToContinue();
-    console.log();
+    let idx = testIdx || 1;
+    for (const test of tests) {
+      console.log(`Running test #${idx}`);
+      const pdfBytes = await test(assets);
+      const path = writePdfToTmp(pdfBytes);
+      console.log(`> PDF file written to: ${path}`);
+      openPdf(path);
+      idx += 1;
+      await promptToContinue();
+      console.log();
+    }
+
+    console.log('Done!');
+  } finally {
+    cli.close();
   }
-
-  console.log('Done!');
 };
 
-main().finally(() => {
-  cli.close();
-});
+main();

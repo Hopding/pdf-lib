@@ -5,13 +5,16 @@ import { cmyk, degrees, PDFDocument, rgb, StandardFonts } from 'src/index';
 const main = async () => {
   console.time('Scratchpad');
 
-  const ubuntuFontBytes = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-R.ttf');
-
-  const catRidingUnicornBytes = fs.readFileSync(
-    'assets/images/cat_riding_unicorn.jpg',
+  const ubuntuFontBytes = String(
+    fs.readFileSync('assets/fonts/ubuntu/Ubuntu-R.ttf.base64'),
   );
-  const greyscaleBirdBytes = fs.readFileSync(
-    'assets/images/greyscale_bird.png',
+  // const ubuntuFontBytes = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-R.ttf');
+
+  const catRidingUnicornBytes = String(
+    fs.readFileSync('assets/images/cat_riding_unicorn.jpg.base64'),
+  );
+  const greyscaleBirdBytes = String(
+    fs.readFileSync('assets/images/greyscale_bird.png.base64.uri'),
   );
   const minionsBananaAlphaBytes = fs.readFileSync(
     'assets/images/minions_banana_alpha.png',
@@ -109,7 +112,9 @@ const main = async () => {
 
   /*******************/
 
-  const pdfBytes2 = fs.readFileSync('./assets/pdfs/with_comments.pdf');
+  const pdfBytes2 = String(
+    fs.readFileSync('./assets/pdfs/with_update_sections.pdf.base64.uri'),
+  );
 
   const donorPdfDoc = PDFDocument.load(pdfBytes2);
   const [donorPage] = await pdfDoc.copyPages(donorPdfDoc, [0]);

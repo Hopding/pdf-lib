@@ -25,10 +25,11 @@
   </body>
 
   <script type="text/javascript">
-    const fetchAsset = (asset) =>
-      fetch(`/assets/${asset}`)
-        .then((res) => res.arrayBuffer())
-        .then((res) => new Uint8Array(res));
+    const fetchBinaryAsset = (asset) =>
+      fetch(`/assets/${asset}`).then((res) => res.arrayBuffer());
+
+    const fetchStringAsset = (asset) =>
+      fetch(`/assets/${asset}`).then((res) => res.text());
 
     const renderInIframe = (pdfBytes) => {
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -196,7 +197,7 @@
       page2.setFontColor(rgb(101 / 255, 123 / 255, 131 / 255));
 
       const [
-        ubuntuBytes,
+        ubuntuBase64,
         fantasqueBytes,
         indieFlowerBytes,
         greatVibesBytes,
@@ -205,17 +206,19 @@
         pressStart2PBytes,
         hussar3DBytes,
       ] = await Promise.all([
-        fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
-        fetchAsset('fonts/fantasque/OTF/FantasqueSansMono-BoldItalic.otf'),
-        fetchAsset('fonts/indie_flower/IndieFlower.ttf'),
-        fetchAsset('fonts/great_vibes/GreatVibes-Regular.ttf'),
-        fetchAsset('fonts/apple_storm/AppleStormCBo.otf'),
-        fetchAsset('fonts/bio_rhyme/BioRhymeExpanded-Regular.ttf'),
-        fetchAsset('fonts/press_start_2p/PressStart2P-Regular.ttf'),
-        fetchAsset('fonts/hussar_3d/Hussar3DFour.otf'),
+        fetchStringAsset('fonts/ubuntu/Ubuntu-R.ttf.base64'),
+        fetchBinaryAsset(
+          'fonts/fantasque/OTF/FantasqueSansMono-BoldItalic.otf',
+        ),
+        fetchBinaryAsset('fonts/indie_flower/IndieFlower.ttf'),
+        fetchBinaryAsset('fonts/great_vibes/GreatVibes-Regular.ttf'),
+        fetchBinaryAsset('fonts/apple_storm/AppleStormCBo.otf'),
+        fetchBinaryAsset('fonts/bio_rhyme/BioRhymeExpanded-Regular.ttf'),
+        fetchBinaryAsset('fonts/press_start_2p/PressStart2P-Regular.ttf'),
+        fetchBinaryAsset('fonts/hussar_3d/Hussar3DFour.otf'),
       ]);
 
-      const ubuntuFont = pdfDoc.embedFont(ubuntuBytes, { subset: true });
+      const ubuntuFont = pdfDoc.embedFont(ubuntuBase64, { subset: true });
       page2.drawText(ipsumLines.join('\n'), {
         y: size - 20,
         size: 20,
@@ -293,24 +296,24 @@
       const page3 = pdfDoc.addPage([size, page3Height]);
 
       const [
-        catRidingUnicornBytes,
+        catRidingUnicornBase64,
         minionsLaughingBytes,
-        greyscaleBirdBytes,
+        greyscaleBirdBase64,
         minionsBananaAlphaBytes,
         minionsBananaNoAlphaBytes,
         smallMarioBytes,
       ] = await Promise.all([
-        fetchAsset('images/cat_riding_unicorn.jpg'),
-        fetchAsset('images/minions_laughing.jpg'),
-        fetchAsset('images/greyscale_bird.png'),
-        fetchAsset('images/minions_banana_alpha.png'),
-        fetchAsset('images/minions_banana_no_alpha.png'),
-        fetchAsset('images/small_mario.png'),
+        fetchStringAsset('images/cat_riding_unicorn.jpg.base64'),
+        fetchBinaryAsset('images/minions_laughing.jpg'),
+        fetchStringAsset('images/greyscale_bird.png.base64.uri'),
+        fetchBinaryAsset('images/minions_banana_alpha.png'),
+        fetchBinaryAsset('images/minions_banana_no_alpha.png'),
+        fetchBinaryAsset('images/small_mario.png'),
       ]);
 
-      const catRidingUnicornImage = pdfDoc.embedJpg(catRidingUnicornBytes);
+      const catRidingUnicornImage = pdfDoc.embedJpg(catRidingUnicornBase64);
       const minionsLaughingImage = pdfDoc.embedJpg(minionsLaughingBytes);
-      const greyscaleBirdImage = pdfDoc.embedPng(greyscaleBirdBytes);
+      const greyscaleBirdImage = pdfDoc.embedPng(greyscaleBirdBase64);
       const minionsBananaAlphaImage = pdfDoc.embedPng(minionsBananaAlphaBytes);
       const minionsBananaNoAlphaImage = pdfDoc.embedPng(
         minionsBananaNoAlphaBytes,

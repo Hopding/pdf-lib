@@ -4,7 +4,7 @@ import { degrees, PDFDocument, rgb, StandardFonts } from '../../..';
 export default async (assets: Assets) => {
   const { pdfs, images } = assets;
 
-  const pdfDoc = PDFDocument.load(pdfs.with_update_sections);
+  const pdfDoc = PDFDocument.load(pdfs.with_update_sections_base64_uri);
 
   const helveticaFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const catRidingUnicornImage = pdfDoc.embedJpg(images.jpg.cat_riding_unicorn);

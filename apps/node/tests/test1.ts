@@ -1,3 +1,4 @@
+import fontkit from '@pdf-lib/fontkit';
 import { Assets } from '..';
 import {
   clip,
@@ -21,7 +22,6 @@ import {
   setLineJoin,
   StandardFonts,
 } from '../../..';
-import fontkit from '@pdf-lib/fontkit';
 
 const ipsumLines = [
   'Eligendi est pariatur quidem in non excepturi et.',
@@ -158,7 +158,9 @@ export default async (assets: Assets) => {
 
   const { fonts } = assets;
 
-  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
+  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r_base64, {
+    subset: true,
+  });
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 20,
     size: 20,
@@ -237,9 +239,9 @@ export default async (assets: Assets) => {
 
   const { jpg, png } = assets.images;
 
-  const catRidingUnicornImage = pdfDoc.embedJpg(jpg.cat_riding_unicorn);
+  const catRidingUnicornImage = pdfDoc.embedJpg(jpg.cat_riding_unicorn_base64);
   const minionsLaughingImage = pdfDoc.embedJpg(jpg.minions_laughing);
-  const greyscaleBirdImage = pdfDoc.embedPng(png.greyscale_bird);
+  const greyscaleBirdImage = pdfDoc.embedPng(png.greyscale_bird_base64_uri);
   const minionsBananaAlphaImage = pdfDoc.embedPng(png.minions_banana_alpha);
   const minionsBananaNoAlphaImage = pdfDoc.embedPng(
     png.minions_banana_no_alpha,
