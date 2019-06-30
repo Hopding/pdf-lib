@@ -1,3 +1,4 @@
+import { EncryptedPDFError } from 'src/api/errors';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
@@ -27,10 +28,14 @@ import {
 } from 'src/utils';
 
 class PDFDocument {
-  static load = (pdf: string | Uint8Array | ArrayBuffer) => {
+  static load = (
+    pdf: string | Uint8Array | ArrayBuffer,
+    options: { ignoreEncryption?: boolean } = {},
+  ) => {
+    const { ignoreEncryption = false } = options;
     const bytes = toUint8Array(pdf);
     const context = PDFParser.forBytes(bytes).parseDocument();
-    return new PDFDocument(context);
+    return new PDFDocument(context, ignoreEncryption);
   };
 
   static create = () => {
@@ -39,11 +44,12 @@ class PDFDocument {
     const pageTreeRef = context.register(pageTree);
     const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
     context.trailerInfo.Root = context.register(catalog);
-    return new PDFDocument(context);
+    return new PDFDocument(context, false);
   };
 
   readonly context: PDFContext;
   readonly catalog: PDFCatalog;
+  readonly isEncrypted: boolean;
 
   private fontkit?: Fontkit;
   private readonly pageCache: Cache<PDFPage[]>;
@@ -51,14 +57,17 @@ class PDFDocument {
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
 
-  private constructor(context: PDFContext) {
+  private constructor(context: PDFContext, ignoreEncryption: boolean) {
     this.context = context;
     this.catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
+    this.isEncrypted = !!context.lookup(context.trailerInfo.Encrypt);
 
     this.pageCache = Cache.populatedBy(this.computePages);
     this.pageMap = new Map();
     this.fonts = [];
     this.images = [];
+
+    if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
   }
 
   registerFontkit(fontkit: Fontkit): void {
