@@ -1,4 +1,8 @@
-import { EncryptedPDFError } from 'src/api/errors';
+import {
+  EncryptedPDFError,
+  FontkitNotRegisteredError,
+  ForeignPageError,
+} from 'src/api/errors';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
@@ -93,11 +97,7 @@ class PDFDocument {
       page = PDFPage.create(this);
       page.setSize(...dims);
     } else if (page.doc !== this) {
-      // const copier = PDFObjectCopier.for(page.doc.context, this.context);
-      // const copiedPage = copier.copy(page.node);
-      // const ref = this.context.register(copiedPage);
-      // page = PDFPage.of(copiedPage, ref, this);
-      throw new Error('FIX ME!!! (hint to use PDFDocument.copyPagesFrom()');
+      throw new ForeignPageError();
     }
 
     const parentRef = this.catalog.insertLeafNode(page.ref, index);
@@ -139,7 +139,9 @@ class PDFDocument {
         ? CustomFontSubsetEmbedder.for(fontkit, bytes)
         : CustomFontEmbedder.for(fontkit, bytes);
     } else {
-      throw new Error('FIX ME!!!');
+      throw new TypeError(
+        '`font` must be one of `StandardFonts | string | Uint8Array | ArrayBuffer`',
+      );
     }
 
     const ref = this.context.nextRef();
@@ -182,18 +184,17 @@ class PDFDocument {
   }
 
   async save(
-    options: { useObjectStreams?: boolean } = {},
+    options: { useObjectStreams?: boolean; addDefaultPage?: boolean } = {},
   ): Promise<Uint8Array> {
-    const { useObjectStreams = true } = options;
+    const { useObjectStreams = true, addDefaultPage = true } = options;
+    if (addDefaultPage && this.getPages().length === 0) this.addPage();
     await this.flush();
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context).serializeToBuffer();
   }
 
   private assertFontkit(): Fontkit {
-    if (!this.fontkit) {
-      throw new Error('FIX ME!!! Fontkit not registered... See docs url...');
-    }
+    if (!this.fontkit) throw new FontkitNotRegisteredError();
     return this.fontkit;
   }
 

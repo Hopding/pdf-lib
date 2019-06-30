@@ -120,6 +120,8 @@ export const toUint8Array = (input: string | ArrayBuffer | Uint8Array) => {
   } else if (input instanceof Uint8Array) {
     return input;
   } else {
-    throw new Error('FIX ME!!! Invalid input...');
+    throw new TypeError(
+      '`input` must be one of `string | ArrayBuffer | Uint8Array`',
+    );
   }
 };

@@ -4,6 +4,7 @@ import PDFTrailer from 'src/core/document/PDFTrailer';
 import {
   MissingKeywordError,
   MissingPDFHeaderError,
+  PDFInvalidObjectParsingError,
   ReparseError,
   StalledParserError,
 } from 'src/core/errors';
@@ -147,6 +148,8 @@ class PDFParser extends PDFObjectParser {
 
   // TODO: Improve and clean this up
   private tryToParseInvalidIndirectObject() {
+    const startPos = this.bytes.position();
+
     const ref = this.parseIndirectObjectHeader();
 
     this.skipWhitespaceAndComments();
@@ -161,7 +164,7 @@ class PDFParser extends PDFObjectParser {
       this.bytes.next();
     }
 
-    if (failed) throw new Error('FIX ME');
+    if (failed) throw new PDFInvalidObjectParsingError(startPos);
 
     const end = this.bytes.offset() - Keywords.endobj.length;
 
