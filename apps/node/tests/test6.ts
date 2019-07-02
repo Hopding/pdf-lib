@@ -1,12 +1,13 @@
 import fontkit from '@pdf-lib/fontkit';
 import { Assets } from '..';
-import { degrees, PDFDocument, rgb } from '../../..';
+import { degrees, ParseSpeeds, PDFDocument, rgb } from '../../..';
 
 export default async (assets: Assets) => {
   const { pdfs, images, fonts } = assets;
 
-  const pdfDoc = PDFDocument.load(
+  const pdfDoc = await PDFDocument.load(
     pdfs.with_missing_endstream_eol_and_polluted_ctm,
+    { parseSpeed: ParseSpeeds.Fastest },
   );
 
   pdfDoc.registerFontkit(fontkit);

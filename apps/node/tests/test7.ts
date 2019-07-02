@@ -1,8 +1,8 @@
 import { Assets } from '..';
-import { degrees, PDFDocument, StandardFonts } from '../../..';
+import { degrees, ParseSpeeds, PDFDocument, StandardFonts } from '../../..';
 
-const createDonorPdf = () => {
-  const pdfDoc = PDFDocument.create();
+const createDonorPdf = async () => {
+  const pdfDoc = await PDFDocument.create();
   const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
 
   const page = pdfDoc.addPage([500, 500]);
@@ -19,8 +19,9 @@ const createDonorPdf = () => {
 export default async (assets: Assets) => {
   const { pdfs } = assets;
 
-  const pdfDoc = PDFDocument.load(
+  const pdfDoc = await PDFDocument.load(
     pdfs.with_missing_endstream_eol_and_polluted_ctm,
+    { parseSpeed: ParseSpeeds.Fastest },
   );
 
   const allDonorPdfBytes: Uint8Array[] = [
@@ -32,12 +33,12 @@ export default async (assets: Assets) => {
 
   for (let idx = 0, len = allDonorPdfBytes.length; idx < len; idx++) {
     const donorBytes = allDonorPdfBytes[idx];
-    const donorPdf = PDFDocument.load(donorBytes);
+    const donorPdf = await PDFDocument.load(donorBytes);
     const [donorPage] = await pdfDoc.copyPages(donorPdf, [0]);
     pdfDoc.addPage(donorPage);
   }
 
-  const anotherDonorPdf = createDonorPdf();
+  const anotherDonorPdf = await createDonorPdf();
   const [anotherDonorPage] = await pdfDoc.copyPages(anotherDonorPdf, [0]);
   pdfDoc.insertPage(1, anotherDonorPage);
 

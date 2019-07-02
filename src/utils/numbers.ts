@@ -1,8 +1,13 @@
 // tslint:disable radix
-//
-// Credit: https://stackoverflow.com/a/46545519
-//
-// *** TODO: Unit test this!!! *** Document why it is needed (PDF number limit recommendations and JavaScript exponential notation)
+
+/**
+ * Converts a number to its string representation in decimal. This function
+ * differs from simply converting a number to a string with `.toString()`
+ * because this function's output string will **not** contain exponential
+ * notation.
+ *
+ * Credit: https://stackoverflow.com/a/46545519
+ */
 export const numberToString = (num: number) => {
   let numStr = String(num);
 

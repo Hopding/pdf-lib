@@ -47,7 +47,7 @@
         fetchAsset('images/small_mario.png'),
       ]);
 
-      const pdfDoc = PDFDocument.load(inputPdfBytes);
+      const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
       pdfDoc.registerFontkit(fontkit);
 

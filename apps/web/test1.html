@@ -67,7 +67,7 @@
         StandardFonts,
       } = PDFLib;
 
-      const pdfDoc = PDFDocument.create();
+      const pdfDoc = await PDFDocument.create();
 
       pdfDoc.registerFontkit(fontkit);
 

@@ -43,7 +43,7 @@
         fetchBinaryAsset('images/cat_riding_unicorn.jpg'),
       ]);
 
-      const pdfDoc = PDFDocument.load(inputPdfBase64);
+      const pdfDoc = await PDFDocument.load(inputPdfBase64);
 
       const helveticaFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const catRidingUnicornImage = pdfDoc.embedJpg(catRidingUnicornBytes);

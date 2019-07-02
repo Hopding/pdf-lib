@@ -31,25 +31,38 @@ import {
   toUint8Array,
 } from 'src/utils';
 
-class PDFDocument {
-  static load = (
-    pdf: string | Uint8Array | ArrayBuffer,
-    options: { ignoreEncryption?: boolean } = {},
-  ) => {
-    const { ignoreEncryption = false } = options;
-    const bytes = toUint8Array(pdf);
-    const context = PDFParser.forBytes(bytes).parseDocument();
-    return new PDFDocument(context, ignoreEncryption);
-  };
+export enum ParseSpeeds {
+  Fastest = Infinity,
+  Fast = 1500,
+  Medium = 500,
+  Slow = 100,
+}
 
-  static create = () => {
+class PDFDocument {
+  static async load(
+    pdf: string | Uint8Array | ArrayBuffer,
+    options: {
+      ignoreEncryption?: boolean;
+      parseSpeed?: ParseSpeeds | number;
+    } = {},
+  ) {
+    const { ignoreEncryption = false, parseSpeed = ParseSpeeds.Slow } = options;
+    const bytes = toUint8Array(pdf);
+    const context = await PDFParser.forBytesWithOptions(
+      bytes,
+      parseSpeed,
+    ).parseDocument();
+    return new PDFDocument(context, ignoreEncryption);
+  }
+
+  static async create() {
     const context = PDFContext.create();
     const pageTree = PDFPageTree.withContext(context);
     const pageTreeRef = context.register(pageTree);
     const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
     context.trailerInfo.Root = context.register(catalog);
     return new PDFDocument(context, false);
-  };
+  }
 
   readonly context: PDFContext;
   readonly catalog: PDFCatalog;

@@ -43,7 +43,7 @@
         fetchBinaryAsset('images/minions_laughing.jpg'),
       ]);
 
-      const pdfDoc = PDFDocument.load(inputPdfBase64);
+      const pdfDoc = await PDFDocument.load(inputPdfBase64);
 
       const minionsLaughingImage = pdfDoc.embedJpg(minionsLaughingBytes);
       const minionsLaughingDims = minionsLaughingImage.scale(0.6);

@@ -76,7 +76,7 @@ const breakLinesIntoGroups = (
 export default async (assets: Assets) => {
   const { fonts } = assets;
 
-  const pdfDoc = PDFDocument.create();
+  const pdfDoc = await PDFDocument.create();
 
   pdfDoc.registerFontkit(fontkit);
 

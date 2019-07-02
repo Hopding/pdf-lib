@@ -1,10 +1,17 @@
 import fs from 'fs';
-import { PDFDocument } from 'src/api';
+import { ParseSpeeds, PDFDocument } from 'src/api';
 
 const main = async () => {
-  const inputBytes = fs.readFileSync('assets/pdfs/bixby_guide.pdf');
+  // const inputBytes = fs.readFileSync('assets/pdfs/bixby_guide.pdf');
+  const inputBytes = fs.readFileSync(
+    'assets/pdfs/linearized_with_object_streams.pdf',
+  );
 
-  const pdfDoc = PDFDocument.load(inputBytes);
+  console.time('parse');
+  const pdfDoc = await PDFDocument.load(inputBytes, {
+    parseSpeed: ParseSpeeds.Fastest,
+  });
+  console.timeEnd('parse');
 
   const buffer = await pdfDoc.save();
   fs.writeFileSync('./out.pdf', buffer);

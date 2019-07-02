@@ -158,7 +158,7 @@ const breakTextIntoLines = (
 };
 
 export default async (_assets: Assets) => {
-  const pdfDoc = PDFDocument.create();
+  const pdfDoc = await PDFDocument.create();
 
   const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
   const helveticaBoldFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);

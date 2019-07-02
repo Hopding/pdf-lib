@@ -5,26 +5,31 @@ import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
 import ByteStream from 'src/core/parser/ByteStream';
 import PDFObjectParser from 'src/core/parser/PDFObjectParser';
+import { waitForTick } from 'src/utils';
 
 class PDFObjectStreamParser extends PDFObjectParser {
-  static forStream = (rawStream: PDFRawStream) =>
-    new PDFObjectStreamParser(rawStream);
+  static forStream = (
+    rawStream: PDFRawStream,
+    shouldWaitForTick?: () => boolean,
+  ) => new PDFObjectStreamParser(rawStream, shouldWaitForTick);
 
   private alreadyParsed: boolean;
+  private readonly shouldWaitForTick: () => boolean;
   private readonly firstOffset: number;
   private readonly objectCount: number;
 
-  constructor(rawStream: PDFRawStream) {
+  constructor(rawStream: PDFRawStream, shouldWaitForTick?: () => boolean) {
     super(ByteStream.fromPDFRawStream(rawStream), rawStream.dict.context);
 
     const { dict } = rawStream;
 
     this.alreadyParsed = false;
+    this.shouldWaitForTick = shouldWaitForTick || (() => false);
     this.firstOffset = dict.lookup(PDFName.of('First'), PDFNumber).value();
     this.objectCount = dict.lookup(PDFName.of('N'), PDFNumber).value();
   }
 
-  parseIntoContext(): void {
+  async parseIntoContext(): Promise<void> {
     if (this.alreadyParsed) {
       throw new ReparseError('PDFObjectStreamParser', 'parseIntoContext');
     }
@@ -37,6 +42,7 @@ class PDFObjectStreamParser extends PDFObjectParser {
       const object = this.parseObject();
       const ref = PDFRef.of(objectNumber, 0);
       this.context.assign(ref, object);
+      if (this.shouldWaitForTick()) await waitForTick();
     }
   }
 
