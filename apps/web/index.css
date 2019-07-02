@@ -20,6 +20,13 @@ iframe {
   justify-content: center;
 }
 
+#animation-target {
+  width: 30px;
+  height: 15px;
+  background-color: red;
+  border-radius: 25%;
+}
+
 button {
   padding: 10px;
   margin: 5px;

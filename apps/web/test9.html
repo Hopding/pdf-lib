@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
     <title>Test 9</title>
     <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
     <script
       type="text/javascript"
       src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js"
@@ -23,10 +24,13 @@
         Next
       </button>
     </div>
+    <div id="animation-target"></div>
     <iframe id="iframe"></iframe>
   </body>
 
   <script type="text/javascript">
+    startFpsTracker('animation-target');
+
     const fetchAsset = (asset) =>
       fetch(`/assets/${asset}`)
         .then((res) => res.arrayBuffer())
