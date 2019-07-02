@@ -22,17 +22,24 @@ import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { Keywords } from 'src/core/syntax/Keywords';
 import { IsDigit } from 'src/core/syntax/Numeric';
+import { waitForTick } from 'src/utils';
 
 class PDFParser extends PDFObjectParser {
-  static forBytes = (pdfBytes: Uint8Array) => new PDFParser(pdfBytes);
+  static forBytesWithOptions = (
+    pdfBytes: Uint8Array,
+    objectsPerTick?: number,
+  ) => new PDFParser(pdfBytes, objectsPerTick);
 
+  private readonly objectsPerTick: number;
   private alreadyParsed = false;
+  private parsedObjects = 0;
 
-  constructor(pdfBytes: Uint8Array) {
+  constructor(pdfBytes: Uint8Array, objectsPerTick: number = Infinity) {
     super(ByteStream.of(pdfBytes), PDFContext.create());
+    this.objectsPerTick = objectsPerTick;
   }
 
-  parseDocument(): PDFContext {
+  async parseDocument(): Promise<PDFContext> {
     if (this.alreadyParsed) {
       throw new ReparseError('PDFParser', 'parseDocument');
     }
@@ -42,7 +49,7 @@ class PDFParser extends PDFObjectParser {
 
     let prevOffset;
     while (!this.bytes.done()) {
-      this.parseDocumentSection();
+      await this.parseDocumentSection();
       const offset = this.bytes.offset();
       if (offset === prevOffset) {
         throw new StalledParserError(this.bytes.position());
@@ -115,7 +122,12 @@ class PDFParser extends PDFObjectParser {
     }
   }
 
-  private parseIndirectObject(): PDFRef {
+  private shouldWaitForTick = () => {
+    this.parsedObjects += 1;
+    return this.parsedObjects % this.objectsPerTick === 0;
+  };
+
+  private async parseIndirectObject(): Promise<PDFRef> {
     const ref = this.parseIndirectObjectHeader();
 
     this.skipWhitespaceAndComments();
@@ -133,7 +145,10 @@ class PDFParser extends PDFObjectParser {
       object instanceof PDFRawStream &&
       object.dict.lookup(PDFName.of('Type')) === PDFName.of('ObjStm')
     ) {
-      PDFObjectStreamParser.forStream(object).parseIntoContext();
+      await PDFObjectStreamParser.forStream(
+        object,
+        this.shouldWaitForTick,
+      ).parseIntoContext();
     } else if (
       object instanceof PDFRawStream &&
       object.dict.lookup(PDFName.of('Type')) === PDFName.of('XRef')
@@ -174,12 +189,14 @@ class PDFParser extends PDFObjectParser {
     return ref;
   }
 
-  private parseIndirectObjects(): void {
+  private async parseIndirectObjects(): Promise<void> {
     this.skipWhitespaceAndComments();
+
     while (!this.bytes.done() && IsDigit[this.bytes.peek()]) {
       const initialOffset = this.bytes.offset();
+
       try {
-        this.parseIndirectObject();
+        await this.parseIndirectObject();
       } catch (e) {
         // TODO: Add tracing/logging mechanism to track when this happens!
         this.bytes.moveTo(initialOffset);
@@ -189,6 +206,8 @@ class PDFParser extends PDFObjectParser {
 
       // TODO: Can this be done only when needed, to avoid harming performance?
       this.skipJibberish();
+
+      if (this.shouldWaitForTick()) await waitForTick();
     }
   }
 
@@ -256,8 +275,8 @@ class PDFParser extends PDFObjectParser {
     return PDFTrailer.forLastCrossRefSectionOffset(offset);
   }
 
-  private parseDocumentSection(): void {
-    this.parseIndirectObjects();
+  private async parseDocumentSection(): Promise<void> {
+    await this.parseIndirectObjects();
     this.maybeParseCrossRefSection();
     this.maybeParseTrailerDict();
     this.maybeParseTrailer();

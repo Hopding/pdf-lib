@@ -108,7 +108,7 @@
         fetchAsset('fonts/source_hans_jp/SourceHanSerifJP-Regular.otf'),
       ]);
 
-      const pdfDoc = PDFDocument.create();
+      const pdfDoc = await PDFDocument.create();
 
       pdfDoc.registerFontkit(fontkit);
 

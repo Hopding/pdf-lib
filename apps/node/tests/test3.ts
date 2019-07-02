@@ -1,10 +1,18 @@
 import { Assets } from '..';
-import { degrees, PDFDocument, rgb, StandardFonts } from '../../..';
+import {
+  degrees,
+  PDFDocument,
+  rgb,
+  StandardFonts,
+  ParseSpeeds,
+} from '../../..';
 
 export default async (assets: Assets) => {
   const { pdfs, images } = assets;
 
-  const pdfDoc = PDFDocument.load(pdfs.with_update_sections_base64_uri);
+  const pdfDoc = await PDFDocument.load(pdfs.with_update_sections_base64_uri, {
+    parseSpeed: ParseSpeeds.Fastest,
+  });
 
   const helveticaFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const catRidingUnicornImage = pdfDoc.embedJpg(images.jpg.cat_riding_unicorn);

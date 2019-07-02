@@ -1,11 +1,12 @@
 import { Assets } from '..';
-import { PDFDocument, rgb, StandardFonts } from '../../..';
+import { ParseSpeeds, PDFDocument, rgb, StandardFonts } from '../../..';
 
 export default async (assets: Assets) => {
   const { pdfs } = assets;
 
-  const pdfDoc = PDFDocument.load(
+  const pdfDoc = await PDFDocument.load(
     pdfs.with_newline_whitespace_in_indirect_object_numbers,
+    { parseSpeed: ParseSpeeds.Fastest },
   );
 
   const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);

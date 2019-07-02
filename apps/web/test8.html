@@ -43,7 +43,7 @@
         ),
       ]);
 
-      const pdfDoc = PDFDocument.load(inputPdfBytes);
+      const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
       const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
 

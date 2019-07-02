@@ -30,7 +30,7 @@ const ipsumLines = [
 ];
 
 export default async (assets: Assets) => {
-  const pdfDoc = PDFDocument.create();
+  const pdfDoc = await PDFDocument.create();
 
   pdfDoc.registerFontkit(fontkit);
 

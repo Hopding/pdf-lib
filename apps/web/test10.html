@@ -181,7 +181,7 @@
     async function test() {
       const { PDFDocument, StandardFonts } = PDFLib;
 
-      const pdfDoc = PDFDocument.create();
+      const pdfDoc = await PDFDocument.create();
 
       const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
       const helveticaBoldFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);

@@ -35,10 +35,10 @@
       document.getElementById('iframe').src = blobUrl;
     };
 
-    const createDonorPdf = () => {
+    const createDonorPdf = async () => {
       const { PDFDocument, StandardFonts, degrees } = PDFLib;
 
-      const pdfDoc = PDFDocument.create();
+      const pdfDoc = await PDFDocument.create();
       const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
 
       const page = pdfDoc.addPage([500, 500]);
@@ -69,7 +69,7 @@
         fetchAsset('pdfs/with_large_page_count.pdf'),
       ]);
 
-      const pdfDoc = PDFDocument.load(
+      const pdfDoc = await PDFDocument.load(
         withMissingEndstreamEolAndPollutedCtmBytes,
       );
 
@@ -82,12 +82,12 @@
 
       for (let idx = 0, len = allDonorPdfBytes.length; idx < len; idx++) {
         const donorBytes = allDonorPdfBytes[idx];
-        const donorPdf = PDFDocument.load(donorBytes);
+        const donorPdf = await PDFDocument.load(donorBytes);
         const [donorPage] = await pdfDoc.copyPages(donorPdf, [0]);
         pdfDoc.addPage(donorPage);
       }
 
-      const anotherDonorPdf = createDonorPdf();
+      const anotherDonorPdf = await createDonorPdf();
       const [anotherDonorPage] = await pdfDoc.copyPages(anotherDonorPdf, [0]);
       pdfDoc.insertPage(1, anotherDonorPage);
 

@@ -42,7 +42,7 @@
         fetchAsset('images/minions_banana_alpha.png'),
       ]);
 
-      const pdfDoc = PDFDocument.load(inputPdfBytes);
+      const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
       const timesRomanFont = pdfDoc.embedFont(
         StandardFonts.TimesRomanBoldItalic,

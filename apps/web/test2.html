@@ -47,7 +47,7 @@
         fetchAsset('pdfs/linearized_with_object_streams.pdf'),
       ]);
 
-      const pdfDoc = PDFDocument.load(inputPdfBytes);
+      const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
       pdfDoc.registerFontkit(fontkit);
 
