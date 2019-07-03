@@ -1,5 +1,5 @@
 <h1 align="center">
-<img alt="pdf-lib" src="https://raw.githubusercontent.com/Hopding/pdf-lib-docs/master/assets/logo-full.svg?sanitize=true">
+<img alt="pdf-lib" height="300" src="https://raw.githubusercontent.com/Hopding/pdf-lib-docs/master/assets/logo-full.svg?sanitize=true">
 </h1>
 
 <div align="center">
