@@ -134,7 +134,10 @@ import { PDFDocument } from 'pdf-lib'
 
 const pdfDoc = await PDFDocumentFactory.create();
 
-// These should be a Uint8Arrays. (see Document Modification example for more details)
+// This should be a Uint8Arrays.
+// These can be obtained in a number of different ways.
+// If your running in a Node environment, you could use fs.readFile().
+// In the browser, you could make a fetch() call and use res.arrayBuffer().
 const firstDonorPdfBytes = ...
 const secondDonorPdfBytes = ...
 
@@ -155,8 +158,13 @@ const pdfBytes = await pdfDoc.save()
 
 ### Embed Font and Measure Text
 
+`pdf-lib` relies upon a sister module to support embedding custom fonts: [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit). You must add the `@pdf-lib/fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts.
+
+> **[See below for detailed installation instructions](#fontkit-installation) on installing `@pdf-lib/fontkit` as a UMD or NPM module.**
+
 ```js
 import { PDFDocument, rgb } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 
 // This should be a Uint8Array.
 // This data can be obtained in a number of different ways.
@@ -166,21 +174,23 @@ const fontBytes = ...
 
 const pdfDoc = await PDFDocument.create()
 
-const embeddedFont = await pdfDoc.embedFont(fontBytes)
+pdfDoc.registerFontkit(fontkit)
+
+const customFont = await pdfDoc.embedFont(fontBytes)
 
 const page = pdfDoc.addPage()
 
 const text = 'This is text in an embedded font!'
 const textSize = 15
-const textWidth = embeddedFont.widthOfTextAtSize(text, textSize)
-const textHeight = embeddedFont.heightAtSize(textSize)
+const textWidth = customFont.widthOfTextAtSize(text, textSize)
+const textHeight = customFont.heightAtSize(textSize)
 
 // Draw text on page
 page.drawText(text, {
   x: 50,
   y: 450,
   size: textSize,
-  font: embeddedFont,
+  font: customFont,
   color: rgb(0, 0.53, 0.71),
 })
 
@@ -231,6 +241,46 @@ import { PDFDocument, rgb } from 'pdf-lib';
 // UMD module
 var PDFDocument = PDFLib.PDFDocument;
 var rgb = PDFLib.rgb;
+```
+
+## Fontkit Installation
+
+`pdf-lib` relies upon a sister module to support embedding custom fonts: [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit). You must add the `@pdf-lib/fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts (see the [font embedding example](#embed-font-and-measure-text)). This module is not included by default because not all users need it, and it increases bundle size.
+
+Installing this module is easy. Just like `pdf-lib` itself, `@pdf-lib/fontkit` can be installed with `npm`/`yarn` or as a UMD module.
+
+### Fontkit NPM Module
+
+```bash
+# With npm
+npm install --save @pdf-lib/fontkit
+
+# With yarn
+yarn add @pdf-lib/fontkit
+```
+
+To register the `fontkit` instance:
+
+```js
+import { PDFDocument } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
+
+const pdfDoc = await PDFDocument.create();
+pdfDoc.registerFontkit(fontkit);
+```
+
+### Fontkit UMD Module
+
+The following builds are available:
+
+- https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js
+- https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.min.js
+
+When using a UMD build, you will have access to a global `window.fontkit` variable. To register the `fontkit` instance:
+
+```js
+var pdfDoc = await PDFLib.PDFDocument.create();
+pdfDoc.registerFontkit(fontkit);
 ```
 
 ## Prior Art
