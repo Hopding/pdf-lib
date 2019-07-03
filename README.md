@@ -2,6 +2,13 @@
 <img alt="pdf-lib" height="300" src="https://raw.githubusercontent.com/Hopding/pdf-lib-docs/master/assets/logo-full.svg?sanitize=true">
 </h1>
 
+<div align="center">
+  <strong>Create and modify PDF documents in any JavaScript environment.</strong>
+</div>
+<div align="center">
+  Designed to work in any modern JavaScript runtime. Tested in Node, Browser, and React Native environments.
+</div>
+
 <br />
 
 <div align="center">
@@ -26,12 +33,4 @@
       alt="Prettier Badge"
     />
   </a>
-</div>
-
-> **Create and modify PDF documents in any JavaScript environment.**
-
-
-<br />
-<div align="center">
-  Designed to work in any modern JavaScript runtime. Tested in Node, Browser, and React Native environments.
 </div>
