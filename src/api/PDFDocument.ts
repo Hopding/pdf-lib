@@ -136,10 +136,10 @@ class PDFDocument {
     return copiedPages;
   }
 
-  embedFont(
+  async embedFont(
     font: StandardFonts | string | Uint8Array | ArrayBuffer,
     options: { subset?: boolean } = {},
-  ): PDFFont {
+  ): Promise<PDFFont> {
     const { subset = false } = options;
 
     let embedder: CustomFontEmbedder | StandardFontEmbedder;
@@ -149,8 +149,8 @@ class PDFDocument {
       const bytes = toUint8Array(font);
       const fontkit = this.assertFontkit();
       embedder = subset
-        ? CustomFontSubsetEmbedder.for(fontkit, bytes)
-        : CustomFontEmbedder.for(fontkit, bytes);
+        ? await CustomFontSubsetEmbedder.for(fontkit, bytes)
+        : await CustomFontEmbedder.for(fontkit, bytes);
     } else {
       throw new TypeError(
         '`font` must be one of `StandardFonts | string | Uint8Array | ArrayBuffer`',
@@ -164,18 +164,28 @@ class PDFDocument {
     return pdfFont;
   }
 
-  embedJpg(jpg: string | Uint8Array | ArrayBuffer): PDFImage {
+  embedStandardFont(font: StandardFonts): PDFFont {
+    const embedder = StandardFontEmbedder.for(font);
+
+    const ref = this.context.nextRef();
+    const pdfFont = PDFFont.of(ref, this, embedder);
+    this.fonts.push(pdfFont);
+
+    return pdfFont;
+  }
+
+  async embedJpg(jpg: string | Uint8Array | ArrayBuffer): Promise<PDFImage> {
     const bytes = toUint8Array(jpg);
-    const embedder = JpegEmbedder.for(bytes);
+    const embedder = await JpegEmbedder.for(bytes);
     const ref = this.context.nextRef();
     const pdfImage = PDFImage.of(ref, this, embedder);
     this.images.push(pdfImage);
     return pdfImage;
   }
 
-  embedPng(png: string | Uint8Array | ArrayBuffer): PDFImage {
+  async embedPng(png: string | Uint8Array | ArrayBuffer): Promise<PDFImage> {
     const bytes = toUint8Array(png);
-    const embedder = PngEmbedder.for(bytes);
+    const embedder = await PngEmbedder.for(bytes);
     const ref = this.context.nextRef();
     const pdfImage = PDFImage.of(ref, this, embedder);
     this.images.push(pdfImage);
@@ -197,13 +207,22 @@ class PDFDocument {
   }
 
   async save(
-    options: { useObjectStreams?: boolean; addDefaultPage?: boolean } = {},
+    options: {
+      useObjectStreams?: boolean;
+      addDefaultPage?: boolean;
+      objectsPerTick?: number;
+    } = {},
   ): Promise<Uint8Array> {
-    const { useObjectStreams = true, addDefaultPage = true } = options;
+    const {
+      useObjectStreams = true,
+      addDefaultPage = true,
+      objectsPerTick = 50,
+    } = options;
     if (addDefaultPage && this.getPages().length === 0) this.addPage();
     await this.flush();
+
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
-    return Writer.forContext(this.context).serializeToBuffer();
+    return Writer.forContext(this.context, objectsPerTick).serializeToBuffer();
   }
 
   private assertFontkit(): Fontkit {

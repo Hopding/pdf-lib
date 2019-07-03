@@ -1,4 +1,4 @@
-import { Glyph } from '@pdf-lib/fontkit';
+import { Glyph } from 'src/types/fontkit';
 
 import { toHexStringOfMinLength } from 'src/utils';
 

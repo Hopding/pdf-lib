@@ -268,7 +268,7 @@ class PDFPage {
 
   private getFont(): [PDFFont, string] {
     if (!this.font || !this.fontKey) {
-      const font = this.doc.embedFont(StandardFonts.Helvetica);
+      const font = this.doc.embedStandardFont(StandardFonts.Helvetica);
       this.setFont(font);
     }
     return [this.font!, this.fontKey!];

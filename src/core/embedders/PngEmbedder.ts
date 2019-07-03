@@ -10,7 +10,10 @@ import PDFContext from 'src/core/PDFContext';
  *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/png.coffee
  */
 class PngEmbedder {
-  static for = (imageData: Uint8Array) => new PngEmbedder(imageData);
+  static async for(imageData: Uint8Array) {
+    const image = await PNG.load(imageData);
+    return new PngEmbedder(image);
+  }
 
   readonly bitsPerComponent: number;
   readonly height: number;
@@ -21,8 +24,8 @@ class PngEmbedder {
   private imageData: Uint8Array;
   private alphaChannel: Uint8Array | undefined;
 
-  private constructor(pngData: Uint8Array) {
-    this.image = PNG.load(pngData);
+  private constructor(png: PNG) {
+    this.image = png;
     this.imageData = this.image.imgData;
     this.alphaChannel = undefined;
 
@@ -37,15 +40,17 @@ class PngEmbedder {
     //
     // if (this.image.transparency.grayscale)
     // if (this.image.transparency.rgb)
-
-    if (this.image.transparency.indexed) {
-      this.loadIndexedAlphaChannel();
-    } else if (this.image.hasAlphaChannel) {
-      this.splitAlphaChannel();
-    }
   }
 
-  embedIntoContext(context: PDFContext, ref?: PDFRef): PDFRef {
+  async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
+    if (!this.alphaChannel) {
+      if (this.image.transparency.indexed) {
+        await this.loadIndexedAlphaChannel();
+      } else if (this.image.hasAlphaChannel) {
+        await this.splitAlphaChannel();
+      }
+    }
+
     const SMask = this.embedAlphaChannel(context);
 
     const { palette } = this.image;
@@ -101,7 +106,7 @@ class PngEmbedder {
     return context.register(xObject);
   }
 
-  private splitAlphaChannel(): void {
+  private async splitAlphaChannel(): Promise<void> {
     const { colors, bits, width, height } = this.image;
 
     const pixels = this.image.decodePixels();
@@ -127,7 +132,7 @@ class PngEmbedder {
     this.alphaChannel = alphaChannel;
   }
 
-  private loadIndexedAlphaChannel(): void {
+  private async loadIndexedAlphaChannel(): Promise<void> {
     const transparency = this.image.transparency.indexed!;
     const pixels = this.image.decodePixels();
     const alphaChannel = new Uint8Array(this.image.width * this.image.height);

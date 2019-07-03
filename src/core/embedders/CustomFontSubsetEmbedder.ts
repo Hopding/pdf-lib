@@ -1,4 +1,4 @@
-import { Fontkit, Glyph, Subset } from 'src/types/fontkit';
+import { Font, Fontkit, Glyph, Subset } from 'src/types/fontkit';
 
 import CustomFontEmbedder from 'src/core/embedders/CustomFontEmbedder';
 import PDFHexString from 'src/core/objects/PDFHexString';
@@ -10,15 +10,17 @@ import { Cache, mergeUint8Arrays, toHexStringOfMinLength } from 'src/utils';
  *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
  */
 class CustomFontSubsetEmbedder extends CustomFontEmbedder {
-  static for = (fontkit: Fontkit, fontData: Uint8Array) =>
-    new CustomFontSubsetEmbedder(fontkit, fontData);
+  static async for(fontkit: Fontkit, fontData: Uint8Array) {
+    const font = await fontkit.create(fontData);
+    return new CustomFontSubsetEmbedder(font, fontData);
+  }
 
   private readonly subset: Subset;
   private readonly glyphs: Glyph[];
   private readonly glyphIdMap: Map<number, number>;
 
-  private constructor(fontkit: Fontkit, fontData: Uint8Array) {
-    super(fontkit, fontData);
+  private constructor(font: Font, fontData: Uint8Array) {
+    super(font, fontData);
 
     this.subset = this.font.createSubset();
     this.glyphs = [];

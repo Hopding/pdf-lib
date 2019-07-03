@@ -15,7 +15,7 @@ const contentStreamText = `
 `;
 
 describe(`PDFStreamWriter`, () => {
-  it(`serializes PDFContext objects using Indirect Objects, Object Streams, and XRef Streams`, () => {
+  it(`serializes PDFContext objects using Indirect Objects, Object Streams, and XRef Streams`, async () => {
     const context = PDFContext.create();
 
     const contentStream = context.flateStream(contentStreamText);
@@ -53,8 +53,9 @@ describe(`PDFStreamWriter`, () => {
     });
     context.trailerInfo.Root = context.register(catalog);
 
-    const buffer = PDFStreamWriter.forContext(
+    const buffer = await PDFStreamWriter.forContext(
       context,
+      Infinity,
       false,
       2,
     ).serializeToBuffer();

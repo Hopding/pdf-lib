@@ -1,4 +1,4 @@
-import { Font } from '@pdf-lib/fontkit';
+import { Font } from 'src/types/fontkit';
 
 export interface FontFlagOptions {
   fixedPitch?: boolean;

@@ -1,10 +1,10 @@
 import { Assets } from '..';
 import {
+  ParseSpeeds,
   PDFDocument,
   PDFPage,
   radians,
   StandardFonts,
-  ParseSpeeds,
 } from '../../..';
 
 export default async (assets: Assets) => {
@@ -14,7 +14,9 @@ export default async (assets: Assets) => {
     parseSpeed: ParseSpeeds.Fastest,
   });
 
-  const minionsLaughingImage = pdfDoc.embedJpg(images.jpg.minions_laughing);
+  const minionsLaughingImage = await pdfDoc.embedJpg(
+    images.jpg.minions_laughing,
+  );
   const minionsLaughingDims = minionsLaughingImage.scale(0.6);
 
   const firstPage = pdfDoc.getPages()[0];
@@ -27,7 +29,9 @@ export default async (assets: Assets) => {
 
   Object.keys(StandardFonts).forEach((fontName: any, idx) => {
     middlePage.moveDown(fontSize);
-    const font = pdfDoc.embedFont(StandardFonts[fontName] as StandardFonts);
+    const font = pdfDoc.embedStandardFont(StandardFonts[
+      fontName
+    ] as StandardFonts);
     middlePage.setFont(font);
 
     // prettier-ignore

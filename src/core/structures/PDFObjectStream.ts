@@ -16,7 +16,7 @@ class PDFObjectStream extends PDFFlateStream {
     encode = true,
   ) => new PDFObjectStream(context, objects, encode);
 
-  private readonly objects: IndirectObject[];
+  readonly objects: IndirectObject[];
   private readonly offsets: Array<[number, number]>;
   private readonly offsetsString: string;
 

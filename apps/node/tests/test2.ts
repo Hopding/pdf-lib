@@ -11,8 +11,10 @@ export default async (assets: Assets) => {
 
   pdfDoc.registerFontkit(fontkit);
 
-  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r, { subset: true });
-  const smallMarioImage = pdfDoc.embedPng(images.png.small_mario);
+  const ubuntuFont = await pdfDoc.embedFont(fonts.ttf.ubuntu_r, {
+    subset: true,
+  });
+  const smallMarioImage = await pdfDoc.embedPng(images.png.small_mario);
   const smallMarioDims = smallMarioImage.scale(0.18);
 
   const pages = pdfDoc.getPages();

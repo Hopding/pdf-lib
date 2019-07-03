@@ -3,7 +3,7 @@ import { degrees, ParseSpeeds, PDFDocument, StandardFonts } from '../../..';
 
 const createDonorPdf = async () => {
   const pdfDoc = await PDFDocument.create();
-  const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
   const page = pdfDoc.addPage([500, 500]);
 

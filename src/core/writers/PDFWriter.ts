@@ -6,8 +6,9 @@ import PDFDict from 'src/core/objects/PDFDict';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
+import PDFObjectStream from 'src/core/structures/PDFObjectStream';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { copyStringIntoBuffer } from 'src/utils';
+import { copyStringIntoBuffer, waitForTick } from 'src/utils';
 
 export interface SerializationInfo {
   size: number;
@@ -19,15 +20,20 @@ export interface SerializationInfo {
 }
 
 class PDFWriter {
-  static forContext = (context: PDFContext) => new PDFWriter(context);
+  static forContext = (context: PDFContext, objectsPerTick: number) =>
+    new PDFWriter(context, objectsPerTick);
 
   protected readonly context: PDFContext;
 
-  protected constructor(context: PDFContext) {
+  protected readonly objectsPerTick: number;
+  private parsedObjects = 0;
+
+  protected constructor(context: PDFContext, objectsPerTick: number) {
     this.context = context;
+    this.objectsPerTick = objectsPerTick;
   }
 
-  serializeToBuffer(): Uint8Array {
+  async serializeToBuffer(): Promise<Uint8Array> {
     const {
       size,
       header,
@@ -35,7 +41,7 @@ class PDFWriter {
       xref,
       trailerDict,
       trailer,
-    } = this.computeBufferSize();
+    } = await this.computeBufferSize();
 
     let offset = 0;
     const buffer = new Uint8Array(size);
@@ -71,6 +77,9 @@ class PDFWriter {
       buffer[offset++] = CharCodes.j;
       buffer[offset++] = CharCodes.Newline;
       buffer[offset++] = CharCodes.Newline;
+
+      const n = object instanceof PDFObjectStream ? object.objects.length : 1;
+      if (this.shouldWaitForTick(n)) await waitForTick();
     }
 
     if (xref) {
@@ -108,7 +117,7 @@ class PDFWriter {
     });
   }
 
-  protected computeBufferSize(): SerializationInfo {
+  protected async computeBufferSize(): Promise<SerializationInfo> {
     const header = PDFHeader.forVersion(1, 7);
 
     let size = header.sizeInBytes() + 2;
@@ -122,6 +131,7 @@ class PDFWriter {
       const [ref] = indirectObject;
       xref.addEntry(ref, size);
       size += this.computeIndirectObjectSize(indirectObject);
+      if (this.shouldWaitForTick(1)) await waitForTick();
     }
 
     const xrefOffset = size;
@@ -135,6 +145,11 @@ class PDFWriter {
 
     return { size, header, indirectObjects, xref, trailerDict, trailer };
   }
+
+  protected shouldWaitForTick = (n: number) => {
+    this.parsedObjects += n;
+    return this.parsedObjects % this.objectsPerTick === 0;
+  };
 }
 
 export default PDFWriter;

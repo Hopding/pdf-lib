@@ -34,7 +34,7 @@ export default async (assets: Assets) => {
 
   pdfDoc.registerFontkit(fontkit);
 
-  const timesRomanFont = pdfDoc.embedFont(StandardFonts.TimesRoman);
+  const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
 
   const size = 750;
 
@@ -158,7 +158,7 @@ export default async (assets: Assets) => {
 
   const { fonts } = assets;
 
-  const ubuntuFont = pdfDoc.embedFont(fonts.ttf.ubuntu_r_base64, {
+  const ubuntuFont = await pdfDoc.embedFont(fonts.ttf.ubuntu_r_base64, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -168,7 +168,9 @@ export default async (assets: Assets) => {
     lineHeight: 20,
   });
 
-  const fantasqueFont = pdfDoc.embedFont(fonts.otf.fantasque_sans_mono_bi);
+  const fantasqueFont = await pdfDoc.embedFont(
+    fonts.otf.fantasque_sans_mono_bi,
+  );
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 105,
     size: 25,
@@ -176,7 +178,7 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const indieFlowerFont = pdfDoc.embedFont(fonts.ttf.indie_flower_r, {
+  const indieFlowerFont = await pdfDoc.embedFont(fonts.ttf.indie_flower_r, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -186,7 +188,7 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const greatVibesFont = pdfDoc.embedFont(fonts.ttf.great_vibes_r, {
+  const greatVibesFont = await pdfDoc.embedFont(fonts.ttf.great_vibes_r, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -196,7 +198,7 @@ export default async (assets: Assets) => {
     lineHeight: 30,
   });
 
-  const appleStormFont = pdfDoc.embedFont(fonts.otf.apple_storm_r);
+  const appleStormFont = await pdfDoc.embedFont(fonts.otf.apple_storm_r);
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 425,
     size: 25,
@@ -204,7 +206,7 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const bioRhymeFont = pdfDoc.embedFont(fonts.ttf.bio_rhyme_r, {
+  const bioRhymeFont = await pdfDoc.embedFont(fonts.ttf.bio_rhyme_r, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -214,7 +216,7 @@ export default async (assets: Assets) => {
     lineHeight: 15,
   });
 
-  const pressStart2PFont = pdfDoc.embedFont(fonts.ttf.press_start_2p_r, {
+  const pressStart2PFont = await pdfDoc.embedFont(fonts.ttf.press_start_2p_r, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -224,7 +226,7 @@ export default async (assets: Assets) => {
     lineHeight: 15,
   });
 
-  const hussar3DFont = pdfDoc.embedFont(fonts.otf.hussar_3d_r);
+  const hussar3DFont = await pdfDoc.embedFont(fonts.otf.hussar_3d_r);
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 650,
     size: 25,
@@ -239,14 +241,20 @@ export default async (assets: Assets) => {
 
   const { jpg, png } = assets.images;
 
-  const catRidingUnicornImage = pdfDoc.embedJpg(jpg.cat_riding_unicorn_base64);
-  const minionsLaughingImage = pdfDoc.embedJpg(jpg.minions_laughing);
-  const greyscaleBirdImage = pdfDoc.embedPng(png.greyscale_bird_base64_uri);
-  const minionsBananaAlphaImage = pdfDoc.embedPng(png.minions_banana_alpha);
-  const minionsBananaNoAlphaImage = pdfDoc.embedPng(
+  const catRidingUnicornImage = await pdfDoc.embedJpg(
+    jpg.cat_riding_unicorn_base64,
+  );
+  const minionsLaughingImage = await pdfDoc.embedJpg(jpg.minions_laughing);
+  const greyscaleBirdImage = await pdfDoc.embedPng(
+    png.greyscale_bird_base64_uri,
+  );
+  const minionsBananaAlphaImage = await pdfDoc.embedPng(
+    png.minions_banana_alpha,
+  );
+  const minionsBananaNoAlphaImage = await pdfDoc.embedPng(
     png.minions_banana_no_alpha,
   );
-  const smallMarioImage = pdfDoc.embedPng(png.small_mario);
+  const smallMarioImage = await pdfDoc.embedPng(png.small_mario);
 
   const catRidingUnicornDims = catRidingUnicornImage.scale(0.2);
   const minionsLaughingDims = minionsLaughingImage.scale(0.75);

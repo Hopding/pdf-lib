@@ -1,10 +1,10 @@
 import { Assets } from '..';
 import {
   degrees,
+  ParseSpeeds,
   PDFDocument,
   rgb,
   StandardFonts,
-  ParseSpeeds,
 } from '../../..';
 
 export default async (assets: Assets) => {
@@ -14,8 +14,10 @@ export default async (assets: Assets) => {
     parseSpeed: ParseSpeeds.Fastest,
   });
 
-  const helveticaFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const catRidingUnicornImage = pdfDoc.embedJpg(images.jpg.cat_riding_unicorn);
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const catRidingUnicornImage = await pdfDoc.embedJpg(
+    images.jpg.cat_riding_unicorn,
+  );
   const catRidingUnicornDims = catRidingUnicornImage.scale(0.13);
 
   const page0 = pdfDoc.insertPage(0, [305, 250]);
