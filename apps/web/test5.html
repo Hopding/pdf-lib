@@ -48,10 +48,10 @@
 
       const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
-      const timesRomanFont = pdfDoc.embedFont(
+      const timesRomanFont = await pdfDoc.embedFont(
         StandardFonts.TimesRomanBoldItalic,
       );
-      const minionsBananaImage = pdfDoc.embedPng(minionsBananaAlphaBytes);
+      const minionsBananaImage = await pdfDoc.embedPng(minionsBananaAlphaBytes);
       const minionsBananaDims = minionsBananaImage.scale(0.5);
 
       const pages = pdfDoc.getPages();
@@ -85,6 +85,7 @@
           color: rgb(0.7, 0.4, 0.9),
         });
       });
+
       const pdfBytes = await pdfDoc.save();
 
       renderInIframe(pdfBytes);

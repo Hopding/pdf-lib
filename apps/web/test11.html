@@ -116,8 +116,10 @@
 
       pdfDoc.registerFontkit(fontkit);
 
-      const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
-      const helveticaBoldFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const helveticaBoldFont = await pdfDoc.embedFont(
+        StandardFonts.HelveticaBold,
+      );
 
       const title = 'Embedded UTF-16 Font Demo';
       const description = `
@@ -157,7 +159,7 @@
         x: 25,
       });
 
-      const sourceHanFont = pdfDoc.embedFont(sourceHanBytes);
+      const sourceHanFont = await pdfDoc.embedFont(sourceHanBytes);
 
       const sourceHanFontSize = 20;
       const sourceHanString = String.fromCodePoint(

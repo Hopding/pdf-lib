@@ -107,7 +107,7 @@ const addPageWithFonts = (
 
   page.moveTo(0, 675);
   fontNames.forEach((fontName) => {
-    const font = pdfDoc.embedFont(fontName);
+    const font = pdfDoc.embedStandardFont(fontName);
     const lines = breakTextIntoLines(text, fontSize, font, 600);
 
     page.drawText(fontName, {
@@ -160,8 +160,8 @@ const breakTextIntoLines = (
 export default async (_assets: Assets) => {
   const pdfDoc = await PDFDocument.create();
 
-  const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
-  const helveticaBoldFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
   const title = 'Standard 14 Fonts Demo';
   const description = `
@@ -237,7 +237,7 @@ export default async (_assets: Assets) => {
   ]);
 
   // ZapfDingbats
-  const zapfDingbatsFont = pdfDoc.embedFont(StandardFonts.ZapfDingbats);
+  const zapfDingbatsFont = await pdfDoc.embedFont(StandardFonts.ZapfDingbats);
   const zapfDingbatsFontSize = 20;
   const zapfDingbatsLines = breakTextIntoLines(
     zapfDingbatsString,
@@ -266,7 +266,7 @@ export default async (_assets: Assets) => {
   });
 
   // Symbol
-  const symbolFont = pdfDoc.embedFont(StandardFonts.Symbol);
+  const symbolFont = await pdfDoc.embedFont(StandardFonts.Symbol);
   const symbolFontSize = 20;
   const symbolLines = breakTextIntoLines(
     symbolString,

@@ -9,30 +9,38 @@ import PDFContext from 'src/core/PDFContext';
 import PDFCrossRefStream from 'src/core/structures/PDFCrossRefStream';
 import PDFObjectStream from 'src/core/structures/PDFObjectStream';
 import PDFWriter from 'src/core/writers/PDFWriter';
-import { last } from 'src/utils';
+import { last, waitForTick } from 'src/utils';
 
 class PDFStreamWriter extends PDFWriter {
   static forContext = (
     context: PDFContext,
+    objectsPerTick: number,
     encodeStreams = true,
     objectsPerStream = 50,
-  ) => new PDFStreamWriter(context, encodeStreams, objectsPerStream);
+  ) =>
+    new PDFStreamWriter(
+      context,
+      objectsPerTick,
+      encodeStreams,
+      objectsPerStream,
+    );
 
   private readonly encodeStreams: boolean;
   private readonly objectsPerStream: number;
 
   private constructor(
     context: PDFContext,
+    objectsPerTick: number,
     encodeStreams: boolean,
     objectsPerStream: number,
   ) {
-    super(context);
+    super(context, objectsPerTick);
 
     this.encodeStreams = encodeStreams;
     this.objectsPerStream = objectsPerStream;
   }
 
-  protected computeBufferSize() {
+  protected async computeBufferSize() {
     let objectNumber = this.context.largestObjectNumber + 1;
 
     const header = PDFHeader.forVersion(1, 7);
@@ -62,6 +70,7 @@ class PDFStreamWriter extends PDFWriter {
         uncompressedObjects.push(indirectObject);
         xrefStream.addUncompressedEntry(ref, size);
         size += this.computeIndirectObjectSize(indirectObject);
+        if (this.shouldWaitForTick(1)) await waitForTick();
       } else {
         let chunk = last(compressedObjects);
         let objectStreamRef = last(objectStreamRefs);
@@ -89,6 +98,8 @@ class PDFStreamWriter extends PDFWriter {
       size += this.computeIndirectObjectSize([ref, objectStream]);
 
       uncompressedObjects.push([ref, objectStream]);
+
+      if (this.shouldWaitForTick(chunk.length)) await waitForTick();
     }
 
     const xrefStreamRef = PDFRef.of(objectNumber++);

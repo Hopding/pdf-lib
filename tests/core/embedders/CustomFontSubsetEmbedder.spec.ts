@@ -11,14 +11,14 @@ import {
 const ubuntuFont = fs.readFileSync('./assets/fonts/ubuntu/Ubuntu-R.ttf');
 
 describe(`CustomFontSubsetEmbedder`, () => {
-  it(`can be constructed with CustomFontSubsetEmbedder.for(...)`, () => {
-    const embedder = CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
+  it(`can be constructed with CustomFontSubsetEmbedder.for(...)`, async () => {
+    const embedder = await CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
     expect(embedder).toBeInstanceOf(CustomFontSubsetEmbedder);
   });
 
   it(`can embed standard font dictionaries into PDFContexts`, async () => {
     const context = PDFContext.create();
-    const embedder = CustomFontSubsetEmbedder.for(
+    const embedder = await CustomFontSubsetEmbedder.for(
       fontkit,
       new Uint8Array(ubuntuFont),
     );
@@ -29,11 +29,11 @@ describe(`CustomFontSubsetEmbedder`, () => {
     expect(context.lookup(ref)).toBeInstanceOf(PDFDict);
   });
 
-  it(`can encode text strings into PDFHexString objects`, () => {
+  it(`can encode text strings into PDFHexString objects`, async () => {
     const text = 'Stuff and thingz!';
     const hexCodes =
       '00010002000300040005000600070008000500020009000A0007000B000C000D';
-    const embedder = CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
+    const embedder = await CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
 
     expect(embedder.encodeText(text)).toBeInstanceOf(PDFHexString);
     expect(String(embedder.encodeText(text))).toBe(
@@ -41,21 +41,21 @@ describe(`CustomFontSubsetEmbedder`, () => {
     );
   });
 
-  it(`can measure the width of text strings at the given font size`, () => {
+  it(`can measure the width of text strings at the given font size`, async () => {
     const text = 'Stuff and thingz!';
-    const embedder = CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
+    const embedder = await CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
     expect(embedder.widthOfTextAtSize(text, 12)).toBe(90.672);
     expect(embedder.widthOfTextAtSize(text, 24)).toBe(181.344);
   });
 
-  it(`can measure the height of the font at the given size`, () => {
-    const embedder = CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
+  it(`can measure the height of the font at the given size`, async () => {
+    const embedder = await CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
     expect(embedder.heightOfFontAtSize(12)).toBeCloseTo(13.452);
     expect(embedder.heightOfFontAtSize(24)).toBeCloseTo(26.904);
   });
 
-  it(`can measure the size of the font at a given height`, () => {
-    const embedder = CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
+  it(`can measure the size of the font at a given height`, async () => {
+    const embedder = await CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
     expect(embedder.sizeOfFontAtHeight(12)).toBeCloseTo(10.705);
     expect(embedder.sizeOfFontAtHeight(24)).toBeCloseTo(21.409);
   });

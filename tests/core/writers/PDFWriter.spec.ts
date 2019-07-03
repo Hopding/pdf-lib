@@ -95,7 +95,7 @@ startxref
 );
 
 describe(`PDFWriter`, () => {
-  it(`serializes PDFContext objects using Indirect Objects and a Cross Reference table`, () => {
+  it(`serializes PDFContext objects using Indirect Objects and a Cross Reference table`, async () => {
     const context = PDFContext.create();
 
     const contentStream = context.flateStream(contentStreamText);
@@ -133,7 +133,10 @@ describe(`PDFWriter`, () => {
     });
     context.trailerInfo.Root = context.register(catalog);
 
-    const buffer = PDFWriter.forContext(context).serializeToBuffer();
+    const buffer = await PDFWriter.forContext(
+      context,
+      Infinity,
+    ).serializeToBuffer();
 
     expect(buffer.length).toBe(pdfBytes.length);
     expect(buffer).toEqual(pdfBytes);

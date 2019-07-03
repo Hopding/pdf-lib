@@ -49,8 +49,10 @@
 
       const pdfDoc = await PDFDocument.load(inputPdfBase64);
 
-      const helveticaFont = pdfDoc.embedFont(StandardFonts.HelveticaBold);
-      const catRidingUnicornImage = pdfDoc.embedJpg(catRidingUnicornBytes);
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const catRidingUnicornImage = await pdfDoc.embedJpg(
+        catRidingUnicornBytes,
+      );
       const catRidingUnicornDims = catRidingUnicornImage.scale(0.13);
 
       const page0 = pdfDoc.insertPage(0, [305, 250]);

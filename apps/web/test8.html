@@ -49,7 +49,7 @@
 
       const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
-      const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
       const pages = pdfDoc.getPages();
 

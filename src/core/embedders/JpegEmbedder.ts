@@ -28,18 +28,7 @@ const ChannelToColorSpace: { [idx: number]: ColorSpace | undefined } = {
  *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
  */
 class JpegEmbedder {
-  static for = (imageData: Uint8Array) => new JpegEmbedder(imageData);
-
-  readonly bitsPerComponent: number;
-  readonly height: number;
-  readonly width: number;
-  readonly colorSpace: ColorSpace;
-
-  private readonly imageData: Uint8Array;
-
-  private constructor(imageData: Uint8Array) {
-    this.imageData = imageData;
-
+  static async for(imageData: Uint8Array) {
     const dataView = new DataView(imageData.buffer);
 
     const soi = dataView.getUint16(0);
@@ -58,11 +47,11 @@ class JpegEmbedder {
     if (!MARKERS.includes(marker!)) throw new Error('Invalid JPEG');
     pos += 2;
 
-    this.bitsPerComponent = dataView.getUint8(pos++);
-    this.height = dataView.getUint16(pos);
+    const bitsPerComponent = dataView.getUint8(pos++);
+    const height = dataView.getUint16(pos);
     pos += 2;
 
-    this.width = dataView.getUint16(pos);
+    const width = dataView.getUint16(pos);
     pos += 2;
 
     const channelByte = dataView.getUint8(pos++);
@@ -70,10 +59,39 @@ class JpegEmbedder {
 
     if (!channelName) throw new Error('Unknown JPEG channel.');
 
-    this.colorSpace = channelName;
+    const colorSpace = channelName;
+
+    return new JpegEmbedder(
+      imageData,
+      bitsPerComponent,
+      width,
+      height,
+      colorSpace,
+    );
   }
 
-  embedIntoContext(context: PDFContext, ref?: PDFRef): PDFRef {
+  readonly bitsPerComponent: number;
+  readonly height: number;
+  readonly width: number;
+  readonly colorSpace: ColorSpace;
+
+  private readonly imageData: Uint8Array;
+
+  private constructor(
+    imageData: Uint8Array,
+    bitsPerComponent: number,
+    width: number,
+    height: number,
+    colorSpace: ColorSpace,
+  ) {
+    this.imageData = imageData;
+    this.bitsPerComponent = bitsPerComponent;
+    this.width = width;
+    this.height = height;
+    this.colorSpace = colorSpace;
+  }
+
+  async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
     const xObject = context.stream(this.imageData, {
       Type: 'XObject',
       Subtype: 'Image',

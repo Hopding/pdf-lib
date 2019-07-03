@@ -9,7 +9,7 @@ export default async (assets: Assets) => {
     { parseSpeed: ParseSpeeds.Fastest },
   );
 
-  const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
   const pages = pdfDoc.getPages();
 

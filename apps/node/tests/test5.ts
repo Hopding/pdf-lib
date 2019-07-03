@@ -1,5 +1,5 @@
 import { Assets } from '..';
-import { PDFDocument, rgb, StandardFonts, ParseSpeeds } from '../../..';
+import { ParseSpeeds, PDFDocument, rgb, StandardFonts } from '../../..';
 
 export default async (assets: Assets) => {
   const { pdfs, images } = assets;
@@ -8,8 +8,12 @@ export default async (assets: Assets) => {
     parseSpeed: ParseSpeeds.Fastest,
   });
 
-  const timesRomanFont = pdfDoc.embedFont(StandardFonts.TimesRomanBoldItalic);
-  const minionsBananaImage = pdfDoc.embedPng(images.png.minions_banana_alpha);
+  const timesRomanFont = await pdfDoc.embedFont(
+    StandardFonts.TimesRomanBoldItalic,
+  );
+  const minionsBananaImage = await pdfDoc.embedPng(
+    images.png.minions_banana_alpha,
+  );
   const minionsBananaDims = minionsBananaImage.scale(0.5);
 
   const pages = pdfDoc.getPages();

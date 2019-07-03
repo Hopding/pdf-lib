@@ -20,8 +20,10 @@ import {
  *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
  */
 class CustomFontEmbedder {
-  static for = (fontkit: Fontkit, fontData: Uint8Array) =>
-    new CustomFontEmbedder(fontkit, fontData);
+  static async for(fontkit: Fontkit, fontData: Uint8Array) {
+    const font = await fontkit.create(fontData);
+    return new CustomFontEmbedder(font, fontData);
+  }
 
   readonly font: Font;
   readonly scale: number;
@@ -31,8 +33,8 @@ class CustomFontEmbedder {
   protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
-  protected constructor(fontkit: Fontkit, fontData: Uint8Array) {
-    this.font = fontkit.create(fontData);
+  protected constructor(font: Font, fontData: Uint8Array) {
+    this.font = font;
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;
     this.fontName = this.font.postscriptName || 'Font';
