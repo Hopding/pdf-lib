@@ -78,30 +78,38 @@ There are [other](#prior-art) good open source JavaScript PDF libraries availabl
 
 ### Document Creation
 
+This example produces [this PDF](assets/pdfs/examples/document_creation.pdf).
+
+<!-- prettier-ignore -->
 ```js
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 
-const pdfDoc = await PDFDocument.create();
+const pdfDoc = await PDFDocument.create()
 
-const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
 
-const page = pdfDoc.addPage();
+const page = pdfDoc.addPage()
+const { height } = page.getSize()
 
+const fontSize = 30
 page.drawText('Creating PDFs in JavaScript is awesome!', {
   x: 50,
-  y: 450,
-  size: 15,
+  y: height - 4 * fontSize,
+  size: fontSize,
   font: timesRomanFont,
   color: rgb(0, 0.53, 0.71),
-});
+})
 
-const pdfBytes = await pdfDoc.save();
+const pdfBytes = await pdfDoc.save()
 ```
 
 ### Document Modification
 
+This example produces [this PDF](assets/pdfs/examples/document_modification.pdf) when [this PDF](assets/pdfs/normal.pdf) is used for the `existingPdfBytes` variable.
+
+<!-- prettier-ignore -->
 ```js
-import { PDFDocument, rgb } from 'pdf-lib';
+import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 // This should be a Uint8Array.
 // This data can be obtained in a number of different ways.
@@ -115,13 +123,15 @@ const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
 const pages = pdfDoc.getPages()
 const firstPage = pages[0]
+const { height } = firstPage.getSize()
 
-firstPage.drawText('This text was added to the PDF with JavaScript!', {
-  x: 25,
-  y: 25,
-  size: 24,
+firstPage.drawText('This text was added with JavaScript!', {
+  x: 5,
+  y: height / 2 + 300,
+  size: 50,
   font: helveticaFont,
-  color: rgb(0.95, 0.26, 0.21),
+  color: rgb(0.95, 0.1, 0.1),
+  rotate: degrees(-45),
 })
 
 const pdfBytes = await pdfDoc.save()
@@ -129,10 +139,13 @@ const pdfBytes = await pdfDoc.save()
 
 ### Copying Pages
 
+This example produces [this PDF](assets/pdfs/copying_pages.pdf) when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/normal.pdf) is used for the `secondDonorPdfBytes` variable.
+
+<!-- prettier-ignore -->
 ```js
 import { PDFDocument } from 'pdf-lib'
 
-const pdfDoc = await PDFDocumentFactory.create();
+const pdfDoc = await PDFDocument.create();
 
 // This should be a Uint8Arrays.
 // These can be obtained in a number of different ways.
@@ -144,13 +157,15 @@ const secondDonorPdfBytes = ...
 const firstDonorPdfDoc = await PDFDocument.load(firstDonorPdfBytes)
 const secondDonorPdfDoc = await PDFDocument.load(secondDonorPdfBytes)
 
-// We'll copy the fourth page from the first donor document, and the
-// first page from the second donor document.
-const [firstDonorPage] = await pdfDoc.copyPages(firstDonorPdfDoc, [3])
-const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [0])
+// We'll copy the first page from the first donor document, and the
+// second page from the second donor document.
+const [firstDonorPage] = await pdfDoc.copyPages(firstDonorPdfDoc, [0])
+const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [1])
 
-// Copy over the pages from the donor documents into our new document
+// Add the first copied page
 pdfDoc.addPage(firstDonorPage)
+
+// Insert the second copied page to index 0, so it will be the first page
 pdfDoc.insertPage(0, secondDonorPage)
 
 const pdfBytes = await pdfDoc.save()
@@ -160,8 +175,11 @@ const pdfBytes = await pdfDoc.save()
 
 `pdf-lib` relies upon a sister module to support embedding custom fonts: [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit). You must add the `@pdf-lib/fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts.
 
-> **[See below for detailed installation instructions](#fontkit-installation) on installing `@pdf-lib/fontkit` as a UMD or NPM module.**
+> **[See below for detailed installation instructions on installing `@pdf-lib/fontkit` as a UMD or NPM module.](#fontkit-installation)**
 
+This example produces [this PDF](assets/pdfs/embed_font_and_measure_text.pdf) when [this font](assets/fonts/ubuntu/Ubuntu-R.ttf) is used for the `fontBytes` variable.
+
+<!-- prettier-ignore -->
 ```js
 import { PDFDocument, rgb } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
@@ -181,13 +199,13 @@ const customFont = await pdfDoc.embedFont(fontBytes)
 const page = pdfDoc.addPage()
 
 const text = 'This is text in an embedded font!'
-const textSize = 15
+const textSize = 35
 const textWidth = customFont.widthOfTextAtSize(text, textSize)
 const textHeight = customFont.heightAtSize(textSize)
 
 // Draw text on page
 page.drawText(text, {
-  x: 50,
+  x: 40,
   y: 450,
   size: textSize,
   font: customFont,
@@ -196,12 +214,12 @@ page.drawText(text, {
 
 // Draw a box around the text
 page.drawRectangle({
-  x: 50,
+  x: 40,
   y: 450,
   width: textWidth,
   height: textHeight,
   borderColor: rgb(1, 0, 0),
-  borderWidth: 0.5,
+  borderWidth: 1.5,
 })
 
 const pdfBytes = await pdfDoc.save()
