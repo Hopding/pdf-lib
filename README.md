@@ -40,9 +40,9 @@
 - [Features](#features)
 - [Motivation](#motivation)
 - [Examples](#examples)
-  - [Document Creation](#document-creation)
-  - [Document Modification](#document-modification)
-  - [Copying Pages](#copying-pages)
+  - [Create Document](#create-document)
+  - [Modify Document](#modify-document)
+  - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
 - [Installation](#installation)
@@ -77,7 +77,7 @@ There are [other](#prior-art) good open source JavaScript PDF libraries availabl
 
 ## Examples
 
-### Document Creation
+### Create Document
 
 _This example produces [this PDF](assets/pdfs/examples/document_creation.pdf)._
 
@@ -104,7 +104,7 @@ page.drawText('Creating PDFs in JavaScript is awesome!', {
 const pdfBytes = await pdfDoc.save()
 ```
 
-### Document Modification
+### Modify Document
 
 _This example produces [this PDF](assets/pdfs/examples/document_modification.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `existingPdfBytes` variable).
 
@@ -112,7 +112,7 @@ _This example produces [this PDF](assets/pdfs/examples/document_modification.pdf
 ```js
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
-// This should be a Uint8Array.
+// This should be a Uint8Array or ArrayBuffer.
 // This data can be obtained in a number of different ways.
 // If your running in a Node environment, you could use fs.readFile().
 // In the browser, you could make a fetch() call and use res.arrayBuffer().
@@ -138,7 +138,7 @@ firstPage.drawText('This text was added with JavaScript!', {
 const pdfBytes = await pdfDoc.save()
 ```
 
-### Copying Pages
+### Copy Pages
 
 _This example produces [this PDF](assets/pdfs/examples/copying_pages.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/with_large_page_count.pdf) is used for the `secondDonorPdfBytes` variable).
 
@@ -148,8 +148,8 @@ import { PDFDocument } from 'pdf-lib'
 
 const pdfDoc = await PDFDocument.create();
 
-// This should be a Uint8Arrays.
-// These can be obtained in a number of different ways.
+// These should be a Uint8Arrays or ArrayBuffers.
+// This data can be obtained in a number of different ways.
 // If your running in a Node environment, you could use fs.readFile().
 // In the browser, you could make a fetch() call and use res.arrayBuffer().
 const firstDonorPdfBytes = ...
@@ -174,13 +174,13 @@ const pdfBytes = await pdfDoc.save()
 
 ### Embed PNG and JPEG Images
 
-_This example produces [this PDF](assets/pdfs/examples/embed_png_and_jpeg_images.pdf)_ (when [this image](assets/images/cat_riding_unicorn.jpg) is used for the `jpgImageBytes` variable and [this image](assets/images/minions_banana_alpha.jpg) is used for the `pngImageBytes` variable).
+_This example produces [this PDF](assets/pdfs/examples/embed_png_and_jpeg_images.pdf)_ (when [this image](assets/images/cat_riding_unicorn.jpg) is used for the `jpgImageBytes` variable and [this image](assets/images/minions_banana_alpha.png) is used for the `pngImageBytes` variable).
 
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument } from 'pdf-lib'
 
-// These should be a Uint8Arrays.
+// These should be a Uint8Arrays or ArrayBuffers.
 // This data can be obtained in a number of different ways.
 // If your running in a Node environment, you could use fs.readFile().
 // In the browser, you could make a fetch() call and use res.arrayBuffer().
@@ -227,7 +227,7 @@ _This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_te
 import { PDFDocument, rgb } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 
-// This should be a Uint8Array.
+// This should be a Uint8Array or ArrayBuffer.
 // This data can be obtained in a number of different ways.
 // If your running in a Node environment, you could use fs.readFile().
 // In the browser, you could make a fetch() call and use res.arrayBuffer().
