@@ -43,6 +43,7 @@
   - [Document Creation](#document-creation)
   - [Document Modification](#document-modification)
   - [Copying Pages](#copying-pages)
+  - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
 - [Installation](#installation)
 - [Prior Art](#prior-art)
@@ -167,6 +168,48 @@ pdfDoc.addPage(firstDonorPage)
 
 // Insert the second copied page to index 0, so it will be the first page
 pdfDoc.insertPage(0, secondDonorPage)
+
+const pdfBytes = await pdfDoc.save()
+```
+
+### Embed PNG and JPEG Images
+
+_This example produces [this PDF](assets/pdfs/examples/embed_png_and_jpeg_images.pdf)_ (when [this image](assets/images/cat_riding_unicorn.jpg) is used for the `jpgImageBytes` variable and [this image](assets/images/minions_banana_alpha.jpg) is used for the `pngImageBytes` variable).
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// These should be a Uint8Arrays.
+// This data can be obtained in a number of different ways.
+// If your running in a Node environment, you could use fs.readFile().
+// In the browser, you could make a fetch() call and use res.arrayBuffer().
+const jpgImageBytes = ...
+const pngImageBytes = ...
+
+const pdfDoc = await PDFDocument.create()
+
+const jpgImage = await pdfDoc.embedJpg(jpgImageBytes)
+const pngImage = await pdfDoc.embedPng(pngImageBytes)
+
+const jpgDims = jpgImage.scale(0.25)
+const pngDims = pngImage.scale(0.5)
+
+const page = pdfDoc.addPage()
+
+page.drawImage(jpgImage, {
+  x: page.getWidth() / 2 - jpgDims.width / 2,
+  y: page.getHeight() / 2 - jpgDims.height / 2,
+  width: jpgDims.width,
+  height: jpgDims.height,
+})
+
+page.drawImage(pngImage, {
+  x: page.getWidth() / 2 - pngDims.width / 2 + 75,
+  y: page.getHeight() / 2 - pngDims.height,
+  width: pngDims.width,
+  height: pngDims.height,
+})
 
 const pdfBytes = await pdfDoc.save()
 ```
