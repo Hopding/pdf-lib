@@ -156,7 +156,7 @@ class CustomFontEmbedder {
       // https://stackoverflow.com/questions/35485179/stemv-value-of-the-truetype-font
       StemV: 0,
 
-      [this.font.cff ? 'FontFile3' : 'FontFile2']: fontStreamRef,
+      [this.isCFF() ? 'FontFile3' : 'FontFile2']: fontStreamRef,
     });
 
     return context.register(fontDescriptor);
@@ -168,7 +168,7 @@ class CustomFontEmbedder {
 
   protected async embedFontStream(context: PDFContext): Promise<PDFRef> {
     const fontStream = context.flateStream(await this.serializeFont(), {
-      Subtype: 'CIDFontType0C',
+      Subtype: this.isCFF() ? 'CIDFontType0C' : undefined,
     });
     return context.register(fontStream);
   }
