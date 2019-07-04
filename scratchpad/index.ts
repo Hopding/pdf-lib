@@ -13,7 +13,7 @@ import { PDFDocument, rgb } from 'src/index';
 
   pdfDoc.registerFontkit(fontkit);
 
-  const customFont = await pdfDoc.embedFont(fontBytes);
+  const customFont = await pdfDoc.embedFont(fontBytes, { subset: true });
 
   const page = pdfDoc.addPage();
 
