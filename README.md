@@ -78,7 +78,7 @@ There are [other](#prior-art) good open source JavaScript PDF libraries availabl
 
 ### Document Creation
 
-**This example produces [this PDF](assets/pdfs/examples/document_creation.pdf).**
+_This example produces [this PDF](assets/pdfs/examples/document_creation.pdf)._
 
 <!-- prettier-ignore -->
 ```js
@@ -105,7 +105,7 @@ const pdfBytes = await pdfDoc.save()
 
 ### Document Modification
 
-**This example produces [this PDF](assets/pdfs/examples/document_modification.pdf)** (when [this PDF](assets/pdfs/normal.pdf) is used for the `existingPdfBytes` variable).
+_This example produces [this PDF](assets/pdfs/examples/document_modification.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `existingPdfBytes` variable).
 
 <!-- prettier-ignore -->
 ```js
@@ -139,7 +139,7 @@ const pdfBytes = await pdfDoc.save()
 
 ### Copying Pages
 
-**This example produces [this PDF](assets/pdfs/copying_pages.pdf)** (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/normal.pdf) is used for the `secondDonorPdfBytes` variable).
+_This example produces [this PDF](assets/pdfs/examples/copying_pages.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/with_large_page_count.pdf) is used for the `secondDonorPdfBytes` variable).
 
 <!-- prettier-ignore -->
 ```js
@@ -173,11 +173,11 @@ const pdfBytes = await pdfDoc.save()
 
 ### Embed Font and Measure Text
 
-`pdf-lib` relies upon a sister module to support embedding custom fonts: [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit). You must add the `@pdf-lib/fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts.
+`pdf-lib` relies on a sister module to support embedding custom fonts: [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit). You must add the `@pdf-lib/fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts.
 
 > **[See below for detailed installation instructions on installing `@pdf-lib/fontkit` as a UMD or NPM module.](#fontkit-installation)**
 
-**This example produces [this PDF](assets/pdfs/embed_font_and_measure_text.pdf)** (when [this font](assets/fonts/ubuntu/Ubuntu-R.ttf) is used for the `fontBytes` variable).
+_This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_text.pdf)_ (when [this font](assets/fonts/ubuntu/Ubuntu-R.ttf) is used for the `fontBytes` variable).
 
 <!-- prettier-ignore -->
 ```js
