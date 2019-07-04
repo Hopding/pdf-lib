@@ -7,7 +7,7 @@ import { PDFDocument, rgb } from 'src/index';
   // This data can be obtained in a number of different ways.
   // If your running in a Node environment, you could use fs.readFile().
   // In the browser, you could make a fetch() call and use res.arrayBuffer().
-  const fontBytes = fs.readFileSync('./assets/fonts/ubuntu/Ubuntu-R.ttf');
+  const fontBytes = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-R.ttf');
 
   const pdfDoc = await PDFDocument.create();
 
