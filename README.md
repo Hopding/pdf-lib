@@ -157,10 +157,10 @@ const secondDonorPdfBytes = ...
 const firstDonorPdfDoc = await PDFDocument.load(firstDonorPdfBytes)
 const secondDonorPdfDoc = await PDFDocument.load(secondDonorPdfBytes)
 
-// We'll copy the first page from the first donor document, and the
-// second page from the second donor document.
+// We'll copy the 1st page from the first donor document, and the
+// 743rd page from the second donor document.
 const [firstDonorPage] = await pdfDoc.copyPages(firstDonorPdfDoc, [0])
-const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [1])
+const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [742])
 
 // Add the first copied page
 pdfDoc.addPage(firstDonorPage)
