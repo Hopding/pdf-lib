@@ -41,7 +41,7 @@ import { PDFDocument, rgb } from 'src/index';
     borderWidth: 1.5,
   });
 
-  const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
+  const pdfBytes = await pdfDoc.save();
 
   fs.writeFileSync('./out.pdf', pdfBytes);
   console.log('./out.pdf');
