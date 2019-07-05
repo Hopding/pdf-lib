@@ -39,7 +39,7 @@
 
 - [Features](#features)
 - [Motivation](#motivation)
-- [Examples](#examples)
+- [Usage Examples](#usage-examples)
   - [Create Document](#create-document)
   - [Modify Document](#modify-document)
   - [Copy Pages](#copy-pages)
@@ -60,9 +60,8 @@
 - Draw Text
 - Draw Images
 - Draw Vector Graphics
-- Embed Fonts (supports UTF-8 and UTF-16 character sets)
 - Measure width and height of text
-- Embed Images
+- Embed Fonts (supports UTF-8 and UTF-16 character sets)
 
 ## Motivation
 
@@ -75,7 +74,7 @@ Two of `pdf-lib`'s distinguishing features are:
 
 There are [other](#prior-art) good open source JavaScript PDF libraries available. However, most of them can only _create_ documents, they cannot _modify_ existing ones. And many of them only work in particular environments.
 
-## Examples
+## Usage Examples
 
 ### Create Document
 
@@ -85,13 +84,19 @@ _This example produces [this PDF](assets/pdfs/examples/document_creation.pdf)._
 ```js
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 
+// Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
 
+// Embed the Times Roman font
 const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
 
+// Add a blank page to the document
 const page = pdfDoc.addPage()
-const { height } = page.getSize()
 
+// Get the width and height of the page
+const { width, height } = page.getSize()
+
+// Draw a string of text toward the top of the page
 const fontSize = 30
 page.drawText('Creating PDFs in JavaScript is awesome!', {
   x: 50,
@@ -101,7 +106,13 @@ page.drawText('Creating PDFs in JavaScript is awesome!', {
   color: rgb(0, 0.53, 0.71),
 })
 
+// Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
 ```
 
 ### Modify Document
@@ -112,20 +123,26 @@ _This example produces [this PDF](assets/pdfs/examples/document_modification.pdf
 ```js
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
-// This should be a Uint8Array or ArrayBuffer.
-// This data can be obtained in a number of different ways.
-// If your running in a Node environment, you could use fs.readFile().
-// In the browser, you could make a fetch() call and use res.arrayBuffer().
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
 const existingPdfBytes = ...
 
+// Load a PDFDocument from the existing PDF bytes
 const pdfDoc = await PDFDocument.load(existingPdfBytes)
 
+// Embed the Helvetica font
 const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
+// Get the first page of the document
 const pages = pdfDoc.getPages()
 const firstPage = pages[0]
-const { height } = firstPage.getSize()
 
+// Get the width and height of the first page
+const { width, height } = firstPage.getSize()
+
+// Draw a string of text diagonally across the first page
 firstPage.drawText('This text was added with JavaScript!', {
   x: 5,
   y: height / 2 + 300,
@@ -135,7 +152,14 @@ firstPage.drawText('This text was added with JavaScript!', {
   rotate: degrees(-45),
 })
 
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
 ```
 
 ### Copy Pages
@@ -146,30 +170,39 @@ _This example produces [this PDF](assets/pdfs/examples/copying_pages.pdf)_ (when
 ```js
 import { PDFDocument } from 'pdf-lib'
 
+// Create a new PDFDocument
 const pdfDoc = await PDFDocument.create();
 
-// These should be a Uint8Arrays or ArrayBuffers.
-// This data can be obtained in a number of different ways.
-// If your running in a Node environment, you could use fs.readFile().
-// In the browser, you could make a fetch() call and use res.arrayBuffer().
+// These should be Uint8Arrays or ArrayBuffers
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
 const firstDonorPdfBytes = ...
 const secondDonorPdfBytes = ...
 
+// Load a PDFDocument from each of the existing PDFs
 const firstDonorPdfDoc = await PDFDocument.load(firstDonorPdfBytes)
 const secondDonorPdfDoc = await PDFDocument.load(secondDonorPdfBytes)
 
-// We'll copy the 1st page from the first donor document, and the
-// 743rd page from the second donor document.
+// Copy the 1st page from the first donor document, and 
+// the 743rd page from the second donor document
 const [firstDonorPage] = await pdfDoc.copyPages(firstDonorPdfDoc, [0])
 const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [742])
 
 // Add the first copied page
 pdfDoc.addPage(firstDonorPage)
 
-// Insert the second copied page to index 0, so it will be the first page
+// Insert the second copied page to index 0, so it will be the 
+// first page in `pdfDoc`
 pdfDoc.insertPage(0, secondDonorPage)
 
+// Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
 ```
 
 ### Embed PNG and JPEG Images
@@ -180,23 +213,30 @@ _This example produces [this PDF](assets/pdfs/examples/embed_png_and_jpeg_images
 ```js
 import { PDFDocument } from 'pdf-lib'
 
-// These should be a Uint8Arrays or ArrayBuffers.
-// This data can be obtained in a number of different ways.
-// If your running in a Node environment, you could use fs.readFile().
-// In the browser, you could make a fetch() call and use res.arrayBuffer().
+// These should be Uint8Arrays or ArrayBuffers
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
 const jpgImageBytes = ...
 const pngImageBytes = ...
 
+// Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
 
+// Embed the JPG image bytes and PNG image bytes
 const jpgImage = await pdfDoc.embedJpg(jpgImageBytes)
 const pngImage = await pdfDoc.embedPng(pngImageBytes)
 
+// Get the width/height of the JPG image scaled down to 25% of its original size
 const jpgDims = jpgImage.scale(0.25)
+
+// Get the width/height of the PNG image scaled down to 50% of its original size
 const pngDims = pngImage.scale(0.5)
 
+// Add a blank page to the document
 const page = pdfDoc.addPage()
 
+// Draw the JPG image in the center of the page
 page.drawImage(jpgImage, {
   x: page.getWidth() / 2 - jpgDims.width / 2,
   y: page.getHeight() / 2 - jpgDims.height / 2,
@@ -204,6 +244,7 @@ page.drawImage(jpgImage, {
   height: jpgDims.height,
 })
 
+// Draw the PNG image near the lower right corner of the JPG image
 page.drawImage(pngImage, {
   x: page.getWidth() / 2 - pngDims.width / 2 + 75,
   y: page.getHeight() / 2 - pngDims.height,
@@ -211,7 +252,13 @@ page.drawImage(pngImage, {
   height: pngDims.height,
 })
 
+// Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
 ```
 
 ### Embed Font and Measure Text
@@ -227,26 +274,31 @@ _This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_te
 import { PDFDocument, rgb } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 
-// This should be a Uint8Array or ArrayBuffer.
-// This data can be obtained in a number of different ways.
-// If your running in a Node environment, you could use fs.readFile().
-// In the browser, you could make a fetch() call and use res.arrayBuffer().
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
 const fontBytes = ...
 
+// Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
 
+// Register the `fontkit` instance
 pdfDoc.registerFontkit(fontkit)
 
+// Embed our custom font in the document
 const customFont = await pdfDoc.embedFont(fontBytes)
 
+// Add a blank page to the document
 const page = pdfDoc.addPage()
 
+// Create a string of text and measure its width and height in our custom font
 const text = 'This is text in an embedded font!'
 const textSize = 35
 const textWidth = customFont.widthOfTextAtSize(text, textSize)
 const textHeight = customFont.heightAtSize(textSize)
 
-// Draw text on page
+// Draw the string of text on the page
 page.drawText(text, {
   x: 40,
   y: 450,
@@ -255,7 +307,7 @@ page.drawText(text, {
   color: rgb(0, 0.53, 0.71),
 })
 
-// Draw a box around the text
+// Draw a box around the string of text
 page.drawRectangle({
   x: 40,
   y: 450,
@@ -265,7 +317,13 @@ page.drawRectangle({
   borderWidth: 1.5,
 })
 
+// Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
 ```
 
 ## Installation
@@ -346,8 +404,8 @@ pdfDoc.registerFontkit(fontkit);
 
 ## Prior Art
 
-- [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/PDFFontFactory.ts#L64-L68), [PNG embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/PNGXObjectFactory.ts#L19-L23), and [JPG embedding](https://github.com/Hopding/pdf-lib/blob/AddDocumentation/src/core/pdf-structures/factories/JPEGXObjectFactory.ts#L32-L36) was especially useful.
-- [`pdf.js`](https://github.com/mozilla/pdf.js) is a PDF rendering library for the Browser. This library was helpful as a reference when writing `pdf-lib`'s parser. Some of the code for stream decoding was ported directly to TypeScript for use in `pdf-lib`.
+- [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](https://github.com/Hopding/pdf-lib/blob/Rewrite/src/core/embedders/CustomFontEmbedder.ts#L17-L21), [PNG embedding](https://github.com/Hopding/pdf-lib/blob/Rewrite/src/core/embedders/PngEmbedder.ts#L7-L11), and [JPG embedding](https://github.com/Hopding/pdf-lib/blob/Rewrite/src/core/embedders/JpegEmbedder.ts#L25-L29) was especially useful.
+- [`pdf.js`](https://github.com/mozilla/pdf.js) is a PDF rendering library for the Browser. This library was helpful as a reference when writing `pdf-lib`'s parser. Some of the code for stream decoding was [ported directly to TypeScript](https://github.com/Hopding/pdf-lib/tree/Rewrite/src/core/streams) for use in `pdf-lib`.
 - [`jspdf`](https://github.com/MrRio/jsPDF) is a PDF generation library for the browser.
 - [`pdfmake`](https://github.com/bpampuch/pdfmake) is a PDF generation library for the browser.
 - [`hummus`](https://github.com/galkahana/HummusJS) is a PDF generation and modification library for Node environments. `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer), so it doesn't work in many JavaScript environments - like the Browser or React Native.
