@@ -46,6 +46,7 @@
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
 - [Installation](#installation)
+- [Encryption Handling](#encryption-handling)
 - [Prior Art](#prior-art)
 - [License](#license)
 
@@ -401,6 +402,35 @@ When using a UMD build, you will have access to a global `window.fontkit` variab
 var pdfDoc = await PDFLib.PDFDocument.create();
 pdfDoc.registerFontkit(fontkit);
 ```
+
+## Encryption Handling
+
+`pdf-lib` does not currently support modification of encrypted documents. In general, it is not advised to use `pdf-lib` with encrypted documents.
+
+When an encrypted document is passed to `PDFDocument.load(...)`, an error will be thrown:
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, EncryptedPDFError } from 'pdf-lib'
+
+const encryptedPdfBytes = ...
+
+// Assignment fails. Throws an `EncryptedPDFError`.
+const pdfDoc = PDFDocument.load(encryptedPdfBytes)
+```
+
+This default behavior is usually what you want. It allows you to easily detect if a given document is encrypted, and it prevents you from trying to modify it. However, if you really want to load the document, you can use the `{ ignoreEncryption: true }` option:
+
+```js
+import { PDFDocument } from 'pdf-lib'
+
+const encryptedPdfBytes = ...
+
+// Assignment succeeds. Does not throw an error.
+const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
+```
+
+Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
 
 ## Prior Art
 
