@@ -165,7 +165,13 @@ class PDFParser extends PDFObjectParser {
   private tryToParseInvalidIndirectObject() {
     const startPos = this.bytes.position();
 
+    console.warn(
+      `Trying to parse invalid object: ${JSON.stringify(startPos)})`,
+    );
+
     const ref = this.parseIndirectObjectHeader();
+
+    console.warn(`Invalid object ref: ${ref}`);
 
     this.skipWhitespaceAndComments();
     const start = this.bytes.offset();

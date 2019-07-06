@@ -16,7 +16,7 @@ class PDFObjectStream extends PDFFlateStream {
     encode = true,
   ) => new PDFObjectStream(context, objects, encode);
 
-  readonly objects: IndirectObject[];
+  private readonly objects: IndirectObject[];
   private readonly offsets: Array<[number, number]>;
   private readonly offsetsString: string;
 
@@ -34,6 +34,10 @@ class PDFObjectStream extends PDFFlateStream {
     this.dict.set(PDFName.of('Type'), PDFName.of('ObjStm'));
     this.dict.set(PDFName.of('N'), PDFNumber.of(this.objects.length));
     this.dict.set(PDFName.of('First'), PDFNumber.of(this.offsetsString.length));
+  }
+
+  getObjectsCount(): number {
+    return this.objects.length;
   }
 
   clone(context?: PDFContext): PDFObjectStream {
