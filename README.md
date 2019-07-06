@@ -45,6 +45,7 @@
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
+- [Complete Examples](#complete-examples)
 - [Installation](#installation)
 - [Encryption Handling](#encryption-handling)
 - [Prior Art](#prior-art)
@@ -327,6 +328,15 @@ const pdfBytes = await pdfDoc.save()
 //   • Rendered in an <iframe>
 ```
 
+## Complete Examples
+
+The [usage examples](#usage-examples) provide code that is brief and to the point, demonstrating the different features of `pdf-lib`. You can find complete working examples in the [`apps/`](apps/) directory. These apps are used to do manual testing of `pdf-lib` before every release (in addition to the [automated tests](tests/)).
+
+There are currently two apps:
+
+- [**`node`**](apps/node/) - contains [tests](apps/node/tests/) for `pdf-lib` in Node environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` from the filesystem.
+- [**`web`**](apps/web/) - contains [tests](apps/web/) for `pdf-lib` in browser environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` in a browser environment.
+
 ## Installation
 
 ### NPM Module
@@ -405,7 +415,7 @@ pdfDoc.registerFontkit(fontkit);
 
 ## Encryption Handling
 
-`pdf-lib` does not currently support modification of encrypted documents. In general, it is not advised to use `pdf-lib` with encrypted documents.
+`pdf-lib` does not currently support modification of encrypted documents. In general, it is not advised to use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
 
 When an encrypted document is passed to `PDFDocument.load(...)`, an error will be thrown:
 
