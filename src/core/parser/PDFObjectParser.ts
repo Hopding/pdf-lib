@@ -1,6 +1,7 @@
 import {
   PDFObjectParsingError,
   PDFStreamParsingError,
+  Position,
   UnbalancedParenthesisError,
 } from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
@@ -221,9 +222,27 @@ class PDFObjectParser extends BaseParser {
     }
 
     const start = this.bytes.offset();
+    let end: number;
 
-    // TODO: Try to use dict's `Length` entry, but use this as backup...
+    const Length = dict.get(PDFName.of('Length'));
+    if (Length instanceof PDFNumber) {
+      end = start + Length.value();
+      this.bytes.moveTo(end);
+      this.skipWhitespaceAndComments();
+      if (!this.matchKeyword(Keywords.endstream)) {
+        this.bytes.moveTo(start);
+        end = this.findEndOfStreamFallback(startPos);
+      }
+    } else {
+      end = this.findEndOfStreamFallback(startPos);
+    }
 
+    const contents = this.bytes.slice(start, end);
+
+    return PDFRawStream.of(dict, contents);
+  }
+
+  protected findEndOfStreamFallback(startPos: Position) {
     // Move to end of stream, while handling nested streams
     let nestingLvl = 1;
     let end = this.bytes.offset();
@@ -249,9 +268,7 @@ class PDFObjectParser extends BaseParser {
 
     if (nestingLvl !== 0) throw new PDFStreamParsingError(startPos);
 
-    const contents = this.bytes.slice(start, end);
-
-    return PDFRawStream.of(dict, contents);
+    return end;
   }
 }
 

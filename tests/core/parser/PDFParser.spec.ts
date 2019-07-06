@@ -190,7 +190,7 @@ describe(`PDFParser`, () => {
 
     expect(context.header).toBeInstanceOf(PDFHeader);
     expect(context.header.toString()).toEqual('%PDF-1.6\n%');
-    expect(context.enumerateIndirectObjects().length).toBe(208);
+    expect(context.enumerateIndirectObjects().length).toBe(17);
   });
 
   it(`can fix incorrect values for /Root`, async () => {

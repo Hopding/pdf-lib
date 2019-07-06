@@ -78,7 +78,8 @@ class PDFWriter {
       buffer[offset++] = CharCodes.Newline;
       buffer[offset++] = CharCodes.Newline;
 
-      const n = object instanceof PDFObjectStream ? object.objects.length : 1;
+      const n =
+        object instanceof PDFObjectStream ? object.getObjectsCount() : 1;
       if (this.shouldWaitForTick(n)) await waitForTick();
     }
 

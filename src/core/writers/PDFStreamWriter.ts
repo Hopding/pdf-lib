@@ -1,5 +1,6 @@
 import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
+import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
@@ -64,6 +65,7 @@ class PDFStreamWriter extends PDFWriter {
       const shouldNotCompress =
         ref === this.context.trailerInfo.Encrypt ||
         object instanceof PDFStream ||
+        object instanceof PDFInvalidObject ||
         ref.generationNumber !== 0;
 
       if (shouldNotCompress) {
