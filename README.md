@@ -434,8 +434,8 @@ Note that **using this option does not decrypt the document**. This means that a
 
 ## Prior Art
 
-- [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](https://github.com/Hopding/pdf-lib/blob/Rewrite/src/core/embedders/CustomFontEmbedder.ts#L17-L21), [PNG embedding](https://github.com/Hopding/pdf-lib/blob/Rewrite/src/core/embedders/PngEmbedder.ts#L7-L11), and [JPG embedding](https://github.com/Hopding/pdf-lib/blob/Rewrite/src/core/embedders/JpegEmbedder.ts#L25-L29) was especially useful.
-- [`pdf.js`](https://github.com/mozilla/pdf.js) is a PDF rendering library for the Browser. This library was helpful as a reference when writing `pdf-lib`'s parser. Some of the code for stream decoding was [ported directly to TypeScript](https://github.com/Hopding/pdf-lib/tree/Rewrite/src/core/streams) for use in `pdf-lib`.
+- [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](src/core/embedders/CustomFontEmbedder.ts#L17-L21), [PNG embedding](src/core/embedders/PngEmbedder.ts#L7-L11), and [JPG embedding](src/core/embedders/JpegEmbedder.ts#L25-L29) was especially useful.
+- [`pdf.js`](https://github.com/mozilla/pdf.js) is a PDF rendering library for the Browser. This library was helpful as a reference when writing `pdf-lib`'s parser. Some of the code for stream decoding was [ported directly to TypeScript](src/core/streams) for use in `pdf-lib`.
 - [`jspdf`](https://github.com/MrRio/jsPDF) is a PDF generation library for the browser.
 - [`pdfmake`](https://github.com/bpampuch/pdfmake) is a PDF generation library for the browser.
 - [`hummus`](https://github.com/galkahana/HummusJS) is a PDF generation and modification library for Node environments. `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer), so it doesn't work in many JavaScript environments - like the Browser or React Native.
@@ -443,3 +443,5 @@ Note that **using this option does not decrypt the document**. This means that a
 - [`pdfassembler`](https://github.com/DevelopingMagic/pdfassembler) is a PDF generation and modification library for Node and the browser. It requires some knowledge about the logical structure of PDF documents to use.
 
 ## License
+
+[MIT](LICENSE.md)
