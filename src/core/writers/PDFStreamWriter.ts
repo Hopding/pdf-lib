@@ -90,6 +90,7 @@ class PDFStreamWriter extends PDFWriter {
     for (let idx = 0, len = compressedObjects.length; idx < len; idx++) {
       const chunk = compressedObjects[idx];
       const ref = objectStreamRefs[idx];
+
       const objectStream = PDFObjectStream.withContextAndObjects(
         this.context,
         chunk,

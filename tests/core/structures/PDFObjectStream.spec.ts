@@ -50,7 +50,7 @@ describe(`PDFObjectStream`, () => {
     ).toEqual(
       '<<\n/Type /ObjStm\n/N 9\n/First 42\n/Length 108\n>>\n' +
         'stream\n' +
-        '1 0 2 4 3 9 4 15 5 24 6 31 7 39 8 44 9 47 \n' +
+        '1 0 2 4 3 9 4 15 5 24 6 31 7 39 8 44 9 47 ' +
         '[ ]\n' +
         'true\n' +
         '<<\n>>\n' +
@@ -59,7 +59,7 @@ describe(`PDFObjectStream`, () => {
         '/QuxBaz\n' +
         'null\n' +
         '21\n' +
-        '(Stuff and thingz)' +
+        '(Stuff and thingz)\n' +
         '\nendstream',
     );
   });
@@ -88,7 +88,7 @@ describe(`PDFObjectStream`, () => {
       typedArrayFor(
         '  <<\n/Type /ObjStm\n/N 9\n/First 42\n/Length 108\n>>\n' +
           'stream\n' +
-          '1 0 2 4 3 9 4 15 5 24 6 31 7 39 8 44 9 47 \n' +
+          '1 0 2 4 3 9 4 15 5 24 6 31 7 39 8 44 9 47 ' +
           '[ ]\n' +
           'true\n' +
           '<<\n>>\n' +
@@ -97,7 +97,7 @@ describe(`PDFObjectStream`, () => {
           '/QuxBaz\n' +
           'null\n' +
           '21\n' +
-          '(Stuff and thingz)' +
+          '(Stuff and thingz)\n' +
           '\nendstream ',
       ),
     );
@@ -105,7 +105,7 @@ describe(`PDFObjectStream`, () => {
 
   it(`can be serialized when encoded`, () => {
     const contents =
-      '1 0 2 4 3 9 4 15 5 24 6 31 7 39 8 44 9 47 \n' +
+      '1 0 2 4 3 9 4 15 5 24 6 31 7 39 8 44 9 47 ' +
       '[ ]\n' +
       'true\n' +
       '<<\n>>\n' +
@@ -114,7 +114,7 @@ describe(`PDFObjectStream`, () => {
       '/QuxBaz\n' +
       'null\n' +
       '21\n' +
-      '(Stuff and thingz)';
+      '(Stuff and thingz)\n';
     const encodedContents = pako.deflate(contents);
 
     const stream = PDFObjectStream.withContextAndObjects(
