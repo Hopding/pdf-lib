@@ -58,5 +58,5 @@ import { openPdf, Reader } from './open';
   fs.writeFileSync('./out.pdf', pdfBytes);
   console.log('./out.pdf');
 
-  openPdf('./out.pdf', Reader.Acrobat);
+  openPdf('./out.pdf', Reader.Preview);
 })();

@@ -69,6 +69,9 @@ export default async (assets: Assets) => {
     color: hotPink,
   });
 
-  const pdfBytes = await pdfDoc.save();
+  const base64Pdf = await pdfDoc.saveAsBase64();
+
+  const pdfBytes = Buffer.from(base64Pdf, 'base64');
+
   return pdfBytes;
 };
