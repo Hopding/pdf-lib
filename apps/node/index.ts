@@ -27,7 +27,12 @@ const promptToContinue = () =>
 // This needs to be more sophisticated to work on Linux and Windows as well.
 const openPdf = (path: string) => {
   if (process.platform === 'darwin') {
-    execSync(`open ${path}`);
+    // TODO: Make this a CLI argument
+    execSync(`open -a "Preview" ${path}`);
+    // execSync(`open -a "Adobe Acrobat" ${path}`);
+    // execSync(`open -a "Foxit Reader" ${path}`);
+    // execSync(`open -a "Google Chrome" ${path}`);
+    // execSync(`open -a "Firefox" ${path}`);
   } else {
     const msg1 = `Note: Automatically opening PDFs currently only works on Macs. If you're using a Windows or Linux machine, please consider contributing to expand support for this feature`;
     const msg2 = `(https://github.com/Hopding/pdf-lib/blob/master/apps/node/index.ts#L8-L17)\n`;
