@@ -34,6 +34,16 @@
   "main": "cjs/index.js",
   "module": "es/index.js",
   "unpkg": "dist/pdf-lib.min.js",
+  "files": [
+    "cjs/",
+    "dist/",
+    "es/",
+    "src/",
+    "LICENSE.md",
+    "package.json",
+    "README.md",
+    "yarn.lock"
+  ],
   "dependencies": {
     "@pdf-lib/standard-fonts": "^0.0.4",
     "pako": "^1.0.10",
