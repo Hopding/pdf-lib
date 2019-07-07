@@ -80,7 +80,7 @@ There are [other](#prior-art) good open source JavaScript PDF libraries availabl
 
 ### Create Document
 
-_This example produces [this PDF](assets/pdfs/examples/document_creation.pdf)._
+_This example produces [this PDF](assets/pdfs/examples/create_document.pdf)._
 
 <!-- prettier-ignore -->
 ```js
@@ -119,7 +119,7 @@ const pdfBytes = await pdfDoc.save()
 
 ### Modify Document
 
-_This example produces [this PDF](assets/pdfs/examples/document_modification.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `existingPdfBytes` variable).
+_This example produces [this PDF](assets/pdfs/examples/modify_document.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `existingPdfBytes` variable).
 
 <!-- prettier-ignore -->
 ```js
@@ -166,7 +166,7 @@ const pdfBytes = await pdfDoc.save()
 
 ### Copy Pages
 
-_This example produces [this PDF](assets/pdfs/examples/copying_pages.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/with_large_page_count.pdf) is used for the `secondDonorPdfBytes` variable).
+_This example produces [this PDF](assets/pdfs/examples/copy_pages.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/with_large_page_count.pdf) is used for the `secondDonorPdfBytes` variable).
 
 <!-- prettier-ignore -->
 ```js
@@ -334,7 +334,7 @@ The [usage examples](#usage-examples) provide code that is brief and to the poin
 
 There are currently two apps:
 
-- [**`node`**](apps/node/) - contains [tests](apps/node/tests/) for `pdf-lib` in Node environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` from the filesystem.
+- [**`node`**](apps/node/) - contains [tests](apps/node/tests/) for `pdf-lib` in Node environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` from the filesystem. They also allow you to quickly open your PDFs in different viewers (Acrobat, Preview, Foxit, Chrome, Firefox, etc...) to ensure compatibility.
 - [**`web`**](apps/web/) - contains [tests](apps/web/) for `pdf-lib` in browser environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` in a browser environment.
 
 ## Installation

@@ -73,8 +73,7 @@ class PDFPageTree extends PDFDict {
       if (kid instanceof PDFPageTree) {
         const kidCount = kid.Count().value();
         if (currIndex + kidCount > index) {
-          kid.insertLeafNode(leafRef, index - currIndex);
-          return kidRef;
+          return kid.insertLeafNode(leafRef, index - currIndex) || kidRef;
         } else {
           currIndex += kidCount;
         }
