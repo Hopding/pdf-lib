@@ -122,6 +122,16 @@ class PDFPageLeaf extends PDFDict {
     (Contents as PDFArray).push(contentStreamRef);
   }
 
+  wrapContentStreams(startStream: PDFRef, endStream: PDFRef): boolean {
+    const contents = this.lookup(PDFName.of('Contents'));
+    if (contents instanceof PDFArray) {
+      contents.insert(0, startStream);
+      contents.push(endStream);
+      return true;
+    }
+    return false;
+  }
+
   setFontDictionary(name: PDFName, fontDictRef: PDFRef): void {
     this.normalize();
     const Font = this.Resources().lookup(PDFName.of('Font'), PDFDict);
@@ -152,9 +162,10 @@ class PDFPageLeaf extends PDFDict {
     }
 
     if (this.autoNormalizeCTM) {
-      const contentsArray = this.lookup(PDFName.of('Contents'), PDFArray);
-      contentsArray.insert(0, this.context.getPushGraphicsStateContentStream());
-      contentsArray.push(this.context.getPopGraphicsStateContentStream());
+      this.wrapContentStreams(
+        this.context.getPushGraphicsStateContentStream(),
+        this.context.getPopGraphicsStateContentStream(),
+      );
     }
 
     const Resources = this.get(PDFName.of('Resources'))

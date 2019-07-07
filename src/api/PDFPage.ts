@@ -5,6 +5,11 @@ import {
   drawLinesOfText,
   drawRectangle,
 } from 'src/api/operations';
+import {
+  popGraphicsState,
+  pushGraphicsState,
+  translate,
+} from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
@@ -103,6 +108,28 @@ class PDFPage {
 
   getHeight(): number {
     return this.getSize().height;
+  }
+
+  translateContent(x: number, y: number): void {
+    this.node.normalize();
+    this.getContentStream();
+
+    const start = this.createContentStream(
+      pushGraphicsState(),
+      translate(x, y),
+    );
+    const startRef = this.doc.context.register(start);
+
+    const end = this.createContentStream(popGraphicsState());
+    const endRef = this.doc.context.register(end);
+
+    this.node.wrapContentStreams(startRef, endRef);
+  }
+
+  resetPosition(): void {
+    this.getContentStream(false);
+    this.x = 0;
+    this.y = 0;
   }
 
   // TODO: Reuse image Font name if we've already added this image to Resources.Fonts
@@ -274,13 +301,18 @@ class PDFPage {
     return [this.font!, this.fontKey!];
   }
 
-  private getContentStream(): PDFContentStream {
-    if (this.contentStream) return this.contentStream;
-    const dict = this.doc.context.obj({});
-    this.contentStream = PDFContentStream.of(dict, []);
+  private getContentStream(useExisting = true): PDFContentStream {
+    if (useExisting && this.contentStream) return this.contentStream;
+    this.contentStream = this.createContentStream();
     this.contentStreamRef = this.doc.context.register(this.contentStream);
     this.node.addContentStream(this.contentStreamRef);
     return this.contentStream;
+  }
+
+  private createContentStream(...operators: PDFOperator[]): PDFContentStream {
+    const dict = this.doc.context.obj({});
+    const contentStream = PDFContentStream.of(dict, operators);
+    return contentStream;
   }
 }
 
