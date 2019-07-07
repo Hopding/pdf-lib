@@ -68,6 +68,19 @@ export default async (assets: Assets) => {
     ySkew: degrees(15),
   });
 
+  page.setSize(page.getWidth() + 100, page.getHeight() + 100);
+  page.translateContent(100, 100);
+
+  page.drawText('This text is shifted', {
+    color: rgb(1, 0, 0),
+    size: 50,
+  });
+  page.resetPosition();
+  page.drawText('This text is not shifted', {
+    color: rgb(0, 0, 1),
+    size: 50,
+  });
+
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
 };
