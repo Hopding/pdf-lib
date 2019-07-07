@@ -8,6 +8,27 @@ const newEncryptedPdfBytes = fs.readFileSync('assets/pdfs/encrypted_new.pdf');
 
 describe(`PDFDocument`, () => {
   describe(`load() method`, () => {
+    const origConsoleWarn = console.warn;
+
+    beforeAll(() => {
+      console.warn = jest.fn((...args) => {
+        if (
+          !args[0].includes('Trying to parse invalid object:') &&
+          !args[0].includes('Invalid object ref:')
+        ) {
+          origConsoleWarn(...args);
+        }
+      });
+    });
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+      console.warn = origConsoleWarn;
+    });
+
     it(`does not throw an error for unencrypted PDFs`, async () => {
       const pdfDoc = await PDFDocument.load(unencryptedPdfBytes, {
         parseSpeed: ParseSpeeds.Fastest,

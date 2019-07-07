@@ -14,6 +14,27 @@ import {
 } from 'src/index';
 
 describe(`PDFParser`, () => {
+  const origConsoleWarn = console.warn;
+
+  beforeAll(() => {
+    console.warn = jest.fn((...args) => {
+      if (
+        !args[0].includes('Trying to parse invalid object:') &&
+        !args[0].includes('Invalid object ref:')
+      ) {
+        origConsoleWarn(...args);
+      }
+    });
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    console.warn = origConsoleWarn;
+  });
+
   it(`throws an error when the PDF is missing a header`, async () => {
     const input = `
       I_AM_NOT_A_HEADER
