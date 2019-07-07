@@ -27,6 +27,7 @@ import { Fontkit } from 'src/types/fontkit';
 import {
   Cache,
   canBeConvertedToUint8Array,
+  encodeToBase64,
   isStandardFont,
   toUint8Array,
 } from 'src/utils';
@@ -36,6 +37,16 @@ export enum ParseSpeeds {
   Fast = 1500,
   Medium = 500,
   Slow = 100,
+}
+
+export interface SaveOptions {
+  useObjectStreams?: boolean;
+  addDefaultPage?: boolean;
+  objectsPerTick?: number;
+}
+
+export interface Base64SaveOptions extends SaveOptions {
+  dataUri?: boolean;
 }
 
 class PDFDocument {
@@ -206,13 +217,7 @@ class PDFDocument {
     }
   }
 
-  async save(
-    options: {
-      useObjectStreams?: boolean;
-      addDefaultPage?: boolean;
-      objectsPerTick?: number;
-    } = {},
-  ): Promise<Uint8Array> {
+  async save(options: SaveOptions = {}): Promise<Uint8Array> {
     const {
       useObjectStreams = true,
       addDefaultPage = true,
@@ -223,6 +228,13 @@ class PDFDocument {
 
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context, objectsPerTick).serializeToBuffer();
+  }
+
+  async saveAsBase64(options: Base64SaveOptions = {}): Promise<string> {
+    const { dataUri = false, ...otherOptions } = options;
+    const bytes = await this.save(otherOptions);
+    const base64 = encodeToBase64(bytes);
+    return dataUri ? `data:application/pdf;base64,${base64}` : base64;
   }
 
   private assertFontkit(): Fontkit {

@@ -5,8 +5,8 @@
       http-equiv="Content-Security-Policy"
       content="
         default-src 'self' 'unsafe-inline';
-        object-src 'self' blob:;
-        frame-src 'self' blob:;
+        object-src 'self' data:;
+        frame-src 'self' data:;
       "
     />
     <meta charset="UTF-8" />
@@ -41,10 +41,8 @@
     const fetchStringAsset = (asset) =>
       fetch(`/assets/${asset}`).then((res) => res.text());
 
-    const renderInIframe = (pdfBytes) => {
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const blobUrl = URL.createObjectURL(blob);
-      document.getElementById('iframe').src = blobUrl;
+    const renderInIframe = (pdfDataUri) => {
+      document.getElementById('iframe').src = pdfDataUri;
     };
 
     async function test() {
@@ -115,9 +113,9 @@
         color: hotPink,
       });
 
-      const pdfBytes = await pdfDoc.save();
+      const base64PdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 
-      renderInIframe(pdfBytes);
+      renderInIframe(base64PdfDataUri);
     }
   </script>
 </html>
