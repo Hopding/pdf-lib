@@ -68,6 +68,22 @@ describe(`PDFName`, () => {
       const pdfName = PDFName.from('Bar√ß');
       expect(pdfName.toString()).toEqual('/Bar#221a#df');
     });
+
+    it(`decodes hex codes in the values`, () => {
+      expect(PDFName.fromEncoded('Lime#20Green')).toBe(
+        PDFName.fromEncoded('Lime Green'),
+      );
+      expect(PDFName.fromEncoded('paired#28#29parentheses')).toBe(
+        PDFName.fromEncoded('paired()parentheses'),
+      );
+      expect(PDFName.fromEncoded('The_Key_of_F#23_Minor')).toBe(
+        PDFName.fromEncoded('The_Key_of_F#_Minor'),
+      );
+      expect(PDFName.fromEncoded('A#42')).toBe(PDFName.fromEncoded('AB'));
+      expect(PDFName.fromEncoded('Identity#2DH')).toBe(
+        PDFName.fromEncoded('Identity-H'),
+      );
+    });
   });
 
   describe(`"bytesSize" method`, () => {
