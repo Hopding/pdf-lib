@@ -33,6 +33,7 @@ describe(`PDFName`, () => {
       PDFName.of('The_Key_of_F#_Minor'),
     );
     expect(PDFName.of('A#42')).toBe(PDFName.of('AB'));
+    expect(PDFName.of('Identity#2DH')).toBe(PDFName.of('Identity-H'));
   });
 
   it(`encodes hashes, whitespace, and delimiters when serialized`, () => {
