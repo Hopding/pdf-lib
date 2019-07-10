@@ -10,7 +10,7 @@ import {
 } from 'src/utils';
 
 const decodeName = (name: string) =>
-  name.replace(/#(\d{2})/g, (_, hex) => charFromHexCode(hex));
+  name.replace(/#([\dABCDEF]{2})/g, (_, hex) => charFromHexCode(hex));
 
 const isRegularChar = (charCode: number) =>
   charCode >= CharCodes.ExclamationPoint &&
