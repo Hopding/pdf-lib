@@ -29,6 +29,7 @@ import {
   canBeConvertedToUint8Array,
   encodeToBase64,
   isStandardFont,
+  range,
   toUint8Array,
 } from 'src/utils';
 
@@ -104,6 +105,10 @@ class PDFDocument {
 
   getPages(): PDFPage[] {
     return this.pageCache.access();
+  }
+
+  getPageIndices(): number[] {
+    return range(0, this.getPages().length);
   }
 
   removePage(index: number): void {
