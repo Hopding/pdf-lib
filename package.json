@@ -1,6 +1,6 @@
 {
   "name": "pdf-lib",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.3",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -9,6 +9,7 @@
     "Mickael Lecoq (https://github.com/mlecoq)"
   ],
   "scripts": {
+    "prepublish": "yarn clean && yarn install && yarn test && yarn build",
     "clean": "rimraf build cjs dist es scratchpad/build coverage tsBuildInfo.json isolate*.log flamegraph.html out.pdf",
     "typecheck": "tsc --noEmit",
     "test": "jest --config jest.json --runInBand",
@@ -28,7 +29,10 @@
     "scratchpad:flame": "rimraf isolate*.log && node --prof scratchpad/build/scratchpad/index.js && node --prof-process --preprocess -j isolate*.log | flamebearer",
     "apps:node": "ttsc --build apps/node/tsconfig.json && node apps/node-build/index.js",
     "apps:web": "http-server -c-1 .",
-    "apps:web:mac": "bash -c 'sleep 1 && open http://localhost:8080/apps/web/test1.html' & yarn apps:web"
+    "apps:web:mac": "bash -c 'sleep 1 && open http://localhost:8080/apps/web/test1.html' & yarn apps:web",
+    "apps:rn:ios": "cd apps/rn && yarn add ./../.. --force && react-native run-ios",
+    "apps:rn:android": "yarn apps:rn:emulator & cd apps/rn && yarn add ./../.. --force && react-native run-android",
+    "apps:rn:emulator": "emulator -avd \"$(emulator -list-avds | head -n 1)\" & bash -c 'sleep 5 && adb reverse tcp:8080 tcp:8080 && adb reverse tcp:8081 tcp:8081'"
   },
   "types": "cjs/index.d.ts",
   "main": "cjs/index.js",

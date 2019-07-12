@@ -1,5 +1,4 @@
 import fontkit from '@pdf-lib/fontkit';
-import { Assets } from '..';
 import {
   clip,
   clipEvenOdd,
@@ -21,7 +20,9 @@ import {
   setLineCap,
   setLineJoin,
   StandardFonts,
-} from '../../..';
+} from 'pdf-lib';
+
+import { fetchAsset } from './assets';
 
 const ipsumLines = [
   'Eligendi est pariatur quidem in non excepturi et.',
@@ -29,7 +30,7 @@ const ipsumLines = [
   'Labore nisi officiis quia ipsum qui voluptatem omnis.',
 ];
 
-export default async (assets: Assets) => {
+export default async () => {
   const pdfDoc = await PDFDocument.create();
 
   pdfDoc.registerFontkit(fontkit);
@@ -154,11 +155,27 @@ export default async (assets: Assets) => {
   page2.drawSquare({ size, color: rgb(253 / 255, 246 / 255, 227 / 255) });
   page2.setFontColor(rgb(101 / 255, 123 / 255, 131 / 255));
 
-  const { fonts } = assets;
+  const [
+    ubuntuBytes,
+    fantasqueBytes,
+    indieFlowerBytes,
+    greatVibesBytes,
+    appleStormBytes,
+    bioRhymeBytes,
+    pressStart2PBytes,
+    hussar3DBytes,
+  ] = await Promise.all([
+    fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
+    fetchAsset('fonts/fantasque/OTF/FantasqueSansMono-BoldItalic.otf'),
+    fetchAsset('fonts/indie_flower/IndieFlower.ttf'),
+    fetchAsset('fonts/great_vibes/GreatVibes-Regular.ttf'),
+    fetchAsset('fonts/apple_storm/AppleStormCBo.otf'),
+    fetchAsset('fonts/bio_rhyme/BioRhymeExpanded-Regular.ttf'),
+    fetchAsset('fonts/press_start_2p/PressStart2P-Regular.ttf'),
+    fetchAsset('fonts/hussar_3d/Hussar3DFour.otf'),
+  ]);
 
-  const ubuntuFont = await pdfDoc.embedFont(fonts.ttf.ubuntu_r_base64, {
-    subset: true,
-  });
+  const ubuntuFont = await pdfDoc.embedFont(ubuntuBytes, { subset: true });
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 20,
     size: 20,
@@ -166,9 +183,7 @@ export default async (assets: Assets) => {
     lineHeight: 20,
   });
 
-  const fantasqueFont = await pdfDoc.embedFont(
-    fonts.otf.fantasque_sans_mono_bi,
-  );
+  const fantasqueFont = await pdfDoc.embedFont(fantasqueBytes);
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 105,
     size: 25,
@@ -176,7 +191,7 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const indieFlowerFont = await pdfDoc.embedFont(fonts.ttf.indie_flower_r, {
+  const indieFlowerFont = await pdfDoc.embedFont(indieFlowerBytes, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -186,7 +201,7 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const greatVibesFont = await pdfDoc.embedFont(fonts.ttf.great_vibes_r, {
+  const greatVibesFont = await pdfDoc.embedFont(greatVibesBytes, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -196,7 +211,7 @@ export default async (assets: Assets) => {
     lineHeight: 30,
   });
 
-  const appleStormFont = await pdfDoc.embedFont(fonts.otf.apple_storm_r);
+  const appleStormFont = await pdfDoc.embedFont(appleStormBytes);
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 425,
     size: 25,
@@ -204,7 +219,7 @@ export default async (assets: Assets) => {
     lineHeight: 25,
   });
 
-  const bioRhymeFont = await pdfDoc.embedFont(fonts.ttf.bio_rhyme_r, {
+  const bioRhymeFont = await pdfDoc.embedFont(bioRhymeBytes, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -214,7 +229,7 @@ export default async (assets: Assets) => {
     lineHeight: 15,
   });
 
-  const pressStart2PFont = await pdfDoc.embedFont(fonts.ttf.press_start_2p_r, {
+  const pressStart2PFont = await pdfDoc.embedFont(pressStart2PBytes, {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
@@ -224,7 +239,7 @@ export default async (assets: Assets) => {
     lineHeight: 15,
   });
 
-  const hussar3DFont = await pdfDoc.embedFont(fonts.otf.hussar_3d_r);
+  const hussar3DFont = await pdfDoc.embedFont(hussar3DBytes);
   page2.drawText(ipsumLines.join('\n'), {
     y: size - 650,
     size: 25,
@@ -237,22 +252,32 @@ export default async (assets: Assets) => {
   const page3Height = 1750;
   const page3 = pdfDoc.addPage([size, page3Height]);
 
-  const { jpg, png } = assets.images;
+  const [
+    catRidingUnicornBytes,
+    minionsLaughingBytes,
+    greyscaleBirdBytes,
+    minionsBananaAlphaBytes,
+    minionsBananaNoAlphaBytes,
+    smallMarioBytes,
+  ] = await Promise.all([
+    fetchAsset('images/cat_riding_unicorn.jpg'),
+    fetchAsset('images/minions_laughing.jpg'),
+    fetchAsset('images/greyscale_bird.png'),
+    fetchAsset('images/minions_banana_alpha.png'),
+    fetchAsset('images/minions_banana_no_alpha.png'),
+    fetchAsset('images/small_mario.png'),
+  ]);
 
-  const catRidingUnicornImage = await pdfDoc.embedJpg(
-    jpg.cat_riding_unicorn_base64,
-  );
-  const minionsLaughingImage = await pdfDoc.embedJpg(jpg.minions_laughing);
-  const greyscaleBirdImage = await pdfDoc.embedPng(
-    png.greyscale_bird_base64_uri,
-  );
+  const catRidingUnicornImage = await pdfDoc.embedJpg(catRidingUnicornBytes);
+  const minionsLaughingImage = await pdfDoc.embedJpg(minionsLaughingBytes);
+  const greyscaleBirdImage = await pdfDoc.embedPng(greyscaleBirdBytes);
   const minionsBananaAlphaImage = await pdfDoc.embedPng(
-    png.minions_banana_alpha,
+    minionsBananaAlphaBytes,
   );
   const minionsBananaNoAlphaImage = await pdfDoc.embedPng(
-    png.minions_banana_no_alpha,
+    minionsBananaNoAlphaBytes,
   );
-  const smallMarioImage = await pdfDoc.embedPng(png.small_mario);
+  const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);
 
   const catRidingUnicornDims = catRidingUnicornImage.scale(0.2);
   const minionsLaughingDims = minionsLaughingImage.scale(0.75);
@@ -261,6 +286,11 @@ export default async (assets: Assets) => {
   const minionsBananaNoAlphaDims = minionsBananaNoAlphaImage.scale(0.5);
   const smallMarioDims = smallMarioImage.scale(0.18);
 
+  // const {
+  //   setTextRenderingMode,
+  //   setStrokingColor,
+  //   TextRenderingMode,
+  // } = PDFLib;
   // page3.pushOperators(
   //   setTextRenderingMode(TextRenderingMode.OutlineAndClip),
   //   setStrokingColor(rgb(0.5, 0.5, 0.5)),
@@ -284,7 +314,6 @@ export default async (assets: Assets) => {
   });
 
   page3.moveTo(0, page3Height);
-
   page3.moveDown(catRidingUnicornDims.height);
   page3.drawImage(catRidingUnicornImage, catRidingUnicornDims);
 
@@ -303,6 +332,7 @@ export default async (assets: Assets) => {
   page3.moveDown(smallMarioDims.height);
   page3.drawImage(smallMarioImage, smallMarioDims);
 
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  const base64Pdf = await pdfDoc.saveAsBase64({ dataUri: true });
+
+  return { base64Pdf };
 };

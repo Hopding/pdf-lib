@@ -105,6 +105,12 @@ export const sum = (array: number[] | Uint8Array): number => {
   return total;
 };
 
+export const range = (start: number, end: number): number[] => {
+  const arr = new Array(end - start);
+  for (let idx = start; idx < end; idx++) arr[idx] = idx;
+  return arr;
+};
+
 export const canBeConvertedToUint8Array = (
   input: any,
 ): input is string | ArrayBuffer | Uint8Array =>
