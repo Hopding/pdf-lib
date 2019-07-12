@@ -5,14 +5,14 @@ import { fetchAsset, writePdf } from './assets';
 export default async () => {
   const [inputPdfBytes, catRidingUnicornBytes] = await Promise.all([
     fetchAsset('pdfs/with_update_sections.pdf'),
-    fetchAsset('images/cat_riding_unicorn.jpg'),
+    fetchAsset('images/cat_riding_unicorn_resized.jpg'),
   ]);
 
   const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const catRidingUnicornImage = await pdfDoc.embedJpg(catRidingUnicornBytes);
-  const catRidingUnicornDims = catRidingUnicornImage.scale(0.13);
+  const catRidingUnicornDims = catRidingUnicornImage.scale(0.25);
 
   const page0 = pdfDoc.insertPage(0, [305, 250]);
   const page1 = pdfDoc.getPages()[1];

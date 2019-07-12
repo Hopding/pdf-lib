@@ -260,12 +260,12 @@ export default async () => {
     minionsBananaNoAlphaBytes,
     smallMarioBytes,
   ] = await Promise.all([
-    fetchAsset('images/cat_riding_unicorn.jpg'),
+    fetchAsset('images/cat_riding_unicorn_resized.jpg'),
     fetchAsset('images/minions_laughing.jpg'),
     fetchAsset('images/greyscale_bird.png'),
     fetchAsset('images/minions_banana_alpha.png'),
-    fetchAsset('images/minions_banana_no_alpha.png'),
-    fetchAsset('images/small_mario.png'),
+    fetchAsset('images/minions_banana_no_alpha_resized.png'),
+    fetchAsset('images/small_mario_resized.png'),
   ]);
 
   const catRidingUnicornImage = await pdfDoc.embedJpg(catRidingUnicornBytes);
@@ -279,12 +279,12 @@ export default async () => {
   );
   const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);
 
-  const catRidingUnicornDims = catRidingUnicornImage.scale(0.2);
+  const catRidingUnicornDims = catRidingUnicornImage.scale(0.52);
   const minionsLaughingDims = minionsLaughingImage.scale(0.75);
   const greyscaleBirdDims = greyscaleBirdImage.scale(0.75);
   const minionsBananaAlphaDims = minionsBananaAlphaImage.scale(0.5);
-  const minionsBananaNoAlphaDims = minionsBananaNoAlphaImage.scale(0.5);
-  const smallMarioDims = smallMarioImage.scale(0.18);
+  const minionsBananaNoAlphaDims = minionsBananaNoAlphaImage.scale(0.75);
+  const smallMarioDims = smallMarioImage.scale(0.75);
 
   // const {
   //   setTextRenderingMode,
