@@ -7,7 +7,7 @@ export default async () => {
   const [inputPdfBytes, ubuntuBytes, smallMarioBytes] = await Promise.all([
     fetchAsset('pdfs/with_comments.pdf'),
     fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
-    fetchAsset('images/small_mario.png'),
+    fetchAsset('images/small_mario_resized.png'),
   ]);
 
   const pdfDoc = await PDFDocument.load(inputPdfBytes);
@@ -16,7 +16,7 @@ export default async () => {
 
   const ubuntuFont = await pdfDoc.embedFont(ubuntuBytes, { subset: true });
   const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);
-  const smallMarioDims = smallMarioImage.scale(0.15);
+  const smallMarioDims = smallMarioImage.scale(0.65);
 
   const pages = pdfDoc.getPages();
 

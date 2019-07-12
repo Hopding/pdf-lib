@@ -6,7 +6,7 @@ import { fetchAsset, writePdf } from './assets';
 export default async () => {
   const [ubuntuBytes, smallMarioBytes, inputPdfBytes] = await Promise.all([
     fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
-    fetchAsset('images/small_mario.png'),
+    fetchAsset('images/small_mario_resized.png'),
     fetchAsset('pdfs/linearized_with_object_streams.pdf'),
   ]);
 
@@ -16,7 +16,7 @@ export default async () => {
 
   const ubuntuFont = await pdfDoc.embedFont(ubuntuBytes, { subset: true });
   const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);
-  const smallMarioDims = smallMarioImage.scale(0.18);
+  const smallMarioDims = smallMarioImage.scale(0.75);
 
   const pages = pdfDoc.getPages();
 

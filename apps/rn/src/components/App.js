@@ -61,7 +61,7 @@ export default class App extends Component {
       if (state === App.States.TestLauncher) {
         this.setState({ testNumber, state: App.States.TestRunning });
       }
-    }, 100);
+    }, 50);
   };
 
   handleDone = () => {
