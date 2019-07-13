@@ -1,4 +1,4 @@
-import { error } from 'src/utils';
+import { assertIs, error } from 'src/utils';
 
 export enum RotationTypes {
   Degrees = 'degrees',
@@ -17,15 +17,15 @@ export interface Degrees {
 
 export type Rotation = Radians | Degrees;
 
-export const radians = (radianAngle: number): Radians => ({
-  type: RotationTypes.Radians,
-  angle: radianAngle,
-});
+export const radians = (radianAngle: number): Radians => {
+  assertIs(radianAngle, 'radianAngle', ['number']);
+  return { type: RotationTypes.Radians, angle: radianAngle };
+};
 
-export const degrees = (degreeAngle: number): Degrees => ({
-  type: RotationTypes.Degrees,
-  angle: degreeAngle,
-});
+export const degrees = (degreeAngle: number): Degrees => {
+  assertIs(degreeAngle, 'degreeAngle', ['number']);
+  return { type: RotationTypes.Degrees, angle: degreeAngle };
+};
 
 const { Radians, Degrees } = RotationTypes;
 

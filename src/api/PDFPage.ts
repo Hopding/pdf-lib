@@ -32,13 +32,20 @@ import {
   PDFRef,
   StandardFonts,
 } from 'src/core';
-import { addRandomSuffix } from 'src/utils';
+import {
+  addRandomSuffix,
+  assertEachIs,
+  assertIs,
+  assertMultiple,
+  assertOrUndefined,
+} from 'src/utils';
 
 class PDFPage {
   static of = (leafNode: PDFPageLeaf, ref: PDFRef, doc: PDFDocument) =>
     new PDFPage(leafNode, ref, doc);
 
   static create = (doc: PDFDocument) => {
+    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
     const dummyRef = PDFRef.of(-1);
     const pageLeaf = PDFPageLeaf.withContextAndParent(doc.context, dummyRef);
     const pageRef = doc.context.register(pageLeaf);
@@ -60,14 +67,18 @@ class PDFPage {
   private contentStreamRef?: PDFRef;
 
   private constructor(leafNode: PDFPageLeaf, ref: PDFRef, doc: PDFDocument) {
+    assertIs(leafNode, 'leafNode', [[PDFPageLeaf, 'PDFPageLeaf']]);
+    assertIs(ref, 'ref', [[PDFRef, 'PDFRef']]);
+    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
+
     this.node = leafNode;
     this.ref = ref;
     this.doc = doc;
   }
 
-  // TODO: Validate is multiple of 90 degrees!
   setRotation(angle: Rotation): void {
     const degreesAngle = toDegrees(angle);
+    assertMultiple(degreesAngle, 'degreesAngle', 90);
     this.node.set(PDFName.of('Rotate'), this.doc.context.obj(degreesAngle));
   }
 
@@ -77,6 +88,8 @@ class PDFPage {
   }
 
   setSize(width: number, height: number): void {
+    assertIs(width, 'width', ['number']);
+    assertIs(height, 'height', ['number']);
     const mediaBox = this.node.MediaBox().clone();
     mediaBox.set(2, this.doc.context.obj(width));
     mediaBox.set(3, this.doc.context.obj(height));
@@ -84,10 +97,12 @@ class PDFPage {
   }
 
   setWidth(width: number): void {
+    assertIs(width, 'width', ['number']);
     this.setSize(width, this.getSize().height);
   }
 
   setHeight(height: number): void {
+    assertIs(height, 'height', ['number']);
     this.setSize(this.getSize().width, height);
   }
 
@@ -111,6 +126,9 @@ class PDFPage {
   }
 
   translateContent(x: number, y: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+
     this.node.normalize();
     this.getContentStream();
 
@@ -134,20 +152,24 @@ class PDFPage {
 
   // TODO: Reuse image Font name if we've already added this image to Resources.Fonts
   setFont(font: PDFFont): void {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.font = font;
     this.fontKey = addRandomSuffix(this.font.name);
     this.node.setFontDictionary(PDFName.of(this.fontKey), this.font.ref);
   }
 
   setFontSize(fontSize: number): void {
+    assertIs(fontSize, 'fontSize', ['number']);
     this.fontSize = fontSize;
   }
 
   setFontColor(fontColor: Color): void {
+    assertIs(fontColor, 'fontColor', [[Object, 'Color']]);
     this.fontColor = fontColor;
   }
 
   setLineHeight(lineHeight: number): void {
+    assertIs(lineHeight, 'lineHeight', ['number']);
     this.lineHeight = lineHeight;
   }
 
@@ -164,32 +186,50 @@ class PDFPage {
   }
 
   moveTo(x: number, y: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
     this.x = x;
     this.y = y;
   }
 
   moveDown(yDecrease: number): void {
+    assertIs(yDecrease, 'yDecrease', ['number']);
     this.y -= yDecrease;
   }
 
   moveUp(yIncrease: number): void {
+    assertIs(yIncrease, 'yIncrease', ['number']);
     this.y += yIncrease;
   }
 
   moveLeft(xDecrease: number): void {
+    assertIs(xDecrease, 'xDecrease', ['number']);
     this.x -= xDecrease;
   }
 
   moveRight(xIncrease: number): void {
+    assertIs(xIncrease, 'xIncrease', ['number']);
     this.x += xIncrease;
   }
 
   pushOperators(...operator: PDFOperator[]): void {
+    assertEachIs(operator, 'operator', [[PDFOperator, 'PDFOperator']]);
     const contentStream = this.getContentStream();
     contentStream.push(...operator);
   }
 
   drawText(text: string, options: PDFPageDrawTextOptions = {}): void {
+    assertIs(text, 'text', ['string']);
+    assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.font, 'options.font', [[PDFFont, 'PDFFont']]);
+    assertOrUndefined(options.size, 'options.size', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
+    assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.lineHeight, 'options.lineHeight', ['number']);
+
     const [originalFont] = this.getFont();
     if (options.font) this.setFont(options.font);
     const [font, fontKey] = this.getFont();
@@ -220,6 +260,15 @@ class PDFPage {
 
   // TODO: Reuse image XObject name if we've already added this image to Resources.XObjects
   drawImage(image: PDFImage, options: PDFPageDrawImageOptions = {}): void {
+    assertIs(image, 'image', [[PDFImage, 'PDFImage']]);
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.width, 'options.width', ['number']);
+    assertOrUndefined(options.height, 'options.height', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
+    assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+
     const xObjectKey = addRandomSuffix('Image', 4);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
@@ -238,6 +287,19 @@ class PDFPage {
   }
 
   drawRectangle(options: PDFPageDrawRectangleOptions = {}): void {
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.width, 'options.width', ['number']);
+    assertOrUndefined(options.height, 'options.height', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
+    assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
+    assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.borderColor, 'options.borderColor', [
+      [Object, 'Color'],
+    ]);
+
     const contentStream = this.getContentStream();
     if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
@@ -260,10 +322,21 @@ class PDFPage {
 
   drawSquare(options: PDFPageDrawSquareOptions = {}): void {
     const { size } = options;
+    assertOrUndefined(size, 'size', ['number']);
     this.drawRectangle({ ...options, width: size, height: size });
   }
 
   drawEllipse(options: PDFPageDrawEllipseOptions = {}): void {
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.xScale, 'options.xScale', ['number']);
+    assertOrUndefined(options.yScale, 'options.yScale', ['number']);
+    assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.borderColor, 'options.borderColor', [
+      [Object, 'Color'],
+    ]);
+    assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
+
     const contentStream = this.getContentStream();
     if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
@@ -283,6 +356,7 @@ class PDFPage {
 
   drawCircle(options: PDFPageDrawCircleOptions = {}): void {
     const { size } = options;
+    assertOrUndefined(size, 'size', ['number']);
     this.drawEllipse({ ...options, xScale: size, yScale: size });
   }
 
