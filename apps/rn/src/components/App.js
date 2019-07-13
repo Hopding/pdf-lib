@@ -35,7 +35,6 @@ export default class App extends Component {
     state: App.States.TestLauncher,
   };
 
-  // TODO: Handle errors/promise rejections
   handleLaunchTest = (testNumber, testLauncher) => {
     const start = Date.now();
     testLauncher()

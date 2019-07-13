@@ -5,6 +5,7 @@ import {
   PDFRef,
   StandardFontEmbedder,
 } from 'src/core';
+import { assertIs } from 'src/utils';
 
 export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
 
@@ -20,6 +21,13 @@ class PDFFont {
   private readonly embedder: FontEmbedder;
 
   private constructor(ref: PDFRef, doc: PDFDocument, embedder: FontEmbedder) {
+    assertIs(ref, 'ref', [[PDFRef, 'PDFRef']]);
+    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
+    assertIs(embedder, 'embedder', [
+      [CustomFontEmbedder, 'CustomFontEmbedder'],
+      [StandardFontEmbedder, 'StandardFontEmbedder'],
+    ]);
+
     this.ref = ref;
     this.doc = doc;
     this.name = embedder.fontName;
@@ -28,19 +36,24 @@ class PDFFont {
   }
 
   encodeText(text: string): PDFHexString {
+    assertIs(text, 'text', ['string']);
     this.modified = true;
     return this.embedder.encodeText(text);
   }
 
   widthOfTextAtSize(text: string, size: number): number {
+    assertIs(text, 'text', ['string']);
+    assertIs(size, 'size', ['number']);
     return this.embedder.widthOfTextAtSize(text, size);
   }
 
   heightAtSize(size: number): number {
+    assertIs(size, 'size', ['number']);
     return this.embedder.heightOfFontAtSize(size);
   }
 
   sizeAtHeight(height: number): number {
+    assertIs(height, 'height', ['number']);
     return this.embedder.sizeOfFontAtHeight(height);
   }
 
