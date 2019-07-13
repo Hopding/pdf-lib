@@ -25,7 +25,7 @@ describe(`PDFNumber`, () => {
       '-340300000000000000000000000000000000000',
     );
     expect(String(PDFNumber.of(-3.403e-38))).toEqual(
-      '-0.00000000000000000000000000000000000003403',
+      '-0.000000000000000000000000000000000000034030000000000005',
     );
   });
 
@@ -47,10 +47,12 @@ describe(`PDFNumber`, () => {
       typedArrayFor('-340300000000000000000000000000000000000'),
     );
 
-    const buffer3 = new Uint8Array(51).fill(toCharCode(' '));
-    expect(PDFNumber.of(-3.403e-38).copyBytesInto(buffer3, 3)).toBe(44);
+    const buffer3 = new Uint8Array(64).fill(toCharCode(' '));
+    expect(PDFNumber.of(-3.403e-38).copyBytesInto(buffer3, 3)).toBe(57);
     expect(buffer3).toEqual(
-      typedArrayFor('   -0.00000000000000000000000000000000000003403    '),
+      typedArrayFor(
+        '   -0.000000000000000000000000000000000000034030000000000005    ',
+      ),
     );
   });
 });
