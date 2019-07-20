@@ -40,7 +40,7 @@ import {
   assertOrUndefined,
 } from 'src/utils';
 
-class PDFPage {
+export default class PDFPage {
   static of = (leafNode: PDFPageLeaf, ref: PDFRef, doc: PDFDocument) =>
     new PDFPage(leafNode, ref, doc);
 
@@ -54,6 +54,8 @@ class PDFPage {
 
   readonly node: PDFPageLeaf;
   readonly ref: PDFRef;
+
+  /** The document to which this page belongs. */
   readonly doc: PDFDocument;
 
   private fontKey?: string;
@@ -76,6 +78,19 @@ class PDFPage {
     this.doc = doc;
   }
 
+  /**
+   * Rotate this page by a multiple of 90 degrees. For example:
+   * ```js
+   * import { degrees } from 'pdf-lib'
+   *
+   * page.setRotation(degrees(-90))
+   * page.setRotation(degrees(0))
+   * page.setRotation(degrees(90))
+   * page.setRotation(degrees(180))
+   * page.setRotation(degrees(270))
+   * ```
+   * @param angle The angle to rotate this page.
+   */
   setRotation(angle: Rotation): void {
     const degreesAngle = toDegrees(angle);
     assertMultiple(degreesAngle, 'degreesAngle', 90);
@@ -389,5 +404,3 @@ class PDFPage {
     return contentStream;
   }
 }
-
-export default PDFPage;

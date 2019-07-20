@@ -53,7 +53,7 @@ export interface Base64SaveOptions extends SaveOptions {
   dataUri?: boolean;
 }
 
-class PDFDocument {
+export default class PDFDocument {
   static async load(
     pdf: string | Uint8Array | ArrayBuffer,
     options: {
@@ -305,5 +305,3 @@ class PDFDocument {
     return pages;
   };
 }
-
-export default PDFDocument;
