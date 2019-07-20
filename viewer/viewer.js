@@ -29,8 +29,7 @@ var MAX_IMAGE_SIZE = 1024 * 1024;
 var CMAP_URL = '../../node_modules/pdfjs-dist/cmaps/';
 var CMAP_PACKED = true;
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  '/pdf-lib/js/pdf.worker.min.js_2.1.266';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js_2.1.266';
 
 // var DEFAULT_URL = '/assets/copy_pages.pdf';
 var DEFAULT_SCALE_DELTA = 1.1;
