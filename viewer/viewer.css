@@ -1,0 +1,321 @@
+/* Copyright 2016 Mozilla Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* SVG styles. */
+svg {
+  animation: 2s linear infinite svg-animation;
+  max-width: 100px;
+}
+
+/* SVG animation. */
+@keyframes svg-animation {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+
+/* Circle styles. */
+circle {
+  animation: 1.4s ease-in-out infinite both circle-animation;
+  display: block;
+  fill: transparent;
+  stroke: #2f3d4c;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 280;
+  stroke-width: 10px;
+  transform-origin: 50% 50%;
+}
+
+/* Circle animation. */
+@keyframes circle-animation {
+  0%,
+  25% {
+    stroke-dashoffset: 280;
+    transform: rotate(0);
+  }
+
+  50%,
+  75% {
+    stroke-dashoffset: 75;
+    transform: rotate(45deg);
+  }
+
+  100% {
+    stroke-dashoffset: 280;
+    transform: rotate(360deg);
+  }
+}
+
+/* * {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-size: 10px;
+} */
+
+#pdf-viewer header {
+  background-color: #f4f4f4;
+}
+
+#pdf-viewer header h1 {
+  border-bottom: 1px solid #d8d8d8;
+  color: #858585;
+  font-size: 23px;
+  font-style: italic;
+  font-weight: normal;
+  overflow: hidden;
+  padding: 10px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* body {
+  background: url(assets/document_bg.png);
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 10px;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  padding-bottom: 5rem;
+} */
+
+#pdf-viewer section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-size: 2rem;
+}
+
+#pdf-viewer footer {
+  height: 4rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  overflow: hidden;
+}
+
+#pdf-viewer .toolbarButton {
+  display: block;
+  padding: 0;
+  margin: 0;
+  border-width: 0;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+#pdf-viewer .toolbarButton:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+  -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+  box-shadow: inset 0px 0px 5px #c1c1c1;
+  outline: none;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+
+#pdf-viewer .toolbarButton.pageUp {
+  position: absolute;
+  width: 18%;
+  height: 100%;
+  left: 0;
+  background-image: url(assets/icon_prev_page.svg);
+  background-size: 2rem;
+}
+
+#pdf-viewer .toolbarButton.pageDown {
+  position: absolute;
+  width: 18%;
+  height: 100%;
+  left: 18%;
+  background-image: url(assets/icon_next_page.svg);
+  background-size: 2rem;
+}
+
+#pdf-viewer #pageNumber {
+  -moz-appearance: textfield; /* hides the spinner in moz */
+  position: absolute;
+  width: 28%;
+  height: 100%;
+  left: 36%;
+  text-align: center;
+  border: 0;
+  background-color: transparent;
+  font-size: 1.2rem;
+  color: #000;
+  background-repeat: no-repeat;
+  background-position: left, right;
+  background-size: 0.2rem, 0.2rem;
+}
+
+#pdf-viewer .toolbarButton.zoomOut {
+  position: absolute;
+  width: 18%;
+  height: 100%;
+  left: 64%;
+  background-image: url(assets/icon_zoom_out.svg);
+  background-size: 2.4rem;
+}
+
+#pdf-viewer .toolbarButton.zoomIn {
+  position: absolute;
+  width: 18%;
+  height: 100%;
+  left: 82%;
+  background-image: url(assets/icon_zoom_in.svg);
+  background-size: 2.4rem;
+}
+
+#pdf-viewer .toolbarButton[disabled] {
+  opacity: 0.3;
+}
+
+#pdf-viewer .hidden {
+  display: none;
+}
+[hidden] {
+  display: none !important;
+}
+
+#pdf-viewer {
+  width: 100%;
+  height: 100%;
+}
+
+#pdf-viewer #viewerContainer {
+  position: absolute;
+  overflow: auto;
+  width: 100%;
+  /* top: 5rem; */
+  top: 0rem;
+  bottom: 4rem;
+  left: 0;
+  right: 0;
+  background-color: #f8f8f8;
+}
+
+#pdf-viewer .page {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  margin: 25px;
+  margin-top: 0;
+}
+
+#pdf-viewer #viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 25px;
+}
+
+#pdf-viewer canvas {
+  margin: auto;
+  display: block;
+}
+
+#pdf-viewer #loadingBar {
+  position: relative;
+  height: 0.6rem;
+  background-color: #333;
+  border-bottom: 1px solid #333;
+  margin-top: 5rem;
+}
+
+#pdf-viewer #loadingBar .progress {
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: #ddd;
+  overflow: hidden;
+  transition: width 200ms;
+}
+
+@keyframes progressIndeterminate {
+  0% {
+    left: 0;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+#pdf-viewer #loadingBar .progress.indeterminate {
+  background-color: #999;
+  transition: none;
+}
+
+#pdf-viewer #loadingBar .indeterminate .glimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 5rem;
+
+  background-image: linear-gradient(to right, #999 0%, #fff 50%, #999 100%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+
+  animation: progressIndeterminate 2s linear infinite;
+}
+
+#pdf-viewer #errorWrapper {
+  background: none repeat scroll 0 0 #ff5555;
+  color: white;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 3.2rem;
+  z-index: 1000;
+  padding: 0.3rem;
+  font-size: 0.8em;
+}
+
+#pdf-viewer #errorMessageLeft {
+  float: left;
+}
+
+#pdf-viewer #errorMessageRight {
+  float: right;
+}
+
+#pdf-viewer #errorMoreInfo {
+  background-color: #ffffff;
+  color: black;
+  padding: 0.3rem;
+  margin: 0.3rem;
+  width: 98%;
+}
