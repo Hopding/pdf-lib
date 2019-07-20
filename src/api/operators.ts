@@ -8,9 +8,6 @@ import {
   PDFOperatorNames as Ops,
 } from 'src/core';
 
-export type NameT = string | PDFName;
-export type NumberT = number | PDFNumber;
-
 /* ==================== Clipping Path Operators ==================== */
 
 export const clip = () => PDFOperator.of(Ops.ClipNonZero);
@@ -21,12 +18,12 @@ export const clipEvenOdd = () => PDFOperator.of(Ops.ClipEvenOdd);
 const { cos, sin, tan } = Math;
 
 export const concatTransformationMatrix = (
-  a: NumberT,
-  b: NumberT,
-  c: NumberT,
-  d: NumberT,
-  e: NumberT,
-  f: NumberT,
+  a: number | PDFNumber,
+  b: number | PDFNumber,
+  c: number | PDFNumber,
+  d: number | PDFNumber,
+  e: number | PDFNumber,
+  f: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.ConcatTransformationMatrix, [
     asPDFNumber(a),
@@ -37,13 +34,13 @@ export const concatTransformationMatrix = (
     asPDFNumber(f),
   ]);
 
-export const translate = (xPos: NumberT, yPos: NumberT) =>
+export const translate = (xPos: number | PDFNumber, yPos: number | PDFNumber) =>
   concatTransformationMatrix(1, 0, 0, 1, xPos, yPos);
 
-export const scale = (xPos: NumberT, yPos: NumberT) =>
+export const scale = (xPos: number | PDFNumber, yPos: number | PDFNumber) =>
   concatTransformationMatrix(xPos, 0, 0, yPos, 0, 0);
 
-export const rotateRadians = (angle: NumberT) =>
+export const rotateRadians = (angle: number | PDFNumber) =>
   concatTransformationMatrix(
     cos(asNumber(angle)),
     sin(asNumber(angle)),
@@ -53,10 +50,13 @@ export const rotateRadians = (angle: NumberT) =>
     0,
   );
 
-export const rotateDegrees = (angle: NumberT) =>
+export const rotateDegrees = (angle: number | PDFNumber) =>
   rotateRadians(degreesToRadians(asNumber(angle)));
 
-export const skewRadians = (xSkewAngle: NumberT, ySkewAngle: NumberT) =>
+export const skewRadians = (
+  xSkewAngle: number | PDFNumber,
+  ySkewAngle: number | PDFNumber,
+) =>
   concatTransformationMatrix(
     1,
     tan(asNumber(xSkewAngle)),
@@ -66,13 +66,19 @@ export const skewRadians = (xSkewAngle: NumberT, ySkewAngle: NumberT) =>
     0,
   );
 
-export const skewDegrees = (xSkewAngle: NumberT, ySkewAngle: NumberT) =>
+export const skewDegrees = (
+  xSkewAngle: number | PDFNumber,
+  ySkewAngle: number | PDFNumber,
+) =>
   skewRadians(
     degreesToRadians(asNumber(xSkewAngle)),
     degreesToRadians(asNumber(ySkewAngle)),
   );
 
-export const setDashPattern = (dashArray: NumberT[], dashPhase: NumberT) =>
+export const setDashPattern = (
+  dashArray: (number | PDFNumber)[],
+  dashPhase: number | PDFNumber,
+) =>
   PDFOperator.of(Ops.SetLineDashPattern, [
     `[${dashArray.map(asPDFNumber).join(' ')}]`,
     asPDFNumber(dashPhase),
@@ -102,18 +108,18 @@ export const pushGraphicsState = () => PDFOperator.of(Ops.PushGraphicsState);
 
 export const popGraphicsState = () => PDFOperator.of(Ops.PopGraphicsState);
 
-export const setLineWidth = (width: NumberT) =>
+export const setLineWidth = (width: number | PDFNumber) =>
   PDFOperator.of(Ops.SetLineWidth, [asPDFNumber(width)]);
 
 /* ==================== Path Construction Operators ==================== */
 
 export const appendBezierCurve = (
-  x1: NumberT,
-  y1: NumberT,
-  x2: NumberT,
-  y2: NumberT,
-  x3: NumberT,
-  y3: NumberT,
+  x1: number | PDFNumber,
+  y1: number | PDFNumber,
+  x2: number | PDFNumber,
+  y2: number | PDFNumber,
+  x3: number | PDFNumber,
+  y3: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.AppendBezierCurve, [
     asPDFNumber(x1),
@@ -126,10 +132,10 @@ export const appendBezierCurve = (
 
 export const closePath = () => PDFOperator.of(Ops.ClosePath);
 
-export const moveTo = (xPos: NumberT, yPos: NumberT) =>
+export const moveTo = (xPos: number | PDFNumber, yPos: number | PDFNumber) =>
   PDFOperator.of(Ops.MoveTo, [asPDFNumber(xPos), asPDFNumber(yPos)]);
 
-export const lineTo = (xPos: NumberT, yPos: NumberT) =>
+export const lineTo = (xPos: number | PDFNumber, yPos: number | PDFNumber) =>
   PDFOperator.of(Ops.LineTo, [asPDFNumber(xPos), asPDFNumber(yPos)]);
 
 /**
@@ -139,10 +145,10 @@ export const lineTo = (xPos: NumberT, yPos: NumberT) =>
  * @param height height of the rectangle
  */
 export const rectangle = (
-  xPos: NumberT,
-  yPos: NumberT,
-  width: NumberT,
-  height: NumberT,
+  xPos: number | PDFNumber,
+  yPos: number | PDFNumber,
+  width: number | PDFNumber,
+  height: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.AppendRectangle, [
     asPDFNumber(xPos),
@@ -173,7 +179,7 @@ export const endPath = () => PDFOperator.of(Ops.EndPath);
 
 export const nextLine = () => PDFOperator.of(Ops.NextLine);
 
-export const moveText = (x: NumberT, y: NumberT) =>
+export const moveText = (x: number | PDFNumber, y: number | PDFNumber) =>
   PDFOperator.of(Ops.MoveText, [asPDFNumber(x), asPDFNumber(y)]);
 
 /* ==================== Text Showing Operators ==================== */
@@ -186,23 +192,25 @@ export const showText = (text: PDFHexString) =>
 export const beginText = () => PDFOperator.of(Ops.BeginText);
 export const endText = () => PDFOperator.of(Ops.EndText);
 
-export const setFontAndSize = (name: NameT, size: NumberT) =>
-  PDFOperator.of(Ops.SetFontAndSize, [asPDFName(name), asPDFNumber(size)]);
+export const setFontAndSize = (
+  name: string | PDFName,
+  size: number | PDFNumber,
+) => PDFOperator.of(Ops.SetFontAndSize, [asPDFName(name), asPDFNumber(size)]);
 
-export const setCharacterSpacing = (spacing: NumberT) =>
+export const setCharacterSpacing = (spacing: number | PDFNumber) =>
   PDFOperator.of(Ops.SetCharacterSpacing, [asPDFNumber(spacing)]);
 
-export const setWordSpacing = (spacing: NumberT) =>
+export const setWordSpacing = (spacing: number | PDFNumber) =>
   PDFOperator.of(Ops.SetWordSpacing, [asPDFNumber(spacing)]);
 
 /** @param squeeze horizontal character spacing */
-export const setCharacterSqueeze = (squeeze: NumberT) =>
+export const setCharacterSqueeze = (squeeze: number | PDFNumber) =>
   PDFOperator.of(Ops.SetTextHorizontalScaling, [asPDFNumber(squeeze)]);
 
-export const setLineHeight = (lineHeight: NumberT) =>
+export const setLineHeight = (lineHeight: number | PDFNumber) =>
   PDFOperator.of(Ops.SetTextLineHeight, [asPDFNumber(lineHeight)]);
 
-export const setTextRise = (rise: NumberT) =>
+export const setTextRise = (rise: number | PDFNumber) =>
   PDFOperator.of(Ops.SetTextRise, [asPDFNumber(rise)]);
 
 export enum TextRenderingMode {
@@ -220,12 +228,12 @@ export const setTextRenderingMode = (mode: TextRenderingMode) =>
   PDFOperator.of(Ops.SetTextRenderingMode, [asPDFNumber(mode)]);
 
 export const setTextMatrix = (
-  a: NumberT,
-  b: NumberT,
-  c: NumberT,
-  d: NumberT,
-  e: NumberT,
-  f: NumberT,
+  a: number | PDFNumber,
+  b: number | PDFNumber,
+  c: number | PDFNumber,
+  d: number | PDFNumber,
+  e: number | PDFNumber,
+  f: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.SetTextMatrix, [
     asPDFNumber(a),
@@ -237,11 +245,11 @@ export const setTextMatrix = (
   ]);
 
 export const rotateAndSkewTextRadiansAndTranslate = (
-  rotationAngle: NumberT,
-  xSkewAngle: NumberT,
-  ySkewAngle: NumberT,
-  x: NumberT,
-  y: NumberT,
+  rotationAngle: number | PDFNumber,
+  xSkewAngle: number | PDFNumber,
+  ySkewAngle: number | PDFNumber,
+  x: number | PDFNumber,
+  y: number | PDFNumber,
 ) =>
   setTextMatrix(
     cos(asNumber(rotationAngle)),
@@ -253,11 +261,11 @@ export const rotateAndSkewTextRadiansAndTranslate = (
   );
 
 export const rotateAndSkewTextDegreesAndTranslate = (
-  rotationAngle: NumberT,
-  xSkewAngle: NumberT,
-  ySkewAngle: NumberT,
-  x: NumberT,
-  y: NumberT,
+  rotationAngle: number | PDFNumber,
+  xSkewAngle: number | PDFNumber,
+  ySkewAngle: number | PDFNumber,
+  x: number | PDFNumber,
+  y: number | PDFNumber,
 ) =>
   rotateAndSkewTextRadiansAndTranslate(
     degreesToRadians(asNumber(rotationAngle)),
@@ -269,21 +277,21 @@ export const rotateAndSkewTextDegreesAndTranslate = (
 
 /* ==================== XObject Operator ==================== */
 
-export const drawObject = (name: NameT) =>
+export const drawObject = (name: string | PDFName) =>
   PDFOperator.of(Ops.DrawObject, [asPDFName(name)]);
 
 /* ==================== Color Operators ==================== */
 
-export const setFillingGrayscaleColor = (gray: NumberT) =>
+export const setFillingGrayscaleColor = (gray: number | PDFNumber) =>
   PDFOperator.of(Ops.NonStrokingColorGray, [asPDFNumber(gray)]);
 
-export const setStrokingGrayscaleColor = (gray: NumberT) =>
+export const setStrokingGrayscaleColor = (gray: number | PDFNumber) =>
   PDFOperator.of(Ops.StrokingColorGray, [asPDFNumber(gray)]);
 
 export const setFillingRgbColor = (
-  red: NumberT,
-  green: NumberT,
-  blue: NumberT,
+  red: number | PDFNumber,
+  green: number | PDFNumber,
+  blue: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.NonStrokingColorRgb, [
     asPDFNumber(red),
@@ -292,9 +300,9 @@ export const setFillingRgbColor = (
   ]);
 
 export const setStrokingRgbColor = (
-  red: NumberT,
-  green: NumberT,
-  blue: NumberT,
+  red: number | PDFNumber,
+  green: number | PDFNumber,
+  blue: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.StrokingColorRgb, [
     asPDFNumber(red),
@@ -303,10 +311,10 @@ export const setStrokingRgbColor = (
   ]);
 
 export const setFillingCmykColor = (
-  cyan: NumberT,
-  magenta: NumberT,
-  yellow: NumberT,
-  key: NumberT,
+  cyan: number | PDFNumber,
+  magenta: number | PDFNumber,
+  yellow: number | PDFNumber,
+  key: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.NonStrokingColorCmyk, [
     asPDFNumber(cyan),
@@ -316,10 +324,10 @@ export const setFillingCmykColor = (
   ]);
 
 export const setStrokingCmykColor = (
-  cyan: NumberT,
-  magenta: NumberT,
-  yellow: NumberT,
-  key: NumberT,
+  cyan: number | PDFNumber,
+  magenta: number | PDFNumber,
+  yellow: number | PDFNumber,
+  key: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.StrokingColorCmyk, [
     asPDFNumber(cyan),

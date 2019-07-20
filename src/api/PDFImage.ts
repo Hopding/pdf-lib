@@ -4,7 +4,7 @@ import { assertIs } from 'src/utils';
 
 export type ImageEmbedder = JpegEmbedder | PngEmbedder;
 
-class PDFImage {
+export default class PDFImage {
   static of = (ref: PDFRef, doc: PDFDocument, embedder: ImageEmbedder) =>
     new PDFImage(ref, doc, embedder);
 
@@ -48,5 +48,3 @@ class PDFImage {
     }
   }
 }
-
-export default PDFImage;
