@@ -56,13 +56,15 @@ class PDFObjectCopier {
     // Move any entries that the originalPage is inheriting from its parent
     // tree nodes directly into originalPage so they are preserved during
     // the copy.
-    clonedPage.Parent.ascend((parentNode) => {
-      PDFPage.INHERITABLE_ENTRIES.forEach((key) => {
-        if (!clonedPage.getMaybe(key) && parentNode.getMaybe(key)) {
-          clonedPage.set(key, parentNode.get(key));
-        }
-      });
-    }, true);
+    if (clonedPage.getMaybe('Parent')) {
+      clonedPage.Parent.ascend((parentNode) => {
+        PDFPage.INHERITABLE_ENTRIES.forEach((key) => {
+          if (!clonedPage.getMaybe(key) && parentNode.getMaybe(key)) {
+            clonedPage.set(key, parentNode.get(key));
+          }
+        });
+      }, true);
+    }
 
     // Remove the parent reference to prevent the whole donor document's page
     // tree from being copied when we only need a single page.
