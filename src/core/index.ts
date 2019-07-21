@@ -1,5 +1,3 @@
-export { FontNames as StandardFonts } from '@pdf-lib/standard-fonts';
-
 export * from 'src/core/errors';
 export { default as CharCodes } from 'src/core/syntax/CharCodes';
 

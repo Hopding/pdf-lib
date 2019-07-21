@@ -40,6 +40,9 @@ import {
   assertOrUndefined,
 } from 'src/utils';
 
+/**
+ * Represents a single page of a [[PDFDocument]].
+ */
 export default class PDFPage {
   static of = (leafNode: PDFPageLeaf, ref: PDFRef, doc: PDFDocument) =>
     new PDFPage(leafNode, ref, doc);
@@ -52,7 +55,10 @@ export default class PDFPage {
     return new PDFPage(pageLeaf, pageRef, doc);
   };
 
+  /** The low-level PDFDictionary wrapped by this page. */
   readonly node: PDFPageLeaf;
+
+  /** The unique reference assigned to this page within the document. */
   readonly ref: PDFRef;
 
   /** The document to which this page belongs. */
@@ -97,11 +103,30 @@ export default class PDFPage {
     this.node.set(PDFName.of('Rotate'), this.doc.context.obj(degreesAngle));
   }
 
-  getRotation(): number {
+  /**
+   * Get this page's rotation angle in degrees. For example:
+   * ```js
+   * const rotationAngle = page.getRotation().angle;
+   * ```
+   * @returns The rotation angle of the page in degrees (always a multiple of
+   *          90 degrees).
+   */
+  getRotation(): Rotation {
     const Rotate = this.node.Rotate();
-    return Rotate ? Rotate.value() : 0;
+    return degrees(Rotate ? Rotate.value() : 0);
   }
 
+  /**
+   * Resize this page by increasing or decreasing its width and height. For
+   * example:
+   * ```js
+   * page.setSize(250, 500)
+   * page.setSize(page.getWidth() + 50, page.getHeight() + 100)
+   * page.setSize(page.getWidth() - 50, page.getHeight() - 100)
+   * ```
+   * @param width The new width of the page.
+   * @param height The new height of the page.
+   */
   setSize(width: number, height: number): void {
     assertIs(width, 'width', ['number']);
     assertIs(height, 'height', ['number']);
@@ -111,16 +136,41 @@ export default class PDFPage {
     this.node.set(PDFName.of('MediaBox'), mediaBox);
   }
 
+  /**
+   * Resize this page by increasing or decreasing its width. For example:
+   * ```js
+   * page.setWidth(250)
+   * page.setWidth(page.getWidth() + 50)
+   * page.setWidth(page.getWidth() - 50)
+   * ```
+   * @param width The new width of the page.
+   */
   setWidth(width: number): void {
     assertIs(width, 'width', ['number']);
     this.setSize(width, this.getSize().height);
   }
 
+  /**
+   * Resize this page by increasing or decreasing its height. For example:
+   * ```js
+   * page.setHeight(500)
+   * page.setHeight(page.getWidth() + 100)
+   * page.setHeight(page.getWidth() - 100)
+   * ```
+   * @param height The new height of the page.
+   */
   setHeight(height: number): void {
     assertIs(height, 'height', ['number']);
     this.setSize(this.getSize().width, height);
   }
 
+  /**
+   * Get this page's width and height. For example:
+   * ```js
+   * const { width, height } = page.getSize()
+   * ```
+   * @returns The width and height of the page.
+   */
   getSize(): { width: number; height: number } {
     const mediaBox = this.node.MediaBox();
     const width =
@@ -132,14 +182,44 @@ export default class PDFPage {
     return { width, height };
   }
 
+  /**
+   * Get this page's width. For example:
+   * ```js
+   * const width = page.getWidth()
+   * ```
+   * @returns The width of the page.
+   */
   getWidth(): number {
     return this.getSize().width;
   }
 
+  /**
+   * Get this page's height. For example:
+   * ```js
+   * const height = page.getHeight()
+   * ```
+   * @returns The height of the page.
+   */
   getHeight(): number {
     return this.getSize().height;
   }
 
+  /**
+   * Translate this page's content to a new location on the page. This operation
+   * is often useful after resizing the page with [[setSize]]. For example:
+   * ```js
+   * // Add 50 units of whitespace to the top and right of the page
+   * page.setSize(page.getWidth() + 50, page.getHeight() + 50)
+   *
+   * // Move the page's content from the lower-left corner of the page
+   * // to the top-right corner.
+   * page.translateContent(50, 50)
+   *
+   * // Now there are 50 units of whitespace to the left and bottom of the page
+   * ```
+   * @param x The new position on the x-axis for this page's content.
+   * @param y The new position on the y-axis for this page's content.
+   */
   translateContent(x: number, y: number): void {
     assertIs(x, 'x', ['number']);
     assertIs(y, 'y', ['number']);
@@ -159,14 +239,49 @@ export default class PDFPage {
     this.node.wrapContentStreams(startRef, endRef);
   }
 
+  /**
+   * Reset the x and y coordinates of this page to `(0, 0)`. This operation is
+   * often useful after calling [[translateContent]]. For example:
+   * ```js
+   * // Shift the page's contents up and to the right by 50 units
+   * page.translateContent(50, 50)
+   *
+   * // This text will shifted - it will be drawn at (50, 50)
+   * page.drawText('I am shifted')
+   *
+   * // Move back to (0, 0)
+   * page.resetPosition()
+   *
+   * // This text will not be shifted - it will be drawn at (0, 0)
+   * page.drawText('I am not shifted')
+   * ```
+   */
   resetPosition(): void {
     this.getContentStream(false);
     this.x = 0;
     this.y = 0;
   }
 
-  // TODO: Reuse image Font name if we've already added this image to Resources.Fonts
+  /**
+   * Choose a default font for this page. The default font will be used whenever
+   * text is drawn on this page and no font is specified. For example:
+   * ```js
+   * import { StandardFonts } from 'pdf-lib'
+   *
+   * const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+   * const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+   * const courierFont = await pdfDoc.embedFont(StandardFonts.Courier)
+   *
+   * page.setFont(helveticaFont)
+   * page.drawText('I will be drawn in Helvetica')
+   *
+   * page.setFont(timesRomanFont)
+   * page.drawText('I will be drawn in Courier', { font: courierFont })
+   * ```
+   * @param font The default font to be used when drawing text on this page.
+   */
   setFont(font: PDFFont): void {
+    // TODO: Reuse image Font name if we've already added this image to Resources.Fonts
     assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.font = font;
     this.fontKey = addRandomSuffix(this.font.name);
