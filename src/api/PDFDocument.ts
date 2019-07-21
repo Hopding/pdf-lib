@@ -22,8 +22,8 @@ import {
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
-  StandardFonts,
 } from 'src/core';
+import { StandardFonts } from 'src/api/StandardFonts';
 import { Fontkit } from 'src/types/fontkit';
 import {
   assertIs,
