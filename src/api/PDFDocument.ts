@@ -8,6 +8,7 @@ import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
 import { PageSizes } from 'src/api/sizes';
+import { StandardFonts } from 'src/api/StandardFonts';
 import {
   CustomFontEmbedder,
   CustomFontSubsetEmbedder,
@@ -23,7 +24,6 @@ import {
   PngEmbedder,
   StandardFontEmbedder,
 } from 'src/core';
-import { StandardFonts } from 'src/api/StandardFonts';
 import { Fontkit } from 'src/types/fontkit';
 import {
   assertIs,
@@ -215,6 +215,9 @@ export default class PDFDocument {
 
   embedStandardFont(font: StandardFonts): PDFFont {
     assertIs(font, 'font', ['string']);
+    if (!isStandardFont(font)) {
+      throw new TypeError('`font` must be one of type `StandardFontsr`');
+    }
 
     const embedder = StandardFontEmbedder.for(font);
 
