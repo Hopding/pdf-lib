@@ -44,9 +44,29 @@ import {
  * Represents a single page of a [[PDFDocument]].
  */
 export default class PDFPage {
+  /**
+   * > **NOTE:** You probably don't want to call this method directly. Instead,
+   * > consider using the [[PDFDocument.addPage]] and [[PDFDocument.insertPage]]
+   * > methods, which can create instances of [[PDFPage]] for you.
+   *
+   * Create an instance of [[PDFPage]] from an existing leaf node.
+   *
+   * @param leafNode The leaf node to be wrapped.
+   * @param ref The unique reference for the page.
+   * @param doc The document to which the page will belong.
+   */
   static of = (leafNode: PDFPageLeaf, ref: PDFRef, doc: PDFDocument) =>
     new PDFPage(leafNode, ref, doc);
 
+  /**
+   * > **NOTE:** You probably don't want to call this method directly. Instead,
+   * > consider using the [[PDFDocument.addPage]] and [[PDFDocument.insertPage]]
+   * > methods, which can create instances of [[PDFPage]] for you.
+   *
+   * Create an instance of [[PDFPage]].
+   *
+   * @param doc The document to which the page will belong.
+   */
   static create = (doc: PDFDocument) => {
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
     const dummyRef = PDFRef.of(-1);
@@ -217,6 +237,7 @@ export default class PDFPage {
    *
    * // Now there are 50 units of whitespace to the left and bottom of the page
    * ```
+   * See also: [[resetPosition]]
    * @param x The new position on the x-axis for this page's content.
    * @param y The new position on the y-axis for this page's content.
    */
@@ -272,6 +293,8 @@ export default class PDFPage {
    * const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
    * const courierFont = await pdfDoc.embedFont(StandardFonts.Courier)
    *
+   * const page = pdfDoc.addPage()
+   *
    * page.setFont(helveticaFont)
    * page.drawText('I will be drawn in Helvetica')
    *
@@ -288,33 +311,115 @@ export default class PDFPage {
     this.node.setFontDictionary(PDFName.of(this.fontKey), this.font.ref);
   }
 
+  /**
+   * Choose a default font size for this page. The default font size will be
+   * used whenever text is drawn on this page and no font size is specified.
+   * For example:
+   * ```js
+   * page.setFontSize(12)
+   * page.drawText('I will be drawn in size 12')
+   *
+   * page.setFontSize(36)
+   * page.drawText('I will be drawn in size 24', { fontSize: 24 })
+   * ```
+   * @param fontSize The default font size to be used when drawing text on this
+   *                 page.
+   */
   setFontSize(fontSize: number): void {
     assertIs(fontSize, 'fontSize', ['number']);
     this.fontSize = fontSize;
   }
 
+  /**
+   * Choose a default font color for this page. The default font color will be
+   * used whenever text is drawn on this page and no font color is specified.
+   * For example:
+   * ```js
+   * import { rgb, cmyk, grayscale } from 'pdf-lib'
+   *
+   * page.setFontColor(rgb(0.97, 0.02, 0.97))
+   * page.drawText('I will be drawn in pink')
+   *
+   * page.setFontColor(cmyk(0.4, 0.7, 0.39, 0.15))
+   * page.drawText('I will be drawn in gray', { color: grayscale(0.5) })
+   * ```
+   * @param fontColor The default font color to be used when drawing text on
+   *                  this page.
+   */
   setFontColor(fontColor: Color): void {
     assertIs(fontColor, 'fontColor', [[Object, 'Color']]);
     this.fontColor = fontColor;
   }
 
+  /**
+   * Choose a default line height for this page. The default line height will be
+   * used whenever text is drawn on this page and no line height is specified.
+   * For example:
+   * ```js
+   * page.setLineHeight(12);
+   * page.drawText('These lines will be vertically \n separated by 12 units')
+   *
+   * page.setLineHeight(36);
+   * page.drawText('These lines will be vertically \n separated by 24 units', {
+   *   lineHeight: 24
+   * })
+   * ```
+   * @param lineHeight The default line height to be used when drawing text on
+   *                   this page.
+   */
   setLineHeight(lineHeight: number): void {
     assertIs(lineHeight, 'lineHeight', ['number']);
     this.lineHeight = lineHeight;
   }
 
+  /**
+   * Get the default position of this page. For example:
+   * ```js
+   * const { x, y } = page.getPosition()
+   * ```
+   * @returns The default position of the page.
+   */
   getPosition(): { x: number; y: number } {
     return { x: this.x, y: this.y };
   }
 
+  /**
+   * Get the default x coordinate of this page. For example:
+   * ```js
+   * const x = page.getX()
+   * ```
+   * @returns The default x coordinate of the page.
+   */
   getX(): number {
     return this.x;
   }
 
+  /**
+   * Get the default y coordinate of this page. For example:
+   * ```js
+   * const y = page.getY()
+   * ```
+   * @returns The default y coordinate of the page.
+   */
   getY(): number {
     return this.y;
   }
 
+  /**
+   * Change the default position of this page. For example:
+   * ```js
+   * page.moveTo(0, 0)
+   * page.drawText('I will be drawn at the origin')
+   *
+   * page.moveTo(0, 25)
+   * page.drawText('I will be drawn 25 units up')
+   *
+   * page.moveTo(25, 25)
+   * page.drawText('I will be drawn 25 units up and 25 units to the right')
+   * ```
+   * @param x The new default position on the x-axis for this page.
+   * @param y The new default position on the y-axis for this page.
+   */
   moveTo(x: number, y: number): void {
     assertIs(x, 'x', ['number']);
     assertIs(y, 'y', ['number']);
@@ -322,32 +427,148 @@ export default class PDFPage {
     this.y = y;
   }
 
+  /**
+   * Change the default position of this page to be further down the y-axis.
+   * For example:
+   * ```js
+   * page.moveTo(50, 50)
+   * page.drawText('I will be drawn at (50, 50)')
+   *
+   * page.moveDown(10)
+   * page.drawText('I will be drawn at (50, 40)')
+   * ```
+   * @param yDecrease The amount by which the page's default position along the
+   *                  y-axis should be decreased.
+   */
   moveDown(yDecrease: number): void {
     assertIs(yDecrease, 'yDecrease', ['number']);
     this.y -= yDecrease;
   }
 
+  /**
+   * Change the default position of this page to be further up the y-axis.
+   * For example:
+   * ```js
+   * page.moveTo(50, 50)
+   * page.drawText('I will be drawn at (50, 50)')
+   *
+   * page.moveUp(10)
+   * page.drawText('I will be drawn at (50, 60)')
+   * ```
+   * @param yIncrease The amount by which the page's default position along the
+   *                  y-axis should be increased.
+   */
   moveUp(yIncrease: number): void {
     assertIs(yIncrease, 'yIncrease', ['number']);
     this.y += yIncrease;
   }
 
+  /**
+   * Change the default position of this page to be further left on the x-axis.
+   * For example:
+   * ```js
+   * page.moveTo(50, 50)
+   * page.drawText('I will be drawn at (50, 50)')
+   *
+   * page.moveLeft(10)
+   * page.drawText('I will be drawn at (40, 50)')
+   * ```
+   * @param xDecrease The amount by which the page's default position along the
+   *                  x-axis should be decreased.
+   */
   moveLeft(xDecrease: number): void {
     assertIs(xDecrease, 'xDecrease', ['number']);
     this.x -= xDecrease;
   }
 
+  /**
+   * Change the default position of this page to be further right on the y-axis.
+   * ```js
+   * page.moveTo(50, 50)
+   * page.drawText('I will be drawn at (50, 50)')
+   *
+   * page.moveRight(10)
+   * page.drawText('I will be drawn at (60, 50)')
+   * ```
+   * @param xIncrease The amount by which the page's default position along the
+   *                  x-axis should be increased.
+   */
   moveRight(xIncrease: number): void {
     assertIs(xIncrease, 'xIncrease', ['number']);
     this.x += xIncrease;
   }
 
+  /**
+   * Push one or more operators to the end of this page's current content
+   * stream. For example:
+   * ```js
+   * import {
+   *   pushGraphicsState,
+   *   moveTo,
+   *   lineTo,
+   *   closePath,
+   *   setFillingColor,
+   *   rgb,
+   *   fill,
+   *   popGraphicsState,
+   * } from 'pdf-lib'
+   *
+   * // Draw a green triangle in the lower-left corner of the page
+   * page.pushOperators(
+   *   pushGraphicsState(),
+   *   moveTo(0, 0),
+   *   lineTo(100, 0),
+   *   lineTo(50, 100),
+   *   closePath(),
+   *   setFillingColor(rgb(0.0, 1.0, 0.0)),
+   *   fill(),
+   *   popGraphicsState(),
+   * )
+   * ```
+   * @param operator The operators to be pushed.
+   */
   pushOperators(...operator: PDFOperator[]): void {
     assertEachIs(operator, 'operator', [[PDFOperator, 'PDFOperator']]);
     const contentStream = this.getContentStream();
     contentStream.push(...operator);
   }
 
+  /**
+   * Draw one or more lines of text on this page. For example:
+   * ```js
+   * import { StandardFonts, rgb } from 'pdf-lib'
+   *
+   * const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+   * const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+   *
+   * const page = pdfDoc.addPage()
+   *
+   * page.setFont(helveticaFont)
+   *
+   * page.moveTo(5, 200)
+   * page.drawText('The Life of an Egg', { size: 36 })
+   *
+   * page.moveDown(36)
+   * page.drawText('An Epic Tale of Woe', { size: 30 })
+   *
+   * page.drawText(
+   *   `Humpty Dumpty sat on a wall \n` +
+   *   `Humpty Dumpty had a great fall; \n` +
+   *   `All the king's horses and all the king's men \n` +
+   *   `Couldn't put Humpty together again. \n`,
+   *   {
+   *     x: 25,
+   *     y: 100,
+   *     font: timesRomanFont,
+   *     size: 24,
+   *     color: rgb(1, 0, 0),
+   *     lineHeight: 24,
+   *   },
+   * )
+   * ```
+   * @param text The text to be drawn.
+   * @param options The options to be used when drawing the text.
+   */
   drawText(text: string, options: PDFPageDrawTextOptions = {}): void {
     assertIs(text, 'text', ['string']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
@@ -388,8 +609,32 @@ export default class PDFPage {
     if (options.font) this.setFont(originalFont);
   }
 
-  // TODO: Reuse image XObject name if we've already added this image to Resources.XObjects
+  /**
+   * Draw an image on this page. For example:
+   * ```js
+   * import { degrees } from 'pdf-lib'
+   *
+   * const jpgUrl = 'https://pdf-lib.js.org/assets/cat_riding_unicorn.jpg'
+   * const jpgImageBytes = await fetch(jpgUrl).then((res) => res.arrayBuffer())
+   *
+   * const jpgImage = await pdfDoc.embedJpg(jpgImageBytes)
+   * const jpgDims = jpgImage.scale(0.5)
+   *
+   * const page = pdfDoc.addPage()
+   *
+   * page.drawImage(jpgImage, {
+   *   x: 25,
+   *   y: 25,
+   *   width: jpgDims.width,
+   *   height: jpgDims.height,
+   *   rotate: degrees(30)
+   * })
+   * ```
+   * @param image The image to be drawn.
+   * @param options The options to be used when drawing the image.
+   */
   drawImage(image: PDFImage, options: PDFPageDrawImageOptions = {}): void {
+    // TODO: Reuse image XObject name if we've already added this image to Resources.XObjects
     assertIs(image, 'image', [[PDFImage, 'PDFImage']]);
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
@@ -416,6 +661,24 @@ export default class PDFPage {
     );
   }
 
+  /**
+   * Draw a rectangle on this page. For example:
+   * ```js
+   * import { degrees, grayscale, rgb } from 'pdf-lib'
+   *
+   * page.drawRectangle({
+   *   x: 25,
+   *   y: 75,
+   *   width: 250,
+   *   height: 75,
+   *   rotate: degrees(-15),
+   *   borderWidth: 5,
+   *   borderColor: grayscale(0.5),
+   *   color: rgb(0.75, 0.2, 0.2)
+   * })
+   * ```
+   * @param options The options to be used when drawing the rectangle.
+   */
   drawRectangle(options: PDFPageDrawRectangleOptions = {}): void {
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
@@ -450,12 +713,46 @@ export default class PDFPage {
     );
   }
 
+  /**
+   * Draw a square on this page. For example:
+   * ```js
+   * import { degrees, grayscale, rgb } from 'pdf-lib'
+   *
+   * page.drawSquare({
+   *   x: 25,
+   *   y: 75,
+   *   size: 100,
+   *   rotate: degrees(-15),
+   *   borderWidth: 5,
+   *   borderColor: grayscale(0.5),
+   *   color: rgb(0.75, 0.2, 0.2)
+   * })
+   * ```
+   * @param options The options to be used when drawing the square.
+   */
   drawSquare(options: PDFPageDrawSquareOptions = {}): void {
     const { size } = options;
     assertOrUndefined(size, 'size', ['number']);
     this.drawRectangle({ ...options, width: size, height: size });
   }
 
+  /**
+   * Draw an ellipse on this page. For example:
+   * ```js
+   * import { grayscale, rgb } from 'pdf-lib'
+   *
+   * page.drawEllipse({
+   *   x: 200,
+   *   y: 75,
+   *   xScale: 100,
+   *   yScale: 50,
+   *   borderWidth: 5,
+   *   borderColor: grayscale(0.5),
+   *   color: rgb(0.75, 0.2, 0.2)
+   * })
+   * ```
+   * @param options The options to be used when drawing the ellipse.
+   */
   drawEllipse(options: PDFPageDrawEllipseOptions = {}): void {
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
@@ -484,6 +781,22 @@ export default class PDFPage {
     );
   }
 
+  /**
+   * Draw a circle on this page. For example:
+   * ```js
+   * import { grayscale, rgb } from 'pdf-lib'
+   *
+   * page.drawCircle({
+   *   x: 200,
+   *   y: 150,
+   *   size: 100,
+   *   borderWidth: 5,
+   *   borderColor: grayscale(0.5),
+   *   color: rgb(0.75, 0.2, 0.2)
+   * })
+   * ```
+   * @param options The options to be used when drawing the ellipse.
+   */
   drawCircle(options: PDFPageDrawCircleOptions = {}): void {
     const { size } = options;
     assertOrUndefined(size, 'size', ['number']);
