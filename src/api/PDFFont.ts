@@ -9,7 +9,7 @@ import { assertIs } from 'src/utils';
 
 export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
 
-class PDFFont {
+export default class PDFFont {
   static of = (ref: PDFRef, doc: PDFDocument, embedder: FontEmbedder) =>
     new PDFFont(ref, doc, embedder);
 
@@ -76,5 +76,3 @@ class PDFFont {
     }
   }
 }
-
-export default PDFFont;

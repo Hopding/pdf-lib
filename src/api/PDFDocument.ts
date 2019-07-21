@@ -22,8 +22,8 @@ import {
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
-  StandardFonts,
 } from 'src/core';
+import { StandardFonts } from 'src/api/StandardFonts';
 import { Fontkit } from 'src/types/fontkit';
 import {
   assertIs,
@@ -53,7 +53,7 @@ export interface Base64SaveOptions extends SaveOptions {
   dataUri?: boolean;
 }
 
-class PDFDocument {
+export default class PDFDocument {
   static async load(
     pdf: string | Uint8Array | ArrayBuffer,
     options: {
@@ -305,5 +305,3 @@ class PDFDocument {
     return pages;
   };
 }
-
-export default PDFDocument;
