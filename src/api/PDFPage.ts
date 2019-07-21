@@ -22,6 +22,7 @@ import {
   PDFPageDrawTextOptions,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
+import { StandardFonts } from 'src/api/StandardFonts';
 import {
   PDFContentStream,
   PDFHexString,
@@ -30,7 +31,6 @@ import {
   PDFOperator,
   PDFPageLeaf,
   PDFRef,
-  StandardFonts,
 } from 'src/core';
 import {
   addRandomSuffix,
