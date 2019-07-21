@@ -6,6 +6,7 @@ export * from 'src/api/operators';
 export * from 'src/api/rotations';
 export * from 'src/api/sizes';
 export * from 'src/api/PDFPageOptions';
+export * from 'src/api/StandardFonts';
 export { default as PDFDocument, ParseSpeeds } from 'src/api/PDFDocument';
 export { default as PDFFont } from 'src/api/PDFFont';
 export { default as PDFImage } from 'src/api/PDFImage';
