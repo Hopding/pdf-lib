@@ -79,8 +79,8 @@ export default class PDFDocument {
    * For example:
    * ```js
    * import { PDFDocument } from 'pdf-lib'
-   * import fs from 'fs'
    *
+   * // pdf=string
    * const base64 =
    *  'JVBERi0xLjcKJYGBgYEKCjUgMCBvYmoKPDwKL0ZpbHRlciAvRmxhdGVEZWNvZGUKL0xlbm' +
    *  'd0aCAxMDQKPj4Kc3RyZWFtCniccwrhMlAAwaJ0Ln2P1Jyy1JLM5ERdc0MjCwUjE4WQNC4Q' +
@@ -99,15 +99,19 @@ export default class PDFDocument {
    *
    * const dataUri = 'data:application/pdf;base64,' + base64
    *
-   * const url = 'https://pdf-lib.js.org/assets/with_update_sections.pdf'
-   * const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
-   *
-   * const uint8Array = fs.readFileSync('with_update_sections.pdf')
-   *
    * const pdfDoc1 = await PDFDocument.load(base64)
    * const pdfDoc2 = await PDFDocument.load(dataUri)
-   * const pdfDoc3 = await PDFDocument.load(arrayBuffer)
-   * const pdfDoc4 = await PDFDocument.load(uint8Array)
+   *
+   * // pdf=Uint8Array
+   * import fs from 'fs'
+   * const uint8Array = fs.readFileSync('with_update_sections.pdf')
+   * const pdfDoc3 = await PDFDocument.load(uint8Array)
+   *
+   * // pdf=ArrayBuffer
+   * const url = 'https://pdf-lib.js.org/assets/with_update_sections.pdf'
+   * const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+   * const pdfDoc4 = await PDFDocument.load(arrayBuffer)
+   *
    * ```
    *
    * @param pdf The input data containing a PDF document.
@@ -183,6 +187,9 @@ export default class PDFDocument {
    * Register a fontkit instance. This must be done before custom fonts can
    * be embedded. See [here](https://github.com/Hopding/pdf-lib/tree/Rewrite#fontkit-installation)
    * for instructions on how to install and register a fontkit instance.
+   *
+   * > You do **not** need to call this method to embed standard fonts.
+   *
    * @param fontkit The fontkit instance to be registered.
    */
   registerFontkit(fontkit: Fontkit): void {
@@ -410,7 +417,7 @@ export default class PDFDocument {
    * const ubuntuBytes = await fetch(url).then(res => res.arrayBuffer())
    * const font5 = await pdfDoc.embedFont(ubuntuBytes)
    * ```
-   *
+   * See also: [[registerFontkit]]
    * @param font The input data for a font.
    * @param options The options to be used when embedding the font.
    * @returns Resolves with the embedded font.
@@ -446,6 +453,16 @@ export default class PDFDocument {
     return pdfFont;
   }
 
+  /**
+   * Embed a standard font into this document.
+   * For example:
+   * ```js
+   * import { StandardFonts } from 'pdf-lib'
+   * const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica)
+   * ```
+   * @param font The standard font to be embedded.
+   * @returns The embedded font.
+   */
   embedStandardFont(font: StandardFonts): PDFFont {
     assertIs(font, 'font', ['string']);
     if (!isStandardFont(font)) {
@@ -461,6 +478,36 @@ export default class PDFDocument {
     return pdfFont;
   }
 
+  /**
+   * Embed a JPEG image into this document. The input data can be provided in
+   * multiple formats:
+   *
+   * | Type          | Contents                                                      |
+   * | ------------- | ------------------------------------------------------------- |
+   * | `string`      | A base64 encoded string (or data URI) containing a JPEG image |
+   * | `Uint8Array`  | The raw bytes of a JPEG image                                 |
+   * | `ArrayBuffer` | The raw bytes of a JPEG image                                 |
+   *
+   * For example:
+   * ```js
+   * // jpg=string
+   * const image1 = await pdfDoc.embedJpg('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBD...')
+   * const image2 = await pdfDoc.embedJpg('data:image/jpeg;base64,/9j/4AAQ...')
+   *
+   * // jpg=Uint8Array
+   * import fs from 'fs'
+   * const uint8Array = fs.readFileSync('cat_riding_unicorn.jpg')
+   * const image3 = await pdfDoc.embedJpg(uint8Array)
+   *
+   * // jpg=ArrayBuffer
+   * const url = 'https://pdf-lib.js.org/assets/cat_riding_unicorn.jpg'
+   * const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+   * const image4 = await pdfDoc.embedJpg(arrayBuffer)
+   * ```
+   *
+   * @param jpg The input data for a JPEG image.
+   * @returns Resolves with the embedded image.
+   */
   async embedJpg(jpg: string | Uint8Array | ArrayBuffer): Promise<PDFImage> {
     assertIs(jpg, 'jpg', ['string', Uint8Array, ArrayBuffer]);
     const bytes = toUint8Array(jpg);
@@ -471,6 +518,36 @@ export default class PDFDocument {
     return pdfImage;
   }
 
+  /**
+   * Embed a PNG image into this document. The input data can be provided in
+   * multiple formats:
+   *
+   * | Type          | Contents                                                     |
+   * | ------------- | ------------------------------------------------------------ |
+   * | `string`      | A base64 encoded string (or data URI) containing a PNG image |
+   * | `Uint8Array`  | The raw bytes of a PNG image                                 |
+   * | `ArrayBuffer` | The raw bytes of a PNG image                                 |
+   *
+   * For example:
+   * ```js
+   * // png=string
+   * const image1 = await pdfDoc.embedPng('iVBORw0KGgoAAAANSUhEUgAAAlgAAAF3...')
+   * const image2 = await pdfDoc.embedPng('data:image/png;base64,iVBORw0KGg...')
+   *
+   * // png=Uint8Array
+   * import fs from 'fs'
+   * const uint8Array = fs.readFileSync('small_mario.png')
+   * const image3 = await pdfDoc.embedPng(uint8Array)
+   *
+   * // png=ArrayBuffer
+   * const url = 'https://pdf-lib.js.org/assets/small_mario.png'
+   * const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+   * const image4 = await pdfDoc.embedPng(arrayBuffer)
+   * ```
+   *
+   * @param png The input data for a PNG image.
+   * @returns Resolves with the embedded image.
+   */
   async embedPng(png: string | Uint8Array | ArrayBuffer): Promise<PDFImage> {
     assertIs(png, 'png', ['string', Uint8Array, ArrayBuffer]);
     const bytes = toUint8Array(png);
@@ -481,6 +558,15 @@ export default class PDFDocument {
     return pdfImage;
   }
 
+  /**
+   * > **NOTE:** You shouldn't need to call this method directly. The [[save]]
+   * > and [[saveAsBase64]] methods will automatically ensure that all embedded
+   * > assets are flushed before serializing the document.
+   *
+   * Flush all embedded fonts and images to this document's [[context]].
+   *
+   * @returns Resolves when the flush is complete.
+   */
   async flush(): Promise<void> {
     // Embed fonts
     for (let idx = 0, len = this.fonts.length; idx < len; idx++) {
@@ -495,6 +581,22 @@ export default class PDFDocument {
     }
   }
 
+  /**
+   * Serialize this document to an array of bytes making up a PDF file.
+   * For example:
+   * ```js
+   * const pdfBytes = await pdfDoc.save()
+   * ```
+   *
+   * There are a number of things you can do with the serialized document,
+   * depending on the JavaScript environment you're running in:
+   * * Write it to a file in Node or React Native
+   * * Download it as a Blob in the browser
+   * * Render it in an `iframe`
+   *
+   * @param options The options to be used when saving the document.
+   * @returns Resolves with the bytes of the serialized document.
+   */
   async save(options: SaveOptions = {}): Promise<Uint8Array> {
     const {
       useObjectStreams = true,
@@ -513,6 +615,21 @@ export default class PDFDocument {
     return Writer.forContext(this.context, objectsPerTick).serializeToBuffer();
   }
 
+  /**
+   * Serialize this document to a base64 encoded string or data URI making up a
+   * PDF file. For example:
+   * ```js
+   * const base64String = await pdfDoc.saveAsBase64()
+   * base64String // => 'JVBERi0xLjcKJYGBgYEKC...'
+   *
+   * const base64DataUri = await pdfDoc.saveAsBase64({ dataUri: true })
+   * base64DataUri // => 'data:application/pdf;base64,JVBERi0xLjcKJYGBgYEKC...'
+   * ```
+   *
+   * @param options The options to be used when saving the document.
+   * @returns Resolves with a base64 encoded string or data URI of the
+   *          serialized document.
+   */
   async saveAsBase64(options: Base64SaveOptions = {}): Promise<string> {
     const { dataUri = false, ...otherOptions } = options;
     assertIs(dataUri, 'dataUri', ['boolean']);
