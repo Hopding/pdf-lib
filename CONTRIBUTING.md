@@ -15,7 +15,7 @@
 - [Compiling the Project](#compiling-the-project)
 - [Running the Linter](#running-the-linter)
 - [Running the Type Checker](#running-the-type-checker)
-- [Other Debugging Tips](#debugging-tips)
+- [Debugging Tips](#debugging-tips)
 
 ## Local Setup And Prerequisites
 
@@ -137,7 +137,7 @@ You can use the VSCode debugger to run your scratchpad file. This can be a very 
 
 ## Generating a Flamegraph
 
-Flamegraphs are incredibly useful visual tools for troubleshooting performance issues. You can generate a flamegraph using the [scratchpad file](#using-the-scratchpad) as an entrypoint by running `yarn scratchpad:flame` (note that you must have the TypeScript compiler running, as explained above).
+Flamegraphs are incredibly useful visual tools for troubleshooting performance issues. You can generate a flamegraph using the [scratchpad file](#using-the-scratchpad) as an entrypoint by running `yarn scratchpad:flame` (note that you must have the TypeScript compiler running, as explained above). This will run the scratchpad file, generate a flamegraph of its execution, and automatically open it in your browser.
 
 ## Compiling the Project
 
