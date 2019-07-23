@@ -1,6 +1,8 @@
+<a href="https://pdf-lib.js.org">
 <h1 align="center">
 <img alt="pdf-lib" height="300" src="https://raw.githubusercontent.com/Hopding/pdf-lib-docs/master/assets/logo-full.svg?sanitize=true">
 </h1>
+</a>
 
 <div align="center">
   <strong>Create and modify PDF documents in any JavaScript environment.</strong>
@@ -47,9 +49,13 @@
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
+- [Documentation](#documentation)
 - [Encryption Handling](#encryption-handling)
+- [Contributing](#contributing)
 - [Prior Art](#prior-art)
 - [License](#license)
+
+> **Learn more at [pdf-lib.js.org](https://pdf-lib.js.org)**
 
 ## Features
 
@@ -414,6 +420,13 @@ var pdfDoc = await PDFLib.PDFDocument.create();
 pdfDoc.registerFontkit(fontkit);
 ```
 
+## Documentation
+
+API documentation is available on the project site at https://pdf-lib.js.org/docs/api/.
+
+The repo for the project site (and generated documentation files) is
+located here: https://github.com/Hopding/pdf-lib-docs.
+
 ## Encryption Handling
 
 `pdf-lib` does not currently support modification of encrypted documents. In general, it is not advised to use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
@@ -442,6 +455,10 @@ const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
 ```
 
 Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
+
+## Contributing
+
+We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine. (We try to make this as simple and fast as possible! :rocket:)
 
 ## Prior Art
 
