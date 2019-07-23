@@ -37,6 +37,10 @@
   </a>
 </div>
 
+<br />
+
+> **Learn more at [pdf-lib.js.org](https://pdf-lib.js.org)**
+
 ## Table of Contents
 
 - [Features](#features)
@@ -54,8 +58,6 @@
 - [Contributing](#contributing)
 - [Prior Art](#prior-art)
 - [License](#license)
-
-> **Learn more at [pdf-lib.js.org](https://pdf-lib.js.org)**
 
 ## Features
 
