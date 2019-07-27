@@ -35,7 +35,7 @@ pages[<span class="hljs-number">0</span>].drawText(<span class="hljs-string">'Yo
 </span></div></div></div></div></div></div><div class="container quickStartAndExamples homeCodeSnippet lightBackground"><div class="wrapper"><div><h2>Quick Start</h2><div><span><pre><code class="hljs css language-html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/pdf-lib@beta"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/pdf-lib"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
 
   <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
@@ -81,7 +81,7 @@ yarn add pdf-lib
   <span class="hljs-keyword">const</span> pdfBytes = <span class="hljs-keyword">await</span> pdfDoc.save()
 }
 </code></pre>
-</span></div><iframe id="2873665" class="card"></iframe><script>document.getElementById('2873665').src = '/viewer?url=/assets/create_document.pdf'</script><h2>Modify Document</h2><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { degrees, PDFDocument, rgb, StandardFonts } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>;
+</span></div><iframe id="2513818" class="card"></iframe><script>document.getElementById('2513818').src = '/viewer?url=/assets/create_document.pdf'</script><h2>Modify Document</h2><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { degrees, PDFDocument, rgb, StandardFonts } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>;
 
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">modifyPdf</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> url = <span class="hljs-string">'https://pdf-lib.js.org/assets/with_update_sections.pdf'</span>
@@ -105,7 +105,7 @@ yarn add pdf-lib
   <span class="hljs-keyword">const</span> pdfBytes = <span class="hljs-keyword">await</span> pdfDoc.save()
 }
 </code></pre>
-</span></div><iframe id="9150786" class="card"></iframe><script>document.getElementById('9150786').src = '/viewer?url=/assets/modify_document.pdf'</script><h2>Copy Pages</h2><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
+</span></div><iframe id="8909612" class="card"></iframe><script>document.getElementById('8909612').src = '/viewer?url=/assets/modify_document.pdf'</script><h2>Copy Pages</h2><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
 
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">copyPages</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> url1 = <span class="hljs-string">'https://pdf-lib.js.org/assets/with_update_sections.pdf'</span>
@@ -128,7 +128,7 @@ yarn add pdf-lib
   <span class="hljs-keyword">const</span> pdfBytes = <span class="hljs-keyword">await</span> pdfDoc.save()
 }
 </code></pre>
-</span></div><iframe id="2484326" class="card"></iframe><script>document.getElementById('2484326').src = '/viewer?url=/assets/copy_pages.pdf'</script><h2>Embed PNG and JPEG Images</h2><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
+</span></div><iframe id="3014490" class="card"></iframe><script>document.getElementById('3014490').src = '/viewer?url=/assets/copy_pages.pdf'</script><h2>Embed PNG and JPEG Images</h2><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
 
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">embedImages</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> jpgUrl = <span class="hljs-string">'https://pdf-lib.js.org/assets/cat_riding_unicorn.jpg'</span>
@@ -163,7 +163,7 @@ yarn add pdf-lib
   <span class="hljs-keyword">const</span> pdfBytes = <span class="hljs-keyword">await</span> pdfDoc.save()
 }
 </code></pre>
-</span></div><iframe id="8327760" class="card"></iframe><script>document.getElementById('8327760').src = '/viewer?url=/assets/embed_png_and_jpeg_images.pdf'</script><h2>Embed Font and Measure Text</h2><p><a href="https://github.com/Hopding/pdf-lib/tree/Rewrite#fontkit-installation">The<code>@pdf-lib/fontkit</code> module must be installed to embed custom fonts.</a></p><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument, rgb } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
+</span></div><iframe id="5752818" class="card"></iframe><script>document.getElementById('5752818').src = '/viewer?url=/assets/embed_png_and_jpeg_images.pdf'</script><h2>Embed Font and Measure Text</h2><p><a href="https://github.com/Hopding/pdf-lib/tree/Rewrite#fontkit-installation">The<code>@pdf-lib/fontkit</code> module must be installed to embed custom fonts.</a></p><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument, rgb } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
 <span class="hljs-keyword">import</span> fontkit <span class="hljs-keyword">from</span> <span class="hljs-string">'@pdf-lib/fontkit'</span>
 
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">embedFontAndMeasureText</span>(<span class="hljs-params"></span>) </span>{
@@ -201,7 +201,7 @@ yarn add pdf-lib
   <span class="hljs-keyword">const</span> pdfBytes = <span class="hljs-keyword">await</span> pdfDoc.save()
 }
 </code></pre>
-</span></div><iframe id="3553028" class="card"></iframe><script>document.getElementById('3553028').src = '/viewer?url=/assets/embed_font_and_measure_text.pdf'</script></div></div></div></div></div></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div><iframe id="7613485" class="card"></iframe><script>document.getElementById('7613485').src = '/viewer?url=/assets/embed_font_and_measure_text.pdf'</script></div></div></div></div></div></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
