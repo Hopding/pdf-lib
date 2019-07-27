@@ -55,7 +55,7 @@
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Encryption Handling](#encryption-handling)
-- [Migrating to v1.0.0](#migrating-to-v1.0.0)
+- [Migrating to v1.0.0](#migrating-to-v1)
 - [Contributing](#contributing)
 - [Prior Art](#prior-art)
 - [License](#license)
@@ -459,7 +459,7 @@ const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
 
 Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
 
-## Migrating to v1.0.0
+<h2 id="migrating-to-v1">Migrating to v1.0.0</h2>
 
 The latest release of `pdf-lib` (`v1.0.0`) includes several breaking API changes. If you have code written for older versions of `pdf-lib` (`v0.x.x`), you can use the following instructions to help migrate your code to v1.0.0.
 
