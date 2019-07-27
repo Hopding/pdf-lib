@@ -422,6 +422,109 @@ var pdfDoc = await PDFLib.PDFDocument.create();
 pdfDoc.registerFontkit(fontkit);
 ```
 
+## Migrating from v0.x.x to v1.0.0
+
+To migrate your code make the following changes. Note that many to the API methods are now asynchronous and return promises, so you'll need to *await* on them (or use promise chaining: .then(res => ...)).
+
+Rename *PDFDocumentFactory* to **PDFDocument**. *PDFDocument.create* and *PDFDocument.load* are now asynchronous (they return promises), so you'll need to *await* on them.
+
+To create a new PDF document:
+
+    const pdfDoc = await PDFDocument.create()
+
+To retrieve and load a PDF where *pdfUrl* points to the PDF to be loaded:
+
+    let pdfBuffer = await fetch(pdfUrl).then(r => r.arrayBuffer()).then(buffer => new Uint8Array(buffer))
+    const pdfDoc = await PDFDocument.load(pdfBuffer)
+
+Note: The purpose of making these methods asynchronous is to avoid blocking the event loop (especially for browser-based usage). If you aren't running this code client-side and are not concerned about blocking the event loop, you can speed up parsing times with: 
+
+    PDFDocument.load(..., { parseSpeed: ParseSpeeds.Fastest })
+
+You can do a similar thing for save: 
+
+    PDFDocument.save({ objectsPerTick: Infinity }) 
+
+(I have yet to make a SaveSpeeds enum).
+
+Change *getMaybe* function calls to **get** calls. If a property doesn't exist *undefined* will be returned. Note, however, that PDF name strings with need to be wrapped in **PDFName.of**. For example, to look up the AcroForm you'll need to change *pdfDoc.catalog.getMaybe('AcroForm')* to *pdfDoc.catalog.get(PDFName.of('AcroForm'))*
+
+    let acroForm = await pdfDoc.context.lookup(pdfDoc.catalog.get(PDFName.of('AcroForm')))
+
+v0.x.x converted the strings passed to *get* and *getMaybe* to *PDFName* objects, but in v1.0.0 you must always pass actual *PDFName* objects.
+
+To find the AcroForm field references now becomes:
+
+    const acroFieldRefs = await pdfDoc.context.lookup(acroForm.get(PDFName.of('Fields')));
+
+To add a new page replace *pdfDoc.createPage([width, height])* with **pdfDoc.addPage([width, height])**
+
+    let page = pdfDoc.addPage([500, 750])
+
+or simply:
+
+    let page = pdfDoc.addPage()
+
+To get the size of the page:
+
+    page.getWidth()
+    page.getHeight()
+
+To add images replace *pdfDoc.embedPNG* with **pdfDoc.embedPng** and *pdfDoc.embedJPG* to **pdfDoc.embedJpg**
+
+The pdfDoc.embedPng and pdfDoc.embedJpg methods now return PDFImage objects which have the width and height of the image as properties. You can also scale down the width and height by a constant factor using the image.scale method:
+
+    const aBigImage = await pdfDoc.embedPng(aBigImageBytes)
+    const { width, height } = aBigImage.scale(0.25)
+
+So, const [image, dims] = await pdfDoc.embedJpg(mediaBuffer) becomes: 
+
+    const image = await pdfDoc.embedJpg(mediaBuffer)
+    // image.width, image.height can be used instead of the dims object.
+
+To save the PDF replace *PDFDocumentWriter.saveToBytes(pdfDoc)* with **pdfDoc.save()**
+
+    let pdfDocBytes = await pdfDoc.save()
+
+To display the saved PDF now becomes:
+    
+    const pdfUrl = URL.createObjectURL(new Blob([await pdfDoc.save()], {type: 'application/pdf'}))
+    window.open(pdfUrl, '_blank')
+
+(note: URL.revokeObjectURL should be called later to free up memory)
+
+To get the PDF page count:
+
+    pdfDoc.getPages().length
+
+To copy pages from one document to another you must now call **destPdf.copyPages(srcPdf, srcPageIndexesArray)** to copy pages. You can see an example of this in the <a href="https://github.com/Hopding/pdf-lib/tree/Rewrite#copy-pages" target="_blank">Copy Pages</a> usage example. Admittedly, this API is slightly less ergonomic than what exists in v0.x.x, but it has two key benefits:
+
+1\. It avoids making PDFDocument.addPage and PDFDocument.insertPage async.
+When copying multiple pages from the source document, the resulting merged document should have a smaller file size. This is because the page copying API that exists in v0.x.x was intended for copying just one or two pages. 
+
+2\. When copying large numbers of pages, it could result in redundant objects being created. This new page copying API should eliminate that.
+
+    async function mergePdfs(pdfsToMerge: string[]) {
+      const mergedPdf = await PDFDocument.create();
+      for (const pdfCopyDoc of pdfsToMerge) {
+        const pdfBytes = fs.readFileSync(pdfCopyDoc);
+        const pdf = await PDFDocument.load(pdfBytes);
+        const pageIndices = Array.from(pdf.getPages().keys());
+        const copiedPages = await mergedPdf.copyPages(pdf, pageIndices);
+        copiedPages.forEach((page) => {
+          mergedPdf.addPage(page);
+        });
+      }
+      const mergedPdfFile = await mergedPdf.save();
+      return mergedPdfFile;
+    }
+
+Note: I might add a method to PDFDocument that returns Array.from(this.getPages().keys()), just because it's a bit of an awkward snippet. It would be much easier for users to call pdfDoc.getPageIndices() or pdfDoc.getPageRange().
+
+If required, to retrieve the CropBox or MediaBox: 
+
+    const cropBox = page.node.CropBox() || page.node.MediaBox();
+
 ## Documentation
 
 API documentation is available on the project site at https://pdf-lib.js.org/docs/api/.
