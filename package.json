@@ -79,6 +79,7 @@
   },
   "license": "MIT",
   "private": false,
+  "homepage": "https://pdf-lib.js.org",
   "repository": "git+https://github.com/Hopding/pdf-lib.git",
   "bugs": {
     "url": "https://github.com/Hopding/pdf-lib/issues"
