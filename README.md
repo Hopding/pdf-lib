@@ -604,7 +604,3 @@ We welcome contributions from the open source community! If you are interested i
 ## License
 
 [MIT](LICENSE.md)
-
-```
-
-```
