@@ -9,9 +9,11 @@
     "Mickael Lecoq (https://github.com/mlecoq)"
   ],
   "scripts": {
-    "release:latest": "yarn publish --tag latest",
+    "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
     "release:next": "yarn publish --tag next",
-    "release:prep": "yarn clean && yarn lint && yarn typecheck && yarn test && yarn build && yarn pack",
+    "release:prep": "yarn clean && yarn lint && yarn typecheck && yarn test && yarn build",
+    "release:tag": "TAG=\"v$(yarn --silent get:version)\" && git tag $TAG && git push origin $TAG",
+    "get:version": "node --eval 'console.log(require(`./package.json`).version)'",
     "clean": "rimraf build cjs dist es scratchpad/build coverage tsBuildInfo.json isolate*.log flamegraph.html out.pdf",
     "typecheck": "tsc --noEmit",
     "test": "jest --config jest.json --runInBand",
