@@ -9,7 +9,9 @@
     "Mickael Lecoq (https://github.com/mlecoq)"
   ],
   "scripts": {
-    "prepublish": "yarn clean && yarn build",
+    "release:latest": "yarn publish --tag latest",
+    "release:next": "yarn publish --tag next",
+    "release:prep": "yarn clean && yarn lint && yarn typecheck && yarn test && yarn build && yarn pack",
     "clean": "rimraf build cjs dist es scratchpad/build coverage tsBuildInfo.json isolate*.log flamegraph.html out.pdf",
     "typecheck": "tsc --noEmit",
     "test": "jest --config jest.json --runInBand",
