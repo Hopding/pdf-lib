@@ -12,3 +12,4 @@ flamegraph.html
 isolate*.log
 .DS_Store
 out.pdf
+*.tgz
