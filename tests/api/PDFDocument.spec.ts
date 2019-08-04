@@ -88,4 +88,40 @@ describe(`PDFDocument`, () => {
       expect(pdfDoc.isEncrypted).toBe(true);
     });
   });
+
+  describe(`getPageCount() method`, () => {
+    let pdfDoc: PDFDocument;
+    beforeAll(async () => {
+      const bytes = fs.readFileSync('assets/pdfs/normal.pdf');
+      const parseSpeed = ParseSpeeds.Fastest;
+      pdfDoc = await PDFDocument.load(bytes, { parseSpeed });
+    });
+
+    it(`returns the initial page count of the document`, () => {
+      expect(pdfDoc.getPageCount()).toBe(2);
+    });
+
+    it(`returns the updated page count after adding pages`, () => {
+      pdfDoc.addPage();
+      pdfDoc.addPage();
+      expect(pdfDoc.getPageCount()).toBe(4);
+    });
+
+    it(`returns the updated page count after inserting pages`, () => {
+      pdfDoc.insertPage(0);
+      pdfDoc.insertPage(4);
+      expect(pdfDoc.getPageCount()).toBe(6);
+    });
+
+    it(`returns the updated page count after removing pages`, () => {
+      pdfDoc.removePage(5);
+      pdfDoc.removePage(0);
+      expect(pdfDoc.getPageCount()).toBe(4);
+    });
+
+    it(`returns 0 for brand new documents`, async () => {
+      const newDoc = await PDFDocument.create();
+      expect(newDoc.getPageCount()).toBe(0);
+    });
+  });
 });
