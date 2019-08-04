@@ -159,7 +159,7 @@ export default class PDFDocument {
   readonly isEncrypted: boolean;
 
   private fontkit?: Fontkit;
-  private pageCount: number;
+  private pageCount: number | undefined;
   private readonly pageCache: Cache<PDFPage[]>;
   private readonly pageMap: Map<PDFPageLeaf, PDFPage>;
   private readonly fonts: PDFFont[];
@@ -177,8 +177,6 @@ export default class PDFDocument {
     this.pageMap = new Map();
     this.fonts = [];
     this.images = [];
-
-    this.pageCount = this.getPageCount();
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
   }
@@ -204,6 +202,7 @@ export default class PDFDocument {
    * @returns The number of pages in this document.
    */
   getPageCount(): number {
+    if (this.pageCount === undefined) this.pageCount = this.getPages().length;
     return this.pageCount;
   }
 
@@ -254,11 +253,11 @@ export default class PDFDocument {
    * @param index The index of the page to be removed.
    */
   removePage(index: number): void {
-    const pageCount = this.getPages().length;
-    if (pageCount === 0) throw new RemovePageFromEmptyDocumentError();
+    const pageCount = this.getPageCount();
+    if (this.pageCount === 0) throw new RemovePageFromEmptyDocumentError();
     assertRange(index, 'index', 0, pageCount - 1);
     this.catalog.removeLeafNode(index);
-    this.pageCount -= 1;
+    this.pageCount = pageCount - 1;
   }
 
   /**
@@ -294,9 +293,7 @@ export default class PDFDocument {
    */
   addPage(page?: PDFPage | [number, number]): PDFPage {
     assertIs(page, 'page', ['undefined', [PDFPage, 'PDFPage'], Array]);
-    const pages = this.getPages();
-    this.pageCount += 1;
-    return this.insertPage(pages.length, page);
+    return this.insertPage(this.getPageCount() - 1, page);
   }
 
   /**
@@ -332,7 +329,8 @@ export default class PDFDocument {
    * @returns The newly created (or existing) page.
    */
   insertPage(index: number, page?: PDFPage | [number, number]): PDFPage {
-    assertRange(index, 'index', 0, this.pageCount - 1);
+    const pageCount = this.getPageCount();
+    assertRange(index, 'index', 0, pageCount - 1);
     assertIs(page, 'page', ['undefined', [PDFPage, 'PDFPage'], Array]);
     if (!page || Array.isArray(page)) {
       const dims = Array.isArray(page) ? page : PageSizes.A4;
@@ -348,7 +346,7 @@ export default class PDFDocument {
     this.pageMap.set(page.node, page);
     this.pageCache.invalidate();
 
-    this.pageCount += 1;
+    this.pageCount = pageCount + 1;
 
     return page;
   }
@@ -608,7 +606,7 @@ export default class PDFDocument {
     assertIs(addDefaultPage, 'addDefaultPage', ['boolean']);
     assertIs(objectsPerTick, 'objectsPerTick', ['number']);
 
-    if (addDefaultPage && this.getPages().length === 0) this.addPage();
+    if (addDefaultPage && this.pageCount === 0) this.addPage();
     await this.flush();
 
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
