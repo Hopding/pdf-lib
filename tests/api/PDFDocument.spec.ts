@@ -1,5 +1,10 @@
 import fs from 'fs';
-import { EncryptedPDFError, ParseSpeeds, PDFDocument } from 'src/index';
+import {
+  EncryptedPDFError,
+  ParseSpeeds,
+  PDFDocument,
+  PDFPage,
+} from 'src/index';
 
 const unencryptedPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 const oldEncryptedPdfBytes1 = fs.readFileSync('assets/pdfs/encrypted_old.pdf');
@@ -122,6 +127,13 @@ describe(`PDFDocument`, () => {
     it(`returns 0 for brand new documents`, async () => {
       const newDoc = await PDFDocument.create();
       expect(newDoc.getPageCount()).toBe(0);
+    });
+  });
+
+  describe(`addPage() method`, () => {
+    it(`Can insert pages in brand new documents`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      expect(pdfDoc.addPage()).toBeInstanceOf(PDFPage);
     });
   });
 });

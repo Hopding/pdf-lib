@@ -293,7 +293,7 @@ export default class PDFDocument {
    */
   addPage(page?: PDFPage | [number, number]): PDFPage {
     assertIs(page, 'page', ['undefined', [PDFPage, 'PDFPage'], Array]);
-    return this.insertPage(this.getPageCount() - 1, page);
+    return this.insertPage(this.getPageCount(), page);
   }
 
   /**
@@ -330,7 +330,7 @@ export default class PDFDocument {
    */
   insertPage(index: number, page?: PDFPage | [number, number]): PDFPage {
     const pageCount = this.getPageCount();
-    assertRange(index, 'index', 0, pageCount - 1);
+    assertRange(index, 'index', 0, pageCount);
     assertIs(page, 'page', ['undefined', [PDFPage, 'PDFPage'], Array]);
     if (!page || Array.isArray(page)) {
       const dims = Array.isArray(page) ? page : PageSizes.A4;
