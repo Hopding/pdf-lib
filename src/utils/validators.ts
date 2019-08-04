@@ -110,6 +110,7 @@ export const assertRange = (
   assertIs(value, valueName, ['number']);
   assertIs(min, 'min', ['number']);
   assertIs(max, 'max', ['number']);
+  max = Math.max(min, max);
   if (value < min || value > max) {
     // prettier-ignore
     throw new Error(`${backtick(valueName)} must be at least ${min} and at most ${max}, but was actually ${value}`);
