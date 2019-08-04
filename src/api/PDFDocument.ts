@@ -178,7 +178,7 @@ export default class PDFDocument {
     this.fonts = [];
     this.images = [];
 
-    this.pageCount = this.getPageCount();
+    this.pageCount = this.pageCache.access().length;
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
   }
@@ -254,9 +254,8 @@ export default class PDFDocument {
    * @param index The index of the page to be removed.
    */
   removePage(index: number): void {
-    const pageCount = this.getPages().length;
-    if (pageCount === 0) throw new RemovePageFromEmptyDocumentError();
-    assertRange(index, 'index', 0, pageCount - 1);
+    if (this.pageCount === 0) throw new RemovePageFromEmptyDocumentError();
+    assertRange(index, 'index', 0, this.pageCount - 1);
     this.catalog.removeLeafNode(index);
     this.pageCount -= 1;
   }
@@ -294,9 +293,7 @@ export default class PDFDocument {
    */
   addPage(page?: PDFPage | [number, number]): PDFPage {
     assertIs(page, 'page', ['undefined', [PDFPage, 'PDFPage'], Array]);
-    const pages = this.getPages();
-    this.pageCount += 1;
-    return this.insertPage(pages.length, page);
+    return this.insertPage(this.pageCount - 1, page);
   }
 
   /**
@@ -608,7 +605,7 @@ export default class PDFDocument {
     assertIs(addDefaultPage, 'addDefaultPage', ['boolean']);
     assertIs(objectsPerTick, 'objectsPerTick', ['number']);
 
-    if (addDefaultPage && this.getPages().length === 0) this.addPage();
+    if (addDefaultPage && this.pageCount === 0) this.addPage();
     await this.flush();
 
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;

@@ -33,7 +33,7 @@ export const isType = (value: any, type: TypeDescriptor) => {
   if (type === 'null') return value === null;
   if (type === 'undefined') return value === undefined;
   if (type === 'string') return typeof value === 'string';
-  if (type === 'number') return typeof value === 'number';
+  if (type === 'number') return typeof value === 'number' && !isNaN(value);
   if (type === 'boolean') return typeof value === 'boolean';
   if (type === 'symbol') return typeof value === 'symbol';
   if (type === 'bigint') return typeof value === 'bigint';
@@ -107,6 +107,8 @@ export const assertRange = (
   max: number,
 ) => {
   assertIs(value, valueName, ['number']);
+  assertIs(min, 'min', ['number']);
+  assertIs(max, 'max', ['number']);
   if (value < min || value > max) {
     // prettier-ignore
     throw new Error(`${backtick(valueName)} must be at least ${min} and at most ${max}, but was actually ${value}`);
