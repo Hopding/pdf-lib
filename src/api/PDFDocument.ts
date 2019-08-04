@@ -202,7 +202,7 @@ export default class PDFDocument {
    * @returns The number of pages in this document.
    */
   getPageCount(): number {
-    if (this.pageCount === undefined) return this.getPages().length;
+    if (this.pageCount === undefined) this.pageCount = this.getPages().length;
     return this.pageCount;
   }
 
