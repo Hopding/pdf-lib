@@ -27,6 +27,10 @@ describe(`PDFString`, () => {
     it(`does not escape nested parenthesis`, () => {
       expect(String(PDFString.of('(Foo((Bar))Qux)'))).toBe('((Foo((Bar))Qux))');
     });
+
+    it(`encodes non-Latin text`, () => {
+      expect(String(PDFString.of('кириллица'))).toBe('<FEFF043A043804400438043B043B043804460430>');
+    });
   });
 
   it(`can provide its size in bytes`, () => {
