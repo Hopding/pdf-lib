@@ -661,10 +661,10 @@ export default class PDFPage {
         font.widthOfTextAtSize(candidateString, fontSize) >= maxWidth;
 
       if (i < words.length && lengthReached) {
-        wrappedLines.push(words.slice(startIndex, i - 1).join(' '));
+        wrappedLines.push(words.slice(startIndex, i).join(' '));
         startIndex = i;
       } else if (i === words.length) {
-        wrappedLines.push(words.slice(startIndex, i - 1).join(' '));
+        wrappedLines.push(words.slice(startIndex, i).join(' '));
       }
     }
 
