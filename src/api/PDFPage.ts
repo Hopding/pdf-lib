@@ -611,18 +611,15 @@ export default class PDFPage {
   }
 
   /**
-   * Draw a line of text on the page and wrap it at line length `maxWidth`. Default width is the page width.
+   * Draw a line of text on the page and wrap it at a specified line length.
+   * This accepts all the options of `drawText` as well as an additional `maxWidth` option.
    *
    * For example:
    * ```js
    * import { StandardFonts, rgb } from 'pdf-lib'
    *
-   * const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
    * const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
-   *
    * const page = pdfDoc.addPage()
-   *
-   * page.setFont(helveticaFont)
    *
    * page.moveTo(5, 200)
    * page.drawWrappedText(
