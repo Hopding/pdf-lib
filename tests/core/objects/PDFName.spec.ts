@@ -34,6 +34,23 @@ describe(`PDFName`, () => {
     );
     expect(PDFName.of('A#42')).toBe(PDFName.of('AB'));
     expect(PDFName.of('Identity#2DH')).toBe(PDFName.of('Identity-H'));
+
+    expect(PDFName.of('#40')).toBe(PDFName.of('@'));
+    expect(PDFName.of('#41')).toBe(PDFName.of('A'));
+    expect(PDFName.of('#42')).toBe(PDFName.of('B'));
+    expect(PDFName.of('#43')).toBe(PDFName.of('C'));
+    expect(PDFName.of('#44')).toBe(PDFName.of('D'));
+    expect(PDFName.of('#45')).toBe(PDFName.of('E'));
+    expect(PDFName.of('#46')).toBe(PDFName.of('F'));
+    expect(PDFName.of('#47')).toBe(PDFName.of('G'));
+    expect(PDFName.of('#48')).toBe(PDFName.of('H'));
+    expect(PDFName.of('#49')).toBe(PDFName.of('I'));
+    expect(PDFName.of('#4A')).toBe(PDFName.of('J'));
+    expect(PDFName.of('#4B')).toBe(PDFName.of('K'));
+    expect(PDFName.of('#4C')).toBe(PDFName.of('L'));
+    expect(PDFName.of('#4D')).toBe(PDFName.of('M'));
+    expect(PDFName.of('#4E')).toBe(PDFName.of('N'));
+    expect(PDFName.of('#4F')).toBe(PDFName.of('O'));
   });
 
   it(`encodes hashes, whitespace, and delimiters when serialized`, () => {
