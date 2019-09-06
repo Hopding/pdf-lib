@@ -27,11 +27,13 @@ export default async (assets: Assets) => {
   middlePage.setFontSize(fontSize);
   middlePage.moveTo(0, middlePage.getHeight());
 
-  Object.keys(StandardFonts).forEach((fontName: any, idx) => {
+  Object.keys(StandardFonts).forEach((fontNameStr, idx) => {
     middlePage.moveDown(fontSize);
-    const font = pdfDoc.embedStandardFont(StandardFonts[
-      fontName
-    ] as StandardFonts);
+
+    const fontName = fontNameStr as keyof typeof StandardFonts;
+    const fontObj = StandardFonts[fontName];
+    const font = pdfDoc.embedStandardFont(fontObj);
+
     middlePage.setFont(font);
 
     // prettier-ignore
