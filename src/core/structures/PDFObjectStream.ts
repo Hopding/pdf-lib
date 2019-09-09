@@ -62,7 +62,7 @@ class PDFObjectStream extends PDFFlateStream {
     let offset = copyStringIntoBuffer(this.offsetsString, buffer, 0);
     for (let idx = 0, len = this.objects.length; idx < len; idx++) {
       const [, object] = this.objects[idx];
-      offset += object.copyBytesInto(buffer, offset);
+      offset += object ? object.copyBytesInto(buffer, offset) : 0;
       buffer[offset++] = CharCodes.Newline;
     }
     return buffer;
@@ -92,7 +92,7 @@ class PDFObjectStream extends PDFFlateStream {
     for (let idx = 0, len = this.objects.length; idx < len; idx++) {
       const [ref, object] = this.objects[idx];
       offsets[idx] = [ref.objectNumber, offset];
-      offset += object.sizeInBytes() + 1; // '\n'
+      offset += object ? object.sizeInBytes() + 1 : 0; // '\n'
     }
     return offsets;
   }
