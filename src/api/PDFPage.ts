@@ -601,29 +601,43 @@ export default class PDFPage {
       for (let i = 0; i < wordBreak.length; i++) {
         const el = wordBreak[i];
         if (typeof(el) !== "string") {
-          assertIs(options.maxWidth, `options.wordBreak.${i}`, ['string']);
+          assertIs(options.maxWidth, `options.wordBreak[${i}]`, ['string']);
         } else if (el.length === 0) {
-          throw new TypeError(`The string of options.wordBreak.${i} must be at least 1 character long.`);
+          throw new TypeError(`The string of \`options.wordBreak[${i}]\` must be at least 1 character long.`);
+        } else if (el.indexOf('\n') !== -1 || el.indexOf('\r') !== -1) {
+          throw new TypeError(`The string of \`options.wordBreak[${i}]\` must not contain a new-line.`);
         }
       }
 
       const maxWidth = options.maxWidth || this.getWidth();
       const fontSize = options.size || this.fontSize;
-      const words: {content: string, width: number}[] = [];
-      const regex = new RegExp(wordBreak.map(escapeRegExp).join('|'), 'gs')
+      const words: {content: string, width: number, forceBreak: boolean}[] = [];
+      const regex = new RegExp(wordBreak.map(escapeRegExp).join('|') + '|\\r\\n|\\r|\\n', 'gm')
+      let shouldForceBreak = false;
       let index = 0;
       let match;
 
       while ((match = regex.exec(text)) !== null) {
-        const seperator = match[0];
+        let seperator = match[0];
+        let seperatorLength = seperator.length;
+        let forceBreak = shouldForceBreak;
+
+        if (seperator === '\n' || seperator === '\r' || seperator === '\r\n') {
+          seperator = '';
+          shouldForceBreak = true;
+        } else {
+          shouldForceBreak = false;
+        }
+
         let content = text.substr(index, match.index - index) + seperator;
 
         words.push({
           content: content,
-          width: font.widthOfTextAtSize(content, fontSize)
+          width: font.widthOfTextAtSize(content, fontSize),
+          forceBreak: forceBreak
         });
 
-        index = match.index + seperator.length;
+        index = match.index + seperatorLength;
       }
 
       if (index < text.length) {
@@ -631,7 +645,8 @@ export default class PDFPage {
 
         words.push({
           content: content,
-          width: font.widthOfTextAtSize(content, fontSize)
+          width: font.widthOfTextAtSize(content, fontSize),
+          forceBreak: false
         })
       }
 
@@ -643,7 +658,7 @@ export default class PDFPage {
         let word = words[i];
         let newLineWidth = lineWidth + word.width;
 
-        if (lineWidth > 0 && newLineWidth >= maxWidth) {
+        if (word.forceBreak || lineWidth > 0 && newLineWidth >= maxWidth) {
           wrappedLines.push(line);
           lineWidth = 0;
           line = '';
