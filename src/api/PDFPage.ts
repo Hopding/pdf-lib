@@ -598,10 +598,19 @@ export default class PDFPage {
         wordBreak = [wordBreak];
       }
 
+      for (let i = 0; i < wordBreak.length; i++) {
+        const el = wordBreak[i];
+        if (typeof(el) !== "string") {
+          assertIs(options.maxWidth, `options.wordBreak.${i}`, ['string']);
+        } else if (el.length === 0) {
+          throw new TypeError(`The string of options.wordBreak.${i} must be at least 1 character long.`);
+        }
+      }
+
       const maxWidth = options.maxWidth || this.getWidth();
       const fontSize = options.size || this.fontSize;
       const words: {content: string, width: number}[] = [];
-      const regex = new RegExp(wordBreak.map(escapeRegExp).join('|'), 'gm')
+      const regex = new RegExp(wordBreak.map(escapeRegExp).join('|'), 'gs')
       let index = 0;
       let match;
 
