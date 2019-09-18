@@ -598,6 +598,10 @@ export default class PDFPage {
         wordBreak = [wordBreak];
       }
 
+      if (wordBreak.length === 0) {
+        throw new TypeError('The array `options.wordBreak` cannot be empty.');
+      }
+
       for (let i = 0; i < wordBreak.length; i++) {
         const el = wordBreak[i];
         if (typeof(el) !== "string") {
