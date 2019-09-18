@@ -33,3 +33,5 @@ export const copyStringIntoBuffer = (
 
 export const addRandomSuffix = (prefix: string, suffixLength = 4) =>
   `${prefix}-${Math.floor(Math.random() * 10 ** suffixLength)}`;
+
+export const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

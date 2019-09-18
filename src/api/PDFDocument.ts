@@ -165,6 +165,9 @@ export default class PDFDocument {
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
 
+  /** The default word breaks used in PDFPage.drawText */
+  public defaultWordBreak: string[] = [" ", "-"]
+
   private constructor(context: PDFContext, ignoreEncryption: boolean) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
