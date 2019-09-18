@@ -158,15 +158,15 @@ export default class PDFDocument {
   /** Whether or not this document is encrypted. */
   readonly isEncrypted: boolean;
 
+  /** The default word breaks used in PDFPage.drawText */
+  defaultWordBreak: string[] = [' ', '-'];
+
   private fontkit?: Fontkit;
   private pageCount: number | undefined;
   private readonly pageCache: Cache<PDFPage[]>;
   private readonly pageMap: Map<PDFPageLeaf, PDFPage>;
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
-
-  /** The default word breaks used in PDFPage.drawText */
-  public defaultWordBreak: string[] = [" ", "-"]
 
   private constructor(context: PDFContext, ignoreEncryption: boolean) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);

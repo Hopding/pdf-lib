@@ -604,7 +604,7 @@ export default class PDFPage {
 
       for (let i = 0; i < wordBreak.length; i++) {
         const el = wordBreak[i];
-        if (typeof(el) !== "string") {
+        if (typeof(el) !== 'string') {
           assertIs(options.maxWidth, `options.wordBreak[${i}]`, ['string']);
         } else if (el.length === 0) {
           throw new TypeError(`The string of \`options.wordBreak[${i}]\` must be at least 1 character long.`);
@@ -615,16 +615,18 @@ export default class PDFPage {
 
       const maxWidth = options.maxWidth || this.getWidth();
       const fontSize = options.size || this.fontSize;
-      const words: {content: string, width: number, forceBreak: boolean}[] = [];
-      const regex = new RegExp(wordBreak.map(escapeRegExp).join('|') + '|\\r\\n|\\r|\\n', 'gm')
+      const words: Array<{content: string, width: number, forceBreak: boolean}> = [];
+      const regex = new RegExp(wordBreak.map(escapeRegExp).join('|') + '|\\r\\n|\\r|\\n', 'gm');
       let shouldForceBreak = false;
       let index = 0;
       let match;
 
-      while ((match = regex.exec(text)) !== null) {
+      match = regex.exec(text);
+
+      while (match !== null) {
         let seperator = match[0];
-        let seperatorLength = seperator.length;
-        let forceBreak = shouldForceBreak;
+        const seperatorLength = seperator.length;
+        const forceBreak = shouldForceBreak;
 
         if (seperator === '\n' || seperator === '\r' || seperator === '\r\n') {
           seperator = '';
@@ -633,25 +635,26 @@ export default class PDFPage {
           shouldForceBreak = false;
         }
 
-        let content = text.substr(index, match.index - index) + seperator;
+        const content = text.substr(index, match.index - index) + seperator;
 
         words.push({
-          content: content,
+          content,
           width: font.widthOfTextAtSize(content, fontSize),
-          forceBreak: forceBreak
+          forceBreak
         });
 
         index = match.index + seperatorLength;
+        match = regex.exec(text);
       }
 
       if (index < text.length) {
-        let content = text.substr(index, text.length);
+        const content = text.substr(index, text.length);
 
         words.push({
-          content: content,
+          content,
           width: font.widthOfTextAtSize(content, fontSize),
           forceBreak: false
-        })
+        });
       }
 
       const wrappedLines = [];
@@ -659,14 +662,14 @@ export default class PDFPage {
       let line = '';
 
       for (let i = 0; i < words.length; i++) {
-        let word = words[i];
+        const word = words[i];
         let newLineWidth = lineWidth + word.width;
 
         if (word.forceBreak || lineWidth > 0 && newLineWidth >= maxWidth) {
           wrappedLines.push(line);
           lineWidth = 0;
           line = '';
-          newLineWidth = word.width
+          newLineWidth = word.width;
         }
 
         line += word.content;
