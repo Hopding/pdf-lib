@@ -14,6 +14,10 @@ export interface PDFPageDrawTextOptions {
   lineHeight?: number;
 }
 
+export interface PDFPageDrawWrappedTextOptions extends PDFPageDrawTextOptions {
+  maxWidth?: number;
+}
+
 export interface PDFPageDrawImageOptions {
   x?: number;
   y?: number;

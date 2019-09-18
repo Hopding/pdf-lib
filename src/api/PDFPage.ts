@@ -20,6 +20,7 @@ import {
   PDFPageDrawRectangleOptions,
   PDFPageDrawSquareOptions,
   PDFPageDrawTextOptions,
+  PDFPageDrawWrappedTextOptions,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
 import { StandardFonts } from 'src/api/StandardFonts';
@@ -607,6 +608,67 @@ export default class PDFPage {
     );
 
     if (options.font) this.setFont(originalFont);
+  }
+
+  /**
+   * Draw a line of text on the page and wrap it at a specified line length.
+   * This accepts all the options of `drawText` as well as an additional `maxWidth` option.
+   *
+   * For example:
+   * ```js
+   * import { StandardFonts, rgb } from 'pdf-lib'
+   *
+   * const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+   * const page = pdfDoc.addPage()
+   *
+   * page.moveTo(5, 200)
+   * page.drawWrappedText(
+   *   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+   *   {
+   *     x: 25,
+   *     y: 100,
+   *     font: timesRomanFont,
+   *     size: 24,
+   *     color: rgb(1, 0, 0),
+   *     lineHeight: 24,
+   *     maxWidth: 100,
+   *   }
+   * )
+   * ```
+   * @param text The text to be drawn.
+   * @param options The options to be used when drawing the text.
+   */
+  drawWrappedText(
+    text: string,
+    options: PDFPageDrawWrappedTextOptions = {},
+  ): void {
+    assertIs(text, 'text', ['string']);
+    assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
+
+    const fontSize = options.size || this.fontSize;
+    if (options.font) this.setFont(options.font);
+    const [font] = this.getFont();
+
+    const maxWidth = options.maxWidth || this.getWidth();
+
+    const words = text.split(' ');
+
+    const wrappedLines = [];
+    let startIndex = 0;
+    for (let i = 0; i <= words.length; i++) {
+      const candidateString = words.slice(startIndex, i).join(' ');
+      const lengthReached =
+        font.widthOfTextAtSize(candidateString, fontSize) >= maxWidth;
+
+      if (i < words.length && lengthReached) {
+        wrappedLines.push(words.slice(startIndex, i).join(' '));
+        startIndex = i;
+      } else if (i === words.length) {
+        wrappedLines.push(words.slice(startIndex, i).join(' '));
+      }
+    }
+
+    this.drawText(wrappedLines.join('\n'), options);
   }
 
   /**
