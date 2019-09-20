@@ -593,30 +593,42 @@ export default class PDFPage {
       let wordBreak = options.wordBreak;
 
       if (wordBreak === undefined) {
-        wordBreak = this.doc.defaultWordBreak;
+        wordBreak = [...this.doc.defaultWordBreak];
       } else if (typeof(wordBreak) === 'string') {
         wordBreak = [wordBreak];
+      } else {
+        wordBreak = [...wordBreak];
       }
 
       if (wordBreak.length === 0) {
         throw new TypeError('The array `options.wordBreak` cannot be empty.');
       }
 
+      let shouldBreakAllCharacters = false;
+
       for (let i = 0; i < wordBreak.length; i++) {
         const el = wordBreak[i];
         if (typeof(el) !== 'string') {
           assertIs(options.maxWidth, `options.wordBreak[${i}]`, ['string']);
         } else if (el.length === 0) {
-          throw new TypeError(`The string of \`options.wordBreak[${i}]\` must be at least 1 character long.`);
+          shouldBreakAllCharacters = true;
+          wordBreak.splice(i, 1);
+          i--;
         } else if (el.indexOf('\n') !== -1 || el.indexOf('\r') !== -1) {
           throw new TypeError(`The string of \`options.wordBreak[${i}]\` must not contain a new-line.`);
         }
       }
+      
+      const userRules = wordBreak.map(escapeRegExp);
 
+      if (shouldBreakAllCharacters) {
+        userRules.push('.');
+      }
+
+      const regex = new RegExp('\\r\\n|\\r|\\n|' + userRules.join('|'), 'gm');
       const maxWidth = options.maxWidth || this.getWidth();
       const fontSize = options.size || this.fontSize;
       const words: Array<{content: string, width: number, forceBreak: boolean}> = [];
-      const regex = new RegExp(wordBreak.map(escapeRegExp).join('|') + '|\\r\\n|\\r|\\n', 'gm');
       let shouldForceBreak = false;
       let index = 0;
       let match;
