@@ -13,7 +13,7 @@ export interface PDFPageDrawTextOptions {
   y?: number;
   lineHeight?: number;
   maxWidth?: number;
-  wordBreak?: string[];
+  wordBreaks?: string[];
 }
 
 export interface PDFPageDrawImageOptions {

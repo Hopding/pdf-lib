@@ -159,7 +159,7 @@ export default class PDFDocument {
   readonly isEncrypted: boolean;
 
   /** The default word breaks used in PDFPage.drawText */
-  defaultWordBreak: string[] = [' ', '-'];
+  defaultWordBreaks: string[] = [' '];
 
   private fontkit?: Fontkit;
   private pageCount: number | undefined;

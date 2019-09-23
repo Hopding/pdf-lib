@@ -38,7 +38,8 @@ import {
   assertIs,
   assertMultiple,
   assertOrUndefined,
-  escapeRegExp,
+  breakTextIntoLines,
+  cleanText,
 } from 'src/utils';
 
 /**
@@ -581,124 +582,25 @@ export default class PDFPage {
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.lineHeight, 'options.lineHeight', ['number']);
+    assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
+    assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
 
     const [originalFont] = this.getFont();
     if (options.font) this.setFont(options.font);
     const [font, fontKey] = this.getFont();
 
-    if (options.maxWidth !== undefined) {
-      assertIs(options.maxWidth, 'options.maxWidth', ['number']);
-      assertOrUndefined(options.wordBreak, 'options.wordBreak', [Array, 'string']);
+    const fontSize = options.size || this.fontSize;
 
-      let wordBreak = options.wordBreak;
+    const wordBreaks = options.wordBreaks || this.doc.defaultWordBreaks;
+    const textWidth = (t: string) => font.widthOfTextAtSize(t, fontSize);
+    const lines =
+      options.maxWidth === undefined
+        ? cleanText(text).split(/[\r\n\f]/)
+        : breakTextIntoLines(text, wordBreaks, options.maxWidth, textWidth);
 
-      if (wordBreak === undefined) {
-        wordBreak = [...this.doc.defaultWordBreak];
-      } else if (typeof(wordBreak) === 'string') {
-        wordBreak = [wordBreak];
-      } else {
-        wordBreak = [...wordBreak];
-      }
-
-      if (wordBreak.length === 0) {
-        throw new TypeError('The array `options.wordBreak` cannot be empty.');
-      }
-
-      let shouldBreakAllCharacters = false;
-
-      for (let i = 0; i < wordBreak.length; i++) {
-        const el = wordBreak[i];
-        if (typeof(el) !== 'string') {
-          assertIs(options.maxWidth, `options.wordBreak[${i}]`, ['string']);
-        } else if (el.length === 0) {
-          shouldBreakAllCharacters = true;
-          wordBreak.splice(i, 1);
-          i--;
-        } else if (el.indexOf('\n') !== -1 || el.indexOf('\r') !== -1) {
-          throw new TypeError(`The string of \`options.wordBreak[${i}]\` must not contain a new-line.`);
-        }
-      }
-      
-      const userRules = wordBreak.map(escapeRegExp);
-
-      if (shouldBreakAllCharacters) {
-        userRules.push('.');
-      }
-
-      const regex = new RegExp('\\r\\n|\\r|\\n|' + userRules.join('|'), 'gm');
-      const maxWidth = options.maxWidth || this.getWidth();
-      const fontSize = options.size || this.fontSize;
-      const words: Array<{content: string, width: number, forceBreak: boolean}> = [];
-      let shouldForceBreak = false;
-      let index = 0;
-      let match;
-
-      match = regex.exec(text);
-
-      while (match !== null) {
-        let seperator = match[0];
-        const seperatorLength = seperator.length;
-        const forceBreak = shouldForceBreak;
-
-        if (seperator === '\n' || seperator === '\r' || seperator === '\r\n') {
-          seperator = '';
-          shouldForceBreak = true;
-        } else {
-          shouldForceBreak = false;
-        }
-
-        const content = text.substr(index, match.index - index) + seperator;
-
-        words.push({
-          content,
-          width: font.widthOfTextAtSize(content, fontSize),
-          forceBreak
-        });
-
-        index = match.index + seperatorLength;
-        match = regex.exec(text);
-      }
-
-      if (index < text.length) {
-        const content = text.substr(index, text.length);
-
-        words.push({
-          content,
-          width: font.widthOfTextAtSize(content, fontSize),
-          forceBreak: false
-        });
-      }
-
-      const wrappedLines = [];
-      let lineWidth = 0;
-      let line = '';
-
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        let newLineWidth = lineWidth + word.width;
-
-        if (word.forceBreak || lineWidth > 0 && newLineWidth >= maxWidth) {
-          wrappedLines.push(line);
-          lineWidth = 0;
-          line = '';
-          newLineWidth = word.width;
-        }
-
-        line += word.content;
-        lineWidth = newLineWidth;
-      }
-
-      if (line !== '') {
-        wrappedLines.push(line);
-      }
-
-      text = wrappedLines.join('\n');
-    }
-
-    const preprocessedLines = this.preprocessText(text);
-    const encodedLines = new Array(preprocessedLines.length) as PDFHexString[];
-    for (let idx = 0, len = preprocessedLines.length; idx < len; idx++) {
-      encodedLines[idx] = font.encodeText(preprocessedLines[idx]);
+    const encodedLines = new Array(lines.length) as PDFHexString[];
+    for (let idx = 0, len = lines.length; idx < len; idx++) {
+      encodedLines[idx] = font.encodeText(lines[idx]);
     }
 
     const contentStream = this.getContentStream();
@@ -706,7 +608,7 @@ export default class PDFPage {
       ...drawLinesOfText(encodedLines, {
         color: options.color || this.fontColor,
         font: fontKey,
-        size: options.size || this.fontSize,
+        size: fontSize,
         rotate: options.rotate || degrees(0),
         xSkew: options.xSkew || degrees(0),
         ySkew: options.ySkew || degrees(0),
@@ -911,13 +813,6 @@ export default class PDFPage {
     const { size } = options;
     assertOrUndefined(size, 'size', ['number']);
     this.drawEllipse({ ...options, xScale: size, yScale: size });
-  }
-
-  private preprocessText(text: string): string[] {
-    return text
-      .replace(/\t/g, '    ')
-      .replace(/[\b\v]/g, '')
-      .split(/[\r\n\f]/);
   }
 
   private getFont(): [PDFFont, string] {
