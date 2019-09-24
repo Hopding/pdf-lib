@@ -41,7 +41,7 @@ export const cleanText = (text: string) =>
   text.replace(/\t/g, '    ').replace(/[\b\v]/g, '');
 
 const buildWordBreakRegex = (wordBreaks: string[]) => {
-  const escapedRules: string[] = [];
+  const escapedRules: string[] = ['$'];
   for (let idx = 0, len = wordBreaks.length; idx < len; idx++) {
     const wordBreak = wordBreaks[idx];
     if (wordBreak.includes('\n') || wordBreak.includes('\r')) {
@@ -50,7 +50,7 @@ const buildWordBreakRegex = (wordBreaks: string[]) => {
     escapedRules.push(wordBreak === '' ? '.' : escapeRegExp(wordBreak));
   }
   const breakRules = escapedRules.join('|');
-  return new RegExp(`(\\n|\\r|\\f)|((.*?)(${breakRules}|$))`, 'gm');
+  return new RegExp(`(\\n|\\r)|((.*?)(${breakRules}))`, 'gm');
 };
 
 export const breakTextIntoLines = (
@@ -68,7 +68,7 @@ export const breakTextIntoLines = (
   const lines: string[] = [];
 
   const pushCurrLine = () => {
-    lines.push(currLine);
+    if (currLine !== '') lines.push(currLine);
     currLine = '';
     currWidth = 0;
   };
