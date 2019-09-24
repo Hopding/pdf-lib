@@ -38,6 +38,8 @@ import {
   assertIs,
   assertMultiple,
   assertOrUndefined,
+  breakTextIntoLines,
+  cleanText,
 } from 'src/utils';
 
 /**
@@ -580,15 +582,25 @@ export default class PDFPage {
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.lineHeight, 'options.lineHeight', ['number']);
+    assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
+    assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
 
     const [originalFont] = this.getFont();
     if (options.font) this.setFont(options.font);
     const [font, fontKey] = this.getFont();
 
-    const preprocessedLines = this.preprocessText(text);
-    const encodedLines = new Array(preprocessedLines.length) as PDFHexString[];
-    for (let idx = 0, len = preprocessedLines.length; idx < len; idx++) {
-      encodedLines[idx] = font.encodeText(preprocessedLines[idx]);
+    const fontSize = options.size || this.fontSize;
+
+    const wordBreaks = options.wordBreaks || this.doc.defaultWordBreaks;
+    const textWidth = (t: string) => font.widthOfTextAtSize(t, fontSize);
+    const lines =
+      options.maxWidth === undefined
+        ? cleanText(text).split(/[\r\n\f]/)
+        : breakTextIntoLines(text, wordBreaks, options.maxWidth, textWidth);
+
+    const encodedLines = new Array(lines.length) as PDFHexString[];
+    for (let idx = 0, len = lines.length; idx < len; idx++) {
+      encodedLines[idx] = font.encodeText(lines[idx]);
     }
 
     const contentStream = this.getContentStream();
@@ -596,7 +608,7 @@ export default class PDFPage {
       ...drawLinesOfText(encodedLines, {
         color: options.color || this.fontColor,
         font: fontKey,
-        size: options.size || this.fontSize,
+        size: fontSize,
         rotate: options.rotate || degrees(0),
         xSkew: options.xSkew || degrees(0),
         ySkew: options.ySkew || degrees(0),
@@ -801,13 +813,6 @@ export default class PDFPage {
     const { size } = options;
     assertOrUndefined(size, 'size', ['number']);
     this.drawEllipse({ ...options, xScale: size, yScale: size });
-  }
-
-  private preprocessText(text: string): string[] {
-    return text
-      .replace(/\t/g, '    ')
-      .replace(/[\b\v]/g, '')
-      .split(/[\r\n\f]/);
   }
 
   private getFont(): [PDFFont, string] {

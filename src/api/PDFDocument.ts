@@ -158,6 +158,9 @@ export default class PDFDocument {
   /** Whether or not this document is encrypted. */
   readonly isEncrypted: boolean;
 
+  /** The default word breaks used in PDFPage.drawText */
+  defaultWordBreaks: string[] = [' '];
+
   private fontkit?: Fontkit;
   private pageCount: number | undefined;
   private readonly pageCache: Cache<PDFPage[]>;
