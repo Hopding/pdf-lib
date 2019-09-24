@@ -129,10 +129,11 @@ class PDFObjectCopier {
       const newRef = this.dest.nextRef();
       this.traversedObjects.set(ref, newRef);
 
-      const dereferencedValue = this.src.lookup(ref)!;
-      const cloned = this.copy(dereferencedValue);
-
-      this.dest.assign(newRef, cloned);
+      const dereferencedValue = this.src.lookup(ref);
+      if (dereferencedValue) {
+        const cloned = this.copy(dereferencedValue);
+        this.dest.assign(newRef, cloned);
+      }
     }
 
     return this.traversedObjects.get(ref) as PDFRef;

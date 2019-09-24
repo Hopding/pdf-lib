@@ -393,4 +393,29 @@ describe(`PDFObjectCopier`, () => {
     expect(copiedString).not.toBe(origString);
     expect(copiedString).toBeInstanceOf(PDFString);
   });
+
+  it(`copies objects with undefined references`, () => {
+    // Arrange
+    const src = PDFContext.create();
+    const dest = PDFContext.create();
+    const copier = PDFObjectCopier.for(src, dest);
+
+    const origArray = src.obj([PDFRef.of(21)]);
+    const origDict = src.obj({ Foo: PDFRef.of(21) });
+
+    // Act
+    const copiedArray = copier.copy(origArray);
+    const copiedDict = copier.copy(origDict);
+
+    // Assert
+    expect(copiedArray).not.toBe(origArray);
+    expect(copiedArray).toBeInstanceOf(PDFArray);
+    expect(copiedArray.size()).toBe(1);
+    expect(copiedArray.get(0)).toBe(PDFRef.of(1));
+
+    expect(copiedDict).not.toBe(origDict);
+    expect(copiedDict).toBeInstanceOf(PDFDict);
+    expect(copiedDict.entries().length).toBe(1);
+    expect(copiedDict.get(PDFName.of('Foo'))).toBe(PDFRef.of(1));
+  });
 });
