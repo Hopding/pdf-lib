@@ -69,16 +69,13 @@
 
       const page = pdfDoc.getPages()[0];
 
-      const lines = [
-        'This is an image of Mario running.',
-        'This image and text was drawn on',
-        'top of an existing PDF using pdf-lib!',
-      ];
+      const text =
+        'This is an image of Mario running. This image and text was drawn on top of an existing PDF using pdf-lib!';
       const fontSize = 24;
       const solarizedWhite = rgb(253 / 255, 246 / 255, 227 / 255);
       const solarizedGray = rgb(101 / 255, 123 / 255, 131 / 255);
 
-      const textWidth = ubuntuFont.widthOfTextAtSize(lines[2], fontSize);
+      const boxWidth = 387.5;
 
       const { width, height } = page.getSize();
       const centerX = width / 2;
@@ -96,11 +93,11 @@
         xSkew: degrees(35),
         ySkew: degrees(35),
       });
-      const boxHeight = (fontSize + 5) * lines.length;
+      const boxHeight = (fontSize + 5) * 3;
       page.drawRectangle({
-        x: centerX - textWidth / 2 - 5,
+        x: centerX - boxWidth / 2 - 5,
         y: centerY - 60 - boxHeight + fontSize + 3,
-        width: textWidth + 10,
+        width: boxWidth + 10,
         height: boxHeight,
         color: solarizedWhite,
         borderColor: solarizedGray,
@@ -110,11 +107,12 @@
       });
       page.setFont(ubuntuFont);
       page.setFontColor(solarizedGray);
-      page.drawText(lines.join('\n'), {
-        x: centerX - textWidth / 2,
+      page.drawText(text, {
+        x: centerX - boxWidth / 2 + 5,
         y: centerY - 60,
         rotate: degrees(10),
         ySkew: degrees(15),
+        maxWidth: boxWidth + 5,
       });
 
       page.setSize(page.getWidth() + 100, page.getHeight() + 100);
