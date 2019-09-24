@@ -274,6 +274,8 @@ class PDFParser extends PDFObjectParser {
 
     const offset = this.parseRawInt();
 
+    this.skipWhitespace();
+    this.matchKeyword(Keywords.eof);
     this.skipWhitespaceAndComments();
     this.matchKeyword(Keywords.eof);
     this.skipWhitespaceAndComments();
