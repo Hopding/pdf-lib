@@ -3,6 +3,7 @@ import fs from 'fs';
 import {
   CharCodes,
   mergeIntoTypedArray,
+  PDFDict,
   PDFHeader,
   PDFInvalidObject,
   PDFPageLeaf,
@@ -271,5 +272,72 @@ describe(`PDFParser`, () => {
     expect(
       objects.filter(([_ref, obj]) => obj instanceof PDFPageLeaf).length,
     ).toBe(2);
+  });
+
+  it(`handles updated PDFs missing newline after %%EOF marker`, async () => {
+    const input = `
+    %PDF-1.7
+    22 0 obj
+      (foo)
+    endobj
+    xref
+    0 0
+    trailer
+    << >>
+    startxref
+    21
+    %%EOF28 0 obj
+    << /Foo /Bar >>
+    endobj
+    xref
+    0 0
+    trailer
+    << >>
+    startxref
+    21
+    %%EOF
+  `;
+    const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
+    const context = await parser.parseDocument();
+
+    expect(context.enumerateIndirectObjects().length).toBe(2);
+    const object22 = context.lookup(PDFRef.of(22));
+    expect(object22).toBeInstanceOf(PDFString);
+    const object28 = context.lookup(PDFRef.of(28));
+    expect(object28).toBeInstanceOf(PDFDict);
+  });
+
+  it(`handles updated PDFs with comments preceding %%EOF marker`, async () => {
+    const input = `
+    %PDF-1.7
+    22 0 obj
+      (foo)
+    endobj
+    xref
+    0 0
+    trailer
+    << >>
+    startxref
+    21
+    %%EOF28 0 obj
+    << /Foo /Bar >>
+    endobj
+    xref
+    0 0
+    trailer
+    << >>
+    startxref
+    21 % Foo
+    % Bar
+    %%EOF
+  `;
+    const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
+    const context = await parser.parseDocument();
+
+    expect(context.enumerateIndirectObjects().length).toBe(2);
+    const object22 = context.lookup(PDFRef.of(22));
+    expect(object22).toBeInstanceOf(PDFString);
+    const object28 = context.lookup(PDFRef.of(28));
+    expect(object28).toBeInstanceOf(PDFDict);
   });
 });
