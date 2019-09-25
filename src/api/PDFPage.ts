@@ -681,10 +681,8 @@ export default class PDFPage {
    * import { rgb } from 'pdf-lib'
    *
    * page.drawLine({
-   *   x1: 25,
-   *   y1: 75,
-   *   x2: 125,
-   *   y2: 175,
+   *   start: { x: 25, y: 75 },
+   *   end: { x: 125, y: 175 },
    *   thickness: 2,
    *   color: rgb(0.75, 0.2, 0.2)
    * })
