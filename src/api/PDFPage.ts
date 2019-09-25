@@ -2,9 +2,9 @@ import { Color, rgb } from 'src/api/colors';
 import {
   drawEllipse,
   drawImage,
+  drawLine,
   drawLinesOfText,
   drawRectangle,
-  drawLine,
 } from 'src/api/operations';
 import {
   popGraphicsState,
@@ -18,10 +18,10 @@ import {
   PDFPageDrawCircleOptions,
   PDFPageDrawEllipseOptions,
   PDFPageDrawImageOptions,
+  PDFPageDrawLineOptions,
   PDFPageDrawRectangleOptions,
   PDFPageDrawSquareOptions,
   PDFPageDrawTextOptions,
-  PDFPageDrawLineOptions,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
 import { StandardFonts } from 'src/api/StandardFonts';
@@ -678,7 +678,7 @@ export default class PDFPage {
   /**
    * Draw a line on this page. For example:
    * ```js
-   * import { degrees, grayscale, rgb } from 'pdf-lib'
+   * import { rgb } from 'pdf-lib'
    *
    * page.drawLine({
    *   x1: 25,

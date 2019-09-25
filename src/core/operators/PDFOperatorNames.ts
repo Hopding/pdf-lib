@@ -38,7 +38,6 @@ const enum PDFOperatorNames {
   SetRenderingIntent = 'ri',
 
   // Graphics Operators
-  AppendLine = 'ln',
   AppendRectangle = 're',
   BeginInlineImage = 'BI',
   BeginInlineImageData = 'ID',
