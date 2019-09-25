@@ -108,10 +108,8 @@ export const drawImage = (
 ];
 
 export const drawLine = (options: {
-  x1: number | PDFNumber;
-  y1: number | PDFNumber;
-  x2: number | PDFNumber;
-  y2: number | PDFNumber;
+  start: { x: number | PDFNumber; y: number | PDFNumber };
+  end: { x: number | PDFNumber; y: number | PDFNumber };
   thickness: number | PDFNumber;
   color: Color | undefined;
 }) =>
@@ -119,8 +117,8 @@ export const drawLine = (options: {
     pushGraphicsState(),
     options.color && setStrokingColor(options.color),
     setLineWidth(options.thickness),
-    moveTo(options.x1, options.y1),
-    lineTo(options.x2, options.y2),
+    moveTo(options.start.x, options.start.y),
+    lineTo(options.end.x, options.end.y),
     stroke(),
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];

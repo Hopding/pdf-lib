@@ -692,10 +692,16 @@ export default class PDFPage {
    * @param options The options to be used when drawing the line.
    */
   drawLine(options: PDFPageDrawLineOptions): void {
-    assertIs(options.x1, 'options.x1', ['number']);
-    assertIs(options.y1, 'options.y1', ['number']);
-    assertIs(options.x2, 'options.x2', ['number']);
-    assertIs(options.y2, 'options.y2', ['number']);
+    assertIs(options.start, 'options.start', [
+      [Object, '{ x: number, y: number }'],
+    ]);
+    assertIs(options.end, 'options.end', [
+      [Object, '{ x: number, y: number }'],
+    ]);
+    assertIs(options.start.x, 'options.start.x', ['number']);
+    assertIs(options.start.y, 'options.start.y', ['number']);
+    assertIs(options.end.x, 'options.end.x', ['number']);
+    assertIs(options.end.y, 'options.end.y', ['number']);
     assertOrUndefined(options.thickness, 'options.thickness', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
 
@@ -705,10 +711,8 @@ export default class PDFPage {
     }
     contentStream.push(
       ...drawLine({
-        x1: options.x1,
-        y1: options.y1,
-        x2: options.x2,
-        y2: options.y2,
+        start: options.start,
+        end: options.end,
         thickness: options.thickness || 1,
         color: options.color || undefined,
       }),
