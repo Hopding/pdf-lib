@@ -158,6 +158,25 @@ export const rectangle = (
   ]);
 
 /**
+ * @param x1 x coordinate of the first point
+ * @param y1 y coordinate of the first point
+ * @param x2 x coordinate of the second point
+ * @param y2 y coordinate of the second point
+ */
+export const line = (
+  x1: number | PDFNumber,
+  y1: number | PDFNumber,
+  x2: number | PDFNumber,
+  y2: number | PDFNumber,
+) =>
+  PDFOperator.of(Ops.AppendLine, [
+    asPDFNumber(x1),
+    asPDFNumber(y1),
+    asPDFNumber(x2),
+    asPDFNumber(y2),
+  ]);
+
+/**
  * @param xPos x coordinate for the lower left corner of the square
  * @param yPos y coordinate for the lower left corner of the square
  * @param size width and height of the square

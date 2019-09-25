@@ -4,6 +4,7 @@ import {
   drawImage,
   drawLinesOfText,
   drawRectangle,
+  drawLine,
 } from 'src/api/operations';
 import {
   popGraphicsState,
@@ -20,6 +21,7 @@ import {
   PDFPageDrawRectangleOptions,
   PDFPageDrawSquareOptions,
   PDFPageDrawTextOptions,
+  PDFPageDrawLineOptions,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
 import { StandardFonts } from 'src/api/StandardFonts';
@@ -669,6 +671,46 @@ export default class PDFPage {
         rotate: options.rotate || degrees(0),
         xSkew: options.xSkew || degrees(0),
         ySkew: options.ySkew || degrees(0),
+      }),
+    );
+  }
+
+  /**
+   * Draw a line on this page. For example:
+   * ```js
+   * import { degrees, grayscale, rgb } from 'pdf-lib'
+   *
+   * page.drawLine({
+   *   x1: 25,
+   *   y1: 75,
+   *   x2: 125,
+   *   y2: 175,
+   *   thickness: 2,
+   *   color: rgb(0.75, 0.2, 0.2)
+   * })
+   * ```
+   * @param options The options to be used when drawing the line.
+   */
+  drawLine(options: PDFPageDrawLineOptions): void {
+    assertIs(options.x1, 'options.x1', ['number']);
+    assertIs(options.y1, 'options.y1', ['number']);
+    assertIs(options.x2, 'options.x2', ['number']);
+    assertIs(options.y2, 'options.y2', ['number']);
+    assertOrUndefined(options.thickness, 'options.thickness', ['number']);
+    assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+
+    const contentStream = this.getContentStream();
+    if (!('color' in options)) {
+      options.color = rgb(0, 0, 0);
+    }
+    contentStream.push(
+      ...drawLine({
+        x1: options.x1,
+        y1: options.y1,
+        x2: options.x2,
+        y2: options.y2,
+        thickness: options.thickness || 1,
+        color: options.color || undefined,
       }),
     );
   }
