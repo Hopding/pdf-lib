@@ -107,6 +107,22 @@ export const drawImage = (
   popGraphicsState(),
 ];
 
+export const drawLine = (options: {
+  start: { x: number | PDFNumber; y: number | PDFNumber };
+  end: { x: number | PDFNumber; y: number | PDFNumber };
+  thickness: number | PDFNumber;
+  color: Color | undefined;
+}) =>
+  [
+    pushGraphicsState(),
+    options.color && setStrokingColor(options.color),
+    setLineWidth(options.thickness),
+    moveTo(options.start.x, options.start.y),
+    lineTo(options.end.x, options.end.y),
+    stroke(),
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
+
 export const drawRectangle = (options: {
   x: number | PDFNumber;
   y: number | PDFNumber;

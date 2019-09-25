@@ -39,6 +39,13 @@ export interface PDFPageDrawRectangleOptions {
   borderColor?: Color;
 }
 
+export interface PDFPageDrawLineOptions {
+  start: { x: number; y: number };
+  end: { x: number; y: number };
+  thickness?: number;
+  color?: Color;
+}
+
 export interface PDFPageDrawSquareOptions {
   x?: number;
   y?: number;
