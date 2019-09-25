@@ -2,6 +2,7 @@ import { Color, rgb } from 'src/api/colors';
 import {
   drawEllipse,
   drawImage,
+  drawLine,
   drawLinesOfText,
   drawRectangle,
 } from 'src/api/operations';
@@ -17,6 +18,7 @@ import {
   PDFPageDrawCircleOptions,
   PDFPageDrawEllipseOptions,
   PDFPageDrawImageOptions,
+  PDFPageDrawLineOptions,
   PDFPageDrawRectangleOptions,
   PDFPageDrawSquareOptions,
   PDFPageDrawTextOptions,
@@ -669,6 +671,48 @@ export default class PDFPage {
         rotate: options.rotate || degrees(0),
         xSkew: options.xSkew || degrees(0),
         ySkew: options.ySkew || degrees(0),
+      }),
+    );
+  }
+
+  /**
+   * Draw a line on this page. For example:
+   * ```js
+   * import { rgb } from 'pdf-lib'
+   *
+   * page.drawLine({
+   *   start: { x: 25, y: 75 },
+   *   end: { x: 125, y: 175 },
+   *   thickness: 2,
+   *   color: rgb(0.75, 0.2, 0.2)
+   * })
+   * ```
+   * @param options The options to be used when drawing the line.
+   */
+  drawLine(options: PDFPageDrawLineOptions): void {
+    assertIs(options.start, 'options.start', [
+      [Object, '{ x: number, y: number }'],
+    ]);
+    assertIs(options.end, 'options.end', [
+      [Object, '{ x: number, y: number }'],
+    ]);
+    assertIs(options.start.x, 'options.start.x', ['number']);
+    assertIs(options.start.y, 'options.start.y', ['number']);
+    assertIs(options.end.x, 'options.end.x', ['number']);
+    assertIs(options.end.y, 'options.end.y', ['number']);
+    assertOrUndefined(options.thickness, 'options.thickness', ['number']);
+    assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+
+    const contentStream = this.getContentStream();
+    if (!('color' in options)) {
+      options.color = rgb(0, 0, 0);
+    }
+    contentStream.push(
+      ...drawLine({
+        start: options.start,
+        end: options.end,
+        thickness: options.thickness || 1,
+        color: options.color || undefined,
       }),
     );
   }

@@ -61,12 +61,11 @@ export default async (assets: Assets) => {
     font: helveticaFont,
     color: hotPink,
   });
-  page2.drawRectangle({
-    x: 30,
-    y: 50,
-    width: lastPageTextWidth,
-    height: 5,
+  page2.drawLine({
+    start: { x: 30, y: 50 },
+    end: { x: 30 + lastPageTextWidth, y: 50 },
     color: hotPink,
+    thickness: 5,
   });
 
   const base64Pdf = await pdfDoc.saveAsBase64();
