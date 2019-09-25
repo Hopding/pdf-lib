@@ -4706,7 +4706,7 @@ path-type@^3.0.0:
     pify "^3.0.0"
 
 pdf-lib@./../..:
-  version "1.0.0"
+  version "1.1.0"
   dependencies:
     "@pdf-lib/standard-fonts" "^0.0.4"
     pako "^1.0.10"
