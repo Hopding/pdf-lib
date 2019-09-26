@@ -65,4 +65,18 @@ describe(`utf8Encode`, () => {
 
     expect(actual).toEqual(withBom(expected));
   });
+
+  it(`encodes "ä☺𠜎️☁️" to UTF-8 (without a BOM)`, () => {
+    const input = 'ä☺𠜎️☁️';
+
+    // prettier-ignore
+    const expected = new Uint8Array([
+      0xc3, 0xa4, 0xe2, 0x98, 0xba, 0xf0, 0xa0, 0x9c, 0x8e, 0xef, 0xb8, 0x8f,
+      0xe2, 0x98, 0x81, 0xef, 0xb8, 0x8f,
+    ]);
+
+    const actual = utf8Encode(input, false);
+
+    expect(actual).toEqual(expected);
+  });
 });
