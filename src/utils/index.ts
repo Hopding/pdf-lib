@@ -1,6 +1,7 @@
 export * from 'src/utils/arrays';
 export * from 'src/utils/async';
 export * from 'src/utils/strings';
+export * from 'src/utils/unicode';
 export * from 'src/utils/numbers';
 export * from 'src/utils/errors';
 export * from 'src/utils/base64';
