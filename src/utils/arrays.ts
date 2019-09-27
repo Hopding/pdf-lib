@@ -1,11 +1,17 @@
 import { decodeFromBase64DataUri } from 'src/utils/base64';
 import { charFromCode } from 'src/utils/strings';
-import { utf8Encode } from 'src/utils/unicode';
 
 export const last = <T>(array: T[]): T => array[array.length - 1];
 
-export const typedArrayFor = (value: string | Uint8Array): Uint8Array =>
-  value instanceof Uint8Array ? value : utf8Encode(value);
+export const typedArrayFor = (value: string | Uint8Array): Uint8Array => {
+  if (value instanceof Uint8Array) return value;
+  const length = value.length;
+  const typedArray = new Uint8Array(length);
+  for (let idx = 0; idx < length; idx++) {
+    typedArray[idx] = value.charCodeAt(idx);
+  }
+  return typedArray;
+};
 
 export const mergeIntoTypedArray = (...arrays: Array<string | Uint8Array>) => {
   const arrayCount = arrays.length;

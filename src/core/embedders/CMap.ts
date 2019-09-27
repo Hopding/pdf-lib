@@ -2,9 +2,9 @@ import { Glyph } from 'src/types/fontkit';
 
 import { toHexString, toHexStringOfMinLength } from 'src/utils';
 import {
+  hasSurrogates,
   highSurrogate,
-  isUtf16CodePoint,
-  isUtf8CodePoint,
+  isWithinBMP,
   lowSurrogate,
 } from 'src/utils/unicode';
 
@@ -82,9 +82,9 @@ const cmapHexFormat = (...values: string[]) => `<${values.join('')}>`;
 const cmapHexString = (value: number) => toHexStringOfMinLength(value, 4);
 
 const cmapCodePointFormat = (codePoint: number) => {
-  if (isUtf8CodePoint(codePoint)) return cmapHexString(codePoint);
+  if (isWithinBMP(codePoint)) return cmapHexString(codePoint);
 
-  if (isUtf16CodePoint(codePoint)) {
+  if (hasSurrogates(codePoint)) {
     const hs = highSurrogate(codePoint);
     const ls = lowSurrogate(codePoint);
     return `${cmapHexString(hs)}${cmapHexString(ls)}`;
