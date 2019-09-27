@@ -4,10 +4,7 @@ import { openPdf, Reader } from './open';
 import { PDFDocument, StandardFonts } from 'src/index';
 
 (async () => {
-  // const pdfDoc = await PDFDocument.create();
-  const pdfDoc = await PDFDocument.load(
-    fs.readFileSync('/Users/tajd1/Desktop/Untitled.pdf'),
-  );
+  const pdfDoc = await PDFDocument.create();
 
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -43,5 +40,5 @@ import { PDFDocument, StandardFonts } from 'src/index';
 
   fs.writeFileSync('./out.pdf', pdfBytes);
 
-  openPdf('./out.pdf', Reader.Foxit);
+  openPdf('./out.pdf', Reader.Preview);
 })();
