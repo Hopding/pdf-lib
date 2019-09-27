@@ -15,11 +15,15 @@ import {
   JpegEmbedder,
   PDFCatalog,
   PDFContext,
+  PDFDict,
+  PDFHexString,
+  PDFName,
   PDFObjectCopier,
   PDFPageLeaf,
   PDFPageTree,
   PDFParser,
   PDFStreamWriter,
+  PDFString,
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
@@ -182,6 +186,8 @@ export default class PDFDocument {
     this.images = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
+
+    this.updateInfoDict();
   }
 
   /**
@@ -195,6 +201,54 @@ export default class PDFDocument {
    */
   registerFontkit(fontkit: Fontkit): void {
     this.fontkit = fontkit;
+  }
+
+  setTitle(title: string): void {
+    assertIs(title, 'title', ['string']);
+    const key = PDFName.of('Title');
+    this.getInfoDict().set(key, PDFHexString.fromText(title));
+  }
+
+  setAuthor(author: string): void {
+    assertIs(author, 'author', ['string']);
+    const key = PDFName.of('Author');
+    this.getInfoDict().set(key, PDFHexString.fromText(author));
+  }
+
+  setSubject(subject: string): void {
+    assertIs(subject, 'author', ['string']);
+    const key = PDFName.of('Subject');
+    this.getInfoDict().set(key, PDFHexString.fromText(subject));
+  }
+
+  setKeywords(keywords: string[]): void {
+    assertIs(keywords, 'keywords', [Array]);
+    const key = PDFName.of('Keywords');
+    this.getInfoDict().set(key, PDFHexString.fromText(keywords.join(' ')));
+  }
+
+  setCreator(creator: string): void {
+    assertIs(creator, 'creator', ['string']);
+    const key = PDFName.of('Creator');
+    this.getInfoDict().set(key, PDFHexString.fromText(creator));
+  }
+
+  setProducer(producer: string): void {
+    assertIs(producer, 'creator', ['string']);
+    const key = PDFName.of('Producer');
+    this.getInfoDict().set(key, PDFHexString.fromText(producer));
+  }
+
+  setCreationDate(creationDate: Date): void {
+    assertIs(creationDate, 'creationDate', [[Date, 'Date']]);
+    const key = PDFName.of('CreationDate');
+    this.getInfoDict().set(key, PDFString.fromDate(creationDate));
+  }
+
+  setModificationDate(modificationDate: Date): void {
+    assertIs(modificationDate, 'modificationDate', [[Date, 'Date']]);
+    const key = PDFName.of('ModDate');
+    this.getInfoDict().set(key, PDFString.fromDate(modificationDate));
   }
 
   /**
@@ -637,6 +691,29 @@ export default class PDFDocument {
     const bytes = await this.save(otherOptions);
     const base64 = encodeToBase64(bytes);
     return dataUri ? `data:application/pdf;base64,${base64}` : base64;
+  }
+
+  private updateInfoDict(): void {
+    const pdfLib = `pdf-lib (https://github.com/Hopding/pdf-lib)`;
+    const now = new Date();
+
+    const info = this.getInfoDict();
+
+    this.setProducer(pdfLib);
+    this.setModificationDate(now);
+
+    if (!info.get(PDFName.of('Creator'))) this.setCreator(pdfLib);
+    if (!info.get(PDFName.of('CreationDate'))) this.setCreationDate(now);
+  }
+
+  private getInfoDict(): PDFDict {
+    const existingInfo = this.context.lookup(this.context.trailerInfo.Info);
+    if (existingInfo instanceof PDFDict) return existingInfo;
+
+    const newInfo = this.context.obj({});
+    this.context.trailerInfo.Info = this.context.register(newInfo);
+
+    return newInfo;
   }
 
   private assertFontkit(): Fontkit {
