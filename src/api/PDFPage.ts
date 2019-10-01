@@ -487,6 +487,7 @@ export default class PDFPage {
 
   /**
    * Change the default position of this page to be further right on the y-axis.
+   * For example:
    * ```js
    * page.moveTo(50, 50)
    * page.drawText('I will be drawn at (50, 50)')

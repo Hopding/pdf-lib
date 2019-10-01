@@ -15,11 +15,15 @@ import {
   JpegEmbedder,
   PDFCatalog,
   PDFContext,
+  PDFDict,
+  PDFHexString,
+  PDFName,
   PDFObjectCopier,
   PDFPageLeaf,
   PDFPageTree,
   PDFParser,
   PDFStreamWriter,
+  PDFString,
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
@@ -182,6 +186,8 @@ export default class PDFDocument {
     this.images = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
+
+    this.updateInfoDict();
   }
 
   /**
@@ -198,9 +204,122 @@ export default class PDFDocument {
   }
 
   /**
+   * Set this document's title metadata. The title will appear in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * pdfDoc.setTitle('🥚 The Life of an Egg 🍳')
+   * ```
+   * @param title The title of this document.
+   */
+  setTitle(title: string): void {
+    assertIs(title, 'title', ['string']);
+    const key = PDFName.of('Title');
+    this.getInfoDict().set(key, PDFHexString.fromText(title));
+  }
+
+  /**
+   * Set this document's author metadata. The author will appear in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * pdfDoc.setAuthor('Humpty Dumpty')
+   * ```
+   * @param author The author of this document.
+   */
+  setAuthor(author: string): void {
+    assertIs(author, 'author', ['string']);
+    const key = PDFName.of('Author');
+    this.getInfoDict().set(key, PDFHexString.fromText(author));
+  }
+
+  /**
+   * Set this document's subject metadata. The subject will appear in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * pdfDoc.setSubject('📘 An Epic Tale of Woe 📖')
+   * ```
+   * @param subject The subject of this document.
+   */
+  setSubject(subject: string): void {
+    assertIs(subject, 'author', ['string']);
+    const key = PDFName.of('Subject');
+    this.getInfoDict().set(key, PDFHexString.fromText(subject));
+  }
+
+  /**
+   * Set this document's keyword metadata. These keywords will appear in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * pdfDoc.setKeywords(['eggs', 'wall', 'fall', 'king', 'horses', 'men'])
+   * ```
+   * @param keywords An array of keywords associated with this document.
+   */
+  setKeywords(keywords: string[]): void {
+    assertIs(keywords, 'keywords', [Array]);
+    const key = PDFName.of('Keywords');
+    this.getInfoDict().set(key, PDFHexString.fromText(keywords.join(' ')));
+  }
+
+  /**
+   * Set this document's creator metadata. The creator will appear in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * pdfDoc.setCreator('PDF App 9000 🤖')
+   * ```
+   * @param creator The creator of this document.
+   */
+  setCreator(creator: string): void {
+    assertIs(creator, 'creator', ['string']);
+    const key = PDFName.of('Creator');
+    this.getInfoDict().set(key, PDFHexString.fromText(creator));
+  }
+
+  /**
+   * Set this document's producer metadata. The producer will appear in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * pdfDoc.setProducer('PDF App 9000 🤖')
+   * ```
+   * @param producer The producer of this document.
+   */
+  setProducer(producer: string): void {
+    assertIs(producer, 'creator', ['string']);
+    const key = PDFName.of('Producer');
+    this.getInfoDict().set(key, PDFHexString.fromText(producer));
+  }
+
+  /**
+   * Set this document's creation date metadata. The creation date will appear
+   * in the "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * pdfDoc.setCreationDate(new Date())
+   * ```
+   * @param creationDate The date this document was created.
+   */
+  setCreationDate(creationDate: Date): void {
+    assertIs(creationDate, 'creationDate', [[Date, 'Date']]);
+    const key = PDFName.of('CreationDate');
+    this.getInfoDict().set(key, PDFString.fromDate(creationDate));
+  }
+
+  /**
+   * Set this document's modification date metadata. The modification date will
+   * appear in the "Document Properties" section of most PDF readers. For
+   * example:
+   * ```js
+   * pdfDoc.setModificationDate(new Date())
+   * ```
+   * @param modificationDate The date this document was last modified.
+   */
+  setModificationDate(modificationDate: Date): void {
+    assertIs(modificationDate, 'modificationDate', [[Date, 'Date']]);
+    const key = PDFName.of('ModDate');
+    this.getInfoDict().set(key, PDFString.fromDate(modificationDate));
+  }
+
+  /**
    * Get the number of pages contained in this document. For example:
    * ```js
-   * const totalPages = pdfDoc.getPageCount();
+   * const totalPages = pdfDoc.getPageCount()
    * ```
    * @returns The number of pages in this document.
    */
@@ -637,6 +756,29 @@ export default class PDFDocument {
     const bytes = await this.save(otherOptions);
     const base64 = encodeToBase64(bytes);
     return dataUri ? `data:application/pdf;base64,${base64}` : base64;
+  }
+
+  private updateInfoDict(): void {
+    const pdfLib = `pdf-lib (https://github.com/Hopding/pdf-lib)`;
+    const now = new Date();
+
+    const info = this.getInfoDict();
+
+    this.setProducer(pdfLib);
+    this.setModificationDate(now);
+
+    if (!info.get(PDFName.of('Creator'))) this.setCreator(pdfLib);
+    if (!info.get(PDFName.of('CreationDate'))) this.setCreationDate(now);
+  }
+
+  private getInfoDict(): PDFDict {
+    const existingInfo = this.context.lookup(this.context.trailerInfo.Info);
+    if (existingInfo instanceof PDFDict) return existingInfo;
+
+    const newInfo = this.context.obj({});
+    this.context.trailerInfo.Info = this.context.register(newInfo);
+
+    return newInfo;
   }
 
   private assertFontkit(): Fontkit {

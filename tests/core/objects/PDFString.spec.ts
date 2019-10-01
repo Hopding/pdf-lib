@@ -8,6 +8,14 @@ describe(`PDFString`, () => {
     expect(PDFString.of(')b\\a/z(')).toBeInstanceOf(PDFString);
   });
 
+  it(`can be constructed from a Date object`, () => {
+    const date1 = new Date('2018-06-24T01:58:37.228Z');
+    expect(String(PDFString.fromDate(date1))).toBe('(D:20180624015837Z)');
+
+    const date2 = new Date('2019-12-21T07:00:11.000Z');
+    expect(String(PDFString.fromDate(date2))).toBe('(D:20191221070011Z)');
+  });
+
   it(`can be cloned`, () => {
     const original = PDFString.of(')b\\a/z(');
     const clone = original.clone();

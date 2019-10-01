@@ -1,9 +1,24 @@
 import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { copyStringIntoBuffer } from 'src/utils';
+import {
+  copyStringIntoBuffer,
+  toHexStringOfMinLength,
+  utf16Encode,
+} from 'src/utils';
 
 class PDFHexString extends PDFObject {
   static of = (value: string) => new PDFHexString(value);
+
+  static fromText = (value: string) => {
+    const encoded = utf16Encode(value);
+
+    let hex = '';
+    for (let idx = 0, len = encoded.length; idx < len; idx++) {
+      hex += toHexStringOfMinLength(encoded[idx], 4);
+    }
+
+    return new PDFHexString(hex);
+  };
 
   private readonly value: string;
 
