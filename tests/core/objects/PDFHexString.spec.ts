@@ -8,6 +8,16 @@ describe(`PDFHexString`, () => {
     expect(PDFHexString.of('901FA')).toBeInstanceOf(PDFHexString);
   });
 
+  it(`can be constructed from a string of text (using UTF-16BE encoding)`, () => {
+    expect(String(PDFHexString.fromText(''))).toBe('<FEFF>');
+    expect(String(PDFHexString.fromText('ä☺𠜎️☁️💩'))).toBe(
+      '<FEFF00E4263AD841DF0EFE0F2601FE0FD83DDCA9>',
+    );
+    expect(String(PDFHexString.fromText('stuff 💩 and 🎂things'))).toBe(
+      '<FEFF007300740075006600660020D83DDCA900200061006E00640020D83CDF82007400680069006E00670073>',
+    );
+  });
+
   it(`can be cloned`, () => {
     const original = PDFHexString.of('901FA');
     const clone = original.clone();

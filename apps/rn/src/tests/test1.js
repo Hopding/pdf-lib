@@ -33,6 +33,15 @@ const ipsumLines = [
 export default async () => {
   const pdfDoc = await PDFDocument.create();
 
+  pdfDoc.setTitle('🥚 The Life of an Egg 🍳');
+  pdfDoc.setAuthor('Humpty Dumpty');
+  pdfDoc.setSubject('📘 An Epic Tale of Woe 📖');
+  pdfDoc.setKeywords(['eggs', 'wall', 'fall', 'king', 'horses', 'men']);
+  pdfDoc.setProducer('PDF App 9000 🤖');
+  pdfDoc.setCreator('PDF App 9000 🤖');
+  pdfDoc.setCreationDate(new Date('2018-06-24T01:58:37.228Z'));
+  pdfDoc.setModificationDate(new Date('2018-12-21T07:00:11.000Z'));
+
   pdfDoc.registerFontkit(fontkit);
 
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
