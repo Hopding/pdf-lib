@@ -83,4 +83,45 @@ describe(`svgPath`, () => {
       '100 100 m,100 100 200 100 200 200 c,200 300 200 200 100 200 c,0 200 0 250 v',
     );
   });
+  it(`draws dashed line`, () => {
+    const operators = svgPathOperators(
+      'M 0,25 5,25 M 10,25 15,25 M 20,25 25,25',
+    );
+    expect(operators.length).toBe(6);
+    expect(operators.toString()).toBe(
+      '0 25 m,5 25 l,10 25 m,15 25 l,20 25 m,25 25 l',
+    );
+  });
+  it(`draws relative dashed line`, () => {
+    const operators = svgPathOperators('m 0,25 5,0 m 5,0 5,0 m 5,0 5,0');
+    expect(operators.length).toBe(6);
+    expect(operators.toString()).toBe(
+      '0 25 m,5 25 l,10 25 m,15 25 l,20 25 m,25 25 l',
+    );
+  });
+  it(`interprets odd inputs`, () => {
+    const operators = svgPathOperators('M 0,25 5,25 m 5-0 5..0 m 5,0 5,0');
+    expect(operators.length).toBe(6);
+    expect(operators.toString()).toBe(
+      '0 25 m,5 25 l,10 25 m,15 25 l,20 25 m,25 25 l',
+    );
+  });
+  it(`resets cubic bezier control points`, () => {
+    const operators = svgPathOperators(
+      'M100 100 S200,100 200,200 M95 105 s100,0 100,100',
+    );
+    expect(operators.length).toBe(4);
+    expect(operators.toString()).toBe(
+      '100 100 m,100 100 200 100 200 200 c,95 105 m,95 105 195 105 195 205 c',
+    );
+  });
+  it(`resets quadratic bezier control points`, () => {
+    const operators = svgPathOperators(
+      'M100 100 T100,200 200,200 M90,120 t0,100 100,0',
+    );
+    expect(operators.length).toBe(6);
+    expect(operators.toString()).toBe(
+      '100 100 m,100 100 100 200 v,100 300 200 200 v,90 120 m,90 120 90 220 v,90 320 190 220 v',
+    );
+  });
 });
