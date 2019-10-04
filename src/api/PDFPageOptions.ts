@@ -76,3 +76,12 @@ export interface PDFPageDrawCircleOptions {
   borderColor?: Color;
   borderWidth?: number;
 }
+
+export interface PDFPageDrawSVGOptions {
+  x?: number;
+  y?: number;
+  scale?: number;
+  borderWidth?: number;
+  color?: Color;
+  borderColor?: Color;
+}

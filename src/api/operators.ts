@@ -130,6 +130,19 @@ export const appendBezierCurve = (
     asPDFNumber(y3),
   ]);
 
+export const appendQuadraticCurve = (
+  x1: number | PDFNumber,
+  y1: number | PDFNumber,
+  x2: number | PDFNumber,
+  y2: number | PDFNumber,
+) =>
+  PDFOperator.of(Ops.CurveToReplicateInitialPoint, [
+    asPDFNumber(x1),
+    asPDFNumber(y1),
+    asPDFNumber(x2),
+    asPDFNumber(y2),
+  ]);
+
 export const closePath = () => PDFOperator.of(Ops.ClosePath);
 
 export const moveTo = (xPos: number | PDFNumber, yPos: number | PDFNumber) =>
