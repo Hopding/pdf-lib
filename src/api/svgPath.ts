@@ -2,6 +2,7 @@
 // https://github.com/foliojs/pdfkit/blob/1e62e6ffe24b378eb890df507a47610f4c4a7b24/lib/path.js
 // MIT LICENSE
 // Updated for pdf-lib & TypeScript by Jeremy Messenger
+
 import {
   appendBezierCurve,
   appendQuadraticCurve,
@@ -485,7 +486,4 @@ const segmentToBezier = (
   return result;
 };
 
-export default (path: string) => {
-  const commands = parse(path);
-  return apply(commands);
-};
+export const svgPathToOperators = (path: string) => apply(parse(path));

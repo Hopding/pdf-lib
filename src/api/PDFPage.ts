@@ -679,39 +679,39 @@ export default class PDFPage {
   }
 
   /**
-   * Draw a SVG path on this page.
+   * Draw an SVG path on this page. For example:
    * ```js
    * import { rgb } from 'pdf-lib'
    *
    * const svgPath = 'M 0,20 L 100,160 Q 130,200 150,120 C 190,-40 200,200 300,150 L 400,90';
    *
-   * // draw path as black line
-   * page.drawSvgPath(svgPath, { x: 25, y: 75 });
+   * // Draw path as black line
+   * page.drawSvgPath(svgPath, { x: 25, y: 75 })
    *
-   * // change border style
+   * // Change border style
    * page.drawSvgPath(svgPath, {
    *   x: 25,
    *   y: 275,
    *   borderColor: rgb(0.5, 0.5, 0.5),
-   *   borderWidth: 2
-   * });
+   *   borderWidth: 2,
+   * })
    *
-   * // set fill color
+   * // Set fill color
    * page.drawSvgPath(svgPath, {
    * 	 x: 25,
    * 	 y: 475,
-   * 	 color: rgb(1.0, 0, 0)
-   * });
+   * 	 color: rgb(1.0, 0, 0),
+   * })
    *
-   * // draw 50% of original size
+   * // Draw 50% of original size
    * page.drawSvgPath(svgPath, {
    * 	 x: 25,
    * 	 y: 675,
-   * 	 scale: 0.5
-   * });
+   * 	 scale: 0.5,
+   * })
    * ```
-   * @param path SVG path.
-   * @param options The options to be used when drawing the SVG.
+   * @param path The SVG path to be drawn.
+   * @param options The options to be used when drawing the SVG path.
    */
   drawSvgPath(path: string, options: PDFPageDrawSVGOptions = {}): void {
     assertIs(path, 'path', ['string']);
@@ -724,22 +724,20 @@ export default class PDFPage {
       [Object, 'Color'],
     ]);
 
-    const opts = {
-      ...options,
-      x: options.x || this.x,
-      y: options.y || this.y,
-    };
-    // if no fill color or border assigned - use black border
-    if (!options.color && !options.borderColor) {
-      opts.borderColor = rgb(0, 0, 0);
-    }
-    if (options.borderColor && !options.borderWidth) {
-      opts.borderWidth = 1;
-    }
-
     const contentStream = this.getContentStream();
-    const commands = drawSvgPath(path, opts);
-    contentStream.push(...commands);
+    if (!('color' in options) && !('borderColor' in options)) {
+      options.borderColor = rgb(0, 0, 0);
+    }
+    contentStream.push(
+      ...drawSvgPath(path, {
+        x: options.x || this.x,
+        y: options.y || this.y,
+        scale: options.scale,
+        color: options.color || undefined,
+        borderColor: options.borderColor || undefined,
+        borderWidth: options.borderWidth || 0,
+      }),
+    );
   }
 
   /**

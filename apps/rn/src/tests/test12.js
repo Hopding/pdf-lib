@@ -1,8 +1,4 @@
-import {
-  PageSizes,
-  PDFDocument,
-  rgb
-} from 'pdf-lib';
+import { PageSizes, PDFDocument, rgb } from 'pdf-lib';
 
 const inchToPt = (inches) => Math.round(inches * 72);
 
@@ -20,6 +16,7 @@ export default async () => {
     y: inchToPt(12),
     color: rgb(1, 0, 0),
     borderColor: rgb(0, 0, 1),
+    borderWidth: 1,
   });
 
   // bezier curve example
@@ -76,12 +73,14 @@ export default async () => {
     y: inchToPt(5.5),
     color: rgb(1, 0, 0),
     borderColor: rgb(0, 0, 1),
+    borderWidth: 1,
   });
   page2.drawSvgPath('M275,175 v-150 a150,150 0 0,0 -150,150 z', {
     x: inchToPt(-1),
     y: inchToPt(5.5),
     color: rgb(1, 1, 0),
     borderColor: rgb(0, 0, 1),
+    borderWidth: 1,
   });
   page2.drawSvgPath(
     'M600,350 l 50,-25 a25,25 -30 0,1 50,-25 l 50,-25 a25,50 -30 0,1 50,-25 l 50,-25 a25,75 -30 0,1 50,-25 l 50,-25 a25,100 -30 0,1 50,-25 l 50,-25',
@@ -89,8 +88,8 @@ export default async () => {
       x: inchToPt(1),
       y: inchToPt(3),
       scale: 0.5,
-      borderWidth: 2,
       borderColor: rgb(1, 0, 0),
+      borderWidth: 2,
     },
   );
 
