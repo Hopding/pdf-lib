@@ -5,6 +5,7 @@ import {
   drawLine,
   drawLinesOfText,
   drawRectangle,
+  drawSvgPath,
 } from 'src/api/operations';
 import {
   popGraphicsState,
@@ -21,6 +22,7 @@ import {
   PDFPageDrawLineOptions,
   PDFPageDrawRectangleOptions,
   PDFPageDrawSquareOptions,
+  PDFPageDrawSVGOptions,
   PDFPageDrawTextOptions,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
@@ -674,6 +676,70 @@ export default class PDFPage {
         ySkew: options.ySkew || degrees(0),
       }),
     );
+  }
+
+  /**
+   * Draw a SVG path on this page.
+   * ```js
+   * import { rgb } from 'pdf-lib'
+   *
+   * const svgPath = 'M 0,20 L 100,160 Q 130,200 150,120 C 190,-40 200,200 300,150 L 400,90';
+   *
+   * // draw path as black line
+   * page.drawSvgPath(svgPath, { x: 25, y: 75 });
+   *
+   * // change border style
+   * page.drawSvgPath(svgPath, {
+   *   x: 25,
+   *   y: 275,
+   *   borderColor: rgb(0.5, 0.5, 0.5),
+   *   borderWidth: 2
+   * });
+   *
+   * // set fill color
+   * page.drawSvgPath(svgPath, {
+   * 	 x: 25,
+   * 	 y: 475,
+   * 	 color: rgb(1.0, 0, 0)
+   * });
+   *
+   * // draw 50% of original size
+   * page.drawSvgPath(svgPath, {
+   * 	 x: 25,
+   * 	 y: 675,
+   * 	 scale: 0.5
+   * });
+   * ```
+   * @param path SVG path.
+   * @param options The options to be used when drawing the SVG.
+   */
+  drawSvgPath(path: string, options: PDFPageDrawSVGOptions = {}): void {
+    assertIs(path, 'path', ['string']);
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.scale, 'options.scale', ['number']);
+    assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
+    assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.borderColor, 'options.borderColor', [
+      [Object, 'Color'],
+    ]);
+
+    const opts = {
+      ...options,
+      x: options.x || this.x,
+      y: options.y || this.y,
+    };
+    // if no fill color or border assigned - use black border
+    if (!options.color && !options.borderColor) {
+      opts.borderColor = rgb(0, 0, 0);
+    }
+    if (options.borderColor && !options.borderWidth) {
+      opts.borderWidth = 1;
+    }
+
+    const contentStream = this.getContentStream();
+    const commands = drawSvgPath(path, opts);
+    contentStream.push(...commands);
   }
 
   /**

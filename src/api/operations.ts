@@ -25,6 +25,7 @@ import {
   translate,
 } from 'src/api/operators';
 import { Rotation, toRadians } from 'src/api/rotations';
+import svgPathOperators from 'src/api/svgPath';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
 
 export interface DrawTextOptions {
@@ -212,6 +213,37 @@ export const drawEllipse = (options: {
       xScale: options.xScale,
       yScale: options.yScale,
     }),
+
+    // prettier-ignore
+    options.color && options.borderWidth ? fillAndStroke()
+  : options.color                      ? fill()
+  : options.borderColor                ? stroke()
+  : closePath(),
+
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
+
+export const drawSvgPath = (
+  path: string,
+  options: {
+    x: number;
+    y: number;
+    scale?: number;
+    borderWidth?: number;
+    color?: Color;
+    borderColor?: Color;
+  },
+) =>
+  [
+    pushGraphicsState(),
+    translate(options.x, options.y),
+    // prettier-ignore
+    options.scale ? scale(options.scale, -options.scale)
+  : scale(1, -1), // SVG path Y axis is opposite pdf-lib's
+    options.color && setFillingColor(options.color),
+    options.borderColor && setStrokingColor(options.borderColor),
+    options.borderWidth && setLineWidth(options.borderWidth),
+    ...svgPathOperators(path),
 
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()

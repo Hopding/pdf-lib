@@ -19,6 +19,7 @@ import test8 from '../tests/test8';
 import test9 from '../tests/test9';
 import test10 from '../tests/test10';
 import test11 from '../tests/test11';
+import test12 from '../tests/test12';
 
 const red = '#FF0000';
 
@@ -67,6 +68,7 @@ export default class TestLauncher extends Component {
         <TestButton test={[9, test9]} longRunning />
         <TestButton test={[10, test10]} />
         <TestButton test={[11, test11]} longRunning />
+        <TestButton test={[12, test12]} />
       </SafeAreaView>
     );
   }
