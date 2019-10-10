@@ -683,7 +683,7 @@ export default class PDFPage {
    * ```js
    * import { rgb } from 'pdf-lib'
    *
-   * const svgPath = 'M 0,20 L 100,160 Q 130,200 150,120 C 190,-40 200,200 300,150 L 400,90';
+   * const svgPath = 'M 0,20 L 100,160 Q 130,200 150,120 C 190,-40 200,200 300,150 L 400,90'
    *
    * // Draw path as black line
    * page.drawSvgPath(svgPath, { x: 25, y: 75 })

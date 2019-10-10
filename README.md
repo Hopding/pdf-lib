@@ -51,6 +51,8 @@
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
+  - [Set Document Metadata](#set-document-metadata)
+  - [Draw SVG Paths](#draw-svg-paths)
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
 - [Documentation](#documentation)
@@ -71,8 +73,10 @@
 - Draw Text
 - Draw Images
 - Draw Vector Graphics
+- Draw SVG Paths
 - Measure width and height of text
 - Embed Fonts (supports UTF-8 and UTF-16 character sets)
+- Set document metadata
 
 ## Motivation
 
@@ -327,6 +331,90 @@ page.drawRectangle({
   borderColor: rgb(1, 0, 0),
   borderWidth: 1.5,
 })
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Set Document Metadata
+
+_This example produces [this PDF](assets/pdfs/examples/set_document_metadata.pdf)_.
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts } from 'pdf-lib'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Embed the Times Roman font
+const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+
+// Add a page and draw some text on it
+const page = pdfDoc.addPage([500, 600]);
+page.setFont(timesRomanFont);
+page.drawText('The Life of an Egg', { x: 60, y: 500, size: 50 });
+page.drawText('An Epic Tale of Woe', { x: 125, y: 460, size: 25 });
+
+// Set all available metadata fields on the PDFDocument. Note that these fields
+// are visible in the "Document Properties" section of most PDF readers.
+pdfDoc.setTitle('🥚 The Life of an Egg 🍳');
+pdfDoc.setAuthor('Humpty Dumpty');
+pdfDoc.setSubject('📘 An Epic Tale of Woe 📖');
+pdfDoc.setKeywords(['eggs', 'wall', 'fall', 'king', 'horses', 'men']);
+pdfDoc.setProducer('PDF App 9000 🤖');
+pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)');
+pdfDoc.setCreationDate(new Date('2018-06-24T01:58:37.228Z'));
+pdfDoc.setModificationDate(new Date('2019-12-21T07:00:11.000Z'));
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Draw SVG Paths
+
+_This example produces [this PDF](assets/pdfs/examples/draw_svg_paths.pdf)_.
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, rgb } from 'pdf-lib'
+
+// SVG path for a wavy line
+const svgPath =
+  'M 0,20 L 100,160 Q 130,200 150,120 C 190,-40 200,200 300,150 L 400,90'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Add a blank page to the document
+const page = pdfDoc.addPage()
+page.moveTo(100, page.getHeight() - 5)
+
+// Draw the SVG path as a black line
+page.moveDown(25)
+page.drawSvgPath(svgPath)
+
+// Draw the SVG path as a thick green line
+page.moveDown(200)
+page.drawSvgPath(svgPath, { borderColor: rgb(0, 1, 0), borderWidth: 5 })
+
+// Draw the SVG path and fill it with red
+page.moveDown(200)
+page.drawSvgPath(svgPath, { color: rgb(1, 0, 0) })
+
+// Draw the SVG path at 50% of its original size
+page.moveDown(200)
+page.drawSvgPath(svgPath, { scale: 0.5 })
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
