@@ -368,7 +368,7 @@ pdfDoc.setAuthor('Humpty Dumpty')
 pdfDoc.setSubject('📘 An Epic Tale of Woe 📖')
 pdfDoc.setKeywords(['eggs', 'wall', 'fall', 'king', 'horses', 'men'])
 pdfDoc.setProducer('PDF App 9000 🤖')
-pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)');
+pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)')
 pdfDoc.setCreationDate(new Date('2018-06-24T01:58:37.228Z'))
 pdfDoc.setModificationDate(new Date('2019-12-21T07:00:11.000Z'))
 
