@@ -661,7 +661,7 @@ export default class PDFPage {
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
 
-    const xObjectKey = addRandomSuffix('Image', 4);
+    const xObjectKey = addRandomSuffix('Image', 10);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
     const contentStream = this.getContentStream();
