@@ -173,6 +173,53 @@ describe(`PDFPageLeaf`, () => {
     expect(pageLeaf.Rotate()).toBe(rotate);
   });
 
+  it(`returns its Resources, MediaBox, CropBox, and Rotate entry values after being normalized, when they are inherited`, () => {
+    const context = PDFContext.create();
+
+    const resources = context.obj({
+      Font: { Foo: PDFRef.of(2100) },
+      XObject: { Foo: PDFRef.of(9000) },
+    });
+    const resourcesRef = context.register(resources);
+
+    const mediaBox = context.obj([]);
+    const mediaBoxRef = context.register(mediaBox);
+
+    const cropBox = context.obj([]);
+    const cropBoxRef = context.register(cropBox);
+
+    const rotate = context.obj(270);
+    const rotateRef = context.register(rotate);
+
+    const parent = PDFPageTree.withContext(context);
+    const parentRef = context.register(parent);
+
+    parent.set(PDFName.of('Resources'), resourcesRef);
+    parent.set(PDFName.of('MediaBox'), mediaBoxRef);
+    parent.set(PDFName.of('CropBox'), cropBoxRef);
+    parent.set(PDFName.of('Rotate'), rotateRef);
+
+    const pageLeaf = PDFPageLeaf.withContextAndParent(context, parentRef);
+    const pageLeafRef = context.register(pageLeaf);
+
+    parent.pushLeafNode(pageLeafRef);
+
+    pageLeaf.delete(PDFName.of('Resources'));
+    pageLeaf.delete(PDFName.of('MediaBox'));
+
+    const { Resources, Font, XObject } = pageLeaf.normalizedEntries();
+
+    expect(pageLeaf.Parent()).toBe(parent);
+    expect(pageLeaf.Resources()).toBe(resources);
+    expect(pageLeaf.MediaBox()).toBe(mediaBox);
+    expect(pageLeaf.CropBox()).toBe(cropBox);
+    expect(pageLeaf.Rotate()).toBe(rotate);
+
+    expect(Resources).toBe(resources);
+    expect(Font).toBe(resources.get(PDFName.Font));
+    expect(XObject).toBe(resources.get(PDFName.XObject));
+  });
+
   it(`can set its Parent`, () => {
     const context = PDFContext.create();
     const parentRef = PDFRef.of(1);
@@ -185,7 +232,6 @@ describe(`PDFPageLeaf`, () => {
     const context = PDFContext.create();
     const parentRef = PDFRef.of(1);
     const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
-    pageTree.normalize();
 
     pageTree.addContentStream(PDFRef.of(21));
     expect(pageTree.Contents()!.toString()).toBe('[ 21 0 R ]');
@@ -197,20 +243,19 @@ describe(`PDFPageLeaf`, () => {
     const context = PDFContext.create();
     const parentRef = PDFRef.of(1);
     const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
-    pageTree.normalize();
 
     const Font = PDFName.of('Font');
     pageTree.setFontDictionary(PDFName.of('Foo'), PDFRef.of(21));
     expect(
       pageTree
-        .Resources()
+        .Resources()!
         .get(Font)!
         .toString(),
     ).toBe('<<\n/Foo 21 0 R\n>>');
     pageTree.setFontDictionary(PDFName.of('Bar'), PDFRef.of(99));
     expect(
       pageTree
-        .Resources()
+        .Resources()!
         .get(Font)!
         .toString(),
     ).toBe('<<\n/Foo 21 0 R\n/Bar 99 0 R\n>>');
@@ -220,20 +265,19 @@ describe(`PDFPageLeaf`, () => {
     const context = PDFContext.create();
     const parentRef = PDFRef.of(1);
     const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
-    pageTree.normalize();
 
     const XObject = PDFName.of('XObject');
     pageTree.setXObject(PDFName.of('Foo'), PDFRef.of(21));
     expect(
       pageTree
-        .Resources()
+        .Resources()!
         .get(XObject)!
         .toString(),
     ).toBe('<<\n/Foo 21 0 R\n>>');
     pageTree.setXObject(PDFName.of('Bar'), PDFRef.of(99));
     expect(
       pageTree
-        .Resources()
+        .Resources()!
         .get(XObject)!
         .toString(),
     ).toBe('<<\n/Foo 21 0 R\n/Bar 99 0 R\n>>');
@@ -271,12 +315,12 @@ describe(`PDFPageLeaf`, () => {
     pageTree.set(PDFName.of('Contents'), streamRef);
 
     expect(pageTree.Contents()).toBe(stream);
-    expect(pageTree.Resources().toString()).toBe('<<\n>>');
+    expect(pageTree.Resources()!.toString()).toBe('<<\n>>');
 
     pageTree.normalize();
 
     expect(pageTree.Contents()!.toString()).toBe('[ 21 0 R ]');
-    expect(pageTree.Resources().toString()).toBe(
+    expect(pageTree.Resources()!.toString()).toBe(
       '<<\n/Font <<\n>>\n/XObject <<\n>>\n>>',
     );
   });
@@ -300,7 +344,7 @@ describe(`PDFPageLeaf`, () => {
     expect(pageTree.Contents()!.toString()).toBe(
       `[ ${pushRef} 21 0 R ${popRef} ]`,
     );
-    expect(pageTree.Resources().toString()).toBe(
+    expect(pageTree.Resources()!.toString()).toBe(
       '<<\n/Font <<\n>>\n/XObject <<\n>>\n>>',
     );
   });

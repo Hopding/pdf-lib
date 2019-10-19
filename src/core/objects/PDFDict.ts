@@ -41,6 +41,28 @@ class PDFDict extends PDFObject {
     return this.dict.get(key);
   }
 
+  has(key: PDFName): boolean {
+    return this.dict.has(key);
+  }
+
+  lookupMaybe(key: PDFName, type: typeof PDFArray): PDFArray | undefined;
+  lookupMaybe(key: PDFName, type: typeof PDFBool): PDFBool | undefined;
+  lookupMaybe(key: PDFName, type: typeof PDFDict): PDFDict | undefined;
+  lookupMaybe(
+    key: PDFName,
+    type: typeof PDFHexString,
+  ): PDFHexString | undefined;
+  lookupMaybe(key: PDFName, type: typeof PDFName): PDFName | undefined;
+  lookupMaybe(key: PDFName, type: typeof PDFNull): typeof PDFNull | undefined;
+  lookupMaybe(key: PDFName, type: typeof PDFNumber): PDFNumber | undefined;
+  lookupMaybe(key: PDFName, type: typeof PDFStream): PDFStream | undefined;
+  lookupMaybe(key: PDFName, type: typeof PDFRef): PDFRef | undefined;
+  lookupMaybe(key: PDFName, type: typeof PDFString): PDFString | undefined;
+
+  lookupMaybe(key: PDFName, type: any) {
+    return this.context.lookupMaybe(this.get(key), type) as any;
+  }
+
   lookup(key: PDFName): PDFObject | undefined;
   lookup(key: PDFName, type: typeof PDFArray): PDFArray;
   lookup(key: PDFName, type: typeof PDFBool): PDFBool;
