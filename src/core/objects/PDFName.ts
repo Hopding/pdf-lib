@@ -36,6 +36,19 @@ class PDFName extends PDFObject {
   /* tslint:disable member-ordering */
   static readonly Length = PDFName.of('Length');
   static readonly FlateDecode = PDFName.of('FlateDecode');
+  static readonly Resources = PDFName.of('Resources');
+  static readonly Font = PDFName.of('Font');
+  static readonly XObject = PDFName.of('XObject');
+  static readonly Contents = PDFName.of('Contents');
+  static readonly Type = PDFName.of('Type');
+  static readonly Parent = PDFName.of('Parent');
+  static readonly MediaBox = PDFName.of('MediaBox');
+  static readonly Page = PDFName.of('Page');
+  static readonly Annots = PDFName.of('Annots');
+  static readonly TrimBox = PDFName.of('TrimBox');
+  static readonly BleedBox = PDFName.of('BleedBox');
+  static readonly CropBox = PDFName.of('CropBox');
+  static readonly Rotate = PDFName.of('Rotate');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;
