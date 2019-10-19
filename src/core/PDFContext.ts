@@ -90,6 +90,28 @@ class PDFContext {
     return this.indirectObjects.delete(ref);
   }
 
+  lookupMaybe(ref: LookupKey, type: typeof PDFArray): PDFArray | undefined;
+  lookupMaybe(ref: LookupKey, type: typeof PDFBool): PDFBool | undefined;
+  lookupMaybe(ref: LookupKey, type: typeof PDFDict): PDFDict | undefined;
+  lookupMaybe(
+    ref: LookupKey,
+    type: typeof PDFHexString,
+  ): PDFHexString | undefined;
+  lookupMaybe(ref: LookupKey, type: typeof PDFName): PDFName | undefined;
+  lookupMaybe(ref: LookupKey, type: typeof PDFNull): typeof PDFNull | undefined;
+  lookupMaybe(ref: LookupKey, type: typeof PDFNumber): PDFNumber | undefined;
+  lookupMaybe(ref: LookupKey, type: typeof PDFStream): PDFStream | undefined;
+  lookupMaybe(ref: LookupKey, type: typeof PDFRef): PDFRef | undefined;
+  lookupMaybe(ref: LookupKey, type: typeof PDFString): PDFString | undefined;
+
+  lookupMaybe(ref: LookupKey, type: any) {
+    const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
+    if (result && !(result instanceof type)) {
+      throw new UnexpectedObjectTypeError(type, result);
+    }
+    return result;
+  }
+
   lookup(ref: LookupKey): PDFObject | undefined;
   lookup(ref: LookupKey, type: typeof PDFArray): PDFArray;
   lookup(ref: LookupKey, type: typeof PDFBool): PDFBool;
