@@ -8,7 +8,6 @@
     "Greg Bacchus (https://github.com/gregbacchus)",
     "Mickael Lecoq (https://github.com/mlecoq)"
   ],
-  "postinstall": "yarn && yarn build",
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
     "release:next": "yarn publish --tag next",
