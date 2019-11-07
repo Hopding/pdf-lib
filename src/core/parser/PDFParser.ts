@@ -39,7 +39,9 @@ class PDFParser extends PDFObjectParser {
     this.objectsPerTick = objectsPerTick;
   }
 
-  async parseDocument(throwOnInvalidObject: boolean = false): Promise<PDFContext> {
+  async parseDocument(
+    throwOnInvalidObject: boolean = false,
+  ): Promise<PDFContext> {
     if (this.alreadyParsed) {
       throw new ReparseError('PDFParser', 'parseDocument');
     }
@@ -162,13 +164,15 @@ class PDFParser extends PDFObjectParser {
   }
 
   // TODO: Improve and clean this up
-  private tryToParseInvalidIndirectObject(throwOnInvalidObject: boolean = false) {
+  private tryToParseInvalidIndirectObject(
+    throwOnInvalidObject: boolean = false,
+  ) {
     const startPos = this.bytes.position();
 
-    if (throwOnInvalidObject){
+    if (throwOnInvalidObject) {
       throw new Error(
         `Trying to parse invalid object: ${JSON.stringify(startPos)})`,
-      )
+      );
     }
 
     console.warn(
@@ -201,7 +205,9 @@ class PDFParser extends PDFObjectParser {
     return ref;
   }
 
-  private async parseIndirectObjects(throwOnInvalidObject: boolean = false): Promise<void> {
+  private async parseIndirectObjects(
+    throwOnInvalidObject: boolean = false,
+  ): Promise<void> {
     this.skipWhitespaceAndComments();
 
     while (!this.bytes.done() && IsDigit[this.bytes.peek()]) {
@@ -289,7 +295,9 @@ class PDFParser extends PDFObjectParser {
     return PDFTrailer.forLastCrossRefSectionOffset(offset);
   }
 
-  private async parseDocumentSection(throwOnInvalidObject: boolean = false): Promise<void> {
+  private async parseDocumentSection(
+    throwOnInvalidObject: boolean = false,
+  ): Promise<void> {
     await this.parseIndirectObjects(throwOnInvalidObject);
     this.maybeParseCrossRefSection();
     this.maybeParseTrailerDict();
