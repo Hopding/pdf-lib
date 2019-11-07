@@ -60,6 +60,7 @@ export interface Base64SaveOptions extends SaveOptions {
 export interface LoadOptions {
   ignoreEncryption?: boolean;
   parseSpeed?: ParseSpeeds | number;
+  throwOnInvalidObject?: boolean;
 }
 
 export interface EmbedFontOptions {
