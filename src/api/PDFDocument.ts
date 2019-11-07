@@ -126,11 +126,12 @@ export default class PDFDocument {
     pdf: string | Uint8Array | ArrayBuffer,
     options: LoadOptions = {},
   ) {
-    const { ignoreEncryption = false, parseSpeed = ParseSpeeds.Slow } = options;
+    const { ignoreEncryption = false, parseSpeed = ParseSpeeds.Slow, throwOnInvalidObject = false } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
     assertIs(parseSpeed, 'parseSpeed', ['number']);
+    assertIs(throwOnInvalidObject, 'throwOnInvalidObject', ['boolean']);
 
     const bytes = toUint8Array(pdf);
     const context = await PDFParser.forBytesWithOptions(

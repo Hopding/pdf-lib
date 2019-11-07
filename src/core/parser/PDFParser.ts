@@ -39,7 +39,7 @@ class PDFParser extends PDFObjectParser {
     this.objectsPerTick = objectsPerTick;
   }
 
-  async parseDocument(): Promise<PDFContext> {
+  async parseDocument(throwOnInvalidObject: boolean = false): Promise<PDFContext> {
     if (this.alreadyParsed) {
       throw new ReparseError('PDFParser', 'parseDocument');
     }
@@ -49,7 +49,7 @@ class PDFParser extends PDFObjectParser {
 
     let prevOffset;
     while (!this.bytes.done()) {
-      await this.parseDocumentSection();
+      await this.parseDocumentSection(throwOnInvalidObject);
       const offset = this.bytes.offset();
       if (offset === prevOffset) {
         throw new StalledParserError(this.bytes.position());
@@ -162,8 +162,14 @@ class PDFParser extends PDFObjectParser {
   }
 
   // TODO: Improve and clean this up
-  private tryToParseInvalidIndirectObject() {
+  private tryToParseInvalidIndirectObject(throwOnInvalidObject: boolean = false) {
     const startPos = this.bytes.position();
+
+    if (throwOnInvalidObject){
+      throw new Error(
+        `Trying to parse invalid object: ${JSON.stringify(startPos)})`,
+      )
+    }
 
     console.warn(
       `Trying to parse invalid object: ${JSON.stringify(startPos)})`,
@@ -195,7 +201,7 @@ class PDFParser extends PDFObjectParser {
     return ref;
   }
 
-  private async parseIndirectObjects(): Promise<void> {
+  private async parseIndirectObjects(throwOnInvalidObject: boolean = false): Promise<void> {
     this.skipWhitespaceAndComments();
 
     while (!this.bytes.done() && IsDigit[this.bytes.peek()]) {
@@ -206,7 +212,7 @@ class PDFParser extends PDFObjectParser {
       } catch (e) {
         // TODO: Add tracing/logging mechanism to track when this happens!
         this.bytes.moveTo(initialOffset);
-        this.tryToParseInvalidIndirectObject();
+        this.tryToParseInvalidIndirectObject(throwOnInvalidObject);
       }
       this.skipWhitespaceAndComments();
 
@@ -283,8 +289,8 @@ class PDFParser extends PDFObjectParser {
     return PDFTrailer.forLastCrossRefSectionOffset(offset);
   }
 
-  private async parseDocumentSection(): Promise<void> {
-    await this.parseIndirectObjects();
+  private async parseDocumentSection(throwOnInvalidObject: boolean = false): Promise<void> {
+    await this.parseIndirectObjects(throwOnInvalidObject);
     this.maybeParseCrossRefSection();
     this.maybeParseTrailerDict();
     this.maybeParseTrailer();
