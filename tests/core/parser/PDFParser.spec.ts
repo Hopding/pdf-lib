@@ -99,6 +99,24 @@ describe(`PDFParser`, () => {
     expect(object).toBeInstanceOf(PDFInvalidObject);
   });
 
+  it(`throws an error with invalid indirect objects when throwOnInvalidObject=true`, (done) => {
+    const input = `
+    %PDF-1.7
+    22 0 obj <</Type/Outlines/First ## 0 R/Last ** 0 R/Count 2>> endobj
+  `;
+    const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
+    parser
+      .parseDocument()
+      .then((context) => {
+        expect(context).toBeUndefined();
+        done();
+      })
+      .catch((error) => {
+        expect(error).toBeInstanceOf(Error);
+        done();
+      });
+  });
+
   it(`handles xref sections with empty subsections`, async () => {
     const input = `
     %PDF-1.7

@@ -10,6 +10,7 @@ const unencryptedPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 const oldEncryptedPdfBytes1 = fs.readFileSync('assets/pdfs/encrypted_old.pdf');
 const oldEncryptedPdfBytes2 = fs.readFileSync('pdf_specification.pdf');
 const newEncryptedPdfBytes = fs.readFileSync('assets/pdfs/encrypted_new.pdf');
+const invalidPdfBytes = fs.readFileSync('assets/pdfs/invalid.pdf');
 
 describe(`PDFDocument`, () => {
   describe(`load() method`, () => {
@@ -91,6 +92,36 @@ describe(`PDFDocument`, () => {
       });
       expect(pdfDoc).toBeInstanceOf(PDFDocument);
       expect(pdfDoc.isEncrypted).toBe(true);
+    });
+
+    it(`does not throw an error for invalid PDFs when throwOnInvalidObject=false`, async () => {
+      const pdfDoc = await PDFDocument.load(invalidPdfBytes, {
+        ignoreEncryption: true,
+        parseSpeed: ParseSpeeds.Fastest,
+        throwOnInvalidObject: false,
+      });
+      expect(pdfDoc).toBeInstanceOf(PDFDocument);
+    });
+
+    it(`throws an error for invalid PDFs when throwOnInvalidObject=true`, (done) => {
+      PDFDocument.load(invalidPdfBytes, {
+        ignoreEncryption: true,
+        parseSpeed: ParseSpeeds.Fastest,
+        throwOnInvalidObject: true,
+      })
+        .then((pdf) => {
+          expect(pdf).toBeUndefined(); // Will fail if load resolves
+          done();
+        })
+        .catch((error) => {
+          expect(error).toBeInstanceOf(Error);
+          expect(error).toEqual(
+            new Error(
+              'Trying to parse invalid object: {"line":1,"column":53,"offset":13})',
+            ),
+          );
+          done();
+        });
     });
   });
 
