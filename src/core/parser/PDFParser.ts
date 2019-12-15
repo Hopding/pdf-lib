@@ -28,20 +28,21 @@ class PDFParser extends PDFObjectParser {
   static forBytesWithOptions = (
     pdfBytes: Uint8Array,
     objectsPerTick?: number,
-  ) => new PDFParser(pdfBytes, objectsPerTick);
+    throwOnInvalidObject?: boolean,
+  ) => new PDFParser(pdfBytes, objectsPerTick, throwOnInvalidObject);
 
   private readonly objectsPerTick: number;
+  private readonly throwOnInvalidObject: boolean;
   private alreadyParsed = false;
   private parsedObjects = 0;
 
-  constructor(pdfBytes: Uint8Array, objectsPerTick: number = Infinity) {
+  constructor(pdfBytes: Uint8Array, objectsPerTick: number = Infinity, throwOnInvalidObject = false) {
     super(ByteStream.of(pdfBytes), PDFContext.create());
     this.objectsPerTick = objectsPerTick;
+    this.throwOnInvalidObject = throwOnInvalidObject;
   }
 
-  async parseDocument(
-    throwOnInvalidObject: boolean = false,
-  ): Promise<PDFContext> {
+  async parseDocument(): Promise<PDFContext> {
     if (this.alreadyParsed) {
       throw new ReparseError('PDFParser', 'parseDocument');
     }
@@ -51,7 +52,7 @@ class PDFParser extends PDFObjectParser {
 
     let prevOffset;
     while (!this.bytes.done()) {
-      await this.parseDocumentSection(throwOnInvalidObject);
+      await this.parseDocumentSection();
       const offset = this.bytes.offset();
       if (offset === prevOffset) {
         throw new StalledParserError(this.bytes.position());
@@ -164,20 +165,12 @@ class PDFParser extends PDFObjectParser {
   }
 
   // TODO: Improve and clean this up
-  private tryToParseInvalidIndirectObject(
-    throwOnInvalidObject: boolean = false,
-  ) {
+  private tryToParseInvalidIndirectObject() {
     const startPos = this.bytes.position();
 
-    if (throwOnInvalidObject) {
-      throw new Error(
-        `Trying to parse invalid object: ${JSON.stringify(startPos)})`,
-      );
-    }
-
-    console.warn(
-      `Trying to parse invalid object: ${JSON.stringify(startPos)})`,
-    );
+    const msg = `Trying to parse invalid object: ${JSON.stringify(startPos)})`;
+    if (this.throwOnInvalidObject) throw new Error(msg);
+    console.warn(msg);
 
     const ref = this.parseIndirectObjectHeader();
 
@@ -205,9 +198,7 @@ class PDFParser extends PDFObjectParser {
     return ref;
   }
 
-  private async parseIndirectObjects(
-    throwOnInvalidObject: boolean = false,
-  ): Promise<void> {
+  private async parseIndirectObjects(): Promise<void> {
     this.skipWhitespaceAndComments();
 
     while (!this.bytes.done() && IsDigit[this.bytes.peek()]) {
@@ -218,7 +209,7 @@ class PDFParser extends PDFObjectParser {
       } catch (e) {
         // TODO: Add tracing/logging mechanism to track when this happens!
         this.bytes.moveTo(initialOffset);
-        this.tryToParseInvalidIndirectObject(throwOnInvalidObject);
+        this.tryToParseInvalidIndirectObject();
       }
       this.skipWhitespaceAndComments();
 
@@ -295,10 +286,8 @@ class PDFParser extends PDFObjectParser {
     return PDFTrailer.forLastCrossRefSectionOffset(offset);
   }
 
-  private async parseDocumentSection(
-    throwOnInvalidObject: boolean = false,
-  ): Promise<void> {
-    await this.parseIndirectObjects(throwOnInvalidObject);
+  private async parseDocumentSection(): Promise<void> {
+    await this.parseIndirectObjects();
     this.maybeParseCrossRefSection();
     this.maybeParseTrailerDict();
     this.maybeParseTrailer();
