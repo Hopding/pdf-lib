@@ -142,7 +142,8 @@ export default class PDFDocument {
     const context = await PDFParser.forBytesWithOptions(
       bytes,
       parseSpeed,
-    ).parseDocument(throwOnInvalidObject);
+      throwOnInvalidObject,
+    ).parseDocument();
     return new PDFDocument(context, ignoreEncryption);
   }
 
