@@ -49,6 +49,7 @@ export {
 export {
   default as PDFObjectStream,
 } from 'src/core/structures/PDFObjectStream';
+export { default as PDFAcroForm } from 'src/core/structures/PDFAcroForm';
 export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
 export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
 export { default as PDFFlateStream } from 'src/core/structures/PDFFlateStream';

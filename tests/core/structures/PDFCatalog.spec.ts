@@ -1,8 +1,10 @@
 import {
+  PDFAcroForm,
   PDFCatalog,
   PDFContext,
   PDFDict,
   PDFName,
+  PDFObject,
   PDFPageLeaf,
   PDFPageTree,
   PDFRef,
@@ -104,5 +106,20 @@ describe(`PDFCatalog`, () => {
     expect(pageTree1.Count().value()).toBe(1);
     expect(pageTree1.Kids().get(0)).toBe(leafRef1);
     expect(pageTree1.Kids().get(1)).toBe(undefined);
+  });
+
+  it('returns its acroform dictionary', () => {
+    const context = PDFContext.create();
+    let dict = new Map<PDFName, PDFObject>([]);
+    let catalog = PDFCatalog.fromMapWithContext(dict, context);
+    expect(catalog.AcroForm).toBe(undefined);
+
+    const acroform = PDFAcroForm.withContext(context);
+    const acroformRef = context.register(acroform);
+    dict = new Map<PDFName, PDFObject>([
+      [PDFName.of('AcroForm'), acroformRef]
+    ]);
+    catalog = PDFCatalog.fromMapWithContext(dict, context);
+    expect(catalog.AcroForm).toBe(acroform);
   });
 });
