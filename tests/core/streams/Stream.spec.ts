@@ -44,34 +44,29 @@ describe(`Stream`, () => {
 
     describe('can get the next n bytes', () => {
         let stream:Stream;
+        const bytes = Uint8Array.from([1, 2, 258]);
 
         beforeEach(() => {
-            stream = new Stream(Uint8Array.from([1, 2, 258]));
+            stream = new Stream(bytes);
         });
 
         describe('when zero length is specified', () => {
             it('and the values are not clamped', () => {
-                const bytes = stream.getBytes(0, false);
-                expect(bytes.length).toEqual(stream.length);
-                expect(bytes[0]).toEqual(1);
-                expect(bytes[1]).toEqual(2);
-                expect(bytes[2]).toEqual(2);
+                expect(stream.getBytes(0, false)).toEqual(bytes);
             });
 
             it('and the values are clamped', () => {
-                const bytes = stream.getBytes(0, true);
-                expect(bytes.length).toEqual(stream.length);
-                expect(bytes[0]).toEqual(1);
-                expect(bytes[1]).toEqual(2);
-                expect(bytes[2]).toEqual(2);
+                const gottenBytes = stream.getBytes(0, true);
+                expect(gottenBytes instanceof Uint8ClampedArray).toEqual(true);
+                expect(gottenBytes.length).toEqual(stream.length);
+                expect(gottenBytes[0]).toEqual(1);
+                expect(gottenBytes[1]).toEqual(2);
+                expect(gottenBytes[2]).toEqual(2);
             });
         });
 
         it('when a non-zero length is specified', () => {
-            const bytes = stream.getBytes(2, false);
-            expect(bytes.length).toEqual(2);
-            expect(bytes[0]).toEqual(1);
-            expect(bytes[1]).toEqual(2);
+            expect(stream.getBytes(2, false)).toEqual(bytes.subarray(0, 2));
         });
     });
 
@@ -83,21 +78,19 @@ describe(`Stream`, () => {
 
     describe('can peek at the next n bytes', () => {
         let stream:Stream;
+        const bytes = Uint8Array.from([1, 2, 258]);
 
         beforeEach(() => {
-            stream = new Stream(Uint8Array.from([1, 2, 258]));
+            stream = new Stream(bytes);
         });
 
         it('when the values are not clamped', () => {
-            const peekedBytes = stream.peekBytes(3, false);
-            expect(peekedBytes.length).toEqual(3);
-            expect(peekedBytes[0]).toEqual(1);
-            expect(peekedBytes[1]).toEqual(2);
-            expect(peekedBytes[2]).toEqual(2);
+            expect(stream.peekBytes(3, false)).toEqual(bytes);
         });
 
         it('when the values are clamped', () => {
-            const peekedBytes = stream.peekBytes(3, false);
+            const peekedBytes = stream.peekBytes(3, true);
+            expect(peekedBytes instanceof Uint8ClampedArray).toEqual(true);
             expect(peekedBytes.length).toEqual(3);
             expect(peekedBytes[0]).toEqual(1);
             expect(peekedBytes[1]).toEqual(2);
