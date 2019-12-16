@@ -22,7 +22,7 @@
     "lint": "yarn lint:prettier && yarn lint:tslint:src && yarn lint:tslint:tests",
     "lint:tslint:src": "tslint --project tsconfig.json --fix",
     "lint:tslint:tests": "tslint --project tests/tsconfig.json --fix",
-    "lint:prettier": "prettier --write './{src,tests}/**/*.{ts,js,json}' --loglevel error",
+    "lint:prettier": "prettier --write \"./{src,tests}/**/*.{ts,js,json}\" --loglevel error",
     "build": "yarn build:cjs && yarn build:es && yarn build:umd && yarn build:umd:min",
     "build:cjs": "ttsc --module commonjs --outDir cjs",
     "build:es": "ttsc --module ES2015 --outDir es",
