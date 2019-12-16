@@ -24,9 +24,7 @@ class PDFCatalog extends PDFDict {
   }
 
   get AcroForm(): PDFAcroForm | undefined {
-    const acroformRef = this.get(PDFName.of('AcroForm'));
-    if (!acroformRef) return undefined;
-    return this.context.lookup(acroformRef) as PDFAcroForm;
+    return this.lookupMaybe(PDFName.of('AcroForm'), PDFAcroForm);
   }
 
   /**
