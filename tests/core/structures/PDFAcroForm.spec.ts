@@ -20,9 +20,8 @@ describe('PDFAcroForm', () => {
 
   it('returns the Fields array', () => {
     const fieldsArray = PDFArray.withContext(context);
-    const fieldsArrayRef = context.register(fieldsArray);
     dict = new Map<PDFName, PDFObject>([
-      [PDFName.of('Fields'), fieldsArrayRef],
+      [PDFName.of('Fields'), fieldsArray],
     ]);
     const acroForm = PDFAcroForm.fromMapWithContext(dict, context);
     expect(acroForm.Fields).toBe(fieldsArray);

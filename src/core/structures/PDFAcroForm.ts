@@ -15,6 +15,7 @@ class PDFAcroForm extends PDFDict {
     dict: Map<PDFName, PDFObject>,
     context: PDFContext,
   ): PDFAcroForm {
+    dict.set(PDFName.of('Fields'), dict.get(PDFName.of('Fields')) || PDFArray.withContext(context));
     return new PDFAcroForm(dict, context);
   }
 
@@ -23,7 +24,7 @@ class PDFAcroForm extends PDFDict {
   }
 
   get Fields(): PDFArray {
-    return this.lookup(PDFName.of('Fields'), PDFArray);
+    return this.get(PDFName.of('Fields')) as PDFArray;
   }
 
   get NeedsAppearances(): PDFBool | undefined {
