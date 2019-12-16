@@ -15,7 +15,10 @@ class PDFAcroForm extends PDFDict {
     dict: Map<PDFName, PDFObject>,
     context: PDFContext,
   ): PDFAcroForm {
-    dict.set(PDFName.of('Fields'), dict.get(PDFName.of('Fields')) || PDFArray.withContext(context));
+    dict.set(
+      PDFName.of('Fields'),
+      dict.get(PDFName.of('Fields')) || PDFArray.withContext(context),
+    );
     return new PDFAcroForm(dict, context);
   }
 
