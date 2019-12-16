@@ -116,9 +116,7 @@ describe(`PDFCatalog`, () => {
 
     const acroform = PDFAcroForm.fromMapWithContext(new Map(), context);
     const acroformRef = context.register(acroform);
-    dict = new Map<PDFName, PDFObject>([
-      [PDFName.of('AcroForm'), acroformRef]
-    ]);
+    dict = new Map<PDFName, PDFObject>([[PDFName.of('AcroForm'), acroformRef]]);
     catalog = PDFCatalog.fromMapWithContext(dict, context);
     expect(catalog.AcroForm).toBe(acroform);
   });

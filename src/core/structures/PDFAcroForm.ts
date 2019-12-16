@@ -1,41 +1,54 @@
 import {
-    PDFArray,
-    PDFBool,
-    PDFDict,
-    PDFName,
-    PDFNumber,
-    PDFStream,
-    PDFString
+  PDFArray,
+  PDFBool,
+  PDFContext,
+  PDFDict,
+  PDFName,
+  PDFNumber,
+  PDFObject,
+  PDFStream,
+  PDFString,
 } from 'src/core';
 
 class PDFAcroForm extends PDFDict {
-    get Fields(): PDFArray {
-        return this.lookup(PDFName.of('Fields'), PDFArray);
-    }
+  static fromMapWithContext(
+    dict: Map<PDFName, PDFObject>,
+    context: PDFContext,
+  ): PDFAcroForm {
+    return new PDFAcroForm(dict, context);
+  }
 
-    get NeedsAppearances(): PDFBool {
-        return this.lookup(PDFName.of('NeedsAppearances'), PDFBool);
-    }
+  protected constructor(map: Map<PDFName, PDFObject>, context: PDFContext) {
+    super(map, context);
+  }
 
-    get SigFlags(): PDFNumber {
-        return this.lookup(PDFName.of('SigFlags'), PDFNumber);
-    }
+  get Fields(): PDFArray {
+    return this.lookup(PDFName.of('Fields'), PDFArray);
+  }
 
-    get DR(): PDFDict {
-        return this.lookup(PDFName.of('DR'), PDFDict);
-    }
+  get NeedsAppearances(): PDFBool | undefined {
+    return this.get(PDFName.of('NeedsAppearances')) as PDFBool;
+  }
 
-    get DA(): PDFString {
-        return this.lookup(PDFName.of('DA'), PDFString);
-    }
+  get SigFlags(): PDFNumber | undefined {
+    return this.get(PDFName.of('SigFlags')) as PDFNumber;
+  }
 
-    get Q(): PDFNumber {
-        return this.lookup(PDFName.of('Q'), PDFNumber);
-    }
+  get DR(): PDFDict | undefined {
+    return this.get(PDFName.of('DR')) as PDFDict;
+  }
 
-    get XFA(): PDFArray | PDFStream {
-        return this.lookup(PDFName.of('XFA')) as PDFArray | PDFStream;
-    }
+  get DA(): PDFString | undefined {
+    return this.get(PDFName.of('DA')) as PDFString;
+  }
+
+  get Q(): PDFNumber | undefined {
+    return this.get(PDFName.of('Q')) as PDFNumber;
+  }
+
+  get XFA(): PDFArray | PDFStream | undefined {
+    return this.get(PDFName.of('XFA')) as PDFArray | PDFStream | undefined;
+  }
 }
 
 export default PDFAcroForm;
