@@ -34,6 +34,8 @@ git clone https://github.com/Hopding/pdf-lib.git
 cd pdf-lib
 ```
 
+> **Note for Windows Users:** You should run `git config --global core.autocrlf false` before cloning the repo. This will prevent the line endings from being altered and causing the unit tests to fail (see [#241](https://github.com/Hopding/pdf-lib/issues/241)). 
+
 After cloning the project, you'll need to install the dependencies. All dependencies are managed within the `package.json` file. This means all you have to do is run:
 
 ```
