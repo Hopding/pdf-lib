@@ -28,15 +28,18 @@ class PDFParser extends PDFObjectParser {
   static forBytesWithOptions = (
     pdfBytes: Uint8Array,
     objectsPerTick?: number,
-  ) => new PDFParser(pdfBytes, objectsPerTick);
+    throwOnInvalidObject?: boolean,
+  ) => new PDFParser(pdfBytes, objectsPerTick, throwOnInvalidObject);
 
   private readonly objectsPerTick: number;
+  private readonly throwOnInvalidObject: boolean;
   private alreadyParsed = false;
   private parsedObjects = 0;
 
-  constructor(pdfBytes: Uint8Array, objectsPerTick: number = Infinity) {
+  constructor(pdfBytes: Uint8Array, objectsPerTick: number = Infinity, throwOnInvalidObject = false) {
     super(ByteStream.of(pdfBytes), PDFContext.create());
     this.objectsPerTick = objectsPerTick;
+    this.throwOnInvalidObject = throwOnInvalidObject;
   }
 
   async parseDocument(): Promise<PDFContext> {
@@ -165,9 +168,9 @@ class PDFParser extends PDFObjectParser {
   private tryToParseInvalidIndirectObject() {
     const startPos = this.bytes.position();
 
-    console.warn(
-      `Trying to parse invalid object: ${JSON.stringify(startPos)})`,
-    );
+    const msg = `Trying to parse invalid object: ${JSON.stringify(startPos)})`;
+    if (this.throwOnInvalidObject) throw new Error(msg);
+    console.warn(msg);
 
     const ref = this.parseIndirectObjectHeader();
 

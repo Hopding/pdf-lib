@@ -10,6 +10,9 @@ const unencryptedPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 const oldEncryptedPdfBytes1 = fs.readFileSync('assets/pdfs/encrypted_old.pdf');
 const oldEncryptedPdfBytes2 = fs.readFileSync('pdf_specification.pdf');
 const newEncryptedPdfBytes = fs.readFileSync('assets/pdfs/encrypted_new.pdf');
+const invalidObjectsPdfBytes = fs.readFileSync(
+  'assets/pdfs/with_invalid_objects.pdf',
+);
 
 describe(`PDFDocument`, () => {
   describe(`load() method`, () => {
@@ -92,14 +95,36 @@ describe(`PDFDocument`, () => {
       expect(pdfDoc).toBeInstanceOf(PDFDocument);
       expect(pdfDoc.isEncrypted).toBe(true);
     });
+
+    it(`does not throw an error for invalid PDFs when throwOnInvalidObject=false`, async () => {
+      await expect(
+        PDFDocument.load(invalidObjectsPdfBytes, {
+          ignoreEncryption: true,
+          parseSpeed: ParseSpeeds.Fastest,
+          throwOnInvalidObject: false,
+        }),
+      ).resolves.toBeInstanceOf(PDFDocument);
+    });
+
+    it(`throws an error for invalid PDFs when throwOnInvalidObject=true`, async () => {
+      const expectedError = new Error(
+        'Trying to parse invalid object: {"line":20,"column":13,"offset":126})',
+      );
+      await expect(
+        PDFDocument.load(invalidObjectsPdfBytes, {
+          ignoreEncryption: true,
+          parseSpeed: ParseSpeeds.Fastest,
+          throwOnInvalidObject: true,
+        }),
+      ).rejects.toEqual(expectedError);
+    });
   });
 
   describe(`getPageCount() method`, () => {
     let pdfDoc: PDFDocument;
     beforeAll(async () => {
-      const bytes = fs.readFileSync('assets/pdfs/normal.pdf');
       const parseSpeed = ParseSpeeds.Fastest;
-      pdfDoc = await PDFDocument.load(bytes, { parseSpeed });
+      pdfDoc = await PDFDocument.load(unencryptedPdfBytes, { parseSpeed });
     });
 
     it(`returns the initial page count of the document`, () => {
