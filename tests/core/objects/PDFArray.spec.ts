@@ -92,6 +92,17 @@ describe(`PDFArray`, () => {
     expect(array.size()).toBe(2);
   });
 
+  it('can be mapped', () => {
+    const array = PDFArray.withContext(PDFContext.create());
+    array.push(PDFName.of('a'));
+    array.push(PDFName.of('b'));
+    array.push(PDFName.of('c'));
+    const mappedArray = array.map(() => PDFName.of('a'));
+    expect(mappedArray.get(0)).toBe(PDFName.of('a'));
+    expect(mappedArray.get(1)).toBe(PDFName.of('a'));
+    expect(mappedArray.get(2)).toBe(PDFName.of('a'));
+  });
+
   it(`can be cloned`, () => {
     const original = pdfArray;
     const clone = original.clone();

@@ -47,6 +47,14 @@ class PDFArray extends PDFObject {
     return this.array[index];
   }
 
+  map(mapFunc: (obj: PDFObject) => PDFObject): PDFArray {
+    const mappedPDFArray = new PDFArray(this.context);
+    this.array.forEach(obj => {
+      mappedPDFArray.push(mapFunc(obj));
+    });
+    return mappedPDFArray;
+  }
+
   lookupMaybe(index: number, type: typeof PDFArray): PDFArray | undefined;
   lookupMaybe(index: number, type: typeof PDFBool): PDFBool | undefined;
   lookupMaybe(index: number, type: typeof PDFDict): PDFDict | undefined;
