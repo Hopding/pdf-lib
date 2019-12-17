@@ -18,14 +18,19 @@ describe('PDFAcroForm', () => {
     context = PDFContext.create();
   });
 
-  it('returns the Fields array', () => {
+  it('returns the dereferenced Fields array', () => {
+    const formField = PDFDict.fromMapWithContext(new Map(), context);
+    const formFieldRef = context.register(formField);
     const fieldsArray = PDFArray.withContext(context);
+    fieldsArray.push(formFieldRef);
     dict = new Map<PDFName, PDFObject>([[PDFName.of('Fields'), fieldsArray]]);
     const acroForm = PDFAcroForm.fromMapWithContext(dict, context);
-    expect(acroForm.Fields).toBe(fieldsArray);
+    const expectedArray = PDFArray.withContext(context);
+    expectedArray.push(formField);
+    expect(acroForm.Fields).toEqual(expectedArray);
   });
 
-  describe('returns the NeedApperances flag', () => {
+  describe('returns the NeedAppearances flag', () => {
     it('when it is undefined', () => {
       const acroForm = PDFAcroForm.fromMapWithContext(new Map(), context);
       expect(acroForm.NeedsAppearances).toBe(undefined);
