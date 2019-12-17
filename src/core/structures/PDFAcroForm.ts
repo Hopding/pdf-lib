@@ -28,7 +28,7 @@ class PDFAcroForm extends PDFDict {
 
   get Fields(): PDFArray {
     const fieldRefs = this.get(PDFName.of('Fields')) as PDFArray;
-    return fieldRefs.map(fieldRef => this.context.lookup(fieldRef, PDFDict));
+    return fieldRefs.map((fieldRef) => this.context.lookup(fieldRef, PDFDict));
   }
 
   get NeedsAppearances(): PDFBool | undefined {

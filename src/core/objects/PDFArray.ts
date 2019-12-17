@@ -49,7 +49,7 @@ class PDFArray extends PDFObject {
 
   map(mapFunc: (obj: PDFObject) => PDFObject): PDFArray {
     const mappedPDFArray = new PDFArray(this.context);
-    this.array.forEach(obj => {
+    this.array.forEach((obj) => {
       mappedPDFArray.push(mapFunc(obj));
     });
     return mappedPDFArray;
