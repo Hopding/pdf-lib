@@ -15,10 +15,9 @@ class PDFAcroForm extends PDFDict {
     dict: Map<PDFName, PDFObject>,
     context: PDFContext,
   ): PDFAcroForm {
-    dict.set(
-      PDFName.of('Fields'),
-      dict.get(PDFName.of('Fields')) || PDFArray.withContext(context),
-    );
+    if (!dict.has(PDFName.of('Fields'))) {
+      dict.set(PDFName.of('Fields'), context.obj([]));
+    }
     return new PDFAcroForm(dict, context);
   }
 
@@ -26,33 +25,33 @@ class PDFAcroForm extends PDFDict {
     super(map, context);
   }
 
-  get Fields(): PDFArray {
+  Fields(): PDFArray {
     const fieldRefs = this.get(PDFName.of('Fields')) as PDFArray;
     return fieldRefs.map((fieldRef) => this.context.lookup(fieldRef, PDFDict));
   }
 
   get NeedsAppearances(): PDFBool | undefined {
-    return this.get(PDFName.of('NeedsAppearances')) as PDFBool;
+    return this.lookupMaybe(PDFName.of('NeedsAppearances'), PDFBool);
   }
 
   get SigFlags(): PDFNumber | undefined {
-    return this.get(PDFName.of('SigFlags')) as PDFNumber;
+    return this.lookupMaybe(PDFName.of('SigFlags'), PDFNumber);
   }
 
   get DR(): PDFDict | undefined {
-    return this.get(PDFName.of('DR')) as PDFDict;
+    return this.lookupMaybe(PDFName.of('DR'), PDFDict);
   }
 
   get DA(): PDFString | undefined {
-    return this.get(PDFName.of('DA')) as PDFString;
+    return this.lookupMaybe(PDFName.of('DA'), PDFString);
   }
 
   get Q(): PDFNumber | undefined {
-    return this.get(PDFName.of('Q')) as PDFNumber;
+    return this.lookupMaybe(PDFName.of('Q'), PDFNumber);
   }
 
   get XFA(): PDFArray | PDFStream | undefined {
-    return this.get(PDFName.of('XFA')) as PDFArray | PDFStream | undefined;
+    return this.lookup(PDFName.of('XFA')) as PDFArray | PDFStream | undefined;
   }
 }
 
