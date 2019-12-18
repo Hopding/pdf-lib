@@ -295,6 +295,25 @@ export default class PDFDocument {
   }
 
   /**
+   * Set this document's language metadata. The language will appear in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * pdfDoc.setLanguage('en-us')
+   * ```
+   *
+   * A language identifier shall either be the empty text string,
+   * to indicate that the language is unknown,
+   * or a Language-Tag as defined in RFC 3066.
+   *
+   * @param language The language of this document.
+   */
+  setLanguage(language: string): void {
+    assertIs(language, 'language', ['string']);
+    const key = PDFName.of('Lang');
+    this.catalog.set(key, PDFString.of(language));
+  }
+
+  /**
    * Set this document's creation date metadata. The creation date will appear
    * in the "Document Properties" section of most PDF readers. For example:
    * ```js
