@@ -53,6 +53,7 @@ export { default as PDFAcroForm } from 'src/core/structures/PDFAcroForm';
 export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
 export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
 export { default as PDFFlateStream } from 'src/core/structures/PDFFlateStream';
+export { XFAResource } from 'src/core/structures/XFAForm';
 
 export { default as PDFOperator } from 'src/core/operators/PDFOperator';
 export {
