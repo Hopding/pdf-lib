@@ -112,12 +112,12 @@ describe(`PDFCatalog`, () => {
     const context = PDFContext.create();
     let dict = new Map<PDFName, PDFObject>([]);
     let catalog = PDFCatalog.fromMapWithContext(dict, context);
-    expect(catalog.AcroForm).toBe(undefined);
+    expect(catalog.AcroForm()).toBe(undefined);
 
     const acroform = PDFAcroForm.fromMapWithContext(new Map(), context);
     const acroformRef = context.register(acroform);
     dict = new Map<PDFName, PDFObject>([[PDFName.of('AcroForm'), acroformRef]]);
     catalog = PDFCatalog.fromMapWithContext(dict, context);
-    expect(catalog.AcroForm).toBe(acroform);
+    expect(catalog.AcroForm()).toBe(acroform);
   });
 });

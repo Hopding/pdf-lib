@@ -23,7 +23,7 @@ class PDFCatalog extends PDFDict {
     return this.lookup(PDFName.of('Pages'), PDFDict) as PDFPageTree;
   }
 
-  get AcroForm(): PDFAcroForm | undefined {
+  AcroForm(): PDFAcroForm | undefined {
     return this.lookupMaybe(PDFName.of('AcroForm'), PDFAcroForm);
   }
 
