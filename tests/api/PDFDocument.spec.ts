@@ -3,6 +3,7 @@ import {
   EncryptedPDFError,
   ParseSpeeds,
   PDFDocument,
+  PDFName,
   PDFPage,
 } from 'src/index';
 
@@ -117,6 +118,24 @@ describe(`PDFDocument`, () => {
           throwOnInvalidObject: true,
         }),
       ).rejects.toEqual(expectedError);
+    });
+  });
+
+  describe(`setLanguage() method`, () => {
+    let pdfDoc: PDFDocument;
+    beforeAll(async () => {
+      const parseSpeed = ParseSpeeds.Fastest;
+      pdfDoc = await PDFDocument.load(unencryptedPdfBytes, { parseSpeed });
+    });
+
+    it(`sets the language of the document`, () => {
+      expect(pdfDoc.catalog.get(PDFName.of('Lang'))).toBe(undefined);
+      pdfDoc.setLanguage('fr-FR');
+      expect(String(pdfDoc.catalog.get(PDFName.of('Lang')))).toBe('(fr-FR)');
+      pdfDoc.setLanguage('en');
+      expect(String(pdfDoc.catalog.get(PDFName.of('Lang')))).toBe('(en)');
+      pdfDoc.setLanguage('');
+      expect(String(pdfDoc.catalog.get(PDFName.of('Lang')))).toBe('()');
     });
   });
 
