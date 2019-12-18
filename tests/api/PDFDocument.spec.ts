@@ -3,6 +3,7 @@ import {
   EncryptedPDFError,
   ParseSpeeds,
   PDFDocument,
+  PDFName,
   PDFPage,
 } from 'src/index';
 
@@ -117,6 +118,22 @@ describe(`PDFDocument`, () => {
           throwOnInvalidObject: true,
         }),
       ).rejects.toEqual(expectedError);
+    });
+  });
+
+  describe(`setLanguage() method`, () => {
+    it(`sets the language of the document`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      expect(pdfDoc.catalog.get(PDFName.of('Lang'))).toBeUndefined();
+
+      pdfDoc.setLanguage('fr-FR');
+      expect(String(pdfDoc.catalog.get(PDFName.of('Lang')))).toBe('(fr-FR)');
+
+      pdfDoc.setLanguage('en');
+      expect(String(pdfDoc.catalog.get(PDFName.of('Lang')))).toBe('(en)');
+
+      pdfDoc.setLanguage('');
+      expect(String(pdfDoc.catalog.get(PDFName.of('Lang')))).toBe('()');
     });
   });
 
