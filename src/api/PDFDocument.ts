@@ -296,16 +296,13 @@ export default class PDFDocument {
 
   /**
    * Set this document's language metadata. The language will appear in the
-   * "Document Properties" section of most PDF readers. For example:
+   * "Document Properties" section of some PDF readers. For example:
    * ```js
    * pdfDoc.setLanguage('en-us')
    * ```
    *
-   * A language identifier shall either be the empty text string,
-   * to indicate that the language is unknown,
-   * or a Language-Tag as defined in RFC 3066.
-   *
-   * @param language The language of this document.
+   * @param language An RFC 3066 _Language-Tag_ denoting the language of this
+   *                 document, or an empty string if the language is unknown.
    */
   setLanguage(language: string): void {
     assertIs(language, 'language', ['string']);
