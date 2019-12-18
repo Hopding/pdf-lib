@@ -5,14 +5,15 @@ import {
   PDFDict,
   PDFName,
   PDFNumber,
-  PDFObject,
   PDFStream,
   PDFString,
+  XFAResource,
 } from 'src/core';
+import { DictMap } from 'src/core/objects/PDFDict';
 
 class PDFAcroForm extends PDFDict {
   static fromMapWithContext(
-    dict: Map<PDFName, PDFObject>,
+    dict: DictMap,
     context: PDFContext,
   ): PDFAcroForm {
     if (!dict.has(PDFName.of('Fields'))) {
@@ -21,37 +22,37 @@ class PDFAcroForm extends PDFDict {
     return new PDFAcroForm(dict, context);
   }
 
-  protected constructor(map: Map<PDFName, PDFObject>, context: PDFContext) {
+  protected constructor(map: DictMap, context: PDFContext) {
     super(map, context);
   }
 
   Fields(): PDFArray {
-    const fieldRefs = this.get(PDFName.of('Fields')) as PDFArray;
+    const fieldRefs = this.lookup(PDFName.of('Fields'), PDFArray);
     return fieldRefs.map((fieldRef) => this.context.lookup(fieldRef, PDFDict));
   }
 
-  get NeedsAppearances(): PDFBool | undefined {
+  NeedsAppearances(): PDFBool | undefined {
     return this.lookupMaybe(PDFName.of('NeedsAppearances'), PDFBool);
   }
 
-  get SigFlags(): PDFNumber | undefined {
+  SigFlags(): PDFNumber | undefined {
     return this.lookupMaybe(PDFName.of('SigFlags'), PDFNumber);
   }
 
-  get DR(): PDFDict | undefined {
+  DR(): PDFDict | undefined {
     return this.lookupMaybe(PDFName.of('DR'), PDFDict);
   }
 
-  get DA(): PDFString | undefined {
+  DA(): PDFString | undefined {
     return this.lookupMaybe(PDFName.of('DA'), PDFString);
   }
 
-  get Q(): PDFNumber | undefined {
+  Q(): PDFNumber | undefined {
     return this.lookupMaybe(PDFName.of('Q'), PDFNumber);
   }
 
-  get XFA(): PDFArray | PDFStream | undefined {
-    return this.lookup(PDFName.of('XFA')) as PDFArray | PDFStream | undefined;
+  XFA(): XFAResource | undefined {
+    return this.lookupMaybe(PDFName.of('XFA'), PDFArray || PDFStream);
   }
 }
 
