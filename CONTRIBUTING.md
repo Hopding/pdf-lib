@@ -21,11 +21,6 @@
 
 You can develop `pdf-lib` on Windows, Mac, or Linux machines. While most of the original code was developed on Macs, care has been taken to ensure that all scripts and commands needed for development are platform independent. (If you find anything that doesn't work on your machine/platform, please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) or submit a PR!)
 
-### Notes For Windows Contributors
-Some of the test fixtures are streams with LF line endings. Some distributions of git on Windows will automatically convert these line endings to CRLF, breaking the stream tests. You can fix this by configuring git to skip conversion
-to CRLF endings by running `git config --global core.autocrlf false`
-
-
 In order to work on `pdf-lib`, please ensure you have installed the following:
 
 - **Node.js** provides the runtime needed to run this project. ([Installation instructions](https://nodejs.org/en/download/) - need `v9.0.0` or greater).
@@ -39,7 +34,7 @@ git clone https://github.com/Hopding/pdf-lib.git
 cd pdf-lib
 ```
 
-> **Note for Windows Users:** You should run `git config --global core.autocrlf false` before cloning the repo. This will prevent the line endings from being altered and causing the unit tests to fail (see [#241](https://github.com/Hopding/pdf-lib/issues/241)).
+> **Note for Windows Users:** You should run `git config --global core.autocrlf false` before cloning the repo. This will prevent the line endings from being altered and causing the unit tests to fail (see [#241](https://github.com/Hopding/pdf-lib/issues/241)). 
 
 After cloning the project, you'll need to install the dependencies. All dependencies are managed within the `package.json` file. This means all you have to do is run:
 
