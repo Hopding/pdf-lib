@@ -18,7 +18,7 @@ describe('PDFAcroForm', () => {
     context = PDFContext.create();
   });
 
-  describe('can be constructed from PDFDict.fromMapWithContext', () => {
+  describe('can be constructed from PDFAcroFrom.fromMapWithContext', () => {
     it('without a fields array', () => {
       dict = new Map<PDFName, PDFObject>();
       const acroform = PDFAcroForm.fromMapWithContext(dict, context)
