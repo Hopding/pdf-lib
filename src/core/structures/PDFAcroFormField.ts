@@ -10,10 +10,10 @@ import {
 import { DictMap } from 'src/core/objects/PDFDict';
 
 const acroFormFieldTypes: Array<PDFObject|undefined> = [
-    PDFName.of('Btn'),
-    PDFName.of('Ch'),
-    PDFName.of('Tx'),
-    PDFName.of('Sig')
+    PDFName.Btn,
+    PDFName.Ch,
+    PDFName.Tx,
+    PDFName.Sig,
 ];
 
 export type PDFAcroFormFieldValue = PDFArray | PDFName | PDFNumber | PDFString | PDFDict;
@@ -24,7 +24,7 @@ class PDFAcroFormField extends PDFDict {
         dict: DictMap,
         context: PDFContext,
     ): PDFAcroFormField {
-        const ft = PDFName.of('ft');
+        const ft = PDFName.of('FT');
         const hasValidFieldType = dict.has(ft) && acroFormFieldTypes.includes(dict.get(ft));
         if (!hasValidFieldType) {
             throw new Error('Invalid PDFAcroFormField Type');
@@ -36,8 +36,8 @@ class PDFAcroFormField extends PDFDict {
         return this.lookup(PDFName.of('FT'), PDFName);
     }
 
-    Parent(): PDFDict {
-        return this.lookup(PDFName.of('Parent'), PDFDict);
+    Parent(): PDFDict | undefined {
+        return this.lookupMaybe(PDFName.of('Parent'), PDFDict);
     }
 
     Kids(): PDFArray | undefined {

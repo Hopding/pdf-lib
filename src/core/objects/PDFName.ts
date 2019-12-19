@@ -52,6 +52,11 @@ class PDFName extends PDFObject {
   static readonly AcroForm = PDFName.of('AcroForm');
   static readonly Pages = PDFName.of('Pages');
   static readonly Catalog = PDFName.of('Catalog');
+  static readonly Fields = PDFName.of('Fields');
+  static readonly Btn = PDFName.of('Btn');
+  static readonly Ch = PDFName.of('Ch');
+  static readonly Tx = PDFName.of('Tx');
+  static readonly Sig = PDFName.of('Sig');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;
