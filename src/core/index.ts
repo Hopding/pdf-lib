@@ -33,7 +33,7 @@ export { default as PDFHexString } from 'src/core/objects/PDFHexString';
 export { default as PDFName } from 'src/core/objects/PDFName';
 export { default as PDFNull } from 'src/core/objects/PDFNull';
 export { default as PDFArray } from 'src/core/objects/PDFArray';
-export { default as PDFDict } from 'src/core/objects/PDFDict';
+export { default as PDFDict, DictMap } from 'src/core/objects/PDFDict';
 export { default as PDFRef } from 'src/core/objects/PDFRef';
 export { default as PDFInvalidObject } from 'src/core/objects/PDFInvalidObject';
 export { default as PDFStream } from 'src/core/objects/PDFStream';
