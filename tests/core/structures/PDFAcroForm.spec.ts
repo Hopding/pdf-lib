@@ -18,6 +18,23 @@ describe('PDFAcroForm', () => {
     context = PDFContext.create();
   });
 
+  describe('can be constructed from PDFDict.fromMapWithContext', () => {
+    it('without a fields array', () => {
+      dict = new Map<PDFName, PDFObject>();
+      const acroform = PDFAcroForm.fromMapWithContext(dict, context)
+      expect(acroform).toBeInstanceOf(PDFAcroForm);
+      expect(acroform.Fields()).toEqual(PDFArray.withContext(context));
+    });
+
+    it('with a fields PDFArray', () => {
+      const fieldsArray = PDFArray.withContext(context);
+      dict = new Map<PDFName, PDFObject>([[PDFName.of('Fields'), fieldsArray]]);
+      const acroform = PDFAcroForm.fromMapWithContext(dict, context);
+      expect(acroform).toBeInstanceOf(PDFAcroForm);
+      expect(acroform.Fields()).toEqual(fieldsArray);
+    });
+  });
+
   it('returns the dereferenced Fields array', () => {
     const formField = PDFDict.fromMapWithContext(new Map(), context);
     const formFieldRef = context.register(formField);
