@@ -27,7 +27,7 @@ describe(`PDFPageTree`, () => {
     const pageTree = PDFPageTree.withContext(context);
 
     expect(pageTree).toBeInstanceOf(PDFPageTree);
-    expect(pageTree.get(PDFName.of('Type'))).toBe(PDFName.of('Pages'));
+    expect(pageTree.get(PDFName.of('Type'))).toBe(PDFName.Pages);
     expect(pageTree.get(PDFName.of('Kids'))).toBeInstanceOf(PDFArray);
     expect(pageTree.lookup(PDFName.of('Kids'), PDFArray).size()).toBe(0);
     expect(pageTree.get(PDFName.of('Count'))).toBeInstanceOf(PDFNumber);

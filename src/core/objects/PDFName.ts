@@ -49,6 +49,9 @@ class PDFName extends PDFObject {
   static readonly BleedBox = PDFName.of('BleedBox');
   static readonly CropBox = PDFName.of('CropBox');
   static readonly Rotate = PDFName.of('Rotate');
+  static readonly AcroForm = PDFName.of('AcroForm');
+  static readonly Pages = PDFName.of('Pages');
+  static readonly Catalog = PDFName.of('Catalog');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;

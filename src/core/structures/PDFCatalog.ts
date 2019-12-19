@@ -11,8 +11,8 @@ class PDFCatalog extends PDFDict {
     pages: PDFPageTree | PDFRef,
   ) => {
     const dict = new Map();
-    dict.set(PDFName.of('Type'), PDFName.of('Catalog'));
-    dict.set(PDFName.of('Pages'), pages);
+    dict.set(PDFName.Type, PDFName.Catalog);
+    dict.set(PDFName.Pages, pages);
     return new PDFCatalog(dict, context);
   };
 
@@ -20,11 +20,11 @@ class PDFCatalog extends PDFDict {
     new PDFCatalog(map, context);
 
   Pages(): PDFPageTree {
-    return this.lookup(PDFName.of('Pages'), PDFDict) as PDFPageTree;
+    return this.lookup(PDFName.Pages, PDFDict) as PDFPageTree;
   }
 
   AcroForm(): PDFAcroForm | undefined {
-    return this.lookupMaybe(PDFName.of('AcroForm'), PDFAcroForm);
+    return this.lookupMaybe(PDFName.AcroForm, PDFAcroForm);
   }
 
   /**
@@ -35,7 +35,7 @@ class PDFCatalog extends PDFDict {
    * Returns the ref of the PDFPageTree node into which `leafRef` was inserted.
    */
   insertLeafNode(leafRef: PDFRef, index: number): PDFRef {
-    const pagesRef = this.get(PDFName.of('Pages')) as PDFRef;
+    const pagesRef = this.get(PDFName.Pages) as PDFRef;
     const maybeParentRef = this.Pages().insertLeafNode(leafRef, index);
     return maybeParentRef || pagesRef;
   }

@@ -193,11 +193,11 @@ class PDFObjectParser extends BaseParser {
 
     const Type = dict.get(PDFName.of('Type'));
 
-    if (Type === PDFName.of('Catalog')) {
+    if (Type === PDFName.Catalog) {
       return PDFCatalog.fromMapWithContext(dict, this.context);
-    } else if (Type === PDFName.of('Pages')) {
+    } else if (Type === PDFName.Pages) {
       return PDFPageTree.fromMapWithContext(dict, this.context);
-    } else if (Type === PDFName.of('Page')) {
+    } else if (Type === PDFName.Page) {
       return PDFPageLeaf.fromMapWithContext(dict, this.context);
     } else {
       return PDFDict.fromMapWithContext(dict, this.context);

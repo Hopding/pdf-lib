@@ -11,7 +11,7 @@ export type TreeNode = PDFPageTree | PDFPageLeaf;
 class PDFPageTree extends PDFDict {
   static withContext = (context: PDFContext, parent?: PDFRef) => {
     const dict = new Map();
-    dict.set(PDFName.of('Type'), PDFName.of('Pages'));
+    dict.set(PDFName.Type, PDFName.Pages);
     dict.set(PDFName.of('Kids'), context.obj([]));
     dict.set(PDFName.of('Count'), context.obj(0));
     if (parent) dict.set(PDFName.of('Parent'), parent);
