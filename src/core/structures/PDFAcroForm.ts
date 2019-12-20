@@ -5,17 +5,13 @@ import {
   PDFDict,
   PDFName,
   PDFNumber,
-  PDFStream,
   PDFString,
-  XFAResource,
 } from 'src/core';
 import { DictMap } from 'src/core/objects/PDFDict';
+import PDFObject from '../objects/PDFObject';
 
 class PDFAcroForm extends PDFDict {
-  static fromMapWithContext(
-    dict: DictMap,
-    context: PDFContext,
-  ): PDFAcroForm {
+  static fromMapWithContext(dict: DictMap, context: PDFContext): PDFAcroForm {
     if (!dict.has(PDFName.of('Fields'))) {
       dict.set(PDFName.of('Fields'), context.obj([]));
     }
@@ -51,8 +47,8 @@ class PDFAcroForm extends PDFDict {
     return this.lookupMaybe(PDFName.of('Q'), PDFNumber);
   }
 
-  XFA(): XFAResource | undefined {
-    return this.lookupMaybe(PDFName.of('XFA'), PDFArray || PDFStream);
+  XFA(): PDFObject | undefined {
+    return this.lookup(PDFName.of('XFA'));
   }
 }
 
