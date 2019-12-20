@@ -16,8 +16,6 @@ const acroFormFieldTypes: Array<PDFObject|undefined> = [
     PDFName.Sig,
 ];
 
-export type PDFAcroFormFieldValue = PDFArray | PDFName | PDFNumber | PDFString | PDFDict;
-
 
 class PDFAcroFormField extends PDFDict {
     static fromMapWithContext(
@@ -48,20 +46,24 @@ class PDFAcroFormField extends PDFDict {
         return this.lookupMaybe(PDFName.of('T'), PDFString);
     }
 
+    TU(): PDFString | undefined {
+        return this.lookupMaybe(PDFName.of('TU'), PDFString);
+    }
+
     TM(): PDFString | undefined {
-        return this.lookupMaybe(PDFName.of('M'), PDFString);
+        return this.lookupMaybe(PDFName.of('TM'), PDFString);
     }
 
     Ff(): PDFNumber | undefined {
         return this.lookupMaybe(PDFName.of('Ff'), PDFNumber);
     }
 
-    V(): PDFAcroFormFieldValue | undefined {
-        return this.lookupMaybe(PDFName.of('V'),  PDFArray || PDFName || PDFNumber || PDFString || PDFDict);
+    V(): PDFObject | undefined {
+        return this.lookup(PDFName.of('V'));
     }
 
-    DV(): PDFAcroFormFieldValue | undefined {
-        return this.lookupMaybe(PDFName.of('DV'),  PDFArray || PDFName || PDFNumber || PDFString || PDFDict);
+    DV(): PDFObject | undefined {
+        return this.lookup(PDFName.of('DV'));
     }
 
     AA(): PDFDict | undefined {
