@@ -1,4 +1,5 @@
 import {
+  PDFAcroFormField,
   PDFArray,
   PDFBool,
   PDFContext,
@@ -24,7 +25,9 @@ class PDFAcroForm extends PDFDict {
 
   Fields(): PDFArray {
     const fieldRefs = this.lookup(PDFName.of('Fields'), PDFArray);
-    return fieldRefs.map((fieldRef) => this.context.lookup(fieldRef, PDFDict));
+    return fieldRefs.map((fieldRef) =>
+      this.context.lookup(fieldRef, PDFAcroFormField),
+    );
   }
 
   NeedsAppearances(): PDFBool | undefined {

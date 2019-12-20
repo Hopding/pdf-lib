@@ -1,5 +1,6 @@
 import {
   PDFAcroForm,
+  PDFAcroFormField,
   PDFArray,
   PDFBool,
   PDFContext,
@@ -36,7 +37,10 @@ describe('PDFAcroForm', () => {
   });
 
   it('returns the dereferenced Fields array', () => {
-    const formField = PDFDict.fromMapWithContext(new Map(), context);
+    const fieldDict = new Map<PDFName, PDFObject>([
+      [PDFName.of('FT'), PDFName.Btn],
+    ]);
+    const formField = PDFAcroFormField.fromMapWithContext(fieldDict, context);
     const formFieldRef = context.register(formField);
     const fieldsArray = PDFArray.withContext(context);
     fieldsArray.push(formFieldRef);
