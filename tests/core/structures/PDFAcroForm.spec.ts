@@ -18,7 +18,18 @@ describe('PDFAcroForm', () => {
     context = PDFContext.create();
   });
 
-  it('returns the dereferenced Fields array', () => {
+  it('can return the Fields array', () => {
+    const formField = PDFDict.fromMapWithContext(new Map(), context);
+    const formFieldRef = context.register(formField);
+    const fieldsArray = PDFArray.withContext(context);
+    fieldsArray.push(formFieldRef);
+    dict = new Map<PDFName, PDFObject>([[PDFName.of('Fields'), fieldsArray]]);
+    const acroForm = PDFAcroForm.fromMapWithContext(dict, context);
+    expect(acroForm.Fields()).toEqual(fieldsArray);
+  });
+
+
+  it('can return the dereferenced Fields array', () => {
     const formField = PDFDict.fromMapWithContext(new Map(), context);
     const formFieldRef = context.register(formField);
     const fieldsArray = PDFArray.withContext(context);
@@ -27,7 +38,9 @@ describe('PDFAcroForm', () => {
     const acroForm = PDFAcroForm.fromMapWithContext(dict, context);
     const expectedArray = PDFArray.withContext(context);
     expectedArray.push(formField);
-    expect(acroForm.Fields()).toEqual(expectedArray);
+    const fieldDicts = acroForm.fieldDicts();
+    expect(fieldDicts.length).toBe(1);
+    expect(fieldDicts[0]).toEqual(formField);
   });
 
   describe('returns the NeedAppearances flag', () => {
