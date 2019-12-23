@@ -1,4 +1,4 @@
-const enum PDFOperatorNames {
+enum PDFOperatorNames {
   // Non Stroking Color Operators
   NonStrokingColor = 'sc',
   NonStrokingColorN = 'scn',
