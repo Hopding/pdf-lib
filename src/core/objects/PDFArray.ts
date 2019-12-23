@@ -47,12 +47,15 @@ class PDFArray extends PDFObject {
     return this.array[index];
   }
 
-  map(mapFunc: (obj: PDFObject) => PDFObject): PDFArray {
-    const mappedPDFArray = new PDFArray(this.context);
-    this.array.forEach((obj) => {
-      mappedPDFArray.push(mapFunc(obj));
-    });
-    return mappedPDFArray;
+  lookupElements(): Array<PDFObject | undefined>;
+  lookupElements(type: typeof PDFDict): PDFDict[];
+
+  lookupElements(type?: any) {
+    const values = new Array(this.size());
+    for (let idx = 0, len = this.size(); idx < len; idx++) {
+      values[idx] = this.context.lookup(this.get(idx), type);
+    }
+    return values;
   }
 
   lookupMaybe(index: number, type: typeof PDFArray): PDFArray | undefined;
