@@ -104,7 +104,11 @@ describe(`PDFParser`, () => {
     %PDF-1.7
     22 0 obj <</Type/Outlines/First ## 0 R/Last ** 0 R/Count 2>> endobj
   `;
-    const parser = PDFParser.forBytesWithOptions(typedArrayFor(input), 100, true);
+    const parser = PDFParser.forBytesWithOptions(
+      typedArrayFor(input),
+      100,
+      true,
+    );
     await expect(parser.parseDocument()).rejects.toBeInstanceOf(Error);
   });
 
