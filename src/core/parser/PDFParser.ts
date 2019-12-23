@@ -36,7 +36,11 @@ class PDFParser extends PDFObjectParser {
   private alreadyParsed = false;
   private parsedObjects = 0;
 
-  constructor(pdfBytes: Uint8Array, objectsPerTick: number = Infinity, throwOnInvalidObject = false) {
+  constructor(
+    pdfBytes: Uint8Array,
+    objectsPerTick: number = Infinity,
+    throwOnInvalidObject = false,
+  ) {
     super(ByteStream.of(pdfBytes), PDFContext.create());
     this.objectsPerTick = objectsPerTick;
     this.throwOnInvalidObject = throwOnInvalidObject;
