@@ -28,7 +28,6 @@ describe('PDFAcroForm', () => {
     expect(acroForm.Fields()).toEqual(fieldsArray);
   });
 
-
   it('can return the dereferenced Fields array', () => {
     const formField = PDFDict.fromMapWithContext(new Map(), context);
     const formFieldRef = context.register(formField);

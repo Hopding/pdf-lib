@@ -12,10 +12,7 @@ import {
 import { DictMap } from 'src/core/objects/PDFDict';
 
 class PDFAcroForm extends PDFDict {
-  static fromMapWithContext(
-    dict: DictMap,
-    context: PDFContext,
-  ): PDFAcroForm {
+  static fromMapWithContext(dict: DictMap, context: PDFContext): PDFAcroForm {
     if (!dict.has(PDFName.of('Fields'))) {
       dict.set(PDFName.of('Fields'), context.obj([]));
     }

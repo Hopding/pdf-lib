@@ -9,19 +9,11 @@ export { default as PDFStreamWriter } from 'src/core/writers/PDFStreamWriter';
 export { default as PDFHeader } from 'src/core/document/PDFHeader';
 export { default as PDFTrailer } from 'src/core/document/PDFTrailer';
 export { default as PDFTrailerDict } from 'src/core/document/PDFTrailerDict';
-export {
-  default as PDFCrossRefSection,
-} from 'src/core/document/PDFCrossRefSection';
+export { default as PDFCrossRefSection } from 'src/core/document/PDFCrossRefSection';
 
-export {
-  default as StandardFontEmbedder,
-} from 'src/core/embedders/StandardFontEmbedder';
-export {
-  default as CustomFontEmbedder,
-} from 'src/core/embedders/CustomFontEmbedder';
-export {
-  default as CustomFontSubsetEmbedder,
-} from 'src/core/embedders/CustomFontSubsetEmbedder';
+export { default as StandardFontEmbedder } from 'src/core/embedders/StandardFontEmbedder';
+export { default as CustomFontEmbedder } from 'src/core/embedders/CustomFontEmbedder';
+export { default as CustomFontSubsetEmbedder } from 'src/core/embedders/CustomFontSubsetEmbedder';
 export { default as JpegEmbedder } from 'src/core/embedders/JpegEmbedder';
 export { default as PngEmbedder } from 'src/core/embedders/PngEmbedder';
 
@@ -40,15 +32,9 @@ export { default as PDFStream } from 'src/core/objects/PDFStream';
 export { default as PDFRawStream } from 'src/core/objects/PDFRawStream';
 
 export { default as PDFCatalog } from 'src/core/structures/PDFCatalog';
-export {
-  default as PDFContentStream,
-} from 'src/core/structures/PDFContentStream';
-export {
-  default as PDFCrossRefStream,
-} from 'src/core/structures/PDFCrossRefStream';
-export {
-  default as PDFObjectStream,
-} from 'src/core/structures/PDFObjectStream';
+export { default as PDFContentStream } from 'src/core/structures/PDFContentStream';
+export { default as PDFCrossRefStream } from 'src/core/structures/PDFCrossRefStream';
+export { default as PDFObjectStream } from 'src/core/structures/PDFObjectStream';
 export { default as PDFAcroForm } from 'src/core/structures/PDFAcroForm';
 export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
 export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
@@ -56,15 +42,9 @@ export { default as PDFFlateStream } from 'src/core/structures/PDFFlateStream';
 export { XFAResource } from 'src/core/structures/XFAForm';
 
 export { default as PDFOperator } from 'src/core/operators/PDFOperator';
-export {
-  default as PDFOperatorNames,
-} from 'src/core/operators/PDFOperatorNames';
+export { default as PDFOperatorNames } from 'src/core/operators/PDFOperatorNames';
 
 export { default as PDFObjectParser } from 'src/core/parser/PDFObjectParser';
-export {
-  default as PDFObjectStreamParser,
-} from 'src/core/parser/PDFObjectStreamParser';
+export { default as PDFObjectStreamParser } from 'src/core/parser/PDFObjectStreamParser';
 export { default as PDFParser } from 'src/core/parser/PDFParser';
-export {
-  default as PDFXRefStreamParser,
-} from 'src/core/parser/PDFXRefStreamParser';
+export { default as PDFXRefStreamParser } from 'src/core/parser/PDFXRefStreamParser';
