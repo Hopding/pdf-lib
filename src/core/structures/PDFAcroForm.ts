@@ -9,22 +9,25 @@ import {
   PDFString,
   XFAResource,
 } from 'src/core';
-import { DictMap } from 'src/core/objects/PDFDict';
 
-class PDFAcroForm extends PDFDict {
-  static fromMapWithContext(dict: DictMap, context: PDFContext): PDFAcroForm {
+class PDFAcroForm  {
+  static fromDict(dict: PDFDict, context: PDFContext): PDFAcroForm {
     if (!dict.has(PDFName.of('Fields'))) {
       dict.set(PDFName.of('Fields'), context.obj([]));
     }
     return new PDFAcroForm(dict, context);
   }
 
-  protected constructor(map: DictMap, context: PDFContext) {
-    super(map, context);
+  readonly context: PDFContext;
+  readonly dict: PDFDict;
+
+  protected constructor(dict: PDFDict, context: PDFContext) {
+    this.dict = dict;
+    this.context = context;
   }
 
   Fields(): PDFArray {
-    return this.lookup(PDFName.of('Fields'), PDFArray);
+    return this.dict.lookup(PDFName.of('Fields'), PDFArray);
   }
 
   fieldDicts(): PDFDict[] {
@@ -32,27 +35,27 @@ class PDFAcroForm extends PDFDict {
   }
 
   NeedsAppearances(): PDFBool | undefined {
-    return this.lookupMaybe(PDFName.of('NeedsAppearances'), PDFBool);
+    return this.dict.lookupMaybe(PDFName.of('NeedsAppearances'), PDFBool);
   }
 
   SigFlags(): PDFNumber | undefined {
-    return this.lookupMaybe(PDFName.of('SigFlags'), PDFNumber);
+    return this.dict.lookupMaybe(PDFName.of('SigFlags'), PDFNumber);
   }
 
   DR(): PDFDict | undefined {
-    return this.lookupMaybe(PDFName.of('DR'), PDFDict);
+    return this.dict.lookupMaybe(PDFName.of('DR'), PDFDict);
   }
 
   DA(): PDFString | undefined {
-    return this.lookupMaybe(PDFName.of('DA'), PDFString);
+    return this.dict.lookupMaybe(PDFName.of('DA'), PDFString);
   }
 
   Q(): PDFNumber | undefined {
-    return this.lookupMaybe(PDFName.of('Q'), PDFNumber);
+    return this.dict.lookupMaybe(PDFName.of('Q'), PDFNumber);
   }
 
   XFA(): XFAResource | undefined {
-    return this.lookupMaybe(PDFName.of('XFA'), PDFArray || PDFStream);
+    return this.dict.lookupMaybe(PDFName.of('XFA'), PDFArray || PDFStream);
   }
 }
 
