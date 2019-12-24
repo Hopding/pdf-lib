@@ -453,12 +453,19 @@ This assumes you're using [npm](https://www.npmjs.com/) or [yarn](https://yarnpk
 
 ### UMD Module
 
-You can also download `pdf-lib` as a UMD module from [unpkg](https://unpkg.com/#/). The UMD builds have been compiled to ES5, so they should work [in any modern browser](https://caniuse.com/#feat=es5). UMD builds are useful if you aren't using a package manager or module bundler. For example, you can use them directly in the `<script>` tag of an HTML page.
+You can also download `pdf-lib` as a UMD module from [unpkg](https://unpkg.com/#/) or [jsDelivr](https://www.jsdelivr.com/). The UMD builds have been compiled to ES5, so they should work [in any modern browser](https://caniuse.com/#feat=es5). UMD builds are useful if you aren't using a package manager or module bundler. For example, you can use them directly in the `<script>` tag of an HTML page.
 
 The following builds are available:
 
 - https://unpkg.com/pdf-lib/dist/pdf-lib.js
 - https://unpkg.com/pdf-lib/dist/pdf-lib.min.js
+- https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.js
+- https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js
+
+> **NOTE:** if you are using the CDN scripts in production, you should include a specific version number in the URL, for example:
+>
+> - https://unpkg.com/pdf-lib@1.3.0/dist/pdf-lib.min.js
+> - https://cdn.jsdelivr.net/npm/pdf-lib@1.3.0/dist/pdf-lib.min.js
 
 When using a UMD build, you will have access to a global `window.PDFLib` variable. This variable contains all of the classes and functions exported by `pdf-lib`. For example:
 
