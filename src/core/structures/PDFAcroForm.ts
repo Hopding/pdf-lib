@@ -9,7 +9,7 @@ import {
   PDFString,
 } from 'src/core';
 
-class PDFAcroForm  {
+class PDFAcroForm {
   static fromDict(dict: PDFDict, context: PDFContext): PDFAcroForm {
     if (!dict.has(PDFName.of('Fields'))) {
       dict.set(PDFName.of('Fields'), context.obj([]));

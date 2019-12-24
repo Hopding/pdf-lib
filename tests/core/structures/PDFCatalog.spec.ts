@@ -119,7 +119,9 @@ describe(`PDFCatalog`, () => {
       const context = PDFContext.create();
       const acroFormDict = PDFDict.fromMapWithContext(new Map(), context);
       const acroform = PDFAcroForm.fromDict(acroFormDict, context);
-      const catalogDict = new Map<PDFName, PDFObject>([[PDFName.of('AcroForm'), acroFormDict]]);
+      const catalogDict = new Map<PDFName, PDFObject>([
+        [PDFName.of('AcroForm'), acroFormDict],
+      ]);
       const catalog = PDFCatalog.fromMapWithContext(catalogDict, context);
       expect(catalog.AcroForm()).toEqual(acroform);
     });
