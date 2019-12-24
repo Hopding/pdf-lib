@@ -18,7 +18,7 @@ class PDFAcroForm  {
   }
 
   readonly context: PDFContext;
-  readonly dict: PDFDict;
+  private readonly dict: PDFDict;
 
   protected constructor(dict: PDFDict, context: PDFContext) {
     this.dict = dict;
