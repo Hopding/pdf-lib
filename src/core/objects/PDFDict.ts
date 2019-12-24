@@ -10,7 +10,6 @@ import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
 import PDFAcroForm from 'src/core/structures/PDFAcroForm';
-import { XFAResource } from 'src/core/structures/XFAForm';
 import CharCodes from 'src/core/syntax/CharCodes';
 
 export type DictMap = Map<PDFName, PDFObject>;
@@ -61,7 +60,6 @@ class PDFDict extends PDFObject {
   lookupMaybe(key: PDFName, type: typeof PDFStream): PDFStream | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFRef): PDFRef | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFString): PDFString | undefined;
-  lookupMaybe(key: PDFName, type: XFAResource): XFAResource | undefined;
 
   lookupMaybe(key: PDFName, type: any) {
     return this.context.lookupMaybe(this.get(key), type) as any;

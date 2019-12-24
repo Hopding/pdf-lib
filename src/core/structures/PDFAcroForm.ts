@@ -5,9 +5,8 @@ import {
   PDFDict,
   PDFName,
   PDFNumber,
-  PDFStream,
+  PDFObject,
   PDFString,
-  XFAResource,
 } from 'src/core';
 
 class PDFAcroForm  {
@@ -54,8 +53,8 @@ class PDFAcroForm  {
     return this.dict.lookupMaybe(PDFName.of('Q'), PDFNumber);
   }
 
-  XFA(): XFAResource | undefined {
-    return this.dict.lookupMaybe(PDFName.of('XFA'), PDFArray || PDFStream);
+  XFA(): PDFObject | undefined {
+    return this.dict.lookup(PDFName.of('XFA'));
   }
 }
 

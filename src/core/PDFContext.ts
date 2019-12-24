@@ -17,7 +17,6 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFOperator from 'src/core/operators/PDFOperator';
 import Ops from 'src/core/operators/PDFOperatorNames';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
-import { XFAResource } from 'src/core/structures/XFAForm';
 import { typedArrayFor } from 'src/utils';
 
 type LookupKey = PDFRef | PDFObject | undefined;
@@ -104,7 +103,6 @@ class PDFContext {
   lookupMaybe(ref: LookupKey, type: typeof PDFStream): PDFStream | undefined;
   lookupMaybe(ref: LookupKey, type: typeof PDFRef): PDFRef | undefined;
   lookupMaybe(ref: LookupKey, type: typeof PDFString): PDFString | undefined;
-  lookupMaybe(key: PDFName, type: XFAResource): XFAResource | undefined;
 
   lookupMaybe(ref: LookupKey, type: any) {
     const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
