@@ -9,7 +9,6 @@ import PDFRef from 'src/core/objects/PDFRef';
 import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
-import PDFAcroForm from 'src/core/structures/PDFAcroForm';
 import CharCodes from 'src/core/syntax/CharCodes';
 
 export type DictMap = Map<PDFName, PDFObject>;
@@ -46,7 +45,6 @@ class PDFDict extends PDFObject {
     return this.dict.has(key);
   }
 
-  lookupMaybe(key: PDFName, type: typeof PDFAcroForm): PDFAcroForm | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFArray): PDFArray | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFBool): PDFBool | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFDict): PDFDict | undefined;
