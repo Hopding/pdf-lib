@@ -118,7 +118,7 @@ describe(`PDFCatalog`, () => {
     it('when it is defined', () => {
       const context = PDFContext.create();
       const acroFormDict = PDFDict.fromMapWithContext(new Map(), context);
-      const acroform = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroform = PDFAcroForm.fromDict(acroFormDict);
       const catalogDict = new Map<PDFName, PDFObject>([
         [PDFName.of('AcroForm'), acroFormDict],
       ]);

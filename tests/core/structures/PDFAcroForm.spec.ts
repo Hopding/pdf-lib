@@ -25,7 +25,7 @@ describe('PDFAcroForm', () => {
     fieldsArray.push(formFieldRef);
     dict = new Map<PDFName, PDFObject>([[PDFName.of('Fields'), fieldsArray]]);
     const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-    const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+    const acroForm = PDFAcroForm.fromDict(acroFormDict);
     expect(acroForm.Fields()).toEqual(fieldsArray);
   });
 
@@ -36,7 +36,7 @@ describe('PDFAcroForm', () => {
     fieldsArray.push(formFieldRef);
     dict = new Map([[PDFName.of('Fields'), fieldsArray]]);
     const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-    const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+    const acroForm = PDFAcroForm.fromDict(acroFormDict);
     const expectedArray = PDFArray.withContext(context);
     expectedArray.push(formField);
     const fieldDicts = acroForm.fieldDicts();
@@ -47,14 +47,14 @@ describe('PDFAcroForm', () => {
   describe('returns the NeedAppearances flag', () => {
     it('when it is undefined', () => {
       const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.NeedsAppearances()).toBe(undefined);
     });
 
     it('when it is defined', () => {
       dict = new Map([[PDFName.of('NeedsAppearances'), PDFBool.True]]);
       const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.NeedsAppearances()).toBe(PDFBool.True);
     });
   });
@@ -62,14 +62,14 @@ describe('PDFAcroForm', () => {
   describe('returns the SigFlags number', () => {
     it('when it is undefined', () => {
       const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.SigFlags()).toBe(undefined);
     });
 
     it('when it is defined', () => {
       dict = new Map([[PDFName.of('SigFlags'), PDFNumber.of(1)]]);
       const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.SigFlags()).toEqual(PDFNumber.of(1));
     });
   });
@@ -77,7 +77,7 @@ describe('PDFAcroForm', () => {
   describe('returns the resource dictionary', () => {
     it('when it is undefined', () => {
       const acroFormDict = PDFDict.fromMapWithContext(new Map(), context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.DR()).toBe(undefined);
     });
 
@@ -85,7 +85,7 @@ describe('PDFAcroForm', () => {
       const dr = PDFDict.withContext(context);
       dict = new Map([[PDFName.of('DR'), dr]]);
       const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.DR()).toBe(dr);
     });
   });
@@ -93,7 +93,7 @@ describe('PDFAcroForm', () => {
   describe('returns the default appearance string', () => {
     it('when it is undefined', () => {
       const acroFormDict = PDFDict.fromMapWithContext(new Map(), context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.DA()).toBe(undefined);
     });
 
@@ -101,7 +101,7 @@ describe('PDFAcroForm', () => {
       const da = PDFString.of('da');
       dict = new Map([[PDFName.of('DA'), da]]);
       const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.DA()).toBe(da);
     });
   });
@@ -109,7 +109,7 @@ describe('PDFAcroForm', () => {
   describe('returns the quadding number', () => {
     it('when it is undefined', () => {
       const acroFormDict = PDFDict.fromMapWithContext(new Map(), context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.Q()).toBe(undefined);
     });
 
@@ -117,7 +117,7 @@ describe('PDFAcroForm', () => {
       const q = PDFNumber.of(1);
       dict = new Map([[PDFName.of('Q'), q]]);
       const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.Q()).toBe(q);
     });
   });
@@ -125,7 +125,7 @@ describe('PDFAcroForm', () => {
   describe('returns the XFA Form array or stream', () => {
     it('when it is undefined', () => {
       const acroFormDict = PDFDict.fromMapWithContext(new Map(), context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.XFA()).toBe(undefined);
     });
 
@@ -133,7 +133,7 @@ describe('PDFAcroForm', () => {
       const xfa = PDFArray.withContext(context);
       dict = new Map([[PDFName.of('XFA'), xfa]]);
       const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-      const acroForm = PDFAcroForm.fromDict(acroFormDict, context);
+      const acroForm = PDFAcroForm.fromDict(acroFormDict);
       expect(acroForm.XFA()).toBe(xfa);
     });
   });

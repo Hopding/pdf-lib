@@ -28,7 +28,7 @@ class PDFCatalog extends PDFDict {
     if (!acroFormDict) {
       return undefined;
     }
-    return PDFAcroForm.fromDict(acroFormDict, this.context);
+    return PDFAcroForm.fromDict(acroFormDict);
   }
 
   /**

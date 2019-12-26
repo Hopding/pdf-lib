@@ -1,7 +1,6 @@
 import {
   PDFArray,
   PDFBool,
-  PDFContext,
   PDFDict,
   PDFName,
   PDFNumber,
@@ -10,19 +9,17 @@ import {
 } from 'src/core';
 
 class PDFAcroForm {
-  static fromDict(dict: PDFDict, context: PDFContext): PDFAcroForm {
+  static fromDict(dict: PDFDict): PDFAcroForm {
     if (!dict.has(PDFName.of('Fields'))) {
-      dict.set(PDFName.of('Fields'), context.obj([]));
+      dict.set(PDFName.of('Fields'), dict.context.obj([]));
     }
-    return new PDFAcroForm(dict, context);
+    return new PDFAcroForm(dict);
   }
 
-  readonly context: PDFContext;
   private readonly dict: PDFDict;
 
-  protected constructor(dict: PDFDict, context: PDFContext) {
+  protected constructor(dict: PDFDict) {
     this.dict = dict;
-    this.context = context;
   }
 
   Fields(): PDFArray {
