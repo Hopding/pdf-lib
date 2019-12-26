@@ -92,6 +92,20 @@ describe(`PDFArray`, () => {
     expect(array.size()).toBe(2);
   });
 
+  it('can return an array with the results of looking up all its fields', () => {
+    const pdfDict = PDFDict.fromMapWithContext(new Map(), context);
+    const dictRef = context.register(pdfDict);
+    const pdfDict2 = PDFDict.fromMapWithContext(new Map(), context);
+    const dictRef2 = context.register(pdfDict);
+    const array = PDFArray.withContext(context);
+    array.push(dictRef);
+    array.push(dictRef2);
+    const lookupValues = array.lookupElements(PDFDict);
+    expect(lookupValues.length).toBe(2);
+    expect(lookupValues[0]).toEqual(pdfDict);
+    expect(lookupValues[1]).toEqual(pdfDict2);
+  });
+
   it(`can be cloned`, () => {
     const original = pdfArray;
     const clone = original.clone();

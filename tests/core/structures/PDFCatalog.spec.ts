@@ -1,8 +1,10 @@
 import {
+  PDFAcroForm,
   PDFCatalog,
   PDFContext,
   PDFDict,
   PDFName,
+  PDFObject,
   PDFPageLeaf,
   PDFPageTree,
   PDFRef,
@@ -104,5 +106,24 @@ describe(`PDFCatalog`, () => {
     expect(pageTree1.Count().value()).toBe(1);
     expect(pageTree1.Kids().get(0)).toBe(leafRef1);
     expect(pageTree1.Kids().get(1)).toBe(undefined);
+  });
+
+  describe('returns its acroform dictionary', () => {
+    it('when it is undefined', () => {
+      const context = PDFContext.create();
+      const catalog = PDFCatalog.fromMapWithContext(new Map([]), context);
+      expect(catalog.AcroForm()).toBe(undefined);
+    });
+
+    it('when it is defined', () => {
+      const context = PDFContext.create();
+      const acroFormDict = PDFDict.fromMapWithContext(new Map(), context);
+      const acroform = PDFAcroForm.fromDict(acroFormDict);
+      const catalogDict = new Map<PDFName, PDFObject>([
+        [PDFName.of('AcroForm'), acroFormDict],
+      ]);
+      const catalog = PDFCatalog.fromMapWithContext(catalogDict, context);
+      expect(catalog.AcroForm()).toEqual(acroform);
+    });
   });
 });

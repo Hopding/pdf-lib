@@ -2,6 +2,7 @@ import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
+import PDFAcroForm from 'src/core/structures/PDFAcroForm';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
 
 class PDFCatalog extends PDFDict {
@@ -20,6 +21,14 @@ class PDFCatalog extends PDFDict {
 
   Pages(): PDFPageTree {
     return this.lookup(PDFName.of('Pages'), PDFDict) as PDFPageTree;
+  }
+
+  AcroForm(): PDFAcroForm | undefined {
+    const acroFormDict = this.lookupMaybe(PDFName.of('AcroForm'), PDFDict);
+    if (!acroFormDict) {
+      return undefined;
+    }
+    return PDFAcroForm.fromDict(acroFormDict);
   }
 
   /**

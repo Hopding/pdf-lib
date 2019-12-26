@@ -47,6 +47,17 @@ class PDFArray extends PDFObject {
     return this.array[index];
   }
 
+  lookupElements(): Array<PDFObject | undefined>;
+  lookupElements(type: typeof PDFDict): PDFDict[];
+
+  lookupElements(type?: any) {
+    const values = new Array(this.size());
+    for (let idx = 0, len = this.size(); idx < len; idx++) {
+      values[idx] = this.lookup(idx, type);
+    }
+    return values;
+  }
+
   lookupMaybe(index: number, type: typeof PDFArray): PDFArray | undefined;
   lookupMaybe(index: number, type: typeof PDFBool): PDFBool | undefined;
   lookupMaybe(index: number, type: typeof PDFDict): PDFDict | undefined;
