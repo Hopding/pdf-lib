@@ -53,7 +53,7 @@ class PDFArray extends PDFObject {
   lookupElements(type?: any) {
     const values = new Array(this.size());
     for (let idx = 0, len = this.size(); idx < len; idx++) {
-      values[idx] = this.context.lookup(this.get(idx), type);
+      values[idx] = this.lookup(idx, type);
     }
     return values;
   }
