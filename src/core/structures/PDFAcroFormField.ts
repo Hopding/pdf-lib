@@ -1,13 +1,11 @@
 import {
   PDFArray,
-  PDFContext,
   PDFDict,
   PDFName,
   PDFNumber,
   PDFObject,
   PDFString,
 } from 'src/core';
-import { DictMap } from 'src/core/objects/PDFDict';
 
 const acroFormFieldTypes: Array<PDFObject | undefined> = [
   PDFName.Btn,
@@ -16,10 +14,9 @@ const acroFormFieldTypes: Array<PDFObject | undefined> = [
   PDFName.Sig,
 ];
 
-class PDFAcroFormField extends PDFDict {
-  static fromMapWithContext(
-    dict: DictMap,
-    context: PDFContext,
+class PDFAcroFormField {
+  static fromDict(
+    dict: PDFDict,
   ): PDFAcroFormField {
     const ft = PDFName.of('FT');
     const hasValidFieldType =
@@ -27,47 +24,53 @@ class PDFAcroFormField extends PDFDict {
     if (!hasValidFieldType) {
       throw new Error('Invalid PDFAcroFormField Type');
     }
-    return new PDFAcroFormField(dict, context);
+    return new PDFAcroFormField(dict);
+  }
+
+  private readonly dict: PDFDict;
+
+  protected constructor(dict: PDFDict) {
+    this.dict = dict;
   }
 
   FT(): PDFName {
-    return this.lookup(PDFName.of('FT'), PDFName);
+    return this.dict.lookup(PDFName.of('FT'), PDFName);
   }
 
   Parent(): PDFDict | undefined {
-    return this.lookupMaybe(PDFName.of('Parent'), PDFDict);
+    return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
   }
 
   Kids(): PDFArray | undefined {
-    return this.lookupMaybe(PDFName.of('Kids'), PDFArray);
+    return this.dict.lookupMaybe(PDFName.of('Kids'), PDFArray);
   }
 
   T(): PDFString | undefined {
-    return this.lookupMaybe(PDFName.of('T'), PDFString);
+    return this.dict.lookupMaybe(PDFName.of('T'), PDFString);
   }
 
   TU(): PDFString | undefined {
-    return this.lookupMaybe(PDFName.of('TU'), PDFString);
+    return this.dict.lookupMaybe(PDFName.of('TU'), PDFString);
   }
 
   TM(): PDFString | undefined {
-    return this.lookupMaybe(PDFName.of('TM'), PDFString);
+    return this.dict.lookupMaybe(PDFName.of('TM'), PDFString);
   }
 
   Ff(): PDFNumber | undefined {
-    return this.lookupMaybe(PDFName.of('Ff'), PDFNumber);
+    return this.dict.lookupMaybe(PDFName.of('Ff'), PDFNumber);
   }
 
   V(): PDFObject | undefined {
-    return this.lookup(PDFName.of('V'));
+    return this.dict.lookup(PDFName.of('V'));
   }
 
   DV(): PDFObject | undefined {
-    return this.lookup(PDFName.of('DV'));
+    return this.dict.lookup(PDFName.of('DV'));
   }
 
   AA(): PDFDict | undefined {
-    return this.lookupMaybe(PDFName.of('AA'), PDFDict);
+    return this.dict.lookupMaybe(PDFName.of('AA'), PDFDict);
   }
 }
 
