@@ -7,7 +7,7 @@ import {
   PDFString,
 } from 'src/core';
 
-const acroFormFieldTypes: Array<PDFObject | undefined> = [
+const acroFormFieldTypes = [
   PDFName.Btn,
   PDFName.Ch,
   PDFName.Tx,
@@ -18,7 +18,7 @@ class PDFAcroFormField {
   static fromDict(dict: PDFDict): PDFAcroFormField {
     const ft = PDFName.of('FT');
     const hasValidFieldType =
-      dict.has(ft) && acroFormFieldTypes.includes(dict.get(ft));
+      dict.has(ft) && acroFormFieldTypes.includes(dict.lookup(ft, PDFName));
     if (!hasValidFieldType) {
       throw new Error('Invalid PDFAcroFormField Type');
     }
