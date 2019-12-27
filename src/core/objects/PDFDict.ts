@@ -46,7 +46,6 @@ class PDFDict extends PDFObject {
     return this.dict.has(key);
   }
 
-  lookupMaybe(key: PDFName, type: typeof PDFAcroForm): PDFAcroForm | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFArray): PDFArray | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFBool): PDFBool | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFDict): PDFDict | undefined;
