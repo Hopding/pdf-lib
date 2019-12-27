@@ -36,7 +36,7 @@ export { default as PDFContentStream } from 'src/core/structures/PDFContentStrea
 export { default as PDFCrossRefStream } from 'src/core/structures/PDFCrossRefStream';
 export { default as PDFObjectStream } from 'src/core/structures/PDFObjectStream';
 export { default as PDFAcroForm } from 'src/core/structures/PDFAcroForm';
-export { default as PDFAcroFormField } from 'src/core/structures/PDFAcroFormField';
+export { default as PDFAcroField } from 'src/core/structures/PDFAcroField';
 export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
 export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
 export { default as PDFFlateStream } from 'src/core/structures/PDFFlateStream';

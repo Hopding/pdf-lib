@@ -1,5 +1,5 @@
 import {
-  PDFAcroFormField,
+  PDFAcroField,
   PDFArray,
   PDFBool,
   PDFDict,
@@ -23,13 +23,13 @@ class PDFAcroForm {
     this.dict = dict;
   }
 
-  Fields(): PDFAcroFormField[] {
+  Fields(): PDFAcroField[] {
     const fieldDicts = this.dict
       .lookup(PDFName.of('Fields'), PDFArray)
       .lookupElements(PDFDict);
     const fields = new Array(fieldDicts.length);
     for (let idx = 0, len = fieldDicts.length; idx < len; idx++) {
-      fields[idx] = PDFAcroFormField.fromDict(fieldDicts[idx]);
+      fields[idx] = PDFAcroField.fromDict(fieldDicts[idx]);
     }
     return fields;
   }

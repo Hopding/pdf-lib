@@ -14,15 +14,15 @@ const acroFormFieldTypes = [
   PDFName.Sig,
 ];
 
-class PDFAcroFormField {
-  static fromDict(dict: PDFDict): PDFAcroFormField {
+class PDFAcroField {
+  static fromDict(dict: PDFDict): PDFAcroField {
     const ft = PDFName.of('FT');
     const hasValidFieldType =
       dict.has(ft) && acroFormFieldTypes.includes(dict.lookup(ft, PDFName));
     if (!hasValidFieldType) {
-      throw new Error('Invalid PDFAcroFormField Type');
+      throw new Error('Invalid PDFAcroField Type');
     }
-    return new PDFAcroFormField(dict);
+    return new PDFAcroField(dict);
   }
 
   private readonly dict: PDFDict;
@@ -72,4 +72,4 @@ class PDFAcroFormField {
   }
 }
 
-export default PDFAcroFormField;
+export default PDFAcroField;
