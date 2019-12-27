@@ -25,7 +25,7 @@ class PDFAcroField {
     return new PDFAcroField(dict);
   }
 
-  private readonly dict: PDFDict;
+  readonly dict: PDFDict;
 
   protected constructor(dict: PDFDict) {
     this.dict = dict;

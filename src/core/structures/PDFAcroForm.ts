@@ -17,7 +17,7 @@ class PDFAcroForm {
     return new PDFAcroForm(dict);
   }
 
-  private readonly dict: PDFDict;
+  readonly dict: PDFDict;
 
   protected constructor(dict: PDFDict) {
     this.dict = dict;
