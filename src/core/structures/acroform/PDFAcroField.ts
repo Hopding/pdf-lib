@@ -6,7 +6,7 @@ import {
   PDFObject,
   PDFString,
 } from 'src/core';
-import { PDFNonTerminalField, PDFTerminalField } from './internal';
+import { PDFNonTerminalField, PDFTerminalField } from './index';
 
 export const acroFormFieldTypes = [
   PDFName.Btn,

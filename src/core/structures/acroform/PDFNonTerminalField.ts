@@ -1,5 +1,5 @@
 import { PDFArray, PDFDict, PDFName } from 'src/index';
-import { PDFAcroField } from './internal';
+import { PDFAcroField } from './index';
 
 class PDFNonTerminalField extends PDFAcroField {
   static fromDict(dict: PDFDict): PDFAcroField {

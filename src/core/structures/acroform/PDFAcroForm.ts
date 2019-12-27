@@ -7,7 +7,7 @@ import {
   PDFObject,
   PDFString,
 } from 'src/core';
-import { PDFAcroField } from './internal';
+import { PDFAcroField } from './index';
 
 class PDFAcroForm {
   static fromDict(dict: PDFDict): PDFAcroForm {

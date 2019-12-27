@@ -1,5 +1,5 @@
 import { PDFDict, PDFName } from 'src/core';
-import { acroFormFieldTypes, PDFAcroField } from './internal';
+import { acroFormFieldTypes, PDFAcroField } from './index';
 
 class PDFTerminalField extends PDFAcroField {
   static fromDict(dict: PDFDict): PDFAcroField {
