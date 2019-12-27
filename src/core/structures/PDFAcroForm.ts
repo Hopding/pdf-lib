@@ -24,7 +24,9 @@ class PDFAcroForm {
   }
 
   Fields(): PDFAcroFormField[] {
-    const fieldDicts = this.dict.lookup(PDFName.of('Fields'), PDFArray).lookupElements(PDFDict);
+    const fieldDicts = this.dict
+      .lookup(PDFName.of('Fields'), PDFArray)
+      .lookupElements(PDFDict);
     const fields = [];
     for (let idx = 0, size = fieldDicts.length; idx < size; idx++) {
       fields.push(PDFAcroFormField.fromDict(fieldDicts[idx]));

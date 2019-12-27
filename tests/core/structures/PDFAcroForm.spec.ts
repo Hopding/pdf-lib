@@ -22,7 +22,7 @@ describe('PDFAcroForm', () => {
   it('can return the field dictionaries as PDFAcroFormFields', () => {
     const formFieldDict = PDFDict.fromMapWithContext(
       new Map([[PDFName.FT, PDFName.Btn]]),
-      context
+      context,
     );
     const formField = PDFAcroFormField.fromDict(formFieldDict);
     const formFieldRef = context.register(formFieldDict);

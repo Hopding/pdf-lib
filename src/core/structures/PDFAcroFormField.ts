@@ -15,9 +15,7 @@ const acroFormFieldTypes: Array<PDFObject | undefined> = [
 ];
 
 class PDFAcroFormField {
-  static fromDict(
-    dict: PDFDict,
-  ): PDFAcroFormField {
+  static fromDict(dict: PDFDict): PDFAcroFormField {
     const ft = PDFName.of('FT');
     const hasValidFieldType =
       dict.has(ft) && acroFormFieldTypes.includes(dict.get(ft));
