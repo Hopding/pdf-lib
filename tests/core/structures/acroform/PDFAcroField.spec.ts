@@ -17,7 +17,7 @@ describe('PDFAcroField', () => {
 
   beforeEach(() => {
     context = PDFContext.create();
-    dict = new Map([[PDFName.of('FT'), PDFName.Btn]]);
+    dict = new Map([[PDFName.FT, PDFName.Btn]]);
   });
 
   describe('can be constructed from a PDFDict', () => {

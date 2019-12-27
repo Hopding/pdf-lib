@@ -12,7 +12,7 @@ describe('PDFTerminalField', () => {
 
   beforeEach(() => {
     context = PDFContext.create();
-    dict = new Map([[PDFName.of('FT'), PDFName.Btn]]);
+    dict = new Map([[PDFName.FT, PDFName.Btn]]);
   });
 
   describe('can be constructed from a PDFDict', () => {
@@ -24,7 +24,7 @@ describe('PDFTerminalField', () => {
     });
 
     it('only with a valid field type', () => {
-      dict = new Map([[PDFName.of('FT'), PDFName.of('InvalidFieldType')]]);
+      dict = new Map([[PDFName.FT, PDFName.of('InvalidFieldType')]]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const createField = () => PDFTerminalField.fromDict(acroFormFieldDict);
       expect(createField).toThrow(Error);
