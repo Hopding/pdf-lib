@@ -1,4 +1,5 @@
 import {
+  PDFAcroFormField,
   PDFArray,
   PDFBool,
   PDFDict,
@@ -22,12 +23,13 @@ class PDFAcroForm {
     this.dict = dict;
   }
 
-  Fields(): PDFArray {
-    return this.dict.lookup(PDFName.of('Fields'), PDFArray);
-  }
-
-  fieldDicts(): PDFDict[] {
-    return this.Fields().lookupElements(PDFDict);
+  Fields(): PDFAcroFormField[] {
+    const fieldDicts = this.dict.lookup(PDFName.of('Fields'), PDFArray).lookupElements(PDFDict);
+    const fields = [];
+    for (let idx = 0, size = fieldDicts.length; idx < size; idx++) {
+      fields.push(PDFAcroFormField.fromDict(fieldDicts[idx]));
+    }
+    return fields;
   }
 
   NeedsAppearances(): PDFBool | undefined {

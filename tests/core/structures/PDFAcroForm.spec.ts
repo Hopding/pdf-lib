@@ -1,5 +1,6 @@
 import {
   PDFAcroForm,
+  PDFAcroFormField,
   PDFArray,
   PDFBool,
   PDFContext,
@@ -18,30 +19,19 @@ describe('PDFAcroForm', () => {
     context = PDFContext.create();
   });
 
-  it('can return the Fields array', () => {
-    const formField = PDFDict.fromMapWithContext(new Map(), context);
-    const formFieldRef = context.register(formField);
-    const fieldsArray = PDFArray.withContext(context);
-    fieldsArray.push(formFieldRef);
-    dict = new Map<PDFName, PDFObject>([[PDFName.of('Fields'), fieldsArray]]);
-    const acroFormDict = PDFDict.fromMapWithContext(dict, context);
-    const acroForm = PDFAcroForm.fromDict(acroFormDict);
-    expect(acroForm.Fields()).toEqual(fieldsArray);
-  });
-
-  it('can return the dereferenced Fields array', () => {
-    const formField = PDFDict.fromMapWithContext(new Map(), context);
-    const formFieldRef = context.register(formField);
+  it('can return the field dictionaries as PDFAcroFormFields', () => {
+    const formFieldDict = PDFDict.fromMapWithContext(
+      new Map([[PDFName.FT, PDFName.Btn]]),
+      context
+    );
+    const formField = PDFAcroFormField.fromDict(formFieldDict);
+    const formFieldRef = context.register(formFieldDict);
     const fieldsArray = PDFArray.withContext(context);
     fieldsArray.push(formFieldRef);
     dict = new Map([[PDFName.of('Fields'), fieldsArray]]);
     const acroFormDict = PDFDict.fromMapWithContext(dict, context);
     const acroForm = PDFAcroForm.fromDict(acroFormDict);
-    const expectedArray = PDFArray.withContext(context);
-    expectedArray.push(formField);
-    const fieldDicts = acroForm.fieldDicts();
-    expect(fieldDicts.length).toBe(1);
-    expect(fieldDicts[0]).toEqual(formField);
+    expect(acroForm.Fields()).toEqual([formField]);
   });
 
   describe('returns the NeedAppearances flag', () => {
