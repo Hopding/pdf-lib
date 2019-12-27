@@ -16,7 +16,6 @@ import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import PDFOperator from 'src/core/operators/PDFOperator';
 import Ops from 'src/core/operators/PDFOperatorNames';
-import PDFAcroFormField from 'src/core/structures/PDFAcroFormField';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
 import { typedArrayFor } from 'src/utils';
 
@@ -124,7 +123,6 @@ class PDFContext {
   lookup(ref: LookupKey, type: typeof PDFStream): PDFStream;
   lookup(ref: LookupKey, type: typeof PDFRef): PDFRef;
   lookup(ref: LookupKey, type: typeof PDFString): PDFString;
-  lookup(ref: LookupKey, type: typeof PDFAcroFormField): PDFAcroFormField;
 
   lookup(ref: LookupKey, type?: any) {
     const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
