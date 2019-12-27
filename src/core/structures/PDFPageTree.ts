@@ -12,7 +12,7 @@ class PDFPageTree extends PDFDict {
   static withContext = (context: PDFContext, parent?: PDFRef) => {
     const dict = new Map();
     dict.set(PDFName.Type, PDFName.Pages);
-    dict.set(PDFName.of('Kids'), context.obj([]));
+    dict.set(PDFName.Kids, context.obj([]));
     dict.set(PDFName.of('Count'), context.obj(0));
     if (parent) dict.set(PDFName.of('Parent'), parent);
     return new PDFPageTree(dict, context);
@@ -26,7 +26,7 @@ class PDFPageTree extends PDFDict {
   }
 
   Kids(): PDFArray {
-    return this.lookup(PDFName.of('Kids'), PDFArray);
+    return this.lookup(PDFName.Kids, PDFArray);
   }
 
   Count(): PDFNumber {

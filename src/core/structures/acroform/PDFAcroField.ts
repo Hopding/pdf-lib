@@ -17,7 +17,7 @@ export const acroFormFieldTypes = [
 
 class PDFAcroField {
   static fromDict(dict: PDFDict): PDFAcroField {
-    const kids = PDFName.of('Kids');
+    const kids = PDFName.Kids;
     const isTerminal = !dict.lookup(kids);
     if (isTerminal) {
       return PDFTerminalField.fromDict(dict);
@@ -40,7 +40,7 @@ class PDFAcroField {
   }
 
   Kids(): PDFArray | undefined {
-    return this.dict.lookupMaybe(PDFName.of('Kids'), PDFArray);
+    return this.dict.lookupMaybe(PDFName.Kids, PDFArray);
   }
 
   T(): PDFString | undefined {

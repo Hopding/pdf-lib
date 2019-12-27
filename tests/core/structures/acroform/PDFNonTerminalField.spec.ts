@@ -17,7 +17,7 @@ describe('PDFNonTerminalField', () => {
 
   it('returns a valid kids array', () => {
     const kidsArray = PDFArray.withContext(context);
-    dict = new Map([[PDFName.of('Kids'), kidsArray]]);
+    dict = new Map([[PDFName.Kids, kidsArray]]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const field = PDFNonTerminalField.fromDict(acroFormFieldDict);
     expect(field.Kids()).toBe(kidsArray);

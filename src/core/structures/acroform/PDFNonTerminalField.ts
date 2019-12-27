@@ -13,7 +13,7 @@ class PDFNonTerminalField extends PDFAcroField {
   }
 
   Kids(): PDFArray {
-    return this.dict.lookup(PDFName.of('Kids'), PDFArray);
+    return this.dict.lookup(PDFName.Kids, PDFArray);
   }
 }
 

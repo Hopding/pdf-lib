@@ -30,7 +30,7 @@ describe('PDFAcroField', () => {
     });
 
     it('representing a non terminal field', () => {
-      dict = new Map([[PDFName.of('Kids'), PDFArray.withContext(context)]]);
+      dict = new Map([[PDFName.Kids, PDFArray.withContext(context)]]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
       expect(field).toBeInstanceOf(PDFNonTerminalField);
@@ -62,7 +62,7 @@ describe('PDFAcroField', () => {
   describe('returns the Kids array', () => {
     it('when it is defined', () => {
       const kids = PDFArray.withContext(context);
-      dict.set(PDFName.of('Kids'), kids);
+      dict.set(PDFName.Kids, kids);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
       expect(field.Kids()).toBe(kids);
