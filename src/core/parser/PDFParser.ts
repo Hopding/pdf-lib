@@ -71,8 +71,7 @@ class PDFParser extends PDFObjectParser {
 
   private maybeRecoverRoot(): void {
     const isValidCatalog = (obj?: PDFObject) =>
-      obj instanceof PDFDict &&
-      obj.lookup(PDFName.of('Type')) === PDFName.of('Catalog');
+      obj instanceof PDFDict && obj.lookup(PDFName.Type) === PDFName.Catalog;
 
     const catalog = this.context.lookup(this.context.trailerInfo.Root);
 

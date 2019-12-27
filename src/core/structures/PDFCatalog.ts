@@ -2,7 +2,7 @@ import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
-import PDFAcroForm from 'src/core/structures/PDFAcroForm';
+import PDFAcroForm from 'src/core/structures/acroform/PDFAcroForm';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
 
 class PDFCatalog extends PDFDict {
@@ -11,8 +11,8 @@ class PDFCatalog extends PDFDict {
     pages: PDFPageTree | PDFRef,
   ) => {
     const dict = new Map();
-    dict.set(PDFName.of('Type'), PDFName.of('Catalog'));
-    dict.set(PDFName.of('Pages'), pages);
+    dict.set(PDFName.Type, PDFName.Catalog);
+    dict.set(PDFName.Pages, pages);
     return new PDFCatalog(dict, context);
   };
 
@@ -20,7 +20,7 @@ class PDFCatalog extends PDFDict {
     new PDFCatalog(map, context);
 
   Pages(): PDFPageTree {
-    return this.lookup(PDFName.of('Pages'), PDFDict) as PDFPageTree;
+    return this.lookup(PDFName.Pages, PDFDict) as PDFPageTree;
   }
 
   AcroForm(): PDFAcroForm | undefined {
@@ -39,7 +39,7 @@ class PDFCatalog extends PDFDict {
    * Returns the ref of the PDFPageTree node into which `leafRef` was inserted.
    */
   insertLeafNode(leafRef: PDFRef, index: number): PDFRef {
-    const pagesRef = this.get(PDFName.of('Pages')) as PDFRef;
+    const pagesRef = this.get(PDFName.Pages) as PDFRef;
     const maybeParentRef = this.Pages().insertLeafNode(leafRef, index);
     return maybeParentRef || pagesRef;
   }

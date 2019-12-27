@@ -7,6 +7,7 @@ import {
   PDFObject,
   PDFString,
 } from 'src/core';
+import { PDFAcroField } from './index';
 
 class PDFAcroForm {
   static fromDict(dict: PDFDict): PDFAcroForm {
@@ -16,18 +17,21 @@ class PDFAcroForm {
     return new PDFAcroForm(dict);
   }
 
-  private readonly dict: PDFDict;
+  readonly dict: PDFDict;
 
   protected constructor(dict: PDFDict) {
     this.dict = dict;
   }
 
-  Fields(): PDFArray {
-    return this.dict.lookup(PDFName.of('Fields'), PDFArray);
-  }
-
-  fieldDicts(): PDFDict[] {
-    return this.Fields().lookupElements(PDFDict);
+  Fields(): PDFAcroField[] {
+    const fieldDicts = this.dict
+      .lookup(PDFName.of('Fields'), PDFArray)
+      .lookupElements(PDFDict);
+    const fields = new Array(fieldDicts.length);
+    for (let idx = 0, len = fieldDicts.length; idx < len; idx++) {
+      fields[idx] = PDFAcroField.fromDict(fieldDicts[idx]);
+    }
+    return fields;
   }
 
   NeedsAppearances(): PDFBool | undefined {

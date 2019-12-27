@@ -16,7 +16,7 @@ describe(`PDFPageLeaf`, () => {
 
     expect(pageTree).toBeInstanceOf(PDFPageLeaf);
     expect(pageTree.get(PDFName.of('Type'))).toBeUndefined();
-    expect(pageTree.get(PDFName.of('Kids'))).toBeUndefined();
+    expect(pageTree.get(PDFName.Kids)).toBeUndefined();
     expect(pageTree.get(PDFName.of('Count'))).toBeUndefined();
     expect(pageTree.get(PDFName.of('Parent'))).toBeUndefined();
   });

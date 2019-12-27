@@ -17,7 +17,7 @@ describe(`PDFPageTree`, () => {
 
     expect(pageTree).toBeInstanceOf(PDFPageTree);
     expect(pageTree.get(PDFName.of('Type'))).toBeUndefined();
-    expect(pageTree.get(PDFName.of('Kids'))).toBeUndefined();
+    expect(pageTree.get(PDFName.Kids)).toBeUndefined();
     expect(pageTree.get(PDFName.of('Count'))).toBeUndefined();
     expect(pageTree.get(PDFName.of('Parent'))).toBeUndefined();
   });
@@ -27,9 +27,9 @@ describe(`PDFPageTree`, () => {
     const pageTree = PDFPageTree.withContext(context);
 
     expect(pageTree).toBeInstanceOf(PDFPageTree);
-    expect(pageTree.get(PDFName.of('Type'))).toBe(PDFName.of('Pages'));
-    expect(pageTree.get(PDFName.of('Kids'))).toBeInstanceOf(PDFArray);
-    expect(pageTree.lookup(PDFName.of('Kids'), PDFArray).size()).toBe(0);
+    expect(pageTree.get(PDFName.of('Type'))).toBe(PDFName.Pages);
+    expect(pageTree.get(PDFName.Kids)).toBeInstanceOf(PDFArray);
+    expect(pageTree.lookup(PDFName.Kids, PDFArray).size()).toBe(0);
     expect(pageTree.get(PDFName.of('Count'))).toBeInstanceOf(PDFNumber);
     expect(pageTree.lookup(PDFName.of('Count'), PDFNumber).value()).toBe(0);
     expect(pageTree.get(PDFName.of('Parent'))).toBeUndefined();
@@ -48,7 +48,7 @@ describe(`PDFPageTree`, () => {
     const countRef = context.register(count);
 
     const pageTree = PDFPageTree.withContext(context, parentRef);
-    pageTree.set(PDFName.of('Kids'), kidsRef);
+    pageTree.set(PDFName.Kids, kidsRef);
     pageTree.set(PDFName.of('Count'), countRef);
 
     expect(pageTree.Parent()).toBe(parent);
@@ -64,7 +64,7 @@ describe(`PDFPageTree`, () => {
     const count = context.obj(0);
 
     const pageTree = PDFPageTree.withContext(context);
-    pageTree.set(PDFName.of('Kids'), kids);
+    pageTree.set(PDFName.Kids, kids);
     pageTree.set(PDFName.of('Count'), count);
 
     expect(pageTree.Parent()).toBeUndefined();
