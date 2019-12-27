@@ -108,16 +108,22 @@ describe(`PDFCatalog`, () => {
     expect(pageTree1.Kids().get(1)).toBe(undefined);
   });
 
-  it('returns its acroform dictionary', () => {
-    const context = PDFContext.create();
-    let dict = new Map<PDFName, PDFObject>([]);
-    let catalog = PDFCatalog.fromMapWithContext(dict, context);
-    expect(catalog.AcroForm()).toBe(undefined);
+  describe('returns its acroform dictionary', () => {
+    it('when it is undefined', () => {
+      const context = PDFContext.create();
+      const catalog = PDFCatalog.fromMapWithContext(new Map([]), context);
+      expect(catalog.AcroForm()).toBe(undefined);
+    });
 
-    const acroform = PDFAcroForm.fromMapWithContext(new Map(), context);
-    const acroformRef = context.register(acroform);
-    dict = new Map<PDFName, PDFObject>([[PDFName.of('AcroForm'), acroformRef]]);
-    catalog = PDFCatalog.fromMapWithContext(dict, context);
-    expect(catalog.AcroForm()).toBe(acroform);
+    it('when it is defined', () => {
+      const context = PDFContext.create();
+      const acroFormDict = PDFDict.fromMapWithContext(new Map(), context);
+      const acroform = PDFAcroForm.fromDict(acroFormDict);
+      const catalogDict = new Map<PDFName, PDFObject>([
+        [PDFName.of('AcroForm'), acroFormDict],
+      ]);
+      const catalog = PDFCatalog.fromMapWithContext(catalogDict, context);
+      expect(catalog.AcroForm()).toEqual(acroform);
+    });
   });
 });
