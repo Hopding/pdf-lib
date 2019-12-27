@@ -5,9 +5,10 @@ import {
   PDFContext,
   PDFDict,
   PDFName,
+  PDFNonTerminalField,
   PDFNumber,
-  PDFObject,
   PDFString,
+  PDFTerminalField,
 } from 'src/index';
 
 describe('PDFAcroField', () => {
@@ -16,24 +17,24 @@ describe('PDFAcroField', () => {
 
   beforeEach(() => {
     context = PDFContext.create();
-    dict = new Map<PDFName, PDFObject>([[PDFName.of('FT'), PDFName.Btn]]);
+    dict = new Map([[PDFName.of('FT'), PDFName.Btn]]);
   });
 
-  describe('can be constructed from PDFAcroField.fromMapWithContext', () => {
-    it('with a valid field type', () => {
-      dict = new Map<PDFName, PDFObject>([[PDFName.of('FT'), PDFName.Btn]]);
+  describe('can be constructed from a PDFDict', () => {
+    it('representing as a terminal field', () => {
+      dict = new Map([[PDFName.FT, PDFName.Btn]]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
       expect(field.FT()).toBe(PDFName.Btn);
+      expect(field).toBeInstanceOf(PDFTerminalField);
     });
 
-    it('only with a valid field type', () => {
-      dict = new Map<PDFName, PDFObject>([
-        [PDFName.of('FT'), PDFName.of('InvalidFieldType')],
+    it('representing a non terminal field', () => {
+      dict = new Map([[PDFName.of('Kids'), PDFArray.withContext(context)],
       ]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-      const createField = () => PDFAcroField.fromDict(acroFormFieldDict);
-      expect(createField).toThrow(Error);
+      const field = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(field).toBeInstanceOf(PDFNonTerminalField);
     });
   });
 
@@ -46,7 +47,7 @@ describe('PDFAcroField', () => {
   describe('returns the parent field dictionary', () => {
     it('when it is defined', () => {
       const parentDict = PDFDict.fromMapWithContext(
-        new Map<PDFName, PDFObject>(),
+        new Map(),
         context,
       );
       dict.set(PDFName.of('Parent'), parentDict);

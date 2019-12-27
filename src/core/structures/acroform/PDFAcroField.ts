@@ -6,8 +6,12 @@ import {
   PDFObject,
   PDFString,
 } from 'src/core';
+import {
+  PDFNonTerminalField,
+  PDFTerminalField
+} from './internal';
 
-const acroFormFieldTypes = [
+export const acroFormFieldTypes = [
   PDFName.Btn,
   PDFName.Ch,
   PDFName.Tx,
@@ -16,13 +20,12 @@ const acroFormFieldTypes = [
 
 class PDFAcroField {
   static fromDict(dict: PDFDict): PDFAcroField {
-    const ft = PDFName.of('FT');
-    const hasValidFieldType =
-      dict.has(ft) && acroFormFieldTypes.includes(dict.lookup(ft, PDFName));
-    if (!hasValidFieldType) {
-      throw new Error('Invalid PDFAcroField Type');
+    const kids = PDFName.of('Kids');
+    const isTerminal = !(dict.lookup(kids));
+    if (isTerminal) {
+      return PDFTerminalField.fromDict(dict);
     }
-    return new PDFAcroField(dict);
+    return PDFNonTerminalField.fromDict(dict);
   }
 
   readonly dict: PDFDict;
@@ -31,8 +34,8 @@ class PDFAcroField {
     this.dict = dict;
   }
 
-  FT(): PDFName {
-    return this.dict.lookup(PDFName.of('FT'), PDFName);
+  FT(): PDFName | undefined {
+    return this.dict.lookup(PDFName.FT, PDFName);
   }
 
   Parent(): PDFDict | undefined {

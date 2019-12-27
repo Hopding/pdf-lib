@@ -1,5 +1,4 @@
 import {
-  PDFAcroField,
   PDFArray,
   PDFBool,
   PDFDict,
@@ -8,6 +7,7 @@ import {
   PDFObject,
   PDFString,
 } from 'src/core';
+import { PDFAcroField } from './internal';
 
 class PDFAcroForm {
   static fromDict(dict: PDFDict): PDFAcroForm {
