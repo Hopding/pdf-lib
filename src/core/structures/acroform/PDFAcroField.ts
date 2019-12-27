@@ -6,10 +6,7 @@ import {
   PDFObject,
   PDFString,
 } from 'src/core';
-import {
-  PDFNonTerminalField,
-  PDFTerminalField
-} from './internal';
+import { PDFNonTerminalField, PDFTerminalField } from './internal';
 
 export const acroFormFieldTypes = [
   PDFName.Btn,
@@ -21,7 +18,7 @@ export const acroFormFieldTypes = [
 class PDFAcroField {
   static fromDict(dict: PDFDict): PDFAcroField {
     const kids = PDFName.of('Kids');
-    const isTerminal = !(dict.lookup(kids));
+    const isTerminal = !dict.lookup(kids);
     if (isTerminal) {
       return PDFTerminalField.fromDict(dict);
     }
