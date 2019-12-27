@@ -52,6 +52,7 @@ class PDFName extends PDFObject {
   static readonly AcroForm = PDFName.of('AcroForm');
   static readonly Pages = PDFName.of('Pages');
   static readonly Catalog = PDFName.of('Catalog');
+  static readonly FT = PDFName.of('FT');
   static readonly Fields = PDFName.of('Fields');
   static readonly Btn = PDFName.of('Btn');
   static readonly Ch = PDFName.of('Ch');
