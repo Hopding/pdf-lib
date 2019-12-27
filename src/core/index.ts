@@ -39,8 +39,6 @@ export { default as PDFObjectStream } from 'src/core/structures/PDFObjectStream'
 export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
 export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
 export { default as PDFFlateStream } from 'src/core/structures/PDFFlateStream';
-export { default as PDFNonTerminalField } from 'src/core/structures/acroform/PDFNonTerminalField';
-export { default as PDFTerminalField } from 'src/core/structures/acroform/PDFTerminalField';
 
 export { default as PDFOperator } from 'src/core/operators/PDFOperator';
 export { default as PDFOperatorNames } from 'src/core/operators/PDFOperatorNames';
