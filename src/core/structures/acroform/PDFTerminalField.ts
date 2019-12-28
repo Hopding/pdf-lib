@@ -1,13 +1,15 @@
 import { PDFDict, PDFName } from 'src/core';
-import { acroFormFieldTypes, PDFAcroField } from './index';
+import { acroFormFieldTypes, PDFAcroButton, PDFAcroField } from './index';
 
 class PDFTerminalField extends PDFAcroField {
-  static fromDict(dict: PDFDict): PDFAcroField {
-    const ft = PDFName.FT;
-    const hasValidFieldType =
-      dict.has(ft) && acroFormFieldTypes.includes(dict.lookup(ft, PDFName));
+  static fromDict(dict: PDFDict): PDFTerminalField {
+    const fieldType = dict.lookup(PDFName.FT, PDFName);
+    const hasValidFieldType = acroFormFieldTypes.includes(fieldType);
     if (!hasValidFieldType) {
       throw new Error('Invalid PDFAcroField Type');
+    }
+    if (fieldType === PDFName.Btn) {
+      return PDFAcroButton.fromDict(dict);
     }
     return new PDFTerminalField(dict);
   }
