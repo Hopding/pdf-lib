@@ -510,6 +510,13 @@ The following builds are available:
 
 - https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js
 - https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.min.js
+- https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit/dist/fontkit.umd.js
+- https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit/dist/fontkit.umd.min.js
+
+> **NOTE:** if you are using the CDN scripts in production, you should include a specific version number in the URL, for example:
+>
+> - https://unpkg.com/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.min.js
+> - https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.min.js
 
 When using a UMD build, you will have access to a global `window.fontkit` variable. To register the `fontkit` instance:
 
