@@ -510,6 +510,13 @@ The following builds are available:
 
 - https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js
 - https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.min.js
+- https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit/dist/fontkit.umd.js
+- https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit/dist/fontkit.umd.min.js
+
+> **NOTE:** if you are using the CDN scripts in production, you should include a specific version number in the URL, for example:
+>
+> - https://unpkg.com/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.min.js
+> - https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.min.js
 
 When using a UMD build, you will have access to a global `window.fontkit` variable. To register the `fontkit` instance:
 
@@ -585,6 +592,38 @@ Note that many of the API methods are now asynchronous and return promises, so y
   ```js
   PDFDocument.save({ objectsPerTick: Infinity });
   ```
+
+- To draw content on a page in old versions of `pdf-lib`, you needed to create a content stream, invoke some operators, register the content stream, and add it to the document. Something like the following:
+
+  ```js
+  const contentStream = pdfDoc.createContentStream(
+    drawText(
+      timesRomanFont.encodeText('Creating PDFs in JavaScript is awesome!'),
+      {
+        x: 50,
+        y: 450,
+        size: 15,
+        font: 'TimesRoman',
+        colorRgb: [0, 0.53, 0.71],
+      },
+    ),
+  );
+  page.addContentStreams(pdfDoc.register(contentStream));
+  ```
+
+  However, in new versions of `pdf-lib`, this is much simpler. You simply invoke drawing methods on the page, such as [`PDFPage.drawText`](https://pdf-lib.js.org/docs/api/classes/pdfpage#drawtext), [`PDFPage.drawImage`](https://pdf-lib.js.org/docs/api/classes/pdfpage#drawimage), [`PDFPage.drawRectangle`](https://pdf-lib.js.org/docs/api/classes/pdfpage#drawrectangle), or [`PDFPage.drawSvgPath`](https://pdf-lib.js.org/docs/api/classes/pdfpage#drawsvgpath). So the above example becomes:
+
+  ```js
+  page.drawText('Creating PDFs in JavaScript is awesome!', {
+    x: 50,
+    y: 450,
+    size: 15,
+    font: timesRomanFont,
+    color: rgb(0, 0.53, 0.71),
+  });
+  ```
+
+  Please see the [Usage Examples](#usage-examples) for more in depth examples of drawing content on a page in the new versions of `pdf-lib`. You may also find the [Complete Examples](#complete-examples) to be a useful reference.
 
 - Change _`getMaybe`_ function calls to **`get`** calls. If a property doesn't exist, then `undefined` will be returned. Note, however, that PDF name strings with need to be wrapped in `PDFName.of(...)`. For example, to look up the AcroForm object you'll need to change _`pdfDoc.catalog.getMaybe('AcroForm')`_ to **`pdfDoc.catalog.get(PDFName.of('AcroForm'))`**.
 
