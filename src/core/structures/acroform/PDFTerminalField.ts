@@ -3,7 +3,7 @@ import { acroFormFieldTypes, PDFAcroButton, PDFAcroField } from './index';
 
 class PDFTerminalField extends PDFAcroField {
   static fromDict(dict: PDFDict): PDFTerminalField {
-    const fieldType =  dict.lookup(PDFName.FT, PDFName);
+    const fieldType = dict.lookup(PDFName.FT, PDFName);
     const hasValidFieldType = acroFormFieldTypes.includes(fieldType);
     if (!hasValidFieldType) {
       throw new Error('Invalid PDFAcroField Type');
