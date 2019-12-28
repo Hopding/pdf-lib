@@ -3,6 +3,7 @@ import { execSync } from 'child_process';
 export enum Reader {
   Preview = 'Preview',
   Acrobat = 'Adobe Acrobat',
+  AcrobatReader = 'Adobe Acrobat Reader DC',
   Foxit = 'Foxit Reader',
   Chrome = 'Google Chrome',
   Firefox = 'Firefox',
