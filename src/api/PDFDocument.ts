@@ -751,7 +751,7 @@ export default class PDFDocument {
     assertIs(addDefaultPage, 'addDefaultPage', ['boolean']);
     assertIs(objectsPerTick, 'objectsPerTick', ['number']);
 
-    if (addDefaultPage && this.pageCount === 0) this.addPage();
+    if (addDefaultPage && !this.pageCount) this.addPage();
     await this.flush();
 
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
