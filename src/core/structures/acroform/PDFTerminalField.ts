@@ -1,5 +1,10 @@
 import { PDFDict, PDFName } from 'src/core';
-import { acroFormFieldTypes, PDFAcroButton, PDFAcroField } from './index';
+import {
+  acroFormFieldTypes,
+  PDFAcroButton,
+  PDFAcroField,
+  PDFAcroText,
+} from './index';
 
 class PDFTerminalField extends PDFAcroField {
   static fromDict(dict: PDFDict): PDFTerminalField {
@@ -8,10 +13,14 @@ class PDFTerminalField extends PDFAcroField {
     if (!hasValidFieldType) {
       throw new Error('Invalid PDFAcroField Type');
     }
-    if (fieldType === PDFName.Btn) {
-      return PDFAcroButton.fromDict(dict);
+    switch (fieldType) {
+      case PDFName.Btn:
+        return PDFAcroButton.fromDict(dict);
+      case PDFName.Tx:
+        return PDFAcroText.fromDict(dict);
+      default:
+        return new PDFTerminalField(dict);
     }
-    return new PDFTerminalField(dict);
   }
 
   readonly dict!: PDFDict;
