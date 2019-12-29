@@ -1,6 +1,7 @@
 import {
   DictMap,
   PDFAcroButton,
+  PDFAcroText,
   PDFContext,
   PDFDict,
   PDFName,
@@ -36,6 +37,13 @@ describe('PDFTerminalField', () => {
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFTerminalField.fromDict(acroFormFieldDict);
       expect(field).toBeInstanceOf(PDFAcroButton);
+    });
+
+    it('returns a PDFAcroText if the field type is Tx', () => {
+      dict = new Map([[PDFName.FT, PDFName.Tx]]);
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFTerminalField.fromDict(acroFormFieldDict);
+      expect(field).toBeInstanceOf(PDFAcroText);
     });
   });
 });
