@@ -1,6 +1,10 @@
 * text eol=lf
-pdf_specification.pdf binary
+
+tests/**/*.encoded binary eol=lf
+tests/**/*.decoded binary eol=lf
+
 *.otf binary
 *.ttf binary
 *.woff binary
 *.woff2 binary
+*.pdf binary
