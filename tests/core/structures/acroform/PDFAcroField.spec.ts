@@ -133,6 +133,7 @@ describe('PDFAcroField', () => {
     });
 
     it('when it is undefined', () => {
+      dict.set(PDFName.Kids, PDFArray.withContext(context));
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
       expect(field.Ff()).toBe(undefined);
