@@ -65,7 +65,7 @@ describe('PDFAcroField', () => {
       dict.set(PDFName.Kids, kids);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
-      expect(field.Kids()).toBe(kids);
+      expect(field.Kids()).toEqual([]);
     });
 
     it('when it is undefined', () => {

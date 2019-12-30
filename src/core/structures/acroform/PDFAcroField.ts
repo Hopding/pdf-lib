@@ -39,8 +39,8 @@ class PDFAcroField {
     return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
   }
 
-  Kids(): PDFArray | undefined {
-    return this.dict.lookupMaybe(PDFName.Kids, PDFArray);
+  Kids(): PDFAcroField[] | PDFDict[] | undefined {
+    return this.dict.lookupMaybe(PDFName.Kids, PDFArray)?.lookupElements(PDFDict);
   }
 
   T(): PDFString | undefined {

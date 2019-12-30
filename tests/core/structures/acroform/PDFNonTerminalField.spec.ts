@@ -1,5 +1,6 @@
 import {
   DictMap,
+  PDFAcroField,
   PDFArray,
   PDFContext,
   PDFDict,
@@ -15,11 +16,20 @@ describe('PDFNonTerminalField', () => {
     context = PDFContext.create();
   });
 
-  it('returns a valid kids array', () => {
+  it('returns a valid kids array of PDFAcroFields', () => {
     const kidsArray = PDFArray.withContext(context);
+    const childDict = PDFDict.fromMapWithContext(
+      new Map([
+        [PDFName.FT, PDFName.Btn]
+      ]),
+      context
+    );
+    const childDictRef = context.register(childDict);
+    const childAcroField = PDFAcroField.fromDict(childDict);
+    kidsArray.push(childDictRef);
     dict = new Map([[PDFName.Kids, kidsArray]]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const field = PDFNonTerminalField.fromDict(acroFormFieldDict);
-    expect(field.Kids()).toBe(kidsArray);
+    expect(field.Kids()).toEqual([childAcroField]);
   });
 });
