@@ -39,7 +39,7 @@ describe('PDFAcroChoice', () => {
     const topIndex = PDFNumber.of(1);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
-      [PDFName.TI, topIndex]
+      [PDFName.TI, topIndex],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);
@@ -61,7 +61,7 @@ describe('PDFAcroChoice', () => {
     const fieldFlags = PDFNumber.of(1 << 18);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
-      [PDFName.Ff, fieldFlags]
+      [PDFName.Ff, fieldFlags],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);
@@ -72,7 +72,7 @@ describe('PDFAcroChoice', () => {
     const fieldFlags = PDFNumber.of(1 << 19);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
-      [PDFName.Ff, fieldFlags]
+      [PDFName.Ff, fieldFlags],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);
@@ -83,7 +83,7 @@ describe('PDFAcroChoice', () => {
     const fieldFlags = PDFNumber.of(1 << 20);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
-      [PDFName.Ff, fieldFlags]
+      [PDFName.Ff, fieldFlags],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);
@@ -94,7 +94,7 @@ describe('PDFAcroChoice', () => {
     const fieldFlags = PDFNumber.of(1 << 22);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
-      [PDFName.Ff, fieldFlags]
+      [PDFName.Ff, fieldFlags],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);
@@ -105,7 +105,7 @@ describe('PDFAcroChoice', () => {
     const fieldFlags = PDFNumber.of(1 << 23);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
-      [PDFName.Ff, fieldFlags]
+      [PDFName.Ff, fieldFlags],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);
@@ -116,7 +116,7 @@ describe('PDFAcroChoice', () => {
     const fieldFlags = PDFNumber.of(1 << 23);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
-      [PDFName.Ff, fieldFlags]
+      [PDFName.Ff, fieldFlags],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);
@@ -127,7 +127,7 @@ describe('PDFAcroChoice', () => {
     const fieldFlags = PDFNumber.of(1 << 27);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
-      [PDFName.Ff, fieldFlags]
+      [PDFName.Ff, fieldFlags],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);

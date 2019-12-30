@@ -68,7 +68,7 @@ describe('PDFTerminalField', () => {
     it('to a passed in value', () => {
       dict = new Map<PDFName, PDFObject>([
         [PDFName.FT, PDFName.Ch],
-        [PDFName.Ff, PDFNumber.of(1)]
+        [PDFName.Ff, PDFNumber.of(1)],
       ]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFTerminalField.fromDict(acroFormFieldDict);

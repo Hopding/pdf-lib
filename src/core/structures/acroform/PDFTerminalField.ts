@@ -1,8 +1,4 @@
-import {
-  PDFDict,
-  PDFName,
-  PDFNumber
-} from 'src/core';
+import { PDFDict, PDFName, PDFNumber } from 'src/core';
 import {
   acroFormFieldTypes,
   PDFAcroButton,

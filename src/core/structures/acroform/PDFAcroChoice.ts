@@ -1,9 +1,4 @@
-import {
-  PDFArray,
-  PDFDict,
-  PDFName,
-  PDFNumber
-} from 'src/core';
+import { PDFArray, PDFDict, PDFName, PDFNumber } from 'src/core';
 import { PDFTerminalField } from './index';
 
 class PDFAcroChoice extends PDFTerminalField {
