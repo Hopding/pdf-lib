@@ -53,12 +53,16 @@ class PDFName extends PDFObject {
   static readonly Pages = PDFName.of('Pages');
   static readonly Catalog = PDFName.of('Catalog');
   static readonly FT = PDFName.of('FT');
+  static readonly Ff = PDFName.of('Ff');
   static readonly Kids = PDFName.of('Kids');
   static readonly Fields = PDFName.of('Fields');
   static readonly Btn = PDFName.of('Btn');
   static readonly Ch = PDFName.of('Ch');
   static readonly Tx = PDFName.of('Tx');
   static readonly Sig = PDFName.of('Sig');
+  static readonly Opt = PDFName.of('Opt');
+  static readonly TI = PDFName.of('TI');
+  static readonly I = PDFName.of('I');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;
