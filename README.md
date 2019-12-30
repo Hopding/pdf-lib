@@ -95,6 +95,8 @@ There are [other](#prior-art) good open source JavaScript PDF libraries availabl
 
 _This example produces [this PDF](assets/pdfs/examples/create_document.pdf)._
 
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rxwsc8f5/12/)
+
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
@@ -133,6 +135,8 @@ const pdfBytes = await pdfDoc.save()
 ### Modify Document
 
 _This example produces [this PDF](assets/pdfs/examples/modify_document.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `existingPdfBytes` variable).
+
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/)
 
 <!-- prettier-ignore -->
 ```js
@@ -181,6 +185,8 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/copy_pages.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/with_large_page_count.pdf) is used for the `secondDonorPdfBytes` variable).
 
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/ybank8s9/1/)
+
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument } from 'pdf-lib'
@@ -223,6 +229,8 @@ const pdfBytes = await pdfDoc.save()
 ### Embed PNG and JPEG Images
 
 _This example produces [this PDF](assets/pdfs/examples/embed_png_and_jpeg_images.pdf)_ (when [this image](assets/images/cat_riding_unicorn.jpg) is used for the `jpgImageBytes` variable and [this image](assets/images/minions_banana_alpha.png) is used for the `pngImageBytes` variable).
+
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bcya43ju/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -283,6 +291,8 @@ const pdfBytes = await pdfDoc.save()
 > **[See below for detailed installation instructions on installing `@pdf-lib/fontkit` as a UMD or NPM module.](#fontkit-installation)**
 
 _This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_text.pdf)_ (when [this font](assets/fonts/ubuntu/Ubuntu-R.ttf) is used for the `fontBytes` variable).
+
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rgu6ca59/1/)
 
 <!-- prettier-ignore -->
 ```js
@@ -345,6 +355,8 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/set_document_metadata.pdf)_.
 
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/vcwmfnbe/1/)
+
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument, StandardFonts } from 'pdf-lib'
@@ -384,6 +396,8 @@ const pdfBytes = await pdfDoc.save()
 ### Draw SVG Paths
 
 _This example produces [this PDF](assets/pdfs/examples/draw_svg_paths.pdf)_.
+
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bwaomr9h/1/)
 
 <!-- prettier-ignore -->
 ```js
