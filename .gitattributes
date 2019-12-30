@@ -8,3 +8,9 @@ tests/**/*.decoded binary eol=lf
 *.woff binary
 *.woff2 binary
 *.pdf binary
+*.png binary
+*.jpg binary
+*.eot binary
+assets/**/* binary
+*.jar binary 
+*.bat binary
