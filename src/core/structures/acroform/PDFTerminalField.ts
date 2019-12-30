@@ -2,6 +2,7 @@ import { PDFDict, PDFName } from 'src/core';
 import {
   acroFormFieldTypes,
   PDFAcroButton,
+  PDFAcroChoice,
   PDFAcroField,
   PDFAcroText,
 } from './index';
@@ -18,6 +19,8 @@ class PDFTerminalField extends PDFAcroField {
         return PDFAcroButton.fromDict(dict);
       case PDFName.Tx:
         return PDFAcroText.fromDict(dict);
+      case PDFName.Ch:
+        return PDFAcroChoice.fromDict(dict);
       default:
         return new PDFTerminalField(dict);
     }

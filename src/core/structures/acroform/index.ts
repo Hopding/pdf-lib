@@ -4,3 +4,4 @@ export { default as PDFNonTerminalField } from './PDFNonTerminalField';
 export { default as PDFTerminalField } from './PDFTerminalField';
 export { default as PDFAcroButton } from './PDFAcroButton';
 export { default as PDFAcroText } from './PDFAcroText';
+export { default as PDFAcroChoice } from './PDFAcroChoice';
