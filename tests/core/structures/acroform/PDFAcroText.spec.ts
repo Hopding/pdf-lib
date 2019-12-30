@@ -6,7 +6,7 @@ import {
   PDFName,
   PDFNumber,
   PDFObject,
-  PDFString
+  PDFString,
 } from 'src/index';
 
 describe('PDFAcroText', () => {
@@ -26,9 +26,7 @@ describe('PDFAcroText', () => {
 
   describe('it can return the rich text value', () => {
     it('when it is undefined', () => {
-      dict = new Map([
-        [PDFName.FT, PDFName.Tx],
-      ]);
+      dict = new Map([[PDFName.FT, PDFName.Tx]]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const textField = PDFAcroText.fromDict(acroFormFieldDict);
       expect(textField.RV()).toBe(undefined);
@@ -38,7 +36,7 @@ describe('PDFAcroText', () => {
       const richTextValue = PDFString.of('abc');
       dict = new Map<PDFName, PDFObject>([
         [PDFName.FT, PDFName.Tx],
-        [PDFName.RV, richTextValue]
+        [PDFName.RV, richTextValue],
       ]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const textField = PDFAcroText.fromDict(acroFormFieldDict);
@@ -48,9 +46,7 @@ describe('PDFAcroText', () => {
 
   describe('it can return the maximum field length', () => {
     it('when it is undefined', () => {
-      dict = new Map([
-        [PDFName.FT, PDFName.Tx],
-      ]);
+      dict = new Map([[PDFName.FT, PDFName.Tx]]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const textField = PDFAcroText.fromDict(acroFormFieldDict);
       expect(textField.MaxLen()).toBe(undefined);
