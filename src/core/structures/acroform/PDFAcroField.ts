@@ -40,7 +40,9 @@ class PDFAcroField {
   }
 
   Kids(): PDFAcroField[] | PDFDict[] | undefined {
-    return this.dict.lookupMaybe(PDFName.Kids, PDFArray)?.lookupElements(PDFDict);
+    return this.dict
+      .lookupMaybe(PDFName.Kids, PDFArray)
+      ?.lookupElements(PDFDict);
   }
 
   T(): PDFString | undefined {

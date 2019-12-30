@@ -13,7 +13,9 @@ class PDFNonTerminalField extends PDFAcroField {
   }
 
   Kids(): PDFAcroField[] {
-    const kidsDicts = this.dict.lookup(PDFName.Kids, PDFArray).lookupElements(PDFDict);
+    const kidsDicts = this.dict
+      .lookup(PDFName.Kids, PDFArray)
+      .lookupElements(PDFDict);
     const kidsAcroFields = new Array<PDFAcroField>(kidsDicts.length);
     for (let idx = 0, len = kidsDicts.length; idx < len; idx++) {
       kidsAcroFields[idx] = PDFAcroField.fromDict(kidsDicts[idx]);

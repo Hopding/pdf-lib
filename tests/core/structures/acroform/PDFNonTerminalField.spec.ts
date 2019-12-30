@@ -19,10 +19,8 @@ describe('PDFNonTerminalField', () => {
   it('returns a valid kids array of PDFAcroFields', () => {
     const kidsArray = PDFArray.withContext(context);
     const childDict = PDFDict.fromMapWithContext(
-      new Map([
-        [PDFName.FT, PDFName.Btn]
-      ]),
-      context
+      new Map([[PDFName.FT, PDFName.Btn]]),
+      context,
     );
     const childDictRef = context.register(childDict);
     const childAcroField = PDFAcroField.fromDict(childDict);
