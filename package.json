@@ -6,7 +6,14 @@
   "contributors": [
     "jerp (https://github.com/jerp)",
     "Greg Bacchus (https://github.com/gregbacchus)",
-    "Mickael Lecoq (https://github.com/mlecoq)"
+    "Mickael Lecoq (https://github.com/mlecoq)",
+    "Philip Murphy (https://github.com/philipjmurphy)",
+    "Dmitry Kozliuk (https://github.com/PlushBeaver)",
+    "Said Amezyane (https://github.com/samezyane)",
+    "Georges Gabereau (https://github.com/multiplegeorges)",
+    "Gerard Smit (https://github.com/GerardSmit)",
+    "jlmessenger (https://github.com/jlmessenger)",
+    "thebenlamm (https://github.com/thebenlamm)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
