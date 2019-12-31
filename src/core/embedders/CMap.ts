@@ -26,12 +26,6 @@ export const createCmap = (glyphs: Glyph[], glyphId: (g?: Glyph) => number) => {
 
 /* =============================== Templates ================================ */
 
-const fillBfcharTemplate = ([glyphId, codePoint]: BfChar) => `\
-1 beginbfchar
-${glyphId} ${codePoint}
-endbfchar\
-`;
-
 const fillCmapTemplate = (bfChars: BfChar[]) => `\
 /CIDInit /ProcSet findresource begin
 12 dict begin
@@ -46,7 +40,9 @@ begincmap
 1 begincodespacerange
 <0000><ffff>
 endcodespacerange
-${bfChars.map(fillBfcharTemplate).join('\n')}
+${bfChars.length} beginbfchar
+${bfChars.map(([glyphId, codePoint]) => `${glyphId} ${codePoint}`).join('\n')}
+endbfchar
 endcmap
 CMapName currentdict /CMap defineresource pop
 end
