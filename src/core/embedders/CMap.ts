@@ -8,53 +8,31 @@ import {
   lowSurrogate,
 } from 'src/utils/unicode';
 
-/** [[start, end], mappings] */
-type BfRange = [[string, string], string[]];
+/** [fontId, codePoint] */
+type BfChar = [string, string];
 
-/** `glyphs` should be an array of unique glyphs sorted by their ID */
+/** `glyphs` should be an array of unique glyphs */
 export const createCmap = (glyphs: Glyph[], glyphId: (g?: Glyph) => number) => {
-  const bfRanges: BfRange[] = [];
-
-  let first: number = glyphId(glyphs[0]);
-  let mappings: string[] = [];
-
+  const bfChars: BfChar[] = new Array(glyphs.length);
   for (let idx = 0, len = glyphs.length; idx < len; idx++) {
-    const currGlyph = glyphs[idx];
-    const nextGlyph = glyphs[idx + 1];
-
-    const currGlyphId = glyphId(currGlyph);
-    const nextGlyphId = glyphId(nextGlyph);
-
-    const { codePoints } = currGlyph;
-    mappings.push(cmapHexFormat(...codePoints.map(cmapCodePointFormat)));
-
-    if (idx !== 0 && nextGlyphId - currGlyphId !== 1) {
-      const last = currGlyphId;
-      const delimiters: [string, string] = [
-        cmapHexFormat(cmapHexString(first)),
-        cmapHexFormat(cmapHexString(last)),
-      ];
-      bfRanges.push([delimiters, mappings]);
-
-      first = nextGlyphId;
-      mappings = [];
-    }
+    const glyph = glyphs[idx];
+    const id = cmapHexFormat(cmapHexString(glyphId(glyph)));
+    const unicode = cmapHexFormat(...glyph.codePoints.map(cmapCodePointFormat));
+    bfChars[idx] = [id, unicode];
   }
 
-  return fillCmapTemplate(bfRanges);
+  return fillCmapTemplate(bfChars);
 };
 
 /* =============================== Templates ================================ */
 
-// prettier-ignore
-const fillBfrangeTemplate = ([[start, end], mappings]: BfRange) => `
-${mappings.length} beginbfrange
-${start} ${end} [${mappings.join(' ')}]
-endbfrange
-`.trim();
+const fillBfcharTemplate = ([glyphId, codePoint]: BfChar) => `\
+1 beginbfchar
+${glyphId} ${codePoint}
+endbfchar\
+`;
 
-// prettier-ignore
-const fillCmapTemplate = (bfRanges: BfRange[]) => `
+const fillCmapTemplate = (bfChars: BfChar[]) => `\
 /CIDInit /ProcSet findresource begin
 12 dict begin
 begincmap
@@ -68,12 +46,12 @@ begincmap
 1 begincodespacerange
 <0000><ffff>
 endcodespacerange
-${bfRanges.map(fillBfrangeTemplate).join('\n')}
+${bfChars.map(fillBfcharTemplate).join('\n')}
 endcmap
 CMapName currentdict /CMap defineresource pop
 end
-end
-`.trim();
+end\
+`;
 
 /* =============================== Utilities ================================ */
 
