@@ -35,8 +35,10 @@ class PDFAcroField {
     return this.dict.lookup(PDFName.FT, PDFName);
   }
 
-  Parent(): PDFDict | undefined {
-    return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
+  Parent(): PDFAcroField | undefined {
+    const parentDict = this.dict.lookupMaybe(PDFName.Parent, PDFDict);
+    if (!parentDict) return undefined;
+    return PDFAcroField.fromDict(parentDict);
   }
 
   Kids(): PDFAcroField[] | PDFDict[] | undefined {
@@ -71,6 +73,20 @@ class PDFAcroField {
 
   AA(): PDFDict | undefined {
     return this.dict.lookupMaybe(PDFName.of('AA'), PDFDict);
+  }
+
+  getInheritableAttribute(name: PDFName): PDFObject | undefined {
+    let attribute: PDFObject | undefined;
+    this.ascend((node) => {
+      if (!attribute) attribute = node.dict.get(name);
+    });
+    return attribute;
+  }
+
+  ascend(visitor: (node: PDFAcroField) => any): void {
+    visitor(this);
+    const Parent = this.Parent();
+    if (Parent) Parent.ascend(visitor);
   }
 }
 

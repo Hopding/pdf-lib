@@ -7,6 +7,7 @@ import {
   PDFName,
   PDFNonTerminalField,
   PDFNumber,
+  PDFObject,
   PDFString,
   PDFTerminalField,
 } from 'src/index';
@@ -43,13 +44,23 @@ describe('PDFAcroField', () => {
     expect(field.FT()).toBe(PDFName.Btn);
   });
 
-  describe('returns the parent field dictionary', () => {
+  describe('returns the parent acrofield', () => {
     it('when it is defined', () => {
-      const parentDict = PDFDict.fromMapWithContext(new Map(), context);
-      dict.set(PDFName.of('Parent'), parentDict);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-      const field = PDFAcroField.fromDict(acroFormFieldDict);
-      expect(field.Parent()).toBe(parentDict);
+      const kidRef = context.register(acroFormFieldDict);
+      const kids = PDFArray.withContext(context);
+      kids.push(kidRef);
+      const parentDict = PDFDict.fromMapWithContext(
+        new Map<PDFName, PDFObject>([
+          [PDFName.FT, PDFName.Btn],
+          [PDFName.Kids, kids]
+        ]),
+        context
+      );
+      const expectedParentField = PDFAcroField.fromDict(parentDict);
+      dict.set(PDFName.Parent, parentDict);
+      const childField = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(childField.Parent()).toEqual(expectedParentField);
     });
 
     it('when it is undefined', () => {
