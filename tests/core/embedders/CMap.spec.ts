@@ -26,7 +26,7 @@ const allGlyphsInFontSortedById = (font: Font) => {
 };
 
 describe(`createCmap`, () => {
-  it(`created CMaps for embedded Ubuntu-R font files`, () => {
+  it(`creates CMaps for embedded Ubuntu-R font files`, () => {
     const font = fontkit.create(ubuntuFont);
 
     const glyphs = allGlyphsInFontSortedById(font);
@@ -35,7 +35,7 @@ describe(`createCmap`, () => {
     expect(cmap).toEqual(String(ubuntuFontCmap));
   });
 
-  it(`created CMaps for embedded SourceHanSerifJP-Regular font files`, () => {
+  it(`creates CMaps for embedded SourceHanSerifJP-Regular font files`, () => {
     const font = fontkit.create(sourceHansJpFont);
 
     const glyphs = allGlyphsInFontSortedById(font);
