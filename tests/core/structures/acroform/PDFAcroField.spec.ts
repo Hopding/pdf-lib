@@ -155,7 +155,7 @@ describe('PDFAcroField', () => {
       dict.set(PDFName.Kids, PDFArray.withContext(context));
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
-      expect(field.Ff()).toEqual(PDFNumber.of(0));
+      expect(field.Ff()).toEqual(undefined);
     });
 
     it('when it is inherited from a parent field', () => {
