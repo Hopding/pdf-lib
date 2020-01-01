@@ -74,10 +74,17 @@ describe('PDFAcroField', () => {
   describe('returns the Kids array', () => {
     it('when it is defined', () => {
       const kids = PDFArray.withContext(context);
+      const childDict = PDFDict.fromMapWithContext(
+        new Map([[PDFName.FT, PDFName.Btn]]),
+        context,
+      );
+      const childDictRef = context.register(childDict);
+      const childAcroField = PDFAcroField.fromDict(childDict);
+      kids.push(childDictRef);
       dict.set(PDFName.Kids, kids);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
-      expect(field.Kids()).toEqual([]);
+      expect(field.Kids()).toEqual([childAcroField]);
     });
 
     it('when it is undefined', () => {

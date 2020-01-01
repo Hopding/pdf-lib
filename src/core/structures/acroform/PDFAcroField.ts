@@ -32,8 +32,7 @@ class PDFAcroField {
   }
 
   FT(): PDFName | undefined {
-    const ownFieldType = this.dict.lookup(PDFName.FT, PDFName);
-    return ownFieldType || this.getInheritableAttribute(PDFName.FT, PDFName);
+    return this.getInheritableAttribute(PDFName.FT, PDFName);
   }
 
   Parent(): PDFNonTerminalField | undefined {
@@ -43,9 +42,18 @@ class PDFAcroField {
   }
 
   Kids(): PDFAcroField[] | PDFDict[] | undefined {
-    return this.dict
+    const kidDicts = this.dict
       .lookupMaybe(PDFName.Kids, PDFArray)
       ?.lookupElements(PDFDict);
+    if (!kidDicts) return undefined;
+    if (this instanceof PDFTerminalField) {
+      return kidDicts;
+    }
+    const kidsAcroFields = new Array<PDFAcroField>(kidDicts.length);
+    for (let idx = 0, len = kidDicts.length; idx < len; idx++) {
+      kidsAcroFields[idx] = PDFAcroField.fromDict(kidDicts[idx]);
+    }
+    return kidsAcroFields;
   }
 
   T(): PDFString | undefined {
@@ -68,13 +76,11 @@ class PDFAcroField {
   }
 
   V(): PDFObject | undefined {
-    const ownValue = this.dict.lookup(PDFName.V);
-    return ownValue || this.getInheritableAttribute(PDFName.V);
+    return this.getInheritableAttribute(PDFName.V);
   }
 
   DV(): PDFObject | undefined {
-    const ownDefaultValue = this.dict.lookup(PDFName.DV);
-    return ownDefaultValue || this.getInheritableAttribute(PDFName.DV);
+    return this.getInheritableAttribute(PDFName.DV);
   }
 
   AA(): PDFDict | undefined {
