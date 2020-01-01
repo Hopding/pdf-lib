@@ -57,10 +57,11 @@ describe('PDFAcroField', () => {
         ]),
         context,
       );
-      const expectedParentField = PDFAcroField.fromDict(parentDict);
+      const expectedParentField = PDFNonTerminalField.fromDict(parentDict);
       dict.set(PDFName.Parent, parentDict);
       const childField = PDFAcroField.fromDict(acroFormFieldDict);
-      expect(childField.Parent()).toEqual(expectedParentField);
+      const actualParent = childField.Parent();
+      expect(actualParent).toEqual(expectedParentField);
     });
 
     it('when it is undefined', () => {

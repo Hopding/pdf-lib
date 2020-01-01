@@ -36,10 +36,10 @@ class PDFAcroField {
     return ownFieldType || this.getInheritableAttribute(PDFName.FT, PDFName);
   }
 
-  Parent(): PDFAcroField | undefined {
+  Parent(): PDFNonTerminalField | undefined {
     const parentDict = this.dict.lookupMaybe(PDFName.Parent, PDFDict);
     if (!parentDict) return undefined;
-    return PDFAcroField.fromDict(parentDict);
+    return PDFNonTerminalField.fromDict(parentDict);
   }
 
   Kids(): PDFAcroField[] | PDFDict[] | undefined {
