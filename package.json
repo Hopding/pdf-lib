@@ -88,6 +88,9 @@
     "ttypescript": "^1.5.8",
     "typescript": "^3.7.4"
   },
+  "resolutions": {
+    "jest/**/set-value": "^2.0.1"
+  },
   "license": "MIT",
   "private": false,
   "homepage": "https://pdf-lib.js.org",
