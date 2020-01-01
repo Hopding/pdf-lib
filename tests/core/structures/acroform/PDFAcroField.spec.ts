@@ -137,7 +137,7 @@ describe('PDFAcroField', () => {
   describe('returns the field flags', () => {
     it('when it is defined', () => {
       const flags = PDFNumber.of(1);
-      dict.set(PDFName.of('Ff'), flags);
+      dict.set(PDFName.Ff, flags);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
       expect(field.Ff()).toEqual(flags);
@@ -147,7 +147,25 @@ describe('PDFAcroField', () => {
       dict.set(PDFName.Kids, PDFArray.withContext(context));
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
-      expect(field.Ff()).toBe(undefined);
+      expect(field.Ff()).toEqual(PDFNumber.of(0));
+    });
+
+    it('when it is inherited from a parent field', () => {
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const kidRef = context.register(acroFormFieldDict);
+      const kids = PDFArray.withContext(context);
+      kids.push(kidRef);
+      const parentDict = PDFDict.fromMapWithContext(
+        new Map<PDFName, PDFObject>([
+          [PDFName.FT, PDFName.Btn],
+          [PDFName.Kids, kids],
+          [PDFName.Ff, PDFNumber.of(3)]
+        ]),
+        context
+      );
+      acroFormFieldDict.set(PDFName.Parent, parentDict);
+      const childField = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(childField.Ff()).toEqual(PDFNumber.of(3));
     });
   });
 
@@ -165,6 +183,24 @@ describe('PDFAcroField', () => {
       const field = PDFAcroField.fromDict(acroFormFieldDict);
       expect(field.V()).toBe(undefined);
     });
+
+    it('when it is inherited', () => {
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const kidRef = context.register(acroFormFieldDict);
+      const kids = PDFArray.withContext(context);
+      kids.push(kidRef);
+      const parentDict = PDFDict.fromMapWithContext(
+        new Map<PDFName, PDFObject>([
+          [PDFName.FT, PDFName.Btn],
+          [PDFName.Kids, kids],
+          [PDFName.V, PDFNumber.of(3)]
+        ]),
+        context
+      );
+      acroFormFieldDict.set(PDFName.Parent, parentDict);
+      const childField = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(childField.V()).toEqual(PDFNumber.of(3));
+    });
   });
 
   describe('returns the default value', () => {
@@ -180,6 +216,24 @@ describe('PDFAcroField', () => {
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
       expect(field.DV()).toBe(undefined);
+    });
+
+    it('when it is inherited', () => {
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const kidRef = context.register(acroFormFieldDict);
+      const kids = PDFArray.withContext(context);
+      kids.push(kidRef);
+      const parentDict = PDFDict.fromMapWithContext(
+        new Map<PDFName, PDFObject>([
+          [PDFName.FT, PDFName.Btn],
+          [PDFName.Kids, kids],
+          [PDFName.DV, PDFNumber.of(3)]
+        ]),
+        context
+      );
+      acroFormFieldDict.set(PDFName.Parent, parentDict);
+      const childField = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(childField.DV()).toEqual(PDFNumber.of(3));
     });
   });
 

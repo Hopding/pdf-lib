@@ -32,7 +32,8 @@ class PDFAcroField {
   }
 
   FT(): PDFName | undefined {
-    return this.dict.lookup(PDFName.FT, PDFName);
+    const ownFieldType = this.dict.lookup(PDFName.FT, PDFName);
+    return ownFieldType || this.getInheritableAttribute(PDFName.FT, PDFName);
   }
 
   Parent(): PDFAcroField | undefined {
@@ -59,26 +60,35 @@ class PDFAcroField {
     return this.dict.lookupMaybe(PDFName.of('TM'), PDFString);
   }
 
-  Ff(): PDFNumber | undefined {
-    return this.dict.lookupMaybe(PDFName.of('Ff'), PDFNumber);
+  Ff(): PDFNumber {
+    const ownFieldFlags = this.dict.lookupMaybe(PDFName.Ff, PDFNumber);
+    const fieldFlags = ownFieldFlags || this.getInheritableAttribute(PDFName.Ff, PDFNumber);
+    return fieldFlags || PDFNumber.of(0);
   }
 
   V(): PDFObject | undefined {
-    return this.dict.lookup(PDFName.of('V'));
+    const ownValue = this.dict.lookup(PDFName.V);
+    return ownValue || this.getInheritableAttribute(PDFName.V);
   }
 
   DV(): PDFObject | undefined {
-    return this.dict.lookup(PDFName.of('DV'));
+    const ownDefaultValue = this.dict.lookup(PDFName.DV);
+    return ownDefaultValue || this.getInheritableAttribute(PDFName.DV);
   }
 
   AA(): PDFDict | undefined {
     return this.dict.lookupMaybe(PDFName.of('AA'), PDFDict);
   }
 
-  getInheritableAttribute(name: PDFName): PDFObject | undefined {
+  getInheritableAttribute(name: PDFName): PDFObject | undefined;
+  getInheritableAttribute(name: PDFName, type: typeof PDFName): PDFName;
+  getInheritableAttribute(name: PDFName, type: typeof PDFNumber): PDFNumber;
+
+  getInheritableAttribute(name: PDFName, type?: any): PDFObject | undefined {
     let attribute: PDFObject | undefined;
     this.ascend((node) => {
-      if (!attribute) attribute = node.dict.get(name);
+      if (!(type || attribute)) attribute = node.dict.lookup(name);
+      else if (!attribute) attribute = node.dict.lookupMaybe(name, type);
     });
     return attribute;
   }
