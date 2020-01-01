@@ -30,8 +30,7 @@ class PDFTerminalField extends PDFAcroField {
   }
 
   FT(): PDFName {
-    const ownFieldType = this.dict.lookup(PDFName.FT, PDFName);
-    return ownFieldType || this.getInheritableAttribute(PDFName.FT, PDFName);
+    return this.lookupMaybeInheritableAttribute(PDFName.FT, PDFName);
   }
 
   private validateFieldType() {
