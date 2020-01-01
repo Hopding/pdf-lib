@@ -62,7 +62,8 @@ class PDFAcroField {
 
   Ff(): PDFNumber {
     const ownFieldFlags = this.dict.lookupMaybe(PDFName.Ff, PDFNumber);
-    const fieldFlags = ownFieldFlags || this.getInheritableAttribute(PDFName.Ff, PDFNumber);
+    const fieldFlags =
+      ownFieldFlags || this.getInheritableAttribute(PDFName.Ff, PDFNumber);
     return fieldFlags || PDFNumber.of(0);
   }
 

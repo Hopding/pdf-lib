@@ -53,9 +53,9 @@ describe('PDFAcroField', () => {
       const parentDict = PDFDict.fromMapWithContext(
         new Map<PDFName, PDFObject>([
           [PDFName.FT, PDFName.Btn],
-          [PDFName.Kids, kids]
+          [PDFName.Kids, kids],
         ]),
-        context
+        context,
       );
       const expectedParentField = PDFAcroField.fromDict(parentDict);
       dict.set(PDFName.Parent, parentDict);
@@ -159,9 +159,9 @@ describe('PDFAcroField', () => {
         new Map<PDFName, PDFObject>([
           [PDFName.FT, PDFName.Btn],
           [PDFName.Kids, kids],
-          [PDFName.Ff, PDFNumber.of(3)]
+          [PDFName.Ff, PDFNumber.of(3)],
         ]),
-        context
+        context,
       );
       acroFormFieldDict.set(PDFName.Parent, parentDict);
       const childField = PDFAcroField.fromDict(acroFormFieldDict);
@@ -193,9 +193,9 @@ describe('PDFAcroField', () => {
         new Map<PDFName, PDFObject>([
           [PDFName.FT, PDFName.Btn],
           [PDFName.Kids, kids],
-          [PDFName.V, PDFNumber.of(3)]
+          [PDFName.V, PDFNumber.of(3)],
         ]),
-        context
+        context,
       );
       acroFormFieldDict.set(PDFName.Parent, parentDict);
       const childField = PDFAcroField.fromDict(acroFormFieldDict);
@@ -227,9 +227,9 @@ describe('PDFAcroField', () => {
         new Map<PDFName, PDFObject>([
           [PDFName.FT, PDFName.Btn],
           [PDFName.Kids, kids],
-          [PDFName.DV, PDFNumber.of(3)]
+          [PDFName.DV, PDFNumber.of(3)],
         ]),
-        context
+        context,
       );
       acroFormFieldDict.set(PDFName.Parent, parentDict);
       const childField = PDFAcroField.fromDict(acroFormFieldDict);
