@@ -99,9 +99,15 @@ class PDFAcroField {
   }
 
   lookupMaybeInheritableAttribute(name: PDFName, type: typeof PDFName): PDFName;
-  lookupMaybeInheritableAttribute(name: PDFName, type: typeof PDFNumber): PDFNumber;
+  lookupMaybeInheritableAttribute(
+    name: PDFName,
+    type: typeof PDFNumber,
+  ): PDFNumber;
 
-  lookupMaybeInheritableAttribute(name: PDFName, type?: any): PDFObject | undefined {
+  lookupMaybeInheritableAttribute(
+    name: PDFName,
+    type?: any,
+  ): PDFObject | undefined {
     const objectOrRef = this.getInheritableAttribute(name);
     return this.dict.context.lookupMaybe(objectOrRef, type);
   }
