@@ -41,10 +41,12 @@ class PDFAcroField {
     return PDFNonTerminalField.fromDict(parentDict);
   }
 
-  Kids(): PDFAcroField[] | PDFDict[] | undefined {
-    const kidDicts = this.dict
-      .lookupMaybe(PDFName.Kids, PDFArray)
-      ?.lookupElements(PDFDict);
+  Kids(): PDFArray | undefined {
+    return this.dict.lookupMaybe(PDFName.Kids, PDFArray);
+  }
+
+  getKids(): PDFAcroField[] | PDFDict[] | undefined {
+    const kidDicts = this.Kids()?.lookupElements(PDFDict);
     if (!kidDicts) return undefined;
     if (this instanceof PDFTerminalField) {
       return kidDicts;
@@ -70,6 +72,10 @@ class PDFAcroField {
 
   Ff(): PDFNumber | undefined {
     return this.lookupMaybeInheritableAttribute(PDFName.Ff, PDFNumber);
+  }
+
+  getFlags(): number {
+    return this.Ff()?.value() ?? 0;
   }
 
   V(): PDFObject | undefined {

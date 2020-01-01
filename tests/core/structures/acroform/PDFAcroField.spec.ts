@@ -71,7 +71,29 @@ describe('PDFAcroField', () => {
     });
   });
 
-  describe('returns the Kids array', () => {
+  describe('returns the raw Kids array', () => {
+    it('when it is defined', () => {
+      const kids = PDFArray.withContext(context);
+      const childDict = PDFDict.fromMapWithContext(
+        new Map([[PDFName.FT, PDFName.Btn]]),
+        context,
+      );
+      const childDictRef = context.register(childDict);
+      kids.push(childDictRef);
+      dict.set(PDFName.Kids, kids);
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(field.Kids()).toBe(kids);
+    });
+
+    it('when it is undefined', () => {
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(field.Kids()).toBe(undefined);
+    });
+  });
+
+  describe('returns the Kids acrofields', () => {
     it('when it is defined', () => {
       const kids = PDFArray.withContext(context);
       const childDict = PDFDict.fromMapWithContext(
@@ -84,13 +106,13 @@ describe('PDFAcroField', () => {
       dict.set(PDFName.Kids, kids);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
-      expect(field.Kids()).toEqual([childAcroField]);
+      expect(field.getKids()).toEqual([childAcroField]);
     });
 
     it('when it is undefined', () => {
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
       const field = PDFAcroField.fromDict(acroFormFieldDict);
-      expect(field.Kids()).toBe(undefined);
+      expect(field.getKids()).toBe(undefined);
     });
   });
 
@@ -142,7 +164,7 @@ describe('PDFAcroField', () => {
     });
   });
 
-  describe('returns the field flags', () => {
+  describe('returns the raw field flags', () => {
     it('when it is defined', () => {
       const flags = PDFNumber.of(1);
       dict.set(PDFName.Ff, flags);
@@ -174,6 +196,23 @@ describe('PDFAcroField', () => {
       acroFormFieldDict.set(PDFName.Parent, parentDict);
       const childField = PDFAcroField.fromDict(acroFormFieldDict);
       expect(childField.Ff()).toEqual(PDFNumber.of(3));
+    });
+  });
+
+  describe('returns the field flag value', () => {
+    it('when it is defined', () => {
+      const flags = PDFNumber.of(1);
+      dict.set(PDFName.Ff, flags);
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(field.getFlags()).toEqual(1);
+    });
+
+    it('when it is undefined', () => {
+      dict.set(PDFName.Kids, PDFArray.withContext(context));
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFAcroField.fromDict(acroFormFieldDict);
+      expect(field.getFlags()).toEqual(0);
     });
   });
 
