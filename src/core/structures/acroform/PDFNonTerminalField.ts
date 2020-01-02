@@ -1,4 +1,4 @@
-import { PDFArray, PDFDict, PDFName } from 'src/index';
+import { PDFDict } from 'src/index';
 import { PDFAcroField } from './index';
 
 class PDFNonTerminalField extends PDFAcroField {
@@ -10,10 +10,6 @@ class PDFNonTerminalField extends PDFAcroField {
 
   protected constructor(dict: PDFDict) {
     super(dict);
-  }
-
-  Kids(): PDFArray {
-    return this.dict.lookup(PDFName.Kids, PDFArray);
   }
 }
 

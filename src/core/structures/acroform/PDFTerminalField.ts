@@ -1,4 +1,4 @@
-import { PDFDict, PDFName, PDFNumber } from 'src/core';
+import { PDFDict, PDFName } from 'src/core';
 import {
   acroFormFieldTypes,
   PDFAcroButton,
@@ -22,30 +22,23 @@ class PDFTerminalField extends PDFAcroField {
     }
   }
 
-  private static validateFieldType(fieldType: PDFName) {
+  readonly dict!: PDFDict;
+
+  protected constructor(dict: PDFDict) {
+    super(dict);
+    this.validateFieldType();
+  }
+
+  FT(): PDFName {
+    return this.lookupMaybeInheritableAttribute(PDFName.FT, PDFName);
+  }
+
+  private validateFieldType() {
+    const fieldType = this.FT();
     const hasValidFieldType = acroFormFieldTypes.includes(fieldType);
     if (!hasValidFieldType) {
       throw new Error('Invalid PDFAcroField Type');
     }
-  }
-
-  readonly dict!: PDFDict;
-
-  protected constructor(dict: PDFDict) {
-    const fieldType = dict.lookup(PDFName.FT, PDFName);
-    PDFTerminalField.validateFieldType(fieldType);
-    if (!dict.has(PDFName.Ff)) {
-      dict.set(PDFName.Ff, dict.context.obj(0));
-    }
-    super(dict);
-  }
-
-  FT(): PDFName {
-    return this.dict.lookup(PDFName.FT, PDFName);
-  }
-
-  Ff(): PDFNumber {
-    return this.dict.lookup(PDFName.Ff, PDFNumber);
   }
 }
 

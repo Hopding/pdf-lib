@@ -63,6 +63,8 @@ class PDFName extends PDFObject {
   static readonly Opt = PDFName.of('Opt');
   static readonly TI = PDFName.of('TI');
   static readonly I = PDFName.of('I');
+  static readonly V = PDFName.of('V');
+  static readonly DV = PDFName.of('DV');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;

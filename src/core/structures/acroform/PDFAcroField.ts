@@ -32,15 +32,30 @@ class PDFAcroField {
   }
 
   FT(): PDFName | undefined {
-    return this.dict.lookup(PDFName.FT, PDFName);
+    return this.lookupMaybeInheritableAttribute(PDFName.FT, PDFName);
   }
 
-  Parent(): PDFDict | undefined {
-    return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
+  Parent(): PDFNonTerminalField | undefined {
+    const parentDict = this.dict.lookupMaybe(PDFName.Parent, PDFDict);
+    if (!parentDict) return undefined;
+    return PDFNonTerminalField.fromDict(parentDict);
   }
 
   Kids(): PDFArray | undefined {
     return this.dict.lookupMaybe(PDFName.Kids, PDFArray);
+  }
+
+  getKids(): PDFAcroField[] | PDFDict[] | undefined {
+    const kidDicts = this.Kids()?.lookupElements(PDFDict);
+    if (!kidDicts) return undefined;
+    if (this instanceof PDFTerminalField) {
+      return kidDicts;
+    }
+    const kidsAcroFields = new Array<PDFAcroField>(kidDicts.length);
+    for (let idx = 0, len = kidDicts.length; idx < len; idx++) {
+      kidsAcroFields[idx] = PDFAcroField.fromDict(kidDicts[idx]);
+    }
+    return kidsAcroFields;
   }
 
   T(): PDFString | undefined {
@@ -56,19 +71,51 @@ class PDFAcroField {
   }
 
   Ff(): PDFNumber | undefined {
-    return this.dict.lookupMaybe(PDFName.of('Ff'), PDFNumber);
+    return this.lookupMaybeInheritableAttribute(PDFName.Ff, PDFNumber);
+  }
+
+  getFlags(): number {
+    return this.Ff()?.value() ?? 0;
   }
 
   V(): PDFObject | undefined {
-    return this.dict.lookup(PDFName.of('V'));
+    return this.getInheritableAttribute(PDFName.V);
   }
 
   DV(): PDFObject | undefined {
-    return this.dict.lookup(PDFName.of('DV'));
+    return this.getInheritableAttribute(PDFName.DV);
   }
 
   AA(): PDFDict | undefined {
     return this.dict.lookupMaybe(PDFName.of('AA'), PDFDict);
+  }
+
+  getInheritableAttribute(name: PDFName): PDFObject | undefined {
+    let attribute: PDFObject | undefined;
+    this.ascend((node) => {
+      if (!attribute) attribute = node.dict.get(name);
+    });
+    return attribute;
+  }
+
+  lookupMaybeInheritableAttribute(name: PDFName, type: typeof PDFName): PDFName;
+  lookupMaybeInheritableAttribute(
+    name: PDFName,
+    type: typeof PDFNumber,
+  ): PDFNumber;
+
+  lookupMaybeInheritableAttribute(
+    name: PDFName,
+    type?: any,
+  ): PDFObject | undefined {
+    const objectOrRef = this.getInheritableAttribute(name);
+    return this.dict.context.lookupMaybe(objectOrRef, type);
+  }
+
+  ascend(visitor: (node: PDFAcroField) => any): void {
+    visitor(this);
+    const Parent = this.Parent();
+    if (Parent) Parent.ascend(visitor);
   }
 }
 
