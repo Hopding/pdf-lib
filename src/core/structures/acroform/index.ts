@@ -5,3 +5,4 @@ export { default as PDFTerminalField } from './PDFTerminalField';
 export { default as PDFAcroButton } from './PDFAcroButton';
 export { default as PDFAcroText } from './PDFAcroText';
 export { default as PDFAcroChoice } from './PDFAcroChoice';
+export { default as PushButton } from './PushButton';
