@@ -82,6 +82,14 @@ class PDFAcroField {
     return this.getInheritableAttribute(PDFName.V);
   }
 
+  getValue(): PDFObject | undefined {
+    return this.V();
+  }
+
+  setValue(value: PDFObject): void {
+    this.dict.set(PDFName.V, value);
+  }
+
   DV(): PDFObject | undefined {
     return this.getInheritableAttribute(PDFName.DV);
   }

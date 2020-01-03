@@ -250,6 +250,21 @@ describe('PDFAcroField', () => {
     });
   });
 
+  it('can return the field value from getValue', () => {
+    const value = PDFNumber.of(1);
+    dict.set(PDFName.of('V'), value);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    expect(field.getValue()).toEqual(value);
+  });
+
+  it('can set the field value', () => {
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    field.setValue(PDFNumber.of(2));
+    expect(field.getValue()).toEqual(PDFNumber.of(2));
+  });
+
   describe('returns the default value', () => {
     it('when it is defined', () => {
       const defaultValue = PDFNumber.of(1);
