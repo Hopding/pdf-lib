@@ -199,6 +199,31 @@ describe('PDFAcroField', () => {
     });
   });
 
+  it('can set the flags value', () => {
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    expect(field.setFlags(22));
+    expect(field.getFlags()).toEqual(22);
+  });
+
+  it('can set an individual field flag', () => {
+    const flags = PDFNumber.of(1);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    expect(field.setFlag(1));
+    expect(field.getFlags()).toEqual(3);
+  });
+
+  it('can unset an individual field flag', () => {
+    const flags = PDFNumber.of(1);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    expect(field.unsetFlag(0));
+    expect(field.getFlags()).toEqual(0);
+  });
+
   describe('returns the field flag value', () => {
     it('when it is defined', () => {
       const flags = PDFNumber.of(1);

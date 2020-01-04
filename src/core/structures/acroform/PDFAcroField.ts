@@ -78,6 +78,20 @@ class PDFAcroField {
     return this.Ff()?.value() ?? 0;
   }
 
+  setFlags(flags: number): void {
+    this.dict.set(PDFName.Ff, PDFNumber.of(flags));
+  }
+
+  setFlag(flag: number): void {
+    const newFlags = this.getFlags() | (1 << flag);
+    this.dict.set(PDFName.Ff, PDFNumber.of(newFlags));
+  }
+
+  unsetFlag(flag: number): void {
+    const newFlags = this.getFlags() & ~(1 << flag);
+    this.dict.set(PDFName.Ff, PDFNumber.of(newFlags));
+  }
+
   V(): PDFObject | undefined {
     return this.getInheritableAttribute(PDFName.V);
   }
