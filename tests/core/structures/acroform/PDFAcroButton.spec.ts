@@ -45,7 +45,7 @@ describe('PDFAcroButton', () => {
   });
 
   it('throws an error on invalid field flags', () => {
-    const fieldFlags = PDFNumber.of(1 << 17 | 1 << 16);
+    const fieldFlags = PDFNumber.of((1 << 17) | (1 << 16));
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Btn],
       [PDFName.Ff, fieldFlags],
