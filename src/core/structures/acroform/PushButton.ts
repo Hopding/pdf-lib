@@ -6,6 +6,12 @@ class PushButton extends PDFAcroButton {
     return new PushButton(dict);
   }
 
+  readonly dict!: PDFDict;
+
+  protected constructor(dict: PDFDict) {
+    super(dict);
+  }
+
   V(): undefined {
     return undefined;
   }
