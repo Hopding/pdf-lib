@@ -1,7 +1,7 @@
 import {
-  PDFCheckBox,
   DictMap,
   PDFAcroButton,
+  PDFCheckBox,
   PDFContext,
   PDFDict,
   PDFName,

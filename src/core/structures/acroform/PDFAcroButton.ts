@@ -1,5 +1,5 @@
 import { PDFDict, PDFName, PDFNumber } from 'src/core';
-import { PDFCheckBox, PDFTerminalField, PDFPushButton } from './index';
+import { PDFCheckBox, PDFPushButton, PDFTerminalField } from './index';
 
 class PDFAcroButton extends PDFTerminalField {
   static fromDict(dict: PDFDict): PDFAcroButton {
