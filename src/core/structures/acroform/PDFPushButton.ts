@@ -1,9 +1,9 @@
 import { PDFDict } from 'src/core';
 import { PDFAcroButton } from './index';
 
-class PushButton extends PDFAcroButton {
+class PDFPushButton extends PDFAcroButton {
   static fromDict(dict: PDFDict): PDFAcroButton {
-    return new PushButton(dict);
+    return new PDFPushButton(dict);
   }
 
   readonly dict!: PDFDict;
@@ -21,4 +21,4 @@ class PushButton extends PDFAcroButton {
   }
 }
 
-export default PushButton;
+export default PDFPushButton;

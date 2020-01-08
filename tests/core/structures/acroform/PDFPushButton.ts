@@ -5,10 +5,10 @@ import {
   PDFName,
   PDFNumber,
   PDFObject,
-  PushButton,
+  PDFPushButton,
 } from 'src/index';
 
-describe('PushButton', () => {
+describe('PDFPushButton', () => {
   let context: PDFContext;
   let dict: DictMap;
 
@@ -23,19 +23,19 @@ describe('PushButton', () => {
 
   it('can be constructed from a PDFDict', () => {
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const pushButton = PushButton.fromDict(acroFormFieldDict);
-    expect(pushButton).toBeInstanceOf(PushButton);
+    const pushButton = PDFPushButton.fromDict(acroFormFieldDict);
+    expect(pushButton).toBeInstanceOf(PDFPushButton);
   });
 
   it('returns an undefined value', () => {
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const pushButton = PushButton.fromDict(acroFormFieldDict);
+    const pushButton = PDFPushButton.fromDict(acroFormFieldDict);
     expect(pushButton.V()).toBe(undefined);
   });
 
   it('returns an undefined default value', () => {
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const pushButton = PushButton.fromDict(acroFormFieldDict);
+    const pushButton = PDFPushButton.fromDict(acroFormFieldDict);
     expect(pushButton.DV()).toBe(undefined);
   });
 });

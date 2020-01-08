@@ -1,5 +1,5 @@
 import { PDFDict, PDFName, PDFNumber } from 'src/core';
-import { CheckBox, PDFTerminalField, PushButton } from './index';
+import { CheckBox, PDFTerminalField, PDFPushButton } from './index';
 
 class PDFAcroButton extends PDFTerminalField {
   static fromDict(dict: PDFDict): PDFAcroButton {
@@ -12,7 +12,7 @@ class PDFAcroButton extends PDFTerminalField {
     if (isPushButton && isRadioButton) {
       throw new Error('Invalid button field flags');
     } else if (isPushButton) {
-      return PushButton.fromDict(dict);
+      return PDFPushButton.fromDict(dict);
     } else if (isRadioButton) {
       // TODO: RadioButton in #270
       return new PDFAcroButton(dict);

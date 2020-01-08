@@ -7,7 +7,7 @@ import {
   PDFName,
   PDFNumber,
   PDFObject,
-  PushButton,
+  PDFPushButton,
 } from 'src/index';
 
 describe('PDFAcroButton', () => {
@@ -26,7 +26,7 @@ describe('PDFAcroButton', () => {
     expect(button).toBeInstanceOf(PDFAcroButton);
   });
 
-  it('returns a PushButton when the appropriate field flag is set', () => {
+  it('returns a PDFPushButton when the appropriate field flag is set', () => {
     const fieldFlags = PDFNumber.of(1 << 17);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Btn],
@@ -34,7 +34,7 @@ describe('PDFAcroButton', () => {
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const button = PDFAcroButton.fromDict(acroFormFieldDict);
-    expect(button).toBeInstanceOf(PushButton);
+    expect(button).toBeInstanceOf(PDFPushButton);
   });
 
   it('returns a Checkbox when neither the radio button nor pushbutton flags are set', () => {
