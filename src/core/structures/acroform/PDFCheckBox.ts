@@ -1,9 +1,9 @@
 import { PDFArray, PDFDict, PDFName } from 'src/core';
 import { PDFAcroButton } from './index';
 
-class CheckBox extends PDFAcroButton {
-  static fromDict(dict: PDFDict): CheckBox {
-    return new CheckBox(dict);
+class PDFCheckBox extends PDFAcroButton {
+  static fromDict(dict: PDFDict): PDFCheckBox {
+    return new PDFCheckBox(dict);
   }
 
   protected constructor(dict: PDFDict) {
@@ -43,4 +43,4 @@ class CheckBox extends PDFAcroButton {
   }
 }
 
-export default CheckBox;
+export default PDFCheckBox;

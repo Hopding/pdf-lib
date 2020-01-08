@@ -1,5 +1,5 @@
 import {
-  CheckBox,
+  PDFCheckBox,
   DictMap,
   PDFAcroButton,
   PDFContext,
@@ -41,7 +41,7 @@ describe('PDFAcroButton', () => {
     dict = new Map([[PDFName.FT, PDFName.Btn]]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const button = PDFAcroButton.fromDict(acroFormFieldDict);
-    expect(button).toBeInstanceOf(CheckBox);
+    expect(button).toBeInstanceOf(PDFCheckBox);
   });
 
   it('throws an error on invalid field flags', () => {

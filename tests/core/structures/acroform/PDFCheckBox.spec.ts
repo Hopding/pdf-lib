@@ -1,7 +1,7 @@
 import {
-  CheckBox,
   DictMap,
   PDFArray,
+  PDFCheckBox,
   PDFContext,
   PDFDict,
   PDFName,
@@ -9,7 +9,7 @@ import {
   PDFObject,
 } from 'src/index';
 
-describe('CheckBox', () => {
+describe('PDFCheckBox', () => {
   let context: PDFContext;
   let dict: DictMap;
 
@@ -24,8 +24,8 @@ describe('CheckBox', () => {
       [PDFName.Ff, PDFNumber.of(1 << 16 && 1 << 17)],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const checkbox = CheckBox.fromDict(acroFormFieldDict);
-    expect(checkbox).toBeInstanceOf(CheckBox);
+    const checkbox = PDFCheckBox.fromDict(acroFormFieldDict);
+    expect(checkbox).toBeInstanceOf(PDFCheckBox);
     expect(checkbox.getFlags()).toEqual(0);
   });
 
@@ -37,7 +37,7 @@ describe('CheckBox', () => {
         [PDFName.Opt, optionsArray],
       ]);
       const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-      const checkbox = CheckBox.fromDict(acroFormFieldDict);
+      const checkbox = PDFCheckBox.fromDict(acroFormFieldDict);
       expect(checkbox.Opt()).toBe(optionsArray);
     });
 
@@ -46,7 +46,7 @@ describe('CheckBox', () => {
         new Map([[PDFName.FT, PDFName.Btn]]),
         context,
       );
-      const checkbox = CheckBox.fromDict(acroFormFieldDict);
+      const checkbox = PDFCheckBox.fromDict(acroFormFieldDict);
       expect(checkbox.Opt()).toBe(undefined);
     });
   });
@@ -60,7 +60,7 @@ describe('CheckBox', () => {
       [PDFName.Opt, optionsArray],
     ]);
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const checkbox = CheckBox.fromDict(acroFormFieldDict);
+    const checkbox = PDFCheckBox.fromDict(acroFormFieldDict);
     expect(checkbox.getOptions()).toEqual([PDFName.Yes, PDFName.Off]);
   });
 
@@ -72,7 +72,7 @@ describe('CheckBox', () => {
       ]),
       context,
     );
-    const checkbox = CheckBox.fromDict(acroFormFieldDict);
+    const checkbox = PDFCheckBox.fromDict(acroFormFieldDict);
     checkbox.check();
     expect(checkbox.V()).toEqual(PDFName.Yes);
   });
@@ -85,7 +85,7 @@ describe('CheckBox', () => {
       ]),
       context,
     );
-    const checkbox = CheckBox.fromDict(acroFormFieldDict);
+    const checkbox = PDFCheckBox.fromDict(acroFormFieldDict);
     checkbox.uncheck();
     expect(checkbox.V()).toEqual(PDFName.Off);
   });
@@ -98,7 +98,7 @@ describe('CheckBox', () => {
       ]),
       context,
     );
-    const checkbox = CheckBox.fromDict(acroFormFieldDict);
+    const checkbox = PDFCheckBox.fromDict(acroFormFieldDict);
     checkbox.toggle();
     expect(checkbox.V()).toEqual(PDFName.Yes);
     checkbox.toggle();
@@ -113,7 +113,7 @@ describe('CheckBox', () => {
       ]),
       context,
     );
-    const checkbox = CheckBox.fromDict(acroFormFieldDict);
+    const checkbox = PDFCheckBox.fromDict(acroFormFieldDict);
     checkbox.setValue(PDFName.Yes);
     expect(checkbox.V()).toEqual(PDFName.Yes);
   });

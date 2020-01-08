@@ -1,5 +1,5 @@
 import { PDFDict, PDFName, PDFNumber } from 'src/core';
-import { CheckBox, PDFTerminalField, PDFPushButton } from './index';
+import { PDFCheckBox, PDFTerminalField, PDFPushButton } from './index';
 
 class PDFAcroButton extends PDFTerminalField {
   static fromDict(dict: PDFDict): PDFAcroButton {
@@ -17,7 +17,7 @@ class PDFAcroButton extends PDFTerminalField {
       // TODO: RadioButton in #270
       return new PDFAcroButton(dict);
     } else {
-      return CheckBox.fromDict(dict);
+      return PDFCheckBox.fromDict(dict);
     }
   }
 
