@@ -49,6 +49,7 @@ class PDFArray extends PDFObject {
 
   lookupElements(): Array<PDFObject | undefined>;
   lookupElements(type: typeof PDFDict): PDFDict[];
+  lookupElements(type: typeof PDFName): PDFName[];
 
   lookupElements(type?: any) {
     const values = new Array(this.size());
