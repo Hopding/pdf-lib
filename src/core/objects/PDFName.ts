@@ -69,6 +69,8 @@ class PDFName extends PDFObject {
   static readonly Off = PDFName.of('Off');
   static readonly RV = PDFName.of('RV');
   static readonly MaxLen = PDFName.of('MaxLen');
+  static readonly AP = PDFName.of('AP');
+  static readonly N = PDFName.of('N');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;
