@@ -339,4 +339,70 @@ describe('PDFAcroField', () => {
       expect(field.AA()).toBe(undefined);
     });
   });
+
+  it('can toggle a field flag', () => {
+    const flags = PDFNumber.of(1);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    field.toggleFlag(0);
+    expect(field.getFlags()).toEqual(0);
+  });
+
+  it('can return whether the field is read-only', () => {
+    const flags = PDFNumber.of(1);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    expect(field.isReadOnly()).toEqual(true);
+  });
+
+  it('can return whether the field is required for form submission', () => {
+    const flags = PDFNumber.of(1 << 1);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    expect(field.isRequired()).toEqual(true);
+  });
+
+  it('can return whether the field is not exportable', () => {
+    const flags = PDFNumber.of(1 << 2);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    expect(field.isNoExport()).toEqual(true);
+  });
+
+  it('can set the read-only flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    field.setReadOnly(true);
+    expect(field.isReadOnly()).toEqual(true);
+    field.setReadOnly(false);
+    expect(field.isReadOnly()).toEqual(false);
+  });
+
+  it('can set the is-required flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    field.setIsRequired(true);
+    expect(field.isRequired()).toEqual(true);
+    field.setIsRequired(false);
+    expect(field.isRequired()).toEqual(false);
+  });
+
+  it('can set the is-no-export flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.Ff, flags);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const field = PDFAcroField.fromDict(acroFormFieldDict);
+    field.setIsNoExport(true);
+    expect(field.isNoExport()).toEqual(true);
+    field.setIsNoExport(false);
+    expect(field.isNoExport()).toEqual(false);
+  });
 });
