@@ -32,6 +32,7 @@ export { default as PDFStream } from 'src/core/objects/PDFStream';
 export { default as PDFRawStream } from 'src/core/objects/PDFRawStream';
 
 export * from 'src/core/structures/acroform';
+export * from 'src/core/structures/annotation';
 export { default as PDFCatalog } from 'src/core/structures/PDFCatalog';
 export { default as PDFContentStream } from 'src/core/structures/PDFContentStream';
 export { default as PDFCrossRefStream } from 'src/core/structures/PDFCrossRefStream';
