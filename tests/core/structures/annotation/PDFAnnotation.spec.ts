@@ -17,9 +17,7 @@ describe('PDFAnnotation', () => {
 
   beforeEach(() => {
     context = PDFContext.create();
-    dict = new Map<PDFName, PDFObject>([
-      [PDFName.Subtype, PDFName.Text]
-    ]);
+    dict = new Map<PDFName, PDFObject>([[PDFName.Subtype, PDFName.Text]]);
   });
 
   it('can be constructed from a PDFDict', () => {
@@ -135,7 +133,6 @@ describe('PDFAnnotation', () => {
     });
   });
 
-
   describe('can return the appearance dictionary', () => {
     it('when defined', () => {
       const appearanceDict = PDFDict.fromMapWithContext(new Map(), context);
@@ -216,7 +213,10 @@ describe('PDFAnnotation', () => {
 
   describe('can return the optional content', () => {
     it('when defined', () => {
-      const optionalContentDict = PDFDict.fromMapWithContext(new Map(), context);
+      const optionalContentDict = PDFDict.fromMapWithContext(
+        new Map(),
+        context,
+      );
       dict.set(PDFName.OC, optionalContentDict);
       const annotationDict = PDFDict.fromMapWithContext(dict, context);
       const annotation = PDFAnnotation.fromDict(annotationDict);
