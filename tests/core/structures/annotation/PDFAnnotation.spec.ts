@@ -7,10 +7,11 @@ import {
   PDFName,
   PDFNumber,
   PDFObject,
-  PDFString
+  PDFRectangle,
+  PDFString,
 } from 'src/index';
 
-describe('PDFAcroField', () => {
+describe('PDFAnnotation', () => {
   let context: PDFContext;
   let dict: DictMap;
 
@@ -47,6 +48,14 @@ describe('PDFAcroField', () => {
     const annotationDict = PDFDict.fromMapWithContext(dict, context);
     const annotation = PDFAnnotation.fromDict(annotationDict);
     expect(annotation.Subtype()).toEqual(PDFName.Text);
+  });
+
+  it('can return the annotation rectangle', () => {
+    const rectangleArray = PDFArray.withContext(context);
+    dict.set(PDFName.Rect, rectangleArray);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    expect(annotation.Rect()).toBeInstanceOf(PDFRectangle);
   });
 
   describe('can return the annotation contents', () => {

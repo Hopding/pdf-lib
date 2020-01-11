@@ -3,6 +3,7 @@ import {
   PDFDict,
   PDFName,
   PDFNumber,
+  PDFRectangle,
   PDFString,
 } from 'src/core';
 
@@ -55,6 +56,10 @@ class PDFAnnotation {
 
   Subtype(): PDFName {
     return this.dict.lookup(PDFName.Subtype, PDFName);
+  }
+
+  Rect(): PDFRectangle {
+    return PDFRectangle.fromArray(this.dict.lookup(PDFName.Rect, PDFArray));
   }
 
   Contents(): PDFString | undefined {
