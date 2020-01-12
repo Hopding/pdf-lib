@@ -92,6 +92,45 @@ class PDFAcroField {
     this.dict.set(PDFName.Ff, PDFNumber.of(newFlags));
   }
 
+  toggleFlag(flag: number): void {
+    const flagValue = this.getFlags() & (1 << flag);
+    if (flagValue) {
+      this.unsetFlag(flag);
+    } else {
+      this.setFlag(flag);
+    }
+  }
+
+  isReadOnly(): boolean {
+    return !!(this.getFlags() & 1);
+  }
+
+  isRequired(): boolean {
+    return !!(this.getFlags() & (1 << 1));
+  }
+
+  isNoExport(): boolean {
+    return !!(this.getFlags() & (1 << 2));
+  }
+
+  setReadOnly(readOnly: boolean): void {
+    if ((Number(this.isReadOnly()) ^ Number(readOnly))) {
+      this.toggleFlag(0);
+    }
+  }
+
+  setIsRequired(required: boolean): void {
+    if ((Number(this.isRequired()) ^ Number(required))) {
+      this.toggleFlag(1);
+    }
+  }
+
+  setIsNoExport(noExport: boolean): void {
+    if ((Number(this.isNoExport()) ^ Number(noExport))) {
+      this.toggleFlag(2);
+    }
+  }
+
   V(): PDFObject | undefined {
     return this.getInheritableAttribute(PDFName.V);
   }
