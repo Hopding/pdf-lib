@@ -53,7 +53,15 @@ describe('PDFAnnotation', () => {
     dict.set(PDFName.Rect, rectangleArray);
     const annotationDict = PDFDict.fromMapWithContext(dict, context);
     const annotation = PDFAnnotation.fromDict(annotationDict);
-    expect(annotation.Rect()).toBeInstanceOf(PDFRectangle);
+    expect(annotation.Rect()).toBe(rectangleArray);
+  });
+
+  it('can return the annotation rectangle as a PDFRectangle', () => {
+    const rectangleArray = PDFArray.withContext(context);
+    dict.set(PDFName.Rect, rectangleArray);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    expect(annotation.getRectangle()).toBeInstanceOf(PDFRectangle);
   });
 
   describe('can return the annotation contents', () => {

@@ -58,8 +58,12 @@ class PDFAnnotation {
     return this.dict.lookup(PDFName.Subtype, PDFName);
   }
 
-  Rect(): PDFRectangle {
-    return PDFRectangle.fromArray(this.dict.lookup(PDFName.Rect, PDFArray));
+  Rect(): PDFArray {
+    return this.dict.lookup(PDFName.Rect, PDFArray);
+  }
+
+  getRectangle(): PDFRectangle {
+    return PDFRectangle.fromArray(this.Rect());
   }
 
   Contents(): PDFString | undefined {
