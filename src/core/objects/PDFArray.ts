@@ -14,8 +14,8 @@ import CharCodes from 'src/core/syntax/CharCodes';
 class PDFArray extends PDFObject {
   static withContext = (context: PDFContext) => new PDFArray(context);
 
+  readonly context: PDFContext;
   private readonly array: PDFObject[];
-  private readonly context: PDFContext;
 
   private constructor(context: PDFContext) {
     super();
