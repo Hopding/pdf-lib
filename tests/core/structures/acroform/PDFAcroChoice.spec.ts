@@ -58,7 +58,7 @@ describe('PDFAcroChoice', () => {
   });
 
   it('can return whether the choice field is a combo box', () => {
-    const fieldFlags = PDFNumber.of(1 << 18);
+    const fieldFlags = PDFNumber.of(1 << 17);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
       [PDFName.Ff, fieldFlags],
@@ -69,7 +69,7 @@ describe('PDFAcroChoice', () => {
   });
 
   it('can return whether the choice field has an editable text box', () => {
-    const fieldFlags = PDFNumber.of(1 << 19);
+    const fieldFlags = PDFNumber.of(1 << 18);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
       [PDFName.Ff, fieldFlags],
@@ -80,7 +80,7 @@ describe('PDFAcroChoice', () => {
   });
 
   it('can return whether the choices are sorted alphabetically', () => {
-    const fieldFlags = PDFNumber.of(1 << 20);
+    const fieldFlags = PDFNumber.of(1 << 19);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
       [PDFName.Ff, fieldFlags],
@@ -91,7 +91,7 @@ describe('PDFAcroChoice', () => {
   });
 
   it('can return whether the field is a multi-select', () => {
-    const fieldFlags = PDFNumber.of(1 << 22);
+    const fieldFlags = PDFNumber.of(1 << 21);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
       [PDFName.Ff, fieldFlags],
@@ -101,19 +101,8 @@ describe('PDFAcroChoice', () => {
     expect(choiceField.isMultiSelect()).toBe(true);
   });
 
-  it('can return whether conformed readers will spell-check the field', () => {
-    const fieldFlags = PDFNumber.of(1 << 23);
-    dict = new Map<PDFName, PDFObject>([
-      [PDFName.FT, PDFName.Ch],
-      [PDFName.Ff, fieldFlags],
-    ]);
-    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const choiceField = PDFAcroChoice.fromDict(acroFormFieldDict);
-    expect(choiceField.isSpellChecked()).toBe(false);
-  });
-
-  it('can return whether conformed readers will spell-check the field', () => {
-    const fieldFlags = PDFNumber.of(1 << 23);
+  it('can return whether conforming readers will spell-check the field', () => {
+    const fieldFlags = PDFNumber.of(1 << 22);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
       [PDFName.Ff, fieldFlags],
@@ -124,7 +113,7 @@ describe('PDFAcroChoice', () => {
   });
 
   it('can return whether a selection change is committed before the user leaves the field', () => {
-    const fieldFlags = PDFNumber.of(1 << 27);
+    const fieldFlags = PDFNumber.of(1 << 26);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Ch],
       [PDFName.Ff, fieldFlags],
