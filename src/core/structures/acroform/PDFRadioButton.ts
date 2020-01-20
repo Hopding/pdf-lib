@@ -27,11 +27,11 @@ class PDFRadioButton extends PDFAcroButton {
   }
 
   NoToggleToOff(): boolean {
-    return !!(this.getFlags() | (1 << 15));
+    return !!(this.getFlags() & (1 << 14));
   }
 
   RadiosInUnison(): boolean {
-    return !!(this.getFlags() | (1 << 26));
+    return !!(this.getFlags() & (1 << 25));
   }
 
   Kids(): PDFArray {
@@ -59,7 +59,6 @@ class PDFRadioButton extends PDFAcroButton {
   }
 
   _toggleChild(index: number): void {
-   console.log(this.getValue());
    if (this.getValue() === PDFName.Off) {
     this.setValue(this._getChildOnAppearanceState(index));
    } else {
@@ -67,34 +66,9 @@ class PDFRadioButton extends PDFAcroButton {
    }
   }
 
-  _toggleInUnison(index: number): void {
-    const childOnValues = this.getKids().map((_child, childIndex) => this._getChildOnAppearanceState(childIndex));
-    const targetOnValue = childOnValues[index];
-    childOnValues.forEach((onValue, childIndex) => {
-      if (onValue === targetOnValue) {
-        this._toggleChild(childIndex);
-      }
-    });
-  }
-
-  _toggleWithNoToggleToOff(index: number) {
-    if (this.getValue() === PDFName.Off) {
-      this._toggleChild(index);
-    }
-  }
-
   toggle(index: number): void {
-    console.log(this.getFlags());
-    if (this.RadiosInUnison() && this.NoToggleToOff()) {
-      console.log("HERE");
-      if (this.getValue() === PDFName.Off) {
-        this._toggleInUnison(index);
-      }
-    } else if (this.RadiosInUnison()) {
-      this._toggleInUnison(index);
-    } else if (this.NoToggleToOff()) {
-      this._toggleWithNoToggleToOff(index);
-    } else {
+    const canToggle = !this.NoToggleToOff() || (this.NoToggleToOff() && this.getValue() === PDFName.Off);
+    if (canToggle) {
       this._toggleChild(index);
     }
   }
