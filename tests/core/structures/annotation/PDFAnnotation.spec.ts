@@ -163,9 +163,7 @@ describe('PDFAnnotation', () => {
     dict.set(PDFName.AP, appearanceDict);
     const annotationDict = PDFDict.fromMapWithContext(dict, context);
     const annotation = PDFAnnotation.fromDict(annotationDict);
-    expect(annotation.getAppearanceDict()).toBeInstanceOf(
-      PDFAnnotationAppearance,
-    );
+    expect(annotation.getAppearance()).toBeInstanceOf(PDFAnnotationAppearance);
   });
 
   describe('can return the appearance state', () => {

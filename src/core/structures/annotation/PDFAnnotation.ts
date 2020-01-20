@@ -91,7 +91,7 @@ class PDFAnnotation {
     return this.dict.lookupMaybe(PDFName.AP, PDFDict);
   }
 
-  getAppearanceDict(): PDFAnnotationAppearance | undefined {
+  getAppearance(): PDFAnnotationAppearance | undefined {
     const appearanceDict = this.AP();
     if (!appearanceDict) {
       return appearanceDict;
