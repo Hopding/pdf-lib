@@ -45,7 +45,16 @@ class PDFRadioButton extends PDFAcroButton {
     return this.dict.lookup(PDFName.V, PDFName);
   }
 
-  _getChildOnAppearanceState(index: number): PDFName {
+  toggle(index: number): void {
+    const canToggle =
+      !this.NoToggleToOff() ||
+      (this.NoToggleToOff() && this.getValue() === PDFName.Off);
+    if (canToggle) {
+      this.toggleChild(index);
+    }
+  }
+
+  private getChildOnAppearanceState(index: number): PDFName {
     const kids = this.getKids();
     const childAnnotation = PDFAnnotation.fromDict(kids[index]);
     const childAnnotationNormalAppearanceDict = childAnnotation.dict
@@ -57,20 +66,11 @@ class PDFRadioButton extends PDFAcroButton {
     return childAnnotationNormalOnAppearance;
   }
 
-  _toggleChild(index: number): void {
+  private toggleChild(index: number): void {
     if (this.getValue() === PDFName.Off) {
-      this.setValue(this._getChildOnAppearanceState(index));
+      this.setValue(this.getChildOnAppearanceState(index));
     } else {
       this.setValue(PDFName.Off);
-    }
-  }
-
-  toggle(index: number): void {
-    const canToggle =
-      !this.NoToggleToOff() ||
-      (this.NoToggleToOff() && this.getValue() === PDFName.Off);
-    if (canToggle) {
-      this._toggleChild(index);
     }
   }
 }
