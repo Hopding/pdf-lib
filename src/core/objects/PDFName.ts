@@ -107,6 +107,10 @@ class PDFName extends PDFObject {
   static readonly ThreeD = PDFName.of('3D');
   static readonly Redact = PDFName.of('Redact');
   static readonly Rect = PDFName.of('Rect');
+  static readonly N = PDFName.of('N');
+  static readonly R = PDFName.of('R');
+  static readonly D = PDFName.of('D');
+  static readonly On = PDFName.of('On');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;

@@ -114,19 +114,19 @@ class PDFAcroField {
   }
 
   setReadOnly(readOnly: boolean): void {
-    if ((Number(this.isReadOnly()) ^ Number(readOnly))) {
+    if (Number(this.isReadOnly()) ^ Number(readOnly)) {
       this.toggleFlag(0);
     }
   }
 
   setIsRequired(required: boolean): void {
-    if ((Number(this.isRequired()) ^ Number(required))) {
+    if (Number(this.isRequired()) ^ Number(required)) {
       this.toggleFlag(1);
     }
   }
 
   setIsNoExport(noExport: boolean): void {
-    if ((Number(this.isNoExport()) ^ Number(noExport))) {
+    if (Number(this.isNoExport()) ^ Number(noExport)) {
       this.toggleFlag(2);
     }
   }

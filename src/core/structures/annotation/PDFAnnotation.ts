@@ -1,4 +1,5 @@
 import {
+  PDFAnnotationAppearance,
   PDFArray,
   PDFDict,
   PDFName,
@@ -88,6 +89,14 @@ class PDFAnnotation {
 
   AP(): PDFDict | undefined {
     return this.dict.lookupMaybe(PDFName.AP, PDFDict);
+  }
+
+  getAppearance(): PDFAnnotationAppearance | undefined {
+    const appearanceDict = this.AP();
+    if (!appearanceDict) {
+      return appearanceDict;
+    }
+    return PDFAnnotationAppearance.fromDict(appearanceDict);
   }
 
   AS(): PDFName | undefined {

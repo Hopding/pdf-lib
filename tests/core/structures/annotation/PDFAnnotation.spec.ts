@@ -1,6 +1,7 @@
 import {
   DictMap,
   PDFAnnotation,
+  PDFAnnotationAppearance,
   PDFArray,
   PDFContext,
   PDFDict,
@@ -155,6 +156,14 @@ describe('PDFAnnotation', () => {
       const annotation = PDFAnnotation.fromDict(annotationDict);
       expect(annotation.AP()).toBe(undefined);
     });
+  });
+
+  it('can return the appearance dict as a PDFAnnotationAppearance', () => {
+    const appearanceDict = PDFDict.fromMapWithContext(new Map(), context);
+    dict.set(PDFName.AP, appearanceDict);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    expect(annotation.getAppearance()).toBeInstanceOf(PDFAnnotationAppearance);
   });
 
   describe('can return the appearance state', () => {
