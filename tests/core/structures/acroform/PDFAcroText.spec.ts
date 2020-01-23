@@ -64,7 +64,7 @@ describe('PDFAcroText', () => {
   });
 
   it('can return whether the text field is multiline', () => {
-    const fieldFlags = PDFNumber.of(1 << 13);
+    const fieldFlags = PDFNumber.of(1 << 12);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Tx],
       [PDFName.Ff, fieldFlags],
@@ -75,7 +75,7 @@ describe('PDFAcroText', () => {
   });
 
   it('can return whether the field is for a secure password', () => {
-    const fieldFlags = PDFNumber.of(1 << 14);
+    const fieldFlags = PDFNumber.of(1 << 13);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Tx],
       [PDFName.Ff, fieldFlags],
@@ -86,7 +86,7 @@ describe('PDFAcroText', () => {
   });
 
   it('can return whether the text field is for file selection', () => {
-    const fieldFlags = PDFNumber.of(1 << 21);
+    const fieldFlags = PDFNumber.of(1 << 20);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Tx],
       [PDFName.Ff, fieldFlags],
@@ -97,7 +97,7 @@ describe('PDFAcroText', () => {
   });
 
   it('can return whether the text field is spell-checked', () => {
-    const fieldFlags = PDFNumber.of(1 << 23);
+    const fieldFlags = PDFNumber.of(1 << 22);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Tx],
       [PDFName.Ff, fieldFlags],
@@ -108,7 +108,7 @@ describe('PDFAcroText', () => {
   });
 
   it('can return whether the text field is scrollable', () => {
-    const fieldFlags = PDFNumber.of(1 << 24);
+    const fieldFlags = PDFNumber.of(1 << 23);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Tx],
       [PDFName.Ff, fieldFlags],
@@ -119,7 +119,7 @@ describe('PDFAcroText', () => {
   });
 
   it('can return whether the text field is combed', () => {
-    const fieldFlags = PDFNumber.of(1 << 25);
+    const fieldFlags = PDFNumber.of(1 << 24);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Tx],
       [PDFName.Ff, fieldFlags],
@@ -130,7 +130,7 @@ describe('PDFAcroText', () => {
   });
 
   it('can return whether the text field is rich text', () => {
-    const fieldFlags = PDFNumber.of(1 << 26);
+    const fieldFlags = PDFNumber.of(1 << 25);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Tx],
       [PDFName.Ff, fieldFlags],

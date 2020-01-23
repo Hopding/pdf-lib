@@ -19,27 +19,27 @@ class PDFAcroChoice extends PDFTerminalField {
   }
 
   isCombo(): boolean {
-    return !!(this.getFlags() & (1 << 18));
+    return !!(this.getFlags() & (1 << 17));
   }
 
   isEditable(): boolean {
-    return !!(this.getFlags() & (1 << 19));
+    return !!(this.getFlags() & (1 << 18));
   }
 
   isSorted(): boolean {
-    return !!(this.getFlags() & (1 << 20));
+    return !!(this.getFlags() & (1 << 19));
   }
 
   isMultiSelect(): boolean {
-    return !!(this.getFlags() & (1 << 22));
+    return !!(this.getFlags() & (1 << 21));
   }
 
   isSpellChecked(): boolean {
-    return !(this.getFlags() & (1 << 23));
+    return !(this.getFlags() & (1 << 22));
   }
 
   isCommittedOnSelChange(): boolean {
-    return !!(this.getFlags() & (1 << 27));
+    return !!(this.getFlags() & (1 << 26));
   }
 }
 

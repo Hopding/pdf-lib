@@ -8,6 +8,7 @@ import {
   PDFNumber,
   PDFObject,
   PDFPushButton,
+  PDFRadioButton,
 } from 'src/index';
 
 describe('PDFAcroButton', () => {
@@ -27,7 +28,7 @@ describe('PDFAcroButton', () => {
   });
 
   it('returns a PDFPushButton when the appropriate field flag is set', () => {
-    const fieldFlags = PDFNumber.of(1 << 17);
+    const fieldFlags = PDFNumber.of(1 << 16);
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Btn],
       [PDFName.Ff, fieldFlags],
@@ -35,6 +36,17 @@ describe('PDFAcroButton', () => {
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const button = PDFAcroButton.fromDict(acroFormFieldDict);
     expect(button).toBeInstanceOf(PDFPushButton);
+  });
+
+  it('returns a PDFRadioButton when the appropriate field flag is set', () => {
+    const fieldFlags = PDFNumber.of(1 << 15);
+    dict = new Map<PDFName, PDFObject>([
+      [PDFName.FT, PDFName.Btn],
+      [PDFName.Ff, fieldFlags],
+    ]);
+    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+    const button = PDFAcroButton.fromDict(acroFormFieldDict);
+    expect(button).toBeInstanceOf(PDFRadioButton);
   });
 
   it('returns a Checkbox when neither the radio button nor pushbutton flags are set', () => {
@@ -45,7 +57,7 @@ describe('PDFAcroButton', () => {
   });
 
   it('throws an error on invalid field flags', () => {
-    const fieldFlags = PDFNumber.of((1 << 17) | (1 << 16));
+    const fieldFlags = PDFNumber.of((1 << 16) | (1 << 15));
     dict = new Map<PDFName, PDFObject>([
       [PDFName.FT, PDFName.Btn],
       [PDFName.Ff, fieldFlags],

@@ -69,11 +69,12 @@ class PDFName extends PDFObject {
   static readonly Off = PDFName.of('Off');
   static readonly RV = PDFName.of('RV');
   static readonly MaxLen = PDFName.of('MaxLen');
+  static readonly AP = PDFName.of('AP');
+  static readonly N = PDFName.of('N');
   static readonly P = PDFName.of('P');
   static readonly NM = PDFName.of('NM');
   static readonly M = PDFName.of('M');
   static readonly F = PDFName.of('F');
-  static readonly AP = PDFName.of('AP');
   static readonly AS = PDFName.of('AS');
   static readonly Border = PDFName.of('Border');
   static readonly C = PDFName.of('C');
@@ -107,7 +108,6 @@ class PDFName extends PDFObject {
   static readonly ThreeD = PDFName.of('3D');
   static readonly Redact = PDFName.of('Redact');
   static readonly Rect = PDFName.of('Rect');
-  static readonly N = PDFName.of('N');
   static readonly R = PDFName.of('R');
   static readonly D = PDFName.of('D');
   static readonly On = PDFName.of('On');

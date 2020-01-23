@@ -15,31 +15,31 @@ class PDFAcroText extends PDFTerminalField {
   }
 
   isMultiLine(): boolean {
-    return !!(this.getFlags() & (1 << 13));
+    return !!(this.getFlags() & (1 << 12));
   }
 
   isPassword(): boolean {
-    return !!(this.getFlags() & (1 << 14));
+    return !!(this.getFlags() & (1 << 13));
   }
 
   isFileSelect(): boolean {
-    return !!(this.getFlags() & (1 << 21));
+    return !!(this.getFlags() & (1 << 20));
   }
 
   isSpellChecked(): boolean {
-    return !(this.getFlags() & (1 << 23));
+    return !(this.getFlags() & (1 << 22));
   }
 
   isScrollable(): boolean {
-    return !(this.getFlags() & (1 << 24));
+    return !(this.getFlags() & (1 << 23));
   }
 
   isCombed(): boolean {
-    return !!(this.getFlags() & (1 << 25));
+    return !!(this.getFlags() & (1 << 24));
   }
 
   isRichText(): boolean {
-    return !!(this.getFlags() & (1 << 26));
+    return !!(this.getFlags() & (1 << 25));
   }
 }
 

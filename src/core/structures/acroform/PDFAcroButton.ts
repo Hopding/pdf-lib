@@ -1,11 +1,16 @@
 import { PDFDict, PDFName, PDFNumber } from 'src/core';
-import { PDFCheckBox, PDFPushButton, PDFTerminalField } from './index';
+import {
+  PDFCheckBox,
+  PDFPushButton,
+  PDFRadioButton,
+  PDFTerminalField,
+} from './index';
 
 class PDFAcroButton extends PDFTerminalField {
   static fromDict(dict: PDFDict): PDFAcroButton {
     const fieldFlags = dict.lookupMaybe(PDFName.Ff, PDFNumber)?.value() || 0;
-    const pushButtonFlag = 1 << 17;
-    const radioButtonFlag = 1 << 16;
+    const pushButtonFlag = 1 << 16;
+    const radioButtonFlag = 1 << 15;
     const isPushButton = !!(fieldFlags & pushButtonFlag);
     const isRadioButton = !!(fieldFlags & radioButtonFlag);
 
@@ -14,8 +19,7 @@ class PDFAcroButton extends PDFTerminalField {
     } else if (isPushButton) {
       return PDFPushButton.fromDict(dict);
     } else if (isRadioButton) {
-      // TODO: RadioButton in #270
-      return new PDFAcroButton(dict);
+      return PDFRadioButton.fromDict(dict);
     } else {
       return PDFCheckBox.fromDict(dict);
     }
