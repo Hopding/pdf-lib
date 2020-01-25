@@ -14,7 +14,7 @@ class PDFNonTerminalField extends PDFAcroField {
 
   getKids(): PDFAcroField[] | undefined {
     const kidDicts = this.Kids()?.lookupElements(PDFDict);
-    return kidDicts?.map(childDict => PDFAcroField.fromDict(childDict));
+    return kidDicts?.map((childDict) => PDFAcroField.fromDict(childDict));
   }
 }
 
