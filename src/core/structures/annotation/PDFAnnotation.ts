@@ -87,6 +87,50 @@ class PDFAnnotation {
     return this.dict.lookupMaybe(PDFName.F, PDFNumber);
   }
 
+  getFlags(): number {
+    return this.F()?.value() || 0;
+  }
+
+  isInvisible(): boolean {
+    return !!(this.getFlags() & 1);
+  }
+
+  isHidden(): boolean {
+    return !!(this.getFlags() & (1 << 1));
+  }
+
+  shouldPrint(): boolean {
+    return !!(this.getFlags() & (1 << 2));
+  }
+
+  isNoZoom(): boolean {
+    return !!(this.getFlags() & (1 << 3));
+  }
+
+  isNoRotate(): boolean {
+    return !!(this.getFlags() & (1 << 4));
+  }
+
+  isNoView(): boolean {
+    return !!(this.getFlags() & (1 << 5));
+  }
+
+  isReadOnly(): boolean {
+    return !!(this.getFlags() & (1 << 6));
+  }
+
+  isLocked(): boolean {
+    return !!(this.getFlags() & (1 << 7));
+  }
+
+  isNoViewTogglable(): boolean {
+    return !!(this.getFlags() & (1 << 8));
+  }
+
+  isLockedContent(): boolean {
+    return !!(this.getFlags() & (1 << 9));
+  }
+
   AP(): PDFDict | undefined {
     return this.dict.lookupMaybe(PDFName.AP, PDFDict);
   }
