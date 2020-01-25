@@ -33,8 +33,10 @@ class PDFRadioButton extends PDFAcroButton {
     return this.dict.lookup(PDFName.Kids, PDFArray);
   }
 
-  getKids(): PDFDict[] {
-    return this.Kids().lookupElements(PDFDict);
+  getKids(): PDFAnnotation[] {
+    return this.Kids()
+      .lookupElements(PDFDict)
+      .map((childDict) => PDFAnnotation.fromDict(childDict));
   }
 
   getValue(): PDFName {
@@ -55,8 +57,7 @@ class PDFRadioButton extends PDFAcroButton {
   }
 
   private getChildOnAppearanceState(index: number): PDFName {
-    const kids = this.getKids();
-    const childAnnotation = PDFAnnotation.fromDict(kids[index]);
+    const childAnnotation = this.getKids()[index];
     const childAnnotationNormalAppearanceDict = childAnnotation.dict
       .lookup(PDFName.AP, PDFDict)
       .lookup(PDFName.N, PDFDict);
