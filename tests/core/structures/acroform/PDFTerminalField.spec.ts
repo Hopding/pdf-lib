@@ -3,6 +3,8 @@ import {
   PDFAcroButton,
   PDFAcroChoice,
   PDFAcroText,
+  PDFAnnotation,
+  PDFArray,
   PDFContext,
   PDFDict,
   PDFName,
@@ -53,5 +55,22 @@ describe('PDFTerminalField', () => {
     const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
     const field = PDFTerminalField.fromDict(acroFormFieldDict);
     expect(field).toBeInstanceOf(PDFAcroChoice);
+  });
+
+  describe('can return the field kids as PDFAnnotation instances', () => {
+    it('when the kids array is defined', () => {
+      const kids = PDFArray.withContext(context);
+      const childAnnotationDict = PDFDict.fromMapWithContext(
+        new Map([[PDFName.Subtype, PDFName.Circle]]),
+        context,
+      );
+      const childAnnotationRef = context.register(childAnnotationDict);
+      const childAnnotation = PDFAnnotation.fromDict(childAnnotationDict);
+      kids.push(childAnnotationRef);
+      dict.set(PDFName.Kids, kids);
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFTerminalField.fromDict(acroFormFieldDict);
+      expect(field.getKids()).toEqual([childAnnotation]);
+    });
   });
 });

@@ -1,5 +1,4 @@
 import {
-  PDFAnnotation,
   PDFArray,
   PDFDict,
   PDFName,
@@ -44,15 +43,6 @@ class PDFAcroField {
 
   Kids(): PDFArray | undefined {
     return this.dict.lookupMaybe(PDFName.Kids, PDFArray);
-  }
-
-  getKids(): PDFAcroField[] | PDFAnnotation[] | undefined {
-    const kidDicts = this.Kids()?.lookupElements(PDFDict);
-    if (!kidDicts) return undefined;
-    if (this instanceof PDFTerminalField) {
-      return kidDicts.map(childDict => PDFAnnotation.fromDict(childDict));
-    }
-    return kidDicts.map(childDict => PDFAcroField.fromDict(childDict));
   }
 
   T(): PDFString | undefined {

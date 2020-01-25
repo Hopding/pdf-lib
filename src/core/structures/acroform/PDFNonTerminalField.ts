@@ -11,6 +11,11 @@ class PDFNonTerminalField extends PDFAcroField {
   protected constructor(dict: PDFDict) {
     super(dict);
   }
+
+  getKids(): PDFAcroField[] | undefined {
+    const kidDicts = this.Kids()?.lookupElements(PDFDict);
+    return kidDicts?.map(childDict => PDFAcroField.fromDict(childDict));
+  }
 }
 
 export default PDFNonTerminalField;
