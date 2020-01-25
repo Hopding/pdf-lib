@@ -91,6 +91,85 @@ class PDFAnnotation {
     return this.F()?.value() || 0;
   }
 
+  setFlag(flag: number): void {
+    const newFlags = this.getFlags() | (1 << flag);
+    this.dict.set(PDFName.F, PDFNumber.of(newFlags));
+  }
+
+  unsetFlag(flag: number): void {
+    const newFlags = this.getFlags() & ~(1 << flag);
+    this.dict.set(PDFName.F, PDFNumber.of(newFlags));
+  }
+
+  toggleFlag(flag: number): void {
+    const flagValue = this.getFlags() & (1 << flag);
+    if (flagValue) {
+      this.unsetFlag(flag);
+    } else {
+      this.setFlag(flag);
+    }
+  }
+
+  setInvisible(invisible: boolean): void {
+    if (Number(this.isInvisible()) ^ Number(invisible)) {
+      this.toggleFlag(0);
+    }
+  }
+
+  setHidden(hidden: boolean): void {
+    if (Number(this.isHidden()) ^ Number(hidden)) {
+      this.toggleFlag(1);
+    }
+  }
+
+  setPrint(print: boolean): void {
+    if (Number(this.shouldPrint()) ^ Number(print)) {
+      this.toggleFlag(2);
+    }
+  }
+
+  setNoZoom(noZoom: boolean): void {
+    if (Number(this.isNoZoom()) ^ Number(noZoom)) {
+      this.toggleFlag(3);
+    }
+  }
+
+  setNoRotate(noRotate: boolean): void {
+    if (Number(this.isNoRotate()) ^ Number(noRotate)) {
+      this.toggleFlag(4);
+    }
+  }
+
+  setNoView(noView: boolean): void {
+    if (Number(this.isNoView()) ^ Number(noView)) {
+      this.toggleFlag(5);
+    }
+  }
+
+  setReadOnly(readOnly: boolean): void {
+    if (Number(this.isReadOnly()) ^ Number(readOnly)) {
+      this.toggleFlag(6);
+    }
+  }
+
+  setLocked(locked: boolean): void {
+    if (Number(this.isLocked()) ^ Number(locked)) {
+      this.toggleFlag(7);
+    }
+  }
+
+  setToggleNoView(toggleNoView: boolean): void {
+    if (Number(this.isToggleNoView()) ^ Number(toggleNoView)) {
+      this.toggleFlag(8);
+    }
+  }
+
+  setLockedContent(lockedContent: boolean): void {
+    if (Number(this.isLockedContent()) ^ Number(lockedContent)) {
+      this.toggleFlag(9);
+    }
+  }
+
   isInvisible(): boolean {
     return !!(this.getFlags() & 1);
   }
@@ -123,7 +202,7 @@ class PDFAnnotation {
     return !!(this.getFlags() & (1 << 7));
   }
 
-  isNoViewTogglable(): boolean {
+  isToggleNoView(): boolean {
     return !!(this.getFlags() & (1 << 8));
   }
 

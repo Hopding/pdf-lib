@@ -170,7 +170,7 @@ describe('PDFAnnotation', () => {
     dict.set(PDFName.F, PDFNumber.of(1 << 8));
     const annotationDict = PDFDict.fromMapWithContext(dict, context);
     const annotation = PDFAnnotation.fromDict(annotationDict);
-    expect(annotation.isNoViewTogglable()).toBe(true);
+    expect(annotation.isToggleNoView()).toBe(true);
   });
 
   it('can return whether the is locked content', () => {
@@ -178,6 +178,116 @@ describe('PDFAnnotation', () => {
     const annotationDict = PDFDict.fromMapWithContext(dict, context);
     const annotation = PDFAnnotation.fromDict(annotationDict);
     expect(annotation.isLockedContent()).toBe(true);
+  });
+
+  it('can set the invisible flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setInvisible(true);
+    expect(annotation.isInvisible()).toEqual(true);
+    annotation.setInvisible(false);
+    expect(annotation.isInvisible()).toEqual(false);
+  });
+
+  it('can set the hidden flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setHidden(true);
+    expect(annotation.isHidden()).toEqual(true);
+    annotation.setHidden(false);
+    expect(annotation.isHidden()).toEqual(false);
+  });
+
+  it('can set the print flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setPrint(true);
+    expect(annotation.shouldPrint()).toEqual(true);
+    annotation.setPrint(false);
+    expect(annotation.shouldPrint()).toEqual(false);
+  });
+
+  it('can set the no zoom flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setNoZoom(true);
+    expect(annotation.isNoZoom()).toEqual(true);
+    annotation.setNoZoom(false);
+    expect(annotation.isNoZoom()).toEqual(false);
+  });
+
+  it('can set the no rotate flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setNoRotate(true);
+    expect(annotation.isNoRotate()).toEqual(true);
+    annotation.setNoRotate(false);
+    expect(annotation.isNoRotate()).toEqual(false);
+  });
+
+  it('can set the no view flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setNoView(true);
+    expect(annotation.isNoView()).toEqual(true);
+    annotation.setNoView(false);
+    expect(annotation.isNoView()).toEqual(false);
+  });
+
+  it('can set the read-only flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setReadOnly(true);
+    expect(annotation.isReadOnly()).toEqual(true);
+    annotation.setReadOnly(false);
+    expect(annotation.isReadOnly()).toEqual(false);
+  });
+
+  it('can set the locked flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setLocked(true);
+    expect(annotation.isLocked()).toEqual(true);
+    annotation.setLocked(false);
+    expect(annotation.isLocked()).toEqual(false);
+  });
+
+  it('can set the toggle no view flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setToggleNoView(true);
+    expect(annotation.isToggleNoView()).toEqual(true);
+    annotation.setToggleNoView(false);
+    expect(annotation.isToggleNoView()).toEqual(false);
+  });
+
+  it('can set the locked content flag', () => {
+    const flags = PDFNumber.of(0);
+    dict.set(PDFName.F, flags);
+    const annotationDict = PDFDict.fromMapWithContext(dict, context);
+    const annotation = PDFAnnotation.fromDict(annotationDict);
+    annotation.setLockedContent(true);
+    expect(annotation.isLockedContent()).toEqual(true);
+    annotation.setLockedContent(false);
+    expect(annotation.isLockedContent()).toEqual(false);
   });
 
   describe('can return the page dictionary', () => {
