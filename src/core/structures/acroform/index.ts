@@ -8,3 +8,4 @@ export { default as PDFAcroChoice } from './PDFAcroChoice';
 export { default as PDFPushButton } from './PDFPushButton';
 export { default as PDFRadioButton } from './PDFRadioButton';
 export { default as PDFCheckBox } from './PDFCheckBox';
+export { default as PDFSignature } from './PDFSignature';
