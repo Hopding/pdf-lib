@@ -1,5 +1,6 @@
 import {
   DictMap,
+  PDFAnnotation,
   PDFArray,
   PDFContext,
   PDFDict,
@@ -73,15 +74,19 @@ describe('PDFRadioButton', () => {
     expect(radioButton.Kids()).toBe(kidsArray);
   });
 
-  it('can return the dereferenced kids PDFDict objects', () => {
-    const childDict = PDFDict.fromMapWithContext(new Map(), context);
+  it('can return the dereferenced kids PDFAnnotation objects', () => {
+    const childDict = PDFDict.fromMapWithContext(
+      new Map([[PDFName.Subtype, PDFName.Circle]]),
+      context,
+    );
     const childDictRef = context.register(childDict);
+    const childAnnotation = PDFAnnotation.fromDict(childDict);
     const kidsArray = PDFArray.withContext(context);
     kidsArray.push(childDictRef);
     dict.set(PDFName.Kids, kidsArray);
     const radioButtonDict = PDFDict.fromMapWithContext(dict, context);
     const radioButton = PDFRadioButton.fromDict(radioButtonDict);
-    expect(radioButton.getKids()).toEqual([childDict]);
+    expect(radioButton.getKids()).toEqual([childAnnotation]);
   });
 
   describe('can toggle an option', () => {

@@ -1,4 +1,4 @@
-import { PDFDict, PDFName } from 'src/core';
+import { PDFAnnotation, PDFDict, PDFName } from 'src/core';
 import {
   acroFormFieldTypes,
   PDFAcroButton,
@@ -31,6 +31,11 @@ class PDFTerminalField extends PDFAcroField {
 
   FT(): PDFName {
     return this.lookupMaybeInheritableAttribute(PDFName.FT, PDFName);
+  }
+
+  getKids(): PDFAnnotation[] | undefined {
+    const kidDicts = this.Kids()?.lookupElements(PDFDict);
+    return kidDicts?.map((childDict) => PDFAnnotation.fromDict(childDict));
   }
 
   private validateFieldType() {

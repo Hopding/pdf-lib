@@ -45,19 +45,6 @@ class PDFAcroField {
     return this.dict.lookupMaybe(PDFName.Kids, PDFArray);
   }
 
-  getKids(): PDFAcroField[] | PDFDict[] | undefined {
-    const kidDicts = this.Kids()?.lookupElements(PDFDict);
-    if (!kidDicts) return undefined;
-    if (this instanceof PDFTerminalField) {
-      return kidDicts;
-    }
-    const kidsAcroFields = new Array<PDFAcroField>(kidDicts.length);
-    for (let idx = 0, len = kidDicts.length; idx < len; idx++) {
-      kidsAcroFields[idx] = PDFAcroField.fromDict(kidDicts[idx]);
-    }
-    return kidsAcroFields;
-  }
-
   T(): PDFString | undefined {
     return this.dict.lookupMaybe(PDFName.of('T'), PDFString);
   }
