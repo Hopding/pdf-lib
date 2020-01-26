@@ -5,6 +5,7 @@ import {
   PDFAcroChoice,
   PDFAcroField,
   PDFAcroText,
+  PDFSignature,
 } from './index';
 
 class PDFTerminalField extends PDFAcroField {
@@ -17,6 +18,8 @@ class PDFTerminalField extends PDFAcroField {
         return PDFAcroText.fromDict(dict);
       case PDFName.Ch:
         return PDFAcroChoice.fromDict(dict);
+      case PDFName.Sig:
+        return PDFSignature.fromDict(dict);
       default:
         return new PDFTerminalField(dict);
     }

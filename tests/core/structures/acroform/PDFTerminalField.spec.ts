@@ -8,6 +8,7 @@ import {
   PDFContext,
   PDFDict,
   PDFName,
+  PDFSignature,
   PDFTerminalField,
 } from 'src/index';
 
@@ -34,27 +35,34 @@ describe('PDFTerminalField', () => {
       const createField = () => PDFTerminalField.fromDict(acroFormFieldDict);
       expect(createField).toThrow(Error);
     });
-  });
 
-  it('returns a PDFAcroButton if the field type is Btn', () => {
-    dict = new Map([[PDFName.FT, PDFName.Btn]]);
-    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const field = PDFTerminalField.fromDict(acroFormFieldDict);
-    expect(field).toBeInstanceOf(PDFAcroButton);
-  });
+    it('and returns a PDFAcroButton if the field type is Btn', () => {
+      dict = new Map([[PDFName.FT, PDFName.Btn]]);
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFTerminalField.fromDict(acroFormFieldDict);
+      expect(field).toBeInstanceOf(PDFAcroButton);
+    });
 
-  it('returns a PDFAcroText if the field type is Tx', () => {
-    dict = new Map([[PDFName.FT, PDFName.Tx]]);
-    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const field = PDFTerminalField.fromDict(acroFormFieldDict);
-    expect(field).toBeInstanceOf(PDFAcroText);
-  });
+    it('and returns a PDFAcroText if the field type is Tx', () => {
+      dict = new Map([[PDFName.FT, PDFName.Tx]]);
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFTerminalField.fromDict(acroFormFieldDict);
+      expect(field).toBeInstanceOf(PDFAcroText);
+    });
 
-  it('returns a PDFAcroChoice if the field type is Ch', () => {
-    dict = new Map([[PDFName.FT, PDFName.Ch]]);
-    const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
-    const field = PDFTerminalField.fromDict(acroFormFieldDict);
-    expect(field).toBeInstanceOf(PDFAcroChoice);
+    it('and returns a PDFAcroChoice if the field type is Ch', () => {
+      dict = new Map([[PDFName.FT, PDFName.Ch]]);
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFTerminalField.fromDict(acroFormFieldDict);
+      expect(field).toBeInstanceOf(PDFAcroChoice);
+    });
+
+    it('and returns a PDFSignature if the field type is Sig', () => {
+      dict = new Map([[PDFName.FT, PDFName.Sig]]);
+      const acroFormFieldDict = PDFDict.fromMapWithContext(dict, context);
+      const field = PDFTerminalField.fromDict(acroFormFieldDict);
+      expect(field).toBeInstanceOf(PDFSignature);
+    });
   });
 
   describe('can return the field kids as PDFAnnotation instances', () => {
