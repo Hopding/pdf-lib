@@ -29,4 +29,12 @@ describe(`PDFRectangle`, () => {
   it('can return the upper right Y coordinate', () => {
     expect(rectangle.upperRightY()).toEqual(4);
   });
+
+  it('can set the rectangle dimensions', () => {
+    rectangle.setRectangle(0, 0, 1, 1);
+    expect(rectangle.lowerLeftX()).toEqual(0);
+    expect(rectangle.lowerLeftY()).toEqual(0);
+    expect(rectangle.upperRightX()).toEqual(1);
+    expect(rectangle.upperRightY()).toEqual(1);
+  });
 });
