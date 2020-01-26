@@ -22,6 +22,11 @@ class PDFHexString extends PDFObject {
   };
 
   static toText = (value: string) => {
+    // Append a zero if the number of digits is odd. See pdf spec 7.3.4.3
+    if (value.length % 2 === 1) {
+      value = value + '0';
+    }
+
     const bytes: number[] = [];
     let i = 0;
     while (i + 2 <= value.length) {
@@ -59,6 +64,10 @@ class PDFHexString extends PDFObject {
     offset += copyStringIntoBuffer(this.value, buffer, offset);
     buffer[offset++] = CharCodes.GreaterThan;
     return this.value.length + 2;
+  }
+
+  decodeText() {
+    return PDFHexString.toText(this.value);
   }
 }
 

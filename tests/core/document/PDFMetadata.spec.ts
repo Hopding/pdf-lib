@@ -1,7 +1,7 @@
 import { PDFDocument } from 'src/api';
 
 describe(`PDFMetadata`, () => {
-  it(`metadata fields can be set and retrieved`, async () => {
+  it(`metadata fields can be set and retrieved (Hex String encoded as UTF-16BE)`, async () => {
     const pdfDoc = await PDFDocument.create();
 
     // Everything is empty or has its initial value.
