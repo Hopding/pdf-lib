@@ -2,7 +2,8 @@ import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
 import {
   copyStringIntoBuffer,
-  toHexStringOfMinLength, utf16Decode,
+  toHexStringOfMinLength,
+  utf16Decode,
   utf16Encode,
 } from 'src/utils';
 
@@ -21,7 +22,6 @@ class PDFHexString extends PDFObject {
   };
 
   static toText = (value: string) => {
-
     const bytes: number[] = [];
     let i = 0;
     while (i + 2 <= value.length) {

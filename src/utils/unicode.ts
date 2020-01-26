@@ -283,8 +283,8 @@ export const utf16Decode = (
     byteOrder = readBOM(input);
   }
   // skip byte order mark if needed
-  let i = byteOrderMark? 2 : 0;
-  const codePoints: number [] = [];
+  let i = byteOrderMark ? 2 : 0;
+  const codePoints: number[] = [];
 
   while (i + 1 < input.length) {
     const first = decodeValues(input[i], input[i + 1], byteOrder);
@@ -329,7 +329,7 @@ const isSurrogate = (codePoint: number) =>
  * Reference: https://en.wikipedia.org/wiki/UTF-16#Description
  */
 const isHighSurrogate = (codePoint: number) =>
-  codePoint >= 0xD800 && codePoint <= 0xDBFF;
+  codePoint >= 0xd800 && codePoint <= 0xdbff;
 
 /**
  * Returns `true` if the given `codePoint` is a low surrogate.
@@ -338,7 +338,7 @@ const isHighSurrogate = (codePoint: number) =>
  * Reference: https://en.wikipedia.org/wiki/UTF-16#Description
  */
 const isLowSurrogate = (codePoint: number) =>
-  codePoint >= 0xDC00 && codePoint <= 0xDFFF;
+  codePoint >= 0xdc00 && codePoint <= 0xdfff;
 
 /**
  * Decodes the given utf-16 values first and second using the specified byte order.
@@ -369,11 +369,11 @@ const readBOM = (bytes: Uint16Array) => {
   const firstNumber = bytes[0];
   const secondNumber = bytes[1];
 
-  if (firstNumber === 0xFE && secondNumber === 0xFF) {
+  if (firstNumber === 0xfe && secondNumber === 0xff) {
     //  big-endian
     return 0;
   }
-  if (firstNumber === 0xFF && secondNumber === 0xFE) {
+  if (firstNumber === 0xff && secondNumber === 0xfe) {
     // little-endian
     return 1;
   }

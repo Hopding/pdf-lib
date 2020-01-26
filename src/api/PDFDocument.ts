@@ -257,7 +257,9 @@ export default class PDFDocument {
     const subjectObject = this.getInfoDict().get(PDFName.of('Keywords'));
     if (subjectObject) {
       const hexValue: string = subjectObject.toString();
-      const keyWordsString = PDFHexString.toText(this.extractFromBrackets(hexValue));
+      const keyWordsString = PDFHexString.toText(
+        this.extractFromBrackets(hexValue),
+      );
       return keyWordsString.split(' ');
     }
     return [];

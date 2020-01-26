@@ -8,8 +8,12 @@ describe(`PDFMetadata`, () => {
     expect(pdfDoc.getTitle()).toBe('');
     expect(pdfDoc.getAuthor()).toBe('');
     expect(pdfDoc.getSubject()).toBe('');
-    expect(pdfDoc.getProducer()).toBe('pdf-lib (https://github.com/Hopding/pdf-lib)');
-    expect(pdfDoc.getCreator()).toBe('pdf-lib (https://github.com/Hopding/pdf-lib)');
+    expect(pdfDoc.getProducer()).toBe(
+      'pdf-lib (https://github.com/Hopding/pdf-lib)',
+    );
+    expect(pdfDoc.getCreator()).toBe(
+      'pdf-lib (https://github.com/Hopding/pdf-lib)',
+    );
     expect(pdfDoc.getKeywords()).toStrictEqual([]);
     // Dates can not be tested since they have the current time as value.
 
@@ -31,7 +35,7 @@ describe(`PDFMetadata`, () => {
     pdfDoc.setCreator(creator);
     pdfDoc.setCreationDate(creationDate);
     pdfDoc.setModificationDate(modificationDate);
-    
+
     expect(pdfDoc.getTitle()).toBe(title);
     expect(pdfDoc.getAuthor()).toBe(author);
     expect(pdfDoc.getSubject()).toBe(subject);
