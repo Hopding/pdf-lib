@@ -61,9 +61,11 @@
   ],
   "dependencies": {
     "@pdf-lib/standard-fonts": "^0.0.4",
+    "@types/upng-js": "^2.1.1",
     "pako": "^1.0.10",
     "png-ts": "^0.0.3",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "upng-js": "^2.1.0"
   },
   "devDependencies": {
     "@pdf-lib/fontkit": "^0.0.4",
