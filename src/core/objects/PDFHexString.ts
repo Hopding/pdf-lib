@@ -2,7 +2,7 @@ import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
 import {
   copyStringIntoBuffer,
-  toHexStringOfMinLength,
+  toHexStringOfMinLength, utf16Decode,
   utf16Encode,
 } from 'src/utils';
 
@@ -18,6 +18,21 @@ class PDFHexString extends PDFObject {
     }
 
     return new PDFHexString(hex);
+  };
+
+  static toText = (value: string) => {
+
+    const bytes: number[] = [];
+    let i = 0;
+    while (i + 2 <= value.length) {
+      // Get the next two digits
+      const nextTwoDigits = value.substr(i, 2);
+      i = i + 2;
+
+      // Hex is base 16
+      bytes.push(parseInt(nextTwoDigits, 16));
+    }
+    return utf16Decode(new Uint16Array(bytes));
   };
 
   private readonly value: string;

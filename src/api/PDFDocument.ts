@@ -211,6 +211,110 @@ export default class PDFDocument {
   }
 
   /**
+   * Get this document's title metadata as a string. The title appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getTitle(): string {
+    const titleObject = this.getInfoDict().get(PDFName.of('Title'));
+    if (titleObject) {
+      const hexValue: string = titleObject.toString();
+      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's author metadata. The author appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getAuthor(): string {
+    const authorObject = this.getInfoDict().get(PDFName.of('Author'));
+    if (authorObject) {
+      const hexValue: string = authorObject.toString();
+      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's subject metadata. The subject appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getSubject(): string {
+    const subjectObject = this.getInfoDict().get(PDFName.of('Subject'));
+    if (subjectObject) {
+      const hexValue: string = subjectObject.toString();
+      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's keyword metadata. These keywords appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getKeywords(): string[] {
+    const subjectObject = this.getInfoDict().get(PDFName.of('Keywords'));
+    if (subjectObject) {
+      const hexValue: string = subjectObject.toString();
+      const keyWordsString = PDFHexString.toText(this.extractFromBrackets(hexValue));
+      return keyWordsString.split(' ');
+    }
+    return [];
+  }
+
+  /**
+   * Get this document's creator metadata. The creator appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getCreator(): string {
+    const subjectObject = this.getInfoDict().get(PDFName.of('Creator'));
+    if (subjectObject) {
+      const hexValue: string = subjectObject.toString();
+      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's producer metadata. The producer appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getProducer(): string {
+    const subjectObject = this.getInfoDict().get(PDFName.of('Producer'));
+    if (subjectObject) {
+      const hexValue: string = subjectObject.toString();
+      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's creation date metadata. Returns undefined if the creation date was not set.
+   * The creation date appears in the "Document Properties" section
+   * of most PDF readers.
+   */
+  getCreationDate(): Date | undefined {
+    const creationDate = this.getInfoDict().get(PDFName.of('CreationDate'));
+    if (creationDate) {
+      return PDFString.toDate(creationDate.toString());
+    }
+    return undefined;
+  }
+
+  /**
+   * Get this document's modification date metadata. The modification date
+   * appears in the "Document Properties" section of most PDF readers.
+   */
+  getModificationDate(): Date | undefined {
+    const modDate = this.getInfoDict().get(PDFName.of('ModDate'));
+    if (modDate) {
+      return PDFString.toDate(modDate.toString());
+    }
+    return undefined;
+  }
+
+  /**
    * Set this document's title metadata. The title will appear in the
    * "Document Properties" section of most PDF readers. For example:
    * ```js
@@ -823,4 +927,12 @@ export default class PDFDocument {
     });
     return pages;
   };
+
+  /**
+   * Extract a string which is inside pointy brackets i.e. <value> --> value.
+   * @param value The string with pointy brackets.
+   */
+  private extractFromBrackets(value: string) {
+    return value.substr(value.indexOf('<') + 1, value.lastIndexOf('>') - 1);
+  }
 }

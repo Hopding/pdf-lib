@@ -18,6 +18,13 @@ class PDFString extends PDFObject {
     return new PDFString(`D:${year}${month}${day}${hours}${mins}${secs}Z`);
   };
 
+  static toDate = (dateString: string) =>
+    // Regex find and replace with capturing groups
+    // For Example: (D:20180624015837Z) --> 2018-06-24T01:58:37Z
+    new Date(dateString.replace(
+      /^\(D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)Z\)$/,
+      '$1-$2-$3T$4:$5:$6Z'));
+
   private readonly value: string;
 
   private constructor(value: string) {
