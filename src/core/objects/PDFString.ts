@@ -23,7 +23,7 @@ class PDFString extends PDFObject {
     // For Example: (D:20180624015837Z) --> 2018-06-24T01:58:37Z
     new Date(
       dateString.replace(
-        /^\(D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)Z\)$/,
+        /^D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)Z$/,
         '$1-$2-$3T$4:$5:$6Z',
       ),
     );
@@ -52,6 +52,16 @@ class PDFString extends PDFObject {
     offset += copyStringIntoBuffer(this.value, buffer, offset);
     buffer[offset++] = CharCodes.RightParen;
     return this.value.length + 2;
+  }
+
+  decodeText(): string {
+    // TODO could be PDFDocEncoding or UTF16-BE. check for bom
+    // Not implemented yet
+    throw new Error('Not implemented yet!');
+  }
+
+  decodeDate(): Date {
+    return PDFString.toDate(this.value);
   }
 }
 

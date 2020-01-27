@@ -66,7 +66,8 @@ class PDFHexString extends PDFObject {
     return this.value.length + 2;
   }
 
-  decodeText() {
+  decodeText(): string {
+    // TODO could also be PDFDocEncoding. check for bom
     return PDFHexString.toText(this.value);
   }
 }

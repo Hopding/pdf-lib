@@ -28,6 +28,7 @@ import {
   PngEmbedder,
   StandardFontEmbedder,
 } from 'src/core';
+import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
 import {
   assertIs,
@@ -217,8 +218,7 @@ export default class PDFDocument {
   getTitle(): string {
     const titleObject = this.getInfoDict().get(PDFName.of('Title'));
     if (titleObject) {
-      const hexValue: string = titleObject.toString();
-      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+      return this.decodePDFStringOrPDFHexString(titleObject);
     }
     return '';
   }
@@ -230,8 +230,7 @@ export default class PDFDocument {
   getAuthor(): string {
     const authorObject = this.getInfoDict().get(PDFName.of('Author'));
     if (authorObject) {
-      const hexValue: string = authorObject.toString();
-      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+      return this.decodePDFStringOrPDFHexString(authorObject);
     }
     return '';
   }
@@ -243,8 +242,7 @@ export default class PDFDocument {
   getSubject(): string {
     const subjectObject = this.getInfoDict().get(PDFName.of('Subject'));
     if (subjectObject) {
-      const hexValue: string = subjectObject.toString();
-      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+      return this.decodePDFStringOrPDFHexString(subjectObject);
     }
     return '';
   }
@@ -254,13 +252,12 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getKeywords(): string[] {
-    const subjectObject = this.getInfoDict().get(PDFName.of('Keywords'));
-    if (subjectObject) {
-      const hexValue: string = subjectObject.toString();
-      const keyWordsString = PDFHexString.toText(
-        this.extractFromBrackets(hexValue),
+    const keywordsObject = this.getInfoDict().get(PDFName.of('Keywords'));
+    if (keywordsObject) {
+      const keywordsAsString = this.decodePDFStringOrPDFHexString(
+        keywordsObject,
       );
-      return keyWordsString.split(' ');
+      return keywordsAsString.split(' ');
     }
     return [];
   }
@@ -270,10 +267,9 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getCreator(): string {
-    const subjectObject = this.getInfoDict().get(PDFName.of('Creator'));
-    if (subjectObject) {
-      const hexValue: string = subjectObject.toString();
-      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+    const creatorObject = this.getInfoDict().get(PDFName.of('Creator'));
+    if (creatorObject) {
+      return this.decodePDFStringOrPDFHexString(creatorObject);
     }
     return '';
   }
@@ -283,10 +279,9 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getProducer(): string {
-    const subjectObject = this.getInfoDict().get(PDFName.of('Producer'));
-    if (subjectObject) {
-      const hexValue: string = subjectObject.toString();
-      return PDFHexString.toText(this.extractFromBrackets(hexValue));
+    const producerObject = this.getInfoDict().get(PDFName.of('Producer'));
+    if (producerObject) {
+      return this.decodePDFStringOrPDFHexString(producerObject);
     }
     return '';
   }
@@ -297,9 +292,15 @@ export default class PDFDocument {
    * of most PDF readers.
    */
   getCreationDate(): Date | undefined {
-    const creationDate = this.getInfoDict().get(PDFName.of('CreationDate'));
-    if (creationDate) {
-      return PDFString.toDate(creationDate.toString());
+    const creationDateObject = this.getInfoDict().get(
+      PDFName.of('CreationDate'),
+    );
+    if (creationDateObject) {
+      if (creationDateObject instanceof PDFString) {
+        return creationDateObject.decodeDate();
+      } else {
+        throw new Error();
+      }
     }
     return undefined;
   }
@@ -311,7 +312,11 @@ export default class PDFDocument {
   getModificationDate(): Date | undefined {
     const modDate = this.getInfoDict().get(PDFName.of('ModDate'));
     if (modDate) {
-      return PDFString.toDate(modDate.toString());
+      if (modDate instanceof PDFString) {
+        return modDate.decodeDate();
+      } else {
+        throw new Error();
+      }
     }
     return undefined;
   }
@@ -931,10 +936,14 @@ export default class PDFDocument {
   };
 
   /**
-   * Extract a string which is inside pointy brackets i.e. <value> --> value.
-   * @param value The string with pointy brackets.
+   * Decode a pdfObject which is either a PDFHexString or a PDFString
+   * @param pdfObject The pdfObject to be decoded.
    */
-  private extractFromBrackets(value: string) {
-    return value.substr(value.indexOf('<') + 1, value.lastIndexOf('>') - 1);
+  private decodePDFStringOrPDFHexString(pdfObject: PDFObject) {
+    if (pdfObject instanceof PDFHexString || pdfObject instanceof PDFString) {
+      return pdfObject.decodeText();
+    } else {
+      throw new Error();
+    }
   }
 }
