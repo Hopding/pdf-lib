@@ -19,6 +19,7 @@ import {
   PDFHexString,
   PDFName,
   PDFObjectCopier,
+  PDFPageEmbedder,
   PDFPageLeaf,
   PDFPageTree,
   PDFParser,
@@ -695,6 +696,24 @@ export default class PDFDocument {
     assertIs(png, 'png', ['string', Uint8Array, ArrayBuffer]);
     const bytes = toUint8Array(png);
     const embedder = await PngEmbedder.for(bytes);
+    const ref = this.context.nextRef();
+    const pdfImage = PDFImage.of(ref, this, embedder);
+    this.images.push(pdfImage);
+    return pdfImage;
+  }
+
+  async embedPdfDocument(document: PDFDocument): Promise<PDFImage> {
+    assertIs(document, 'document', [[PDFDocument, 'PDFDocument']]);
+    const embedder = await PDFPageEmbedder.forDocument(document);
+    const ref = this.context.nextRef();
+    const embeddedPdfPage = PDFImage.of(ref, this, embedder);
+    this.images.push(embeddedPdfPage);
+    return embeddedPdfPage;
+  }
+
+  async embedPdfPage(page: PDFPage): Promise<PDFImage> {
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    const embedder = await PDFPageEmbedder.forPage(page);
     const ref = this.context.nextRef();
     const pdfImage = PDFImage.of(ref, this, embedder);
     this.images.push(pdfImage);

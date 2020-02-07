@@ -108,6 +108,27 @@ export const drawImage = (
   popGraphicsState(),
 ];
 
+export const drawEmbeddedPdfPage = (
+  name: string | PDFName,
+  // options: {
+  //   x: number | PDFNumber;
+  //   y: number | PDFNumber;
+  //   width: number | PDFNumber;
+  //   height: number | PDFNumber;
+  //   rotate: Rotation;
+  //   xSkew: Rotation;
+  //   ySkew: Rotation;
+  // },
+): PDFOperator[] => [
+  // pushGraphicsState(),
+  // translate(options.x, options.y),
+  // rotateRadians(toRadians(options.rotate)),
+  // scale(options.width, options.height),
+  // skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
+  drawObject(name),
+  // popGraphicsState(),
+];
+
 export const drawLine = (options: {
   start: { x: number | PDFNumber; y: number | PDFNumber };
   end: { x: number | PDFNumber; y: number | PDFNumber };

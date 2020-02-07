@@ -1,8 +1,8 @@
 import PDFDocument from 'src/api/PDFDocument';
-import { JpegEmbedder, PDFRef, PngEmbedder } from 'src/core';
+import { JpegEmbedder, PDFPageEmbedder, PDFRef, PngEmbedder } from 'src/core';
 import { assertIs } from 'src/utils';
 
-export type ImageEmbedder = JpegEmbedder | PngEmbedder;
+export type ImageEmbedder = JpegEmbedder | PngEmbedder | PDFPageEmbedder;
 
 /**
  * Represents an image that has been embedded in a [[PDFDocument]].
@@ -43,6 +43,7 @@ export default class PDFImage {
     assertIs(embedder, 'embedder', [
       [JpegEmbedder, 'JpegEmbedder'],
       [PngEmbedder, 'PngEmbedder'],
+      [PDFPageEmbedder, 'PDFPageEmbedder'],
     ]);
 
     this.ref = ref;

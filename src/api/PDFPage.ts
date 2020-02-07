@@ -1,6 +1,7 @@
 import { Color, rgb } from 'src/api/colors';
 import {
   drawEllipse,
+  drawEmbeddedPdfPage,
   drawImage,
   drawLine,
   drawLinesOfText,
@@ -675,6 +676,36 @@ export default class PDFPage {
         xSkew: options.xSkew || degrees(0),
         ySkew: options.ySkew || degrees(0),
       }),
+    );
+  }
+
+  drawEmbeddedPdfPage(embeddedPdfPage: PDFImage, options: PDFPageDrawImageOptions = {}): void {
+    // TODO: Reuse embeddedPdfPage XObject name if we've already added this embeddedPdfPage to Resources.XObjects
+    assertIs(embeddedPdfPage, 'embeddedPdfPage', [[PDFImage, 'PDFImage']]);
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.width, 'options.width', ['number']);
+    assertOrUndefined(options.height, 'options.height', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
+    assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+
+    const xObjectKey = addRandomSuffix('EmbeddedPdfPage', 10);
+    this.node.setXObject(PDFName.of(xObjectKey), embeddedPdfPage.ref);
+
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawEmbeddedPdfPage(xObjectKey,
+      //   {
+      //   x: options.x || this.x,
+      //   y: options.y || this.y,
+      //   width: options.width || embeddedPdfPage.size().width,
+      //   height: options.height || embeddedPdfPage.size().height,
+      //   rotate: options.rotate || degrees(0),
+      //   xSkew: options.xSkew || degrees(0),
+      //   ySkew: options.ySkew || degrees(0),
+      // }
+      ),
     );
   }
 
