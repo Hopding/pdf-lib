@@ -16,7 +16,11 @@ export { default as CustomFontEmbedder } from 'src/core/embedders/CustomFontEmbe
 export { default as CustomFontSubsetEmbedder } from 'src/core/embedders/CustomFontSubsetEmbedder';
 export { default as JpegEmbedder } from 'src/core/embedders/JpegEmbedder';
 export { default as PngEmbedder } from 'src/core/embedders/PngEmbedder';
-export { default as PDFPageEmbedder } from 'src/core/embedders/PDFPageEmbedder';
+export {
+  default as PDFPageEmbedder,
+  TransformationMatrix,
+  BoundingBox,
+} from 'src/core/embedders/PDFPageEmbedder';
 
 export { default as PDFObject } from 'src/core/objects/PDFObject';
 export { default as PDFBool } from 'src/core/objects/PDFBool';

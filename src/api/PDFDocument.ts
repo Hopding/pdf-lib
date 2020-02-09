@@ -10,6 +10,7 @@ import PDFPage from 'src/api/PDFPage';
 import { PageSizes } from 'src/api/sizes';
 import { StandardFonts } from 'src/api/StandardFonts';
 import {
+  BoundingBox,
   CustomFontEmbedder,
   CustomFontSubsetEmbedder,
   JpegEmbedder,
@@ -28,6 +29,7 @@ import {
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
+  TransformationMatrix,
 } from 'src/core';
 import { Fontkit } from 'src/types/fontkit';
 import {
@@ -702,25 +704,79 @@ export default class PDFDocument {
     return pdfImage;
   }
 
+  /**
+   * Embed a PDF page into this document.
+   *
+   * For example:
+   * ```js
+   * const pdfDoc = await PDFDocument.create();
+   *
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
+   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
+   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
+   *
+   * // embed page 74 into pdfDoc
+   * const embeddedPage = await pdfDoc.embedPdfDocument(sourcePdfDoc,73);
+   * ```
+   *
+   * @param document The source PDF document that contains the page to be embedded
+   * @param pageIndex Optionally, the page index (starting at 0 for the first page) of the page to embed. Defaults to 0 (the first page).
+   * @returns Resolves with the embedded pdf page.
+   */
   async embedPdfDocument(
     document: PDFDocument,
     pageIndex?: number,
   ): Promise<PDFImage> {
     assertIs(document, 'document', [[PDFDocument, 'PDFDocument']]);
-    const embedder = await PDFPageEmbedder.forDocument(document, pageIndex);
+    const page = document.getPages()[pageIndex || 0];
+    const embeddedPage = await this.embedPdfPage(page);
+    return embeddedPage;
+  }
+
+  /**
+   * Embed a PDF page into this document.
+   *
+   * For example:
+   * ```js
+   * const pdfDoc = await PDFDocument.create();
+   *
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
+   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
+   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
+   * const sourcePdfPage = sourcePdfDoc.getPages()[73];
+   *
+   * const embeddedPage = await pdfDoc.embedPdfPage(
+   *   sourcePdfPage,
+   *   { // clip the PDF page to a certain area within the page
+   *     left: 100,
+   *     right: 450,
+   *     bottom: 330,
+   *     top: 570
+   *   },
+   *   [1, 0, 0, 1, 10, 200] // translate by (10,200) units
+   * );
+   * ```
+   *
+   * @param page The source PDF page to be embedded
+   * @param boundingBox Optionally, area of the source page that should be embedded
+   * @param transformationMatrix Optionally, a transformation matrix that is always applied to the embedded page
+   * @returns Resolves with the embedded pdf page.
+   */
+  async embedPdfPage(
+    page: PDFPage,
+    boundingBox?: BoundingBox,
+    transformationMatrix?: TransformationMatrix,
+  ): Promise<PDFImage> {
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    const embedder = await PDFPageEmbedder.forPage(
+      page,
+      boundingBox,
+      transformationMatrix,
+    );
     const ref = this.context.nextRef();
     const embeddedPdfPage = PDFImage.of(ref, this, embedder);
     this.images.push(embeddedPdfPage);
     return embeddedPdfPage;
-  }
-
-  async embedPdfPage(page: PDFPage): Promise<PDFImage> {
-    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
-    const embedder = await PDFPageEmbedder.forPage(page);
-    const ref = this.context.nextRef();
-    const pdfImage = PDFImage.of(ref, this, embedder);
-    this.images.push(pdfImage);
-    return pdfImage;
   }
 
   /**

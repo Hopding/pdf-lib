@@ -1,4 +1,3 @@
-import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
@@ -47,10 +46,6 @@ export const identityMatrix: TransformationMatrix = [1, 0, 0, 1, 0, 0];
  * this class borrows from their PDF embedding code.
  */
 class PDFPageEmbedder {
-  static async forDocument(document: PDFDocument, pageIndex?: number) {
-    return new PDFPageEmbedder(document.getPages()[pageIndex || 0]);
-  }
-
   static async forPage(
     page: PDFPage,
     boundingBox?: BoundingBox,
