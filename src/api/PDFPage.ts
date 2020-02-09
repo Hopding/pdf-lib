@@ -680,7 +680,10 @@ export default class PDFPage {
     );
   }
 
-  drawEmbeddedPdfPage(embeddedPdfPage: PDFImage, options: PDFPageDrawEmbeddedPdfPageOptions = {}): void {
+  drawEmbeddedPdfPage(
+    embeddedPdfPage: PDFImage,
+    options: PDFPageDrawEmbeddedPdfPageOptions = {},
+  ): void {
     // TODO: Reuse embeddedPdfPage XObject name if we've already added this embeddedPdfPage to Resources.XObjects
     assertIs(embeddedPdfPage, 'embeddedPdfPage', [[PDFImage, 'PDFImage']]);
     assertOrUndefined(options.x, 'options.x', ['number']);
@@ -696,8 +699,7 @@ export default class PDFPage {
 
     const contentStream = this.getContentStream();
     contentStream.push(
-      ...drawEmbeddedPdfPage(xObjectKey,
-        {
+      ...drawEmbeddedPdfPage(xObjectKey, {
         x: options.x || this.x,
         y: options.y || this.y,
         xScale: options.xScale || 1,
@@ -705,8 +707,7 @@ export default class PDFPage {
         rotate: options.rotate || degrees(0),
         xSkew: options.xSkew || degrees(0),
         ySkew: options.ySkew || degrees(0),
-      }
-      ),
+      }),
     );
   }
 

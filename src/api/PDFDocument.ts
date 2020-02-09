@@ -702,7 +702,10 @@ export default class PDFDocument {
     return pdfImage;
   }
 
-  async embedPdfDocument(document: PDFDocument, pageIndex?: number): Promise<PDFImage> {
+  async embedPdfDocument(
+    document: PDFDocument,
+    pageIndex?: number,
+  ): Promise<PDFImage> {
     assertIs(document, 'document', [[PDFDocument, 'PDFDocument']]);
     const embedder = await PDFPageEmbedder.forDocument(document, pageIndex);
     const ref = this.context.nextRef();
