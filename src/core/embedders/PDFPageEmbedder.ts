@@ -138,7 +138,7 @@ class PDFPageEmbedder {
         // add a newline to properly separate streams in between two array elements
         decodedContents[idx] = mergeIntoTypedArray(
           content,
-          Uint8Array.from([0xD, 0xA]),
+          Uint8Array.from([0xd, 0xa]),
         );
       } else {
         decodedContents[idx] = content;
