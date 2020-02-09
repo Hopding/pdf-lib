@@ -1,8 +1,13 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
+import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
+import PDFStream from 'src/core/objects/PDFStream';
 import PDFContext from 'src/core/PDFContext';
 import PDFObjectCopier from 'src/core/PDFObjectCopier';
+import { decodePDFRawStream } from 'src/core/streams/decode';
+import PDFContentStream from 'src/core/structures/PDFContentStream';
+import { mergeIntoTypedArray } from 'src/utils';
 
 /**
  * Represents a page bounding box.
@@ -26,7 +31,14 @@ export interface BoundingBox {
   top: number /** The top of the bounding box */;
 }
 
-export type TransformationMatrix = [number, number, number, number, number, number];
+export type TransformationMatrix = [
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+];
 export const identityMatrix: TransformationMatrix = [1, 0, 0, 1, 0, 0];
 
 /**
@@ -38,7 +50,11 @@ class PDFPageEmbedder {
     return new PDFPageEmbedder(document.getPages()[pageIndex || 0]);
   }
 
-  static async forPage(page: PDFPage, boundingBox?: BoundingBox, transformationMatrix?:TransformationMatrix) {
+  static async forPage(
+    page: PDFPage,
+    boundingBox?: BoundingBox,
+    transformationMatrix?: TransformationMatrix,
+  ) {
     return new PDFPageEmbedder(page, boundingBox, transformationMatrix);
   }
 
@@ -49,7 +65,11 @@ class PDFPageEmbedder {
 
   private readonly page: PDFPage;
 
-  private constructor(page: PDFPage, boundingBox?: BoundingBox, transformationMatrix?: TransformationMatrix) {
+  private constructor(
+    page: PDFPage,
+    boundingBox?: BoundingBox,
+    transformationMatrix?: TransformationMatrix,
+  ) {
     this.page = page;
 
     if (!boundingBox) {
@@ -58,7 +78,7 @@ class PDFPageEmbedder {
         left: 0,
         bottom: 0,
         right: width,
-        top: height
+        top: height,
       };
     } else {
       this.boundingBox = boundingBox;
@@ -74,24 +94,32 @@ class PDFPageEmbedder {
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    const {left, bottom, right, top} = this.boundingBox;
+    const { left, bottom, right, top } = this.boundingBox;
     const bbox = [left, bottom, right, top];
 
-    // await this.page.doc.flush();
     const copier = PDFObjectCopier.for(this.page.doc.context, context);
     const copiedPage = copier.copy(this.page.node);
     const { Contents, Resources } = copiedPage.normalizedEntries();
-    let contentsBuffer = null;
-    if (Contents) {
-      contentsBuffer = new Uint8Array(Contents.sizeInBytes());
-      Contents.copyBytesInto(contentsBuffer, 0);
-    } else {
-      contentsBuffer = '';
+
+    if (!Contents) throw new Error('Missing page.Contents!');
+
+    const decodedContents: Uint8Array[] = new Array(Contents.size());
+    for (let idx = 0, len = Contents.size(); idx < len; idx++) {
+      const stream = Contents.lookup(idx, PDFStream);
+      if (stream instanceof PDFRawStream) {
+        decodedContents[idx] = decodePDFRawStream(stream).decode();
+      } else if (stream instanceof PDFContentStream) {
+        decodedContents[idx] = stream.getUnencodedContents();
+      } else {
+        throw new Error(`Unrecognized stream type: ${stream.constructor.name}`);
+      }
     }
 
-    console.log({bbox, Resources, Contents})
+    // TODO: Should probably insert a newline in between each content array when
+    // merging them, just to be safe
+    const mergedContents = mergeIntoTypedArray(...decodedContents);
 
-    const xObject = context.stream(contentsBuffer, {
+    const xObject = context.stream(mergedContents, {
       Type: 'XObject',
       Subtype: 'Form',
       FormType: 1,
