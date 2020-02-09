@@ -110,23 +110,23 @@ export const drawImage = (
 
 export const drawEmbeddedPdfPage = (
   name: string | PDFName,
-  // options: {
-  //   x: number | PDFNumber;
-  //   y: number | PDFNumber;
-  //   width: number | PDFNumber;
-  //   height: number | PDFNumber;
-  //   rotate: Rotation;
-  //   xSkew: Rotation;
-  //   ySkew: Rotation;
-  // },
+  options: {
+    x: number | PDFNumber;
+    y: number | PDFNumber;
+    xScale: number | PDFNumber;
+    yScale: number | PDFNumber;
+    rotate: Rotation;
+    xSkew: Rotation;
+    ySkew: Rotation;
+  },
 ): PDFOperator[] => [
-  // pushGraphicsState(),
-  // translate(options.x, options.y),
-  // rotateRadians(toRadians(options.rotate)),
-  // scale(options.width, options.height),
-  // skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
+  pushGraphicsState(),
+  translate(options.x, options.y),
+  rotateRadians(toRadians(options.rotate)),
+  scale(options.xScale, options.yScale),
+  skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
   drawObject(name),
-  // popGraphicsState(),
+  popGraphicsState(),
 ];
 
 export const drawLine = (options: {

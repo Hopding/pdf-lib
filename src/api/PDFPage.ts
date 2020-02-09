@@ -19,6 +19,7 @@ import PDFImage from 'src/api/PDFImage';
 import {
   PDFPageDrawCircleOptions,
   PDFPageDrawEllipseOptions,
+  PDFPageDrawEmbeddedPdfPageOptions,
   PDFPageDrawImageOptions,
   PDFPageDrawLineOptions,
   PDFPageDrawRectangleOptions,
@@ -679,13 +680,13 @@ export default class PDFPage {
     );
   }
 
-  drawEmbeddedPdfPage(embeddedPdfPage: PDFImage, options: PDFPageDrawImageOptions = {}): void {
+  drawEmbeddedPdfPage(embeddedPdfPage: PDFImage, options: PDFPageDrawEmbeddedPdfPageOptions = {}): void {
     // TODO: Reuse embeddedPdfPage XObject name if we've already added this embeddedPdfPage to Resources.XObjects
     assertIs(embeddedPdfPage, 'embeddedPdfPage', [[PDFImage, 'PDFImage']]);
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
-    assertOrUndefined(options.width, 'options.width', ['number']);
-    assertOrUndefined(options.height, 'options.height', ['number']);
+    assertOrUndefined(options.xScale, 'options.xScale', ['number']);
+    assertOrUndefined(options.yScale, 'options.yScale', ['number']);
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
@@ -696,15 +697,15 @@ export default class PDFPage {
     const contentStream = this.getContentStream();
     contentStream.push(
       ...drawEmbeddedPdfPage(xObjectKey,
-      //   {
-      //   x: options.x || this.x,
-      //   y: options.y || this.y,
-      //   width: options.width || embeddedPdfPage.size().width,
-      //   height: options.height || embeddedPdfPage.size().height,
-      //   rotate: options.rotate || degrees(0),
-      //   xSkew: options.xSkew || degrees(0),
-      //   ySkew: options.ySkew || degrees(0),
-      // }
+        {
+        x: options.x || this.x,
+        y: options.y || this.y,
+        xScale: options.xScale || 1,
+        yScale: options.yScale || 1,
+        rotate: options.rotate || degrees(0),
+        xSkew: options.xSkew || degrees(0),
+        ySkew: options.ySkew || degrees(0),
+      }
       ),
     );
   }
