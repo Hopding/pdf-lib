@@ -680,6 +680,32 @@ export default class PDFPage {
     );
   }
 
+  /**
+   * Draw an embedded PDF page on this page. For example:
+   * ```js
+   * import { degrees } from 'pdf-lib'
+   *
+   * const pdfDoc = await PDFDocument.create();
+   * const page = pdfDoc.addPage();
+   *
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
+   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
+   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
+   *
+   * // embed page 74 from the PDF
+   * const embeddedPage = await pdfDoc.embedPdfDocument(sourcePdfDoc,73);
+   *
+   * page.drawEmbeddedPdfPage(embeddedPage, {
+   *   x: 250,
+   *   y: 200,
+   *   xScale: 0.5,
+   *   yScale: 0.5,
+   *   rotate: degrees(30)
+   * });
+   * ```
+   * @param embeddedPdfPage The embeddedPDF page object to be drawn.
+   * @param options The options to be used when drawing the pdf page.
+   */
   drawEmbeddedPdfPage(
     embeddedPdfPage: PDFImage,
     options: PDFPageDrawEmbeddedPdfPageOptions = {},
