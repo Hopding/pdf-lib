@@ -1,13 +1,14 @@
+import Embeddable from 'src/api/Embeddable';
 import PDFDocument from 'src/api/PDFDocument';
-import { JpegEmbedder, PDFPageEmbedder, PDFRef, PngEmbedder } from 'src/core';
+import { JpegEmbedder, PDFRef, PngEmbedder } from 'src/core';
 import { assertIs } from 'src/utils';
 
-export type ImageEmbedder = JpegEmbedder | PngEmbedder | PDFPageEmbedder;
+export type ImageEmbedder = JpegEmbedder | PngEmbedder;
 
 /**
  * Represents an image that has been embedded in a [[PDFDocument]].
  */
-export default class PDFImage {
+export default class PDFImage implements Embeddable {
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
    * > consider using the [[PDFDocument.embedPng]] and [[PDFDocument.embedJpg]]
@@ -43,7 +44,6 @@ export default class PDFImage {
     assertIs(embedder, 'embedder', [
       [JpegEmbedder, 'JpegEmbedder'],
       [PngEmbedder, 'PngEmbedder'],
-      [PDFPageEmbedder, 'PDFPageEmbedder'],
     ]);
 
     this.ref = ref;

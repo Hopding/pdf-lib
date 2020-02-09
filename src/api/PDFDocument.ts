@@ -1,3 +1,5 @@
+import Embeddable from 'src/api/Embeddable';
+import EmbeddedPDFPage from 'src/api/EmbeddedPDFPage';
 import {
   EncryptedPDFError,
   FontkitNotRegisteredError,
@@ -181,6 +183,7 @@ export default class PDFDocument {
   private readonly pageMap: Map<PDFPageLeaf, PDFPage>;
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
+  private readonly embeddedPages: EmbeddedPDFPage[];
 
   private constructor(context: PDFContext, ignoreEncryption: boolean) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
@@ -194,6 +197,7 @@ export default class PDFDocument {
     this.pageMap = new Map();
     this.fonts = [];
     this.images = [];
+    this.embeddedPages = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
@@ -726,7 +730,7 @@ export default class PDFDocument {
   async embedPdfDocument(
     document: PDFDocument,
     pageIndex?: number,
-  ): Promise<PDFImage> {
+  ): Promise<EmbeddedPDFPage> {
     assertIs(document, 'document', [[PDFDocument, 'PDFDocument']]);
     const page = document.getPages()[pageIndex || 0];
     const embeddedPage = await this.embedPdfPage(page);
@@ -766,7 +770,7 @@ export default class PDFDocument {
     page: PDFPage,
     boundingBox?: BoundingBox,
     transformationMatrix?: TransformationMatrix,
-  ): Promise<PDFImage> {
+  ): Promise<EmbeddedPDFPage> {
     assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
     const embedder = await PDFPageEmbedder.forPage(
       page,
@@ -774,9 +778,9 @@ export default class PDFDocument {
       transformationMatrix,
     );
     const ref = this.context.nextRef();
-    const embeddedPdfPage = PDFImage.of(ref, this, embedder);
-    this.images.push(embeddedPdfPage);
-    return embeddedPdfPage;
+    const embeddedPage = EmbeddedPDFPage.of(ref, this, embedder);
+    this.embeddedPages.push(embeddedPage);
+    return embeddedPage;
   }
 
   /**
@@ -784,22 +788,14 @@ export default class PDFDocument {
    * > and [[saveAsBase64]] methods will automatically ensure that all embedded
    * > assets are flushed before serializing the document.
    *
-   * Flush all embedded fonts and images to this document's [[context]].
+   * Flush all embedded fonts, PDF pages, and images to this document's [[context]].
    *
    * @returns Resolves when the flush is complete.
    */
   async flush(): Promise<void> {
-    // Embed fonts
-    for (let idx = 0, len = this.fonts.length; idx < len; idx++) {
-      const font = this.fonts[idx];
-      await font.embed();
-    }
-
-    // Embed images
-    for (let idx = 0, len = this.images.length; idx < len; idx++) {
-      const image = this.images[idx];
-      await image.embed();
-    }
+    await this.embedAll(this.fonts);
+    await this.embedAll(this.images);
+    await this.embedAll(this.embeddedPages);
   }
 
   /**
@@ -857,6 +853,12 @@ export default class PDFDocument {
     const bytes = await this.save(otherOptions);
     const base64 = encodeToBase64(bytes);
     return dataUri ? `data:application/pdf;base64,${base64}` : base64;
+  }
+
+  private async embedAll(embeddables: Embeddable[]): Promise<void> {
+    for (let idx = 0, len = embeddables.length; idx < len; idx++) {
+      await embeddables[idx].embed();
+    }
   }
 
   private updateInfoDict(): void {

@@ -47,6 +47,7 @@ import {
   breakTextIntoLines,
   cleanText,
 } from 'src/utils';
+import EmbeddedPDFPage from './EmbeddedPDFPage';
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -707,11 +708,13 @@ export default class PDFPage {
    * @param options The options to be used when drawing the pdf page.
    */
   drawEmbeddedPdfPage(
-    embeddedPdfPage: PDFImage,
+    embeddedPdfPage: EmbeddedPDFPage,
     options: PDFPageDrawEmbeddedPdfPageOptions = {},
   ): void {
     // TODO: Reuse embeddedPdfPage XObject name if we've already added this embeddedPdfPage to Resources.XObjects
-    assertIs(embeddedPdfPage, 'embeddedPdfPage', [[PDFImage, 'PDFImage']]);
+    assertIs(embeddedPdfPage, 'embeddedPdfPage', [
+      [EmbeddedPDFPage, 'EmbeddedPDFPage'],
+    ]);
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.xScale, 'options.xScale', ['number']);

@@ -31,6 +31,22 @@ export interface BoundingBox {
   top: number /** The top of the bounding box */;
 }
 
+/**
+ * A transformation matrix according to section `8.3.3 Common Transformations`
+ * of the PDF specification (page 117f). To cite from the spec:
+ *
+ *   * Translations shall be specified as `[1 0 0 1 tx ty]`, where `tx` and `ty` shall
+ *     be the distances to translate the origin of the coordinate system in the
+ *     horizontal and vertical dimensions, respectively.
+ *   * Scaling shall be obtained by `[sx 0 0 sy 0 0]`. This scales the coordinates
+ *     so that 1 unit in the horizontal and vertical dimensions of the new
+ *     coordinate system is the same size as `sx` and `sy` units, respectively, in
+ *     the previous coordinate system.
+ *   * Rotations shall be produced by `[cos(q) sin(q) -sin(q) cos(q) 0 0]`, which has
+ *     the effect of rotating the coordinate system axes by an angle `q` counter clockwise.
+ *   * Skew shall be specified by `[1 tan(a) tan(b) 1 0 0]`,which skews the x-axis by an
+ *     angle `a` and the y axis by an angle `b`.
+ */
 export type TransformationMatrix = [
   number,
   number,
@@ -41,10 +57,6 @@ export type TransformationMatrix = [
 ];
 export const identityMatrix: TransformationMatrix = [1, 0, 0, 1, 0, 0];
 
-/**
- * A note of thanks to the developers of https://github.com/galkahana/PDF-Writer/, as
- * this class borrows from their PDF embedding code.
- */
 class PDFPageEmbedder {
   static async forPage(
     page: PDFPage,
@@ -56,8 +68,6 @@ class PDFPageEmbedder {
 
   readonly boundingBox: BoundingBox;
   readonly transformationMatrix: TransformationMatrix;
-  readonly width: number;
-  readonly height: number;
 
   private readonly page: PDFPage;
 
@@ -67,26 +77,12 @@ class PDFPageEmbedder {
     transformationMatrix?: TransformationMatrix,
   ) {
     this.page = page;
-
-    if (!boundingBox) {
-      const { width, height } = page.getSize();
-      this.boundingBox = {
-        left: 0,
-        bottom: 0,
-        right: width,
-        top: height,
-      };
-    } else {
-      this.boundingBox = boundingBox;
-    }
-    this.width = this.boundingBox.right;
-    this.height = this.boundingBox.top;
-
-    if (!transformationMatrix) {
-      this.transformationMatrix = identityMatrix;
-    } else {
-      this.transformationMatrix = transformationMatrix;
-    }
+    this.boundingBox = boundingBox
+      ? boundingBox
+      : this.fullPageBoundingBox(page);
+    this.transformationMatrix = transformationMatrix
+      ? transformationMatrix
+      : identityMatrix;
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
@@ -115,8 +111,8 @@ class PDFPageEmbedder {
     }
   }
 
-  // `contents` is an array of stream which we need to merge to include them in the XObject.
-  // This methods extracts each stream and joins them with a newline character
+  // `contents` is an array of streams which are merged to include them in the XObject.
+  // This methods extracts each stream and joins them with a newline character.
   private decodeContents(contents: PDFArray) {
     const decodedContents: Uint8Array[] = new Array(contents.size());
     for (let idx = 0, len = contents.size(); idx < len; idx++) {
@@ -141,6 +137,16 @@ class PDFPageEmbedder {
     }
 
     return mergeIntoTypedArray(...decodedContents);
+  }
+
+  private fullPageBoundingBox(page: PDFPage) {
+    const { width, height } = page.getSize();
+    return {
+      left: 0,
+      bottom: 0,
+      right: width,
+      top: height,
+    };
   }
 }
 
