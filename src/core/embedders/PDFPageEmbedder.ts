@@ -8,6 +8,7 @@ import PDFObjectCopier from 'src/core/PDFObjectCopier';
 import { decodePDFRawStream } from 'src/core/streams/decode';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
 import { mergeIntoTypedArray } from 'src/utils';
+import PDFArray from '../objects/PDFArray';
 
 /**
  * Represents a page bounding box.
@@ -94,39 +95,20 @@ class PDFPageEmbedder {
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    const { left, bottom, right, top } = this.boundingBox;
-    const bbox = [left, bottom, right, top];
-
     const copier = PDFObjectCopier.for(this.page.doc.context, context);
     const copiedPage = copier.copy(this.page.node);
     const { Contents, Resources } = copiedPage.normalizedEntries();
 
     if (!Contents) throw new Error('Missing page.Contents!');
+    const decodedContents = this.decodeContents(Contents);
 
-    const decodedContents: Uint8Array[] = new Array(Contents.size());
-    for (let idx = 0, len = Contents.size(); idx < len; idx++) {
-      const stream = Contents.lookup(idx, PDFStream);
-      if (stream instanceof PDFRawStream) {
-        decodedContents[idx] = decodePDFRawStream(stream).decode();
-      } else if (stream instanceof PDFContentStream) {
-        decodedContents[idx] = stream.getUnencodedContents();
-      } else {
-        throw new Error(`Unrecognized stream type: ${stream.constructor.name}`);
-      }
-    }
-
-    // TODO: Should probably insert a newline in between each content array when
-    // merging them, just to be safe
-    const mergedContents = mergeIntoTypedArray(...decodedContents);
-
-    const xObject = context.stream(mergedContents, {
+    const { left, bottom, right, top } = this.boundingBox;
+    const xObject = context.stream(decodedContents, {
       Type: 'XObject',
       Subtype: 'Form',
       FormType: 1,
-      BBox: bbox,
+      BBox: [left, bottom, right, top],
       Matrix: this.transformationMatrix,
-      // do we want to handle transparency?
-      // https://github.com/galkahana/PDF-Writer/blob/edb7478dce955dfab61bbc2219a1ca7b85bed924/PDFWriter/DocumentContext.cpp#L992
       Resources,
     });
 
@@ -136,6 +118,34 @@ class PDFPageEmbedder {
     } else {
       return context.register(xObject);
     }
+  }
+
+  // `contents` is an array of stream which we need to merge to include them in the XObject.
+  // This methods extracts each stream and joins them with a newline character
+  private decodeContents(contents: PDFArray) {
+    const decodedContents: Uint8Array[] = new Array(contents.size());
+    for (let idx = 0, len = contents.size(); idx < len; idx++) {
+      const stream = contents.lookup(idx, PDFStream);
+      let content: Uint8Array;
+      if (stream instanceof PDFRawStream) {
+        content = decodePDFRawStream(stream).decode();
+      } else if (stream instanceof PDFContentStream) {
+        content = stream.getUnencodedContents();
+      } else {
+        throw new Error(`Unrecognized stream type: ${stream.constructor.name}`);
+      }
+      if (idx === contents.size() - 1) {
+        // add a newline to properly separate streams in between two array elements
+        decodedContents[idx] = mergeIntoTypedArray(
+          content,
+          Uint8Array.from([0xD, 0xA]),
+        );
+      } else {
+        decodedContents[idx] = content;
+      }
+    }
+
+    return mergeIntoTypedArray(...decodedContents);
   }
 }
 
