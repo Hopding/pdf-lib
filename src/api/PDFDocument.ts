@@ -772,7 +772,7 @@ export default class PDFDocument {
     transformationMatrix?: TransformationMatrix,
   ): Promise<EmbeddedPDFPage> {
     assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
-    const embedder = await PDFPageEmbedder.forPage(
+    const embedder = await PDFPageEmbedder.for(
       page,
       boundingBox,
       transformationMatrix,

@@ -58,7 +58,7 @@ export type TransformationMatrix = [
 export const identityMatrix: TransformationMatrix = [1, 0, 0, 1, 0, 0];
 
 class PDFPageEmbedder {
-  static async forPage(
+  static async for(
     page: PDFPage,
     boundingBox?: BoundingBox,
     transformationMatrix?: TransformationMatrix,
