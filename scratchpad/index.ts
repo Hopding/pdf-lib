@@ -1,41 +1,35 @@
 import fs from 'fs';
-import fetch from 'node-fetch';
 import { openPdf, Reader } from './open';
 
-import { degrees } from 'src/api/rotations';
-import { PDFDocument } from 'src/index';
+import { PDFDocument, rgb } from 'src/index';
 
 (async () => {
+  // SVG path for a wavy line
+  const svgPath =
+    'M 0,20 L 100,160 Q 130,200 150,120 C 190,-40 200,200 300,150 L 400,90';
+
+  // Create a new PDFDocument
   const pdfDoc = await PDFDocument.create();
 
-  const sourcePdfUrl =
-    'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
-  const sourceBuffer = await fetch(sourcePdfUrl).then((res) =>
-    res.arrayBuffer(),
-  );
-  const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
-  const sourcePdfPage = sourcePdfDoc.getPages()[73];
-
-  const embeddedPage = await pdfDoc.embedPdfPage(
-    sourcePdfPage,
-    {
-      // clip the PDF page to a certain area within the page
-      left: 100,
-      right: 450,
-      bottom: 330,
-      top: 570,
-    },
-    [1, 0, 0, 1, 10, 200], // translate by (10,200) units
-  );
+  // Add a blank page to the document
   const page = pdfDoc.addPage();
+  page.moveTo(100, page.getHeight() - 5);
 
-  page.drawEmbeddedPdfPage(embeddedPage, {
-    x: 300,
-    y: 100,
-    xScale: 0.8,
-    yScale: 0.8,
-    rotate: degrees(30),
-  });
+  // Draw the SVG path as a black line
+  page.moveDown(25);
+  page.drawSvgPath(svgPath);
+
+  // Draw the SVG path as a thick green line
+  page.moveDown(200);
+  page.drawSvgPath(svgPath, { borderColor: rgb(0, 1, 0), borderWidth: 5 });
+
+  // Draw the SVG path and fill it with red
+  page.moveDown(200);
+  page.drawSvgPath(svgPath, { color: rgb(1, 0, 0) });
+
+  // Draw the SVG path at 50% of its original size
+  page.moveDown(200);
+  page.drawSvgPath(svgPath, { scale: 0.5 });
 
   const pdfBytes = await pdfDoc.save();
 
