@@ -65,6 +65,6 @@ export class PNG {
 
     this.width = upng.width;
     this.height = upng.height;
-    this.bitsPerComponent = upng.depth;
+    this.bitsPerComponent = 8;
   }
 }
