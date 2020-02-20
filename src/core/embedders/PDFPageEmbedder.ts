@@ -1,4 +1,5 @@
 import PDFPage from 'src/api/PDFPage';
+import PDFArray from 'src/core/objects/PDFArray';
 import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFStream from 'src/core/objects/PDFStream';
@@ -6,8 +7,8 @@ import PDFContext from 'src/core/PDFContext';
 import PDFObjectCopier from 'src/core/PDFObjectCopier';
 import { decodePDFRawStream } from 'src/core/streams/decode';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
+import CharCodes from 'src/core/syntax/CharCodes';
 import { mergeIntoTypedArray } from 'src/utils';
-import PDFArray from '../objects/PDFArray';
 
 /**
  * Represents a page bounding box.
@@ -77,12 +78,8 @@ class PDFPageEmbedder {
     transformationMatrix?: TransformationMatrix,
   ) {
     this.page = page;
-    this.boundingBox = boundingBox
-      ? boundingBox
-      : this.fullPageBoundingBox(page);
-    this.transformationMatrix = transformationMatrix
-      ? transformationMatrix
-      : identityMatrix;
+    this.boundingBox = boundingBox || this.fullPageBoundingBox(page);
+    this.transformationMatrix = transformationMatrix || identityMatrix;
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
@@ -114,9 +111,12 @@ class PDFPageEmbedder {
   // `contents` is an array of streams which are merged to include them in the XObject.
   // This methods extracts each stream and joins them with a newline character.
   private decodeContents(contents: PDFArray) {
-    const decodedContents: Uint8Array[] = new Array(contents.size());
+    const newline = Uint8Array.of(CharCodes.Newline);
+    const decodedContents: Uint8Array[] = [];
+
     for (let idx = 0, len = contents.size(); idx < len; idx++) {
       const stream = contents.lookup(idx, PDFStream);
+
       let content: Uint8Array;
       if (stream instanceof PDFRawStream) {
         content = decodePDFRawStream(stream).decode();
@@ -125,15 +125,8 @@ class PDFPageEmbedder {
       } else {
         throw new Error(`Unrecognized stream type: ${stream.constructor.name}`);
       }
-      if (idx === contents.size() - 1) {
-        // add a newline to properly separate streams in between two array elements
-        decodedContents[idx] = mergeIntoTypedArray(
-          content,
-          Uint8Array.from([0xd, 0xa]),
-        );
-      } else {
-        decodedContents[idx] = content;
-      }
+
+      decodedContents.push(content, newline);
     }
 
     return mergeIntoTypedArray(...decodedContents);
