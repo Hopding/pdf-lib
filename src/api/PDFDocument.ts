@@ -733,7 +733,7 @@ export default class PDFDocument {
   ): Promise<EmbeddedPDFPage> {
     assertIs(document, 'document', [[PDFDocument, 'PDFDocument']]);
     const page = document.getPages()[pageIndex || 0];
-    const embeddedPage = await this.embedPdfPage(page);
+    const embeddedPage = await this.embedPage(page);
     return embeddedPage;
   }
 
@@ -749,7 +749,7 @@ export default class PDFDocument {
    * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
    * const sourcePdfPage = sourcePdfDoc.getPages()[73];
    *
-   * const embeddedPage = await pdfDoc.embedPdfPage(
+   * const embeddedPage = await pdfDoc.embedPage(
    *   sourcePdfPage,
    *   { // clip the PDF page to a certain area within the page
    *     left: 100,
@@ -766,7 +766,7 @@ export default class PDFDocument {
    * @param transformationMatrix Optionally, a transformation matrix that is always applied to the embedded page
    * @returns Resolves with the embedded pdf page.
    */
-  async embedPdfPage(
+  async embedPage(
     page: PDFPage,
     boundingBox?: BoundingBox,
     transformationMatrix?: TransformationMatrix,

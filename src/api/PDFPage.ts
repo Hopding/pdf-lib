@@ -1,10 +1,11 @@
 import { Color, rgb } from 'src/api/colors';
+import EmbeddedPDFPage from 'src/api/EmbeddedPDFPage';
 import {
   drawEllipse,
-  drawEmbeddedPdfPage,
   drawImage,
   drawLine,
   drawLinesOfText,
+  drawPage,
   drawRectangle,
   drawSvgPath,
 } from 'src/api/operations';
@@ -19,9 +20,9 @@ import PDFImage from 'src/api/PDFImage';
 import {
   PDFPageDrawCircleOptions,
   PDFPageDrawEllipseOptions,
-  PDFPageDrawEmbeddedPdfPageOptions,
   PDFPageDrawImageOptions,
   PDFPageDrawLineOptions,
+  PDFPageDrawPageOptions,
   PDFPageDrawRectangleOptions,
   PDFPageDrawSquareOptions,
   PDFPageDrawSVGOptions,
@@ -47,7 +48,6 @@ import {
   breakTextIntoLines,
   cleanText,
 } from 'src/utils';
-import EmbeddedPDFPage from './EmbeddedPDFPage';
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -696,7 +696,7 @@ export default class PDFPage {
    * // embed page 74 from the PDF
    * const embeddedPage = await pdfDoc.embedPdfDocument(sourcePdfDoc,73);
    *
-   * page.drawEmbeddedPdfPage(embeddedPage, {
+   * page.drawPage(embeddedPage, {
    *   x: 250,
    *   y: 200,
    *   xScale: 0.5,
@@ -707,9 +707,9 @@ export default class PDFPage {
    * @param embeddedPdfPage The embeddedPDF page object to be drawn.
    * @param options The options to be used when drawing the pdf page.
    */
-  drawEmbeddedPdfPage(
+  drawPage(
     embeddedPdfPage: EmbeddedPDFPage,
-    options: PDFPageDrawEmbeddedPdfPageOptions = {},
+    options: PDFPageDrawPageOptions = {},
   ): void {
     // TODO: Reuse embeddedPdfPage XObject name if we've already added this embeddedPdfPage to Resources.XObjects
     assertIs(embeddedPdfPage, 'embeddedPdfPage', [
@@ -728,7 +728,7 @@ export default class PDFPage {
 
     const contentStream = this.getContentStream();
     contentStream.push(
-      ...drawEmbeddedPdfPage(xObjectKey, {
+      ...drawPage(xObjectKey, {
         x: options.x || this.x,
         y: options.y || this.y,
         xScale: options.xScale || 1,

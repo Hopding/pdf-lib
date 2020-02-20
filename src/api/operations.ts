@@ -108,7 +108,7 @@ export const drawImage = (
   popGraphicsState(),
 ];
 
-export const drawEmbeddedPdfPage = (
+export const drawPage = (
   name: string | PDFName,
   options: {
     x: number | PDFNumber;

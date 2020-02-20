@@ -10,7 +10,7 @@ export default class EmbeddedPDFPage implements Embeddable {
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
    * > consider using the [[PDFDocument.embedPdfDocument]] and
-   * > [[PDFDocument.embedPdfPage]] methods, which will create instances of
+   * > [[PDFDocument.embedPage]] methods, which will create instances of
    * > [[EmbeddedPDFPage]] for you.
    *
    * Create an instance of [[EmbeddedPDFPage]] from an existing ref and embedder

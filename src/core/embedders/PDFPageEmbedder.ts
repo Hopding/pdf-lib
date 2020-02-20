@@ -7,6 +7,7 @@ import PDFContext from 'src/core/PDFContext';
 import PDFObjectCopier from 'src/core/PDFObjectCopier';
 import { decodePDFRawStream } from 'src/core/streams/decode';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
+import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { mergeIntoTypedArray } from 'src/utils';
 
@@ -58,6 +59,20 @@ export type TransformationMatrix = [
 ];
 export const identityMatrix: TransformationMatrix = [1, 0, 0, 1, 0, 0];
 
+const embeddablePage = (
+  sourcePage: PDFPage,
+  targetContext: PDFContext,
+): PDFPageLeaf => {
+  if (sourcePage.doc.context === targetContext) {
+    // no need to change the page, as it already belongs to the targetContext and is embeddable
+    return sourcePage.node;
+  }
+
+  // this is a page from a foreign PDF context, we need to copy it into the targetContext before embedding
+  const copier = PDFObjectCopier.for(sourcePage.doc.context, targetContext);
+  return copier.copy(sourcePage.node);
+};
+
 class PDFPageEmbedder {
   static async for(
     page: PDFPage,
@@ -83,9 +98,8 @@ class PDFPageEmbedder {
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    const copier = PDFObjectCopier.for(this.page.doc.context, context);
-    const copiedPage = copier.copy(this.page.node);
-    const { Contents, Resources } = copiedPage.normalizedEntries();
+    const page = embeddablePage(this.page, context);
+    const { Contents, Resources } = page.normalizedEntries();
 
     if (!Contents) throw new Error('Missing page.Contents!');
     const decodedContents = this.decodeContents(Contents);

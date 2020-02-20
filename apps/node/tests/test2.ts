@@ -31,7 +31,7 @@ export default async (assets: Assets) => {
     height: 240,
     padding: 10,
   };
-  const embeddedPage = await pdfDoc.embedPdfPage(
+  const embeddedPage = await pdfDoc.embedPage(
     sourcePdfPage,
     {
       // clip the PDF page to a certain area within the page
@@ -89,7 +89,7 @@ export default async (assets: Assets) => {
       borderColor: solarizedGray,
       borderWidth: 2,
     });
-    page.drawEmbeddedPdfPage(embeddedPage, {
+    page.drawPage(embeddedPage, {
       x: embeddedPagePos.padding + 10,
       y: embeddedPagePos.padding + 10,
       xScale: 0.5,

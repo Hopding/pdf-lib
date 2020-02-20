@@ -26,7 +26,7 @@ export interface PDFPageDrawImageOptions {
   ySkew?: Rotation;
 }
 
-export interface PDFPageDrawEmbeddedPdfPageOptions {
+export interface PDFPageDrawPageOptions {
   x?: number;
   y?: number;
   xScale?: number;

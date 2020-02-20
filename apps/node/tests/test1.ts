@@ -329,8 +329,8 @@ export default async (assets: Assets) => {
 
   const page4 = pdfDoc.addPage([size, size]);
 
-  const embeddedPage3 = await pdfDoc.embedPdfPage(page3);
-  page4.drawEmbeddedPdfPage(embeddedPage3, {
+  const embeddedPage3 = await pdfDoc.embedPage(page3);
+  page4.drawPage(embeddedPage3, {
     x: 10,
     y: size - 10,
     xScale: 1.52,
@@ -340,7 +340,7 @@ export default async (assets: Assets) => {
 
   const otherPdfDocument = await PDFDocument.load(assets.pdfs.normal);
   const embeddedOtherPage = await pdfDoc.embedPdfDocument(otherPdfDocument);
-  page4.drawEmbeddedPdfPage(embeddedOtherPage, {
+  page4.drawPage(embeddedOtherPage, {
     x: 90,
     y: 10,
     xScale: 0.9,
