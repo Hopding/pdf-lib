@@ -9,22 +9,23 @@ import { assertIs } from 'src/utils';
 export default class EmbeddedPDFPage implements Embeddable {
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
-   * > consider using the [[PDFDocument.embedPng]] and [[PDFDocument.embedJpg]]
-   * > methods, which will create instances of [[PDFImage]] for you.
+   * > consider using the [[PDFDocument.embedPdfDocument]] and
+   * > [[PDFDocument.embedPdfPage]] methods, which will create instances of
+   * > [[EmbeddedPDFPage]] for you.
    *
-   * Create an instance of [[PDFImage]] from an existing ref and embedder
+   * Create an instance of [[EmbeddedPDFPage]] from an existing ref and embedder
    *
-   * @param ref The unique reference for this image.
-   * @param doc The document to which the image will belong.
-   * @param embedder The embedder that will be used to embed the image.
+   * @param ref The unique reference for this embedded page.
+   * @param doc The document to which the embedded page will belong.
+   * @param embedder The embedder that will be used to embed the page.
    */
   static of = (ref: PDFRef, doc: PDFDocument, embedder: PDFPageEmbedder) =>
     new EmbeddedPDFPage(ref, doc, embedder);
 
-  /** The unique reference assigned to this image within the document. */
+  /** The unique reference assigned to this embedded page within the document. */
   readonly ref: PDFRef;
 
-  /** The document to which this image belongs. */
+  /** The document to which this embedded page belongs. */
   readonly doc: PDFDocument;
 
   private alreadyEmbedded = false;
