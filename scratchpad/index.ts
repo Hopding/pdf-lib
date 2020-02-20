@@ -10,10 +10,10 @@ import { PDFDocument } from 'src/index';
     // fs.readFileSync('assets/images/small_mario.png'),
     // fs.readFileSync('assets/images/greyscale_bird.png'),
     // fs.readFileSync('/Users/user/Desktop/signature_export.png'),
-    fs.readFileSync('/Users/user/Desktop/signature.png'),
+    // fs.readFileSync('/Users/user/Desktop/signature.png'),
     // fs.readFileSync('/Users/user/Desktop/upng-test/suite/basi0g01.png'),
     // fs.readFileSync('/Users/user/Desktop/bw_export.png'),
-    // fs.readFileSync('/Users/user/Desktop/etwe.png'),
+    fs.readFileSync('/Users/user/Desktop/etwe.png'),
   );
   const dims = smallMario.scale(1);
 
