@@ -2,6 +2,7 @@ import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument, StandardFonts, last } from 'pdf-lib';
 
 import { fetchAsset, writePdf } from './assets';
+
 // JavaScript's String.charAt() method doesn work on strings containing UTF-16
 // characters (with high and low surrogate pairs), such as 💩 (poo emoji). This
 // `glyphAtIndex()` function does.

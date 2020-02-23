@@ -18,7 +18,7 @@ describe(`PngEmbedder`, () => {
 
     expect(context.enumerateIndirectObjects().length).toBe(0);
     const ref = await embedder.embedIntoContext(context, predefinedRef);
-    expect(context.enumerateIndirectObjects().length).toBe(2);
+    expect(context.enumerateIndirectObjects().length).toBe(1);
     expect(context.lookup(predefinedRef)).toBeInstanceOf(PDFRawStream);
     expect(ref).toBe(predefinedRef);
   });
@@ -29,7 +29,7 @@ describe(`PngEmbedder`, () => {
 
     expect(context.enumerateIndirectObjects().length).toBe(0);
     const ref = await embedder.embedIntoContext(context);
-    expect(context.enumerateIndirectObjects().length).toBe(2);
+    expect(context.enumerateIndirectObjects().length).toBe(1);
     expect(context.lookup(ref)).toBeInstanceOf(PDFRawStream);
   });
 
@@ -39,7 +39,7 @@ describe(`PngEmbedder`, () => {
 
     expect(context.enumerateIndirectObjects().length).toBe(0);
     const ref = await embedder.embedIntoContext(context);
-    expect(context.enumerateIndirectObjects().length).toBe(3);
+    expect(context.enumerateIndirectObjects().length).toBe(2);
     expect(context.lookup(ref)).toBeInstanceOf(PDFRawStream);
   });
 
@@ -68,7 +68,7 @@ describe(`PngEmbedder`, () => {
     expect(embedder.bitsPerComponent).toBe(8);
     expect(embedder.height).toBe(640);
     expect(embedder.width).toBe(960);
-    expect(embedder.colorSpace).toBe('DeviceGray');
+    expect(embedder.colorSpace).toBe('DeviceRGB');
   });
 
   it(`can extract properties of RGB PNG images`, async () => {
