@@ -24,7 +24,7 @@ export default async (assets: Assets) => {
   );
   const sourcePdfPage = sourcePdfDoc.getPages()[73];
 
-  const embeddedPagePos = {
+  const embeddedPageFigure = {
     xOffset: 100,
     yOffset: 330,
     width: 350,
@@ -35,14 +35,15 @@ export default async (assets: Assets) => {
     sourcePdfPage,
     {
       // clip the PDF page to a certain area within the page
-      left: embeddedPagePos.xOffset,
-      right: embeddedPagePos.xOffset + embeddedPagePos.width,
-      bottom: embeddedPagePos.yOffset,
-      top: embeddedPagePos.yOffset + embeddedPagePos.height,
+      left: embeddedPageFigure.xOffset,
+      right: embeddedPageFigure.xOffset + embeddedPageFigure.width,
+      bottom: embeddedPageFigure.yOffset,
+      top: embeddedPageFigure.yOffset + embeddedPageFigure.height,
     },
     // move the clipped part to (0,0) of the embeddedPage for easier inserting
-    [1, 0, 0, 1, -embeddedPagePos.xOffset, -embeddedPagePos.yOffset],
+    [1, 0, 0, 1, -embeddedPageFigure.xOffset, -embeddedPageFigure.yOffset],
   );
+  const embeddedPageDims = embeddedPage.scale(0.5);
 
   const lines = [
     'This is an image of Mario running.',
@@ -83,17 +84,16 @@ export default async (assets: Assets) => {
     page.drawRectangle({
       x: 10,
       y: 10,
-      width: embeddedPagePos.width / 2 + embeddedPagePos.padding * 2,
-      height: embeddedPagePos.height / 2 + embeddedPagePos.padding * 2,
+      width: embeddedPageFigure.width / 2 + embeddedPageFigure.padding * 2,
+      height: embeddedPageFigure.height / 2 + embeddedPageFigure.padding * 2,
       color: solarizedWhite,
       borderColor: solarizedGray,
       borderWidth: 2,
     });
     page.drawPage(embeddedPage, {
-      x: embeddedPagePos.padding + 10,
-      y: embeddedPagePos.padding + 10,
-      xScale: 0.5,
-      yScale: 0.5,
+      x: embeddedPageFigure.padding + 10,
+      y: embeddedPageFigure.padding + 10,
+      ...embeddedPageDims,
     });
   });
 

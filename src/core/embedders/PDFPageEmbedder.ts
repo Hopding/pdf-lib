@@ -96,6 +96,16 @@ class PDFPageEmbedder {
     this.transformationMatrix = transformationMatrix || identityMatrix;
   }
 
+  width(): number {
+    const { left, right } = this.boundingBox;
+    return right - left;
+  }
+
+  height(): number {
+    const { top, bottom } = this.boundingBox;
+    return top - bottom;
+  }
+
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
     const page = embeddablePage(this.page, context, this.copier);
     const { Contents, Resources } = page.normalizedEntries();

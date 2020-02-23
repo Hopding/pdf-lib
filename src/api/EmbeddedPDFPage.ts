@@ -28,6 +28,12 @@ export default class EmbeddedPDFPage implements Embeddable {
   /** The document to which this embedded page belongs. */
   readonly doc: PDFDocument;
 
+  /** The width of this page in pixels. */
+  readonly width: number;
+
+  /** The height of this page in pixels. */
+  readonly height: number;
+
   private alreadyEmbedded = false;
   private readonly embedder: PDFPageEmbedder;
 
@@ -42,7 +48,42 @@ export default class EmbeddedPDFPage implements Embeddable {
 
     this.ref = ref;
     this.doc = doc;
+    this.width = embedder.width();
+    this.height = embedder.height();
+
     this.embedder = embedder;
+  }
+
+  /**
+   * Compute the width and height of this page after being scaled by the
+   * given `factor`. For example:
+   * ```js
+   * embeddedPage.width  // => 500
+   * embeddedPage.height // => 250
+   *
+   * const scaled = embeddedPage.scale(0.5)
+   * scaled.width  // => 250
+   * scaled.height // => 125
+   * ```
+   * This operation is often useful before drawing a page with
+   * [[PDFPage.drawPage]] to compute the `width` and `height` options.
+   * @param factor The factor by which this page should be scaled.
+   * @returns The width and height of the page after being scaled.
+   */
+  scale(factor: number) {
+    assertIs(factor, 'factor', ['number']);
+    return { width: this.width * factor, height: this.height * factor };
+  }
+
+  /**
+   * Get the width and height of this page. For example:
+   * ```js
+   * const { width, height } = embeddedPage.size()
+   * ```
+   * @returns The width and height of the page.
+   */
+  size() {
+    return this.scale(1);
   }
 
   /**

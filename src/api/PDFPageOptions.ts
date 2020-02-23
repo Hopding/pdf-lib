@@ -31,6 +31,8 @@ export interface PDFPageDrawPageOptions {
   y?: number;
   xScale?: number;
   yScale?: number;
+  width?: number;
+  height?: number;
   rotate?: Rotation;
   xSkew?: Rotation;
   ySkew?: Rotation;

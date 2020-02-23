@@ -704,35 +704,48 @@ export default class PDFPage {
    *   rotate: degrees(30)
    * });
    * ```
+   *
+   * `options` accept `width`/`height` and `xScale`/`yScale` keys which all
+   * define the size of the drawn page. If both options are given, `width` or `height`
+   * take precedence and the scale variants are ignored.
    * @param embeddedPdfPage The embeddedPDF page object to be drawn.
    * @param options The options to be used when drawing the pdf page.
    */
   drawPage(
-    embeddedPdfPage: EmbeddedPDFPage,
+    embeddedPage: EmbeddedPDFPage,
     options: PDFPageDrawPageOptions = {},
   ): void {
-    // TODO: Reuse embeddedPdfPage XObject name if we've already added this embeddedPdfPage to Resources.XObjects
-    assertIs(embeddedPdfPage, 'embeddedPdfPage', [
+    // TODO: Reuse embeddedPage XObject name if we've already added this embeddedPage to Resources.XObjects
+    assertIs(embeddedPage, 'embeddedPage', [
       [EmbeddedPDFPage, 'EmbeddedPDFPage'],
     ]);
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.xScale, 'options.xScale', ['number']);
     assertOrUndefined(options.yScale, 'options.yScale', ['number']);
+    assertOrUndefined(options.xScale, 'options.width', ['number']);
+    assertOrUndefined(options.yScale, 'options.height', ['number']);
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
 
     const xObjectKey = addRandomSuffix('EmbeddedPdfPage', 10);
-    this.node.setXObject(PDFName.of(xObjectKey), embeddedPdfPage.ref);
+    this.node.setXObject(PDFName.of(xObjectKey), embeddedPage.ref);
+
+    const xScale = options.width
+      ? options.width / embeddedPage.width
+      : options.xScale || 1;
+    const yScale = options.height
+      ? options.height / embeddedPage.height
+      : options.yScale || 1;
 
     const contentStream = this.getContentStream();
     contentStream.push(
       ...drawPage(xObjectKey, {
         x: options.x || this.x,
         y: options.y || this.y,
-        xScale: options.xScale || 1,
-        yScale: options.yScale || 1,
+        xScale,
+        yScale,
         rotate: options.rotate || degrees(0),
         xSkew: options.xSkew || degrees(0),
         ySkew: options.ySkew || degrees(0),

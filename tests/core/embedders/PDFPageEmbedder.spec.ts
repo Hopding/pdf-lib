@@ -49,5 +49,25 @@ describe(`PDFPageEmbedder`, () => {
       top: page.getSize().height,
     });
     expect(embedder.transformationMatrix).toEqual([1, 0, 0, 1, 0, 0]);
+    expect(embedder.width()).toEqual(page.getWidth());
+    expect(embedder.height()).toEqual(page.getHeight());
+  });
+
+  it(`calculates dimensions depending on the bounding box when given one`, async () => {
+    const page = await examplePage();
+    const boundingBox = {
+      left: 100,
+      bottom: 100,
+      right: 222,
+      top: 333,
+    };
+    const embedder = await PDFPageEmbedder.for(
+      page,
+      copier(page.doc),
+      boundingBox,
+    );
+
+    expect(embedder.width()).toEqual(122);
+    expect(embedder.height()).toEqual(233);
   });
 });
