@@ -716,25 +716,38 @@ export default class PDFDocument {
    * const pdfDoc = await PDFDocument.create();
    *
    * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
-   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
-   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
+   * const sourcePdf = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
    *
    * // embed page 74 into pdfDoc
-   * const embeddedPage = await pdfDoc.embedPdfDocument(sourcePdfDoc,73);
+   * const [ embeddedPage ] = await pdfDoc.embedPdfDocument(sourcePdf, [ 73 ]);
    * ```
    *
-   * @param document The source PDF document that contains the page to be embedded
-   * @param pageIndex Optionally, the page index (starting at 0 for the first page) of the page to embed. Defaults to 0 (the first page).
-   * @returns Resolves with the embedded pdf page.
+   * @param pdf The input data containing a PDF document.
+   * @param indices The indices of the pages that should be embedded.
+   * @returns Resolves with an array of the embedded pages.
    */
   async embedPdfDocument(
-    document: PDFDocument,
-    pageIndex?: number,
-  ): Promise<EmbeddedPDFPage> {
-    assertIs(document, 'document', [[PDFDocument, 'PDFDocument']]);
-    const page = document.getPages()[pageIndex || 0];
-    const embeddedPage = await this.embedPage(page);
-    return embeddedPage;
+    pdf: string | Uint8Array | ArrayBuffer,
+    indices: number[],
+  ): Promise<EmbeddedPDFPage[]> {
+    assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
+    assertIs(indices, 'indices', [Array]);
+
+    const srcDoc = await PDFDocument.load(pdf);
+    const copier = PDFObjectCopier.for(srcDoc.context, this.context);
+    const srcPages = srcDoc.getPages();
+    const embeddedPages: EmbeddedPDFPage[] = new Array(indices.length);
+
+    for (let idx = 0, len = indices.length; idx < len; idx++) {
+      const srcPage = srcPages[indices[idx]];
+      embeddedPages[idx] = await this.embedPage(
+        srcPage,
+        undefined,
+        undefined,
+        copier,
+      );
+    }
+    return embeddedPages;
   }
 
   /**
@@ -764,16 +777,19 @@ export default class PDFDocument {
    * @param page The source PDF page to be embedded
    * @param boundingBox Optionally, area of the source page that should be embedded
    * @param transformationMatrix Optionally, a transformation matrix that is always applied to the embedded page
+   * @param copier Optionally, a PDF object copier instance. When embedding multiple pages from the same doc, using the same copier produces smaller PDFs. If none is given, a new copier is used.
    * @returns Resolves with the embedded pdf page.
    */
   async embedPage(
     page: PDFPage,
     boundingBox?: BoundingBox,
     transformationMatrix?: TransformationMatrix,
+    copier?: PDFObjectCopier,
   ): Promise<EmbeddedPDFPage> {
     assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
     const embedder = await PDFPageEmbedder.for(
       page,
+      copier || PDFObjectCopier.for(page.doc.context, this.context),
       boundingBox,
       transformationMatrix,
     );

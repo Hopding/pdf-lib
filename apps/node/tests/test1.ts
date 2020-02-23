@@ -325,7 +325,7 @@ export default async (assets: Assets) => {
 
   // This page tests embedding other PDF pages. First we embed page 3 of this document
   // but rotate and scale it.
-  // Then we take an external PDF document and embed a page of it.
+  // Then we take an external PDF document and embed two pages of it next to each other.
 
   const page4 = pdfDoc.addPage([size, size]);
 
@@ -338,13 +338,21 @@ export default async (assets: Assets) => {
     rotate: degrees(-90),
   });
 
-  const otherPdfDocument = await PDFDocument.load(assets.pdfs.normal);
-  const embeddedOtherPage = await pdfDoc.embedPdfDocument(otherPdfDocument);
-  page4.drawPage(embeddedOtherPage, {
-    x: 90,
-    y: 10,
-    xScale: 0.9,
-    yScale: 0.9,
+  const [embeddedPage1, embeddedPage2] = await pdfDoc.embedPdfDocument(
+    assets.pdfs.normal,
+    [0, 1],
+  );
+  page4.drawPage(embeddedPage1, {
+    x: 40,
+    y: 100,
+    xScale: 0.5,
+    yScale: 0.5,
+  });
+  page4.drawPage(embeddedPage2, {
+    x: 400,
+    y: 100,
+    xScale: 0.5,
+    yScale: 0.5,
   });
 
   /********************** Export PDF **********************/
