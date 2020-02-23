@@ -347,7 +347,7 @@ class PDFParser extends PDFObjectParser {
       this.parseIndirectObjectHeader();
       this.bytes.moveTo(initialOffset);
     } catch (e) {
-      this.skipLine();
+      this.bytes.next();
       this.skipWhitespaceAndComments();
     }
   }
