@@ -13,7 +13,11 @@
     "Georges Gabereau (https://github.com/multiplegeorges)",
     "Gerard Smit (https://github.com/GerardSmit)",
     "jlmessenger (https://github.com/jlmessenger)",
-    "thebenlamm (https://github.com/thebenlamm)"
+    "thebenlamm (https://github.com/thebenlamm)",
+    "cshenks (https://github.com/cshenks)",
+    "James Woodrow (https://github.com/jwoodrow)",
+    "Guillaume Grossetie (https://github.com/Mogztter)",
+    "Philipp Tessenow (https://github.com/tessi)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
