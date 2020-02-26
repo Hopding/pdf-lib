@@ -26,6 +26,18 @@ export interface PDFPageDrawImageOptions {
   ySkew?: Rotation;
 }
 
+export interface PDFPageDrawPageOptions {
+  x?: number;
+  y?: number;
+  xScale?: number;
+  yScale?: number;
+  width?: number;
+  height?: number;
+  rotate?: Rotation;
+  xSkew?: Rotation;
+  ySkew?: Rotation;
+}
+
 export interface PDFPageDrawRectangleOptions {
   x?: number;
   y?: number;
