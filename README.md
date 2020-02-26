@@ -59,6 +59,7 @@
 - [Encryption Handling](#encryption-handling)
 - [Migrating to v1.0.0](#migrating-to-v1)
 - [Contributing](#contributing)
+- [Tutorials and Cool Stuff](#tutorials-and-cool-stuff)
 - [Prior Art](#prior-art)
 - [License](#license)
 
@@ -738,6 +739,11 @@ Note that many of the API methods are now asynchronous and return promises, so y
 ## Contributing
 
 We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine. (We try to make this as simple and fast as possible! :rocket:)
+
+## Tutorials and Cool Stuff
+
+* [Möbius Printing helper](https://shreevatsa.net/mobius-print/) - a tool created by @shreevatsa
+* [How to use pdf-lib in AWS Lambdas](https://medium.com/swlh/create-pdf-using-pdf-lib-on-serverless-aws-lambda-e9506246dc88) - a tutorial written by Crespo Wang
 
 ## Prior Art
 
