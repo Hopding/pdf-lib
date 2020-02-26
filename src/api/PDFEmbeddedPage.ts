@@ -6,21 +6,21 @@ import { assertIs } from 'src/utils';
 /**
  * Represents a PDF page that has been embedded in a [[PDFDocument]].
  */
-export default class EmbeddedPDFPage implements Embeddable {
+export default class PDFEmbeddedPage implements Embeddable {
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
-   * > consider using the [[PDFDocument.embedPdfDocument]] and
+   * > consider using the [[PDFDocument.embedPdf]] and
    * > [[PDFDocument.embedPage]] methods, which will create instances of
-   * > [[EmbeddedPDFPage]] for you.
+   * > [[PDFEmbeddedPage]] for you.
    *
-   * Create an instance of [[EmbeddedPDFPage]] from an existing ref and embedder
+   * Create an instance of [[PDFEmbeddedPage]] from an existing ref and embedder
    *
    * @param ref The unique reference for this embedded page.
    * @param doc The document to which the embedded page will belong.
    * @param embedder The embedder that will be used to embed the page.
    */
   static of = (ref: PDFRef, doc: PDFDocument, embedder: PDFPageEmbedder) =>
-    new EmbeddedPDFPage(ref, doc, embedder);
+    new PDFEmbeddedPage(ref, doc, embedder);
 
   /** The unique reference assigned to this embedded page within the document. */
   readonly ref: PDFRef;
@@ -48,8 +48,8 @@ export default class EmbeddedPDFPage implements Embeddable {
 
     this.ref = ref;
     this.doc = doc;
-    this.width = embedder.width();
-    this.height = embedder.height();
+    this.width = embedder.width;
+    this.height = embedder.height;
 
     this.embedder = embedder;
   }

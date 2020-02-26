@@ -338,7 +338,7 @@ export default async (assets: Assets) => {
     rotate: degrees(-90),
   });
 
-  const [embeddedPage1, embeddedPage2] = await pdfDoc.embedPdfDocument(
+  const [embeddedPage1, embeddedPage2] = await pdfDoc.embedPdf(
     assets.pdfs.normal,
     [0, 1],
   );
