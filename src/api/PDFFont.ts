@@ -1,3 +1,4 @@
+import Embeddable from 'src/api//Embeddable';
 import PDFDocument from 'src/api/PDFDocument';
 import {
   CustomFontEmbedder,
@@ -12,7 +13,7 @@ export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
 /**
  * Represents a font that has been embedded in a [[PDFDocument]].
  */
-export default class PDFFont {
+export default class PDFFont implements Embeddable {
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
    * > consider using the [[PDFDocument.embedFont]] and

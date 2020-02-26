@@ -1,9 +1,11 @@
 import { Color, rgb } from 'src/api/colors';
+import EmbeddedPDFPage from 'src/api/EmbeddedPDFPage';
 import {
   drawEllipse,
   drawImage,
   drawLine,
   drawLinesOfText,
+  drawPage,
   drawRectangle,
   drawSvgPath,
 } from 'src/api/operations';
@@ -20,6 +22,7 @@ import {
   PDFPageDrawEllipseOptions,
   PDFPageDrawImageOptions,
   PDFPageDrawLineOptions,
+  PDFPageDrawPageOptions,
   PDFPageDrawRectangleOptions,
   PDFPageDrawSquareOptions,
   PDFPageDrawSVGOptions,
@@ -671,6 +674,78 @@ export default class PDFPage {
         y: options.y || this.y,
         width: options.width || image.size().width,
         height: options.height || image.size().height,
+        rotate: options.rotate || degrees(0),
+        xSkew: options.xSkew || degrees(0),
+        ySkew: options.ySkew || degrees(0),
+      }),
+    );
+  }
+
+  /**
+   * Draw an embedded PDF page on this page. For example:
+   * ```js
+   * import { degrees } from 'pdf-lib'
+   *
+   * const pdfDoc = await PDFDocument.create();
+   * const page = pdfDoc.addPage();
+   *
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
+   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
+   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
+   *
+   * // embed page 74 from the PDF
+   * const embeddedPage = await pdfDoc.embedPdfDocument(sourcePdfDoc,73);
+   *
+   * page.drawPage(embeddedPage, {
+   *   x: 250,
+   *   y: 200,
+   *   xScale: 0.5,
+   *   yScale: 0.5,
+   *   rotate: degrees(30)
+   * });
+   * ```
+   *
+   * `options` accept `width`/`height` and `xScale`/`yScale` keys which all
+   * define the size of the drawn page. If both options are given, `width` or `height`
+   * take precedence and the scale variants are ignored.
+   * @param embeddedPdfPage The embeddedPDF page object to be drawn.
+   * @param options The options to be used when drawing the pdf page.
+   */
+  drawPage(
+    embeddedPage: EmbeddedPDFPage,
+    options: PDFPageDrawPageOptions = {},
+  ): void {
+    // TODO: Reuse embeddedPage XObject name if we've already added this embeddedPage to Resources.XObjects
+    assertIs(embeddedPage, 'embeddedPage', [
+      [EmbeddedPDFPage, 'EmbeddedPDFPage'],
+    ]);
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.xScale, 'options.xScale', ['number']);
+    assertOrUndefined(options.yScale, 'options.yScale', ['number']);
+    assertOrUndefined(options.xScale, 'options.width', ['number']);
+    assertOrUndefined(options.yScale, 'options.height', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
+    assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+
+    const xObjectKey = addRandomSuffix('EmbeddedPdfPage', 10);
+    this.node.setXObject(PDFName.of(xObjectKey), embeddedPage.ref);
+
+    const xScale = options.width
+      ? options.width / embeddedPage.width
+      : options.xScale || 1;
+    const yScale = options.height
+      ? options.height / embeddedPage.height
+      : options.yScale || 1;
+
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawPage(xObjectKey, {
+        x: options.x || this.x,
+        y: options.y || this.y,
+        xScale,
+        yScale,
         rotate: options.rotate || degrees(0),
         xSkew: options.xSkew || degrees(0),
         ySkew: options.ySkew || degrees(0),

@@ -1,3 +1,5 @@
+import Embeddable from 'src/api/Embeddable';
+import EmbeddedPDFPage from 'src/api/EmbeddedPDFPage';
 import {
   EncryptedPDFError,
   FontkitNotRegisteredError,
@@ -10,6 +12,7 @@ import PDFPage from 'src/api/PDFPage';
 import { PageSizes } from 'src/api/sizes';
 import { StandardFonts } from 'src/api/StandardFonts';
 import {
+  BoundingBox,
   CustomFontEmbedder,
   CustomFontSubsetEmbedder,
   JpegEmbedder,
@@ -19,6 +22,7 @@ import {
   PDFHexString,
   PDFName,
   PDFObjectCopier,
+  PDFPageEmbedder,
   PDFPageLeaf,
   PDFPageTree,
   PDFParser,
@@ -27,6 +31,7 @@ import {
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
+  TransformationMatrix,
 } from 'src/core';
 import { Fontkit } from 'src/types/fontkit';
 import {
@@ -178,6 +183,7 @@ export default class PDFDocument {
   private readonly pageMap: Map<PDFPageLeaf, PDFPage>;
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
+  private readonly embeddedPages: EmbeddedPDFPage[];
 
   private constructor(context: PDFContext, ignoreEncryption: boolean) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
@@ -191,6 +197,7 @@ export default class PDFDocument {
     this.pageMap = new Map();
     this.fonts = [];
     this.images = [];
+    this.embeddedPages = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
@@ -702,26 +709,109 @@ export default class PDFDocument {
   }
 
   /**
+   * Embed a PDF page into this document.
+   *
+   * For example:
+   * ```js
+   * const pdfDoc = await PDFDocument.create();
+   *
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
+   * const sourcePdf = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
+   *
+   * // embed page 74 into pdfDoc
+   * const [ embeddedPage ] = await pdfDoc.embedPdfDocument(sourcePdf, [ 73 ]);
+   * ```
+   *
+   * @param pdf The input data containing a PDF document.
+   * @param indices The indices of the pages that should be embedded.
+   * @returns Resolves with an array of the embedded pages.
+   */
+  async embedPdfDocument(
+    pdf: string | Uint8Array | ArrayBuffer,
+    indices: number[],
+  ): Promise<EmbeddedPDFPage[]> {
+    assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
+    assertIs(indices, 'indices', [Array]);
+
+    const srcDoc = await PDFDocument.load(pdf);
+    const copier = PDFObjectCopier.for(srcDoc.context, this.context);
+    const srcPages = srcDoc.getPages();
+    const embeddedPages: EmbeddedPDFPage[] = new Array(indices.length);
+
+    for (let idx = 0, len = indices.length; idx < len; idx++) {
+      const srcPage = srcPages[indices[idx]];
+      embeddedPages[idx] = await this.embedPage(
+        srcPage,
+        undefined,
+        undefined,
+        copier,
+      );
+    }
+    return embeddedPages;
+  }
+
+  /**
+   * Embed a PDF page into this document.
+   *
+   * For example:
+   * ```js
+   * const pdfDoc = await PDFDocument.create();
+   *
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
+   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
+   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
+   * const sourcePdfPage = sourcePdfDoc.getPages()[73];
+   *
+   * const embeddedPage = await pdfDoc.embedPage(
+   *   sourcePdfPage,
+   *   { // clip the PDF page to a certain area within the page
+   *     left: 100,
+   *     right: 450,
+   *     bottom: 330,
+   *     top: 570
+   *   },
+   *   [1, 0, 0, 1, 10, 200] // translate by (10,200) units
+   * );
+   * ```
+   *
+   * @param page The source PDF page to be embedded
+   * @param boundingBox Optionally, area of the source page that should be embedded
+   * @param transformationMatrix Optionally, a transformation matrix that is always applied to the embedded page
+   * @param copier Optionally, a PDF object copier instance. When embedding multiple pages from the same doc, using the same copier produces smaller PDFs. If none is given, a new copier is used.
+   * @returns Resolves with the embedded pdf page.
+   */
+  async embedPage(
+    page: PDFPage,
+    boundingBox?: BoundingBox,
+    transformationMatrix?: TransformationMatrix,
+    copier?: PDFObjectCopier,
+  ): Promise<EmbeddedPDFPage> {
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    const embedder = await PDFPageEmbedder.for(
+      page,
+      copier || PDFObjectCopier.for(page.doc.context, this.context),
+      boundingBox,
+      transformationMatrix,
+    );
+    const ref = this.context.nextRef();
+    const embeddedPage = EmbeddedPDFPage.of(ref, this, embedder);
+    this.embeddedPages.push(embeddedPage);
+    return embeddedPage;
+  }
+
+  /**
    * > **NOTE:** You shouldn't need to call this method directly. The [[save]]
    * > and [[saveAsBase64]] methods will automatically ensure that all embedded
    * > assets are flushed before serializing the document.
    *
-   * Flush all embedded fonts and images to this document's [[context]].
+   * Flush all embedded fonts, PDF pages, and images to this document's [[context]].
    *
    * @returns Resolves when the flush is complete.
    */
   async flush(): Promise<void> {
-    // Embed fonts
-    for (let idx = 0, len = this.fonts.length; idx < len; idx++) {
-      const font = this.fonts[idx];
-      await font.embed();
-    }
-
-    // Embed images
-    for (let idx = 0, len = this.images.length; idx < len; idx++) {
-      const image = this.images[idx];
-      await image.embed();
-    }
+    await this.embedAll(this.fonts);
+    await this.embedAll(this.images);
+    await this.embedAll(this.embeddedPages);
   }
 
   /**
@@ -779,6 +869,12 @@ export default class PDFDocument {
     const bytes = await this.save(otherOptions);
     const base64 = encodeToBase64(bytes);
     return dataUri ? `data:application/pdf;base64,${base64}` : base64;
+  }
+
+  private async embedAll(embeddables: Embeddable[]): Promise<void> {
+    for (let idx = 0, len = embeddables.length; idx < len; idx++) {
+      await embeddables[idx].embed();
+    }
   }
 
   private updateInfoDict(): void {
