@@ -49,8 +49,8 @@ describe(`PDFPageEmbedder`, () => {
       top: page.getSize().height,
     });
     expect(embedder.transformationMatrix).toEqual([1, 0, 0, 1, 0, 0]);
-    expect(embedder.width()).toEqual(page.getWidth());
-    expect(embedder.height()).toEqual(page.getHeight());
+    expect(embedder.width).toEqual(page.getWidth());
+    expect(embedder.height).toEqual(page.getHeight());
   });
 
   it(`calculates dimensions depending on the bounding box when given one`, async () => {
@@ -67,7 +67,7 @@ describe(`PDFPageEmbedder`, () => {
       boundingBox,
     );
 
-    expect(embedder.width()).toEqual(122);
-    expect(embedder.height()).toEqual(233);
+    expect(embedder.width).toEqual(122);
+    expect(embedder.height).toEqual(233);
   });
 });

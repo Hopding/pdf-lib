@@ -1,11 +1,11 @@
 import Embeddable from 'src/api/Embeddable';
-import EmbeddedPDFPage from 'src/api/EmbeddedPDFPage';
 import {
   EncryptedPDFError,
   FontkitNotRegisteredError,
   ForeignPageError,
   RemovePageFromEmptyDocumentError,
 } from 'src/api/errors';
+import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
@@ -31,9 +31,9 @@ import {
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
-  TransformationMatrix,
 } from 'src/core';
 import { Fontkit } from 'src/types/fontkit';
+import { TransformationMatrix } from 'src/types/matrix';
 import {
   assertIs,
   assertRange,
@@ -183,7 +183,7 @@ export default class PDFDocument {
   private readonly pageMap: Map<PDFPageLeaf, PDFPage>;
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
-  private readonly embeddedPages: EmbeddedPDFPage[];
+  private readonly embeddedPages: PDFEmbeddedPage[];
 
   private constructor(context: PDFContext, ignoreEncryption: boolean) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
@@ -719,24 +719,31 @@ export default class PDFDocument {
    * const sourcePdf = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
    *
    * // embed page 74 into pdfDoc
-   * const [ embeddedPage ] = await pdfDoc.embedPdfDocument(sourcePdf, [ 73 ]);
+   * const [embeddedPage] = await pdfDoc.embedPdf(sourcePdf, [73]);
    * ```
    *
    * @param pdf The input data containing a PDF document.
    * @param indices The indices of the pages that should be embedded.
    * @returns Resolves with an array of the embedded pages.
    */
-  async embedPdfDocument(
-    pdf: string | Uint8Array | ArrayBuffer,
+  async embedPdf(
+    pdf: string | Uint8Array | ArrayBuffer | PDFDocument,
     indices: number[],
-  ): Promise<EmbeddedPDFPage[]> {
-    assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
+  ): Promise<PDFEmbeddedPage[]> {
+    assertIs(pdf, 'pdf', [
+      'string',
+      Uint8Array,
+      ArrayBuffer,
+      [PDFDocument, 'PDFDocument'],
+    ]);
     assertIs(indices, 'indices', [Array]);
 
-    const srcDoc = await PDFDocument.load(pdf);
+    const srcDoc =
+      pdf instanceof PDFDocument ? pdf : await PDFDocument.load(pdf);
+
     const copier = PDFObjectCopier.for(srcDoc.context, this.context);
     const srcPages = srcDoc.getPages();
-    const embeddedPages: EmbeddedPDFPage[] = new Array(indices.length);
+    const embeddedPages: PDFEmbeddedPage[] = new Array(indices.length);
 
     for (let idx = 0, len = indices.length; idx < len; idx++) {
       const srcPage = srcPages[indices[idx]];
@@ -747,6 +754,7 @@ export default class PDFDocument {
         copier,
       );
     }
+
     return embeddedPages;
   }
 
@@ -785,7 +793,7 @@ export default class PDFDocument {
     boundingBox?: BoundingBox,
     transformationMatrix?: TransformationMatrix,
     copier?: PDFObjectCopier,
-  ): Promise<EmbeddedPDFPage> {
+  ): Promise<PDFEmbeddedPage> {
     assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
     const embedder = await PDFPageEmbedder.for(
       page,
@@ -794,7 +802,7 @@ export default class PDFDocument {
       transformationMatrix,
     );
     const ref = this.context.nextRef();
-    const embeddedPage = EmbeddedPDFPage.of(ref, this, embedder);
+    const embeddedPage = PDFEmbeddedPage.of(ref, this, embedder);
     this.embeddedPages.push(embeddedPage);
     return embeddedPage;
   }

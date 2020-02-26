@@ -18,8 +18,7 @@ export { default as JpegEmbedder } from 'src/core/embedders/JpegEmbedder';
 export { default as PngEmbedder } from 'src/core/embedders/PngEmbedder';
 export {
   default as PDFPageEmbedder,
-  TransformationMatrix,
-  BoundingBox,
+  PageBoundingBox as BoundingBox,
 } from 'src/core/embedders/PDFPageEmbedder';
 
 export { default as PDFObject } from 'src/core/objects/PDFObject';

@@ -1,5 +1,4 @@
 import { Color, rgb } from 'src/api/colors';
-import EmbeddedPDFPage from 'src/api/EmbeddedPDFPage';
 import {
   drawEllipse,
   drawImage,
@@ -15,6 +14,7 @@ import {
   translate,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
+import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import {
@@ -614,15 +614,15 @@ export default class PDFPage {
     const contentStream = this.getContentStream();
     contentStream.push(
       ...drawLinesOfText(encodedLines, {
-        color: options.color || this.fontColor,
+        color: options.color ?? this.fontColor,
         font: fontKey,
         size: fontSize,
-        rotate: options.rotate || degrees(0),
-        xSkew: options.xSkew || degrees(0),
-        ySkew: options.ySkew || degrees(0),
-        x: options.x || this.x,
-        y: options.y || this.y,
-        lineHeight: options.lineHeight || this.lineHeight,
+        rotate: options.rotate ?? degrees(0),
+        xSkew: options.xSkew ?? degrees(0),
+        ySkew: options.ySkew ?? degrees(0),
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
+        lineHeight: options.lineHeight ?? this.lineHeight,
       }),
     );
 
@@ -670,13 +670,13 @@ export default class PDFPage {
     const contentStream = this.getContentStream();
     contentStream.push(
       ...drawImage(xObjectKey, {
-        x: options.x || this.x,
-        y: options.y || this.y,
-        width: options.width || image.size().width,
-        height: options.height || image.size().height,
-        rotate: options.rotate || degrees(0),
-        xSkew: options.xSkew || degrees(0),
-        ySkew: options.ySkew || degrees(0),
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
+        width: options.width ?? image.size().width,
+        height: options.height ?? image.size().height,
+        rotate: options.rotate ?? degrees(0),
+        xSkew: options.xSkew ?? degrees(0),
+        ySkew: options.ySkew ?? degrees(0),
       }),
     );
   }
@@ -694,14 +694,14 @@ export default class PDFPage {
    * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
    *
    * // embed page 74 from the PDF
-   * const embeddedPage = await pdfDoc.embedPdfDocument(sourcePdfDoc,73);
+   * const [embeddedPage] = await pdfDoc.embedPdf(sourcePdfDoc, 73);
    *
    * page.drawPage(embeddedPage, {
    *   x: 250,
    *   y: 200,
    *   xScale: 0.5,
    *   yScale: 0.5,
-   *   rotate: degrees(30)
+   *   rotate: degrees(30),
    * });
    * ```
    *
@@ -712,19 +712,19 @@ export default class PDFPage {
    * @param options The options to be used when drawing the pdf page.
    */
   drawPage(
-    embeddedPage: EmbeddedPDFPage,
+    embeddedPage: PDFEmbeddedPage,
     options: PDFPageDrawPageOptions = {},
   ): void {
     // TODO: Reuse embeddedPage XObject name if we've already added this embeddedPage to Resources.XObjects
     assertIs(embeddedPage, 'embeddedPage', [
-      [EmbeddedPDFPage, 'EmbeddedPDFPage'],
+      [PDFEmbeddedPage, 'PDFEmbeddedPage'],
     ]);
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.xScale, 'options.xScale', ['number']);
     assertOrUndefined(options.yScale, 'options.yScale', ['number']);
-    assertOrUndefined(options.xScale, 'options.width', ['number']);
-    assertOrUndefined(options.yScale, 'options.height', ['number']);
+    assertOrUndefined(options.width, 'options.width', ['number']);
+    assertOrUndefined(options.height, 'options.height', ['number']);
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
@@ -732,23 +732,30 @@ export default class PDFPage {
     const xObjectKey = addRandomSuffix('EmbeddedPdfPage', 10);
     this.node.setXObject(PDFName.of(xObjectKey), embeddedPage.ref);
 
-    const xScale = options.width
-      ? options.width / embeddedPage.width
-      : options.xScale || 1;
-    const yScale = options.height
-      ? options.height / embeddedPage.height
-      : options.yScale || 1;
+    // prettier-ignore
+    const xScale = (
+        options.width  !== undefined ? options.width / embeddedPage.width
+      : options.xScale !== undefined ? options.xScale
+      : 1
+    );
+
+    // prettier-ignore
+    const yScale = (
+        options.height !== undefined ? options.height / embeddedPage.height
+      : options.yScale !== undefined ? options.yScale
+      : 1
+    );
 
     const contentStream = this.getContentStream();
     contentStream.push(
       ...drawPage(xObjectKey, {
-        x: options.x || this.x,
-        y: options.y || this.y,
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
         xScale,
         yScale,
-        rotate: options.rotate || degrees(0),
-        xSkew: options.xSkew || degrees(0),
-        ySkew: options.ySkew || degrees(0),
+        rotate: options.rotate ?? degrees(0),
+        xSkew: options.xSkew ?? degrees(0),
+        ySkew: options.ySkew ?? degrees(0),
       }),
     );
   }
@@ -805,12 +812,12 @@ export default class PDFPage {
     }
     contentStream.push(
       ...drawSvgPath(path, {
-        x: options.x || this.x,
-        y: options.y || this.y,
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
         scale: options.scale,
-        color: options.color || undefined,
-        borderColor: options.borderColor || undefined,
-        borderWidth: options.borderWidth || 0,
+        color: options.color ?? undefined,
+        borderColor: options.borderColor ?? undefined,
+        borderWidth: options.borderWidth ?? 0,
       }),
     );
   }
@@ -851,8 +858,8 @@ export default class PDFPage {
       ...drawLine({
         start: options.start,
         end: options.end,
-        thickness: options.thickness || 1,
-        color: options.color || undefined,
+        thickness: options.thickness ?? 1,
+        color: options.color ?? undefined,
       }),
     );
   }
@@ -895,16 +902,16 @@ export default class PDFPage {
     }
     contentStream.push(
       ...drawRectangle({
-        x: options.x || this.x,
-        y: options.y || this.y,
-        width: options.width || 150,
-        height: options.height || 100,
-        rotate: options.rotate || degrees(0),
-        xSkew: options.xSkew || degrees(0),
-        ySkew: options.ySkew || degrees(0),
-        borderWidth: options.borderWidth || 0,
-        color: options.color || undefined,
-        borderColor: options.borderColor || undefined,
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
+        width: options.width ?? 150,
+        height: options.height ?? 100,
+        rotate: options.rotate ?? degrees(0),
+        xSkew: options.xSkew ?? degrees(0),
+        ySkew: options.ySkew ?? degrees(0),
+        borderWidth: options.borderWidth ?? 0,
+        color: options.color ?? undefined,
+        borderColor: options.borderColor ?? undefined,
       }),
     );
   }
@@ -966,13 +973,13 @@ export default class PDFPage {
     }
     contentStream.push(
       ...drawEllipse({
-        x: options.x || this.x,
-        y: options.y || this.y,
-        xScale: options.xScale || 100,
-        yScale: options.yScale || 100,
-        color: options.color || undefined,
-        borderColor: options.borderColor || undefined,
-        borderWidth: options.borderWidth || 0,
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
+        xScale: options.xScale ?? 100,
+        yScale: options.yScale ?? 100,
+        color: options.color ?? undefined,
+        borderColor: options.borderColor ?? undefined,
+        borderWidth: options.borderWidth ?? 0,
       }),
     );
   }

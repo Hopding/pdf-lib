@@ -49,6 +49,21 @@ export class MissingCatalogError extends Error {
   }
 }
 
+export class MissingPageContentsEmbeddingError extends Error {
+  constructor() {
+    const msg = `Can't embed page with missing Contents`;
+    super(msg);
+  }
+}
+
+export class UnrecognizedStreamTypeError extends Error {
+  constructor(stream: any) {
+    const streamType = stream?.contructor?.name ?? stream?.name ?? stream;
+    const msg = `Unrecognized stream type: ${streamType}`;
+    super(msg);
+  }
+}
+
 /***** Parser Errors ******/
 
 export interface Position {
