@@ -3,11 +3,20 @@ import { PDFDocument, rgb } from 'pdf-lib';
 
 import { fetchAsset, writePdf } from './assets';
 
+// This test loads an existing PDF document with many pages.
+// It inserts data for every page (images, rectangles, texts, embedded PDFs).
+// Also, the second page is removed.
 export default async () => {
-  const [ubuntuBytes, smallMarioBytes, inputPdfBytes] = await Promise.all([
+  const [
+    ubuntuBytes,
+    smallMarioBytes,
+    inputPdfBytes,
+    largePageCountPdfBytes,
+  ] = await Promise.all([
     fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
     fetchAsset('images/small_mario_resized.png'),
     fetchAsset('pdfs/linearized_with_object_streams.pdf'),
+    fetchAsset('pdfs/with_large_page_count.pdf'),
   ]);
 
   const pdfDoc = await PDFDocument.load(inputPdfBytes);
@@ -18,7 +27,24 @@ export default async () => {
   const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);
   const smallMarioDims = smallMarioImage.scale(0.75);
 
-  const pages = pdfDoc.getPages();
+  const sourcePdfDoc = await PDFDocument.load(largePageCountPdfBytes);
+  const sourcePdfPage = sourcePdfDoc.getPages()[73];
+
+  const embeddedPageFigure = {
+    xOffset: 100,
+    yOffset: 330,
+    width: 350,
+    height: 240,
+    padding: 10,
+  };
+  const embeddedPage = await pdfDoc.embedPage(sourcePdfPage, {
+    // clip the PDF page to a certain area within the page
+    left: embeddedPageFigure.xOffset,
+    right: embeddedPageFigure.xOffset + embeddedPageFigure.width,
+    bottom: embeddedPageFigure.yOffset,
+    top: embeddedPageFigure.yOffset + embeddedPageFigure.height,
+  });
+  const embeddedPageDims = embeddedPage.scale(0.5);
 
   const lines = [
     'This is an image of Mario running.',
@@ -31,7 +57,7 @@ export default async () => {
 
   const textWidth = ubuntuFont.widthOfTextAtSize(lines[2], fontSize);
 
-  pages.forEach((page) => {
+  pdfDoc.getPages().forEach((page) => {
     const { width, height } = page.getSize();
     const centerX = width / 2;
     const centerY = height / 2;
@@ -55,6 +81,20 @@ export default async () => {
     page.drawText(lines.join('\n'), {
       x: centerX - textWidth / 2,
       y: centerY - 15,
+    });
+    page.drawRectangle({
+      x: 10,
+      y: 10,
+      width: embeddedPageFigure.width / 2 + embeddedPageFigure.padding * 2,
+      height: embeddedPageFigure.height / 2 + embeddedPageFigure.padding * 2,
+      color: solarizedWhite,
+      borderColor: solarizedGray,
+      borderWidth: 2,
+    });
+    page.drawPage(embeddedPage, {
+      x: embeddedPageFigure.padding + 10,
+      y: embeddedPageFigure.padding + 10,
+      ...embeddedPageDims,
     });
   });
 

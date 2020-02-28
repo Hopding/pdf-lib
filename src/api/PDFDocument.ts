@@ -12,10 +12,11 @@ import PDFPage from 'src/api/PDFPage';
 import { PageSizes } from 'src/api/sizes';
 import { StandardFonts } from 'src/api/StandardFonts';
 import {
-  BoundingBox,
   CustomFontEmbedder,
   CustomFontSubsetEmbedder,
   JpegEmbedder,
+  PageBoundingBox,
+  PageEmbeddingMismatchedContextError,
   PDFCatalog,
   PDFContext,
   PDFDict,
@@ -41,6 +42,7 @@ import {
   canBeConvertedToUint8Array,
   encodeToBase64,
   isStandardFont,
+  pluckIndices,
   range,
   toUint8Array,
 } from 'src/utils';
@@ -709,18 +711,20 @@ export default class PDFDocument {
   }
 
   /**
-   * Embed a PDF page into this document.
+   * Embed one or more PDF pages into this document.
    *
    * For example:
    * ```js
-   * const pdfDoc = await PDFDocument.create();
+   * const pdfDoc = await PDFDocument.create()
    *
-   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
-   * const sourcePdf = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf'
+   * const sourcePdf = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer())
    *
-   * // embed page 74 into pdfDoc
-   * const [embeddedPage] = await pdfDoc.embedPdf(sourcePdf, [73]);
+   * // Embed page 74 of `sourcePdf` into `pdfDoc`
+   * const [embeddedPage] = await pdfDoc.embedPdf(sourcePdf, [73])
    * ```
+   *
+   * See [[PDFDocument.load]] for examples of the allowed input data formats.
    *
    * @param pdf The input data containing a PDF document.
    * @param indices The indices of the pages that should be embedded.
@@ -741,70 +745,122 @@ export default class PDFDocument {
     const srcDoc =
       pdf instanceof PDFDocument ? pdf : await PDFDocument.load(pdf);
 
-    const copier = PDFObjectCopier.for(srcDoc.context, this.context);
-    const srcPages = srcDoc.getPages();
-    const embeddedPages: PDFEmbeddedPage[] = new Array(indices.length);
+    const srcPages = pluckIndices(srcDoc.getPages(), indices);
 
-    for (let idx = 0, len = indices.length; idx < len; idx++) {
-      const srcPage = srcPages[indices[idx]];
-      embeddedPages[idx] = await this.embedPage(
-        srcPage,
-        undefined,
-        undefined,
-        copier,
-      );
-    }
-
-    return embeddedPages;
+    return this.embedPages(srcPages);
   }
 
   /**
-   * Embed a PDF page into this document.
+   * Embed a single PDF page into this document.
    *
    * For example:
    * ```js
-   * const pdfDoc = await PDFDocument.create();
+   * const pdfDoc = await PDFDocument.create()
    *
-   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
-   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
-   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
-   * const sourcePdfPage = sourcePdfDoc.getPages()[73];
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf'
+   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer())
+   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer)
+   * const sourcePdfPage = sourcePdfDoc.getPages()[73]
    *
    * const embeddedPage = await pdfDoc.embedPage(
    *   sourcePdfPage,
-   *   { // clip the PDF page to a certain area within the page
-   *     left: 100,
-   *     right: 450,
-   *     bottom: 330,
-   *     top: 570
-   *   },
-   *   [1, 0, 0, 1, 10, 200] // translate by (10,200) units
-   * );
+   *
+   *   // Clip a section of the source page so that we only embed part of it
+   *   { left: 100, right: 450, bottom: 330, top: 570 },
+   *
+   *   // Translate all drawings of the embedded page by (10, 200) units
+   *   [1, 0, 0, 1, 10, 200],
+   * )
    * ```
    *
-   * @param page The source PDF page to be embedded
-   * @param boundingBox Optionally, area of the source page that should be embedded
-   * @param transformationMatrix Optionally, a transformation matrix that is always applied to the embedded page
-   * @param copier Optionally, a PDF object copier instance. When embedding multiple pages from the same doc, using the same copier produces smaller PDFs. If none is given, a new copier is used.
+   * @param page The page to be embedded.
+   * @param boundingBox
+   * Optionally, an area of the source page that should be embedded
+   * (defaults to entire page).
+   * @param transformationMatrix
+   * Optionally, a transformation matrix that is always applied to the embedded
+   * page anywhere it is drawn.
    * @returns Resolves with the embedded pdf page.
    */
   async embedPage(
     page: PDFPage,
-    boundingBox?: BoundingBox,
+    boundingBox?: PageBoundingBox,
     transformationMatrix?: TransformationMatrix,
-    copier?: PDFObjectCopier,
   ): Promise<PDFEmbeddedPage> {
     assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
-    const embedder = await PDFPageEmbedder.for(
-      page,
-      copier || PDFObjectCopier.for(page.doc.context, this.context),
-      boundingBox,
-      transformationMatrix,
+    const [embeddedPage] = await this.embedPages(
+      [page],
+      [boundingBox],
+      [transformationMatrix],
     );
-    const ref = this.context.nextRef();
-    const embeddedPage = PDFEmbeddedPage.of(ref, this, embedder);
-    this.embeddedPages.push(embeddedPage);
     return embeddedPage;
+  }
+
+  /**
+   * Embed one or more PDF pages into this document.
+   *
+   * For example:
+   * ```js
+   * const pdfDoc = await PDFDocument.create()
+   *
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf'
+   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer())
+   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer)
+   *
+   * const page1 = sourcePdfDoc.getPages()[0]
+   * const page2 = sourcePdfDoc.getPages()[52]
+   * const page3 = sourcePdfDoc.getPages()[73]
+   *
+   * const embeddedPages = await pdfDoc.embedPages([page1, page2, page3])
+   * ```
+   *
+   * @param page
+   * The pages to be embedded (they must all share the same context).
+   * @param boundingBoxes
+   * Optionally, an array of clipping boundaries - one for each page
+   * (defaults to entirety of each page).
+   * @param transformationMatrices
+   * Optionally, an array of transformation matrices - one for each page
+   * (each page's transformation will apply anywhere it is drawn).
+   * @returns Resolves with an array of the embedded pdf pages.
+   */
+  async embedPages(
+    pages: PDFPage[],
+    boundingBoxes: Array<PageBoundingBox | undefined> = [],
+    transformationMatrices: Array<TransformationMatrix | undefined> = [],
+  ) {
+    if (pages.length === 0) return [];
+
+    // Assert all pages have the same context
+    for (let idx = 0, len = pages.length - 1; idx < len; idx++) {
+      const currPage = pages[idx];
+      const nextPage = pages[idx + 1];
+      if (currPage.node.context !== nextPage.node.context) {
+        throw new PageEmbeddingMismatchedContextError();
+      }
+    }
+
+    const context = pages[0].node.context;
+    const maybeCopyPage =
+      context === this.context
+        ? (p: PDFPageLeaf) => p
+        : PDFObjectCopier.for(context, this.context).copy;
+
+    const embeddedPages = new Array<PDFEmbeddedPage>(pages.length);
+    for (let idx = 0, len = pages.length; idx < len; idx++) {
+      const page = maybeCopyPage(pages[idx].node);
+      const box = boundingBoxes[idx];
+      const matrix = transformationMatrices[idx];
+
+      const embedder = await PDFPageEmbedder.for(page, box, matrix);
+
+      const ref = this.context.nextRef();
+      embeddedPages[idx] = PDFEmbeddedPage.of(ref, this, embedder);
+    }
+
+    this.embeddedPages.push(...embeddedPages);
+
+    return embeddedPages;
   }
 
   /**
@@ -812,7 +868,8 @@ export default class PDFDocument {
    * > and [[saveAsBase64]] methods will automatically ensure that all embedded
    * > assets are flushed before serializing the document.
    *
-   * Flush all embedded fonts, PDF pages, and images to this document's [[context]].
+   * Flush all embedded fonts, PDF pages, and images to this document's
+   * [[context]].
    *
    * @returns Resolves when the flush is complete.
    */

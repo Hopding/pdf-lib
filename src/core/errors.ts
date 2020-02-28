@@ -64,6 +64,13 @@ export class UnrecognizedStreamTypeError extends Error {
   }
 }
 
+export class PageEmbeddingMismatchedContextError extends Error {
+  constructor() {
+    const msg = `Found mismatched contexts while embedding pages. All pages in the array passed to \`PDFDocument.embedPages()\` must be from the same document.`;
+    super(msg);
+  }
+}
+
 /***** Parser Errors ******/
 
 export interface Position {

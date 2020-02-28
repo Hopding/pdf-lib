@@ -1,12 +1,6 @@
 import fs from 'fs';
 import { PDFDocument } from 'src/api';
-import {
-  PDFContext,
-  PDFObjectCopier,
-  PDFPageEmbedder,
-  PDFRawStream,
-  PDFRef,
-} from 'src/core';
+import { PDFContext, PDFPageEmbedder, PDFRawStream, PDFRef } from 'src/core';
 
 const examplePdf = fs.readFileSync('./assets/pdfs/normal.pdf');
 
@@ -15,13 +9,10 @@ const examplePage = async () => {
   return doc.getPages()[0];
 };
 
-const copier = (doc: PDFDocument) =>
-  PDFObjectCopier.for(doc.context, doc.context);
-
 describe(`PDFPageEmbedder`, () => {
   it(`can be constructed with PDFPageEmbedder.for(...)`, async () => {
     const page = await examplePage();
-    const embedder = await PDFPageEmbedder.for(page, copier(page.doc));
+    const embedder = await PDFPageEmbedder.for(page.node);
     expect(embedder).toBeInstanceOf(PDFPageEmbedder);
   });
 
@@ -29,7 +20,7 @@ describe(`PDFPageEmbedder`, () => {
     const context = PDFContext.create();
     const predefinedRef = PDFRef.of(9999);
     const page = await examplePage();
-    const embedder = await PDFPageEmbedder.for(page, copier(page.doc));
+    const embedder = await PDFPageEmbedder.for(page.node);
 
     expect(context.enumerateIndirectObjects().length).toBe(0);
     const ref = await embedder.embedIntoContext(context, predefinedRef);
@@ -40,7 +31,7 @@ describe(`PDFPageEmbedder`, () => {
 
   it(`can extract properties of the PDF page`, async () => {
     const page = await examplePage();
-    const embedder = await PDFPageEmbedder.for(page, copier(page.doc));
+    const embedder = await PDFPageEmbedder.for(page.node);
 
     expect(embedder.boundingBox).toEqual({
       left: 0,
@@ -48,7 +39,7 @@ describe(`PDFPageEmbedder`, () => {
       right: page.getSize().width,
       top: page.getSize().height,
     });
-    expect(embedder.transformationMatrix).toEqual([1, 0, 0, 1, 0, 0]);
+    expect(embedder.transformationMatrix).toEqual([1, 0, 0, 1, -0, -0]);
     expect(embedder.width).toEqual(page.getWidth());
     expect(embedder.height).toEqual(page.getHeight());
   });
@@ -61,11 +52,7 @@ describe(`PDFPageEmbedder`, () => {
       right: 222,
       top: 333,
     };
-    const embedder = await PDFPageEmbedder.for(
-      page,
-      copier(page.doc),
-      boundingBox,
-    );
+    const embedder = await PDFPageEmbedder.for(page.node, boundingBox);
 
     expect(embedder.width).toEqual(122);
     expect(embedder.height).toEqual(233);

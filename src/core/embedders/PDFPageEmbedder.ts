@@ -1,19 +1,18 @@
-import PDFPage from 'src/api/PDFPage';
 import {
   MissingPageContentsEmbeddingError,
   UnrecognizedStreamTypeError,
 } from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
+import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFRawStream from 'src/core/objects/PDFRawStream';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFStream from 'src/core/objects/PDFStream';
 import PDFContext from 'src/core/PDFContext';
-import PDFObjectCopier from 'src/core/PDFObjectCopier';
 import { decodePDFRawStream } from 'src/core/streams/decode';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
 import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { identityMatrix, TransformationMatrix } from 'src/types/matrix';
+import { TransformationMatrix } from 'src/types/matrix';
 import { mergeIntoTypedArray } from 'src/utils';
 
 /**
@@ -38,23 +37,33 @@ export interface PageBoundingBox {
   top: number /** The top of the bounding box */;
 }
 
-const embeddablePage = (
-  sourcePage: PDFPage,
-  targetContext: PDFContext,
-  copier: PDFObjectCopier,
-): PDFPageLeaf =>
-  sourcePage.doc.context === targetContext
-    ? sourcePage.node
-    : copier.copy(sourcePage.node);
+const fullPageBoundingBox = (page: PDFPageLeaf) => {
+  const mediaBox = page.MediaBox();
+
+  const width =
+    mediaBox.lookup(2, PDFNumber).value() -
+    mediaBox.lookup(0, PDFNumber).value();
+
+  const height =
+    mediaBox.lookup(3, PDFNumber).value() -
+    mediaBox.lookup(1, PDFNumber).value();
+
+  return { left: 0, bottom: 0, right: width, top: height };
+};
+
+// Returns the identity matrix, modified to position the content of the given
+// bounding box at (0, 0).
+const boundingBoxAdjustedMatrix = (
+  bb: PageBoundingBox,
+): TransformationMatrix => [1, 0, 0, 1, -bb.left, -bb.bottom];
 
 class PDFPageEmbedder {
   static async for(
-    page: PDFPage,
-    copier: PDFObjectCopier,
+    page: PDFPageLeaf,
     boundingBox?: PageBoundingBox,
     transformationMatrix?: TransformationMatrix,
   ) {
-    return new PDFPageEmbedder(page, copier, boundingBox, transformationMatrix);
+    return new PDFPageEmbedder(page, boundingBox, transformationMatrix);
   }
 
   readonly width: number;
@@ -62,29 +71,26 @@ class PDFPageEmbedder {
   readonly boundingBox: PageBoundingBox;
   readonly transformationMatrix: TransformationMatrix;
 
-  private readonly page: PDFPage;
-  private readonly copier: PDFObjectCopier;
+  private readonly page: PDFPageLeaf;
 
   private constructor(
-    page: PDFPage,
-    copier: PDFObjectCopier,
+    page: PDFPageLeaf,
     boundingBox?: PageBoundingBox,
     transformationMatrix?: TransformationMatrix,
   ) {
     this.page = page;
-    this.copier = copier;
 
-    const bb = boundingBox ?? this.fullPageBoundingBox(page);
+    const bb = boundingBox ?? fullPageBoundingBox(page);
 
     this.width = bb.right - bb.left;
     this.height = bb.top - bb.bottom;
     this.boundingBox = bb;
-    this.transformationMatrix = transformationMatrix ?? identityMatrix;
+    this.transformationMatrix =
+      transformationMatrix ?? boundingBoxAdjustedMatrix(bb);
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    const page = embeddablePage(this.page, context, this.copier);
-    const { Contents, Resources } = page.normalizedEntries();
+    const { Contents, Resources } = this.page.normalizedEntries();
 
     if (!Contents) throw new MissingPageContentsEmbeddingError();
     const decodedContents = this.decodeContents(Contents);
@@ -129,11 +135,6 @@ class PDFPageEmbedder {
     }
 
     return mergeIntoTypedArray(...decodedContents);
-  }
-
-  private fullPageBoundingBox(page: PDFPage) {
-    const { width, height } = page.getSize();
-    return { left: 0, bottom: 0, right: width, top: height };
   }
 }
 

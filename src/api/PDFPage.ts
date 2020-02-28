@@ -686,15 +686,14 @@ export default class PDFPage {
    * ```js
    * import { degrees } from 'pdf-lib'
    *
-   * const pdfDoc = await PDFDocument.create();
-   * const page = pdfDoc.addPage();
+   * const pdfDoc = await PDFDocument.create()
+   * const page = pdfDoc.addPage()
    *
-   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf';
-   * const sourceBuffer = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
-   * const sourcePdfDoc = await PDFDocument.load(sourceBuffer);
+   * const sourcePdfUrl = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf'
+   * const sourcePdf = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer())
    *
-   * // embed page 74 from the PDF
-   * const [embeddedPage] = await pdfDoc.embedPdf(sourcePdfDoc, 73);
+   * // Embed page 74 from the PDF
+   * const [embeddedPage] = await pdfDoc.embedPdf(sourcePdf, 73)
    *
    * page.drawPage(embeddedPage, {
    *   x: 250,
@@ -702,14 +701,16 @@ export default class PDFPage {
    *   xScale: 0.5,
    *   yScale: 0.5,
    *   rotate: degrees(30),
-   * });
+   * })
    * ```
    *
-   * `options` accept `width`/`height` and `xScale`/`yScale` keys which all
-   * define the size of the drawn page. If both options are given, `width` or `height`
-   * take precedence and the scale variants are ignored.
-   * @param embeddedPdfPage The embeddedPDF page object to be drawn.
-   * @param options The options to be used when drawing the pdf page.
+   * The `options` argument accepts both `width`/`height` and `xScale`/`yScale`
+   * as options. Since each of these options defines the size of the drawn page,
+   * if both options are given, `width` and `height` take precedence and the
+   * corresponding scale variants are ignored.
+   *
+   * @param embeddedPage The embedded page to be drawn.
+   * @param options The options to be used when drawing the embedded page.
    */
   drawPage(
     embeddedPage: PDFEmbeddedPage,
