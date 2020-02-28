@@ -19,6 +19,7 @@ export default async (assets: Assets) => {
   });
   const smallMarioImage = await pdfDoc.embedPng(images.png.small_mario);
   const smallMarioDims = smallMarioImage.scale(0.18);
+
   const sourcePdfDoc = await PDFDocument.load(
     assets.pdfs.with_large_page_count,
   );
@@ -31,18 +32,13 @@ export default async (assets: Assets) => {
     height: 240,
     padding: 10,
   };
-  const embeddedPage = await pdfDoc.embedPage(
-    sourcePdfPage,
-    {
-      // clip the PDF page to a certain area within the page
-      left: embeddedPageFigure.xOffset,
-      right: embeddedPageFigure.xOffset + embeddedPageFigure.width,
-      bottom: embeddedPageFigure.yOffset,
-      top: embeddedPageFigure.yOffset + embeddedPageFigure.height,
-    },
-    // move the clipped part to (0,0) of the embeddedPage for easier inserting
-    [1, 0, 0, 1, -embeddedPageFigure.xOffset, -embeddedPageFigure.yOffset],
-  );
+  const embeddedPage = await pdfDoc.embedPage(sourcePdfPage, {
+    // clip the PDF page to a certain area within the page
+    left: embeddedPageFigure.xOffset,
+    right: embeddedPageFigure.xOffset + embeddedPageFigure.width,
+    bottom: embeddedPageFigure.yOffset,
+    top: embeddedPageFigure.yOffset + embeddedPageFigure.height,
+  });
   const embeddedPageDims = embeddedPage.scale(0.5);
 
   const lines = [
