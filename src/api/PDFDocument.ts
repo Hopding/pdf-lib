@@ -732,7 +732,7 @@ export default class PDFDocument {
    */
   async embedPdf(
     pdf: string | Uint8Array | ArrayBuffer | PDFDocument,
-    indices: number[],
+    indices: number[] = [0],
   ): Promise<PDFEmbeddedPage[]> {
     assertIs(pdf, 'pdf', [
       'string',
