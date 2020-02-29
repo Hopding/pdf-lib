@@ -97,7 +97,7 @@ There are [other](#prior-art) good open source JavaScript PDF libraries availabl
 
 _This example produces [this PDF](assets/pdfs/examples/create_document.pdf)._
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rxwsc8f5/12/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rxwsc8f5/13/)
 
 <!-- prettier-ignore -->
 ```js
@@ -138,7 +138,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/modify_document.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `existingPdfBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/1/)
 
 <!-- prettier-ignore -->
 ```js
@@ -187,7 +187,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/copy_pages.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/with_large_page_count.pdf) is used for the `secondDonorPdfBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/ybank8s9/1/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/ybank8s9/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -232,7 +232,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/embed_png_and_jpeg_images.pdf)_ (when [this image](assets/images/cat_riding_unicorn.jpg) is used for the `jpgImageBytes` variable and [this image](assets/images/minions_banana_alpha.png) is used for the `pngImageBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bcya43ju/2/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bcya43ju/5/)
 
 <!-- prettier-ignore -->
 ```js
@@ -290,7 +290,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/embed_pdf_pages.pdf)_ (when [this PDF](assets/pdfs/american_flag.pdf) is used for the `americanFlagPdfBytes` variable and [this PDF](assets/pdfs/us_constitution.pdf) is used for the `usConstitutionPdfBytes` variable).
 
-<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/bcya43ju/2/) -->
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/Lyb16ocj/10/)
 
 <!-- prettier-ignore -->
 ```js
@@ -362,7 +362,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_text.pdf)_ (when [this font](assets/fonts/ubuntu/Ubuntu-R.ttf) is used for the `fontBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rgu6ca59/1/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rgu6ca59/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -425,7 +425,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/set_document_metadata.pdf)_.
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/vcwmfnbe/1/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/vcwmfnbe/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -467,7 +467,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/draw_svg_paths.pdf)_.
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bwaomr9h/1/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bwaomr9h/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -548,8 +548,8 @@ The following builds are available:
 
 > **NOTE:** if you are using the CDN scripts in production, you should include a specific version number in the URL, for example:
 >
-> - https://unpkg.com/pdf-lib@1.3.0/dist/pdf-lib.min.js
-> - https://cdn.jsdelivr.net/npm/pdf-lib@1.3.0/dist/pdf-lib.min.js
+> - https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js
+> - https://cdn.jsdelivr.net/npm/pdf-lib@1.4.0/dist/pdf-lib.min.js
 
 When using a UMD build, you will have access to a global `window.PDFLib` variable. This variable contains all of the classes and functions exported by `pdf-lib`. For example:
 
