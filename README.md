@@ -74,6 +74,7 @@
 - Copy pages between PDFs
 - Draw Text
 - Draw Images
+- Draw PDF Pages
 - Draw Vector Graphics
 - Draw SVG Paths
 - Measure width and height of text
