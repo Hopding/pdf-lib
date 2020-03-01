@@ -383,6 +383,11 @@ describe(`PDFObjectParser`, () => {
       expectParseStr('<<>>').toBe('<<\n>>');
     });
 
+    it(`handles empty dictionaries with whitespace between brackets`, () => {
+      expectParse('<<\0\t\n\f\r >>').toBeInstanceOf(PDFDict);
+      expectParseStr('<<\0\t\n\f\r >>').toBe('<<\n>>');
+    });
+
     it(`handles dictionaries of all value types seperated by whitespace and (multiplecomments`, () => {
       const input = `% Comment
       \0\t\n\f\r % Comment
