@@ -314,6 +314,11 @@ describe(`PDFObjectParser`, () => {
       expectParseStr('[]').toBe('[ ]');
     });
 
+    it(`handles empty arrays with whitespace between braces`, () => {
+      expectParse('[\0\t\n\f\r ]').toBeInstanceOf(PDFArray);
+      expectParseStr('[\0\t\n\f\r ]').toBe('[ ]');
+    });
+
     it(`handles arrays of all value types seperated by whitespace and (multiple) comments`, () => {
       const input = `% Comment
         \0\t\n\f\r % Comment
@@ -381,6 +386,11 @@ describe(`PDFObjectParser`, () => {
     it(`handles empty dictionaries`, () => {
       expectParse('<<>>').toBeInstanceOf(PDFDict);
       expectParseStr('<<>>').toBe('<<\n>>');
+    });
+
+    it(`handles empty dictionaries with whitespace between brackets`, () => {
+      expectParse('<<\0\t\n\f\r >>').toBeInstanceOf(PDFDict);
+      expectParseStr('<<\0\t\n\f\r >>').toBe('<<\n>>');
     });
 
     it(`handles dictionaries of all value types seperated by whitespace and (multiplecomments`, () => {
