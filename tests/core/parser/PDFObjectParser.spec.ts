@@ -314,6 +314,11 @@ describe(`PDFObjectParser`, () => {
       expectParseStr('[]').toBe('[ ]');
     });
 
+    it(`handles empty arrays with whitespace between braces`, () => {
+      expectParse('[\0\t\n\f\r ]').toBeInstanceOf(PDFArray);
+      expectParseStr('[\0\t\n\f\r ]').toBe('[ ]');
+    });
+
     it(`handles arrays of all value types seperated by whitespace and (multiple) comments`, () => {
       const input = `% Comment
         \0\t\n\f\r % Comment
