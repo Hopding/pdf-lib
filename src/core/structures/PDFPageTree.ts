@@ -56,13 +56,13 @@ class PDFPageTree extends PDFDict {
    * or `undefined` if it was inserted into the root node (the PDFPageTree upon
    * which the method was first called).
    */
-  insertLeafNode(leafRef: PDFRef, index: number): PDFRef | undefined {
+  insertLeafNode(leafRef: PDFRef, targetIndex: number): PDFRef | undefined {
     const Kids = this.Kids();
     const kidSize = Kids.size();
 
     let kidIdx = 0;
-    let currIndex = 0;
-    while (currIndex < index) {
+    let pageIdx = 0;
+    while (pageIdx < targetIndex) {
       if (kidIdx >= kidSize) {
         throw new Error(`Index out of bounds: ${kidIdx}/${kidSize}`);
       }
@@ -72,13 +72,13 @@ class PDFPageTree extends PDFDict {
 
       if (kid instanceof PDFPageTree) {
         const kidCount = kid.Count().value();
-        if (currIndex + kidCount > index) {
-          return kid.insertLeafNode(leafRef, index - currIndex) || kidRef;
+        if (pageIdx + kidCount > targetIndex) {
+          return kid.insertLeafNode(leafRef, targetIndex - pageIdx) || kidRef;
         } else {
-          currIndex += kidCount;
+          pageIdx += kidCount;
         }
       } else {
-        currIndex += 1;
+        pageIdx += 1;
       }
     }
 
@@ -91,6 +91,11 @@ class PDFPageTree extends PDFDict {
     return undefined;
   }
 
+  /**
+   * Removes the leaf node at the specified index (zero-based) from this page
+   * tree. Also decrements the `Count` of each page tree in the hierarchy to
+   * account for the removed page.
+   */
   removeLeafNode(targetIndex: number): void {
     const Kids = this.Kids();
     const kidSize = Kids.size();
