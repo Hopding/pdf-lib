@@ -91,15 +91,15 @@ class PDFPageTree extends PDFDict {
     return undefined;
   }
 
-  removeLeafNode(index: number): void {
+  removeLeafNode(targetIndex: number): void {
     const Kids = this.Kids();
     const kidSize = Kids.size();
 
     let kidIdx = 0;
-    let currIndex = 0;
-    while (currIndex < index) {
-      if (kidIdx >= kidSize - 1) {
-        throw new Error(`Index out of bounds: ${kidIdx}/${kidSize - 1}`);
+    let pageIdx = 0;
+    while (pageIdx < targetIndex) {
+      if (kidIdx >= kidSize) {
+        throw new Error(`Index out of bounds: ${kidIdx}/${kidSize - 1} (a)`);
       }
 
       const kidRef = Kids.get(kidIdx++) as PDFRef;
@@ -107,15 +107,19 @@ class PDFPageTree extends PDFDict {
 
       if (kid instanceof PDFPageTree) {
         const kidCount = kid.Count().value();
-        if (currIndex + kidCount > index) {
-          kid.removeLeafNode(index - currIndex);
+        if (pageIdx + kidCount > targetIndex) {
+          kid.removeLeafNode(targetIndex - pageIdx);
           return;
         } else {
-          currIndex += kidCount;
+          pageIdx += kidCount;
         }
       } else {
-        currIndex += 1;
+        pageIdx += 1;
       }
+    }
+
+    if (kidIdx >= kidSize) {
+      throw new Error(`Index out of bounds: ${kidIdx}/${kidSize - 1} (b)`);
     }
 
     const target = Kids.lookup(kidIdx);

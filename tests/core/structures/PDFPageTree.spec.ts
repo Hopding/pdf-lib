@@ -518,7 +518,79 @@ describe(`PDFPageTree`, () => {
       pageTree1.pushLeafNode(leafRef2);
       pageTree1.pushLeafNode(leafRef3);
 
-      expect(() => pageTree1.removeLeafNode(3)).toThrow();
+      expect(() => pageTree1.removeLeafNode(3)).toThrow(
+        'Index out of bounds: 3/2 (b)',
+      );
+    });
+
+    it(`throws an error when removing past the end of the tree`, () => {
+      const context = PDFContext.create();
+
+      const pageTree = (parent?: PDFRef): [PDFRef, PDFPageTree] => {
+        const tree = PDFPageTree.withContext(context, parent);
+        const ref = context.register(tree);
+        return [ref, tree];
+      };
+
+      const pageLeaf = (parent: PDFRef): [PDFRef, PDFPageLeaf] => {
+        const leaf = PDFPageLeaf.withContextAndParent(context, parent);
+        const ref = context.register(leaf);
+        return [ref, leaf];
+      };
+
+      const pushTreeNodes = (tree: PDFPageTree, ...nodes: PDFRef[]) => {
+        nodes.forEach((n) => tree.pushTreeNode(n));
+      };
+
+      const pushLeafNodes = (tree: PDFPageTree, ...nodes: PDFRef[]) => {
+        nodes.forEach((n) => tree.pushLeafNode(n));
+      };
+
+      const buildTree = () => {
+        const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
+
+        const [lvl2Tree1Ref, lvl2Tree1] = pageTree(lvl1Tree1Ref);
+        const [lvl2Tree2Ref, lvl2Tree2] = pageTree(lvl1Tree1Ref);
+        pushTreeNodes(lvl1Tree1, lvl2Tree1Ref, lvl2Tree2Ref);
+
+        const [lvl3Tree1Ref, lvl3Tree1] = pageTree(lvl2Tree1Ref);
+        const [lvl3Tree2Ref, lvl3Tree2] = pageTree(lvl2Tree1Ref);
+        const [lvl3Tree3Ref, lvl3Tree3] = pageTree(lvl2Tree2Ref);
+        const [lvl3Tree4Ref, lvl3Tree4] = pageTree(lvl2Tree2Ref);
+        pushTreeNodes(lvl2Tree1, lvl3Tree1Ref, lvl3Tree2Ref);
+        pushTreeNodes(lvl2Tree2, lvl3Tree3Ref, lvl3Tree4Ref);
+
+        const [leafRef1] = pageLeaf(lvl3Tree1Ref);
+        const [leafRef2] = pageLeaf(lvl3Tree1Ref);
+        const [leafRef3] = pageLeaf(lvl3Tree2Ref);
+        const [leafRef4] = pageLeaf(lvl3Tree2Ref);
+        const [leafRef5] = pageLeaf(lvl3Tree3Ref);
+        const [leafRef6] = pageLeaf(lvl3Tree3Ref);
+        const [leafRef7] = pageLeaf(lvl3Tree4Ref);
+        const [leafRef8] = pageLeaf(lvl3Tree4Ref);
+        pushLeafNodes(lvl3Tree1, leafRef1, leafRef2);
+        pushLeafNodes(lvl3Tree2, leafRef3, leafRef4);
+        pushLeafNodes(lvl3Tree3, leafRef5, leafRef6);
+        pushLeafNodes(lvl3Tree4, leafRef7, leafRef8);
+
+        return lvl1Tree1;
+      };
+
+      expect(() => buildTree().removeLeafNode(0)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(1)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(2)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(3)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(4)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(5)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(6)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(7)).not.toThrow();
+
+      expect(() => buildTree().removeLeafNode(8)).toThrow(
+        'Index out of bounds: 2/1 (b)',
+      );
+      expect(() => buildTree().removeLeafNode(9)).toThrow(
+        'Index out of bounds: 2/1 (a)',
+      );
     });
   });
 });
