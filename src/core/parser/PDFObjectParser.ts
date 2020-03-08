@@ -172,6 +172,7 @@ class PDFObjectParser extends BaseParser {
   protected parseDict(): PDFDict {
     this.bytes.assertNext(CharCodes.LessThan);
     this.bytes.assertNext(CharCodes.LessThan);
+    this.skipWhitespaceAndComments();
 
     const dict: DictMap = new Map();
 
@@ -180,7 +181,6 @@ class PDFObjectParser extends BaseParser {
       this.bytes.peek() !== CharCodes.GreaterThan &&
       this.bytes.peekAhead(1) !== CharCodes.GreaterThan
     ) {
-      this.skipWhitespaceAndComments();
       const key = this.parseName();
       const value = this.parseObject();
       dict.set(key, value);

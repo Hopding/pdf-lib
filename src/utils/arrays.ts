@@ -111,6 +111,14 @@ export const range = (start: number, end: number): number[] => {
   return arr;
 };
 
+export const pluckIndices = <T>(arr: T[], indices: number[]) => {
+  const plucked = new Array<T>(indices.length);
+  for (let idx = 0, len = indices.length; idx < len; idx++) {
+    plucked[idx] = arr[indices[idx]];
+  }
+  return plucked;
+};
+
 export const canBeConvertedToUint8Array = (
   input: any,
 ): input is string | ArrayBuffer | Uint8Array =>

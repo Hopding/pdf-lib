@@ -50,6 +50,7 @@
   - [Modify Document](#modify-document)
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
+  - [Embed PDF Pages](#embed-pdf-pages)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
   - [Set Document Metadata](#set-document-metadata)
   - [Draw SVG Paths](#draw-svg-paths)
@@ -59,6 +60,7 @@
 - [Encryption Handling](#encryption-handling)
 - [Migrating to v1.0.0](#migrating-to-v1)
 - [Contributing](#contributing)
+- [Tutorials and Cool Stuff](#tutorials-and-cool-stuff)
 - [Prior Art](#prior-art)
 - [License](#license)
 
@@ -72,6 +74,7 @@
 - Copy pages between PDFs
 - Draw Text
 - Draw Images
+- Draw PDF Pages
 - Draw Vector Graphics
 - Draw SVG Paths
 - Measure width and height of text
@@ -95,7 +98,7 @@ There are [other](#prior-art) good open source JavaScript PDF libraries availabl
 
 _This example produces [this PDF](assets/pdfs/examples/create_document.pdf)._
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rxwsc8f5/12/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rxwsc8f5/13/)
 
 <!-- prettier-ignore -->
 ```js
@@ -136,7 +139,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/modify_document.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `existingPdfBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/1/)
 
 <!-- prettier-ignore -->
 ```js
@@ -185,7 +188,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/copy_pages.pdf)_ (when [this PDF](assets/pdfs/with_update_sections.pdf) is used for the `firstDonorPdfBytes` variable and [this PDF](assets/pdfs/with_large_page_count.pdf) is used for the `secondDonorPdfBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/ybank8s9/1/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/ybank8s9/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -230,7 +233,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/embed_png_and_jpeg_images.pdf)_ (when [this image](assets/images/cat_riding_unicorn.jpg) is used for the `jpgImageBytes` variable and [this image](assets/images/minions_banana_alpha.png) is used for the `pngImageBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bcya43ju/2/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bcya43ju/5/)
 
 <!-- prettier-ignore -->
 ```js
@@ -284,6 +287,74 @@ const pdfBytes = await pdfDoc.save()
 //   • Rendered in an <iframe>
 ```
 
+### Embed PDF Pages
+
+_This example produces [this PDF](assets/pdfs/examples/embed_pdf_pages.pdf)_ (when [this PDF](assets/pdfs/american_flag.pdf) is used for the `americanFlagPdfBytes` variable and [this PDF](assets/pdfs/us_constitution.pdf) is used for the `usConstitutionPdfBytes` variable).
+
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/Lyb16ocj/10/)
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// These should be Uint8Arrays or ArrayBuffers
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const americanFlagPdfBytes = ...
+const usConstitutionPdfBytes = ...
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Embed the American flag PDF bytes
+const [americanFlag] = await pdfDoc.embedPdf(americanFlagPdfBytes)
+
+// Load the U.S. constitution PDF bytes
+const usConstitutionPdf = await PDFDocument.load(usConstitutionPdfBytes)
+
+// Embed the second page of the constitution and clip the preamble
+const preamble = await pdfDoc.embedPage(usConstitutionPdf.getPages()[1], {
+  left: 55,
+  bottom: 485,
+  right: 300,
+  top: 575,
+})
+
+// Get the width/height of the American flag PDF scaled down to 30% of 
+// its original size
+const americanFlagDims = americanFlag.scale(0.3)
+
+// Get the width/height of the preamble clipping scaled up to 225% of 
+// its original size
+const preambleDims = preamble.scale(2.25)
+
+// Add a blank page to the document
+const page = pdfDoc.addPage()
+
+// Draw the American flag image in the center top of the page
+page.drawPage(americanFlag, {
+  ...americanFlagDims,
+  x: page.getWidth() / 2 - americanFlagDims.width / 2,
+  y: page.getHeight() - americanFlagDims.height - 150,
+})
+
+// Draw the preamble clipping in the center bottom of the page
+page.drawPage(preamble, {
+  ...preambleDims,
+  x: page.getWidth() / 2 - preambleDims.width / 2,
+  y: page.getHeight() / 2 - preambleDims.height / 2 - 50,
+})
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
 ### Embed Font and Measure Text
 
 `pdf-lib` relies on a sister module to support embedding custom fonts: [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit). You must add the `@pdf-lib/fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts.
@@ -292,7 +363,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_text.pdf)_ (when [this font](assets/fonts/ubuntu/Ubuntu-R.ttf) is used for the `fontBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rgu6ca59/1/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/rgu6ca59/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -355,7 +426,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/set_document_metadata.pdf)_.
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/vcwmfnbe/1/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/vcwmfnbe/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -397,7 +468,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/draw_svg_paths.pdf)_.
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bwaomr9h/1/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bwaomr9h/2/)
 
 <!-- prettier-ignore -->
 ```js
@@ -478,8 +549,8 @@ The following builds are available:
 
 > **NOTE:** if you are using the CDN scripts in production, you should include a specific version number in the URL, for example:
 >
-> - https://unpkg.com/pdf-lib@1.3.0/dist/pdf-lib.min.js
-> - https://cdn.jsdelivr.net/npm/pdf-lib@1.3.0/dist/pdf-lib.min.js
+> - https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js
+> - https://cdn.jsdelivr.net/npm/pdf-lib@1.4.0/dist/pdf-lib.min.js
 
 When using a UMD build, you will have access to a global `window.PDFLib` variable. This variable contains all of the classes and functions exported by `pdf-lib`. For example:
 
@@ -738,6 +809,11 @@ Note that many of the API methods are now asynchronous and return promises, so y
 ## Contributing
 
 We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine. (We try to make this as simple and fast as possible! :rocket:)
+
+## Tutorials and Cool Stuff
+
+- [Möbius Printing helper](https://shreevatsa.net/mobius-print/) - a tool created by @shreevatsa
+- [How to use pdf-lib in AWS Lambdas](https://medium.com/swlh/create-pdf-using-pdf-lib-on-serverless-aws-lambda-e9506246dc88) - a tutorial written by Crespo Wang
 
 ## Prior Art
 

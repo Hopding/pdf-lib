@@ -7,6 +7,7 @@ import test1 from './tests/test1';
 import test10 from './tests/test10';
 import test11 from './tests/test11';
 import test12 from './tests/test12';
+import test13 from './tests/test13';
 import test2 from './tests/test2';
 import test3 from './tests/test3';
 import test4 from './tests/test4';
@@ -89,6 +90,8 @@ const assets = {
       minions_banana_alpha: readImage('minions_banana_alpha.png'),
       minions_banana_no_alpha: readImage('minions_banana_no_alpha.png'),
       small_mario: readImage('small_mario.png'),
+      etwe: readImage('etwe.png'),
+      self_drive: readImage('self_drive.png'),
     },
   },
   pdfs: {
@@ -121,7 +124,7 @@ const main = async () => {
     // prettier-ignore
     const allTests = [
     test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
-    test11, test12
+    test11, test12, test13
   ];
 
     const tests = testIdx ? [allTests[testIdx - 1]] : allTests;

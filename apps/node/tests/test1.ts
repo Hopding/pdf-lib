@@ -29,6 +29,8 @@ const ipsumLines = [
   'Labore nisi officiis quia ipsum qui voluptatem omnis.',
 ];
 
+// This test creates a new PDF document and inserts pages to it.
+// Each page is testing different features of pdf-lib.
 export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.create();
 
@@ -48,6 +50,9 @@ export default async (assets: Assets) => {
   const size = 750;
 
   /********************** Page 1 **********************/
+
+  // This page tests different drawing operations as well as adding custom
+  // operators to the page content.
 
   const page1 = pdfDoc.addPage([size, size]);
 
@@ -158,6 +163,8 @@ export default async (assets: Assets) => {
 
   /********************** Page 2 **********************/
 
+  // This page tests placement of text with different fonts
+
   const page2 = pdfDoc.addPage([size, size]);
 
   page2.drawSquare({ size, color: rgb(253 / 255, 246 / 255, 227 / 255) });
@@ -243,6 +250,8 @@ export default async (assets: Assets) => {
 
   /********************** Page 3 **********************/
 
+  // This page tests embedding and placing different images.
+
   const page3Height = 1750;
   const page3 = pdfDoc.addPage([size, page3Height]);
 
@@ -311,6 +320,42 @@ export default async (assets: Assets) => {
 
   page3.moveDown(smallMarioDims.height);
   page3.drawImage(smallMarioImage, smallMarioDims);
+
+  /********************** Page 4 **********************/
+
+  // This page tests embedding other PDF pages. First we embed page 3 of this document
+  // but rotate and scale it.
+  // Then we take an external PDF document and embed two pages of it next to each other.
+
+  const page4 = pdfDoc.addPage([size, size]);
+
+  const embeddedPage3 = await pdfDoc.embedPage(page3);
+  page4.drawPage(embeddedPage3, {
+    x: 10,
+    y: size - 10,
+    xScale: 1.52,
+    yScale: 0.42,
+    rotate: degrees(-90),
+  });
+
+  const [embeddedPage1, embeddedPage2] = await pdfDoc.embedPdf(
+    assets.pdfs.normal,
+    [0, 1],
+  );
+  page4.drawPage(embeddedPage1, {
+    x: 40,
+    y: 100,
+    xScale: 0.5,
+    yScale: 0.5,
+  });
+  page4.drawPage(embeddedPage2, {
+    x: 400,
+    y: 100,
+    xScale: 0.5,
+    yScale: 0.5,
+  });
+
+  /********************** Export PDF **********************/
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
