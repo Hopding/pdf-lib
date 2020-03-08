@@ -65,10 +65,24 @@ describe(`PDFParser`, () => {
       new Uint8Array([128, 1, 2, 3, 4, 5, 129, 130, 131, CharCodes.Newline]),
       '1 0 obj\n',
       ' . (foobar)\n',
-      'foo',
+      'endobj',
     );
     const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
-    await expect(parser.parseDocument()).rejects.toThrow();
+    const context = await parser.parseDocument();
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+  });
+
+  it(`handles invalid binary comments with missing newline after header`, async () => {
+    const input = mergeIntoTypedArray(
+      '%PDF-1.7\n',
+      new Uint8Array([142, 1, 2, 3, 4, 5, 129, 130, 131]),
+      '1 0 obj\n',
+      ' . (foobar)\n',
+      'endobj',
+    );
+    const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
+    const context = await parser.parseDocument();
+    expect(context.enumerateIndirectObjects().length).toBe(1);
   });
 
   it(`does not stall when stuff follows the last %%EOL`, async () => {
@@ -83,7 +97,8 @@ describe(`PDFParser`, () => {
       @@@@@@@@@@@@@@@@@@
     `;
     const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
-    await expect(parser.parseDocument()).resolves.not.toThrow();
+    const context = await parser.parseDocument();
+    expect(context.enumerateIndirectObjects().length).toBe(1);
   });
 
   it(`handles invalid indirect objects`, async () => {

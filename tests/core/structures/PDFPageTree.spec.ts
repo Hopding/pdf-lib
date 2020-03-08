@@ -9,6 +9,32 @@ import {
   PDFRef,
 } from 'src/index';
 
+const pageUtils = () => {
+  const context = PDFContext.create();
+
+  const pageTree = (parent?: PDFRef): [PDFRef, PDFPageTree] => {
+    const tree = PDFPageTree.withContext(context, parent);
+    const ref = context.register(tree);
+    return [ref, tree];
+  };
+
+  const pageLeaf = (parent: PDFRef): [PDFRef, PDFPageLeaf] => {
+    const leaf = PDFPageLeaf.withContextAndParent(context, parent);
+    const ref = context.register(leaf);
+    return [ref, leaf];
+  };
+
+  return { context, pageTree, pageLeaf };
+};
+
+const pushTreeNodes = (tree: PDFPageTree, ...nodes: PDFRef[]) => {
+  nodes.forEach((n) => tree.pushTreeNode(n));
+};
+
+const pushLeafNodes = (tree: PDFPageTree, ...nodes: PDFRef[]) => {
+  nodes.forEach((n) => tree.pushLeafNode(n));
+};
+
 describe(`PDFPageTree`, () => {
   it(`can be constructed directly from a Map and PDFContext`, () => {
     const context = PDFContext.create();
@@ -73,55 +99,40 @@ describe(`PDFPageTree`, () => {
   });
 
   it(`can be ascended`, () => {
-    const context = PDFContext.create();
+    const { pageTree } = pageUtils();
 
-    const pageTree1 = PDFPageTree.withContext(context);
-    const pageTree1Ref = context.register(pageTree1);
-
-    const pageTree2 = PDFPageTree.withContext(context, pageTree1Ref);
-    const pageTree2Ref = context.register(pageTree2);
-
-    const pageTree3 = PDFPageTree.withContext(context, pageTree2Ref);
+    const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
+    const [lvl2Tree1Ref, lvl2Tree1] = pageTree(lvl1Tree1Ref);
+    const [, lvl3Tree1] = pageTree(lvl2Tree1Ref);
 
     const visitations: PDFPageTree[] = [];
-    pageTree3.ascend((node) => {
+    lvl3Tree1.ascend((node) => {
       visitations.push(node);
     });
 
-    expect(visitations).toEqual([pageTree3, pageTree2, pageTree1]);
+    expect(visitations).toEqual([lvl3Tree1, lvl2Tree1, lvl1Tree1]);
   });
 
   it(`can perform a Post-Order traversal`, () => {
-    const context = PDFContext.create();
+    const { pageTree, pageLeaf } = pageUtils();
 
-    const rootPageTree = PDFPageTree.withContext(context);
-    const rootPageTreeRef = context.register(rootPageTree);
+    const [rootPageTreeRef, rootPageTree] = pageTree();
+    const [leftPageTreeRef, leftPageTree] = pageTree(rootPageTreeRef);
+    const [rightPageTreeRef, rightPageTree] = pageTree(rootPageTreeRef);
 
-    const leftPageTree = PDFPageTree.withContext(context, rootPageTreeRef);
-    const leftPageTreeRef = context.register(leftPageTree);
+    const [leafRef1, leaf1] = pageLeaf(leftPageTreeRef);
+    const [leafRef2, leaf2] = pageLeaf(leftPageTreeRef);
+    const [leafRef3, leaf3] = pageLeaf(rootPageTreeRef);
+    const [leafRef4, leaf4] = pageLeaf(rightPageTreeRef);
+    const [leafRef5, leaf5] = pageLeaf(rootPageTreeRef);
 
-    const rightPageTree = PDFPageTree.withContext(context, rootPageTreeRef);
-    const rightPageTreeRef = context.register(rightPageTree);
-
-    const leaf1 = PDFPageLeaf.withContextAndParent(context, leftPageTreeRef);
-    const leaf2 = PDFPageLeaf.withContextAndParent(context, leftPageTreeRef);
-    const leaf3 = PDFPageLeaf.withContextAndParent(context, rootPageTreeRef);
-    const leaf4 = PDFPageLeaf.withContextAndParent(context, rightPageTreeRef);
-    const leaf5 = PDFPageLeaf.withContextAndParent(context, rootPageTreeRef);
-
-    const leafRef1 = context.register(leaf1);
-    const leafRef2 = context.register(leaf2);
-    const leafRef3 = context.register(leaf3);
-    const leafRef4 = context.register(leaf4);
-    const leafRef5 = context.register(leaf5);
-
-    rootPageTree.pushTreeNode(leftPageTreeRef);
-    leftPageTree.pushLeafNode(leafRef1);
-    leftPageTree.pushLeafNode(leafRef2);
-    rootPageTree.pushLeafNode(leafRef3);
-    rootPageTree.pushTreeNode(rightPageTreeRef);
-    rightPageTree.pushLeafNode(leafRef4);
-    rootPageTree.pushLeafNode(leafRef5);
+    pushTreeNodes(rootPageTree, leftPageTreeRef);
+    pushLeafNodes(leftPageTree, leafRef1);
+    pushLeafNodes(leftPageTree, leafRef2);
+    pushLeafNodes(rootPageTree, leafRef3);
+    pushTreeNodes(rootPageTree, rightPageTreeRef);
+    pushLeafNodes(rightPageTree, leafRef4);
+    pushLeafNodes(rootPageTree, leafRef5);
 
     const visitations: Array<[TreeNode, PDFRef]> = [];
     rootPageTree.traverse((node, ref) => {
@@ -140,385 +151,343 @@ describe(`PDFPageTree`, () => {
   });
 
   describe(`leaf node insertion`, () => {
-    it(`can insert leaf nodes into the middle of the second layer of the page tree`, () => {
-      const context = PDFContext.create();
+    it(`can insert leaf nodes into the middle of the second layer of a page tree`, () => {
+      const { context, pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+      const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
+      const [lvl2Tree1Ref, lvl2Tree1] = pageTree(lvl1Tree1Ref);
+      const [lvl3Tree1Ref, lvl3Tree1] = pageTree(lvl2Tree1Ref);
+      const [lvl4Tree1Ref, lvl4Tree1] = pageTree(lvl3Tree1Ref);
 
-      const pageTree2 = PDFPageTree.withContext(context, pageTreeRef1);
-      const pageTreeRef2 = context.register(pageTree2);
+      const [leafRef1] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef2] = pageLeaf(lvl2Tree1Ref);
+      const [leafRef3] = pageLeaf(lvl4Tree1Ref);
+      const [leafRef4] = pageLeaf(lvl1Tree1Ref);
 
-      const pageTree3 = PDFPageTree.withContext(context, pageTreeRef2);
-      const pageTreeRef3 = context.register(pageTree3);
+      pushLeafNodes(lvl1Tree1, leafRef1);
+      pushTreeNodes(lvl1Tree1, lvl2Tree1Ref);
+      pushLeafNodes(lvl1Tree1, leafRef4);
 
-      const pageTree4 = PDFPageTree.withContext(context, pageTreeRef3);
-      const pageTreeRef4 = context.register(pageTree4);
+      pushLeafNodes(lvl2Tree1, leafRef2);
+      pushTreeNodes(lvl2Tree1, lvl3Tree1Ref);
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef1 = context.register(leaf1);
+      pushTreeNodes(lvl3Tree1, lvl4Tree1Ref);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef2);
-      const leafRef2 = context.register(leaf2);
+      pushLeafNodes(lvl4Tree1, leafRef3);
 
-      const leaf3 = PDFPageLeaf.withContextAndParent(context, pageTreeRef4);
-      const leafRef3 = context.register(leaf3);
+      expect(lvl1Tree1.Count().value()).toBe(4);
+      expect(lvl2Tree1.Count().value()).toBe(2);
+      expect(lvl3Tree1.Count().value()).toBe(1);
+      expect(lvl4Tree1.Count().value()).toBe(1);
+      expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
 
-      const leaf4 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef4 = context.register(leaf4);
-
-      pageTree1.pushLeafNode(leafRef1);
-      pageTree1.pushTreeNode(pageTreeRef2);
-      pageTree1.pushLeafNode(leafRef4);
-
-      pageTree2.pushLeafNode(leafRef2);
-      pageTree2.pushTreeNode(pageTreeRef3);
-
-      pageTree3.pushTreeNode(pageTreeRef4);
-
-      pageTree4.pushLeafNode(leafRef3);
-
-      expect(pageTree1.Count().value()).toBe(4);
-      expect(pageTree2.Count().value()).toBe(2);
-      expect(pageTree3.Count().value()).toBe(1);
-      expect(pageTree4.Count().value()).toBe(1);
-      expect(pageTree2.Kids().get(1)).toBe(pageTreeRef3);
-
-      const newLeaf = PDFPageLeaf.withContextAndParent(context, pageTreeRef2);
+      const newLeaf = PDFPageLeaf.withContextAndParent(context, lvl2Tree1Ref);
       const newLeafRef = context.register(newLeaf);
-      const insertionRef = pageTree1.insertLeafNode(newLeafRef, 2);
+      const insertionRef = lvl1Tree1.insertLeafNode(newLeafRef, 2);
 
-      expect(pageTree1.Count().value()).toBe(5);
-      expect(pageTree2.Count().value()).toBe(3);
-      expect(pageTree3.Count().value()).toBe(1);
-      expect(pageTree4.Count().value()).toBe(1);
+      expect(lvl1Tree1.Count().value()).toBe(5);
+      expect(lvl2Tree1.Count().value()).toBe(3);
+      expect(lvl3Tree1.Count().value()).toBe(1);
+      expect(lvl4Tree1.Count().value()).toBe(1);
 
-      expect(insertionRef).toBe(pageTreeRef2);
-      expect(pageTree2.Kids().get(1)).toBe(newLeafRef);
-      expect(pageTree2.Kids().get(2)).toBe(pageTreeRef3);
+      expect(insertionRef).toBe(lvl2Tree1Ref);
+      expect(lvl2Tree1.Kids().get(1)).toBe(newLeafRef);
+      expect(lvl2Tree1.Kids().get(2)).toBe(lvl3Tree1Ref);
     });
 
-    it(`can insert leaf nodes towards the end of the second layer of the page tree`, () => {
-      const context = PDFContext.create();
+    it(`can insert leaf nodes towards the end of the second layer of a page tree`, () => {
+      const { context, pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+      const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
+      const [lvl2Tree1Ref, lvl2Tree1] = pageTree(lvl1Tree1Ref);
+      const [lvl3Tree1Ref, lvl3Tree1] = pageTree(lvl2Tree1Ref);
 
-      const pageTree2 = PDFPageTree.withContext(context, pageTreeRef1);
-      const pageTreeRef2 = context.register(pageTree2);
+      const [leafRef1] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef2] = pageLeaf(lvl2Tree1Ref);
+      const [leafRef3] = pageLeaf(lvl3Tree1Ref);
+      const [leafRef4] = pageLeaf(lvl3Tree1Ref);
+      const [leafRef5] = pageLeaf(lvl2Tree1Ref);
+      const [leafRef6] = pageLeaf(lvl1Tree1Ref);
 
-      const pageTree3 = PDFPageTree.withContext(context, pageTreeRef2);
-      const pageTreeRef3 = context.register(pageTree3);
+      pushLeafNodes(lvl1Tree1, leafRef1);
+      pushTreeNodes(lvl1Tree1, lvl2Tree1Ref);
+      pushLeafNodes(lvl1Tree1, leafRef6);
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef1 = context.register(leaf1);
+      pushLeafNodes(lvl2Tree1, leafRef2);
+      pushTreeNodes(lvl2Tree1, lvl3Tree1Ref);
+      pushLeafNodes(lvl2Tree1, leafRef5);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef2);
-      const leafRef2 = context.register(leaf2);
+      pushLeafNodes(lvl3Tree1, leafRef3, leafRef4);
 
-      const leaf3 = PDFPageLeaf.withContextAndParent(context, pageTreeRef3);
-      const leafRef3 = context.register(leaf3);
+      expect(lvl1Tree1.Count().value()).toBe(6);
+      expect(lvl2Tree1.Count().value()).toBe(4);
+      expect(lvl3Tree1.Count().value()).toBe(2);
+      expect(lvl2Tree1.Kids().get(2)).toBe(leafRef5);
 
-      const leaf4 = PDFPageLeaf.withContextAndParent(context, pageTreeRef3);
-      const leafRef4 = context.register(leaf4);
-
-      const leaf5 = PDFPageLeaf.withContextAndParent(context, pageTreeRef2);
-      const leafRef5 = context.register(leaf5);
-
-      const leaf6 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef6 = context.register(leaf6);
-
-      pageTree1.pushLeafNode(leafRef1);
-      pageTree1.pushTreeNode(pageTreeRef2);
-      pageTree1.pushLeafNode(leafRef6);
-
-      pageTree2.pushLeafNode(leafRef2);
-      pageTree2.pushTreeNode(pageTreeRef3);
-      pageTree2.pushLeafNode(leafRef5);
-
-      pageTree3.pushLeafNode(leafRef3);
-      pageTree3.pushLeafNode(leafRef4);
-
-      expect(pageTree1.Count().value()).toBe(6);
-      expect(pageTree2.Count().value()).toBe(4);
-      expect(pageTree3.Count().value()).toBe(2);
-      expect(pageTree2.Kids().get(2)).toBe(leafRef5);
-
-      const newLeaf = PDFPageLeaf.withContextAndParent(context, pageTreeRef2);
+      const newLeaf = PDFPageLeaf.withContextAndParent(context, lvl2Tree1Ref);
       const newLeafRef = context.register(newLeaf);
-      const insertionRef = pageTree1.insertLeafNode(newLeafRef, 4);
+      const insertionRef = lvl1Tree1.insertLeafNode(newLeafRef, 4);
 
-      expect(pageTree1.Count().value()).toBe(7);
-      expect(pageTree2.Count().value()).toBe(5);
-      expect(pageTree3.Count().value()).toBe(2);
+      expect(lvl1Tree1.Count().value()).toBe(7);
+      expect(lvl2Tree1.Count().value()).toBe(5);
+      expect(lvl3Tree1.Count().value()).toBe(2);
 
-      expect(insertionRef).toBe(pageTreeRef2);
-      expect(pageTree2.Kids().get(2)).toBe(newLeafRef);
-      expect(pageTree2.Kids().get(3)).toBe(leafRef5);
+      expect(insertionRef).toBe(lvl2Tree1Ref);
+      expect(lvl2Tree1.Kids().get(2)).toBe(newLeafRef);
+      expect(lvl2Tree1.Kids().get(3)).toBe(leafRef5);
     });
 
-    it(`can insert leaf nodes at the end of the page tree`, () => {
-      const context = PDFContext.create();
+    it(`can insert leaf nodes at the end of a page tree`, () => {
+      const { context, pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+      const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef1 = context.register(leaf1);
+      const [leafRef1] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef2] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef3] = pageLeaf(lvl1Tree1Ref);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef2 = context.register(leaf2);
+      pushLeafNodes(lvl1Tree1, leafRef1, leafRef2, leafRef3);
 
-      const leaf3 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef3 = context.register(leaf3);
+      expect(lvl1Tree1.Count().value()).toBe(3);
+      expect(lvl1Tree1.Kids().get(2)).toBe(leafRef3);
+      expect(lvl1Tree1.Kids().get(3)).toBe(undefined);
 
-      pageTree1.pushLeafNode(leafRef1);
-      pageTree1.pushLeafNode(leafRef2);
-      pageTree1.pushLeafNode(leafRef3);
-
-      expect(pageTree1.Count().value()).toBe(3);
-      expect(pageTree1.Kids().get(2)).toBe(leafRef3);
-      expect(pageTree1.Kids().get(3)).toBe(undefined);
-
-      const newLeaf = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
+      const newLeaf = PDFPageLeaf.withContextAndParent(context, lvl1Tree1Ref);
       const newLeafRef = context.register(newLeaf);
-      const insertionRef = pageTree1.insertLeafNode(newLeafRef, 3);
+      const insertionRef = lvl1Tree1.insertLeafNode(newLeafRef, 3);
 
-      expect(pageTree1.Count().value()).toBe(4);
+      expect(lvl1Tree1.Count().value()).toBe(4);
 
       expect(insertionRef).toBe(undefined);
-      expect(pageTree1.Kids().get(2)).toBe(leafRef3);
-      expect(pageTree1.Kids().get(3)).toBe(newLeafRef);
+      expect(lvl1Tree1.Kids().get(2)).toBe(leafRef3);
+      expect(lvl1Tree1.Kids().get(3)).toBe(newLeafRef);
     });
 
     it(`returns the correct ref when inserting more than two levels deep`, () => {
-      const context = PDFContext.create();
+      const { context, pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+      const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
+      const [lvl2Tree1Ref, lvl2Tree1] = pageTree(lvl1Tree1Ref);
+      const [lvl3Tree1Ref, lvl3Tree1] = pageTree(lvl2Tree1Ref);
 
-      const pageTree2 = PDFPageTree.withContext(context, pageTreeRef1);
-      const pageTreeRef2 = context.register(pageTree2);
+      const [leafRef1] = pageLeaf(lvl3Tree1Ref);
+      const [leafRef2] = pageLeaf(lvl3Tree1Ref);
 
-      const pageTree3 = PDFPageTree.withContext(context, pageTreeRef2);
-      const pageTreeRef3 = context.register(pageTree3);
+      pushTreeNodes(lvl1Tree1, lvl2Tree1Ref);
+      pushTreeNodes(lvl2Tree1, lvl3Tree1Ref);
+      pushLeafNodes(lvl3Tree1, leafRef1, leafRef2);
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef3);
-      const leafRef1 = context.register(leaf1);
+      expect(lvl1Tree1.Count().value()).toBe(2);
+      expect(lvl3Tree1.Kids().get(0)).toBe(leafRef1);
+      expect(lvl3Tree1.Kids().get(1)).toBe(leafRef2);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef3);
-      const leafRef2 = context.register(leaf2);
-
-      pageTree1.pushTreeNode(pageTreeRef2);
-      pageTree2.pushTreeNode(pageTreeRef3);
-      pageTree3.pushLeafNode(leafRef1);
-      pageTree3.pushLeafNode(leafRef2);
-
-      expect(pageTree1.Count().value()).toBe(2);
-      expect(pageTree3.Kids().get(0)).toBe(leafRef1);
-      expect(pageTree3.Kids().get(1)).toBe(leafRef2);
-
-      const newLeaf = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
+      const newLeaf = PDFPageLeaf.withContextAndParent(context, lvl1Tree1Ref);
       const newLeafRef = context.register(newLeaf);
-      const insertionRef = pageTree1.insertLeafNode(newLeafRef, 1);
+      const insertionRef = lvl1Tree1.insertLeafNode(newLeafRef, 1);
 
-      expect(pageTree1.Count().value()).toBe(3);
+      expect(lvl1Tree1.Count().value()).toBe(3);
 
-      expect(insertionRef).toBe(pageTreeRef3);
-      expect(pageTree3.Kids().get(0)).toBe(leafRef1);
-      expect(pageTree3.Kids().get(1)).toBe(newLeafRef);
-      expect(pageTree3.Kids().get(2)).toBe(leafRef2);
+      expect(insertionRef).toBe(lvl3Tree1Ref);
+      expect(lvl3Tree1.Kids().get(0)).toBe(leafRef1);
+      expect(lvl3Tree1.Kids().get(1)).toBe(newLeafRef);
+      expect(lvl3Tree1.Kids().get(2)).toBe(leafRef2);
     });
 
-    it(`throws an error when inserting past the end of the tree`, () => {
-      const context = PDFContext.create();
+    it(`throws an error when inserting past the end of a tree`, () => {
+      const { context, pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+      const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef1 = context.register(leaf1);
+      const [leafRef1] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef2] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef3] = pageLeaf(lvl1Tree1Ref);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef2 = context.register(leaf2);
+      pushLeafNodes(lvl1Tree1, leafRef1, leafRef2, leafRef3);
 
-      const leaf3 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef3 = context.register(leaf3);
-
-      pageTree1.pushLeafNode(leafRef1);
-      pageTree1.pushLeafNode(leafRef2);
-      pageTree1.pushLeafNode(leafRef3);
-
-      const newLeaf = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
+      const newLeaf = PDFPageLeaf.withContextAndParent(context, lvl1Tree1Ref);
       const newLeafRef = context.register(newLeaf);
-      expect(() => pageTree1.insertLeafNode(newLeafRef, 4)).toThrow();
+      expect(() => lvl1Tree1.insertLeafNode(newLeafRef, 4)).toThrow();
     });
   });
 
   describe(`leaf node removal`, () => {
-    it(`can remove leaf nodes from the end of the second layer of the page tree`, () => {
-      const context = PDFContext.create();
+    it(`can remove leaf nodes from the end of the second layer of a page tree`, () => {
+      const { pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+      const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
+      const [lvl2Tree1Ref, lvl2Tree1] = pageTree(lvl1Tree1Ref);
+      const [lvl3Tree1Ref, lvl3Tree1] = pageTree(lvl2Tree1Ref);
 
-      const pageTree2 = PDFPageTree.withContext(context, pageTreeRef1);
-      const pageTreeRef2 = context.register(pageTree2);
+      const [leafRef1] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef2] = pageLeaf(lvl2Tree1Ref);
+      const [leafRef3] = pageLeaf(lvl3Tree1Ref);
+      const [leafRef4] = pageLeaf(lvl3Tree1Ref);
+      const [leafRef5] = pageLeaf(lvl2Tree1Ref);
+      const [leafRef6] = pageLeaf(lvl1Tree1Ref);
 
-      const pageTree3 = PDFPageTree.withContext(context, pageTreeRef2);
-      const pageTreeRef3 = context.register(pageTree3);
+      pushLeafNodes(lvl1Tree1, leafRef1);
+      pushTreeNodes(lvl1Tree1, lvl2Tree1Ref);
+      pushLeafNodes(lvl1Tree1, leafRef6);
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef1 = context.register(leaf1);
+      pushLeafNodes(lvl2Tree1, leafRef2);
+      pushTreeNodes(lvl2Tree1, lvl3Tree1Ref);
+      pushLeafNodes(lvl2Tree1, leafRef5);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef2);
-      const leafRef2 = context.register(leaf2);
+      pushLeafNodes(lvl3Tree1, leafRef3, leafRef4);
 
-      const leaf3 = PDFPageLeaf.withContextAndParent(context, pageTreeRef3);
-      const leafRef3 = context.register(leaf3);
+      expect(lvl1Tree1.Count().value()).toBe(6);
+      expect(lvl2Tree1.Count().value()).toBe(4);
+      expect(lvl3Tree1.Count().value()).toBe(2);
+      expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
+      expect(lvl2Tree1.Kids().get(2)).toBe(leafRef5);
 
-      const leaf4 = PDFPageLeaf.withContextAndParent(context, pageTreeRef3);
-      const leafRef4 = context.register(leaf4);
+      lvl1Tree1.removeLeafNode(4);
 
-      const leaf5 = PDFPageLeaf.withContextAndParent(context, pageTreeRef2);
-      const leafRef5 = context.register(leaf5);
+      expect(lvl1Tree1.Count().value()).toBe(5);
+      expect(lvl2Tree1.Count().value()).toBe(3);
+      expect(lvl3Tree1.Count().value()).toBe(2);
 
-      const leaf6 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef6 = context.register(leaf6);
-
-      pageTree1.pushLeafNode(leafRef1);
-      pageTree1.pushTreeNode(pageTreeRef2);
-      pageTree1.pushLeafNode(leafRef6);
-
-      pageTree2.pushLeafNode(leafRef2);
-      pageTree2.pushTreeNode(pageTreeRef3);
-      pageTree2.pushLeafNode(leafRef5);
-
-      pageTree3.pushLeafNode(leafRef3);
-      pageTree3.pushLeafNode(leafRef4);
-
-      expect(pageTree1.Count().value()).toBe(6);
-      expect(pageTree2.Count().value()).toBe(4);
-      expect(pageTree3.Count().value()).toBe(2);
-      expect(pageTree2.Kids().get(1)).toBe(pageTreeRef3);
-      expect(pageTree2.Kids().get(2)).toBe(leafRef5);
-
-      pageTree1.removeLeafNode(4);
-
-      expect(pageTree1.Count().value()).toBe(5);
-      expect(pageTree2.Count().value()).toBe(3);
-      expect(pageTree3.Count().value()).toBe(2);
-
-      expect(pageTree2.Kids().get(1)).toBe(pageTreeRef3);
-      expect(pageTree2.Kids().get(2)).toBe(undefined);
+      expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
+      expect(lvl2Tree1.Kids().get(2)).toBe(undefined);
     });
 
     it(`can remove leaf nodes from a parent node that is the last child of another node`, () => {
-      const context = PDFContext.create();
+      const { pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+      const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
+      const [lvl2Tree1Ref, lvl2Tree1] = pageTree(lvl1Tree1Ref);
+      const [lvl3Tree1Ref, lvl3Tree1] = pageTree(lvl2Tree1Ref);
+      const [lvl4Tree1Ref, lvl4Tree1] = pageTree(lvl3Tree1Ref);
 
-      const pageTree2 = PDFPageTree.withContext(context, pageTreeRef1);
-      const pageTreeRef2 = context.register(pageTree2);
+      const [leafRef1] = pageLeaf(lvl1Tree1Ref);
+      const [] = pageLeaf(lvl2Tree1Ref);
+      const [leafRef3] = pageLeaf(lvl4Tree1Ref);
+      const [leafRef4] = pageLeaf(lvl1Tree1Ref);
 
-      const pageTree3 = PDFPageTree.withContext(context, pageTreeRef2);
-      const pageTreeRef3 = context.register(pageTree3);
+      pushLeafNodes(lvl1Tree1, leafRef1);
+      pushTreeNodes(lvl1Tree1, lvl2Tree1Ref);
+      pushLeafNodes(lvl1Tree1, leafRef4);
 
-      const pageTree4 = PDFPageTree.withContext(context, pageTreeRef3);
-      const pageTreeRef4 = context.register(pageTree4);
+      pushLeafNodes(lvl2Tree1, leafRef1);
+      pushTreeNodes(lvl2Tree1, lvl3Tree1Ref);
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef1 = context.register(leaf1);
+      pushTreeNodes(lvl3Tree1, lvl4Tree1Ref);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef2);
-      const leafRef2 = context.register(leaf2);
+      pushLeafNodes(lvl4Tree1, leafRef3);
 
-      const leaf3 = PDFPageLeaf.withContextAndParent(context, pageTreeRef4);
-      const leafRef3 = context.register(leaf3);
+      expect(lvl1Tree1.Count().value()).toBe(4);
+      expect(lvl2Tree1.Count().value()).toBe(2);
+      expect(lvl3Tree1.Count().value()).toBe(1);
+      expect(lvl4Tree1.Count().value()).toBe(1);
+      expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
+      expect(lvl4Tree1.Kids().get(0)).toBe(leafRef3);
 
-      const leaf4 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef4 = context.register(leaf4);
+      lvl1Tree1.removeLeafNode(2);
 
-      pageTree1.pushLeafNode(leafRef1);
-      pageTree1.pushTreeNode(pageTreeRef2);
-      pageTree1.pushLeafNode(leafRef4);
+      expect(lvl1Tree1.Count().value()).toBe(3);
+      expect(lvl2Tree1.Count().value()).toBe(1);
+      expect(lvl3Tree1.Count().value()).toBe(0);
+      expect(lvl4Tree1.Count().value()).toBe(0);
 
-      pageTree2.pushLeafNode(leafRef2);
-      pageTree2.pushTreeNode(pageTreeRef3);
-
-      pageTree3.pushTreeNode(pageTreeRef4);
-
-      pageTree4.pushLeafNode(leafRef3);
-
-      expect(pageTree1.Count().value()).toBe(4);
-      expect(pageTree2.Count().value()).toBe(2);
-      expect(pageTree3.Count().value()).toBe(1);
-      expect(pageTree4.Count().value()).toBe(1);
-      expect(pageTree2.Kids().get(1)).toBe(pageTreeRef3);
-      expect(pageTree4.Kids().get(0)).toBe(leafRef3);
-
-      pageTree1.removeLeafNode(2);
-
-      expect(pageTree1.Count().value()).toBe(3);
-      expect(pageTree2.Count().value()).toBe(1);
-      expect(pageTree3.Count().value()).toBe(0);
-      expect(pageTree4.Count().value()).toBe(0);
-
-      expect(pageTree2.Kids().get(1)).toBe(pageTreeRef3);
-      expect(pageTree4.Kids().get(0)).toBe(undefined);
+      expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
+      expect(lvl4Tree1.Kids().get(0)).toBe(undefined);
     });
 
-    it(`can remove leaf nodes from the end of the page tree`, () => {
-      const context = PDFContext.create();
+    it(`can remove leaf nodes from the end of a page tree`, () => {
+      const { pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+      const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef1 = context.register(leaf1);
+      const [leafRef1] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef2] = pageLeaf(lvl1Tree1Ref);
+      const [leafRef3] = pageLeaf(lvl1Tree1Ref);
+      pushLeafNodes(lvl1Tree1, leafRef1, leafRef2, leafRef3);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef2 = context.register(leaf2);
+      expect(lvl1Tree1.Count().value()).toBe(3);
+      expect(lvl1Tree1.Kids().get(1)).toBe(leafRef2);
+      expect(lvl1Tree1.Kids().get(2)).toBe(leafRef3);
 
-      const leaf3 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef3 = context.register(leaf3);
+      lvl1Tree1.removeLeafNode(2);
 
-      pageTree1.pushLeafNode(leafRef1);
-      pageTree1.pushLeafNode(leafRef2);
-      pageTree1.pushLeafNode(leafRef3);
-
-      expect(pageTree1.Count().value()).toBe(3);
-      expect(pageTree1.Kids().get(1)).toBe(leafRef2);
-      expect(pageTree1.Kids().get(2)).toBe(leafRef3);
-
-      pageTree1.removeLeafNode(2);
-
-      expect(pageTree1.Count().value()).toBe(2);
-      expect(pageTree1.Kids().get(1)).toBe(leafRef2);
-      expect(pageTree1.Kids().get(2)).toBe(undefined);
+      expect(lvl1Tree1.Count().value()).toBe(2);
+      expect(lvl1Tree1.Kids().get(1)).toBe(leafRef2);
+      expect(lvl1Tree1.Kids().get(2)).toBe(undefined);
     });
 
-    it(`throws an error when removing past the end of the tree`, () => {
-      const context = PDFContext.create();
+    it(`throws an error when removing past the end of a tree`, () => {
+      const buildTree = () => {
+        const { pageTree, pageLeaf } = pageUtils();
 
-      const pageTree1 = PDFPageTree.withContext(context);
-      const pageTreeRef1 = context.register(pageTree1);
+        const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
 
-      const leaf1 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef1 = context.register(leaf1);
+        const [leafRef1] = pageLeaf(lvl1Tree1Ref);
+        const [leafRef2] = pageLeaf(lvl1Tree1Ref);
+        const [leafRef3] = pageLeaf(lvl1Tree1Ref);
+        pushLeafNodes(lvl1Tree1, leafRef1, leafRef2, leafRef3);
 
-      const leaf2 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef2 = context.register(leaf2);
+        return lvl1Tree1;
+      };
 
-      const leaf3 = PDFPageLeaf.withContextAndParent(context, pageTreeRef1);
-      const leafRef3 = context.register(leaf3);
+      expect(() => buildTree().removeLeafNode(0)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(1)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(2)).not.toThrow();
 
-      pageTree1.pushLeafNode(leafRef1);
-      pageTree1.pushLeafNode(leafRef2);
-      pageTree1.pushLeafNode(leafRef3);
+      expect(() => buildTree().removeLeafNode(3)).toThrow(
+        'Index out of bounds: 3/2 (b)',
+      );
+      expect(() => buildTree().removeLeafNode(4)).toThrow(
+        'Index out of bounds: 3/2 (a)',
+      );
+    });
 
-      expect(() => pageTree1.removeLeafNode(3)).toThrow();
+    it(`does not throw an error when at the end of a hierarchical tree`, () => {
+      const buildTree = () => {
+        const { pageTree, pageLeaf } = pageUtils();
+
+        const [lvl1Tree1Ref, lvl1Tree1] = pageTree();
+
+        const [lvl2Tree1Ref, lvl2Tree1] = pageTree(lvl1Tree1Ref);
+        const [lvl2Tree2Ref, lvl2Tree2] = pageTree(lvl1Tree1Ref);
+        pushTreeNodes(lvl1Tree1, lvl2Tree1Ref, lvl2Tree2Ref);
+
+        const [lvl3Tree1Ref, lvl3Tree1] = pageTree(lvl2Tree1Ref);
+        const [lvl3Tree2Ref, lvl3Tree2] = pageTree(lvl2Tree1Ref);
+        const [lvl3Tree3Ref, lvl3Tree3] = pageTree(lvl2Tree2Ref);
+        const [lvl3Tree4Ref, lvl3Tree4] = pageTree(lvl2Tree2Ref);
+        pushTreeNodes(lvl2Tree1, lvl3Tree1Ref, lvl3Tree2Ref);
+        pushTreeNodes(lvl2Tree2, lvl3Tree3Ref, lvl3Tree4Ref);
+
+        const [leafRef1] = pageLeaf(lvl3Tree1Ref);
+        const [leafRef2] = pageLeaf(lvl3Tree1Ref);
+        const [leafRef3] = pageLeaf(lvl3Tree2Ref);
+        const [leafRef4] = pageLeaf(lvl3Tree2Ref);
+        const [leafRef5] = pageLeaf(lvl3Tree3Ref);
+        const [leafRef6] = pageLeaf(lvl3Tree3Ref);
+        const [leafRef7] = pageLeaf(lvl3Tree4Ref);
+        const [leafRef8] = pageLeaf(lvl3Tree4Ref);
+        pushLeafNodes(lvl3Tree1, leafRef1, leafRef2);
+        pushLeafNodes(lvl3Tree2, leafRef3, leafRef4);
+        pushLeafNodes(lvl3Tree3, leafRef5, leafRef6);
+        pushLeafNodes(lvl3Tree4, leafRef7, leafRef8);
+
+        return lvl1Tree1;
+      };
+
+      expect(() => buildTree().removeLeafNode(0)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(1)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(2)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(3)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(4)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(5)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(6)).not.toThrow();
+      expect(() => buildTree().removeLeafNode(7)).not.toThrow();
+
+      expect(() => buildTree().removeLeafNode(8)).toThrow(
+        'Index out of bounds: 2/1 (b)',
+      );
+      expect(() => buildTree().removeLeafNode(9)).toThrow(
+        'Index out of bounds: 2/1 (a)',
+      );
     });
   });
 });
