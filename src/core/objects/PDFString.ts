@@ -21,6 +21,7 @@ class PDFString extends PDFObject {
   static toDate = (dateString: string) =>
     // Regex find and replace with capturing groups
     // For Example: (D:20180624015837Z) --> 2018-06-24T01:58:37Z
+    // TODO not all possible variations from the spec are supported yet (see 7.9.4)
     new Date(
       dateString.replace(
         /^D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)Z$/,
@@ -55,9 +56,15 @@ class PDFString extends PDFObject {
   }
 
   decodeText(): string {
-    // TODO could be PDFDocEncoding or UTF16-BE. check for bom
-    // Not implemented yet
-    throw new Error('Not implemented yet!');
+    console.log('Literal text pdf object found: ', this.value);
+    // þÿ is the bom (254,255) i.e. FEFF in hex as literal text.
+    if (this.value.startsWith('þÿ')) {
+      // TODO add testcase for this scenario
+      // TODO decode utf-16 string if needed (use codePointAt for each char and call utf-16 decode)
+      throw new Error('Literal Text encoded as utf-16 found');
+    }
+    // TODO check if any decoding is needed. The current testcase seems fine.
+    return this.value;
   }
 
   decodeDate(): Date {

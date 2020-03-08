@@ -1,6 +1,11 @@
+import fs from 'fs';
 import { PDFDocument } from 'src/api';
 
 describe(`PDFMetadata`, () => {
+  const updateSectionsPdfBytes = fs.readFileSync(
+    'assets/pdfs/with_update_sections.pdf',
+  );
+
   it(`metadata fields can be set and retrieved (Hex String encoded as UTF-16BE)`, async () => {
     const pdfDoc = await PDFDocument.create();
 
@@ -44,5 +49,21 @@ describe(`PDFMetadata`, () => {
     expect(pdfDoc.getKeywords()).toStrictEqual(keywords);
     expect(pdfDoc.getCreationDate()).toStrictEqual(creationDate);
     expect(pdfDoc.getModificationDate()).toStrictEqual(modificationDate);
+  });
+
+  it(`metadata fields can retrieved (Literal String encoded with the PDFDocEncoding)`, async () => {
+    const pdfDoc = await PDFDocument.load(updateSectionsPdfBytes);
+
+    expect(pdfDoc.getTitle()).toBe('');
+    expect(pdfDoc.getAuthor()).toBe('SE:W:CAR:MP');
+    expect(pdfDoc.getSubject()).toBe('Payment Voucher');
+    expect(pdfDoc.getProducer()).toBe(
+      'pdf-lib (https://github.com/Hopding/pdf-lib)',
+    );
+    expect(pdfDoc.getCreator()).toBe('Adobe LiveCycle Designer ES 8.2');
+    expect(pdfDoc.getKeywords()).toStrictEqual([]);
+    // Date Reading is not complete see spec 7.9.4
+    // expect(pdfDoc.getCreationDate()).toStrictEqual('creationDate');
+    // expect(pdfDoc.getModificationDate()).toStrictEqual('modificationDate');
   });
 });

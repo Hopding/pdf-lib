@@ -6,6 +6,7 @@ import {
   utf16Decode,
   utf16Encode,
 } from 'src/utils';
+import { pdfDocEncodingDecode } from 'src/utils/pdfdocencoding';
 
 class PDFHexString extends PDFObject {
   static of = (value: string) => new PDFHexString(value);
@@ -37,7 +38,13 @@ class PDFHexString extends PDFObject {
       // Hex is base 16
       bytes.push(parseInt(nextTwoDigits, 16));
     }
-    return utf16Decode(new Uint16Array(bytes));
+
+    if (value.toUpperCase().startsWith('FEFF')) {
+      // Leading Byte Order Mark (in HEX) means it is an UTF-16BE encoded string.
+      // See pdf spec figure 7.
+      return utf16Decode(new Uint16Array(bytes));
+    }
+    return pdfDocEncodingDecode(new Uint16Array(bytes));
   };
 
   private readonly value: string;
@@ -67,7 +74,6 @@ class PDFHexString extends PDFObject {
   }
 
   decodeText(): string {
-    // TODO could also be PDFDocEncoding. check for bom
     return PDFHexString.toText(this.value);
   }
 }
