@@ -62,8 +62,8 @@ describe(`PDFMetadata`, () => {
     );
     expect(pdfDoc.getCreator()).toBe('Adobe LiveCycle Designer ES 8.2');
     expect(pdfDoc.getKeywords()).toStrictEqual([]);
-    // Date Reading is not complete see spec 7.9.4
-    // expect(pdfDoc.getCreationDate()).toStrictEqual('creationDate');
-    // expect(pdfDoc.getModificationDate()).toStrictEqual('modificationDate');
+    expect(pdfDoc.getCreationDate()).toStrictEqual(
+      new Date('2014-01-02T13:00:54Z'),
+    );
   });
 });

@@ -48,4 +48,55 @@ describe(`PDFString`, () => {
     expect(PDFString.of(')(b\\a/))z(').copyBytesInto(buffer, 3)).toBe(12);
     expect(buffer).toEqual(typedArrayFor('   ()(b\\a/))z()     '));
   });
+
+  it(`can construct a date object`, () => {
+    // D:YYYYMMDDHHmmSSOHH'mm
+    expect(PDFString.toDate('D:20200321165011+01\'01')).toStrictEqual(
+      new Date('2020-03-21T15:49:11Z'),
+    );
+    expect(PDFString.toDate('D:20200321165011-01\'01')).toStrictEqual(
+      new Date('2020-03-21T17:51:11Z'),
+    );
+    expect(PDFString.toDate('D:20200321165011Z00\'00')).toStrictEqual(
+      new Date('2020-03-21T16:50:11Z'),
+    );
+    // D:YYYYMMDDHHmmSSOHH
+    expect(PDFString.toDate('D:20200321165011+01')).toStrictEqual(
+      new Date('2020-03-21T15:50:11Z'),
+    );
+    expect(PDFString.toDate('D:20200321165011-01')).toStrictEqual(
+      new Date('2020-03-21T17:50:11Z'),
+    );
+    expect(PDFString.toDate('D:20200321165011Z00')).toStrictEqual(
+      new Date('2020-03-21T16:50:11Z'),
+    );
+    // D:YYYYMMDDHHmmSSO
+    expect(PDFString.toDate('D:20200321165011Z')).toStrictEqual(
+      new Date('2020-03-21T16:50:11Z'),
+    );
+    // D:YYYYMMDDHHmmSS
+    expect(PDFString.toDate('D:20200321165011')).toStrictEqual(
+      new Date('2020-03-21T16:50:11Z'),
+    );
+    // D:YYYYMMDDHHmm
+    expect(PDFString.toDate('D:202003211650')).toStrictEqual(
+      new Date('2020-03-21T16:50:00Z'),
+    );
+    // D:YYYYMMDDHH
+    expect(PDFString.toDate('D:2020032116')).toStrictEqual(
+      new Date('2020-03-21T16:00:00Z'),
+    );
+    // D:YYYYMMDD
+    expect(PDFString.toDate('D:20200321')).toStrictEqual(
+      new Date('2020-03-21T00:00:00Z'),
+    );
+    // D:YYYYMM
+    expect(PDFString.toDate('D:202003')).toStrictEqual(
+      new Date('2020-03-01T00:00:00Z'),
+    );
+    // D:YYYY
+    expect(PDFString.toDate('D:2020')).toStrictEqual(
+      new Date('2020-01-01T00:00:00Z'),
+    );
+  });
 });

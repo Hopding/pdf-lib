@@ -18,16 +18,108 @@ class PDFString extends PDFObject {
     return new PDFString(`D:${year}${month}${day}${hours}${mins}${secs}Z`);
   };
 
-  static toDate = (dateString: string) =>
+  /**
+   * Converts the given string into a date object.
+   * The specification of dates is found in the pdf spec in 7.9.4.
+   */
+  static toDate = (dateString: string) => {
     // Regex find and replace with capturing groups
-    // For Example: (D:20180624015837Z) --> 2018-06-24T01:58:37Z
-    // TODO not all possible variations from the spec are supported yet (see 7.9.4)
-    new Date(
-      dateString.replace(
-        /^D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)Z$/,
-        '$1-$2-$3T$4:$5:$6Z',
-      ),
+    // From the most specified date to the least specified.
+
+    // The default time zone is GMT which is UTC/Z in javascript
+    // The default values for MM and DD are 01 the rest is 00. See spec.
+
+    // D:YYYYMMDDHHmmSSOHH'mm (with optional last ' in the regex)
+    const tillMinuteOffset: RegExp = /^D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)([+\-Z])(\d\d)'(\d\d)'?$/;
+    const tillMinuteOffsetMatch = dateString.match(tillMinuteOffset);
+    if (tillMinuteOffsetMatch) {
+      const date = new Date(
+        dateString.replace(tillMinuteOffset, '$1-$2-$3T$4:$5:$6Z'),
+      );
+      PDFString.takeOffsetIntoAccount(
+        date,
+        tillMinuteOffsetMatch[7],
+        tillMinuteOffsetMatch[8],
+        tillMinuteOffsetMatch[9],
+      );
+      return date;
+    }
+    // D:YYYYMMDDHHmmSSOHH
+    const tillHourOffset: RegExp = /^D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)([+\-Z])(\d\d)$/;
+    const tillHourOffsetMatch: RegExpMatchArray | null = dateString.match(
+      tillHourOffset,
     );
+    if (tillHourOffsetMatch) {
+      const date = new Date(
+        dateString.replace(tillHourOffset, '$1-$2-$3T$4:$5:$6Z'),
+      );
+      PDFString.takeOffsetIntoAccount(
+        date,
+        tillHourOffsetMatch[7],
+        tillHourOffsetMatch[8],
+        '0',
+      );
+      return date;
+    }
+    // D:YYYYMMDDHHmmSSO makes no sense since there is no offset.
+    // D:YYYYMMDDHHmmSS
+    const tillSeconds: RegExp = /^D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)Z?$/;
+    if (dateString.match(tillSeconds)) {
+      return new Date(dateString.replace(tillSeconds, '$1-$2-$3T$4:$5:$6Z'));
+    }
+    // D:YYYYMMDDHHmm
+    const tillMinutes: RegExp = /^D:(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)$/;
+    if (dateString.match(tillMinutes)) {
+      return new Date(dateString.replace(tillMinutes, '$1-$2-$3T$4:$5:00Z'));
+    }
+    // D:YYYYMMDDHH
+    const tillHours: RegExp = /^D:(\d{4})(\d\d)(\d\d)(\d\d)$/;
+    if (dateString.match(tillHours)) {
+      return new Date(dateString.replace(tillHours, '$1-$2-$3T$4:00:00Z'));
+    }
+    // D:YYYYMMDD
+    const tillDay: RegExp = /^D:(\d{4})(\d\d)(\d\d)$/;
+    if (dateString.match(tillDay)) {
+      return new Date(dateString.replace(tillDay, '$1-$2-$3T00:00:00Z'));
+    }
+    // D:YYYYMM
+    const tillMonth: RegExp = /^D:(\d{4})(\d\d)$/;
+    if (dateString.match(tillMonth)) {
+      return new Date(dateString.replace(tillMonth, '$1-$2-01T00:00:00Z'));
+    }
+    // D:YYYY
+    const justYear: RegExp = /^D:(\d{4})$/;
+    if (dateString.match(justYear)) {
+      return new Date(dateString.replace(justYear, '$1-01-01T00:00:00Z'));
+    }
+    // Should not get here. String is not conform to specification!
+    throw new Error(
+      'The given date string does not conform to the pdf spec. The string was: ' +
+        dateString,
+    );
+  };
+
+  static takeOffsetIntoAccount = (
+    date: Date,
+    relation: string,
+    hourOffset: string,
+    minuteOffset: string,
+  ) => {
+    // The relation to UTC, can be either +, - or Z.
+    // Javascript Date supports only UTC so offsets are added or subtracted.
+    switch (relation) {
+      case '+': // time is after UTC, so we offsets are subtracted
+        date.setHours(date.getHours() - parseInt(hourOffset, 10));
+        date.setMinutes(date.getMinutes() - parseInt(minuteOffset, 10));
+        break;
+      case '-': // time is before UTC, so we offsets are added
+        date.setHours(date.getHours() + parseInt(hourOffset, 10));
+        date.setMinutes(date.getMinutes() + parseInt(minuteOffset, 10));
+        break;
+      case 'Z':
+        break;
+    }
+  };
 
   private readonly value: string;
 
