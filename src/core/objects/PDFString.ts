@@ -148,7 +148,6 @@ class PDFString extends PDFObject {
   }
 
   decodeText(): string {
-    console.log('Literal text pdf object found: ', this.value);
     // þÿ is the bom (254,255) i.e. FEFF in hex as literal text.
     if (this.value.startsWith('þÿ')) {
       // TODO add testcase for this scenario

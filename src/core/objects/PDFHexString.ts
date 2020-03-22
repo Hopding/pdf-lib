@@ -2,11 +2,12 @@ import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
 import {
   copyStringIntoBuffer,
+  hexStringToBytes,
   toHexStringOfMinLength,
   utf16Decode,
   utf16Encode,
 } from 'src/utils';
-import { pdfDocEncodingDecode } from 'src/utils/pdfdocencoding';
+import { PDFDocEncoding } from 'src/utils/PDFDocEncoding';
 
 class PDFHexString extends PDFObject {
   static of = (value: string) => new PDFHexString(value);
@@ -23,28 +24,13 @@ class PDFHexString extends PDFObject {
   };
 
   static toText = (value: string) => {
-    // Append a zero if the number of digits is odd. See pdf spec 7.3.4.3
-    if (value.length % 2 === 1) {
-      value = value + '0';
-    }
+    const bytes = hexStringToBytes(value);
 
-    const bytes: number[] = [];
-    let i = 0;
-    while (i + 2 <= value.length) {
-      // Get the next two digits
-      const nextTwoDigits = value.substr(i, 2);
-      i = i + 2;
-
-      // Hex is base 16
-      bytes.push(parseInt(nextTwoDigits, 16));
-    }
-
-    if (value.toUpperCase().startsWith('FEFF')) {
-      // Leading Byte Order Mark (in HEX) means it is an UTF-16BE encoded string.
-      // See pdf spec figure 7.
+    if (bytes.length >= 2 && bytes[0] === 0xfe && bytes[1] === 0xff) {
+      // Leading Byte Order Mark means it is an UTF-16BE encoded string.
       return utf16Decode(new Uint16Array(bytes));
     }
-    return pdfDocEncodingDecode(new Uint16Array(bytes));
+    return PDFDocEncoding.decode(bytes);
   };
 
   private readonly value: string;
