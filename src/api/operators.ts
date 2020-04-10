@@ -76,7 +76,7 @@ export const skewDegrees = (
   );
 
 export const setDashPattern = (
-  dashArray: Array<number | PDFNumber>,
+  dashArray: (number | PDFNumber)[],
   dashPhase: number | PDFNumber,
 ) =>
   PDFOperator.of(Ops.SetLineDashPattern, [

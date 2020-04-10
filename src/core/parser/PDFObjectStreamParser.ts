@@ -46,10 +46,10 @@ class PDFObjectStreamParser extends PDFObjectParser {
     }
   }
 
-  private parseOffsetsAndObjectNumbers(): Array<{
+  private parseOffsetsAndObjectNumbers(): {
     objectNumber: number;
     offset: number;
-  }> {
+  }[] {
     const offsetsAndObjectNumbers = [];
     for (let idx = 0, len = this.objectCount; idx < len; idx++) {
       this.skipWhitespaceAndComments();

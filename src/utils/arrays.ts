@@ -13,7 +13,7 @@ export const typedArrayFor = (value: string | Uint8Array): Uint8Array => {
   return typedArray;
 };
 
-export const mergeIntoTypedArray = (...arrays: Array<string | Uint8Array>) => {
+export const mergeIntoTypedArray = (...arrays: (string | Uint8Array)[]) => {
   const arrayCount = arrays.length;
 
   const typedArrays: Uint8Array[] = [];
