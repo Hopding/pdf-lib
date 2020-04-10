@@ -134,7 +134,7 @@ describe(`PDFPageTree`, () => {
     pushLeafNodes(rightPageTree, leafRef4);
     pushLeafNodes(rootPageTree, leafRef5);
 
-    const visitations: Array<[TreeNode, PDFRef]> = [];
+    const visitations: [TreeNode, PDFRef][] = [];
     rootPageTree.traverse((node, ref) => {
       visitations.push([node, ref]);
     });

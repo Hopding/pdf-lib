@@ -15,7 +15,7 @@ import {
 describe(`PDFObjectStream`, () => {
   const context = PDFContext.create();
 
-  const objects: Array<[PDFRef, PDFObject]> = [
+  const objects: [PDFRef, PDFObject][] = [
     [context.nextRef(), context.obj([])],
     [context.nextRef(), context.obj(true)],
     [context.nextRef(), context.obj({})],

@@ -246,19 +246,13 @@ describe(`PDFPageLeaf`, () => {
 
     const Font = PDFName.of('Font');
     pageTree.setFontDictionary(PDFName.of('Foo'), PDFRef.of(21));
-    expect(
-      pageTree
-        .Resources()!
-        .get(Font)!
-        .toString(),
-    ).toBe('<<\n/Foo 21 0 R\n>>');
+    expect(pageTree.Resources()!.get(Font)!.toString()).toBe(
+      '<<\n/Foo 21 0 R\n>>',
+    );
     pageTree.setFontDictionary(PDFName.of('Bar'), PDFRef.of(99));
-    expect(
-      pageTree
-        .Resources()!
-        .get(Font)!
-        .toString(),
-    ).toBe('<<\n/Foo 21 0 R\n/Bar 99 0 R\n>>');
+    expect(pageTree.Resources()!.get(Font)!.toString()).toBe(
+      '<<\n/Foo 21 0 R\n/Bar 99 0 R\n>>',
+    );
   });
 
   it(`can set XObject refs`, () => {
@@ -268,19 +262,13 @@ describe(`PDFPageLeaf`, () => {
 
     const XObject = PDFName.of('XObject');
     pageTree.setXObject(PDFName.of('Foo'), PDFRef.of(21));
-    expect(
-      pageTree
-        .Resources()!
-        .get(XObject)!
-        .toString(),
-    ).toBe('<<\n/Foo 21 0 R\n>>');
+    expect(pageTree.Resources()!.get(XObject)!.toString()).toBe(
+      '<<\n/Foo 21 0 R\n>>',
+    );
     pageTree.setXObject(PDFName.of('Bar'), PDFRef.of(99));
-    expect(
-      pageTree
-        .Resources()!
-        .get(XObject)!
-        .toString(),
-    ).toBe('<<\n/Foo 21 0 R\n/Bar 99 0 R\n>>');
+    expect(pageTree.Resources()!.get(XObject)!.toString()).toBe(
+      '<<\n/Foo 21 0 R\n/Bar 99 0 R\n>>',
+    );
   });
 
   it(`can be ascended`, () => {
@@ -297,7 +285,7 @@ describe(`PDFPageLeaf`, () => {
     const pageLeafRef = context.register(pageLeaf);
     pageTree2.pushLeafNode(pageLeafRef);
 
-    const visitations: Array<PDFPageLeaf | PDFPageTree> = [];
+    const visitations: (PDFPageLeaf | PDFPageTree)[] = [];
     pageLeaf.ascend((node) => {
       visitations.push(node);
     });

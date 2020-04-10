@@ -17,7 +17,7 @@ class PDFObjectStream extends PDFFlateStream {
   ) => new PDFObjectStream(context, objects, encode);
 
   private readonly objects: IndirectObject[];
-  private readonly offsets: Array<[number, number]>;
+  private readonly offsets: [number, number][];
   private readonly offsetsString: string;
 
   private constructor(
@@ -86,7 +86,7 @@ class PDFObjectStream extends PDFFlateStream {
     return offsetsString;
   }
 
-  private computeObjectOffsets(): Array<[number, number]> {
+  private computeObjectOffsets(): [number, number][] {
     let offset = 0;
     const offsets = new Array(this.objects.length);
     for (let idx = 0, len = this.objects.length; idx < len; idx++) {

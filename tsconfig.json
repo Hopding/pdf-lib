@@ -14,7 +14,6 @@
     "incremental": true,
     "tsBuildInfoFile": "./tsBuildInfo.json",
     "removeComments": false,
-    "noEmit": false,
     "importHelpers": true,
     "downlevelIteration": false,
     "isolatedModules": false,

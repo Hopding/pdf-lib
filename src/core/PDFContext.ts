@@ -132,7 +132,7 @@ class PDFContext {
     return result;
   }
 
-  enumerateIndirectObjects(): Array<[PDFRef, PDFObject]> {
+  enumerateIndirectObjects(): [PDFRef, PDFObject][] {
     return Array.from(this.indirectObjects.entries()).sort(
       byAscendingObjectNumber,
     );
