@@ -13,7 +13,7 @@ import { copyStringIntoBuffer, waitForTick } from 'src/utils';
 export interface SerializationInfo {
   size: number;
   header: PDFHeader;
-  indirectObjects: Array<[PDFRef, PDFObject]>;
+  indirectObjects: [PDFRef, PDFObject][];
   xref?: PDFCrossRefSection;
   trailerDict?: PDFTrailerDict;
   trailer: PDFTrailer;

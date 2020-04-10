@@ -826,8 +826,8 @@ export default class PDFDocument {
    */
   async embedPages(
     pages: PDFPage[],
-    boundingBoxes: Array<PageBoundingBox | undefined> = [],
-    transformationMatrices: Array<TransformationMatrix | undefined> = [],
+    boundingBoxes: (PageBoundingBox | undefined)[] = [],
+    transformationMatrices: (TransformationMatrix | undefined)[] = [],
   ) {
     if (pages.length === 0) return [];
 

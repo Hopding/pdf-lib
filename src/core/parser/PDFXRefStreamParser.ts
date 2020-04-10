@@ -24,10 +24,10 @@ class PDFXRefStreamParser {
   private readonly dict: PDFDict;
   private readonly context: PDFContext;
   private readonly bytes: ByteStream;
-  private readonly subsections: Array<{
+  private readonly subsections: {
     firstObjectNumber: number;
     length: number;
-  }>;
+  }[];
   private readonly byteWidths: [number, number, number];
 
   constructor(rawStream: PDFRawStream) {

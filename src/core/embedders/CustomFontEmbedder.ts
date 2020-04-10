@@ -183,10 +183,10 @@ class CustomFontEmbedder {
     return glyph ? glyph.id : -1;
   }
 
-  protected computeWidths(): Array<number | number[]> {
+  protected computeWidths(): (number | number[])[] {
     const glyphs = this.glyphCache.access();
 
-    const widths: Array<number | number[]> = [];
+    const widths: (number | number[])[] = [];
     let currSection: number[] = [];
 
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {

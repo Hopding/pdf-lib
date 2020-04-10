@@ -53,8 +53,8 @@ class PDFStreamWriter extends PDFWriter {
       this.encodeStreams,
     );
 
-    const uncompressedObjects: Array<[PDFRef, PDFObject]> = [];
-    const compressedObjects: Array<Array<[PDFRef, PDFObject]>> = [];
+    const uncompressedObjects: [PDFRef, PDFObject][] = [];
+    const compressedObjects: [PDFRef, PDFObject][][] = [];
     const objectStreamRefs: PDFRef[] = [];
 
     const indirectObjects = this.context.enumerateIndirectObjects();

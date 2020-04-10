@@ -29,7 +29,7 @@ class PDFDict extends PDFObject {
     this.context = context;
   }
 
-  entries(): Array<[PDFName, PDFObject]> {
+  entries(): [PDFName, PDFObject][] {
     return Array.from(this.dict.entries());
   }
 
