@@ -23,7 +23,7 @@ export default async (assets: Assets) => {
   const sourcePdfDoc = await PDFDocument.load(
     assets.pdfs.with_large_page_count,
   );
-  const sourcePdfPage = sourcePdfDoc.getPages()[73];
+  const sourcePdfPage = sourcePdfDoc.getPage(73);
 
   const embeddedPageFigure = {
     xOffset: 100,

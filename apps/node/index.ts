@@ -112,6 +112,7 @@ const assets = {
       'with_newline_whitespace_in_indirect_object_numbers.pdf',
     ),
     with_comments: readPdf('with_comments.pdf'),
+    with_cropbox: readPdf('with_cropbox.pdf'),
   },
 };
 

@@ -4,10 +4,16 @@ import { degrees, PDFDocument, rgb } from 'pdf-lib';
 import { fetchAsset, writePdf } from './assets';
 
 export default async () => {
-  const [inputPdfBytes, ubuntuBytes, smallMarioBytes] = await Promise.all([
+  const [
+    inputPdfBytes,
+    ubuntuBytes,
+    smallMarioBytes,
+    withCropBoxPdfBytes,
+  ] = await Promise.all([
     fetchAsset('pdfs/with_missing_endstream_eol_and_polluted_ctm.pdf'),
     fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
     fetchAsset('images/small_mario_resized.png'),
+    fetchAsset('pdfs/with_cropbox.pdf'),
   ]);
 
   const pdfDoc = await PDFDocument.load(inputPdfBytes);
@@ -18,7 +24,7 @@ export default async () => {
   const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);
   const smallMarioDims = smallMarioImage.scale(0.7);
 
-  const page = pdfDoc.getPages()[0];
+  const page = pdfDoc.getPage(0);
 
   const text =
     'This is an image of Mario running. This image and text was drawn on top of an existing PDF using pdf-lib!';
@@ -78,6 +84,25 @@ export default async () => {
     color: rgb(0, 0, 1),
     size: 50,
   });
+
+  // Add page with CropBox
+  const pdfDocWithCropBox = await PDFDocument.load(withCropBoxPdfBytes);
+  const [page2] = await pdfDoc.copyPages(pdfDocWithCropBox, [0]);
+  pdfDoc.addPage(page2);
+
+  page2.drawRectangle({
+    x: page2.getWidth(),
+    width: 50,
+    height: page2.getHeight(),
+    color: rgb(1, 0, 0),
+  });
+  page2.drawRectangle({
+    y: page2.getHeight(),
+    height: 50,
+    width: page2.getWidth(),
+    color: rgb(0, 1, 0),
+  });
+  page2.setSize(page2.getWidth() + 50, page2.getHeight() + 50);
 
   const base64Pdf = await pdfDoc.saveAsBase64({ dataUri: true });
 

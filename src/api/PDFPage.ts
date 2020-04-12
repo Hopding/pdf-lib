@@ -268,7 +268,7 @@ export default class PDFPage {
     assertIs(y, 'y', ['number']);
     assertIs(width, 'width', ['number']);
     assertIs(height, 'height', ['number']);
-    const mediaBox = this.doc.context.obj([x, y, width - x, height - y]);
+    const mediaBox = this.doc.context.obj([x, y, x + width, y + height]);
     this.node.set(PDFName.MediaBox, mediaBox);
   }
 
@@ -294,7 +294,7 @@ export default class PDFPage {
     assertIs(y, 'y', ['number']);
     assertIs(width, 'width', ['number']);
     assertIs(height, 'height', ['number']);
-    const cropBox = this.doc.context.obj([x, y, width - x, height - y]);
+    const cropBox = this.doc.context.obj([x, y, x + width, y + height]);
     this.node.set(PDFName.CropBox, cropBox);
   }
 
@@ -320,7 +320,7 @@ export default class PDFPage {
     assertIs(y, 'y', ['number']);
     assertIs(width, 'width', ['number']);
     assertIs(height, 'height', ['number']);
-    const bleedBox = this.doc.context.obj([x, y, width - x, height - y]);
+    const bleedBox = this.doc.context.obj([x, y, x + width, y + height]);
     this.node.set(PDFName.BleedBox, bleedBox);
   }
 
@@ -346,7 +346,7 @@ export default class PDFPage {
     assertIs(y, 'y', ['number']);
     assertIs(width, 'width', ['number']);
     assertIs(height, 'height', ['number']);
-    const trimBox = this.doc.context.obj([x, y, width - x, height - y]);
+    const trimBox = this.doc.context.obj([x, y, x + width, y + height]);
     this.node.set(PDFName.TrimBox, trimBox);
   }
 
@@ -372,7 +372,7 @@ export default class PDFPage {
     assertIs(y, 'y', ['number']);
     assertIs(width, 'width', ['number']);
     assertIs(height, 'height', ['number']);
-    const artBox = this.doc.context.obj([x, y, width - x, height - y]);
+    const artBox = this.doc.context.obj([x, y, x + width, y + height]);
     this.node.set(PDFName.ArtBox, artBox);
   }
 
