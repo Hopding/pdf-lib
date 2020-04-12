@@ -28,7 +28,7 @@ export default async () => {
   const smallMarioDims = smallMarioImage.scale(0.75);
 
   const sourcePdfDoc = await PDFDocument.load(largePageCountPdfBytes);
-  const sourcePdfPage = sourcePdfDoc.getPages()[73];
+  const sourcePdfPage = sourcePdfDoc.getPage(73);
 
   const embeddedPageFigure = {
     xOffset: 100,

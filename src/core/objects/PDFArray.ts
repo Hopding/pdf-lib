@@ -10,6 +10,7 @@ import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
+import { PDFArrayIsNotRectangleError } from '../errors';
 
 class PDFArray extends PDFObject {
   static withContext = (context: PDFContext) => new PDFArray(context);
@@ -79,6 +80,22 @@ class PDFArray extends PDFObject {
 
   lookup(index: number, type?: any) {
     return this.context.lookup(this.get(index), type) as any;
+  }
+
+  asRectangle(): { x: number; y: number; width: number; height: number } {
+    if (this.size() !== 4) throw new PDFArrayIsNotRectangleError(this.size());
+
+    const lowerLeftX = this.lookup(0, PDFNumber).value();
+    const lowerLeftY = this.lookup(1, PDFNumber).value();
+    const upperRightX = this.lookup(2, PDFNumber).value();
+    const upperRightY = this.lookup(3, PDFNumber).value();
+
+    const x = lowerLeftX;
+    const y = lowerLeftY;
+    const width = upperRightX - lowerLeftX;
+    const height = upperRightY - lowerLeftY;
+
+    return { x, y, width, height };
   }
 
   clone(context?: PDFContext): PDFArray {
