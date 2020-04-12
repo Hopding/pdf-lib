@@ -20,30 +20,34 @@ class PDFHexString extends PDFObject {
     return new PDFHexString(hex);
   };
 
-  private readonly value: string;
+  private readonly stringValue: string;
 
   constructor(value: string) {
     super();
-    this.value = value;
+    this.stringValue = value;
+  }
+
+  value(): string {
+    return this.stringValue;
   }
 
   clone(): PDFHexString {
-    return PDFHexString.of(this.value);
+    return PDFHexString.of(this.stringValue);
   }
 
   toString(): string {
-    return `<${this.value}>`;
+    return `<${this.stringValue}>`;
   }
 
   sizeInBytes(): number {
-    return this.value.length + 2;
+    return this.stringValue.length + 2;
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
     buffer[offset++] = CharCodes.LessThan;
-    offset += copyStringIntoBuffer(this.value, buffer, offset);
+    offset += copyStringIntoBuffer(this.stringValue, buffer, offset);
     buffer[offset++] = CharCodes.GreaterThan;
-    return this.value.length + 2;
+    return this.stringValue.length + 2;
   }
 }
 

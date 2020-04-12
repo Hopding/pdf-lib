@@ -98,6 +98,10 @@ class PDFArray extends PDFObject {
     return { x, y, width, height };
   }
 
+  value(): PDFObject[] {
+    return this.array.slice();
+  }
+
   clone(context?: PDFContext): PDFArray {
     const clone = PDFArray.withContext(context || this.context);
     for (let idx = 0, len = this.size(); idx < len; idx++) {

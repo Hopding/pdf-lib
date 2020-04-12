@@ -52,13 +52,17 @@ export const decodePDFRawStream = ({ dict, contents }: PDFRawStream) => {
   const DecodeParms = dict.lookup(PDFName.of('DecodeParms'));
 
   if (Filter instanceof PDFName) {
-    stream = decodeStream(stream, Filter, DecodeParms);
+    stream = decodeStream(
+      stream,
+      Filter,
+      DecodeParms as PDFDict | typeof PDFNull | undefined,
+    );
   } else if (Filter instanceof PDFArray) {
     for (let idx = 0, len = Filter.size(); idx < len; idx++) {
       stream = decodeStream(
         stream,
         Filter.lookup(idx, PDFName),
-        DecodeParms && (DecodeParms as PDFArray).lookup(idx),
+        DecodeParms && (DecodeParms as PDFArray).lookupMaybe(idx, PDFDict),
       );
     }
   } else if (!!Filter) {
