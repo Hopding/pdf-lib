@@ -34,7 +34,6 @@ import {
   PDFContentStream,
   PDFHexString,
   PDFName,
-  PDFNumber,
   PDFOperator,
   PDFPageLeaf,
   PDFRef,
@@ -47,6 +46,7 @@ import {
   assertOrUndefined,
   breakTextIntoLines,
   cleanText,
+  rectanglesAreEqual,
 } from 'src/utils';
 
 /**
@@ -153,16 +153,63 @@ export default class PDFPage {
    * page.setSize(page.getWidth() + 50, page.getHeight() + 100)
    * page.setSize(page.getWidth() - 50, page.getHeight() - 100)
    * ```
+   *
+   * Note that the PDF specification does not allow for pages to have explicit
+   * widths and heights. Instead it defines the "size" of a page in terms of
+   * five rectangles: the MediaBox, CropBox, BleedBox, TrimBox, and ArtBox. As a
+   * result, this method cannot directly change the width and height of a page.
+   * Instead, it works by adjusting these five boxes.
+   *
+   * This method performs the following steps:
+   *   1. Set width & height of MediaBox.
+   *   2. Set width & height of CropBox, if it has same dimensions as MediaBox.
+   *   3. Set width & height of BleedBox, if it has same dimensions as MediaBox.
+   *   4. Set width & height of TrimBox, if it has same dimensions as MediaBox.
+   *   5. Set width & height of ArtBox, if it has same dimensions as MediaBox.
+   *
+   * This approach works well for most PDF documents as all PDF pages must
+   * have a MediaBox, but relatively few have a CropBox, BleedBox, TrimBox, or
+   * ArtBox. And when they do have these additional boxes, they often have the
+   * same dimensions as the MediaBox. However, if you find this method does not
+   * work for your document, consider setting the boxes directly:
+   *   * [[PDFPage.setMediaBox]]
+   *   * [[PDFPage.setCropBox]]
+   *   * [[PDFPage.setBleedBox]]
+   *   * [[PDFPage.setTrimBox]]
+   *   * [[PDFPage.setArtBox]]
+   *
    * @param width The new width of the page.
    * @param height The new height of the page.
    */
   setSize(width: number, height: number): void {
     assertIs(width, 'width', ['number']);
     assertIs(height, 'height', ['number']);
-    const mediaBox = this.node.MediaBox().clone();
-    mediaBox.set(2, this.doc.context.obj(width));
-    mediaBox.set(3, this.doc.context.obj(height));
-    this.node.set(PDFName.of('MediaBox'), mediaBox);
+
+    const mediaBox = this.getMediaBox();
+    this.setMediaBox(mediaBox.x, mediaBox.y, width, height);
+
+    const cropBox = this.getCropBox();
+    const bleedBox = this.getBleedBox();
+    const trimBox = this.getTrimBox();
+    const artBox = this.getArtBox();
+
+    const hasCropBox = this.node.CropBox()!!;
+    const hasBleedBox = this.node.BleedBox()!!;
+    const hasTrimBox = this.node.TrimBox()!!;
+    const hasArtBox = this.node.ArtBox()!!;
+
+    if (hasCropBox && rectanglesAreEqual(cropBox, mediaBox)) {
+      this.setCropBox(mediaBox.x, mediaBox.y, width, height);
+    }
+    if (hasBleedBox && rectanglesAreEqual(bleedBox, mediaBox)) {
+      this.setBleedBox(mediaBox.x, mediaBox.y, width, height);
+    }
+    if (hasTrimBox && rectanglesAreEqual(trimBox, mediaBox)) {
+      this.setTrimBox(mediaBox.x, mediaBox.y, width, height);
+    }
+    if (hasArtBox && rectanglesAreEqual(artBox, mediaBox)) {
+      this.setArtBox(mediaBox.x, mediaBox.y, width, height);
+    }
   }
 
   /**
@@ -172,6 +219,9 @@ export default class PDFPage {
    * page.setWidth(page.getWidth() + 50)
    * page.setWidth(page.getWidth() - 50)
    * ```
+   *
+   * This method uses [[PDFPage.setSize]] to set the page's width.
+   *
    * @param width The new width of the page.
    */
   setWidth(width: number): void {
@@ -186,6 +236,9 @@ export default class PDFPage {
    * page.setHeight(page.getWidth() + 100)
    * page.setHeight(page.getWidth() - 100)
    * ```
+   *
+   * This method uses [[PDFPage.setSize]] to set the page's height.
+   *
    * @param height The new height of the page.
    */
   setHeight(height: number): void {
@@ -194,20 +247,148 @@ export default class PDFPage {
   }
 
   /**
+   * Set the MediaBox of this page. For example:
+   * ```js
+   * const mediaBox = page.getMediaBox()
+   *
+   * page.setMediaBox(0, 0, 250, 500)
+   * page.setMediaBox(mediaBox.x, mediaBox.y, 50, 100)
+   * page.setMediaBox(15, 5, mediaBox.width - 50, mediaBox.height - 100)
+   * ```
+   *
+   * See [[PDFPage.getMediaBox]] for details about what the MediaBox represents.
+   *
+   * @param x The x coordinate of the lower left corner of the new MediaBox.
+   * @param y The y coordinate of the lower left corner of the new MediaBox.
+   * @param width The width of the new MediaBox.
+   * @param height The height of the new MediaBox.
+   */
+  setMediaBox(x: number, y: number, width: number, height: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    assertIs(width, 'width', ['number']);
+    assertIs(height, 'height', ['number']);
+    const mediaBox = this.doc.context.obj([x, y, x + width, y + height]);
+    this.node.set(PDFName.MediaBox, mediaBox);
+  }
+
+  /**
+   * Set the CropBox of this page. For example:
+   * ```js
+   * const cropBox = page.getCropBox()
+   *
+   * page.setCropBox(0, 0, 250, 500)
+   * page.setCropBox(cropBox.x, cropBox.y, 50, 100)
+   * page.setCropBox(15, 5, cropBox.width - 50, cropBox.height - 100)
+   * ```
+   *
+   * See [[PDFPage.getCropBox]] for details about what the CropBox represents.
+   *
+   * @param x The x coordinate of the lower left corner of the new CropBox.
+   * @param y The y coordinate of the lower left corner of the new CropBox.
+   * @param width The width of the new CropBox.
+   * @param height The height of the new CropBox.
+   */
+  setCropBox(x: number, y: number, width: number, height: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    assertIs(width, 'width', ['number']);
+    assertIs(height, 'height', ['number']);
+    const cropBox = this.doc.context.obj([x, y, x + width, y + height]);
+    this.node.set(PDFName.CropBox, cropBox);
+  }
+
+  /**
+   * Set the BleedBox of this page. For example:
+   * ```js
+   * const bleedBox = page.getBleedBox()
+   *
+   * page.setBleedBox(0, 0, 250, 500)
+   * page.setBleedBox(bleedBox.x, bleedBox.y, 50, 100)
+   * page.setBleedBox(15, 5, bleedBox.width - 50, bleedBox.height - 100)
+   * ```
+   *
+   * See [[PDFPage.getBleedBox]] for details about what the BleedBox represents.
+   *
+   * @param x The x coordinate of the lower left corner of the new BleedBox.
+   * @param y The y coordinate of the lower left corner of the new BleedBox.
+   * @param width The width of the new BleedBox.
+   * @param height The height of the new BleedBox.
+   */
+  setBleedBox(x: number, y: number, width: number, height: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    assertIs(width, 'width', ['number']);
+    assertIs(height, 'height', ['number']);
+    const bleedBox = this.doc.context.obj([x, y, x + width, y + height]);
+    this.node.set(PDFName.BleedBox, bleedBox);
+  }
+
+  /**
+   * Set the TrimBox of this page. For example:
+   * ```js
+   * const trimBox = page.getTrimBox()
+   *
+   * page.setTrimBox(0, 0, 250, 500)
+   * page.setTrimBox(trimBox.x, trimBox.y, 50, 100)
+   * page.setTrimBox(15, 5, trimBox.width - 50, trimBox.height - 100)
+   * ```
+   *
+   * See [[PDFPage.getTrimBox]] for details about what the TrimBox represents.
+   *
+   * @param x The x coordinate of the lower left corner of the new TrimBox.
+   * @param y The y coordinate of the lower left corner of the new TrimBox.
+   * @param width The width of the new TrimBox.
+   * @param height The height of the new TrimBox.
+   */
+  setTrimBox(x: number, y: number, width: number, height: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    assertIs(width, 'width', ['number']);
+    assertIs(height, 'height', ['number']);
+    const trimBox = this.doc.context.obj([x, y, x + width, y + height]);
+    this.node.set(PDFName.TrimBox, trimBox);
+  }
+
+  /**
+   * Set the ArtBox of this page. For example:
+   * ```js
+   * const artBox = page.getArtBox()
+   *
+   * page.setArtBox(0, 0, 250, 500)
+   * page.setArtBox(artBox.x, artBox.y, 50, 100)
+   * page.setArtBox(15, 5, artBox.width - 50, artBox.height - 100)
+   * ```
+   *
+   * See [[PDFPage.getArtBox]] for details about what the ArtBox represents.
+   *
+   * @param x The x coordinate of the lower left corner of the new ArtBox.
+   * @param y The y coordinate of the lower left corner of the new ArtBox.
+   * @param width The width of the new ArtBox.
+   * @param height The height of the new ArtBox.
+   */
+  setArtBox(x: number, y: number, width: number, height: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    assertIs(width, 'width', ['number']);
+    assertIs(height, 'height', ['number']);
+    const artBox = this.doc.context.obj([x, y, x + width, y + height]);
+    this.node.set(PDFName.ArtBox, artBox);
+  }
+
+  /**
    * Get this page's width and height. For example:
    * ```js
    * const { width, height } = page.getSize()
    * ```
+   *
+   * This method uses [[PDFPage.getMediaBox]] to obtain the page's
+   * width and height.
+   *
    * @returns The width and height of the page.
    */
   getSize(): { width: number; height: number } {
-    const mediaBox = this.node.MediaBox();
-    const width =
-      mediaBox.lookup(2, PDFNumber).value() -
-      mediaBox.lookup(0, PDFNumber).value();
-    const height =
-      mediaBox.lookup(3, PDFNumber).value() -
-      mediaBox.lookup(1, PDFNumber).value();
+    const { width, height } = this.getMediaBox();
     return { width, height };
   }
 
@@ -216,6 +397,9 @@ export default class PDFPage {
    * ```js
    * const width = page.getWidth()
    * ```
+   *
+   * This method uses [[PDFPage.getSize]] to obtain the page's size.
+   *
    * @returns The width of the page.
    */
   getWidth(): number {
@@ -227,10 +411,118 @@ export default class PDFPage {
    * ```js
    * const height = page.getHeight()
    * ```
+   *
+   * This method uses [[PDFPage.getSize]] to obtain the page's size.
+   *
    * @returns The height of the page.
    */
   getHeight(): number {
     return this.getSize().height;
+  }
+
+  /**
+   * Get the rectangle defining this page's MediaBox. For example:
+   * ```js
+   * const { x, y, width, height } = page.getMediaBox()
+   * ```
+   *
+   * The MediaBox of a page defines the boundaries of the physical medium on
+   * which the page is to be displayed/printed. It may include extended area
+   * surrounding the page content for bleed marks, printing marks, etc...
+   * It may also include areas close to the edges of the medium that cannot be
+   * marked because of physical limitations of the output device. Content
+   * falling outside this boundary may safely be discarded without affecting
+   * the meaning of the PDF file.
+   *
+   * @returns An object defining the lower left corner of the MediaBox and its
+   *          width & height.
+   */
+  getMediaBox(): { x: number; y: number; width: number; height: number } {
+    const mediaBox = this.node.MediaBox();
+    return mediaBox.asRectangle();
+  }
+
+  /**
+   * Get the rectangle defining this page's CropBox. For example:
+   * ```js
+   * const { x, y, width, height } = page.getCropBox()
+   * ```
+   *
+   * The CropBox of a page defines the region to which the contents of the page
+   * shall be clipped when displayed or printed. Unlike the other boxes, the
+   * CropBox does not necessarily represent the physical page geometry. It
+   * merely imposes clipping on the page contents.
+   *
+   * The CropBox's default value is the page's MediaBox.
+   *
+   * @returns An object defining the lower left corner of the CropBox and its
+   *          width & height.
+   */
+  getCropBox(): { x: number; y: number; width: number; height: number } {
+    const cropBox = this.node.CropBox();
+    return cropBox?.asRectangle() ?? this.getMediaBox();
+  }
+
+  /**
+   * Get the rectangle defining this page's BleedBox. For example:
+   * ```js
+   * const { x, y, width, height } = page.getBleedBox()
+   * ```
+   *
+   * The BleedBox of a page defines the region to which the contents of the
+   * page shall be clipped when output in a production environment. This may
+   * include any extra bleed area needed to accommodate the physical
+   * limitations of cutting, folding, and trimming equipment. The actual
+   * printed page may include printing marks that fall outside the BleedBox.
+   *
+   * The BleedBox's default value is the page's CropBox.
+   *
+   * @returns An object defining the lower left corner of the BleedBox and its
+   *          width & height.
+   */
+  getBleedBox(): { x: number; y: number; width: number; height: number } {
+    const bleedBox = this.node.BleedBox();
+    return bleedBox?.asRectangle() ?? this.getCropBox();
+  }
+
+  /**
+   * Get the rectangle defining this page's TrimBox. For example:
+   * ```js
+   * const { x, y, width, height } = page.getTrimBox()
+   * ```
+   *
+   * The TrimBox of a page defines the intended dimensions of the finished
+   * page after trimming. It may be smaller than the MediaBox to allow for
+   * production-related content, such as printing instructions, cut marks, or
+   * color bars.
+   *
+   * The TrimBox's default value is the page's CropBox.
+   *
+   * @returns An object defining the lower left corner of the TrimBox and its
+   *          width & height.
+   */
+  getTrimBox(): { x: number; y: number; width: number; height: number } {
+    const trimBox = this.node.TrimBox();
+    return trimBox?.asRectangle() ?? this.getCropBox();
+  }
+
+  /**
+   * Get the rectangle defining this page's ArtBox. For example:
+   * ```js
+   * const { x, y, width, height } = page.getArtBox()
+   * ```
+   *
+   * The ArtBox of a page defines the extent of the page's meaningful content
+   * (including potential white space).
+   *
+   * The ArtBox's default value is the page's CropBox.
+   *
+   * @returns An object defining the lower left corner of the ArtBox and its
+   *          width & height.
+   */
+  getArtBox(): { x: number; y: number; width: number; height: number } {
+    const artBox = this.node.ArtBox();
+    return artBox?.asRectangle() ?? this.getCropBox();
   }
 
   /**

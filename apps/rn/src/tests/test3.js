@@ -15,7 +15,7 @@ export default async () => {
   const catRidingUnicornDims = catRidingUnicornImage.scale(0.25);
 
   const page0 = pdfDoc.insertPage(0, [305, 250]);
-  const page1 = pdfDoc.getPages()[1];
+  const page1 = pdfDoc.getPage(1);
   const page2 = pdfDoc.addPage([305, 125]);
 
   const hotPink = rgb(1, 0, 1);

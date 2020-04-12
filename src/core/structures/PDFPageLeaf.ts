@@ -80,6 +80,10 @@ class PDFPageLeaf extends PDFDict {
     return this.lookupMaybe(PDFName.TrimBox, PDFArray);
   }
 
+  ArtBox(): PDFArray | undefined {
+    return this.lookupMaybe(PDFName.ArtBox, PDFArray);
+  }
+
   Resources(): PDFDict | undefined {
     const dictOrRef = this.getInheritableAttribute(PDFName.Resources);
     return this.context.lookupMaybe(dictOrRef, PDFDict);

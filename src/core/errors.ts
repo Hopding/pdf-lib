@@ -71,6 +71,13 @@ export class PageEmbeddingMismatchedContextError extends Error {
   }
 }
 
+export class PDFArrayIsNotRectangleError extends Error {
+  constructor(size: number) {
+    const msg = `Attempted to convert PDFArray with ${size} elements to rectangle, but must have exactly 4 elements.`;
+    super(msg);
+  }
+}
+
 /***** Parser Errors ******/
 
 export interface Position {
