@@ -377,6 +377,21 @@ export default class PDFDocument {
   }
 
   /**
+   * Get the page rendered at a particular `index` of the document. For example:
+   * ```js
+   * pdfDoc.getPage(0)   // The first page of the document
+   * pdfDoc.getPage(2)   // The third page of the document
+   * pdfDoc.getPage(197) // The 198th page of the document
+   * ```
+   * @returns The [[PDFPage]] rendered at the given `index` of the document.
+   */
+  getPage(index: number): PDFPage {
+    const pages = this.getPages();
+    assertRange(index, 'index', 0, pages.length - 1);
+    return pages[index];
+  }
+
+  /**
    * Get an array of indices for all the pages contained in this document. The
    * array will contain a range of integers from
    * `0..pdfDoc.getPageCount() - 1`. For example:
