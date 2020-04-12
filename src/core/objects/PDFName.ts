@@ -46,6 +46,7 @@ class PDFName extends PDFObject {
   static readonly Page = PDFName.of('Page');
   static readonly Annots = PDFName.of('Annots');
   static readonly TrimBox = PDFName.of('TrimBox');
+  static readonly ArtBox = PDFName.of('ArtBox');
   static readonly BleedBox = PDFName.of('BleedBox');
   static readonly CropBox = PDFName.of('CropBox');
   static readonly Rotate = PDFName.of('Rotate');
