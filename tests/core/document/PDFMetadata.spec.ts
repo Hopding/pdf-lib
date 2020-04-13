@@ -64,13 +64,15 @@ describe(`PDFMetadata`, () => {
       'pdf-lib (https://github.com/Hopding/pdf-lib)',
     );
     expect(pdfDoc.getKeywords()).toStrictEqual([
-      'Some',
       'Keywords',
-      '1',
-      '2',
-      '3',
-      '4',
+      'metadata',
+      '(StringType=LiteralString,',
+      'Encoding=PDFDocEncoding)',
+      'with',
+      'some',
+      'weird',
+      'chars',
+      '˘•€',
     ]);
-    // TODO add testcases for case 3
   });
 });

@@ -1,6 +1,7 @@
 import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer, padStart, utf16Decode } from 'src/utils';
+import { PDFDocEncoding } from 'src/utils/PDFDocEncoding';
 
 class PDFString extends PDFObject {
   // The PDF spec allows newlines and parens to appear directly within a literal
@@ -155,9 +156,8 @@ class PDFString extends PDFObject {
         new Uint16Array(this.convertOctalToBytes(this.value)),
         true);
     }
-    // Literal String with PDFDocEncoding (assumed).
-    // TODO check if any decoding is needed. The current testcase seems fine.
-    return this.value;
+    // TODO check for escapings
+    return PDFDocEncoding.decode(this.convertOctalToBytes(this.value));
   }
 
   decodeDate(): Date {
