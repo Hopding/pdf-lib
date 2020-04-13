@@ -1,6 +1,6 @@
 import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { copyStringIntoBuffer, padStart } from 'src/utils';
+import { copyStringIntoBuffer, padStart, utf16Decode } from 'src/utils';
 
 class PDFString extends PDFObject {
   // The PDF spec allows newlines and parens to appear directly within a literal
@@ -148,18 +148,27 @@ class PDFString extends PDFObject {
   }
 
   decodeText(): string {
-    // þÿ is the bom (254,255) i.e. FEFF in hex as literal text.
-    if (this.value.startsWith('þÿ')) {
-      // TODO add testcase for this scenario
-      // TODO decode utf-16 string if needed (use codePointAt for each char and call utf-16 decode)
-      throw new Error('Literal Text encoded as utf-16 found');
+    // \376\377 is the bom (254,255) in octal.
+    if (this.value.startsWith('\\376\\377')) {
+      // Literal String encoded as UTF16-BE
+      return utf16Decode(
+        new Uint16Array(this.convertOctalToBytes(this.value)),
+        true);
     }
+    // Literal String with PDFDocEncoding (assumed).
     // TODO check if any decoding is needed. The current testcase seems fine.
     return this.value;
   }
 
   decodeDate(): Date {
     return PDFString.toDate(this.value);
+  }
+
+  private convertOctalToBytes(value: string): number[] {
+    return value.split('\\')
+                // ignore emptry string
+                .filter(octaclNumber => octaclNumber)
+                .map(octalNumber => parseInt(octalNumber, 8));
   }
 }
 

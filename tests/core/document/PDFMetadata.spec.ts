@@ -49,7 +49,7 @@ describe(`PDFMetadata`, () => {
     expect(pdfDoc.getModificationDate()).toStrictEqual(modificationDate);
   });
 
-  it(`metadata fields can retrieved (varying encodings and string types)`, async () => {
+  it(`metadata fields can be retrieved (varying encodings and string types)`, async () => {
     const pdfDoc = await PDFDocument.load(justMetadataPDFbytes);
 
     expect(pdfDoc.getTitle()).toBe(
@@ -58,7 +58,8 @@ describe(`PDFMetadata`, () => {
     expect(pdfDoc.getAuthor()).toBe(
       'Author metadata (StringType=HexString, Encoding=UTF-16BE) with some chinese 你怎么敢',
     );
-    expect(pdfDoc.getSubject()).toBe('Some Subject');
+    expect(pdfDoc.getSubject()).toBe(
+      'Subject metadata (StringType=LiteralString, Encoding=UTF-16BE) with some chinese 你怎么敢');
     expect(pdfDoc.getProducer()).toBe(
       'pdf-lib (https://github.com/Hopding/pdf-lib)',
     );
@@ -70,6 +71,6 @@ describe(`PDFMetadata`, () => {
       '3',
       '4',
     ]);
-    // TODO add testcases for case 3 and case 4
+    // TODO add testcases for case 3
   });
 });
