@@ -59,7 +59,8 @@ describe(`PDFMetadata`, () => {
       'Author metadata (StringType=HexString, Encoding=UTF-16BE) with some chinese 你怎么敢',
     );
     expect(pdfDoc.getSubject()).toBe(
-      'Subject metadata (StringType=LiteralString, Encoding=UTF-16BE) with some chinese 你怎么敢');
+      'Subject metadata (StringType=LiteralString, Encoding=UTF-16BE) with some chinese 你怎么敢',
+    );
     expect(pdfDoc.getProducer()).toBe(
       'pdf-lib (https://github.com/Hopding/pdf-lib)',
     );

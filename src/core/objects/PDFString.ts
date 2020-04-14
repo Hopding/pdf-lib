@@ -101,7 +101,7 @@ class PDFString extends PDFObject {
     // Should not get here. String is not conform to specification!
     throw new Error(
       'The given date string does not conform to the pdf spec. The string was: ' +
-      dateString,
+        dateString,
     );
   };
 
@@ -163,26 +163,38 @@ class PDFString extends PDFObject {
       // decode with UTF16-BE
       return this.decodeTextWithEscapings(
         this.value,
-        (escapedStringPart: string) => utf16Decode(
-          new Uint16Array(this.convertOctalToBytes(escapedStringPart)),
-          true));
+        (escapedStringPart: string) =>
+          utf16Decode(
+            new Uint16Array(this.convertOctalToBytes(escapedStringPart)),
+            true,
+          ),
+      );
     }
     // decode with PDFDocEncoding
     return this.decodeTextWithEscapings(
       this.value,
-      (escapedStringPart: string) => PDFDocEncoding.decode(this.convertOctalToBytes(escapedStringPart)));
+      (escapedStringPart: string) =>
+        PDFDocEncoding.decode(this.convertOctalToBytes(escapedStringPart)),
+    );
   }
 
   decodeDate(): Date {
     return PDFString.toDate(this.value);
   }
 
-  private decodeTextWithEscapings(valueWithEscapings: string, decodingFunction: (escapedStringPart: string) => string): string {
+  private decodeTextWithEscapings(
+    valueWithEscapings: string,
+    decodingFunction: (escapedStringPart: string) => string,
+  ): string {
     let result = '';
     for (let i = 0; i < valueWithEscapings.length; i++) {
       const char: string = valueWithEscapings.charAt(i);
       if (char === PDFString.escapeChar) {
-        const sequenceResult = this.handleEscapedSequence(valueWithEscapings, i, decodingFunction);
+        const sequenceResult = this.handleEscapedSequence(
+          valueWithEscapings,
+          i,
+          decodingFunction,
+        );
         result += sequenceResult.result;
         i = sequenceResult.newIndex;
       } else {
@@ -193,13 +205,20 @@ class PDFString extends PDFObject {
   }
 
   private convertOctalToBytes(value: string): number[] {
-    return value.split(PDFString.escapeChar)
-      // ignore emptry string
-      .filter(octaclNumber => octaclNumber)
-      .map(octalNumber => parseInt(octalNumber, 8));
+    return (
+      value
+        .split(PDFString.escapeChar)
+        // ignore emptry string
+        .filter((octaclNumber) => octaclNumber)
+        .map((octalNumber) => parseInt(octalNumber, 8))
+    );
   }
 
-  private handleEscapedSequence(valueWithEscapings: string, i: number, decodingFunction: (escapedStringPart: string) => string) {
+  private handleEscapedSequence(
+    valueWithEscapings: string,
+    i: number,
+    decodingFunction: (escapedStringPart: string) => string,
+  ) {
     const start = i;
     while (i < valueWithEscapings.length) {
       i += 4;
