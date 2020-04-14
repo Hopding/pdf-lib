@@ -4,6 +4,11 @@ import { copyStringIntoBuffer, padStart, utf16Decode } from 'src/utils';
 import { PDFDocEncoding } from 'src/utils/PDFDocEncoding';
 
 class PDFString extends PDFObject {
+  /**
+   * Escape Char \ used with octal numbers in literal strings.
+   */
+  static escapeChar: string = '\\';
+
   // The PDF spec allows newlines and parens to appear directly within a literal
   // string. These character _may_ be escaped. But they do not _have_ to be. So
   // for simplicity, we will not bother escaping them.
@@ -96,7 +101,7 @@ class PDFString extends PDFObject {
     // Should not get here. String is not conform to specification!
     throw new Error(
       'The given date string does not conform to the pdf spec. The string was: ' +
-        dateString,
+      dateString,
     );
   };
 
@@ -149,26 +154,65 @@ class PDFString extends PDFObject {
   }
 
   decodeText(): string {
+    if (!this.value.includes(PDFString.escapeChar)) {
+      // No escaped sequences means no decoding needed.
+      return this.value;
+    }
     // \376\377 is the bom (254,255) in octal.
     if (this.value.startsWith('\\376\\377')) {
-      // Literal String encoded as UTF16-BE
-      return utf16Decode(
-        new Uint16Array(this.convertOctalToBytes(this.value)),
-        true);
+      // decode with UTF16-BE
+      return this.decodeTextWithEscapings(
+        this.value,
+        (escapedStringPart: string) => utf16Decode(
+          new Uint16Array(this.convertOctalToBytes(escapedStringPart)),
+          true));
     }
-    // TODO check for escapings
-    return PDFDocEncoding.decode(this.convertOctalToBytes(this.value));
+    // decode with PDFDocEncoding
+    return this.decodeTextWithEscapings(
+      this.value,
+      (escapedStringPart: string) => PDFDocEncoding.decode(this.convertOctalToBytes(escapedStringPart)));
   }
 
   decodeDate(): Date {
     return PDFString.toDate(this.value);
   }
 
+  private decodeTextWithEscapings(valueWithEscapings: string, decodingFunction: (escapedStringPart: string) => string): string {
+    let result = '';
+    for (let i = 0; i < valueWithEscapings.length; i++) {
+      const char: string = valueWithEscapings.charAt(i);
+      if (char === PDFString.escapeChar) {
+        const sequenceResult = this.handleEscapedSequence(valueWithEscapings, i, decodingFunction);
+        result += sequenceResult.result;
+        i = sequenceResult.newIndex;
+      } else {
+        result += char;
+      }
+    }
+    return result;
+  }
+
   private convertOctalToBytes(value: string): number[] {
-    return value.split('\\')
-                // ignore emptry string
-                .filter(octaclNumber => octaclNumber)
-                .map(octalNumber => parseInt(octalNumber, 8));
+    return value.split(PDFString.escapeChar)
+      // ignore emptry string
+      .filter(octaclNumber => octaclNumber)
+      .map(octalNumber => parseInt(octalNumber, 8));
+  }
+
+  private handleEscapedSequence(valueWithEscapings: string, i: number, decodingFunction: (escapedStringPart: string) => string) {
+    const start = i;
+    while (i < valueWithEscapings.length) {
+      i += 4;
+      const char: string = valueWithEscapings.charAt(i);
+      if (char !== PDFString.escapeChar) {
+        return {
+          newIndex: i,
+          result: decodingFunction(valueWithEscapings.substring(start, i)),
+        };
+      }
+    }
+    // Should not happen since after a backslash there should be at least 3 chars.
+    throw new Error();
   }
 }
 
