@@ -68,6 +68,11 @@ class PDFName extends PDFObject {
     this.encodedName = encodedName;
   }
 
+  asString(): string {
+    return this.encodedName;
+  }
+
+  /** @deprecated in favor of [[PDFName.asString]] */
   value(): string {
     return this.encodedName;
   }

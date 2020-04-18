@@ -8,6 +8,11 @@ describe(`PDFBool`, () => {
     );
   });
 
+  it(`can be converted to a boolean`, () => {
+    expect(PDFBool.True.asBoolean()).toBe(true);
+    expect(PDFBool.False.asBoolean()).toBe(false);
+  });
+
   it(`can be cloned`, () => {
     expect(PDFBool.True.clone()).toBe(PDFBool.True);
     expect(PDFBool.False.clone()).toBe(PDFBool.False);

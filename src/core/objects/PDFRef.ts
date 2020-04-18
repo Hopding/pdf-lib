@@ -34,7 +34,7 @@ class PDFRef extends PDFObject {
     this.tag = `${objectNumber} ${generationNumber} R`;
   }
 
-  clone() {
+  clone(): PDFRef {
     return this;
   }
 

@@ -226,7 +226,7 @@ class PDFObjectParser extends BaseParser {
 
     const Length = dict.get(PDFName.of('Length'));
     if (Length instanceof PDFNumber) {
-      end = start + Length.value();
+      end = start + Length.asNumber();
       this.bytes.moveTo(end);
       this.skipWhitespaceAndComments();
       if (!this.matchKeyword(Keywords.endstream)) {

@@ -10,6 +10,10 @@ describe(`PDFRawStream`, () => {
     expect(PDFRawStream.of(dict, data)).toBeInstanceOf(PDFRawStream);
   });
 
+  it(`can be converted to a Uint8Array`, () => {
+    expect(PDFRawStream.of(dict, data).asUint8Array()).toEqual(data);
+  });
+
   it(`can be cloned`, () => {
     const original = PDFRawStream.of(dict, data);
     const clone = original.clone();

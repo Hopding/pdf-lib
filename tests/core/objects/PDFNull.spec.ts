@@ -6,6 +6,10 @@ describe(`PDFNull`, () => {
     expect(() => new (PDFNull as any)()).toThrow();
   });
 
+  it(`can be converted to null`, () => {
+    expect(PDFNull.asNull()).toBe(null);
+  });
+
   it(`can be cloned`, () => {
     expect(PDFNull.clone()).toBe(PDFNull);
   });

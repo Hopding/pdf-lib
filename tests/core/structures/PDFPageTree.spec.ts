@@ -57,7 +57,7 @@ describe(`PDFPageTree`, () => {
     expect(pageTree.get(PDFName.of('Kids'))).toBeInstanceOf(PDFArray);
     expect(pageTree.lookup(PDFName.of('Kids'), PDFArray).size()).toBe(0);
     expect(pageTree.get(PDFName.of('Count'))).toBeInstanceOf(PDFNumber);
-    expect(pageTree.lookup(PDFName.of('Count'), PDFNumber).value()).toBe(0);
+    expect(pageTree.lookup(PDFName.of('Count'), PDFNumber).asNumber()).toBe(0);
     expect(pageTree.get(PDFName.of('Parent'))).toBeUndefined();
   });
 
@@ -175,20 +175,20 @@ describe(`PDFPageTree`, () => {
 
       pushLeafNodes(lvl4Tree1, leafRef3);
 
-      expect(lvl1Tree1.Count().value()).toBe(4);
-      expect(lvl2Tree1.Count().value()).toBe(2);
-      expect(lvl3Tree1.Count().value()).toBe(1);
-      expect(lvl4Tree1.Count().value()).toBe(1);
+      expect(lvl1Tree1.Count().asNumber()).toBe(4);
+      expect(lvl2Tree1.Count().asNumber()).toBe(2);
+      expect(lvl3Tree1.Count().asNumber()).toBe(1);
+      expect(lvl4Tree1.Count().asNumber()).toBe(1);
       expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
 
       const newLeaf = PDFPageLeaf.withContextAndParent(context, lvl2Tree1Ref);
       const newLeafRef = context.register(newLeaf);
       const insertionRef = lvl1Tree1.insertLeafNode(newLeafRef, 2);
 
-      expect(lvl1Tree1.Count().value()).toBe(5);
-      expect(lvl2Tree1.Count().value()).toBe(3);
-      expect(lvl3Tree1.Count().value()).toBe(1);
-      expect(lvl4Tree1.Count().value()).toBe(1);
+      expect(lvl1Tree1.Count().asNumber()).toBe(5);
+      expect(lvl2Tree1.Count().asNumber()).toBe(3);
+      expect(lvl3Tree1.Count().asNumber()).toBe(1);
+      expect(lvl4Tree1.Count().asNumber()).toBe(1);
 
       expect(insertionRef).toBe(lvl2Tree1Ref);
       expect(lvl2Tree1.Kids().get(1)).toBe(newLeafRef);
@@ -219,18 +219,18 @@ describe(`PDFPageTree`, () => {
 
       pushLeafNodes(lvl3Tree1, leafRef3, leafRef4);
 
-      expect(lvl1Tree1.Count().value()).toBe(6);
-      expect(lvl2Tree1.Count().value()).toBe(4);
-      expect(lvl3Tree1.Count().value()).toBe(2);
+      expect(lvl1Tree1.Count().asNumber()).toBe(6);
+      expect(lvl2Tree1.Count().asNumber()).toBe(4);
+      expect(lvl3Tree1.Count().asNumber()).toBe(2);
       expect(lvl2Tree1.Kids().get(2)).toBe(leafRef5);
 
       const newLeaf = PDFPageLeaf.withContextAndParent(context, lvl2Tree1Ref);
       const newLeafRef = context.register(newLeaf);
       const insertionRef = lvl1Tree1.insertLeafNode(newLeafRef, 4);
 
-      expect(lvl1Tree1.Count().value()).toBe(7);
-      expect(lvl2Tree1.Count().value()).toBe(5);
-      expect(lvl3Tree1.Count().value()).toBe(2);
+      expect(lvl1Tree1.Count().asNumber()).toBe(7);
+      expect(lvl2Tree1.Count().asNumber()).toBe(5);
+      expect(lvl3Tree1.Count().asNumber()).toBe(2);
 
       expect(insertionRef).toBe(lvl2Tree1Ref);
       expect(lvl2Tree1.Kids().get(2)).toBe(newLeafRef);
@@ -248,7 +248,7 @@ describe(`PDFPageTree`, () => {
 
       pushLeafNodes(lvl1Tree1, leafRef1, leafRef2, leafRef3);
 
-      expect(lvl1Tree1.Count().value()).toBe(3);
+      expect(lvl1Tree1.Count().asNumber()).toBe(3);
       expect(lvl1Tree1.Kids().get(2)).toBe(leafRef3);
       expect(lvl1Tree1.Kids().get(3)).toBe(undefined);
 
@@ -256,7 +256,7 @@ describe(`PDFPageTree`, () => {
       const newLeafRef = context.register(newLeaf);
       const insertionRef = lvl1Tree1.insertLeafNode(newLeafRef, 3);
 
-      expect(lvl1Tree1.Count().value()).toBe(4);
+      expect(lvl1Tree1.Count().asNumber()).toBe(4);
 
       expect(insertionRef).toBe(undefined);
       expect(lvl1Tree1.Kids().get(2)).toBe(leafRef3);
@@ -277,7 +277,7 @@ describe(`PDFPageTree`, () => {
       pushTreeNodes(lvl2Tree1, lvl3Tree1Ref);
       pushLeafNodes(lvl3Tree1, leafRef1, leafRef2);
 
-      expect(lvl1Tree1.Count().value()).toBe(2);
+      expect(lvl1Tree1.Count().asNumber()).toBe(2);
       expect(lvl3Tree1.Kids().get(0)).toBe(leafRef1);
       expect(lvl3Tree1.Kids().get(1)).toBe(leafRef2);
 
@@ -285,7 +285,7 @@ describe(`PDFPageTree`, () => {
       const newLeafRef = context.register(newLeaf);
       const insertionRef = lvl1Tree1.insertLeafNode(newLeafRef, 1);
 
-      expect(lvl1Tree1.Count().value()).toBe(3);
+      expect(lvl1Tree1.Count().asNumber()).toBe(3);
 
       expect(insertionRef).toBe(lvl3Tree1Ref);
       expect(lvl3Tree1.Kids().get(0)).toBe(leafRef1);
@@ -335,17 +335,17 @@ describe(`PDFPageTree`, () => {
 
       pushLeafNodes(lvl3Tree1, leafRef3, leafRef4);
 
-      expect(lvl1Tree1.Count().value()).toBe(6);
-      expect(lvl2Tree1.Count().value()).toBe(4);
-      expect(lvl3Tree1.Count().value()).toBe(2);
+      expect(lvl1Tree1.Count().asNumber()).toBe(6);
+      expect(lvl2Tree1.Count().asNumber()).toBe(4);
+      expect(lvl3Tree1.Count().asNumber()).toBe(2);
       expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
       expect(lvl2Tree1.Kids().get(2)).toBe(leafRef5);
 
       lvl1Tree1.removeLeafNode(4);
 
-      expect(lvl1Tree1.Count().value()).toBe(5);
-      expect(lvl2Tree1.Count().value()).toBe(3);
-      expect(lvl3Tree1.Count().value()).toBe(2);
+      expect(lvl1Tree1.Count().asNumber()).toBe(5);
+      expect(lvl2Tree1.Count().asNumber()).toBe(3);
+      expect(lvl3Tree1.Count().asNumber()).toBe(2);
 
       expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
       expect(lvl2Tree1.Kids().get(2)).toBe(undefined);
@@ -375,19 +375,19 @@ describe(`PDFPageTree`, () => {
 
       pushLeafNodes(lvl4Tree1, leafRef3);
 
-      expect(lvl1Tree1.Count().value()).toBe(4);
-      expect(lvl2Tree1.Count().value()).toBe(2);
-      expect(lvl3Tree1.Count().value()).toBe(1);
-      expect(lvl4Tree1.Count().value()).toBe(1);
+      expect(lvl1Tree1.Count().asNumber()).toBe(4);
+      expect(lvl2Tree1.Count().asNumber()).toBe(2);
+      expect(lvl3Tree1.Count().asNumber()).toBe(1);
+      expect(lvl4Tree1.Count().asNumber()).toBe(1);
       expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
       expect(lvl4Tree1.Kids().get(0)).toBe(leafRef3);
 
       lvl1Tree1.removeLeafNode(2);
 
-      expect(lvl1Tree1.Count().value()).toBe(3);
-      expect(lvl2Tree1.Count().value()).toBe(1);
-      expect(lvl3Tree1.Count().value()).toBe(0);
-      expect(lvl4Tree1.Count().value()).toBe(0);
+      expect(lvl1Tree1.Count().asNumber()).toBe(3);
+      expect(lvl2Tree1.Count().asNumber()).toBe(1);
+      expect(lvl3Tree1.Count().asNumber()).toBe(0);
+      expect(lvl4Tree1.Count().asNumber()).toBe(0);
 
       expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
       expect(lvl4Tree1.Kids().get(0)).toBe(undefined);
@@ -403,13 +403,13 @@ describe(`PDFPageTree`, () => {
       const [leafRef3] = pageLeaf(lvl1Tree1Ref);
       pushLeafNodes(lvl1Tree1, leafRef1, leafRef2, leafRef3);
 
-      expect(lvl1Tree1.Count().value()).toBe(3);
+      expect(lvl1Tree1.Count().asNumber()).toBe(3);
       expect(lvl1Tree1.Kids().get(1)).toBe(leafRef2);
       expect(lvl1Tree1.Kids().get(2)).toBe(leafRef3);
 
       lvl1Tree1.removeLeafNode(2);
 
-      expect(lvl1Tree1.Count().value()).toBe(2);
+      expect(lvl1Tree1.Count().asNumber()).toBe(2);
       expect(lvl1Tree1.Kids().get(1)).toBe(leafRef2);
       expect(lvl1Tree1.Kids().get(2)).toBe(undefined);
     });
