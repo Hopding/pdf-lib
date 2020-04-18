@@ -25,6 +25,10 @@ class PDFString extends PDFObject {
     this.value = value;
   }
 
+  asString(): string {
+    return this.value;
+  }
+
   clone(): PDFString {
     return PDFString.of(this.value);
   }

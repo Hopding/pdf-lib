@@ -814,7 +814,7 @@ We welcome contributions from the open source community! If you are interested i
 
 - [Möbius Printing helper](https://shreevatsa.net/mobius-print/) - a tool created by @shreevatsa
 - [Extract PDF pages](https://shreevatsa.net/pdf-pages/) - a tool created by @shreevatsa
-- [COVID-19 travel certificate generator](https://github.com/LAB-MI/deplacement-covid-19) - a tool that creates travel certificates for French citizens under quarantine due to COVID-19
+- [Travel certificate generator](https://github.com/LAB-MI/deplacement-covid-19) - a tool that creates travel certificates for French citizens under quarantine due to COVID-19
 - [How to use pdf-lib in AWS Lambdas](https://medium.com/swlh/create-pdf-using-pdf-lib-on-serverless-aws-lambda-e9506246dc88) - a tutorial written by Crespo Wang
 - [Working With PDFs in Node.js Using pdf-lib](http://thecodebarbarian.com/working-with-pdfs-in-node-js.html) - a tutorial by Valeri Karpov
 

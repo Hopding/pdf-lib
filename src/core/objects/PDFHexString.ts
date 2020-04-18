@@ -27,6 +27,10 @@ class PDFHexString extends PDFObject {
     this.value = value;
   }
 
+  asString(): string {
+    return this.value;
+  }
+
   clone(): PDFHexString {
     return PDFHexString.of(this.value);
   }

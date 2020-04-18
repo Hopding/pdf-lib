@@ -14,6 +14,10 @@ class PDFRawStream extends PDFStream {
     this.contents = contents;
   }
 
+  asUint8Array(): Uint8Array {
+    return this.contents.slice();
+  }
+
   clone(context?: PDFContext): PDFRawStream {
     return PDFRawStream.of(this.dict.clone(context), this.contents.slice());
   }

@@ -9,6 +9,7 @@ import {
   PDFNumber,
   PDFRef,
   PDFString,
+  PDFObject,
 } from 'src/core';
 import { toCharCode, typedArrayFor } from 'src/utils';
 
@@ -58,6 +59,21 @@ describe(`PDFDict`, () => {
     expect(pdfDict.get(PDFName.of('Ref'))).toBe(pdfRef);
     expect(pdfDict.get(PDFName.of('Dictionary'))).toBe(pdfSubDict);
     expect(pdfSubDict.get(PDFName.of('Array'))).toBe(pdfArray);
+  });
+
+  it(`can be converted to a Map`, () => {
+    expect(pdfDict.asMap()).toEqual(
+      new Map<PDFName, PDFObject>([
+        [PDFName.of('Boolean'), pdfBool],
+        [PDFName.of('HexString'), pdfHexString],
+        [PDFName.of('Name'), pdfName],
+        [PDFName.of('Null'), pdfNull],
+        [PDFName.of('Number'), pdfNumber],
+        [PDFName.of('String'), pdfString],
+        [PDFName.of('Ref'), pdfRef],
+        [PDFName.of('Dictionary'), pdfSubDict],
+      ]),
+    );
   });
 
   it(`can be cloned`, () => {
