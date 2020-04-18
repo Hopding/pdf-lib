@@ -83,7 +83,7 @@ class PDFDict extends PDFObject {
     return this.dict.delete(key);
   }
 
-  value(): Map<PDFName, PDFObject> {
+  asMap(): Map<PDFName, PDFObject> {
     return new Map(this.dict);
   }
 

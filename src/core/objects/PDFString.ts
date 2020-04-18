@@ -18,34 +18,34 @@ class PDFString extends PDFObject {
     return new PDFString(`D:${year}${month}${day}${hours}${mins}${secs}Z`);
   };
 
-  private readonly stringValue: string;
+  private readonly value: string;
 
   private constructor(value: string) {
     super();
-    this.stringValue = value;
+    this.value = value;
   }
 
-  value(): string {
-    return this.stringValue;
+  asString(): string {
+    return this.value;
   }
 
   clone(): PDFString {
-    return PDFString.of(this.stringValue);
+    return PDFString.of(this.value);
   }
 
   toString(): string {
-    return `(${this.stringValue})`;
+    return `(${this.value})`;
   }
 
   sizeInBytes(): number {
-    return this.stringValue.length + 2;
+    return this.value.length + 2;
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
     buffer[offset++] = CharCodes.LeftParen;
-    offset += copyStringIntoBuffer(this.stringValue, buffer, offset);
+    offset += copyStringIntoBuffer(this.value, buffer, offset);
     buffer[offset++] = CharCodes.RightParen;
-    return this.stringValue.length + 2;
+    return this.value.length + 2;
   }
 }
 

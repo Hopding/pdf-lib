@@ -14,7 +14,7 @@ class PDFRawStream extends PDFStream {
     this.contents = contents;
   }
 
-  value(): Uint8Array {
+  asUint8Array(): Uint8Array {
     return this.contents.slice();
   }
 
