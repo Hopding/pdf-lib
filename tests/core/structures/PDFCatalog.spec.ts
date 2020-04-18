@@ -63,7 +63,7 @@ describe(`PDFCatalog`, () => {
     pageTree1.pushLeafNode(leafRef1);
     pageTree1.pushLeafNode(leafRef2);
 
-    expect(pageTree1.Count().value()).toBe(2);
+    expect(pageTree1.Count().asNumber()).toBe(2);
     expect(pageTree1.Kids().get(1)).toBe(leafRef2);
     expect(pageTree1.Kids().get(2)).toBe(undefined);
 
@@ -71,7 +71,7 @@ describe(`PDFCatalog`, () => {
     const newLeafRef = context.register(newLeaf);
     const insertionRef = catalog.insertLeafNode(newLeafRef, 2);
 
-    expect(pageTree1.Count().value()).toBe(3);
+    expect(pageTree1.Count().asNumber()).toBe(3);
 
     expect(insertionRef).toBe(pageTreeRef1);
     expect(pageTree1.Kids().get(1)).toBe(leafRef2);
@@ -95,13 +95,13 @@ describe(`PDFCatalog`, () => {
     pageTree1.pushLeafNode(leafRef1);
     pageTree1.pushLeafNode(leafRef2);
 
-    expect(pageTree1.Count().value()).toBe(2);
+    expect(pageTree1.Count().asNumber()).toBe(2);
     expect(pageTree1.Kids().get(0)).toBe(leafRef1);
     expect(pageTree1.Kids().get(1)).toBe(leafRef2);
 
     catalog.removeLeafNode(1);
 
-    expect(pageTree1.Count().value()).toBe(1);
+    expect(pageTree1.Count().asNumber()).toBe(1);
     expect(pageTree1.Kids().get(0)).toBe(leafRef1);
     expect(pageTree1.Kids().get(1)).toBe(undefined);
   });

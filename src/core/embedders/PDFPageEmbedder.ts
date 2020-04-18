@@ -41,12 +41,12 @@ const fullPageBoundingBox = (page: PDFPageLeaf) => {
   const mediaBox = page.MediaBox();
 
   const width =
-    mediaBox.lookup(2, PDFNumber).value() -
-    mediaBox.lookup(0, PDFNumber).value();
+    mediaBox.lookup(2, PDFNumber).asNumber() -
+    mediaBox.lookup(0, PDFNumber).asNumber();
 
   const height =
-    mediaBox.lookup(3, PDFNumber).value() -
-    mediaBox.lookup(1, PDFNumber).value();
+    mediaBox.lookup(3, PDFNumber).asNumber() -
+    mediaBox.lookup(1, PDFNumber).asNumber();
 
   return { left: 0, bottom: 0, right: width, top: height };
 };

@@ -16,6 +16,13 @@ describe(`PDFString`, () => {
     expect(String(PDFString.fromDate(date2))).toBe('(D:20191221070011Z)');
   });
 
+  it(`can be converted to a string`, () => {
+    expect(PDFString.of('foobar').asString()).toBe('foobar');
+
+    const date = new Date('2018-06-24T01:58:37.228Z');
+    expect(PDFString.fromDate(date).asString()).toBe('D:20180624015837Z');
+  });
+
   it(`can be cloned`, () => {
     const original = PDFString.of(')b\\a/z(');
     const clone = original.clone();

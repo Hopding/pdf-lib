@@ -14,6 +14,11 @@ class PDFNumber extends PDFObject {
     this.stringValue = numberToString(value);
   }
 
+  asNumber(): number {
+    return this.numberValue;
+  }
+
+  /** @deprecated in favor of [[PDFNumber.asNumber]] */
   value(): number {
     return this.numberValue;
   }

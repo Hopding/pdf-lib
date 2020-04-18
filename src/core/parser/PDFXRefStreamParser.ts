@@ -43,18 +43,18 @@ class PDFXRefStreamParser {
     if (Index instanceof PDFArray) {
       this.subsections = [];
       for (let idx = 0, len = Index.size(); idx < len; idx += 2) {
-        const firstObjectNumber = Index.lookup(idx + 0, PDFNumber).value();
-        const length = Index.lookup(idx + 1, PDFNumber).value();
+        const firstObjectNumber = Index.lookup(idx + 0, PDFNumber).asNumber();
+        const length = Index.lookup(idx + 1, PDFNumber).asNumber();
         this.subsections.push({ firstObjectNumber, length });
       }
     } else {
-      this.subsections = [{ firstObjectNumber: 0, length: Size.value() }];
+      this.subsections = [{ firstObjectNumber: 0, length: Size.asNumber() }];
     }
 
     const W = this.dict.lookup(PDFName.of('W'), PDFArray);
     this.byteWidths = [-1, -1, -1];
     for (let idx = 0, len = W.size(); idx < len; idx++) {
-      this.byteWidths[idx] = W.lookup(idx, PDFNumber).value();
+      this.byteWidths[idx] = W.lookup(idx, PDFNumber).asNumber();
     }
   }
 

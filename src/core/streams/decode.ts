@@ -28,7 +28,7 @@ const decodeStream = (
     if (params instanceof PDFDict) {
       const EarlyChange = params.lookup(PDFName.of('EarlyChange'));
       if (EarlyChange instanceof PDFNumber) {
-        earlyChange = EarlyChange.value();
+        earlyChange = EarlyChange.asNumber();
       }
     }
     return new LZWStream(stream, undefined, earlyChange as 0 | 1);
@@ -42,7 +42,7 @@ const decodeStream = (
   if (encoding === PDFName.of('RunLengthDecode')) {
     return new RunLengthStream(stream);
   }
-  throw new UnsupportedEncodingError(encoding.value());
+  throw new UnsupportedEncodingError(encoding.asString());
 };
 
 export const decodePDFRawStream = ({ dict, contents }: PDFRawStream) => {

@@ -7,4 +7,4 @@ export const asPDFNumber = (num: number | PDFNumber) =>
   num instanceof PDFNumber ? num : PDFNumber.of(num);
 
 export const asNumber = (num: number | PDFNumber) =>
-  num instanceof PDFNumber ? num.value() : num;
+  num instanceof PDFNumber ? num.asNumber() : num;
