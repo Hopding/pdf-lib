@@ -260,3 +260,123 @@ export const highSurrogate = (codePoint: number) =>
 //   http://unicode.org/versions/Unicode3.0.0/ch03.pdf
 export const lowSurrogate = (codePoint: number) =>
   ((codePoint - 0x10000) % 0x400) + 0xdc00;
+
+/**
+ * Decodes an Uint16Array to string using the UTF-16.
+ *
+ * @param input A Uint16Array containing the UTF-16 encoding of the input string
+ * @param byteOrderMark Whether or not a byte order marker (BOM) should be read
+ *                      at the start of the encoding. (default `true`)
+ * @returns The decoded string or empty if the decoding was not possible.
+ */
+export const utf16Decode = (
+  input: Uint16Array,
+  byteOrderMark: boolean = true,
+): string => {
+  if (input.length <= 1) {
+    // 1 byte is not valid
+    return '';
+  }
+  // 0 stands for Big Endian, 1 --> Little Endian
+  let byteOrder = 0;
+  if (byteOrderMark) {
+    byteOrder = readBOM(input);
+  }
+  // skip byte order mark if needed
+  let i = byteOrderMark ? 2 : 0;
+  const codePoints: number[] = [];
+
+  while (i + 1 < input.length) {
+    const first = decodeValues(input[i], input[i + 1], byteOrder);
+    if (isSurrogate(first)) {
+      if (isHighSurrogate(first)) {
+        if (input.length - 2 - i < 2) {
+          // Less than 2 bytes remaining but there has to be a low surrogate.
+          return '';
+        }
+        const second = decodeValues(input[i + 2], input[i + 3], byteOrder);
+        if (!isLowSurrogate(second)) {
+          // second has to be the matching low surrogate
+          return '';
+        }
+        codePoints.push(first);
+        codePoints.push(second);
+        i = i + 4;
+        continue;
+      }
+      // has to be a high surrogate since decodeValues(...) takes byte order into account
+      return '';
+    }
+    codePoints.push(first);
+    i = i + 2;
+  }
+  return String.fromCodePoint(...codePoints);
+};
+
+/**
+ * Returns `true` if the given `codePoint` is either a low or high surrogate.
+ * @param codePoint The code point to be evaluated.
+ *
+ * Reference: https://en.wikipedia.org/wiki/UTF-16#Description
+ */
+const isSurrogate = (codePoint: number) =>
+  isHighSurrogate(codePoint) || isLowSurrogate(codePoint);
+
+/**
+ * Returns `true` if the given `codePoint` is a high surrogate.
+ * @param codePoint The code point to be evaluated.
+ *
+ * Reference: https://en.wikipedia.org/wiki/UTF-16#Description
+ */
+const isHighSurrogate = (codePoint: number) =>
+  codePoint >= 0xd800 && codePoint <= 0xdbff;
+
+/**
+ * Returns `true` if the given `codePoint` is a low surrogate.
+ * @param codePoint The code point to be evaluated.
+ *
+ * Reference: https://en.wikipedia.org/wiki/UTF-16#Description
+ */
+const isLowSurrogate = (codePoint: number) =>
+  codePoint >= 0xdc00 && codePoint <= 0xdfff;
+
+/**
+ * Decodes the given utf-16 values first and second using the specified byte order.
+ * @param first The first byte of the encoding.
+ * @param second The second byte of the encoding.
+ * @param byteOrder The byte order (1 --> little-endian everything else big-endian)
+ * Reference: https://en.wikipedia.org/wiki/UTF-16#Examples
+ */
+const decodeValues = (first: number, second: number, byteOrder: number) => {
+  // little-endian encoding
+  if (byteOrder === 1) {
+    // Append the binary representation of the preceding byte by shifting the first one 8 to the left
+    // and than applying a bitwise or-operator to append the second one.
+    return (second << 8) | first;
+  }
+  // big-endian Encoding
+  return (first << 8) | second;
+};
+
+/**
+ * Returns 0/1 if the given array starts with the byte order mark for the big-endian/little-endian encoding.
+ * If neither BOM matches it returns 0.
+ * @param bytes The byte array to be evaluated.
+ *
+ * Reference: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-16
+ */
+const readBOM = (bytes: Uint16Array) => {
+  const firstNumber = bytes[0];
+  const secondNumber = bytes[1];
+
+  if (firstNumber === 0xfe && secondNumber === 0xff) {
+    //  big-endian
+    return 0;
+  }
+  if (firstNumber === 0xff && secondNumber === 0xfe) {
+    // little-endian
+    return 1;
+  }
+  // Assume  big-endian
+  return 0;
+};

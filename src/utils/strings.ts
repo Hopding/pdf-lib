@@ -31,6 +31,25 @@ export const copyStringIntoBuffer = (
   return length;
 };
 
+export const hexStringToBytes = (str: string): number[] => {
+  // Append a zero if the number of digits is odd. See pdf spec 7.3.4.3
+  if (str.length % 2 === 1) {
+    str = str + '0';
+  }
+
+  const bytes: number[] = [];
+  let i = 0;
+  while (i + 2 <= str.length) {
+    // Get the next two digits
+    const nextTwoDigits = str.substr(i, 2);
+    i = i + 2;
+
+    // Hex is base 16
+    bytes.push(parseInt(nextTwoDigits, 16));
+  }
+  return bytes;
+};
+
 export const addRandomSuffix = (prefix: string, suffixLength = 4) =>
   `${prefix}-${Math.floor(Math.random() * 10 ** suffixLength)}`;
 

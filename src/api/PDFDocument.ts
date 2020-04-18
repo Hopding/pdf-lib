@@ -33,6 +33,7 @@ import {
   PngEmbedder,
   StandardFontEmbedder,
 } from 'src/core';
+import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
@@ -217,6 +218,116 @@ export default class PDFDocument {
    */
   registerFontkit(fontkit: Fontkit): void {
     this.fontkit = fontkit;
+  }
+
+  /**
+   * Get this document's title metadata as a string. The title appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getTitle(): string {
+    const titleObject = this.getInfoDict().get(PDFName.of('Title'));
+    if (titleObject) {
+      return this.decodePDFStringOrPDFHexString(titleObject);
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's author metadata. The author appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getAuthor(): string {
+    const authorObject = this.getInfoDict().get(PDFName.of('Author'));
+    if (authorObject) {
+      return this.decodePDFStringOrPDFHexString(authorObject);
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's subject metadata. The subject appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getSubject(): string {
+    const subjectObject = this.getInfoDict().get(PDFName.of('Subject'));
+    if (subjectObject) {
+      return this.decodePDFStringOrPDFHexString(subjectObject);
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's keyword metadata. These keywords appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getKeywords(): string[] {
+    const keywordsObject = this.getInfoDict().get(PDFName.of('Keywords'));
+    if (keywordsObject) {
+      const keywordsAsString = this.decodePDFStringOrPDFHexString(
+        keywordsObject,
+      );
+      return keywordsAsString.split(' ');
+    }
+    return [];
+  }
+
+  /**
+   * Get this document's creator metadata. The creator appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getCreator(): string {
+    const creatorObject = this.getInfoDict().get(PDFName.of('Creator'));
+    if (creatorObject) {
+      return this.decodePDFStringOrPDFHexString(creatorObject);
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's producer metadata. The producer appears in the
+   * "Document Properties" section of most PDF readers.
+   */
+  getProducer(): string {
+    const producerObject = this.getInfoDict().get(PDFName.of('Producer'));
+    if (producerObject) {
+      return this.decodePDFStringOrPDFHexString(producerObject);
+    }
+    return '';
+  }
+
+  /**
+   * Get this document's creation date metadata. Returns undefined if the creation date was not set.
+   * The creation date appears in the "Document Properties" section
+   * of most PDF readers.
+   */
+  getCreationDate(): Date | undefined {
+    const creationDateObject = this.getInfoDict().get(
+      PDFName.of('CreationDate'),
+    );
+    if (creationDateObject) {
+      if (creationDateObject instanceof PDFString) {
+        return creationDateObject.decodeDate();
+      } else {
+        throw new Error();
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Get this document's modification date metadata. The modification date
+   * appears in the "Document Properties" section of most PDF readers.
+   */
+  getModificationDate(): Date | undefined {
+    const modDate = this.getInfoDict().get(PDFName.of('ModDate'));
+    if (modDate) {
+      if (modDate instanceof PDFString) {
+        return modDate.decodeDate();
+      } else {
+        throw new Error();
+      }
+    }
+    return undefined;
   }
 
   /**
@@ -999,4 +1110,16 @@ export default class PDFDocument {
     });
     return pages;
   };
+
+  /**
+   * Decode a pdfObject which is either a PDFHexString or a PDFString
+   * @param pdfObject The pdfObject to be decoded.
+   */
+  private decodePDFStringOrPDFHexString(pdfObject: PDFObject) {
+    if (pdfObject instanceof PDFHexString || pdfObject instanceof PDFString) {
+      return pdfObject.decodeText();
+    } else {
+      throw new Error();
+    }
+  }
 }

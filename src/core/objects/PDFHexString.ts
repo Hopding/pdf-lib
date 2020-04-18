@@ -2,9 +2,12 @@ import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
 import {
   copyStringIntoBuffer,
+  hexStringToBytes,
   toHexStringOfMinLength,
+  utf16Decode,
   utf16Encode,
 } from 'src/utils';
+import { PDFDocEncoding } from 'src/utils/PDFDocEncoding';
 
 class PDFHexString extends PDFObject {
   static of = (value: string) => new PDFHexString(value);
@@ -18,6 +21,16 @@ class PDFHexString extends PDFObject {
     }
 
     return new PDFHexString(hex);
+  };
+
+  static toText = (value: string) => {
+    const bytes = hexStringToBytes(value);
+
+    if (bytes.length >= 2 && bytes[0] === 0xfe && bytes[1] === 0xff) {
+      // Leading Byte Order Mark means it is an UTF-16BE encoded string.
+      return utf16Decode(new Uint16Array(bytes));
+    }
+    return PDFDocEncoding.decode(bytes);
   };
 
   private readonly value: string;
@@ -44,6 +57,10 @@ class PDFHexString extends PDFObject {
     offset += copyStringIntoBuffer(this.value, buffer, offset);
     buffer[offset++] = CharCodes.GreaterThan;
     return this.value.length + 2;
+  }
+
+  decodeText(): string {
+    return PDFHexString.toText(this.value);
   }
 }
 
