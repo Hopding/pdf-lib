@@ -37,6 +37,24 @@ describe(`PDFString`, () => {
     });
   });
 
+  describe.only(`decoding to string`, () => {
+    it(`test a`, () => {
+      const literal =
+        '\\376\\377\\000\\105\\000\\147\\000\\147\\000\\040\\330\\074\\337\\163';
+      expect(PDFString.of(literal).decodeText()).toBe('Egg 🍳');
+    });
+
+    it(`test b`, () => {
+      const literal = '\\376\\377\0E\0g\0g\0 \\330<\\337s';
+      expect(PDFString.of(literal).decodeText()).toBe('Egg 🍳');
+    });
+
+    it(`test c`, () => {
+      const literal = '\\376\\377\0E\\\n\\0g\0g\0 \\330<\\337s';
+      expect(PDFString.of(literal).decodeText()).toBe('Egg 🍳');
+    });
+  });
+
   it(`can provide its size in bytes`, () => {
     expect(PDFString.of('foobar').sizeInBytes()).toBe(8);
     expect(PDFString.of(' (foo(bar))').sizeInBytes()).toBe(13);
@@ -51,13 +69,13 @@ describe(`PDFString`, () => {
 
   it(`can construct a date object`, () => {
     // D:YYYYMMDDHHmmSSOHH'mm
-    expect(PDFString.toDate('D:20200321165011+01\'01')).toStrictEqual(
+    expect(PDFString.toDate("D:20200321165011+01'01")).toStrictEqual(
       new Date('2020-03-21T15:49:11Z'),
     );
-    expect(PDFString.toDate('D:20200321165011-01\'01')).toStrictEqual(
+    expect(PDFString.toDate("D:20200321165011-01'01")).toStrictEqual(
       new Date('2020-03-21T17:51:11Z'),
     );
-    expect(PDFString.toDate('D:20200321165011Z00\'00')).toStrictEqual(
+    expect(PDFString.toDate("D:20200321165011Z00'00")).toStrictEqual(
       new Date('2020-03-21T16:50:11Z'),
     );
     // D:YYYYMMDDHHmmSSOHH

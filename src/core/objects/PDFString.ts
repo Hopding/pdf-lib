@@ -1,7 +1,12 @@
 import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { copyStringIntoBuffer, padStart, utf16Decode } from 'src/utils';
-import { PDFDocEncoding } from 'src/utils/PDFDocEncoding';
+import {
+  copyStringIntoBuffer,
+  padStart,
+  utf16Decode,
+  pdfDocEncodingDecode,
+  toCharCode,
+} from 'src/utils';
 
 class PDFString extends PDFObject {
   /**
@@ -153,85 +158,57 @@ class PDFString extends PDFObject {
     return this.value.length + 2;
   }
 
+  asBytes(): Uint8Array {
+    const bytes: number[] = [];
+
+    let octal = '';
+    let escaped = false;
+    for (let idx = 0, len = this.value.length; idx < len; idx++) {
+      const char = this.value[idx];
+      const byte = toCharCode(char);
+      const nextChar = this.value[idx + 1];
+      if (!escaped) {
+        if (byte === CharCodes.BackSlash) escaped = true;
+        else bytes.push(byte);
+      } else {
+        if (byte === CharCodes.n) bytes.push(CharCodes.Newline);
+        if (byte === CharCodes.r) bytes.push(CharCodes.CarriageReturn);
+        if (byte === CharCodes.t) bytes.push(CharCodes.Tab);
+        if (byte === CharCodes.b) bytes.push(CharCodes.Backspace);
+        if (byte === CharCodes.f) bytes.push(CharCodes.FormFeed);
+        if (byte === CharCodes.LeftParen) bytes.push(CharCodes.LeftParen);
+        if (byte === CharCodes.RightParen) bytes.push(CharCodes.RightParen);
+        if (byte === CharCodes.Backspace) bytes.push(CharCodes.BackSlash);
+        if (byte >= CharCodes.Zero && byte <= CharCodes.Seven) {
+          octal += char;
+          if (octal.length === 3 || !(nextChar >= '0' && nextChar <= '7')) {
+            bytes.push(parseInt(octal, 8));
+            octal = '';
+            escaped = false;
+          }
+        } else {
+          escaped = false;
+        }
+      }
+    }
+
+    return new Uint8Array(bytes);
+  }
+
   decodeText(): string {
-    if (!this.value.includes(PDFString.escapeChar)) {
-      // No escaped sequences means no decoding needed.
-      return this.value;
+    const bytes = this.asBytes();
+
+    // Leading Byte Order Mark means it is a UTF-16BE encoded string.
+    if (bytes[0] === 0xfe && bytes[1] === 0xff) {
+      // return utf16Decode(new Uint16Array(bytes.buffer));
+      return utf16Decode(new Uint16Array(bytes));
     }
-    // \376\377 is the bom (254,255) in octal.
-    if (this.value.startsWith('\\376\\377')) {
-      // decode with UTF16-BE
-      return this.decodeTextWithEscapings(
-        this.value,
-        (escapedStringPart: string) =>
-          utf16Decode(
-            new Uint16Array(this.convertOctalToBytes(escapedStringPart)),
-            true,
-          ),
-      );
-    }
-    // decode with PDFDocEncoding
-    return this.decodeTextWithEscapings(
-      this.value,
-      (escapedStringPart: string) =>
-        PDFDocEncoding.decode(this.convertOctalToBytes(escapedStringPart)),
-    );
+
+    return pdfDocEncodingDecode(bytes);
   }
 
   decodeDate(): Date {
     return PDFString.toDate(this.value);
-  }
-
-  private decodeTextWithEscapings(
-    valueWithEscapings: string,
-    decodingFunction: (escapedStringPart: string) => string,
-  ): string {
-    let result = '';
-    for (let i = 0; i < valueWithEscapings.length; i++) {
-      const char: string = valueWithEscapings.charAt(i);
-      if (char === PDFString.escapeChar) {
-        const sequenceResult = this.handleEscapedSequence(
-          valueWithEscapings,
-          i,
-          decodingFunction,
-        );
-        result += sequenceResult.result;
-        i = sequenceResult.newIndex;
-      } else {
-        result += char;
-      }
-    }
-    return result;
-  }
-
-  private convertOctalToBytes(value: string): number[] {
-    return (
-      value
-        .split(PDFString.escapeChar)
-        // ignore emptry string
-        .filter((octaclNumber) => octaclNumber)
-        .map((octalNumber) => parseInt(octalNumber, 8))
-    );
-  }
-
-  private handleEscapedSequence(
-    valueWithEscapings: string,
-    i: number,
-    decodingFunction: (escapedStringPart: string) => string,
-  ) {
-    const start = i;
-    while (i < valueWithEscapings.length) {
-      i += 4;
-      const char: string = valueWithEscapings.charAt(i);
-      if (char !== PDFString.escapeChar) {
-        return {
-          newIndex: i,
-          result: decodingFunction(valueWithEscapings.substring(start, i)),
-        };
-      }
-    }
-    // Should not happen since after a backslash there should be at least 3 chars.
-    throw new Error();
   }
 }
 

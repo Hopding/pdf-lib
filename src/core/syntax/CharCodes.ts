@@ -1,5 +1,6 @@
 enum CharCodes {
   Null = 0,
+  Backspace = 8,
   Tab = 9,
   Newline = 10,
   FormFeed = 12,
