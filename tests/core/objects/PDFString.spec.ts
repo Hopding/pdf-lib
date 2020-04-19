@@ -37,21 +37,36 @@ describe(`PDFString`, () => {
     });
   });
 
-  describe.only(`decoding to string`, () => {
-    it(`test a`, () => {
+  describe(`decoding to string`, () => {
+    it(`can interpret UTF-16BE strings with escaped octal codes`, () => {
       const literal =
         '\\376\\377\\000\\105\\000\\147\\000\\147\\000\\040\\330\\074\\337\\163';
       expect(PDFString.of(literal).decodeText()).toBe('Egg 🍳');
     });
 
-    it(`test b`, () => {
+    it(`can interpret UTF-16BE strings with ASCII symbols`, () => {
       const literal = '\\376\\377\0E\0g\0g\0 \\330<\\337s';
       expect(PDFString.of(literal).decodeText()).toBe('Egg 🍳');
     });
 
-    it(`test c`, () => {
+    it(`can interpret UTF-16BE strings with line breaks`, () => {
       const literal = '\\376\\377\0E\\\n\\0g\0g\0 \\330<\\337s';
       expect(PDFString.of(literal).decodeText()).toBe('Egg 🍳');
+    });
+
+    it(`can interpret PDFDocEncoded strings`, () => {
+      const literal = 'a\\105b\\163\\0b6';
+      expect(PDFString.of(literal).decodeText()).toBe('aEbs\0b6');
+    });
+
+    it(`can interpret PDFDocEncoded strings with EOLs and line breaks`, () => {
+      const literal = 'a\nb\rc\\\nd\\\re';
+      expect(PDFString.of(literal).decodeText()).toBe('a\nb\rcde');
+    });
+
+    it(`can interpret PDFDocEncoded strings with ignored escapes`, () => {
+      const literal = 'a\nb\rc\\xd\\;';
+      expect(PDFString.of(literal).decodeText()).toBe('a\nb\rcxd;');
     });
   });
 

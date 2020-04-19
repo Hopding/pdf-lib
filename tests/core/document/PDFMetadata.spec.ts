@@ -17,7 +17,7 @@ describe(`PDFMetadata`, () => {
     expect(pdfDoc.getCreator()).toBe(
       'pdf-lib (https://github.com/Hopding/pdf-lib)',
     );
-    expect(pdfDoc.getKeywords()).toStrictEqual([]);
+    expect(pdfDoc.getKeywords()).toBe('');
     // Dates can not be tested since they have the current time as value.
 
     const title = '🥚 The Life of an Egg 🍳';
@@ -44,7 +44,7 @@ describe(`PDFMetadata`, () => {
     expect(pdfDoc.getSubject()).toBe(subject);
     expect(pdfDoc.getProducer()).toBe(producer);
     expect(pdfDoc.getCreator()).toBe(creator);
-    expect(pdfDoc.getKeywords()).toStrictEqual(keywords);
+    expect(pdfDoc.getKeywords()).toBe(keywords.join(' '));
     expect(pdfDoc.getCreationDate()).toStrictEqual(creationDate);
     expect(pdfDoc.getModificationDate()).toStrictEqual(modificationDate);
   });
@@ -64,16 +64,8 @@ describe(`PDFMetadata`, () => {
     expect(pdfDoc.getProducer()).toBe(
       'pdf-lib (https://github.com/Hopding/pdf-lib)',
     );
-    expect(pdfDoc.getKeywords()).toStrictEqual([
-      'Keywords',
-      'metadata',
-      '(StringType=LiteralString,',
-      'Encoding=PDFDocEncoding)',
-      'with',
-      'some',
-      'weird',
-      'chars',
-      '˘•€',
-    ]);
+    expect(pdfDoc.getKeywords()).toBe(
+      'Keywords metadata (StringType=LiteralString, Encoding=PDFDocEncoding) with  some weird  chars ˘•€',
+    );
   });
 });

@@ -20,9 +20,7 @@ const strings = {
   const key = PDFName.of('Title');
   // (pdfDoc as any).getInfoDict().set(key, PDFHexString.of(strings.hexOriginal));
   // (pdfDoc as any).getInfoDict().set(key, PDFString.of(strings.literalOriginal));
-  (pdfDoc as any)
-    .getInfoDict()
-    .set(key, PDFString.of(strings.literalIrregular));
+  (pdfDoc as any).getInfoDict().set(key, PDFString.of('a\nb\rc\\xd\\;'));
 
   console.log(
     'hexOriginal:',

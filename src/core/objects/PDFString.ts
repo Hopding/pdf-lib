@@ -163,31 +163,38 @@ class PDFString extends PDFObject {
 
     let octal = '';
     let escaped = false;
+
+    const pushByte = (byte?: number) => {
+      if (byte !== undefined) bytes.push(byte);
+      escaped = false;
+    };
+
     for (let idx = 0, len = this.value.length; idx < len; idx++) {
       const char = this.value[idx];
       const byte = toCharCode(char);
       const nextChar = this.value[idx + 1];
       if (!escaped) {
         if (byte === CharCodes.BackSlash) escaped = true;
-        else bytes.push(byte);
+        else pushByte(byte);
       } else {
-        if (byte === CharCodes.n) bytes.push(CharCodes.Newline);
-        if (byte === CharCodes.r) bytes.push(CharCodes.CarriageReturn);
-        if (byte === CharCodes.t) bytes.push(CharCodes.Tab);
-        if (byte === CharCodes.b) bytes.push(CharCodes.Backspace);
-        if (byte === CharCodes.f) bytes.push(CharCodes.FormFeed);
-        if (byte === CharCodes.LeftParen) bytes.push(CharCodes.LeftParen);
-        if (byte === CharCodes.RightParen) bytes.push(CharCodes.RightParen);
-        if (byte === CharCodes.Backspace) bytes.push(CharCodes.BackSlash);
-        if (byte >= CharCodes.Zero && byte <= CharCodes.Seven) {
+        if (byte === CharCodes.Newline) pushByte();
+        else if (byte === CharCodes.CarriageReturn) pushByte();
+        else if (byte === CharCodes.n) pushByte(CharCodes.Newline);
+        else if (byte === CharCodes.r) pushByte(CharCodes.CarriageReturn);
+        else if (byte === CharCodes.t) pushByte(CharCodes.Tab);
+        else if (byte === CharCodes.b) pushByte(CharCodes.Backspace);
+        else if (byte === CharCodes.f) pushByte(CharCodes.FormFeed);
+        else if (byte === CharCodes.LeftParen) pushByte(CharCodes.LeftParen);
+        else if (byte === CharCodes.RightParen) pushByte(CharCodes.RightParen);
+        else if (byte === CharCodes.Backspace) pushByte(CharCodes.BackSlash);
+        else if (byte >= CharCodes.Zero && byte <= CharCodes.Seven) {
           octal += char;
           if (octal.length === 3 || !(nextChar >= '0' && nextChar <= '7')) {
-            bytes.push(parseInt(octal, 8));
+            pushByte(parseInt(octal, 8));
             octal = '';
-            escaped = false;
           }
         } else {
-          escaped = false;
+          pushByte(byte);
         }
       }
     }

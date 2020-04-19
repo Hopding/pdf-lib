@@ -257,18 +257,18 @@ export default class PDFDocument {
   }
 
   /**
-   * Get this document's keyword metadata. These keywords appears in the
+   * Get this document's keyword metadata. These keywords appear in the
    * "Document Properties" section of most PDF readers.
    */
-  getKeywords(): string[] {
+  getKeywords(): string {
     const keywordsObject = this.getInfoDict().get(PDFName.of('Keywords'));
     if (keywordsObject) {
       const keywordsAsString = this.decodePDFStringOrPDFHexString(
         keywordsObject,
       );
-      return keywordsAsString.split(' ');
+      return keywordsAsString;
     }
-    return [];
+    return '';
   }
 
   /**
