@@ -63,8 +63,7 @@ class PDFHexString extends PDFObject {
 
     // Leading Byte Order Mark means it is a UTF-16BE encoded string.
     if (bytes[0] === 0xfe && bytes[1] === 0xff) {
-      // return utf16Decode(new Uint16Array(bytes.buffer));
-      return utf16Decode(new Uint16Array(bytes));
+      return utf16Decode(bytes);
     }
 
     return pdfDocEncodingDecode(bytes);

@@ -261,6 +261,11 @@ export const highSurrogate = (codePoint: number) =>
 export const lowSurrogate = (codePoint: number) =>
   ((codePoint - 0x10000) % 0x400) + 0xdc00;
 
+enum ByteOrder {
+  BigEndian = 'BigEndian',
+  LittleEndian = 'LittleEndian',
+}
+
 /**
  * Decodes an Uint16Array to string using the UTF-16.
  *
@@ -270,46 +275,43 @@ export const lowSurrogate = (codePoint: number) =>
  * @returns The decoded string or empty if the decoding was not possible.
  */
 export const utf16Decode = (
-  input: Uint16Array,
-  byteOrderMark: boolean = true,
+  input: Uint8Array,
+  byteOrderMark = true,
 ): string => {
-  if (input.length <= 1) {
-    // 1 byte is not valid
-    return '';
-  }
-  // 0 stands for Big Endian, 1 --> Little Endian
-  let byteOrder = 0;
-  if (byteOrderMark) {
-    byteOrder = readBOM(input);
-  }
-  // skip byte order mark if needed
-  let i = byteOrderMark ? 2 : 0;
+  // 1 byte is not valid
+  if (input.length <= 1) return '';
+
+  const byteOrder = byteOrderMark ? readBOM(input) : ByteOrder.BigEndian;
+
+  // Skip byte order mark if needed
+  let idx = byteOrderMark ? 2 : 0;
   const codePoints: number[] = [];
 
-  while (i + 1 < input.length) {
-    const first = decodeValues(input[i], input[i + 1], byteOrder);
+  while (idx + 1 < input.length) {
+    const first = decodeValues(input[idx], input[idx + 1], byteOrder);
     if (isSurrogate(first)) {
       if (isHighSurrogate(first)) {
-        if (input.length - 2 - i < 2) {
+        if (input.length - 2 - idx < 2) {
           // Less than 2 bytes remaining but there has to be a low surrogate.
           return '';
         }
-        const second = decodeValues(input[i + 2], input[i + 3], byteOrder);
+        const second = decodeValues(input[idx + 2], input[idx + 3], byteOrder);
         if (!isLowSurrogate(second)) {
           // second has to be the matching low surrogate
           return '';
         }
         codePoints.push(first);
         codePoints.push(second);
-        i = i + 4;
+        idx = idx + 4;
         continue;
       }
       // has to be a high surrogate since decodeValues(...) takes byte order into account
       return '';
     }
     codePoints.push(first);
-    i = i + 2;
+    idx = idx + 2;
   }
+
   return String.fromCodePoint(...codePoints);
 };
 
@@ -347,15 +349,12 @@ const isLowSurrogate = (codePoint: number) =>
  * @param byteOrder The byte order (1 --> little-endian everything else big-endian)
  * Reference: https://en.wikipedia.org/wiki/UTF-16#Examples
  */
-const decodeValues = (first: number, second: number, byteOrder: number) => {
-  // little-endian encoding
-  if (byteOrder === 1) {
-    // Append the binary representation of the preceding byte by shifting the first one 8 to the left
-    // and than applying a bitwise or-operator to append the second one.
-    return (second << 8) | first;
-  }
-  // big-endian Encoding
-  return (first << 8) | second;
+const decodeValues = (first: number, second: number, byteOrder: ByteOrder) => {
+  // Append the binary representation of the preceding byte by shifting the first one 8 to the left
+  // and than applying a bitwise or-operator to append the second one.
+  if (byteOrder === ByteOrder.LittleEndian) return (second << 8) | first;
+  if (byteOrder === ByteOrder.BigEndian) return (first << 8) | second;
+  throw new Error(`Invalid byteOrder: ${byteOrder}`);
 };
 
 /**
@@ -365,18 +364,13 @@ const decodeValues = (first: number, second: number, byteOrder: number) => {
  *
  * Reference: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-16
  */
-const readBOM = (bytes: Uint16Array) => {
-  const firstNumber = bytes[0];
-  const secondNumber = bytes[1];
+// const readBOM = (bytes: Uint16Array): ByteOrder => {
+const readBOM = (bytes: Uint8Array): ByteOrder => {
+  const first = bytes[0];
+  const second = bytes[1];
 
-  if (firstNumber === 0xfe && secondNumber === 0xff) {
-    //  big-endian
-    return 0;
-  }
-  if (firstNumber === 0xff && secondNumber === 0xfe) {
-    // little-endian
-    return 1;
-  }
-  // Assume  big-endian
-  return 0;
+  if (first === 0xfe && second === 0xff) return ByteOrder.BigEndian;
+  if (first === 0xff && second === 0xfe) return ByteOrder.LittleEndian;
+
+  return ByteOrder.BigEndian;
 };
