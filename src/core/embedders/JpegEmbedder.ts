@@ -25,7 +25,7 @@ const ChannelToColorSpace: { [idx: number]: ColorSpace | undefined } = {
 /**
  * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as
  * this class borrows from:
- *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
+ *   https://github.com/foliojs/pdfkit/blob/a6af76467ce06bd6a2af4aa7271ccac9ff152a7d/lib/image/jpeg.js
  */
 class JpegEmbedder {
   static async for(imageData: Uint8Array) {
@@ -100,6 +100,24 @@ class JpegEmbedder {
       Height: this.height,
       ColorSpace: this.colorSpace,
       Filter: 'DCTDecode',
+      // CMYK JPEG streams in PDF are typically stored complemented,
+      // with 1 as 'off' and 0 as 'on' (PDF 32000-1:2008, 8.6.4.4).
+      // 
+      // Standalone CMYK JPEG (usually exported by Photoshop) are
+      // stored inverse, with 0 as 'off' and 1 as 'on', like RGB.
+      //
+      // Applying a swap here as a hedge that most bytes passing
+      // through this method will benefit from it.
+      Decode: this.colorSpace === ColorSpace.DeviceCMYK && [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+      ],
     });
 
     if (ref) {
