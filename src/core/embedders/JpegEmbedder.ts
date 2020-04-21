@@ -13,13 +13,13 @@ const MARKERS = [
 enum ColorSpace {
   DeviceGray = 'DeviceGray',
   DeviceRGB = 'DeviceRGB',
-  DeviceCYMK = 'DeviceCYMK',
+  DeviceCMYK = 'DeviceCMYK',
 }
 
 const ChannelToColorSpace: { [idx: number]: ColorSpace | undefined } = {
   1: ColorSpace.DeviceGray,
   3: ColorSpace.DeviceRGB,
-  4: ColorSpace.DeviceCYMK,
+  4: ColorSpace.DeviceCMYK,
 };
 
 /**
