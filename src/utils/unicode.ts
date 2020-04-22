@@ -266,63 +266,65 @@ enum ByteOrder {
   LittleEndian = 'LittleEndian',
 }
 
+const REPLACEMENT = '�'.codePointAt(0)!;
+
 /**
- * Decodes an Uint16Array to string using the UTF-16.
+ * Decodes a Uint8Array of data to a string using UTF-16.
  *
- * @param input A Uint16Array containing the UTF-16 encoding of the input string
+ * Note that this function attempts to recover from erronous input by
+ * inserting the replacement character (�) to mark invalid code points
+ * and surrogate pairs.
+ *
+ * @param input A Uint8Array containing UTF-16 encoded data
  * @param byteOrderMark Whether or not a byte order marker (BOM) should be read
  *                      at the start of the encoding. (default `true`)
- * @returns The decoded string or empty if the decoding was not possible.
+ * @returns The decoded string.
  */
 export const utf16Decode = (
   input: Uint8Array,
   byteOrderMark = true,
 ): string => {
-  // 1 byte is not valid
-  if (input.length <= 1) return '';
+  // Need at least 2 bytes of data in UTF-16 encodings
+  if (input.length <= 1) return String.fromCodePoint(REPLACEMENT);
 
   const byteOrder = byteOrderMark ? readBOM(input) : ByteOrder.BigEndian;
 
   // Skip byte order mark if needed
   let idx = byteOrderMark ? 2 : 0;
+
   const codePoints: number[] = [];
 
-  while (idx + 1 < input.length) {
-    const first = decodeValues(input[idx], input[idx + 1], byteOrder);
-    if (isSurrogate(first)) {
-      if (isHighSurrogate(first)) {
-        if (input.length - 2 - idx < 2) {
-          // Less than 2 bytes remaining but there has to be a low surrogate.
-          return '';
+  while (input.length - idx >= 2) {
+    const first = decodeValues(input[idx++], input[idx++], byteOrder);
+
+    if (isHighSurrogate(first)) {
+      if (input.length - idx < 2) {
+        // Need at least 2 bytes left for the low surrogate that is required
+        codePoints.push(REPLACEMENT);
+      } else {
+        const second = decodeValues(input[idx++], input[idx++], byteOrder);
+        if (isLowSurrogate(second)) {
+          codePoints.push(first, second);
+        } else {
+          // Low surrogates should always follow high surrogates
+          codePoints.push(REPLACEMENT);
         }
-        const second = decodeValues(input[idx + 2], input[idx + 3], byteOrder);
-        if (!isLowSurrogate(second)) {
-          // second has to be the matching low surrogate
-          return '';
-        }
-        codePoints.push(first);
-        codePoints.push(second);
-        idx = idx + 4;
-        continue;
       }
-      // has to be a high surrogate since decodeValues(...) takes byte order into account
-      return '';
+    } else if (isLowSurrogate(first)) {
+      // High surrogates should always come first since `decodeValues()`
+      // accounts for the byte ordering
+      idx += 2;
+      codePoints.push(REPLACEMENT);
+    } else {
+      codePoints.push(first);
     }
-    codePoints.push(first);
-    idx = idx + 2;
   }
+
+  // There shouldn't be extra byte(s) left over
+  if (idx < input.length) codePoints.push(REPLACEMENT);
 
   return String.fromCodePoint(...codePoints);
 };
-
-/**
- * Returns `true` if the given `codePoint` is either a low or high surrogate.
- * @param codePoint The code point to be evaluated.
- *
- * Reference: https://en.wikipedia.org/wiki/UTF-16#Description
- */
-const isSurrogate = (codePoint: number) =>
-  isHighSurrogate(codePoint) || isLowSurrogate(codePoint);
 
 /**
  * Returns `true` if the given `codePoint` is a high surrogate.

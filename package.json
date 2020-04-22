@@ -28,7 +28,7 @@
     "clean": "rimraf ts3.4 build cjs dist es scratchpad/build coverage tsBuildInfo.json isolate*.log flamegraph.html out.pdf",
     "typecheck": "tsc --noEmit --incremental false --tsBuildInfoFile null",
     "test": "jest --config jest.json --runInBand",
-    "testw": "jest --config jest.json --watch --notify",
+    "testw": "jest --config jest.json --watch",
     "testc": "jest --config jest.json --coverage && open coverage/index.html",
     "lint": "yarn lint:prettier && yarn lint:tslint:src && yarn lint:tslint:tests",
     "lint:tslint:src": "tslint --project tsconfig.json --fix",

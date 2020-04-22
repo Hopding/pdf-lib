@@ -202,7 +202,7 @@ describe(`utf16Decode`, () => {
   it(`decodes <U+1F4A9 U+1F382> from UTF-16`, () => {
     // prettier-ignore
     const input = new Uint8Array([
-      /* U+1F4A9 */ 0xd8, 0x3d, 0xdc, 0xa9, 
+      /* U+1F4A9 */ 0xd8, 0x3d, 0xdc, 0xa9,
       /* U+1F382 */ 0xd8, 0x3c, 0xdf, 0x82, 
     ]);
 
@@ -260,6 +260,78 @@ describe(`utf16Decode`, () => {
     const expected = 'ä☺𠜎️☁️';
 
     const actual = utf16Decode(input, true);
+
+    expect(actual).toEqual(expected);
+  });
+
+  it(`injects a replacement character when the input ends prematurely`, () => {
+    // prettier-ignore
+    const input = new Uint8Array([
+      /* U+1F4A9 */ 0xd8, 0x3d, 0xdc, 0xa9,
+      /* U+1F382 */ 0xd8, 
+    ]);
+
+    const expected = '💩�';
+
+    const actual = utf16Decode(input, false);
+
+    expect(actual).toEqual(expected);
+  });
+
+  it(`injects a replacement character when the input ends with a high surrogate`, () => {
+    // prettier-ignore
+    const input = new Uint8Array([
+      /* U+1F4A9 */ 0xd8, 0x3d, 0xdc, 0xa9,
+      /* U+1F382 */ 0xd8, 0x3c,
+    ]);
+
+    const expected = '💩�';
+
+    const actual = utf16Decode(input, false);
+
+    expect(actual).toEqual(expected);
+  });
+
+  it(`injects a replacement character when the input ends with a low surrogate`, () => {
+    // prettier-ignore
+    const input = new Uint8Array([
+      /* U+1F4A9 */ 0xd8, 0x3d, 0xdc, 0xa9,
+      /* U+1F382 */ 0xdf, 0x82,
+    ]);
+
+    const expected = '💩�';
+
+    const actual = utf16Decode(input, false);
+
+    expect(actual).toEqual(expected);
+  });
+
+  it(`injects a replacement character when low surrogates precede high surrogates`, () => {
+    // prettier-ignore
+    const input = new Uint8Array([
+      /* U+1F4A9 */ 0xd8, 0x3d, 0xdc, 0xa9,
+      /* U+1F382 */ 0xdf, 0x82, 0xd8, 0x3c,  
+      /* valid a */ 0, 97,
+    ]);
+
+    const expected = '💩�a';
+
+    const actual = utf16Decode(input, false);
+
+    expect(actual).toEqual(expected);
+  });
+
+  it(`injects a replacement character when high surrogates are not followed by low surrogates`, () => {
+    // prettier-ignore
+    const input = new Uint8Array([
+      /* valid U+1F4A9 */ 0xd8, 0x3d, 0xdc, 0xa9,
+      /* invalid U+1F382 */ 0xd8, 0x3c, 0x82, 0xdf,
+      /* valid a */ 0, 97,
+    ]);
+
+    const expected = '💩�a';
+
+    const actual = utf16Decode(input, false);
 
     expect(actual).toEqual(expected);
   });
