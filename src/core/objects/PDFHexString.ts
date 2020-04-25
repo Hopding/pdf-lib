@@ -2,12 +2,13 @@ import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
 import {
   copyStringIntoBuffer,
-  // hexStringToBytes,
   toHexStringOfMinLength,
   utf16Decode,
   utf16Encode,
   pdfDocEncodingDecode,
+  parseDate,
 } from 'src/utils';
+import { InvalidPDFDateStringError } from 'src/core/errors';
 
 class PDFHexString extends PDFObject {
   static of = (value: string) => new PDFHexString(value);
@@ -37,12 +38,6 @@ class PDFHexString extends PDFObject {
 
     const bytes = new Uint8Array(hex.length / 2);
 
-    // // Interpret each pair of hex digits as a single byte
-    // for (let idx = 0, len = hex.length; idx < len; idx += 2) {
-    //   const byte = parseInt(hex.substring(idx, idx + 2), 16);
-    //   bytes[idx / 2] = byte;
-    // }
-
     let hexOffset = 0;
     let bytesOffset = 0;
 
@@ -62,11 +57,19 @@ class PDFHexString extends PDFObject {
     const bytes = this.asBytes();
 
     // Leading Byte Order Mark means it is a UTF-16BE encoded string.
+    // TODO: Handle UTF-16LE encoding
     if (bytes[0] === 0xfe && bytes[1] === 0xff) {
       return utf16Decode(bytes);
     }
 
     return pdfDocEncodingDecode(bytes);
+  }
+
+  decodeDate(): Date {
+    const text = this.decodeText();
+    const date = parseDate(text);
+    if (!date) throw new InvalidPDFDateStringError(text);
+    return date;
   }
 
   clone(): PDFHexString {

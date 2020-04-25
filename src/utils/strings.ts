@@ -88,3 +88,45 @@ export const breakTextIntoLines = (
 
   return lines;
 };
+
+// See section "7.9.4 Dates" of the PDF specification
+const dateRegex = /^D:(\d\d\d\d)(\d\d)?(\d\d)?(\d\d)?(\d\d)?(\d\d)?([+\-Z])?(\d\d)?'?(\d\d)?'?$/;
+
+export const parseDate = (dateStr: string): Date | undefined => {
+  const match = dateStr.match(dateRegex);
+
+  if (!match) return undefined;
+
+  const [
+    ,
+    year,
+    month = '01',
+    day = '01',
+    hours = '00',
+    mins = '00',
+    secs = '00',
+    offsetSign = 'Z',
+    offsetHours = '00',
+    offsetMins = '00',
+  ] = match;
+
+  const date = new Date(`${year}-${month}-${day}:${hours}:${mins}:${secs}Z`);
+
+  // The relation to UTC, can be either +, - or Z.
+  // Javascript Date supports only UTC so offsets are added or subtracted.
+  switch (offsetSign) {
+    case '+': // time is after UTC, so we offsets are subtracted
+      date.setHours(date.getHours() - Number(offsetHours));
+      date.setMinutes(date.getMinutes() - Number(offsetMins));
+      break;
+    case '-': // time is before UTC, so we offsets are added
+      date.setHours(date.getHours() + Number(offsetHours));
+      date.setMinutes(date.getMinutes() + Number(offsetMins));
+      break;
+    case 'Z':
+      // TODO: Should this really just be `break`?
+      break;
+  }
+
+  return date;
+};

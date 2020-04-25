@@ -78,6 +78,13 @@ export class PDFArrayIsNotRectangleError extends Error {
   }
 }
 
+export class InvalidPDFDateStringError extends Error {
+  constructor(value: string) {
+    const msg = `Attempted to convert "${value}" to a date, but it does not match the PDF date string format.`;
+    super(msg);
+  }
+}
+
 /***** Parser Errors ******/
 
 export interface Position {

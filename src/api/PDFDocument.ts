@@ -69,6 +69,11 @@ export interface LoadOptions {
   ignoreEncryption?: boolean;
   parseSpeed?: ParseSpeeds | number;
   throwOnInvalidObject?: boolean;
+  updateMetadata?: boolean;
+}
+
+export interface CreateOptions {
+  updateMetadata?: boolean;
 }
 
 export interface EmbedFontOptions {
@@ -139,6 +144,7 @@ export default class PDFDocument {
       ignoreEncryption = false,
       parseSpeed = ParseSpeeds.Slow,
       throwOnInvalidObject = false,
+      updateMetadata = true,
     } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
@@ -152,20 +158,23 @@ export default class PDFDocument {
       parseSpeed,
       throwOnInvalidObject,
     ).parseDocument();
-    return new PDFDocument(context, ignoreEncryption);
+    return new PDFDocument(context, ignoreEncryption, updateMetadata);
   }
 
   /**
    * Create a new [[PDFDocument]].
    * @returns Resolves with the newly created document.
    */
-  static async create() {
+  static async create(options: CreateOptions = {}) {
+    const { updateMetadata = true } = options;
+
     const context = PDFContext.create();
     const pageTree = PDFPageTree.withContext(context);
     const pageTreeRef = context.register(pageTree);
     const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
     context.trailerInfo.Root = context.register(catalog);
-    return new PDFDocument(context, false);
+
+    return new PDFDocument(context, false, updateMetadata);
   }
 
   /** The low-level context of this document. */
@@ -188,7 +197,11 @@ export default class PDFDocument {
   private readonly images: PDFImage[];
   private readonly embeddedPages: PDFEmbeddedPage[];
 
-  private constructor(context: PDFContext, ignoreEncryption: boolean) {
+  private constructor(
+    context: PDFContext,
+    ignoreEncryption: boolean,
+    updateMetadata: boolean,
+  ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
 
@@ -204,7 +217,7 @@ export default class PDFDocument {
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
-    this.updateInfoDict();
+    if (updateMetadata) this.updateInfoDict();
   }
 
   /**
@@ -225,7 +238,7 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getTitle(): string {
-    const titleObject = this.getInfoDict().get(PDFName.of('Title'));
+    const titleObject = this.getInfoDict().lookup(PDFName.of('Title'));
     if (titleObject) {
       return this.decodePDFStringOrPDFHexString(titleObject);
     }
@@ -237,7 +250,7 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getAuthor(): string {
-    const authorObject = this.getInfoDict().get(PDFName.of('Author'));
+    const authorObject = this.getInfoDict().lookup(PDFName.of('Author'));
     if (authorObject) {
       return this.decodePDFStringOrPDFHexString(authorObject);
     }
@@ -249,7 +262,7 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getSubject(): string {
-    const subjectObject = this.getInfoDict().get(PDFName.of('Subject'));
+    const subjectObject = this.getInfoDict().lookup(PDFName.of('Subject'));
     if (subjectObject) {
       return this.decodePDFStringOrPDFHexString(subjectObject);
     }
@@ -261,7 +274,7 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getKeywords(): string {
-    const keywordsObject = this.getInfoDict().get(PDFName.of('Keywords'));
+    const keywordsObject = this.getInfoDict().lookup(PDFName.of('Keywords'));
     if (keywordsObject) {
       const keywordsAsString = this.decodePDFStringOrPDFHexString(
         keywordsObject,
@@ -276,7 +289,7 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getCreator(): string {
-    const creatorObject = this.getInfoDict().get(PDFName.of('Creator'));
+    const creatorObject = this.getInfoDict().lookup(PDFName.of('Creator'));
     if (creatorObject) {
       return this.decodePDFStringOrPDFHexString(creatorObject);
     }
@@ -288,7 +301,7 @@ export default class PDFDocument {
    * "Document Properties" section of most PDF readers.
    */
   getProducer(): string {
-    const producerObject = this.getInfoDict().get(PDFName.of('Producer'));
+    const producerObject = this.getInfoDict().lookup(PDFName.of('Producer'));
     if (producerObject) {
       return this.decodePDFStringOrPDFHexString(producerObject);
     }
@@ -301,12 +314,10 @@ export default class PDFDocument {
    * of most PDF readers.
    */
   getCreationDate(): Date | undefined {
-    const creationDateObject = this.getInfoDict().get(
-      PDFName.of('CreationDate'),
-    );
-    if (creationDateObject) {
-      if (creationDateObject instanceof PDFString) {
-        return creationDateObject.decodeDate();
+    const creationDate = this.getInfoDict().lookup(PDFName.of('CreationDate'));
+    if (creationDate) {
+      if (creationDate instanceof PDFString) {
+        return creationDate.decodeDate();
       } else {
         throw new Error();
       }
@@ -319,7 +330,7 @@ export default class PDFDocument {
    * appears in the "Document Properties" section of most PDF readers.
    */
   getModificationDate(): Date | undefined {
-    const modDate = this.getInfoDict().get(PDFName.of('ModDate'));
+    const modDate = this.getInfoDict().lookup(PDFName.of('ModDate'));
     if (modDate) {
       if (modDate instanceof PDFString) {
         return modDate.decodeDate();

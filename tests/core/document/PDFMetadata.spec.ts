@@ -1,9 +1,10 @@
 import fs from 'fs';
 import { PDFDocument } from 'src/api';
 
-describe(`PDFMetadata`, () => {
-  const justMetadataPDFbytes = fs.readFileSync('assets/pdfs/just_metadata.pdf');
+const justMetadataPDFbytes = fs.readFileSync('assets/pdfs/just_metadata.pdf');
+const normalPDFBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 
+describe(`PDFMetadata`, () => {
   it(`metadata fields can be set and retrieved (Hex String encoded as UTF-16BE)`, async () => {
     const pdfDoc = await PDFDocument.create();
 
@@ -66,6 +67,19 @@ describe(`PDFMetadata`, () => {
     );
     expect(pdfDoc.getKeywords()).toBe(
       'Keywords metadata (StringType=LiteralString, Encoding=PDFDocEncoding) with  some weird  chars ˘•€',
+    );
+  });
+
+  it(`can read CreationDate and ModDate metadata fields`, async () => {
+    const pdfDoc = await PDFDocument.load(normalPDFBytes, {
+      updateMetadata: false,
+    });
+
+    expect(pdfDoc.getCreationDate()).toEqual(
+      new Date('2018-01-04T01:05:06.000Z'),
+    );
+    expect(pdfDoc.getModificationDate()).toEqual(
+      new Date('2018-01-04T01:05:06.000Z'),
     );
   });
 });
