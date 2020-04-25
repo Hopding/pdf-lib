@@ -17,7 +17,8 @@
     "cshenks (https://github.com/cshenks)",
     "James Woodrow (https://github.com/jwoodrow)",
     "Guillaume Grossetie (https://github.com/Mogztter)",
-    "Philipp Tessenow (https://github.com/tessi)"
+    "Philipp Tessenow (https://github.com/tessi)",
+    "Tim Kräuter (https://github.com/timKraeuter)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
