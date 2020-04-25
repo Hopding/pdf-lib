@@ -50,6 +50,14 @@ class PDFName extends PDFObject {
   static readonly BleedBox = PDFName.of('BleedBox');
   static readonly CropBox = PDFName.of('CropBox');
   static readonly Rotate = PDFName.of('Rotate');
+  static readonly Title = PDFName.of('Title');
+  static readonly Author = PDFName.of('Author');
+  static readonly Subject = PDFName.of('Subject');
+  static readonly Creator = PDFName.of('Creator');
+  static readonly Keywords = PDFName.of('Keywords');
+  static readonly Producer = PDFName.of('Producer');
+  static readonly CreationDate = PDFName.of('CreationDate');
+  static readonly ModDate = PDFName.of('ModDate');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;
