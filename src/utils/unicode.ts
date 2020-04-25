@@ -360,19 +360,25 @@ const decodeValues = (first: number, second: number, byteOrder: ByteOrder) => {
 };
 
 /**
- * Returns 0/1 if the given array starts with the byte order mark for the big-endian/little-endian encoding.
- * If neither BOM matches it returns 0.
- * @param bytes The byte array to be evaluated.
+ * Returns whether the given array contains a byte order mark for the
+ * UTF-16BE or UTF-16LE encoding. If it has neither, BigEndian is assumed.
  *
  * Reference: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-16
+ *
+ * @param bytes The byte array to be evaluated.
  */
-// const readBOM = (bytes: Uint16Array): ByteOrder => {
-const readBOM = (bytes: Uint8Array): ByteOrder => {
-  const first = bytes[0];
-  const second = bytes[1];
+// prettier-ignore
+const readBOM = (bytes: Uint8Array): ByteOrder => (
+    hasUtf16BigEndianBOM(bytes) ? ByteOrder.BigEndian
+  : hasUtf16LittleEndianBOM(bytes) ? ByteOrder.LittleEndian
+  : ByteOrder.BigEndian
+);
 
-  if (first === 0xfe && second === 0xff) return ByteOrder.BigEndian;
-  if (first === 0xff && second === 0xfe) return ByteOrder.LittleEndian;
+const hasUtf16BigEndianBOM = (bytes: Uint8Array) =>
+  bytes[0] === 0xfe && bytes[1] === 0xff;
 
-  return ByteOrder.BigEndian;
-};
+const hasUtf16LittleEndianBOM = (bytes: Uint8Array) =>
+  bytes[0] === 0xff && bytes[1] === 0xfe;
+
+export const hasUtf16BOM = (bytes: Uint8Array) =>
+  hasUtf16BigEndianBOM(bytes) || hasUtf16LittleEndianBOM(bytes);

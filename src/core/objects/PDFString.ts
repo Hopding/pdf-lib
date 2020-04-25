@@ -7,6 +7,7 @@ import {
   pdfDocEncodingDecode,
   toCharCode,
   parseDate,
+  hasUtf16BOM,
 } from 'src/utils';
 import { InvalidPDFDateStringError } from 'src/core/errors';
 
@@ -79,13 +80,7 @@ class PDFString extends PDFObject {
 
   decodeText(): string {
     const bytes = this.asBytes();
-
-    // Leading Byte Order Mark means it is a UTF-16BE encoded string.
-    // TODO: Support UTF-16LE
-    if (bytes[0] === 0xfe && bytes[1] === 0xff) {
-      return utf16Decode(bytes);
-    }
-
+    if (hasUtf16BOM(bytes)) return utf16Decode(bytes);
     return pdfDocEncodingDecode(bytes);
   }
 

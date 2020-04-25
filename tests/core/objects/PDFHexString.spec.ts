@@ -24,6 +24,11 @@ describe(`PDFHexString`, () => {
       expect(PDFHexString.of(hex).decodeText()).toBe('Egg 🍳');
     });
 
+    it(`can interpret UTF-16LE strings`, () => {
+      const hex = 'FFFE45006700670020003CD873DF';
+      expect(PDFHexString.of(hex).decodeText()).toBe('Egg 🍳');
+    });
+
     it(`can interpret PDFDocEncoded strings`, () => {
       const hex = '61456273006236';
       expect(PDFHexString.of(hex).decodeText()).toBe('aEbs\0b6');

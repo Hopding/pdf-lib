@@ -14,6 +14,8 @@ const newEncryptedPdfBytes = fs.readFileSync('assets/pdfs/encrypted_new.pdf');
 const invalidObjectsPdfBytes = fs.readFileSync(
   'assets/pdfs/with_invalid_objects.pdf',
 );
+const justMetadataPdfbytes = fs.readFileSync('assets/pdfs/just_metadata.pdf');
+const normalPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 
 describe(`PDFDocument`, () => {
   describe(`load() method`, () => {
@@ -176,6 +178,87 @@ describe(`PDFDocument`, () => {
     it(`Can insert pages in brand new documents`, async () => {
       const pdfDoc = await PDFDocument.create();
       expect(pdfDoc.addPage()).toBeInstanceOf(PDFPage);
+    });
+  });
+
+  describe(`metadata getter methods`, () => {
+    it(`they can retrieve the title, author, subject, producer, creator, keywords, creation date, and modification date from a new document`, async () => {
+      const pdfDoc = await PDFDocument.create();
+
+      // Everything is empty or has its initial value.
+      expect(pdfDoc.getTitle()).toBe('');
+      expect(pdfDoc.getAuthor()).toBe('');
+      expect(pdfDoc.getSubject()).toBe('');
+      expect(pdfDoc.getProducer()).toBe(
+        'pdf-lib (https://github.com/Hopding/pdf-lib)',
+      );
+      expect(pdfDoc.getCreator()).toBe(
+        'pdf-lib (https://github.com/Hopding/pdf-lib)',
+      );
+      expect(pdfDoc.getKeywords()).toBe('');
+      // Dates can not be tested since they have the current time as value.
+
+      const title = '🥚 The Life of an Egg 🍳';
+      const author = 'Humpty Dumpty';
+      const subject = '📘 An Epic Tale of Woe 📖';
+      const keywords = ['eggs', 'wall', 'fall', 'king', 'horses', 'men', '🥚'];
+      const producer = 'PDF App 9000 🤖';
+      const creator = 'PDF App 8000 🤖';
+
+      // Milliseconds  will not get saved, so these dates do not have milliseconds.
+      const creationDate = new Date('1997-08-15T01:58:37Z');
+      const modificationDate = new Date('2018-12-21T07:00:11Z');
+
+      pdfDoc.setTitle(title);
+      pdfDoc.setAuthor(author);
+      pdfDoc.setSubject(subject);
+      pdfDoc.setKeywords(keywords);
+      pdfDoc.setProducer(producer);
+      pdfDoc.setCreator(creator);
+      pdfDoc.setCreationDate(creationDate);
+      pdfDoc.setModificationDate(modificationDate);
+
+      expect(pdfDoc.getTitle()).toBe(title);
+      expect(pdfDoc.getAuthor()).toBe(author);
+      expect(pdfDoc.getSubject()).toBe(subject);
+      expect(pdfDoc.getProducer()).toBe(producer);
+      expect(pdfDoc.getCreator()).toBe(creator);
+      expect(pdfDoc.getKeywords()).toBe(keywords.join(' '));
+      expect(pdfDoc.getCreationDate()).toStrictEqual(creationDate);
+      expect(pdfDoc.getModificationDate()).toStrictEqual(modificationDate);
+    });
+
+    it(`they can retrieve the title, author, subject, producer, creator, and keywords from an existing document`, async () => {
+      const pdfDoc = await PDFDocument.load(justMetadataPdfbytes);
+
+      expect(pdfDoc.getTitle()).toBe(
+        'Title metadata (StringType=HexString, Encoding=PDFDocEncoding) with some weird chars ˘•€',
+      );
+      expect(pdfDoc.getAuthor()).toBe(
+        'Author metadata (StringType=HexString, Encoding=UTF-16BE) with some chinese 你怎么敢',
+      );
+      expect(pdfDoc.getSubject()).toBe(
+        'Subject metadata (StringType=LiteralString, Encoding=UTF-16BE) with some chinese 你怎么敢',
+      );
+      expect(pdfDoc.getProducer()).toBe(
+        'pdf-lib (https://github.com/Hopding/pdf-lib)',
+      );
+      expect(pdfDoc.getKeywords()).toBe(
+        'Keywords metadata (StringType=LiteralString, Encoding=PDFDocEncoding) with  some weird  chars ˘•€',
+      );
+    });
+
+    it(`they can retrieve the creation date and modification date from an existing document`, async () => {
+      const pdfDoc = await PDFDocument.load(normalPdfBytes, {
+        updateMetadata: false,
+      });
+
+      expect(pdfDoc.getCreationDate()).toEqual(
+        new Date('2018-01-04T01:05:06.000Z'),
+      );
+      expect(pdfDoc.getModificationDate()).toEqual(
+        new Date('2018-01-04T01:05:06.000Z'),
+      );
     });
   });
 });

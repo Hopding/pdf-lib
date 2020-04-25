@@ -7,6 +7,7 @@ import {
   utf16Encode,
   pdfDocEncodingDecode,
   parseDate,
+  hasUtf16BOM,
 } from 'src/utils';
 import { InvalidPDFDateStringError } from 'src/core/errors';
 
@@ -55,13 +56,7 @@ class PDFHexString extends PDFObject {
 
   decodeText(): string {
     const bytes = this.asBytes();
-
-    // Leading Byte Order Mark means it is a UTF-16BE encoded string.
-    // TODO: Handle UTF-16LE encoding
-    if (bytes[0] === 0xfe && bytes[1] === 0xff) {
-      return utf16Decode(bytes);
-    }
-
+    if (hasUtf16BOM(bytes)) return utf16Decode(bytes);
     return pdfDocEncodingDecode(bytes);
   }
 

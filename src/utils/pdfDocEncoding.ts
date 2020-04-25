@@ -5,17 +5,11 @@ const pdfDocEncodingToUnicode = new Uint16Array(256);
 
 // Initialize the code points which are the same
 for (let idx = 0; idx < 256; idx++) {
-  // Skip differences
-  if (idx > 0x17 && idx < 0x20) continue;
-  if (idx > 0x7e && idx < 0xa1) continue;
-  if (idx === 0xad) continue;
-
   pdfDocEncodingToUnicode[idx] = idx;
 }
 
-// Set differences see Annex D --> D.3 --> Table D.2
-
-// Block 1
+// Set differences (see "Table D.2 – PDFDocEncoding Character Set" of the PDF spec)
+pdfDocEncodingToUnicode[0x16] = toCharCode('\u0017'); // SYNCRONOUS IDLE
 pdfDocEncodingToUnicode[0x18] = toCharCode('\u02D8'); // BREVE
 pdfDocEncodingToUnicode[0x19] = toCharCode('\u02C7'); // CARON
 pdfDocEncodingToUnicode[0x1a] = toCharCode('\u02C6'); // MODIFIER LETTER CIRCUMFLEX ACCENT
@@ -24,8 +18,6 @@ pdfDocEncodingToUnicode[0x1c] = toCharCode('\u02DD'); // DOUBLE ACUTE ACCENT
 pdfDocEncodingToUnicode[0x1d] = toCharCode('\u02DB'); // OGONEK
 pdfDocEncodingToUnicode[0x1e] = toCharCode('\u02DA'); // RING ABOVE
 pdfDocEncodingToUnicode[0x1f] = toCharCode('\u02DC'); // SMALL TILDE
-
-// Block 2
 pdfDocEncodingToUnicode[0x7f] = toCharCode('\uFFFD'); // REPLACEMENT CHARACTER (box with questionmark)
 pdfDocEncodingToUnicode[0x80] = toCharCode('\u2022'); // BULLET
 pdfDocEncodingToUnicode[0x81] = toCharCode('\u2020'); // DAGGER
