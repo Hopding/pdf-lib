@@ -37,6 +37,78 @@ describe(`PDFString`, () => {
     });
   });
 
+  describe(`converting to bytes`, () => {
+    it(`can interpret escaped octal codes`, () => {
+      const literal =
+        '\\376\\377\\000\\105\\000\\147\\000\\147\\000\\040\\330\\074\\337\\163';
+
+      // prettier-ignore
+      expect(PDFString.of(literal).asBytes()).toEqual(Uint8Array.of(
+        0o376, 0o377,
+        0o000, 0o105,
+        0o000, 0o147,
+        0o000, 0o147,
+        0o000, 0o040,
+        0o330, 0o074,
+        0o337, 0o163,
+      ));
+    });
+
+    it(`can interpret ASCII symbols`, () => {
+      const literal = '\\376\\377\0E\0g\0g\0 \\330<\\337s';
+
+      // prettier-ignore
+      expect(PDFString.of(literal).asBytes()).toEqual(Uint8Array.of(
+        0o376, 0o377,
+        toCharCode('\0'), toCharCode('E'),
+        toCharCode('\0'), toCharCode('g'),
+        toCharCode('\0'), toCharCode('g'),
+        toCharCode('\0'), toCharCode(' '),
+        0o330, toCharCode('<'),  
+        0o337, toCharCode('s'),
+      ));
+    });
+
+    it(`can ignore line breaks`, () => {
+      const literal = '\\376\\377\0E\\\n\\0g\0g\0 \\330<\\337s';
+
+      // prettier-ignore
+      expect(PDFString.of(literal).asBytes()).toEqual(Uint8Array.of(
+        0o376, 0o377,
+        toCharCode('\0'), toCharCode('E'),
+        toCharCode('\0'), toCharCode('g'),
+        toCharCode('\0'), toCharCode('g'),
+        toCharCode('\0'), toCharCode(' '),
+        0o330, toCharCode('<'),  
+        0o337, toCharCode('s'),
+      ));
+    });
+
+    it(`can interpret EOLs and line breaks`, () => {
+      const literal = 'a\nb\rc\\\nd\\\re';
+
+      // prettier-ignore
+      expect(PDFString.of(literal).asBytes()).toEqual(Uint8Array.of(
+        toCharCode('a'), toCharCode('\n'),
+        toCharCode('b'), toCharCode('\r'),
+        toCharCode('c'), toCharCode('d'), 
+        toCharCode('e'),
+      ));
+    });
+
+    it(`can interpret invalid escapes`, () => {
+      const literal = 'a\nb\rc\\xd\\;';
+
+      // prettier-ignore
+      expect(PDFString.of(literal).asBytes()).toEqual(Uint8Array.of(
+        toCharCode('a'), toCharCode('\n'),
+        toCharCode('b'), toCharCode('\r'),
+        toCharCode('c'), toCharCode('x'),
+        toCharCode('d'), toCharCode(';'),
+      ));
+    });
+  });
+
   describe(`decoding to string`, () => {
     it(`can interpret UTF-16BE strings with escaped octal codes`, () => {
       const literal =
