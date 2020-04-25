@@ -18,6 +18,35 @@ describe(`PDFHexString`, () => {
     );
   });
 
+  describe(`converting to bytes`, () => {
+    it(`can handle an even number of hex digits`, () => {
+      const hex = 'FEFF0045006700670020D83CDF73';
+
+      // prettier-ignore
+      expect(PDFHexString.of(hex).asBytes()).toEqual(Uint8Array.of(
+        0xFE, 0xFF, 
+        0x00, 0x45, 
+        0x00, 0x67, 
+        0x00, 0x67, 
+        0x00, 0x20, 
+        0xD8, 0x3C, 
+        0xDF, 0x73,
+      ));
+    });
+
+    it(`can handle an odd number of hex digits`, () => {
+      const hex = '6145627300623';
+
+      // prettier-ignore
+      expect(PDFHexString.of(hex).asBytes()).toEqual(Uint8Array.of(
+        0x61, 0x45, 
+        0x62, 0x73, 
+        0x00, 0x62, 
+        0x30,
+      ));
+    });
+  });
+
   describe(`decoding to string`, () => {
     it(`can interpret UTF-16BE strings`, () => {
       const hex = 'FEFF0045006700670020D83CDF73';
