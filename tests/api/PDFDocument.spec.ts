@@ -186,16 +186,16 @@ describe(`PDFDocument`, () => {
       const pdfDoc = await PDFDocument.create();
 
       // Everything is empty or has its initial value.
-      expect(pdfDoc.getTitle()).toBe('');
-      expect(pdfDoc.getAuthor()).toBe('');
-      expect(pdfDoc.getSubject()).toBe('');
+      expect(pdfDoc.getTitle()).toBeUndefined();
+      expect(pdfDoc.getAuthor()).toBeUndefined();
+      expect(pdfDoc.getSubject()).toBeUndefined();
       expect(pdfDoc.getProducer()).toBe(
         'pdf-lib (https://github.com/Hopding/pdf-lib)',
       );
       expect(pdfDoc.getCreator()).toBe(
         'pdf-lib (https://github.com/Hopding/pdf-lib)',
       );
-      expect(pdfDoc.getKeywords()).toBe('');
+      expect(pdfDoc.getKeywords()).toBeUndefined();
       // Dates can not be tested since they have the current time as value.
 
       const title = '🥚 The Life of an Egg 🍳';
