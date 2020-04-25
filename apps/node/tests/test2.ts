@@ -10,6 +10,7 @@ export default async (assets: Assets) => {
 
   const pdfDoc = await PDFDocument.load(pdfs.linearized_with_object_streams, {
     parseSpeed: ParseSpeeds.Fastest,
+    updateMetadata: false,
   });
 
   pdfDoc.registerFontkit(fontkit);
@@ -94,6 +95,18 @@ export default async (assets: Assets) => {
   });
 
   pdfDoc.removePage(1);
+
+  // These will all be undefined since the source document's metadata is
+  // stored in a metadata stream, not the more widely used info dictionary.
+  // pdf-lib does not currently support reading metadata streams.
+  console.log('Title:', pdfDoc.getTitle());
+  console.log('Author:', pdfDoc.getAuthor());
+  console.log('Subject:', pdfDoc.getSubject());
+  console.log('Creator:', pdfDoc.getCreator());
+  console.log('Keywords:', pdfDoc.getKeywords());
+  console.log('Producer:', pdfDoc.getProducer());
+  console.log('Creation Date:', pdfDoc.getCreationDate());
+  console.log('Modification Date:', pdfDoc.getModificationDate());
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;

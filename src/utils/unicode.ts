@@ -260,3 +260,127 @@ export const highSurrogate = (codePoint: number) =>
 //   http://unicode.org/versions/Unicode3.0.0/ch03.pdf
 export const lowSurrogate = (codePoint: number) =>
   ((codePoint - 0x10000) % 0x400) + 0xdc00;
+
+enum ByteOrder {
+  BigEndian = 'BigEndian',
+  LittleEndian = 'LittleEndian',
+}
+
+const REPLACEMENT = '�'.codePointAt(0)!;
+
+/**
+ * Decodes a Uint8Array of data to a string using UTF-16.
+ *
+ * Note that this function attempts to recover from erronous input by
+ * inserting the replacement character (�) to mark invalid code points
+ * and surrogate pairs.
+ *
+ * @param input A Uint8Array containing UTF-16 encoded data
+ * @param byteOrderMark Whether or not a byte order marker (BOM) should be read
+ *                      at the start of the encoding. (default `true`)
+ * @returns The decoded string.
+ */
+export const utf16Decode = (
+  input: Uint8Array,
+  byteOrderMark = true,
+): string => {
+  // Need at least 2 bytes of data in UTF-16 encodings
+  if (input.length <= 1) return String.fromCodePoint(REPLACEMENT);
+
+  const byteOrder = byteOrderMark ? readBOM(input) : ByteOrder.BigEndian;
+
+  // Skip byte order mark if needed
+  let idx = byteOrderMark ? 2 : 0;
+
+  const codePoints: number[] = [];
+
+  while (input.length - idx >= 2) {
+    const first = decodeValues(input[idx++], input[idx++], byteOrder);
+
+    if (isHighSurrogate(first)) {
+      if (input.length - idx < 2) {
+        // Need at least 2 bytes left for the low surrogate that is required
+        codePoints.push(REPLACEMENT);
+      } else {
+        const second = decodeValues(input[idx++], input[idx++], byteOrder);
+        if (isLowSurrogate(second)) {
+          codePoints.push(first, second);
+        } else {
+          // Low surrogates should always follow high surrogates
+          codePoints.push(REPLACEMENT);
+        }
+      }
+    } else if (isLowSurrogate(first)) {
+      // High surrogates should always come first since `decodeValues()`
+      // accounts for the byte ordering
+      idx += 2;
+      codePoints.push(REPLACEMENT);
+    } else {
+      codePoints.push(first);
+    }
+  }
+
+  // There shouldn't be extra byte(s) left over
+  if (idx < input.length) codePoints.push(REPLACEMENT);
+
+  return String.fromCodePoint(...codePoints);
+};
+
+/**
+ * Returns `true` if the given `codePoint` is a high surrogate.
+ * @param codePoint The code point to be evaluated.
+ *
+ * Reference: https://en.wikipedia.org/wiki/UTF-16#Description
+ */
+const isHighSurrogate = (codePoint: number) =>
+  codePoint >= 0xd800 && codePoint <= 0xdbff;
+
+/**
+ * Returns `true` if the given `codePoint` is a low surrogate.
+ * @param codePoint The code point to be evaluated.
+ *
+ * Reference: https://en.wikipedia.org/wiki/UTF-16#Description
+ */
+const isLowSurrogate = (codePoint: number) =>
+  codePoint >= 0xdc00 && codePoint <= 0xdfff;
+
+/**
+ * Decodes the given utf-16 values first and second using the specified
+ * byte order.
+ * @param first The first byte of the encoding.
+ * @param second The second byte of the encoding.
+ * @param byteOrder The byte order of the encoding.
+ * Reference: https://en.wikipedia.org/wiki/UTF-16#Examples
+ */
+const decodeValues = (first: number, second: number, byteOrder: ByteOrder) => {
+  // Append the binary representation of the preceding byte by shifting the
+  // first one 8 to the left and than applying a bitwise or-operator to append
+  // the second one.
+  if (byteOrder === ByteOrder.LittleEndian) return (second << 8) | first;
+  if (byteOrder === ByteOrder.BigEndian) return (first << 8) | second;
+  throw new Error(`Invalid byteOrder: ${byteOrder}`);
+};
+
+/**
+ * Returns whether the given array contains a byte order mark for the
+ * UTF-16BE or UTF-16LE encoding. If it has neither, BigEndian is assumed.
+ *
+ * Reference: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-16
+ *
+ * @param bytes The byte array to be evaluated.
+ */
+// prettier-ignore
+const readBOM = (bytes: Uint8Array): ByteOrder => (
+    hasUtf16BigEndianBOM(bytes) ? ByteOrder.BigEndian
+  : hasUtf16LittleEndianBOM(bytes) ? ByteOrder.LittleEndian
+  : ByteOrder.BigEndian
+);
+
+const hasUtf16BigEndianBOM = (bytes: Uint8Array) =>
+  bytes[0] === 0xfe && bytes[1] === 0xff;
+
+const hasUtf16LittleEndianBOM = (bytes: Uint8Array) =>
+  bytes[0] === 0xff && bytes[1] === 0xfe;
+
+export const hasUtf16BOM = (bytes: Uint8Array) =>
+  hasUtf16BigEndianBOM(bytes) || hasUtf16LittleEndianBOM(bytes);
