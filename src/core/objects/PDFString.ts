@@ -1,6 +1,15 @@
 import PDFObject from 'src/core/objects/PDFObject';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { copyStringIntoBuffer, padStart } from 'src/utils';
+import {
+  copyStringIntoBuffer,
+  padStart,
+  utf16Decode,
+  pdfDocEncodingDecode,
+  toCharCode,
+  parseDate,
+  hasUtf16BOM,
+} from 'src/utils';
+import { InvalidPDFDateStringError } from 'src/core/errors';
 
 class PDFString extends PDFObject {
   // The PDF spec allows newlines and parens to appear directly within a literal
@@ -23,6 +32,63 @@ class PDFString extends PDFObject {
   private constructor(value: string) {
     super();
     this.value = value;
+  }
+
+  asBytes(): Uint8Array {
+    const bytes: number[] = [];
+
+    let octal = '';
+    let escaped = false;
+
+    const pushByte = (byte?: number) => {
+      if (byte !== undefined) bytes.push(byte);
+      escaped = false;
+    };
+
+    for (let idx = 0, len = this.value.length; idx < len; idx++) {
+      const char = this.value[idx];
+      const byte = toCharCode(char);
+      const nextChar = this.value[idx + 1];
+      if (!escaped) {
+        if (byte === CharCodes.BackSlash) escaped = true;
+        else pushByte(byte);
+      } else {
+        if (byte === CharCodes.Newline) pushByte();
+        else if (byte === CharCodes.CarriageReturn) pushByte();
+        else if (byte === CharCodes.n) pushByte(CharCodes.Newline);
+        else if (byte === CharCodes.r) pushByte(CharCodes.CarriageReturn);
+        else if (byte === CharCodes.t) pushByte(CharCodes.Tab);
+        else if (byte === CharCodes.b) pushByte(CharCodes.Backspace);
+        else if (byte === CharCodes.f) pushByte(CharCodes.FormFeed);
+        else if (byte === CharCodes.LeftParen) pushByte(CharCodes.LeftParen);
+        else if (byte === CharCodes.RightParen) pushByte(CharCodes.RightParen);
+        else if (byte === CharCodes.Backspace) pushByte(CharCodes.BackSlash);
+        else if (byte >= CharCodes.Zero && byte <= CharCodes.Seven) {
+          octal += char;
+          if (octal.length === 3 || !(nextChar >= '0' && nextChar <= '7')) {
+            pushByte(parseInt(octal, 8));
+            octal = '';
+          }
+        } else {
+          pushByte(byte);
+        }
+      }
+    }
+
+    return new Uint8Array(bytes);
+  }
+
+  decodeText(): string {
+    const bytes = this.asBytes();
+    if (hasUtf16BOM(bytes)) return utf16Decode(bytes);
+    return pdfDocEncodingDecode(bytes);
+  }
+
+  decodeDate(): Date {
+    const text = this.decodeText();
+    const date = parseDate(text);
+    if (!date) throw new InvalidPDFDateStringError(text);
+    return date;
   }
 
   asString(): string {

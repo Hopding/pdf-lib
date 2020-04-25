@@ -386,6 +386,17 @@ export default async () => {
     yScale: 0.5,
   });
 
+  /********************** Print Metadata **********************/
+
+  console.log('Title:', pdfDoc.getTitle());
+  console.log('Author:', pdfDoc.getAuthor());
+  console.log('Subject:', pdfDoc.getSubject());
+  console.log('Creator:', pdfDoc.getCreator());
+  console.log('Keywords:', pdfDoc.getKeywords());
+  console.log('Producer:', pdfDoc.getProducer());
+  console.log('Creation Date:', pdfDoc.getCreationDate());
+  console.log('Modification Date:', pdfDoc.getModificationDate());
+
   /********************** Export PDF **********************/
 
   const base64Pdf = await pdfDoc.saveAsBase64({ dataUri: true });

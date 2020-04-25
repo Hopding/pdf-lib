@@ -8,7 +8,9 @@ export default async () => {
     fetchAsset('images/cat_riding_unicorn_resized.jpg'),
   ]);
 
-  const pdfDoc = await PDFDocument.load(inputPdfBytes);
+  const pdfDoc = await PDFDocument.load(inputPdfBytes, {
+    updateMetadata: false,
+  });
 
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const catRidingUnicornImage = await pdfDoc.embedJpg(catRidingUnicornBytes);
@@ -62,6 +64,15 @@ export default async () => {
     height: 5,
     color: hotPink,
   });
+
+  console.log('Title:', pdfDoc.getTitle());
+  console.log('Author:', pdfDoc.getAuthor());
+  console.log('Subject:', pdfDoc.getSubject());
+  console.log('Creator:', pdfDoc.getCreator());
+  console.log('Keywords:', pdfDoc.getKeywords());
+  console.log('Producer:', pdfDoc.getProducer());
+  console.log('Creation Date:', pdfDoc.getCreationDate());
+  console.log('Modification Date:', pdfDoc.getModificationDate());
 
   const base64Pdf = await pdfDoc.saveAsBase64({ dataUri: true });
 

@@ -107,7 +107,9 @@ export const sum = (array: number[] | Uint8Array): number => {
 
 export const range = (start: number, end: number): number[] => {
   const arr = new Array(end - start);
-  for (let idx = start; idx < end; idx++) arr[idx] = idx;
+  for (let idx = 0, len = arr.length; idx < len; idx++) {
+    arr[idx] = start + idx;
+  }
   return arr;
 };
 

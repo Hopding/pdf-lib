@@ -1,24 +1,26 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
 
-import { PDFDocument, rgb } from 'src/index';
+import { PDFDocument } from 'src/index';
 
 (async () => {
   const pdfDoc = await PDFDocument.load(
     fs.readFileSync('assets/pdfs/with_cropbox.pdf'),
+    { updateMetadata: false },
   );
 
-  const page = pdfDoc.getPage(0);
-  const { width, height } = page.getSize();
-
-  page.setWidth(width + 50);
-  page.setHeight(height + 50);
-  page.drawRectangle({ x: width, width: 50, height, color: rgb(1, 0, 0) });
-  page.drawRectangle({ y: height, height: 50, width, color: rgb(0, 1, 0) });
+  console.log('Title:', pdfDoc.getTitle());
+  console.log('Author:', pdfDoc.getAuthor());
+  console.log('Subject:', pdfDoc.getSubject());
+  console.log('Creator:', pdfDoc.getCreator());
+  console.log('Keywords:', pdfDoc.getKeywords());
+  console.log('Producer:', pdfDoc.getProducer());
+  console.log('Creation Date:', pdfDoc.getCreationDate());
+  console.log('Modification Date:', pdfDoc.getModificationDate());
 
   const pdfBytes = await pdfDoc.save();
 
   fs.writeFileSync('./out.pdf', pdfBytes);
 
-  openPdf('./out.pdf', Reader.Preview);
+  openPdf('./out.pdf', Reader.Acrobat);
 })();

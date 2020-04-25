@@ -53,7 +53,9 @@
         fetchBinaryAsset('images/cat_riding_unicorn.jpg'),
       ]);
 
-      const pdfDoc = await PDFDocument.load(inputPdfBase64);
+      const pdfDoc = await PDFDocument.load(inputPdfBase64, {
+        updateMetadata: false,
+      });
 
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const catRidingUnicornImage = await pdfDoc.embedJpg(
@@ -112,6 +114,15 @@
         height: 5,
         color: hotPink,
       });
+
+      console.log('Title:', pdfDoc.getTitle());
+      console.log('Author:', pdfDoc.getAuthor());
+      console.log('Subject:', pdfDoc.getSubject());
+      console.log('Creator:', pdfDoc.getCreator());
+      console.log('Keywords:', pdfDoc.getKeywords());
+      console.log('Producer:', pdfDoc.getProducer());
+      console.log('Creation Date:', pdfDoc.getCreationDate());
+      console.log('Modification Date:', pdfDoc.getModificationDate());
 
       const base64PdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
 

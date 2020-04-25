@@ -54,6 +54,7 @@
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
   - [Set Document Metadata](#set-document-metadata)
   - [Draw SVG Paths](#draw-svg-paths)
+  - [Read Metadata](#read-metadata)
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
 - [Documentation](#documentation)
@@ -80,6 +81,7 @@
 - Measure width and height of text
 - Embed Fonts (supports UTF-8 and UTF-16 character sets)
 - Set document metadata
+- Read document metadata
 
 ## Motivation
 
@@ -508,6 +510,49 @@ const pdfBytes = await pdfDoc.save()
 //   • Written to a file in Node
 //   • Downloaded from the browser
 //   • Rendered in an <iframe>
+```
+
+### Read Metadata
+
+<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/eg8rfz3k/2/) -->
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const existingPdfBytes = ...
+
+// Load a PDFDocument without updating its existing metadata
+const pdfDoc = await PDFDocument.load(existingPdfBytes, { 
+  updateMetadata: false 
+})
+
+// Print all available metadata fields
+console.log('Title:', pdfDoc.getTitle());
+console.log('Author:', pdfDoc.getAuthor());
+console.log('Subject:', pdfDoc.getSubject());
+console.log('Creator:', pdfDoc.getCreator());
+console.log('Keywords:', pdfDoc.getKeywords());
+console.log('Producer:', pdfDoc.getProducer());
+console.log('Creation Date:', pdfDoc.getCreationDate());
+console.log('Modification Date:', pdfDoc.getModificationDate());
+```
+
+This script outputs the following (_when [this PDF](assets/pdfs/with_cropbox.pdf) is used for the `existingPdfBytes` variable_):
+
+```
+Title: Microsoft Word - Basic Curriculum Vitae example.doc
+Author: Administrator
+Subject: undefined
+Creator: PScript5.dll Version 5.2
+Keywords: undefined
+Producer: Acrobat Distiller 8.1.0 (Windows)
+Creation Date: 2010-07-29T14:26:00.000Z
+Modification Date: 2010-07-29T14:26:00.000Z
 ```
 
 ## Complete Examples

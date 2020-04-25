@@ -32,7 +32,9 @@ import {
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
+  UnexpectedObjectTypeError,
 } from 'src/core';
+import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
@@ -68,6 +70,11 @@ export interface LoadOptions {
   ignoreEncryption?: boolean;
   parseSpeed?: ParseSpeeds | number;
   throwOnInvalidObject?: boolean;
+  updateMetadata?: boolean;
+}
+
+export interface CreateOptions {
+  updateMetadata?: boolean;
 }
 
 export interface EmbedFontOptions {
@@ -138,6 +145,7 @@ export default class PDFDocument {
       ignoreEncryption = false,
       parseSpeed = ParseSpeeds.Slow,
       throwOnInvalidObject = false,
+      updateMetadata = true,
     } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
@@ -151,20 +159,23 @@ export default class PDFDocument {
       parseSpeed,
       throwOnInvalidObject,
     ).parseDocument();
-    return new PDFDocument(context, ignoreEncryption);
+    return new PDFDocument(context, ignoreEncryption, updateMetadata);
   }
 
   /**
    * Create a new [[PDFDocument]].
    * @returns Resolves with the newly created document.
    */
-  static async create() {
+  static async create(options: CreateOptions = {}) {
+    const { updateMetadata = true } = options;
+
     const context = PDFContext.create();
     const pageTree = PDFPageTree.withContext(context);
     const pageTreeRef = context.register(pageTree);
     const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
     context.trailerInfo.Root = context.register(catalog);
-    return new PDFDocument(context, false);
+
+    return new PDFDocument(context, false, updateMetadata);
   }
 
   /** The low-level context of this document. */
@@ -187,7 +198,11 @@ export default class PDFDocument {
   private readonly images: PDFImage[];
   private readonly embeddedPages: PDFEmbeddedPage[];
 
-  private constructor(context: PDFContext, ignoreEncryption: boolean) {
+  private constructor(
+    context: PDFContext,
+    ignoreEncryption: boolean,
+    updateMetadata: boolean,
+  ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
 
@@ -203,7 +218,7 @@ export default class PDFDocument {
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
-    this.updateInfoDict();
+    if (updateMetadata) this.updateInfoDict();
   }
 
   /**
@@ -217,6 +232,129 @@ export default class PDFDocument {
    */
   registerFontkit(fontkit: Fontkit): void {
     this.fontkit = fontkit;
+  }
+
+  /**
+   * Get this document's title metadata. The title appears in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * const title = pdfDoc.getTitle()
+   * ```
+   * @returns A string containing the title of this document, if it has one.
+   */
+  getTitle(): string | undefined {
+    const title = this.getInfoDict().lookup(PDFName.Title);
+    if (!title) return undefined;
+    assertIsLiteralOrHexString(title);
+    return title.decodeText();
+  }
+
+  /**
+   * Get this document's author metadata. The author appears in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * const author = pdfDoc.getAuthor()
+   * ```
+   * @returns A string containing the author of this document, if it has one.
+   */
+  getAuthor(): string | undefined {
+    const author = this.getInfoDict().lookup(PDFName.Author);
+    if (!author) return undefined;
+    assertIsLiteralOrHexString(author);
+    return author.decodeText();
+  }
+
+  /**
+   * Get this document's subject metadata. The subject appears in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * const subject = pdfDoc.getSubject()
+   * ```
+   * @returns A string containing the subject of this document, if it has one.
+   */
+  getSubject(): string | undefined {
+    const subject = this.getInfoDict().lookup(PDFName.Subject);
+    if (!subject) return undefined;
+    assertIsLiteralOrHexString(subject);
+    return subject.decodeText();
+  }
+
+  /**
+   * Get this document's keywords metadata. The keywords appear in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * const keywords = pdfDoc.getKeywords()
+   * ```
+   * @returns A string containing the keywords of this document, if it has any.
+   */
+  getKeywords(): string | undefined {
+    const keywords = this.getInfoDict().lookup(PDFName.Keywords);
+    if (!keywords) return undefined;
+    assertIsLiteralOrHexString(keywords);
+    return keywords.decodeText();
+  }
+
+  /**
+   * Get this document's creator metadata. The creator appears in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * const creator = pdfDoc.getCreator()
+   * ```
+   * @returns A string containing the creator of this document, if it has one.
+   */
+  getCreator(): string | undefined {
+    const creator = this.getInfoDict().lookup(PDFName.Creator);
+    if (!creator) return undefined;
+    assertIsLiteralOrHexString(creator);
+    return creator.decodeText();
+  }
+
+  /**
+   * Get this document's producer metadata. The producer appears in the
+   * "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * const producer = pdfDoc.getProducer()
+   * ```
+   * @returns A string containing the producer of this document, if it has one.
+   */
+  getProducer(): string | undefined {
+    const producer = this.getInfoDict().lookup(PDFName.Producer);
+    if (!producer) return undefined;
+    assertIsLiteralOrHexString(producer);
+    return producer.decodeText();
+  }
+
+  /**
+   * Get this document's creation date metadata. The creation date appears in
+   * the "Document Properties" section of most PDF readers. For example:
+   * ```js
+   * const creationDate = pdfDoc.getCreationDate()
+   * ```
+   * @returns A Date containing the creation date of this document,
+   *          if it has one.
+   */
+  getCreationDate(): Date | undefined {
+    const creationDate = this.getInfoDict().lookup(PDFName.CreationDate);
+    if (!creationDate) return undefined;
+    assertIsLiteralOrHexString(creationDate);
+    return creationDate.decodeDate();
+  }
+
+  /**
+   * Get this document's modification date metadata. The modification date
+   * appears in the "Document Properties" section of most PDF readers.
+   * For example:
+   * ```js
+   * const modification = pdfDoc.getModificationDate()
+   * ```
+   * @returns A Date containing the modification date of this document,
+   *          if it has one.
+   */
+  getModificationDate(): Date | undefined {
+    const modificationDate = this.getInfoDict().lookup(PDFName.ModDate);
+    if (!modificationDate) return undefined;
+    assertIsLiteralOrHexString(modificationDate);
+    return modificationDate.decodeDate();
   }
 
   /**
@@ -999,4 +1137,16 @@ export default class PDFDocument {
     });
     return pages;
   };
+}
+
+/* tslint:disable-next-line only-arrow-functions */
+function assertIsLiteralOrHexString(
+  pdfObject: PDFObject,
+): asserts pdfObject is PDFHexString | PDFString {
+  if (
+    !(pdfObject instanceof PDFHexString) &&
+    !(pdfObject instanceof PDFString)
+  ) {
+    throw new UnexpectedObjectTypeError([PDFHexString, PDFString], pdfObject);
+  }
 }

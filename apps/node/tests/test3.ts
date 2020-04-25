@@ -12,6 +12,7 @@ export default async (assets: Assets) => {
 
   const pdfDoc = await PDFDocument.load(pdfs.with_update_sections_base64_uri, {
     parseSpeed: ParseSpeeds.Fastest,
+    updateMetadata: false,
   });
 
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -67,6 +68,15 @@ export default async (assets: Assets) => {
     color: hotPink,
     thickness: 5,
   });
+
+  console.log('Title:', pdfDoc.getTitle());
+  console.log('Author:', pdfDoc.getAuthor());
+  console.log('Subject:', pdfDoc.getSubject());
+  console.log('Creator:', pdfDoc.getCreator());
+  console.log('Keywords:', pdfDoc.getKeywords());
+  console.log('Producer:', pdfDoc.getProducer());
+  console.log('Creation Date:', pdfDoc.getCreationDate());
+  console.log('Modification Date:', pdfDoc.getModificationDate());
 
   const base64Pdf = await pdfDoc.saveAsBase64();
 
