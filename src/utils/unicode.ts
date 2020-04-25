@@ -345,15 +345,17 @@ const isLowSurrogate = (codePoint: number) =>
   codePoint >= 0xdc00 && codePoint <= 0xdfff;
 
 /**
- * Decodes the given utf-16 values first and second using the specified byte order.
+ * Decodes the given utf-16 values first and second using the specified
+ * byte order.
  * @param first The first byte of the encoding.
  * @param second The second byte of the encoding.
- * @param byteOrder The byte order (1 --> little-endian everything else big-endian)
+ * @param byteOrder The byte order of the encoding.
  * Reference: https://en.wikipedia.org/wiki/UTF-16#Examples
  */
 const decodeValues = (first: number, second: number, byteOrder: ByteOrder) => {
-  // Append the binary representation of the preceding byte by shifting the first one 8 to the left
-  // and than applying a bitwise or-operator to append the second one.
+  // Append the binary representation of the preceding byte by shifting the
+  // first one 8 to the left and than applying a bitwise or-operator to append
+  // the second one.
   if (byteOrder === ByteOrder.LittleEndian) return (second << 8) | first;
   if (byteOrder === ByteOrder.BigEndian) return (first << 8) | second;
   throw new Error(`Invalid byteOrder: ${byteOrder}`);

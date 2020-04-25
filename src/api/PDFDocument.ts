@@ -280,11 +280,6 @@ export default class PDFDocument {
   }
 
   /**
-   * Get this document's keyword metadata. These keywords appear in the
-   * "Document Properties" section of most PDF readers.
-   */
-
-  /**
    * Get this document's keywords metadata. The keywords appear in the
    * "Document Properties" section of most PDF readers. For example:
    * ```js
@@ -298,11 +293,6 @@ export default class PDFDocument {
     assertIsLiteralOrHexString(keywords);
     return keywords.decodeText();
   }
-
-  /**
-   * Get this document's creator metadata. The creator appears in the
-   * "Document Properties" section of most PDF readers.
-   */
 
   /**
    * Get this document's creator metadata. The creator appears in the
@@ -321,11 +311,6 @@ export default class PDFDocument {
 
   /**
    * Get this document's producer metadata. The producer appears in the
-   * "Document Properties" section of most PDF readers.
-   */
-
-  /**
-   * Get this document's producer metadata. The producer appears in the
    * "Document Properties" section of most PDF readers. For example:
    * ```js
    * const producer = pdfDoc.getProducer()
@@ -338,12 +323,6 @@ export default class PDFDocument {
     assertIsLiteralOrHexString(producer);
     return producer.decodeText();
   }
-
-  /**
-   * Get this document's creation date metadata. Returns undefined if the creation date was not set.
-   * The creation date appears in the "Document Properties" section
-   * of most PDF readers.
-   */
 
   /**
    * Get this document's creation date metadata. The creation date appears in
@@ -360,11 +339,6 @@ export default class PDFDocument {
     assertIsLiteralOrHexString(creationDate);
     return creationDate.decodeDate();
   }
-
-  /**
-   * Get this document's modification date metadata. The modification date
-   * appears in the "Document Properties" section of most PDF readers.
-   */
 
   /**
    * Get this document's modification date metadata. The modification date

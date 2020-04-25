@@ -115,16 +115,15 @@ export const parseDate = (dateStr: string): Date | undefined => {
   // The relation to UTC, can be either +, - or Z.
   // Javascript Date supports only UTC so offsets are added or subtracted.
   switch (offsetSign) {
-    case '+': // time is after UTC, so we offsets are subtracted
+    case '+': // Time is after UTC, so we offsets are subtracted
       date.setHours(date.getHours() - Number(offsetHours));
       date.setMinutes(date.getMinutes() - Number(offsetMins));
       break;
-    case '-': // time is before UTC, so we offsets are added
+    case '-': // Time is before UTC, so we offsets are added
       date.setHours(date.getHours() + Number(offsetHours));
       date.setMinutes(date.getMinutes() + Number(offsetMins));
       break;
-    case 'Z':
-      // TODO: Should this really just be `break`?
+    case 'Z': // Time is already UTC, so nothing to do
       break;
   }
 

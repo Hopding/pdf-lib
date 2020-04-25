@@ -166,7 +166,6 @@ describe(`utf16Encode`, () => {
   });
 });
 
-// TODO: Add tests with both types of BOMs
 describe(`utf16Decode`, () => {
   it(`decodes <U+004D U+0430 U+4E8C U+10302> from UTF-16`, () => {
     // prettier-ignore

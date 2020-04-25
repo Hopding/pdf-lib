@@ -62,15 +62,21 @@ const mappings: Mapping[] = [
 
 describe(`pdfDocEncodingDecode`, () => {
   it(`maps all PDFDocEncoding codes from 0-255 to the correct Unicode code points`, () => {
-    // Make sure we actually have defined mappings for all codes from 0-255
+    // Make sure we have defined mappings for all codes from 0-255
     expect(mappings.map(([code]) => code).sort((a, b) => a - b)).toEqual(
       range(0, 256),
     );
 
-    // Now make sure the `pdfDocEncodingDecode` decodes them all correctly
-    mappings.forEach(([input, expected]) => {
-      const actual = pdfDocEncodingDecode(Uint8Array.of(input));
-      expect(actual).toBe(expected);
+    // Now make sure that `pdfDocEncodingDecode` decodes everything correctly
+    mappings.forEach(([input1, expected1]) => {
+      const actual1 = pdfDocEncodingDecode(Uint8Array.of(input1));
+      expect(actual1).toBe(expected1);
     });
+
+    // Let's do it again but all at once instead of passing each code separately
+    const input2 = Uint8Array.from(mappings.map(([code]) => code));
+    const expected2 = mappings.map(([, str]) => str).join('');
+    const actual2 = pdfDocEncodingDecode(input2);
+    expect(actual2).toEqual(expected2);
   });
 });
