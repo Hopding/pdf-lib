@@ -43,7 +43,7 @@ class PDFPageTree extends PDFDict {
     Kids.push(leafRef);
     this.ascend((node) => {
       const Count = node.Count();
-      node.set(PDFName.of('Count'), PDFNumber.of(Count.value() + 1));
+      node.set(PDFName.of('Count'), PDFNumber.of(Count.asNumber() + 1));
     });
   }
 
@@ -71,7 +71,7 @@ class PDFPageTree extends PDFDict {
       const kid = this.context.lookup(kidRef) as TreeNode;
 
       if (kid instanceof PDFPageTree) {
-        const kidCount = kid.Count().value();
+        const kidCount = kid.Count().asNumber();
         if (pageIdx + kidCount > targetIndex) {
           return kid.insertLeafNode(leafRef, targetIndex - pageIdx) || kidRef;
         } else {
@@ -85,7 +85,7 @@ class PDFPageTree extends PDFDict {
     Kids.insert(kidIdx, leafRef);
     this.ascend((node) => {
       const Count = node.Count();
-      node.set(PDFName.of('Count'), PDFNumber.of(Count.value() + 1));
+      node.set(PDFName.of('Count'), PDFNumber.of(Count.asNumber() + 1));
     });
 
     return undefined;
@@ -111,7 +111,7 @@ class PDFPageTree extends PDFDict {
       const kid = this.context.lookup(kidRef) as TreeNode;
 
       if (kid instanceof PDFPageTree) {
-        const kidCount = kid.Count().value();
+        const kidCount = kid.Count().asNumber();
         if (pageIdx + kidCount > targetIndex) {
           kid.removeLeafNode(targetIndex - pageIdx);
           return;
@@ -134,7 +134,7 @@ class PDFPageTree extends PDFDict {
       Kids.remove(kidIdx);
       this.ascend((node) => {
         const Count = node.Count();
-        node.set(PDFName.of('Count'), PDFNumber.of(Count.value() - 1));
+        node.set(PDFName.of('Count'), PDFNumber.of(Count.asNumber() - 1));
       });
     }
   }

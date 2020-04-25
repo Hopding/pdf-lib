@@ -91,6 +91,10 @@ class PDFString extends PDFObject {
     return date;
   }
 
+  asString(): string {
+    return this.value;
+  }
+
   clone(): PDFString {
     return PDFString.of(this.value);
   }

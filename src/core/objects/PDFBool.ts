@@ -16,6 +16,10 @@ class PDFBool extends PDFObject {
     this.value = value;
   }
 
+  asBoolean(): boolean {
+    return this.value;
+  }
+
   clone(): PDFBool {
     return this;
   }

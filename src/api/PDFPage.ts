@@ -142,7 +142,7 @@ export default class PDFPage {
    */
   getRotation(): Rotation {
     const Rotate = this.node.Rotate();
-    return degrees(Rotate ? Rotate.value() : 0);
+    return degrees(Rotate ? Rotate.asNumber() : 0);
   }
 
   /**

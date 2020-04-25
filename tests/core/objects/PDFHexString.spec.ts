@@ -132,6 +132,13 @@ describe(`PDFHexString`, () => {
     });
   });
 
+  it(`can be converted to a string`, () => {
+    expect(PDFHexString.of('901FA').asString()).toBe('901FA');
+    expect(PDFHexString.fromText('stuff 💩 and 🎂things').asString()).toBe(
+      'FEFF007300740075006600660020D83DDCA900200061006E00640020D83CDF82007400680069006E00670073',
+    );
+  });
+
   it(`can be cloned`, () => {
     const original = PDFHexString.of('901FA');
     const clone = original.clone();
