@@ -81,6 +81,7 @@ const assets = {
         readImage('cat_riding_unicorn.jpg.base64'),
       ),
       minions_laughing: readImage('minions_laughing.jpg'),
+      cmyk_colorspace: readImage('cmyk_colorspace.jpg'),
     },
     png: {
       greyscale_bird: readImage('greyscale_bird.png'),
