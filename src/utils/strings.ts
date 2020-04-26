@@ -110,22 +110,12 @@ export const parseDate = (dateStr: string): Date | undefined => {
     offsetMins = '00',
   ] = match;
 
-  const date = new Date(`${year}-${month}-${day}:${hours}:${mins}:${secs}Z`);
-
-  // The relation to UTC, can be either +, - or Z.
-  // Javascript Date supports only UTC so offsets are added or subtracted.
-  switch (offsetSign) {
-    case '+': // Time is after UTC, so we offsets are subtracted
-      date.setHours(date.getHours() - Number(offsetHours));
-      date.setMinutes(date.getMinutes() - Number(offsetMins));
-      break;
-    case '-': // Time is before UTC, so we offsets are added
-      date.setHours(date.getHours() + Number(offsetHours));
-      date.setMinutes(date.getMinutes() + Number(offsetMins));
-      break;
-    case 'Z': // Time is already UTC, so nothing to do
-      break;
-  }
+  // http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15
+  const tzOffset =
+    offsetSign === 'Z' ? 'Z' : `${offsetSign}${offsetHours}:${offsetMins}`;
+  const date = new Date(
+    `${year}-${month}-${day}T${hours}:${mins}:${secs}${tzOffset}`,
+  );
 
   return date;
 };
