@@ -3,7 +3,7 @@ import { JpegEmbedder, PDFContext, PDFRawStream, PDFRef } from 'src/core';
 
 const catUnicornJpg = fs.readFileSync('./assets/images/cat_riding_unicorn.jpg');
 const minionsLaughing = fs.readFileSync('./assets/images/minions_laughing.jpg');
-const cmykJpg = fs.readFileSync('./assets/images/Channel_digital_image_CMYK_color.jpg');
+const cmykJpg = fs.readFileSync('./assets/images/cmyk_colorspace.jpg');
 
 describe(`JpegEmbedder`, () => {
   it(`can be constructed with JpegEmbedder.for(...)`, async () => {

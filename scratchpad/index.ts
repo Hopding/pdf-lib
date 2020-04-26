@@ -4,23 +4,19 @@ import { openPdf, Reader } from './open';
 import { PDFDocument } from 'src/index';
 
 (async () => {
-  const pdfDoc = await PDFDocument.load(
-    fs.readFileSync('assets/pdfs/with_cropbox.pdf'),
-    { updateMetadata: false },
+  const pdfDoc = await PDFDocument.create();
+
+  const page = pdfDoc.addPage();
+
+  const img = await pdfDoc.embedJpg(
+    fs.readFileSync('assets/images/cmyk_colorspace.jpg'),
   );
 
-  console.log('Title:', pdfDoc.getTitle());
-  console.log('Author:', pdfDoc.getAuthor());
-  console.log('Subject:', pdfDoc.getSubject());
-  console.log('Creator:', pdfDoc.getCreator());
-  console.log('Keywords:', pdfDoc.getKeywords());
-  console.log('Producer:', pdfDoc.getProducer());
-  console.log('Creation Date:', pdfDoc.getCreationDate());
-  console.log('Modification Date:', pdfDoc.getModificationDate());
+  page.drawImage(img);
 
   const pdfBytes = await pdfDoc.save();
 
   fs.writeFileSync('./out.pdf', pdfBytes);
 
-  openPdf('./out.pdf', Reader.Acrobat);
+  openPdf('./out.pdf', Reader.Preview);
 })();

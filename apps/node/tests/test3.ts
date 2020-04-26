@@ -19,11 +19,14 @@ export default async (assets: Assets) => {
   const catRidingUnicornImage = await pdfDoc.embedJpg(
     images.jpg.cat_riding_unicorn,
   );
+  const cmykImage = await pdfDoc.embedJpg(images.jpg.cmyk_colorspace);
+
   const catRidingUnicornDims = catRidingUnicornImage.scale(0.13);
+  const cmykDims = cmykImage.scale(0.5);
 
   const page0 = pdfDoc.insertPage(0, [305, 250]);
   const page1 = pdfDoc.getPage(1);
-  const page2 = pdfDoc.addPage([305, 125]);
+  const page2 = pdfDoc.addPage([305, 250]);
 
   const hotPink = rgb(1, 0, 1);
   const red = rgb(1, 0, 0);
@@ -58,7 +61,7 @@ export default async (assets: Assets) => {
   page2.setFontSize(24);
   page2.drawText('This is the last page!', {
     x: 30,
-    y: 60,
+    y: 215,
     font: helveticaFont,
     color: hotPink,
   });
@@ -67,6 +70,11 @@ export default async (assets: Assets) => {
     end: { x: 30 + lastPageTextWidth, y: 50 },
     color: hotPink,
     thickness: 5,
+  });
+  page2.drawImage(cmykImage, {
+    ...cmykDims,
+    x: 30,
+    y: 30,
   });
 
   console.log('Title:', pdfDoc.getTitle());
