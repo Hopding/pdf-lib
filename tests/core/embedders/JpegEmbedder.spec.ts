@@ -3,6 +3,7 @@ import { JpegEmbedder, PDFContext, PDFRawStream, PDFRef } from 'src/core';
 
 const catUnicornJpg = fs.readFileSync('./assets/images/cat_riding_unicorn.jpg');
 const minionsLaughing = fs.readFileSync('./assets/images/minions_laughing.jpg');
+const cmykJpg = fs.readFileSync('./assets/images/Channel_digital_image_CMYK_color.jpg');
 
 describe(`JpegEmbedder`, () => {
   it(`can be constructed with JpegEmbedder.for(...)`, async () => {
@@ -48,5 +49,14 @@ describe(`JpegEmbedder`, () => {
     expect(embedder.height).toBe(354);
     expect(embedder.width).toBe(630);
     expect(embedder.colorSpace).toBe('DeviceRGB');
+  });
+
+  it(`can extract properties of JPEG images (3)`, async () => {
+    const embedder = await JpegEmbedder.for(cmykJpg);
+
+    expect(embedder.bitsPerComponent).toBe(8);
+    expect(embedder.height).toBe(333);
+    expect(embedder.width).toBe(500);
+    expect(embedder.colorSpace).toBe('DeviceCMYK');
   });
 });
