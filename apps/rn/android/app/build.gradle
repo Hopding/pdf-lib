@@ -162,8 +162,8 @@ android {
 }
 
 dependencies {
-    implementation project(':rn-fetch-blob')
     implementation project(':react-native-pdf')
+    implementation project(':rn-fetch-blob')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
