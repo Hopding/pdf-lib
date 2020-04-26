@@ -197,7 +197,7 @@ _This example produces [this PDF](assets/pdfs/examples/copy_pages.pdf)_ (when [t
 import { PDFDocument } from 'pdf-lib'
 
 // Create a new PDFDocument
-const pdfDoc = await PDFDocument.create();
+const pdfDoc = await PDFDocument.create()
 
 // These should be Uint8Arrays or ArrayBuffers
 // This data can be obtained in a number of different ways
@@ -293,7 +293,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/embed_pdf_pages.pdf)_ (when [this PDF](assets/pdfs/american_flag.pdf) is used for the `americanFlagPdfBytes` variable and [this PDF](assets/pdfs/us_constitution.pdf) is used for the `usConstitutionPdfBytes` variable).
 
-[Try the JSFiddle demo](https://jsfiddle.net/Hopding/Lyb16ocj/10/)
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/Lyb16ocj/13/)
 
 <!-- prettier-ignore -->
 ```js
@@ -468,7 +468,7 @@ const pdfBytes = await pdfDoc.save()
 
 ### Read Document Metadata
 
-<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/eg8rfz3k/2/) -->
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/eg8rfz3k/16/)
 
 <!-- prettier-ignore -->
 ```js
@@ -486,14 +486,14 @@ const pdfDoc = await PDFDocument.load(existingPdfBytes, {
 })
 
 // Print all available metadata fields
-console.log('Title:', pdfDoc.getTitle());
-console.log('Author:', pdfDoc.getAuthor());
-console.log('Subject:', pdfDoc.getSubject());
-console.log('Creator:', pdfDoc.getCreator());
-console.log('Keywords:', pdfDoc.getKeywords());
-console.log('Producer:', pdfDoc.getProducer());
-console.log('Creation Date:', pdfDoc.getCreationDate());
-console.log('Modification Date:', pdfDoc.getModificationDate());
+console.log('Title:', pdfDoc.getTitle())
+console.log('Author:', pdfDoc.getAuthor())
+console.log('Subject:', pdfDoc.getSubject())
+console.log('Creator:', pdfDoc.getCreator())
+console.log('Keywords:', pdfDoc.getKeywords())
+console.log('Producer:', pdfDoc.getProducer())
+console.log('Creation Date:', pdfDoc.getCreationDate())
+console.log('Modification Date:', pdfDoc.getModificationDate())
 ```
 
 This script outputs the following (_when [this PDF](assets/pdfs/with_cropbox.pdf) is used for the `existingPdfBytes` variable_):
@@ -626,12 +626,13 @@ yarn add @pdf-lib/fontkit
 
 To register the `fontkit` instance:
 
+<!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
+import { PDFDocument } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 
-const pdfDoc = await PDFDocument.create();
-pdfDoc.registerFontkit(fontkit);
+const pdfDoc = await PDFDocument.create()
+pdfDoc.registerFontkit(fontkit)
 ```
 
 ### Fontkit UMD Module
@@ -650,9 +651,10 @@ The following builds are available:
 
 When using a UMD build, you will have access to a global `window.fontkit` variable. To register the `fontkit` instance:
 
+<!-- prettier-ignore -->
 ```js
-var pdfDoc = await PDFLib.PDFDocument.create();
-pdfDoc.registerFontkit(fontkit);
+var pdfDoc = await PDFLib.PDFDocument.create()
+pdfDoc.registerFontkit(fontkit)
 ```
 
 ## Documentation
