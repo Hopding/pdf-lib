@@ -140,14 +140,7 @@ class PDFObjectParser extends BaseParser {
     let name = '';
     while (!this.bytes.done()) {
       const byte = this.bytes.peek();
-      if (
-        byte < CharCodes.ExclamationPoint ||
-        byte > CharCodes.Tilde ||
-        IsWhitespace[byte] ||
-        IsDelimiter[byte]
-      ) {
-        break;
-      }
+      if (IsWhitespace[byte] || IsDelimiter[byte]) break;
       name += charFromCode(byte);
       this.bytes.next();
     }
