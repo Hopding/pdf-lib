@@ -306,6 +306,10 @@ describe(`PDFObjectParser`, () => {
       expect(parser.parseObject()).toBe(PDFName.of('Bing'));
       expect(parser.parseObject()).toBe(PDFName.of('Bang'));
     });
+
+    it(`handles names containing non-ASCII characters`, () => {
+      expectParse('/ABCDEE+»ªÎÄÖÐËÎ').toBe(PDFName.of('ABCDEE+»ªÎÄÖÐËÎ'));
+    });
   });
 
   describe(`when parsing arrays`, () => {
