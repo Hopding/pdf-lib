@@ -3,6 +3,7 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
+import { PDFAcroForm } from 'src/core/acroform';
 
 class PDFCatalog extends PDFDict {
   static withContextAndPages = (
@@ -20,6 +21,16 @@ class PDFCatalog extends PDFDict {
 
   Pages(): PDFPageTree {
     return this.lookup(PDFName.of('Pages'), PDFDict) as PDFPageTree;
+  }
+
+  AcroForm(): PDFDict | undefined {
+    return this.lookupMaybe(PDFName.of('AcroForm'), PDFDict);
+  }
+
+  getAcroForm(): PDFAcroForm | undefined {
+    const dict = this.AcroForm();
+    if (!dict) return undefined;
+    return PDFAcroForm.fromDict(dict);
   }
 
   /**

@@ -103,13 +103,23 @@ class PDFContext {
   lookupMaybe(ref: LookupKey, type: typeof PDFStream): PDFStream | undefined;
   lookupMaybe(ref: LookupKey, type: typeof PDFRef): PDFRef | undefined;
   lookupMaybe(ref: LookupKey, type: typeof PDFString): PDFString | undefined;
+  lookupMaybe(
+    ref: LookupKey,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+  ): PDFString | PDFHexString | undefined;
 
-  lookupMaybe(ref: LookupKey, type: any) {
+  lookupMaybe(ref: LookupKey, ...types: any[]) {
     const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
-    if (result && !(result instanceof type)) {
-      throw new UnexpectedObjectTypeError(type, result);
+
+    if (!result) return undefined;
+
+    for (let idx = 0, len = types.length; idx < len; idx++) {
+      const type = types[idx];
+      if (result instanceof type) return result;
     }
-    return result;
+
+    throw new UnexpectedObjectTypeError(types, result);
   }
 
   lookup(ref: LookupKey): PDFObject | undefined;
@@ -123,13 +133,23 @@ class PDFContext {
   lookup(ref: LookupKey, type: typeof PDFStream): PDFStream;
   lookup(ref: LookupKey, type: typeof PDFRef): PDFRef;
   lookup(ref: LookupKey, type: typeof PDFString): PDFString;
+  lookup(
+    ref: LookupKey,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+  ): PDFString | PDFHexString;
 
-  lookup(ref: LookupKey, type?: any) {
+  lookup(ref: LookupKey, ...types: any[]) {
     const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
-    if (type && !(result instanceof type)) {
-      throw new UnexpectedObjectTypeError(type, result);
+
+    if (types.length === 0) return result;
+
+    for (let idx = 0, len = types.length; idx < len; idx++) {
+      const type = types[idx];
+      if (result instanceof type) return result;
     }
-    return result;
+
+    throw new UnexpectedObjectTypeError(types, result);
   }
 
   enumerateIndirectObjects(): [PDFRef, PDFObject][] {

@@ -58,9 +58,18 @@ class PDFDict extends PDFObject {
   lookupMaybe(key: PDFName, type: typeof PDFStream): PDFStream | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFRef): PDFRef | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFString): PDFString | undefined;
+  lookupMaybe(
+    ref: PDFName,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+  ): PDFString | PDFHexString | undefined;
 
-  lookupMaybe(key: PDFName, type: any) {
-    return this.context.lookupMaybe(this.get(key), type) as any;
+  lookupMaybe(key: PDFName, ...types: any[]) {
+    return this.context.lookupMaybe(
+      this.get(key),
+      // @ts-ignore
+      ...types,
+    ) as any;
   }
 
   lookup(key: PDFName): PDFObject | undefined;
@@ -74,9 +83,18 @@ class PDFDict extends PDFObject {
   lookup(key: PDFName, type: typeof PDFStream): PDFStream;
   lookup(key: PDFName, type: typeof PDFRef): PDFRef;
   lookup(key: PDFName, type: typeof PDFString): PDFString;
+  lookup(
+    ref: PDFName,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+  ): PDFString | PDFHexString;
 
-  lookup(key: PDFName, type?: any) {
-    return this.context.lookup(this.get(key), type) as any;
+  lookup(key: PDFName, ...types: any[]) {
+    return this.context.lookup(
+      this.get(key),
+      // @ts-ignore
+      ...types,
+    ) as any;
   }
 
   delete(key: PDFName): boolean {
