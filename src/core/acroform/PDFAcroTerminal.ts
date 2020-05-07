@@ -7,6 +7,7 @@ import {
   PDFAcroChoice,
   PDFAcroSignature,
 } from 'src/core/acroform';
+import { PDFWidgetAnnotation } from 'src/core/annotation';
 
 class PDFAcroTerminal extends PDFAcroField {
   static fromDict = (dict: PDFDict): PDFAcroTerminal => {
@@ -24,6 +25,22 @@ class PDFAcroTerminal extends PDFAcroField {
   FT(): PDFName {
     const nameOrRef = this.getInheritableAttribute(PDFName.of('FT'));
     return this.dict.context.lookup(nameOrRef, PDFName);
+  }
+
+  getWidgets(): PDFWidgetAnnotation[] {
+    const kidDicts = this.Kids();
+
+    // This field is itself represents a widget
+    if (!kidDicts) return [PDFWidgetAnnotation.fromDict(this.dict)];
+
+    // This field's kids are its widgets
+    const widgets = new Array(kidDicts.size());
+    for (let idx = 0, len = kidDicts.size(); idx < len; idx++) {
+      const dict = kidDicts.lookup(idx, PDFDict);
+      widgets[idx] = PDFWidgetAnnotation.fromDict(dict);
+    }
+
+    return widgets;
   }
 }
 

@@ -11,6 +11,9 @@ import {
   PDFAcroSignature,
   PDFAcroChoice,
   PDFAcroText,
+  PDFAcroPushButton,
+  PDFAcroRadioButton,
+  PDFAcroCheckBox,
 } from 'src/core/acroform';
 
 export const createPDFAcroField = (dict: PDFDict): PDFAcroField => {
@@ -18,6 +21,8 @@ export const createPDFAcroField = (dict: PDFDict): PDFAcroField => {
   if (isNonTerminal) return PDFAcroNonTerminal.fromDict(dict);
   return createPDFAcroTerminal(dict);
 };
+
+// TODO: Maybe just check if the dict is *not* a widget? That might be better.
 
 // According to the PDF spec:
 //
@@ -38,7 +43,7 @@ const isNonTerminalAcroField = (dict: PDFDict): boolean => {
 
   if (kids instanceof PDFArray) {
     for (let idx = 0, len = kids.size(); idx < len; idx++) {
-      const kid = kids.get(idx);
+      const kid = kids.lookup(idx);
       const kidIsField = kid instanceof PDFDict && kid.has(PDFName.of('T'));
       if (kidIsField) return true;
     }
@@ -75,11 +80,11 @@ const createPDFAcroButton = (dict: PDFDict): PDFAcroButton => {
   const flags = ffNumber?.asNumber() ?? 0;
 
   if (flagIsSet(flags, AcroButtonFlags.PushButton)) {
-    /* PushButton */
+    return PDFAcroPushButton.fromDict(dict);
   } else if (flagIsSet(flags, AcroButtonFlags.Radio)) {
-    /* RadioButton */
+    return PDFAcroRadioButton.fromDict(dict);
   } else {
-    /* CheckBox */
+    return PDFAcroCheckBox.fromDict(dict);
   }
 };
 

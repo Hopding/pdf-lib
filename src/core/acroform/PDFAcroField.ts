@@ -2,20 +2,16 @@ import PDFDict from 'src/core/objects/PDFDict';
 import PDFString from 'src/core/objects/PDFString';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFName from 'src/core/objects/PDFName';
-import PDFArray from 'src/core/objects/PDFArray';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFNumber from 'src/core/objects/PDFNumber';
-import { PDFAcroTerminal, PDFAcroNonTerminal } from 'src/core/acroform';
+import PDFArray from 'src/core/objects/PDFArray';
+import { PDFAcroNonTerminal } from 'src/core/acroform';
+import { createPDFAcroField } from './utils';
 
 class PDFAcroField {
   readonly dict: PDFDict;
 
-  // TODO: Could we avoid this circular dependency?
-  static fromDict = (dict: PDFDict): PDFAcroField => {
-    const hasKids = !!dict.lookupMaybe(PDFName.of('Kids'), PDFArray)?.size();
-    if (hasKids) return PDFAcroNonTerminal.fromDict(dict);
-    return PDFAcroTerminal.fromDict(dict);
-  };
+  static fromDict = (dict: PDFDict): PDFAcroField => createPDFAcroField(dict);
 
   protected constructor(dict: PDFDict) {
     this.dict = dict;
@@ -30,6 +26,15 @@ class PDFAcroField {
     return this.dict.context.lookupMaybe(numberOrRef, PDFNumber);
   }
 
+  V(): PDFObject | undefined {
+    const valueOrRef = this.getInheritableAttribute(PDFName.of('V'));
+    return this.dict.context.lookup(valueOrRef);
+  }
+
+  Kids(): PDFArray | undefined {
+    return this.dict.lookupMaybe(PDFName.of('Kids'), PDFArray);
+  }
+
   Parent(): PDFDict | undefined {
     return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
   }
@@ -38,6 +43,12 @@ class PDFAcroField {
     const parent = this.Parent();
     if (!parent) return undefined;
     return PDFAcroNonTerminal.fromDict(parent);
+  }
+
+  getFullyQualifiedName(): string | undefined {
+    const parent = this.getParent();
+    if (!parent) return this.getPartialName();
+    return `${parent.getFullyQualifiedName()}.${this.getPartialName()}`;
   }
 
   getPartialName(): string | undefined {

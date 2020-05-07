@@ -6,3 +6,6 @@ export { default as PDFAcroButton } from './PDFAcroButton';
 export { default as PDFAcroText } from './PDFAcroText';
 export { default as PDFAcroChoice } from './PDFAcroChoice';
 export { default as PDFAcroSignature } from './PDFAcroSignature';
+export { default as PDFAcroPushButton } from './PDFAcroPushButton';
+export { default as PDFAcroCheckBox } from './PDFAcroCheckBox';
+export { default as PDFAcroRadioButton } from './PDFAcroRadioButton';

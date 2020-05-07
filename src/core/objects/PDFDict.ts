@@ -29,6 +29,14 @@ class PDFDict extends PDFObject {
     this.context = context;
   }
 
+  keys(): PDFName[] {
+    return Array.from(this.dict.keys());
+  }
+
+  values(): PDFObject[] {
+    return Array.from(this.dict.values());
+  }
+
   entries(): [PDFName, PDFObject][] {
     return Array.from(this.dict.entries());
   }
@@ -63,6 +71,17 @@ class PDFDict extends PDFObject {
     type1: typeof PDFString,
     type2: typeof PDFHexString,
   ): PDFString | PDFHexString | undefined;
+  lookupMaybe(
+    ref: PDFName,
+    type1: typeof PDFDict,
+    type2: typeof PDFStream,
+  ): PDFDict | PDFStream | undefined;
+  lookupMaybe(
+    ref: PDFName,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+    type3: typeof PDFArray,
+  ): PDFString | PDFHexString | PDFArray | undefined;
 
   lookupMaybe(key: PDFName, ...types: any[]) {
     return this.context.lookupMaybe(
@@ -88,6 +107,17 @@ class PDFDict extends PDFObject {
     type1: typeof PDFString,
     type2: typeof PDFHexString,
   ): PDFString | PDFHexString;
+  lookup(
+    ref: PDFName,
+    type1: typeof PDFDict,
+    type2: typeof PDFStream,
+  ): PDFDict | PDFStream;
+  lookup(
+    ref: PDFName,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+    type3: typeof PDFArray,
+  ): PDFString | PDFHexString | PDFArray;
 
   lookup(key: PDFName, ...types: any[]) {
     return this.context.lookup(
