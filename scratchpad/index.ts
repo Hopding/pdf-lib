@@ -4,13 +4,6 @@ import { openPdf, Reader } from './open';
 import { PDFDocument, PDFName } from 'src/index';
 import { PDFAcroRadioButton, PDFAcroCheckBox } from 'src/core/acroform';
 
-// const getButtonType = (button: PDFAcroButton) => {
-//   if (button.isPushButton()) return 'Push Button';
-//   if (button.isRadioButton()) return 'Radio Button';
-//   if (button.isCheckBoxButton()) return 'Check Box Button';
-//   throw new Error('Unknown button type');
-// };
-
 (() => [fs, openPdf, Reader])();
 
 (async () => {
@@ -19,9 +12,11 @@ import { PDFAcroRadioButton, PDFAcroCheckBox } from 'src/core/acroform';
     // fs.readFileSync('/Users/user/Desktop/copy_f1040.pdf'),
     // fs.readFileSync('/Users/user/Desktop/pdfbox_f1040.pdf'),
 
-    fs.readFileSync('/Users/user/Desktop/f1099msc.pdf'),
-    // fs.readFileSync('/Users/user/Desktop/radios.pdf'),
+    // fs.readFileSync('/Users/user/Desktop/f1099msc.pdf'),
+    fs.readFileSync('/Users/user/Desktop/radios.pdf'),
   );
+
+  // TODO: getValueForExport(), getExportForValue()
 
   const acroForm = pdfDoc.catalog.getAcroForm();
   console.log('AcroForm:');
@@ -36,14 +31,8 @@ import { PDFAcroRadioButton, PDFAcroCheckBox } from 'src/core/acroform';
       (field as PDFAcroRadioButton).setValue(PDFName.of('Choice2'));
     }
 
-    if (
-      field.getFullyQualifiedName() ===
-        'topmostSubform[0].CopyA[0].CopyAHeader[0].c1_1[0]' ||
-      field.getFullyQualifiedName() ===
-        'topmostSubform[0].CopyA[0].CopyAHeader[0].c1_1[1]'
-    ) {
-      const x = field as PDFAcroCheckBox;
-      x.setValue(x.getOnValue()!);
+    if (field instanceof PDFAcroCheckBox) {
+      field.setValue(field.getOnValue()!);
     }
 
     const fieldType = field.constructor.name;
@@ -68,6 +57,23 @@ import { PDFAcroRadioButton, PDFAcroCheckBox } from 'src/core/acroform';
     console.log();
   });
 
-  fs.writeFileSync('out.pdf', await pdfDoc.save());
-  openPdf('out.pdf', Reader.Acrobat);
+  fields?.forEach((field) => {
+    if (field instanceof PDFAcroCheckBox) {
+      field.updateAppearances();
+      const widgets = field.getWidgets();
+      widgets.forEach((_widget) => {
+        // widget.dict.delete(PDFName.of('AP'));
+      });
+    }
+    if (field instanceof PDFAcroRadioButton) {
+      field.updateAppearances();
+      const widgets = field.getWidgets();
+      widgets.forEach((_widget) => {
+        // console.log(String(widget.dict));
+      });
+    }
+  });
+
+  fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
+  openPdf('out.pdf', Reader.Preview);
 })();

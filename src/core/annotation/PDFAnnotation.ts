@@ -1,6 +1,7 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from '../objects/PDFName';
 import PDFStream from '../objects/PDFStream';
+import PDFArray from '../objects/PDFArray';
 
 class PDFAnnotation {
   readonly dict: PDFDict;
@@ -11,12 +12,60 @@ class PDFAnnotation {
     this.dict = dict;
   }
 
+  // This is technically required by the PDF spec
+  Rect(): PDFArray | undefined {
+    return this.dict.lookup(PDFName.of('Rect'), PDFArray);
+  }
+
   AP(): PDFDict | undefined {
     return this.dict.lookupMaybe(PDFName.of('AP'), PDFDict);
   }
 
+  getRectangle(): { x: number; y: number; width: number; height: number } {
+    const Rect = this.Rect();
+    return Rect?.asRectangle() ?? { x: 0, y: 0, width: 0, height: 0 };
+  }
+
   setAppearanceState(state: PDFName) {
     this.dict.set(PDFName.of('AS'), state);
+  }
+
+  setAppearances(appearances: PDFDict) {
+    this.dict.set(PDFName.of('AP'), appearances);
+  }
+
+  ensureAP(): PDFDict {
+    let AP = this.AP();
+    if (!AP) {
+      AP = this.dict.context.obj({});
+      this.dict.set(PDFName.of('AP'), AP);
+    }
+    return AP;
+  }
+
+  setNormalAppearance(appearance: PDFStream | PDFDict) {
+    const AP = this.ensureAP();
+    AP.set(PDFName.of('N'), appearance);
+  }
+
+  setRolloverAppearance(appearance: PDFStream | PDFDict) {
+    const AP = this.ensureAP();
+    AP.set(PDFName.of('R'), appearance);
+  }
+
+  setDownAppearance(appearance: PDFStream | PDFDict) {
+    const AP = this.ensureAP();
+    AP.set(PDFName.of('D'), appearance);
+  }
+
+  removeRolloverAppearance() {
+    const AP = this.AP();
+    AP?.delete(PDFName.of('R'));
+  }
+
+  removeDownAppearance() {
+    const AP = this.AP();
+    AP?.delete(PDFName.of('D'));
   }
 
   getAppearances():
@@ -37,86 +86,5 @@ class PDFAnnotation {
     return { normal: N, rollover: R, down: D };
   }
 }
-
-// function getIfType<A extends Function>(
-//   x: any,
-//   typeA: A,
-// ): A['prototype'] | undefined {
-//   if (x instanceof typeA) return x;
-//   return undefined;
-// }
-
-// function isType<A extends Function>(x: any, typeA: A): x is number | undefined {
-//   if (x instanceof typeA) return true;
-//   return false;
-// }
-
-// function checkType<A extends Function>(
-//   x: any,
-//   typeA: A,
-// ): asserts x is A['prototype'] {
-//   if (x instanceof typeA) return;
-//   throw new UnexpectedObjectTypeError(x, typeA);
-// }
-
-// function checkType<A extends Function, B extends Function>(
-//   x: any,
-//   typeA: A,
-//   typeB: B,
-// ): asserts x is A['prototype'] | B['prototype'] {
-//   if (x instanceof typeA) return;
-//   if (x instanceof typeB) return;
-//   throw new UnexpectedObjectTypeError(x, [typeA, typeB]);
-// }
-
-// function checkType<A extends Function[]>(
-//   x: any,
-//   ...types: A
-// ): asserts x is A[number]['prototype'] {
-//   if (types.find((t) => x instanceof t)) return;
-//   throw new UnexpectedObjectTypeError(x, types);
-// }
-
-// type Maybe<T> = T | number;
-
-// function checkTypeMaybe<A extends Function[]>(
-//   x: any,
-//   ...types: A
-// ): asserts x is Maybe<number> {
-//   if (types.find((t) => x instanceof t)) return;
-//   throw new UnexpectedObjectTypeError(x, types);
-// }
-
-// function checkType<A extends Function>(
-//   x: any,
-//   typeA: A,
-// ): asserts x is A['prototype'];
-
-// function checkType<A extends Function, B extends Function>(
-//   x: any,
-//   typeA: A,
-//   typeB: B,
-// ): asserts x is A['prototype'] | B['prototype'];
-
-// function checkType(x: any, ...types: any[]) {
-//   if (types.find((t) => x instanceof t)) return;
-//   throw new UnexpectedObjectTypeError(x, types);
-// }
-
-// function checkTypeMaybe<A extends Function>(
-//   x: any,
-//   typeA: A,
-// ): asserts x is A['prototype'] | undefined;
-
-// function checkTypeMaybe<A extends Function, B extends Function>(
-//   x: any,
-//   typeA: A,
-//   typeB: B,
-// ): asserts x is A['prototype'] | B['prototype'] | undefined;
-
-// function checkTypeMaybe(x: any, ...types: any[]) {
-//   if (types.find((t) => x instanceof t)) return;
-//   throw new UnexpectedObjectTypeError(x, types);
-// }
 
 export default PDFAnnotation;
