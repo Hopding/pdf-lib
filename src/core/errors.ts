@@ -85,6 +85,20 @@ export class InvalidPDFDateStringError extends Error {
   }
 }
 
+export class InvalidTargetIndexError extends Error {
+  constructor(targetIndex: number, Count: number) {
+    const msg = `Invalid targetIndex specified: targetIndex=${targetIndex} must be less than Count=${Count}`;
+    super(msg);
+  }
+}
+
+export class CorruptPageTreeError extends Error {
+  constructor(targetIndex: number, operation: string) {
+    const msg = `Failed to ${operation} at targetIndex=${targetIndex} due to corrupt page tree: It is likely that one or more 'Count' entries are invalid`;
+    super(msg);
+  }
+}
+
 /***** Parser Errors ******/
 
 export interface Position {

@@ -66,8 +66,8 @@ export default async (assets: Assets) => {
     color: hotPink,
   });
   page2.drawLine({
-    start: { x: 30, y: 50 },
-    end: { x: 30 + lastPageTextWidth, y: 50 },
+    start: { x: 30, y: 205 },
+    end: { x: 30 + lastPageTextWidth, y: 205 },
     color: hotPink,
     thickness: 5,
   });
