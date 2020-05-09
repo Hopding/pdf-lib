@@ -382,7 +382,7 @@ describe(`PDFPageTree`, () => {
       expect(lvl2Tree1.Kids().get(1)).toBe(lvl3Tree1Ref);
       expect(lvl4Tree1.Kids().get(0)).toBe(leafRef3);
 
-      lvl1Tree1.removeLeafNode(2);
+      lvl1Tree1.removeLeafNode(2, false);
 
       expect(lvl1Tree1.Count().asNumber()).toBe(3);
       expect(lvl2Tree1.Count().asNumber()).toBe(1);
@@ -433,10 +433,10 @@ describe(`PDFPageTree`, () => {
       expect(() => buildTree().removeLeafNode(2)).not.toThrow();
 
       expect(() => buildTree().removeLeafNode(3)).toThrow(
-        'Index out of bounds: 3/2 (b)',
+        'Invalid targetIndex specified: targetIndex=3 must be less than Count=3',
       );
       expect(() => buildTree().removeLeafNode(4)).toThrow(
-        'Index out of bounds: 3/2 (a)',
+        'Invalid targetIndex specified: targetIndex=4 must be less than Count=3',
       );
     });
 
@@ -483,11 +483,90 @@ describe(`PDFPageTree`, () => {
       expect(() => buildTree().removeLeafNode(7)).not.toThrow();
 
       expect(() => buildTree().removeLeafNode(8)).toThrow(
-        'Index out of bounds: 2/1 (b)',
+        'Invalid targetIndex specified: targetIndex=8 must be less than Count=8',
       );
       expect(() => buildTree().removeLeafNode(9)).toThrow(
-        'Index out of bounds: 2/1 (a)',
+        'Invalid targetIndex specified: targetIndex=9 must be less than Count=8',
       );
+    });
+
+    it(`throws an error when the page tree has no kids`, () => {
+      const buildTree = () => {
+        const { pageTree } = pageUtils();
+        const [, lvl1Tree1] = pageTree();
+        return lvl1Tree1;
+      };
+
+      expect(() => buildTree().removeLeafNode(0)).toThrow(
+        'Invalid targetIndex specified: targetIndex=0 must be less than Count=0',
+      );
+      expect(() => buildTree().removeLeafNode(1)).toThrow(
+        'Invalid targetIndex specified: targetIndex=1 must be less than Count=0',
+      );
+    });
+
+    it(`throws an error when the page tree is invalid`, () => {
+      const buildTree = () => {
+        const { pageTree } = pageUtils();
+        const [, lvl1Tree1] = pageTree();
+        return lvl1Tree1;
+      };
+
+      const tree = buildTree();
+      tree.set(PDFName.of('Count'), PDFNumber.of(21));
+
+      expect(() => tree.removeLeafNode(0)).toThrow(
+        `Failed to removeLeafNode at targetIndex=0 due to corrupt page tree: It is likely that one or more 'Count' entries are invalid`,
+      );
+      expect(() => tree.removeLeafNode(1)).toThrow(
+        `Failed to removeLeafNode at targetIndex=1 due to corrupt page tree: It is likely that one or more 'Count' entries are invalid`,
+      );
+    });
+
+    it(`removes tree nodes that have 0 children after a leaf node is removed`, () => {
+      const { pageTree, pageLeaf } = pageUtils();
+
+      const [tree1Ref, tree1] = pageTree();
+      const [tree2Ref, tree2] = pageTree(tree1Ref);
+      const [tree3Ref, tree3] = pageTree(tree1Ref);
+      const [tree4Ref, tree4] = pageTree(tree1Ref);
+      const [tree5Ref, tree5] = pageTree(tree3Ref);
+
+      const [leafRef1] = pageLeaf(tree2Ref);
+      const [leafRef2] = pageLeaf(tree4Ref);
+      const [leafRef3] = pageLeaf(tree5Ref);
+      const [leafRef4] = pageLeaf(tree5Ref);
+
+      pushTreeNodes(tree1, tree2Ref, tree3Ref, tree4Ref);
+      pushTreeNodes(tree3, tree5Ref);
+
+      pushLeafNodes(tree2, leafRef1);
+      pushLeafNodes(tree4, leafRef2);
+      pushLeafNodes(tree5, leafRef3, leafRef4);
+
+      expect(tree1.Kids().size()).toBe(3);
+      expect(tree1.Kids().get(0)).toBe(tree2Ref);
+      expect(tree1.Kids().get(1)).toBe(tree3Ref);
+      expect(tree1.Kids().get(2)).toBe(tree4Ref);
+
+      expect(tree3.Kids().size()).toBe(1);
+      expect(tree3.Kids().get(0)).toBe(tree5Ref);
+
+      tree1.removeLeafNode(1);
+
+      expect(tree1.Kids().size()).toBe(3);
+      expect(tree1.Kids().get(0)).toBe(tree2Ref);
+      expect(tree1.Kids().get(1)).toBe(tree3Ref);
+      expect(tree1.Kids().get(2)).toBe(tree4Ref);
+
+      expect(tree3.Kids().size()).toBe(1);
+      expect(tree3.Kids().get(0)).toBe(tree5Ref);
+
+      tree1.removeLeafNode(1);
+
+      expect(tree1.Kids().size()).toBe(2);
+      expect(tree1.Kids().get(0)).toBe(tree2Ref);
+      expect(tree1.Kids().get(1)).toBe(tree4Ref);
     });
   });
 });
