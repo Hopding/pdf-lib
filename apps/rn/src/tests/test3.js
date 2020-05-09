@@ -1,4 +1,10 @@
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import {
+  degrees,
+  PDFDocument,
+  rgb,
+  StandardFonts,
+  LineCapStyle,
+} from 'pdf-lib';
 
 import { fetchAsset, writePdf } from './assets';
 
@@ -66,6 +72,7 @@ export default async () => {
     end: { x: 30 + lastPageTextWidth, y: 205 },
     color: hotPink,
     thickness: 5,
+    lineCap: LineCapStyle.Round,
   });
   page2.drawImage(cmykImage, {
     ...cmykDims,
