@@ -1,6 +1,5 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
-import PDFContentStream from 'src/core/structures/PDFContentStream';
 import { rgb, drawEllipse } from 'src/api';
 import { PDFAcroButton } from 'src/core/acroform';
 
@@ -44,6 +43,8 @@ class PDFAcroRadioButton extends PDFAcroButton {
   }
 
   updateAppearances() {
+    const { context } = this.dict;
+
     const widgets = this.getWidgets();
 
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
@@ -52,12 +53,14 @@ class PDFAcroRadioButton extends PDFAcroButton {
 
       const onValue = widget.getOnValue();
       if (onValue) {
-        const xObjectDict = this.dict.context.obj({
-          Type: 'XObject',
-          Subtype: 'Form',
-          BBox: this.dict.context.obj([0, 0, width, height]),
-          Matrix: this.dict.context.obj([1, 0, 0, 1, 0, 0]),
-        });
+        // const xObjectDict = this.dict.context.obj({
+        //   Type: 'XObject',
+        //   Subtype: 'Form',
+        //   BBox: this.dict.context.obj([0, 0, width, height]),
+        //   Matrix: this.dict.context.obj([1, 0, 0, 1, 0, 0]),
+        // });
+
+        const BBox = context.obj([0, 0, width, height]);
 
         const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
         const outline = drawEllipse({
@@ -88,28 +91,29 @@ class PDFAcroRadioButton extends PDFAcroButton {
           borderWidth: 1,
         });
 
-        const onStream = PDFContentStream.of(xObjectDict, [...outline, ...dot]);
-        const onStreamRef = this.dict.context.register(onStream);
+        // const onStream = PDFContentStream.of(xObjectDict, [...outline, ...dot]);
+        const onStream = context.formXObject([...outline, ...dot], { BBox });
+        const onStreamRef = context.register(onStream);
 
-        const offStream = PDFContentStream.of(xObjectDict, [...outline]);
-        const offStreamRef = this.dict.context.register(offStream);
+        // const offStream = PDFContentStream.of(xObjectDict, [...outline]);
+        const offStream = context.formXObject([...outline], { BBox });
+        const offStreamRef = context.register(offStream);
 
-        const onDownStream = PDFContentStream.of(xObjectDict, [
-          ...outlineDown,
-          ...dot,
-        ]);
-        const onDownStreamRef = this.dict.context.register(onDownStream);
+        // const onDownStream = PDFContentStream.of(xObjectDict, [...outlineDown, ...dot]);
+        const onDownStream = context.formXObject([...outlineDown, ...dot], {
+          BBox,
+        });
+        const onDownStreamRef = context.register(onDownStream);
 
-        const offDownStream = PDFContentStream.of(xObjectDict, [
-          ...outlineDown,
-        ]);
-        const offDownStreamRef = this.dict.context.register(offDownStream);
+        // const offDownStream = PDFContentStream.of(xObjectDict, [...outlineDown,]);
+        const offDownStream = context.formXObject([...outlineDown], { BBox });
+        const offDownStreamRef = context.register(offDownStream);
 
-        const appearance = this.dict.context.obj({});
+        const appearance = context.obj({});
         appearance.set(onValue, onStreamRef);
         appearance.set(PDFName.of('Off'), offStreamRef);
 
-        const appearance1 = this.dict.context.obj({});
+        const appearance1 = context.obj({});
         appearance1.set(onValue, onDownStreamRef);
         appearance1.set(PDFName.of('Off'), offDownStreamRef);
 

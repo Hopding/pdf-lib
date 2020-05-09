@@ -211,6 +211,26 @@ class PDFContext {
     });
   }
 
+  contentStream(
+    operators: PDFOperator[],
+    dict: LiteralObject = {},
+  ): PDFContentStream {
+    return PDFContentStream.of(this.obj(dict), operators);
+  }
+
+  formXObject(
+    operators: PDFOperator[],
+    dict: LiteralObject = {},
+  ): PDFContentStream {
+    return this.contentStream(operators, {
+      BBox: this.obj([0, 0, 0, 0]),
+      Matrix: this.obj([1, 0, 0, 1, 0, 0]),
+      ...dict,
+      Type: 'XObject',
+      Subtype: 'Form',
+    });
+  }
+
   /*
    * Reference to PDFContentStream that contains a single PDFOperator: `q`.
    * Used by [[PDFPageLeaf]] instances to ensure that when content streams are

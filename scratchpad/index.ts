@@ -2,7 +2,11 @@ import fs from 'fs';
 import { openPdf, Reader } from './open';
 
 import { PDFDocument, PDFName } from 'src/index';
-import { PDFAcroRadioButton, PDFAcroCheckBox } from 'src/core/acroform';
+import {
+  PDFAcroRadioButton,
+  PDFAcroCheckBox,
+  PDFAcroPushButton,
+} from 'src/core/acroform';
 
 (() => [fs, openPdf, Reader])();
 
@@ -58,6 +62,16 @@ import { PDFAcroRadioButton, PDFAcroCheckBox } from 'src/core/acroform';
   });
 
   fields?.forEach((field) => {
+    if (field instanceof PDFAcroPushButton) {
+      // field.updateAppearances();
+      const widgets = field.getWidgets();
+      widgets.forEach((widget) => {
+        console.log('BEFORE:', String(widget.dict));
+        widget.dict.delete(PDFName.of('AP'));
+        console.log('AFTER:', String(widget.dict));
+      });
+      console.log();
+    }
     if (field instanceof PDFAcroCheckBox) {
       field.updateAppearances();
       const widgets = field.getWidgets();
