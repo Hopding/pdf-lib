@@ -23,6 +23,8 @@ import {
   skewRadians,
   stroke,
   translate,
+  LineCapStyle,
+  setLineCap,
 } from 'src/api/operators';
 import { Rotation, toRadians } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
@@ -133,6 +135,7 @@ export const drawLine = (options: {
   start: { x: number | PDFNumber; y: number | PDFNumber };
   end: { x: number | PDFNumber; y: number | PDFNumber };
   thickness: number | PDFNumber;
+  lineCap: LineCapStyle | undefined,
   color: Color | undefined;
 }) =>
   [
@@ -140,6 +143,7 @@ export const drawLine = (options: {
     options.color && setStrokingColor(options.color),
     setLineWidth(options.thickness),
     moveTo(options.start.x, options.start.y),
+    options.lineCap !== undefined && setLineCap(options.lineCap),
     lineTo(options.end.x, options.end.y),
     stroke(),
     popGraphicsState(),
