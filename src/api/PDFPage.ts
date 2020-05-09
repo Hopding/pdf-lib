@@ -1153,6 +1153,7 @@ export default class PDFPage {
         end: options.end,
         thickness: options.thickness ?? 1,
         color: options.color ?? undefined,
+        lineCap: options.lineCap ?? undefined,
       }),
     );
   }
