@@ -2,6 +2,7 @@ import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from '../objects/PDFName';
 import PDFStream from '../objects/PDFStream';
 import PDFArray from '../objects/PDFArray';
+import PDFRef from '../objects/PDFRef';
 
 class PDFAnnotation {
   readonly dict: PDFDict;
@@ -43,17 +44,20 @@ class PDFAnnotation {
     return AP;
   }
 
-  setNormalAppearance(appearance: PDFStream | PDFDict) {
+  /** @param appearance A PDFDict or PDFStream (direct or ref) */
+  setNormalAppearance(appearance: PDFRef | PDFDict) {
     const AP = this.ensureAP();
     AP.set(PDFName.of('N'), appearance);
   }
 
-  setRolloverAppearance(appearance: PDFStream | PDFDict) {
+  /** @param appearance A PDFDict or PDFStream (direct or ref) */
+  setRolloverAppearance(appearance: PDFRef | PDFDict) {
     const AP = this.ensureAP();
     AP.set(PDFName.of('R'), appearance);
   }
 
-  setDownAppearance(appearance: PDFStream | PDFDict) {
+  /** @param appearance A PDFDict or PDFStream (direct or ref) */
+  setDownAppearance(appearance: PDFRef | PDFDict) {
     const AP = this.ensureAP();
     AP.set(PDFName.of('D'), appearance);
   }
