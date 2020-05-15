@@ -1,11 +1,12 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
 
-import { PDFDocument, PDFName } from 'src/index';
+import { PDFDocument, PDFName, StandardFonts } from 'src/index';
 import {
   PDFAcroRadioButton,
   PDFAcroCheckBox,
   PDFAcroPushButton,
+  PDFAcroText,
 } from 'src/core/acroform';
 
 (() => [fs, openPdf, Reader])();
@@ -16,11 +17,14 @@ import {
     // fs.readFileSync('/Users/user/Desktop/copy_f1040.pdf'),
     // fs.readFileSync('/Users/user/Desktop/pdfbox_f1040.pdf'),
 
+    // fs.readFileSync('/Users/user/Desktop/comb_form.pdf'),
     // fs.readFileSync('/Users/user/Desktop/f1099msc.pdf'),
     fs.readFileSync('/Users/user/Desktop/radios.pdf'),
   );
 
   // TODO: getValueForExport(), getExportForValue()
+
+  const helveticaFont = await pdfDoc.embedStandardFont(StandardFonts.Helvetica);
 
   const acroForm = pdfDoc.catalog.getAcroForm();
   console.log('AcroForm:');
@@ -37,6 +41,11 @@ import {
 
     if (field instanceof PDFAcroCheckBox) {
       field.setValue(field.getOnValue()!);
+    }
+
+    if (field instanceof PDFAcroText) {
+      // field.setValue('Foobar');
+      field.setValue('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
     }
 
     const fieldType = field.constructor.name;
@@ -61,16 +70,29 @@ import {
     console.log();
   });
 
+  (() => [helveticaFont])();
+
   fields?.forEach((field) => {
-    if (field instanceof PDFAcroPushButton) {
-      // field.updateAppearances();
+    if (field instanceof PDFAcroText) {
+      console.log(`${field.getFullyQualifiedName()} isComb: ${field.isComb()}`);
+      field.updateAppearances(helveticaFont);
       const widgets = field.getWidgets();
-      widgets.forEach((widget) => {
-        console.log('BEFORE:', String(widget.dict));
-        widget.dict.delete(PDFName.of('AP'));
-        console.log('AFTER:', String(widget.dict));
+      widgets.forEach((_widget) => {
+        // console.log('BEFORE:', String(widget.dict));
+        // widget.dict.delete(PDFName.of('AP'));
+        // console.log('AFTER:', String(widget.dict));
       });
-      console.log();
+      // console.log();
+    }
+    if (field instanceof PDFAcroPushButton) {
+      field.updateAppearances(helveticaFont);
+      const widgets = field.getWidgets();
+      widgets.forEach((_widget) => {
+        // console.log('BEFORE:', String(widget.dict));
+        // widget.dict.delete(PDFName.of('AP'));
+        // console.log('AFTER:', String(widget.dict));
+      });
+      // console.log();
     }
     if (field instanceof PDFAcroCheckBox) {
       field.updateAppearances();

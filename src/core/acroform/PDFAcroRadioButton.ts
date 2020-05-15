@@ -56,11 +56,12 @@ class PDFAcroRadioButton extends PDFAcroButton {
         const BBox = context.obj([0, 0, width, height]);
 
         const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
+        const scale = Math.min(width, height) / 2 - KAPPA;
         const outline = drawEllipse({
           x: width / 2,
           y: height / 2,
-          xScale: width / 2 - KAPPA,
-          yScale: height / 2 - KAPPA,
+          xScale: scale,
+          yScale: scale,
           color: rgb(1, 1, 1),
           borderColor: rgb(0, 0, 0),
           borderWidth: 1,
@@ -68,8 +69,8 @@ class PDFAcroRadioButton extends PDFAcroButton {
         const dot = drawEllipse({
           x: width / 2,
           y: height / 2,
-          xScale: (width / 2 - KAPPA) * 0.45,
-          yScale: (height / 2 - KAPPA) * 0.45,
+          xScale: scale * 0.45,
+          yScale: scale * 0.45,
           color: rgb(0, 0, 0),
           borderColor: undefined,
           borderWidth: 0,
@@ -77,8 +78,8 @@ class PDFAcroRadioButton extends PDFAcroButton {
         const outlineDown = drawEllipse({
           x: width / 2,
           y: height / 2,
-          xScale: width / 2 - KAPPA,
-          yScale: height / 2 - KAPPA,
+          xScale: scale,
+          yScale: scale,
           color: rgb(0.8, 0.8, 0.8),
           borderColor: rgb(0, 0, 0),
           borderWidth: 1,
