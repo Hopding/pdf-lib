@@ -569,10 +569,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@pdf-lib/fontkit@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@pdf-lib/fontkit/-/fontkit-0.0.4.tgz#90dffd52b0c2cdb7e84e866fc2b8e43bb7303773"
-  integrity sha512-MfwaMqLKRuXXOuTisAUiie+cBH/Wo50SPBDQB5tmVqEHpJGkyh7eYi/xPgFugtPHEeWP6INUk5t9L7IAbV7jmw==
+"@pdf-lib/fontkit@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@pdf-lib/fontkit/-/fontkit-1.0.0.tgz#26249d7ba865714625bafeecb5677796037e8051"
+  integrity sha512-C1Hn6wqRMAXZMW5vTa/oCvcTPq0FQsqKKP2mzzzMxUcx0BWZuJKeH4ZRS320y0LKvRBEs1ntFG2txstSsMGr2g==
   dependencies:
     pako "^1.0.6"
 
