@@ -560,6 +560,8 @@ const pdfBytes = await pdfDoc.save()
 
 `pdf-lib` fully supports the exciting new [Deno](https://deno.land/) runtime! All of the [usage examples](#usage-examples) work in Deno. The only thing you need to do is change the imports for `pdf-lib` and `@pdf-lib/fontkit` to use the [Pika](https://www.pika.dev/) CDN, because Deno requires all modules to be referenced via URLs.
 
+> **See also [How to Create and Modify PDF Files in Deno With pdf-lib](https://medium.com/@andrew.dillon.j/how-to-create-and-modify-pdf-files-in-deno-ffaad7099b0)**
+
 ### Creating a Document with Deno
 
 Below is the [**create document**](#create-document) example modified for Deno:
