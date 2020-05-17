@@ -1,5 +1,9 @@
-import { Assets } from '..';
-import { PDFDocument, StandardFonts, PDFFont } from '../../..';
+import { Assets } from '../index.ts';
+import {
+  PDFDocument,
+  StandardFonts,
+  PDFFont,
+} from '../../../dist/pdf-lib.esm.js';
 
 // prettier-ignore
 const winAnsiCodePoints = [
