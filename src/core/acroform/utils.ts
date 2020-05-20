@@ -3,18 +3,46 @@ import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFArray from 'src/core/objects/PDFArray';
-import {
-  PDFAcroField,
-  PDFAcroTerminal,
-  PDFAcroNonTerminal,
-  PDFAcroButton,
-  PDFAcroSignature,
-  PDFAcroChoice,
-  PDFAcroText,
-  PDFAcroPushButton,
-  PDFAcroRadioButton,
-  PDFAcroCheckBox,
-} from 'src/core/acroform';
+
+import PDFAcroField from 'src/core/acroform/PDFAcroField';
+import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
+import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
+import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
+import PDFAcroSignature from 'src/core/acroform/PDFAcroSignature';
+import PDFAcroChoice from 'src/core/acroform/PDFAcroChoice';
+import PDFAcroText from 'src/core/acroform/PDFAcroText';
+import PDFAcroPushButton from 'src/core/acroform/PDFAcroPushButton';
+import PDFAcroRadioButton from 'src/core/acroform/PDFAcroRadioButton';
+import PDFAcroCheckBox from 'src/core/acroform/PDFAcroCheckBox';
+import PDFAcroComboBox from 'src/core/acroform/PDFAcroComboBox';
+import PDFAcroListBox from 'src/core/acroform/PDFAcroListBox';
+// import {
+//   ,
+//   ,
+//   ,
+//   ,
+//   ,
+//   ,
+//   ,
+//   ,
+//   ,
+//   ,
+//   ,
+//   ,
+// } from 'src/core/acroform';
+
+export const createPDFAcroFields = (kidDicts?: PDFArray): PDFAcroField[] => {
+  if (!kidDicts) return [];
+
+  const kids: PDFAcroField[] = [];
+  for (let idx = 0, len = kidDicts.size(); idx < len; idx++) {
+    const dict = kidDicts.lookup(idx);
+    // if (dict instanceof PDFDict) kids.push(PDFAcroField.fromDict(dict));
+    if (dict instanceof PDFDict) kids.push(createPDFAcroField(dict));
+  }
+
+  return kids;
+};
 
 export const createPDFAcroField = (dict: PDFDict): PDFAcroField => {
   const isNonTerminal = isNonTerminalAcroField(dict);
@@ -57,8 +85,8 @@ const createPDFAcroTerminal = (dict: PDFDict): PDFAcroTerminal => {
   const fieldType = dict.context.lookup(ftNameOrRef, PDFName);
 
   if (fieldType === PDFName.of('Btn')) return createPDFAcroButton(dict);
+  if (fieldType === PDFName.of('Ch')) return createPDFAcroChoice(dict);
   if (fieldType === PDFName.of('Tx')) return PDFAcroText.fromDict(dict);
-  if (fieldType === PDFName.of('Ch')) return PDFAcroChoice.fromDict(dict);
   if (fieldType === PDFName.of('Sig')) return PDFAcroSignature.fromDict(dict);
 
   // We should never reach this line. But there are a lot of weird PDFs out
@@ -85,6 +113,22 @@ const createPDFAcroButton = (dict: PDFDict): PDFAcroButton => {
     return PDFAcroRadioButton.fromDict(dict);
   } else {
     return PDFAcroCheckBox.fromDict(dict);
+  }
+};
+
+enum AcroChoiceFlags {
+  Combo = 18 - 1,
+}
+
+const createPDFAcroChoice = (dict: PDFDict): PDFAcroChoice => {
+  const ffNumberOrRef = getInheritableAttribute(dict, PDFName.of('Ff'));
+  const ffNumber = dict.context.lookupMaybe(ffNumberOrRef, PDFNumber);
+  const flags = ffNumber?.asNumber() ?? 0;
+
+  if (flagIsSet(flags, AcroChoiceFlags.Combo)) {
+    return PDFAcroComboBox.fromDict(dict);
+  } else {
+    return PDFAcroListBox.fromDict(dict);
   }
 };
 

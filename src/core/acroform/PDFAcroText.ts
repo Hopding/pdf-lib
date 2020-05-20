@@ -1,5 +1,9 @@
 import PDFDict from 'src/core/objects/PDFDict';
-import { PDFAcroTerminal } from 'src/core/acroform';
+import PDFNumber from 'src/core/objects/PDFNumber';
+import PDFString from 'src/core/objects/PDFString';
+import PDFHexString from 'src/core/objects/PDFHexString';
+import PDFName from 'src/core/objects/PDFName';
+import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
 import {
   PDFFont,
   grayscale,
@@ -10,10 +14,6 @@ import {
   drawLinesOfText,
 } from 'src/api';
 import { breakTextIntoLines } from 'src/utils';
-import PDFNumber from '../objects/PDFNumber';
-import PDFString from '../objects/PDFString';
-import PDFHexString from '../objects/PDFHexString';
-import PDFName from '../objects/PDFName';
 
 enum AcroTextFlags {
   Multiline = 13 - 1,

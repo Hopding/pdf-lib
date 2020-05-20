@@ -1,9 +1,10 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import { PDFAcroTerminal } from 'src/core/acroform';
-import PDFString from '../objects/PDFString';
-import PDFHexString from '../objects/PDFHexString';
-import PDFArray from '../objects/PDFArray';
-import PDFName from '../objects/PDFName';
+// import PDFDict from 'src/core/objects/PDFDict';
+import PDFString from 'src/core/objects/PDFString';
+import PDFHexString from 'src/core/objects/PDFHexString';
+import PDFArray from 'src/core/objects/PDFArray';
+import PDFName from 'src/core/objects/PDFName';
+
+import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
 
 // TODO: Handle setting stuff with Opts instead of Values
 
@@ -17,7 +18,7 @@ import PDFName from '../objects/PDFName';
 // TODO: Create factory function to avoid intermediate objects and circular
 //       dependencies if possible
 class PDFAcroButton extends PDFAcroTerminal {
-  static fromDict = (dict: PDFDict) => new PDFAcroButton(dict);
+  // static fromDict = (dict: PDFDict) => new PDFAcroButton(dict);
 
   // isPushButton(): boolean {
   //   return this.hasFlag(AcroButtonFlags.PushButton);

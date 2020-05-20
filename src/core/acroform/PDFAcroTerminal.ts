@@ -1,26 +1,17 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
-import {
-  PDFAcroField,
-  PDFAcroButton,
-  PDFAcroText,
-  PDFAcroChoice,
-  PDFAcroSignature,
-} from 'src/core/acroform';
+import PDFAcroField from 'src/core/acroform/PDFAcroField';
+// import {
+//   PDFAcroField,
+//   PDFAcroButton,
+//   PDFAcroText,
+//   PDFAcroChoice,
+//   PDFAcroSignature,
+// } from 'src/core/acroform';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 
 class PDFAcroTerminal extends PDFAcroField {
-  static fromDict = (dict: PDFDict): PDFAcroTerminal => {
-    const field = new PDFAcroTerminal(dict);
-    const fieldType = field.FT();
-
-    if (fieldType === PDFName.of('Btn')) return PDFAcroButton.fromDict(dict);
-    if (fieldType === PDFName.of('Tx')) return PDFAcroText.fromDict(dict);
-    if (fieldType === PDFName.of('Ch')) return PDFAcroChoice.fromDict(dict);
-    if (fieldType === PDFName.of('Sig')) return PDFAcroSignature.fromDict(dict);
-
-    return field;
-  };
+  static fromDict = (dict: PDFDict) => new PDFAcroTerminal(dict);
 
   FT(): PDFName {
     const nameOrRef = this.getInheritableAttribute(PDFName.of('FT'));

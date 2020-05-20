@@ -1,7 +1,7 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import { rgb, drawEllipse } from 'src/api';
-import { PDFAcroButton } from 'src/core/acroform';
+import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
 
 class PDFAcroRadioButton extends PDFAcroButton {
   static fromDict = (dict: PDFDict) => new PDFAcroRadioButton(dict);

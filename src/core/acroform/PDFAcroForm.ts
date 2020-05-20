@@ -1,8 +1,9 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
-import { PDFAcroField } from 'src/core/acroform';
-import PDFAcroNonTerminal from './PDFAcroNonTerminal';
+import PDFAcroField from 'src/core/acroform/PDFAcroField';
+import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
+import { createPDFAcroField, createPDFAcroFields } from './utils';
 
 class PDFAcroForm {
   readonly dict: PDFDict;
@@ -23,7 +24,8 @@ class PDFAcroForm {
     const fields = new Array(fieldDicts.size());
     for (let idx = 0, len = fieldDicts.size(); idx < len; idx++) {
       const dict = fieldDicts.lookup(idx, PDFDict);
-      fields[idx] = PDFAcroField.fromDict(dict);
+      // fields[idx] = PDFAcroField.fromDict(dict);
+      fields[idx] = createPDFAcroField(dict);
     }
 
     return fields;
@@ -37,7 +39,10 @@ class PDFAcroForm {
       for (let idx = 0, len = fields.length; idx < len; idx++) {
         const field = fields[idx];
         allFields.push(field);
-        if (field instanceof PDFAcroNonTerminal) pushFields(field.getKids());
+        // if (field instanceof PDFAcroNonTerminal) pushFields(field.getKids());
+        if (field instanceof PDFAcroNonTerminal) {
+          pushFields(createPDFAcroFields(field.Kids()));
+        }
       }
     };
 

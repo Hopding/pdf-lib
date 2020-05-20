@@ -1,6 +1,7 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
-import { PDFAcroButton } from 'src/core/acroform';
+import PDFContentStream from 'src/core/structures/PDFContentStream';
+import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
 import {
   drawRectangle,
   stroke,
@@ -14,7 +15,6 @@ import {
   popGraphicsState,
   translate,
 } from 'src/api';
-import PDFContentStream from '../structures/PDFContentStream';
 
 class PDFAcroCheckBox extends PDFAcroButton {
   static fromDict = (dict: PDFDict) => new PDFAcroCheckBox(dict);

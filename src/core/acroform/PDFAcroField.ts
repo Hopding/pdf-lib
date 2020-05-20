@@ -5,13 +5,13 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFArray from 'src/core/objects/PDFArray';
-import { PDFAcroNonTerminal } from 'src/core/acroform';
-import { createPDFAcroField } from './utils';
+// import { createPDFAcroField } from './utils';
+// import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
 
 class PDFAcroField {
   readonly dict: PDFDict;
 
-  static fromDict = (dict: PDFDict): PDFAcroField => createPDFAcroField(dict);
+  static fromDict = (dict: PDFDict) => new PDFAcroField(dict);
 
   protected constructor(dict: PDFDict) {
     this.dict = dict;
@@ -39,10 +39,11 @@ class PDFAcroField {
     return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
   }
 
-  getParent(): PDFAcroNonTerminal | undefined {
+  getParent(): PDFAcroField | undefined {
     const parent = this.Parent();
     if (!parent) return undefined;
-    return PDFAcroNonTerminal.fromDict(parent);
+    return PDFAcroField.fromDict(parent);
+    // return createPDFAcroField(parent);
   }
 
   getFullyQualifiedName(): string | undefined {

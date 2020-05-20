@@ -1,5 +1,5 @@
 import PDFDict from 'src/core/objects/PDFDict';
-import { PDFAcroButton } from 'src/core/acroform';
+import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
 import {
   drawRectangle,
   rgb,
@@ -9,7 +9,7 @@ import {
   PDFFont,
   drawText,
 } from 'src/api';
-import PDFNumber from '../objects/PDFNumber';
+import PDFNumber from 'src/core/objects/PDFNumber';
 // import PDFOperator from 'src/core/operators/PDFOperator';
 // import Ops from 'src/core/operators/PDFOperatorNames';
 
