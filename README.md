@@ -378,7 +378,7 @@ const fileName = "fileName.pdf"
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
 
-// Embed the American flag PDF bytes
+// Attach the external file to the new PDFDocument
 await pdfDoc.attach(fileAttachment, fileName)
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
