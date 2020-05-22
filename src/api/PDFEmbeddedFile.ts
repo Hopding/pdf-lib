@@ -7,8 +7,10 @@ export default class PDFEmbeddedFile implements Embeddable {
   static of = (doc: PDFDocument, embedder: PDFAttachmentEmbedder) =>
     new PDFEmbeddedFile(doc, embedder);
 
-  private alreadyEmbedded = false;
+  /** The document to which this embedded page belongs. */
   readonly doc: PDFDocument;
+
+  private alreadyEmbedded = false;
   private readonly embedder: PDFAttachmentEmbedder;
 
   private constructor(doc: PDFDocument, embedder: PDFAttachmentEmbedder) {
@@ -19,9 +21,9 @@ export default class PDFEmbeddedFile implements Embeddable {
   /**
    * > **NOTE:** You probably don't need to call this method directly. The
    * > [[PDFDocument.save]] and [[PDFDocument.saveAsBase64]] methods will
-   * > automatically ensure all embeddable pages get embedded.
+   * > automatically ensure all embeddable files get embedded.
    *
-   * Embed this embeddable page in its document.
+   * Embed this embeddable file in its document.
    *
    * @returns Resolves when the embedding is complete.
    */
