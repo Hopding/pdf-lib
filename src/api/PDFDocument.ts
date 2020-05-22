@@ -1,5 +1,4 @@
 import Embeddable from 'src/api/Embeddable';
-import MimeTypes from 'mime-types';
 import {
   EncryptedPDFError,
   FontkitNotRegisteredError,
@@ -18,7 +17,6 @@ import {
   JpegEmbedder,
   PageBoundingBox,
   PageEmbeddingMismatchedContextError,
-  PDFArray,
   PDFCatalog,
   PDFContext,
   PDFDict,
@@ -29,7 +27,6 @@ import {
   PDFPageLeaf,
   PDFPageTree,
   PDFParser,
-  PDFRef,
   PDFStreamWriter,
   PDFString,
   PDFWriter,
@@ -39,6 +36,7 @@ import {
 } from 'src/core';
 import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
+import Mime from 'mime-types';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
   assertIs,
@@ -51,6 +49,8 @@ import {
   range,
   toUint8Array,
 } from 'src/utils';
+import PDFAttachmentEmbedder from 'src/core/embedders/PDFAttachmentEmbedder';
+import PDFEmbeddedFile from './PDFEmbeddedFile';
 
 export enum ParseSpeeds {
   Fastest = Infinity,
@@ -203,6 +203,7 @@ export default class PDFDocument {
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
   private readonly embeddedPages: PDFEmbeddedPage[];
+  private readonly embeddedFiles: PDFEmbeddedFile[];
 
   private constructor(
     context: PDFContext,
@@ -221,6 +222,7 @@ export default class PDFDocument {
     this.fonts = [];
     this.images = [];
     this.embeddedPages = [];
+    this.embeddedFiles = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
@@ -703,67 +705,18 @@ export default class PDFDocument {
    * @param file The input data containing the file to be attached.
    * @param fileName Name of file to be attached.
    */
-  attach(file: string | Uint8Array | ArrayBuffer, fileName: string) {
+  attach(file: string | Uint8Array | ArrayBuffer, fileName: string): void {
     assertIs(file, 'file', ['string', Uint8Array, ArrayBuffer]);
     assertIs(fileName, 'fileName', ['string']);
-    const fileSpecRef = this.createEmbeddedFile(file, fileName);
-    this.embedFile(fileSpecRef, fileName);
-  }
-
-  /**
-   * Creates an embeddable file and returns the corresponding [[PDFRef]].
-   * @param file The input data containing the file to be embedded.
-   * @param fileName Name of file to be embedded.
-   * @returns [[PDFRef]] of embeddable file.
-   */
-  private createEmbeddedFile(
-    file: string | Uint8Array | ArrayBuffer,
-    fileName: string,
-  ): PDFRef {
+    const mimeType = Mime.lookup(fileName);
+    if (mimeType === false) {
+      assertIs(mimeType, 'mimeType', ['string']);
+      return;
+    }
     const bytes = toUint8Array(file);
-    const mime = MimeTypes.lookup(fileName);
-    if (mime === false) {
-      throw new TypeError('`input` must be a recognizable Mime-Type');
-    }
-    const embeddedFileStream = this.context.flateStream(bytes, {
-      Type: 'EmbeddedFile',
-      Subtype: PDFName.of(mime),
-    });
-
-    const embeddedFileStreamRef = this.context.register(embeddedFileStream);
-
-    const fileSpecDict = this.context.obj({
-      Type: 'Filespec',
-      F: PDFString.of(fileName),
-      UF: PDFHexString.fromText(fileName),
-      EF: { F: embeddedFileStreamRef },
-    });
-    return this.context.register(fileSpecDict);
-  }
-
-  /**
-   * Embeds a file into an existing [[PDFDocument]].
-   * @param fileSpecRef [[PDFRef]] of embeddable file.
-   * @param fileName Name of file to be embedded.
-   */
-  private embedFile(fileSpecRef: PDFRef, fileName: string) {
-    if (!this.catalog.has(PDFName.of('Names'))) {
-      this.catalog.set(PDFName.of('Names'), this.context.obj({}));
-    }
-    const Names = this.catalog.lookup(PDFName.of('Names'), PDFDict);
-
-    if (!Names.has(PDFName.of('EmbeddedFiles'))) {
-      Names.set(PDFName.of('EmbeddedFiles'), this.context.obj({}));
-    }
-    const EmbeddedFiles = Names.lookup(PDFName.of('EmbeddedFiles'), PDFDict);
-
-    if (!EmbeddedFiles.has(PDFName.of('Names'))) {
-      EmbeddedFiles.set(PDFName.of('Names'), this.context.obj([]));
-    }
-    const EFNames = EmbeddedFiles.lookup(PDFName.of('Names'), PDFArray);
-
-    EFNames.push(PDFHexString.fromText(fileName));
-    EFNames.push(fileSpecRef);
+    const embedder = PDFAttachmentEmbedder.for(bytes, fileName, mimeType);
+    const pdfEmbeddedFile = PDFEmbeddedFile.of(this, embedder);
+    this.embeddedFiles.push(pdfEmbeddedFile);
   }
 
   /**
@@ -1104,6 +1057,7 @@ export default class PDFDocument {
     await this.embedAll(this.fonts);
     await this.embedAll(this.images);
     await this.embedAll(this.embeddedPages);
+    await this.embedAll(this.embeddedFiles);
   }
 
   /**
