@@ -1,4 +1,5 @@
 import Embeddable from 'src/api/Embeddable';
+import MimeTypes from 'mime-types';
 import {
   EncryptedPDFError,
   FontkitNotRegisteredError,
@@ -17,6 +18,7 @@ import {
   JpegEmbedder,
   PageBoundingBox,
   PageEmbeddingMismatchedContextError,
+  PDFArray,
   PDFCatalog,
   PDFContext,
   PDFDict,
@@ -27,6 +29,7 @@ import {
   PDFPageLeaf,
   PDFPageTree,
   PDFParser,
+  PDFRef,
   PDFStreamWriter,
   PDFString,
   PDFWriter,
@@ -693,6 +696,74 @@ export default class PDFDocument {
       copiedPages[idx] = PDFPage.of(copiedPage, ref, this);
     }
     return copiedPages;
+  }
+
+  /**
+   * Attaches a file to a [[PDFDocument]] instance.
+   * @param file The input data containing the file to be attached.
+   * @param fileName Name of file to be attached.
+   */
+  attach(file: string | Uint8Array | ArrayBuffer, fileName: string) {
+    assertIs(file, 'file', ['string', Uint8Array, ArrayBuffer]);
+    assertIs(fileName, 'fileName', ['string']);
+    const fileSpecRef = this.createEmbeddedFile(file, fileName);
+    this.embedFile(fileSpecRef, fileName);
+  }
+
+  /**
+   * Creates an embeddable file and returns the corresponding [[PDFRef]].
+   * @param file The input data containing the file to be embedded.
+   * @param fileName Name of file to be embedded.
+   * @returns [[PDFRef]] of embeddable file.
+   */
+  private createEmbeddedFile(
+    file: string | Uint8Array | ArrayBuffer,
+    fileName: string,
+  ): PDFRef {
+    const bytes = toUint8Array(file);
+    const mime = MimeTypes.lookup(fileName);
+    if (mime === false) {
+      throw new TypeError('`input` must be a recognizable Mime-Type');
+    }
+    const embeddedFileStream = this.context.flateStream(bytes, {
+      Type: 'EmbeddedFile',
+      Subtype: PDFName.of(mime),
+    });
+
+    const embeddedFileStreamRef = this.context.register(embeddedFileStream);
+
+    const fileSpecDict = this.context.obj({
+      Type: 'Filespec',
+      F: PDFString.of(fileName),
+      UF: PDFHexString.fromText(fileName),
+      EF: { F: embeddedFileStreamRef },
+    });
+    return this.context.register(fileSpecDict);
+  }
+
+  /**
+   * Embeds a file into an existing [[PDFDocument]].
+   * @param fileSpecRef [[PDFRef]] of embeddable file.
+   * @param fileName Name of file to be embedded.
+   */
+  private embedFile(fileSpecRef: PDFRef, fileName: string) {
+    if (!this.catalog.has(PDFName.of('Names'))) {
+      this.catalog.set(PDFName.of('Names'), this.context.obj({}));
+    }
+    const Names = this.catalog.lookup(PDFName.of('Names'), PDFDict);
+
+    if (!Names.has(PDFName.of('EmbeddedFiles'))) {
+      Names.set(PDFName.of('EmbeddedFiles'), this.context.obj({}));
+    }
+    const EmbeddedFiles = Names.lookup(PDFName.of('EmbeddedFiles'), PDFDict);
+
+    if (!EmbeddedFiles.has(PDFName.of('Names'))) {
+      EmbeddedFiles.set(PDFName.of('Names'), this.context.obj([]));
+    }
+    const EFNames = EmbeddedFiles.lookup(PDFName.of('Names'), PDFArray);
+
+    EFNames.push(PDFHexString.fromText(fileName));
+    EFNames.push(fileSpecRef);
   }
 
   /**
