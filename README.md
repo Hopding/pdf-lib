@@ -51,6 +51,7 @@
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
+  - [Attach External Files](#attach-external-files)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
@@ -348,6 +349,37 @@ page.drawPage(preamble, {
   x: page.getWidth() / 2 - preambleDims.width / 2,
   y: page.getHeight() / 2 - preambleDims.height / 2 - 50,
 })
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Attach External Files
+
+_This example produces [this PDF](assets/pdfs/examples/file_with_attachment.pdf)_ (when [this PDF](assets/pdfs/normal.pdf) is used for the `fileAttachment` variable).
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, rgb } from 'pdf-lib'
+
+// These should be Uint8Arrays or ArrayBuffers
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const fileAttachment = ...
+
+const fileName = "fileName.pdf"
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Embed the American flag PDF bytes
+await pdfDoc.attach(fileAttachment, fileName)
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
