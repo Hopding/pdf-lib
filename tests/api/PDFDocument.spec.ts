@@ -187,14 +187,16 @@ describe(`PDFDocument`, () => {
       expect(() => {
         pdfDoc.attach(normalPdfBytes, 'file');
       }).toThrowError(
-        new TypeError('`input` must be a recognizable Mime-Type'),
+        new TypeError(
+          '`mimeType` must be of type `string`, but was actually of type `boolean`',
+        ),
       );
     });
 
     it('throws an error when file is not convertable to UInt8Array', async () => {
       const pdfDoc = await PDFDocument.create();
       expect(() => {
-        //@ts-ignore Checking TypeError in toUInt8Array fn
+        // @ts-ignore Checking TypeError in toUInt8Array fn
         pdfDoc.attach(null, 'file.pdf');
       }).toThrowError(
         new TypeError(
