@@ -1,12 +1,13 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
 
-import { PDFDocument, PDFName, StandardFonts } from 'src/index';
+import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 import {
   PDFAcroRadioButton,
   PDFAcroCheckBox,
   PDFAcroPushButton,
   PDFAcroText,
+  PDFAcroChoice,
 } from 'src/core/acroform';
 
 (() => [fs, openPdf, Reader])();
@@ -44,8 +45,15 @@ import {
     }
 
     if (field instanceof PDFAcroText) {
-      // field.setValue('Foobar');
       field.setValue('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+    }
+
+    if (field instanceof PDFAcroChoice) {
+      field.setOptions([
+        { value: PDFHexString.fromText('foo') },
+        { value: PDFHexString.fromText('bar') },
+      ]);
+      field.setValues([field.getOptions()[1].value]);
     }
 
     const fieldType = field.constructor.name;
@@ -73,26 +81,27 @@ import {
   (() => [helveticaFont])();
 
   fields?.forEach((field) => {
+    if (field instanceof PDFAcroChoice) {
+      // field.updateAppearances(helveticaFont);
+      const widgets = field.getWidgets();
+      widgets.forEach((_widget) => {
+        _widget.dict.delete(PDFName.of('AP'));
+      });
+    }
     if (field instanceof PDFAcroText) {
       console.log(`${field.getFullyQualifiedName()} isComb: ${field.isComb()}`);
       field.updateAppearances(helveticaFont);
       const widgets = field.getWidgets();
       widgets.forEach((_widget) => {
-        // console.log('BEFORE:', String(widget.dict));
-        // widget.dict.delete(PDFName.of('AP'));
-        // console.log('AFTER:', String(widget.dict));
+        // console.log(String(widget.dict));
       });
-      // console.log();
     }
     if (field instanceof PDFAcroPushButton) {
       field.updateAppearances(helveticaFont);
       const widgets = field.getWidgets();
       widgets.forEach((_widget) => {
-        // console.log('BEFORE:', String(widget.dict));
-        // widget.dict.delete(PDFName.of('AP'));
-        // console.log('AFTER:', String(widget.dict));
+        // console.log(String(widget.dict));
       });
-      // console.log();
     }
     if (field instanceof PDFAcroCheckBox) {
       field.updateAppearances();

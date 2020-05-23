@@ -12,24 +12,43 @@ enum AcroChoiceFlags {
 class PDFAcroChoice extends PDFAcroTerminal {
   // static fromDict = (dict: PDFDict) => new PDFAcroChoice(dict);
 
-  setValue(value: PDFString | PDFHexString) {
-    this.dict.set(PDFName.of('V'), value);
-  }
-
   setValues(values: (PDFString | PDFHexString)[]) {
-    // TODO: Assert all are valid options
+    if (!this.valuesAreValid(values)) throw new Error('TODO: FIX ME! INVALID');
+
     if (values.length === 0) {
       this.dict.delete(PDFName.of('V'));
-      this.dict.delete(PDFName.of('I'));
     }
     if (values.length === 1) {
       this.dict.set(PDFName.of('V'), values[0]);
-      this.dict.delete(PDFName.of('I'));
     }
     if (values.length > 1) {
       if (!this.isMultiSelect()) throw new Error('TODO: FIX ME!');
       this.dict.set(PDFName.of('V'), this.dict.context.obj(values));
-      // TODO: Update /I entry
+    }
+
+    this.updateSelectedIndices(values);
+  }
+
+  valuesAreValid(values: (PDFString | PDFHexString)[]): boolean {
+    const options = this.getOptions();
+    for (let idx = 0, len = values.length; idx < len; idx++) {
+      const val = values[idx].decodeText();
+      if (!options.find((o) => val === o.value.decodeText())) return false;
+    }
+    return true;
+  }
+
+  updateSelectedIndices(values: (PDFString | PDFHexString)[]) {
+    if (values.length > 1) {
+      const indices = new Array<number>(values.length);
+      const options = this.getOptions();
+      for (let idx = 0, len = values.length; idx < len; idx++) {
+        const val = values[idx].decodeText();
+        indices[idx] = options.findIndex((o) => val === o.value.decodeText());
+      }
+      this.dict.set(PDFName.of('I'), this.dict.context.obj(indices.sort()));
+    } else {
+      this.dict.delete(PDFName.of('I'));
     }
   }
 
@@ -49,6 +68,72 @@ class PDFAcroChoice extends PDFAcroTerminal {
       }
 
       return values;
+    }
+
+    return [];
+  }
+
+  Opt(): PDFArray | PDFString | PDFHexString | undefined {
+    return this.dict.lookupMaybe(
+      PDFName.of('Opt'),
+      PDFString,
+      PDFHexString,
+      PDFArray,
+    );
+  }
+
+  setOptions(
+    options: {
+      value: PDFString | PDFHexString;
+      display?: PDFString | PDFHexString;
+    }[],
+  ) {
+    const newOpt = new Array<PDFArray>(options.length);
+    for (let idx = 0, len = options.length; idx < len; idx++) {
+      const { value, display } = options[idx];
+      newOpt[idx] = this.dict.context.obj([value, value || display]);
+    }
+    this.dict.set(PDFName.of('Opt'), this.dict.context.obj(newOpt));
+  }
+
+  getOptions(): {
+    value: PDFString | PDFHexString;
+    display: PDFString | PDFHexString;
+  }[] {
+    const Opt = this.Opt();
+
+    // Not supposed to happen - Opt _should_ always be `PDFArray | undefined`
+    if (Opt instanceof PDFString || Opt instanceof PDFHexString) {
+      return [{ value: Opt, display: Opt }];
+    }
+
+    if (Opt instanceof PDFArray) {
+      const res: {
+        value: PDFString | PDFHexString;
+        display: PDFString | PDFHexString;
+      }[] = [];
+
+      for (let idx = 0, len = Opt.size(); idx < len; idx++) {
+        const item = Opt.lookup(idx);
+
+        // If `item` is a string, use that as both the export and text value
+        if (item instanceof PDFString || item instanceof PDFHexString) {
+          res.push({ value: item, display: item });
+        }
+
+        // If `item` is an array of one, treat it the same as just a string,
+        // if it's an array of two then `item[0]` is the export value and
+        // `item[1]` is the text value
+        if (item instanceof PDFArray) {
+          if (item.size() > 0) {
+            const first = item.lookup(0, PDFString, PDFHexString);
+            const second = item.lookupMaybe(1, PDFString, PDFHexString);
+            res.push({ value: first, display: second || first });
+          }
+        }
+      }
+
+      return res;
     }
 
     return [];
