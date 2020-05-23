@@ -41,20 +41,20 @@ class PDFAcroButton extends PDFAcroTerminal {
     );
   }
 
-  getExportValues(): string[] | undefined {
+  getExportValues(): (PDFString | PDFHexString)[] | undefined {
     const opt = this.Opt();
 
     if (!opt) return undefined;
 
     if (opt instanceof PDFString || opt instanceof PDFHexString) {
-      return [opt.decodeText()];
+      return [opt];
     }
 
-    const values: string[] = [];
+    const values: (PDFString | PDFHexString)[] = [];
     for (let idx = 0, len = opt.size(); idx < len; idx++) {
       const value = opt.lookup(idx);
       if (value instanceof PDFString || value instanceof PDFHexString) {
-        values.push(value.decodeText());
+        values.push(value);
       }
     }
 

@@ -1,7 +1,6 @@
 import PDFDocument from 'src/api/PDFDocument';
 import {
   PDFAcroForm,
-  PDFAcroButton,
   PDFAcroField,
   PDFAcroCheckBox,
   PDFAcroComboBox,
@@ -9,6 +8,7 @@ import {
   PDFAcroRadioButton,
   PDFAcroSignature,
   PDFAcroText,
+  PDFAcroPushButton,
 } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
@@ -25,7 +25,7 @@ const convertToPDFField = (
   field: PDFAcroField,
   doc: PDFDocument,
 ): PDFField | undefined => {
-  if (field instanceof PDFAcroButton) return PDFButton.of(field, doc);
+  if (field instanceof PDFAcroPushButton) return PDFButton.of(field, doc);
   if (field instanceof PDFAcroCheckBox) return PDFCheckBox.of(field, doc);
   if (field instanceof PDFAcroComboBox) return PDFDropdown.of(field, doc);
   if (field instanceof PDFAcroListBox) return PDFOptionList.of(field, doc);

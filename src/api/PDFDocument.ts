@@ -11,6 +11,7 @@ import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
 import { PageSizes } from 'src/api/sizes';
 import { StandardFonts } from 'src/api/StandardFonts';
+import { PDFForm } from 'src/api/form';
 import {
   CustomFontEmbedder,
   CustomFontSubsetEmbedder,
@@ -232,6 +233,13 @@ export default class PDFDocument {
    */
   registerFontkit(fontkit: Fontkit): void {
     this.fontkit = fontkit;
+  }
+
+  // TODO: Document and insert default form to remove `| undefined`!
+  getForm(): PDFForm | undefined {
+    const acroForm = this.catalog.getAcroForm();
+    if (!acroForm) return undefined;
+    return PDFForm.of(acroForm, this);
   }
 
   /**
