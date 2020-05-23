@@ -154,6 +154,26 @@ import { PDFDocument } from 'src/index';
   console.log('rg2.getSelected():', rg2.getSelected());
   console.log('rg2.getOptions():', rg2.getOptions());
 
+  const cb1 = form.getCheckBox('Check Box 1');
+  cb1.check();
+  console.log('cb1.isChecked():', cb1.isChecked());
+
+  const cb2 = form.getCheckBox('Check Box 2');
+  cb2.check();
+  console.log('cb2.isChecked():', cb1.isChecked());
+
+  const cb5 = form.getCheckBox('Check Box5');
+  cb5.check();
+  console.log('cb5.isChecked():', cb1.isChecked());
+
+  const cb6 = form.getCheckBox('Check Box6');
+  cb6.check();
+  console.log('cb6.isChecked():', cb1.isChecked());
+
+  const cb7 = form.getCheckBox('Check Box7');
+  cb7.check();
+  console.log('cb7.isChecked():', cb1.isChecked());
+
   fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
   openPdf('out.pdf', Reader.Preview);
 })();
