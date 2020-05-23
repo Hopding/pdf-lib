@@ -3,7 +3,10 @@ import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
 import PDFAcroField from 'src/core/acroform/PDFAcroField';
 import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
-import { createPDFAcroField, createPDFAcroFields } from './utils';
+import {
+  createPDFAcroField,
+  createPDFAcroFields,
+} from 'src/core/acroform/utils';
 
 class PDFAcroForm {
   readonly dict: PDFDict;
