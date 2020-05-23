@@ -144,6 +144,8 @@ import { PDFDocument } from 'src/index';
     fields.map((f) => [f.getName(), f.constructor.name]),
   );
 
+  // === Radio Groups ===
+
   const rg1 = form.getRadioGroup('Group1');
   rg1.select('Choice2 - 🦄');
   console.log('rg1.getSelected():', rg1.getSelected());
@@ -153,6 +155,8 @@ import { PDFDocument } from 'src/index';
   rg2.select('Choice3');
   console.log('rg2.getSelected():', rg2.getSelected());
   console.log('rg2.getOptions():', rg2.getOptions());
+
+  // === Check Boxes ===
 
   const cb1 = form.getCheckBox('Check Box 1');
   cb1.check();
@@ -173,6 +177,20 @@ import { PDFDocument } from 'src/index';
   const cb7 = form.getCheckBox('Check Box7');
   cb7.check();
   console.log('cb7.isChecked():', cb1.isChecked());
+
+  // === Dropdowns ===
+
+  const dd1 = form.getDropdown('Dropdown1');
+  dd1.select('Item1');
+  console.log('dd1.getSelectedIndices():', dd1.getSelectedIndices());
+  console.log('dd1.getSelected():', dd1.getSelected());
+  console.log('dd1.getOptions():', dd1.getOptions());
+
+  const dd4 = form.getDropdown('Dropdown4');
+  dd4.select(['ExportItem1', 'ExportItem2']);
+  console.log('dd4.getSelectedIndices():', dd4.getSelectedIndices());
+  console.log('dd4.getSelected():', dd4.getSelected());
+  console.log('dd4.getOptions():', dd4.getOptions());
 
   fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
   openPdf('out.pdf', Reader.Preview);

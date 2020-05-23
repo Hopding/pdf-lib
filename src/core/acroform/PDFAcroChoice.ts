@@ -12,6 +12,7 @@ enum AcroChoiceFlags {
 class PDFAcroChoice extends PDFAcroTerminal {
   // static fromDict = (dict: PDFDict) => new PDFAcroChoice(dict);
 
+  // TODO: Remove duplicates
   setValues(values: (PDFString | PDFHexString)[]) {
     if (!this.valuesAreValid(values)) throw new Error('TODO: FIX ME! INVALID');
 
@@ -141,6 +142,11 @@ class PDFAcroChoice extends PDFAcroTerminal {
 
   isMultiSelect(): boolean {
     return this.hasFlag(AcroChoiceFlags.MultiSelect);
+  }
+
+  setIsMultiSelect(enable: boolean) {
+    if (enable) this.setFlag(AcroChoiceFlags.MultiSelect);
+    else this.clearFlag(AcroChoiceFlags.MultiSelect);
   }
 }
 

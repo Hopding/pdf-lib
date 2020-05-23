@@ -60,10 +60,26 @@ class PDFAcroField {
     return this.Ff()?.asNumber() ?? 0;
   }
 
+  setFlags(flags: number) {
+    this.dict.set(PDFName.of('Ff'), PDFNumber.of(flags));
+  }
+
   hasFlag(bitIndex: number): boolean {
     const flags = this.getFlags();
     const flag = 1 << bitIndex;
     return (flags & flag) !== 0;
+  }
+
+  setFlag(bitIndex: number) {
+    const flags = this.getFlags();
+    const flag = 1 << bitIndex;
+    this.setFlags(flags | flag);
+  }
+
+  clearFlag(bitIndex: number) {
+    const flags = this.getFlags();
+    const flag = 1 << bitIndex;
+    this.setFlags(flags & ~flag);
   }
 
   getInheritableAttribute(name: PDFName): PDFObject | undefined {
