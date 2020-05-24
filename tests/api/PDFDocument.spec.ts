@@ -182,22 +182,11 @@ describe(`PDFDocument`, () => {
   });
 
   describe(`attach() method`, () => {
-    it(`throws an error when mime-type is not recognizable`, async () => {
-      const pdfDoc = await PDFDocument.create();
-      expect(() => {
-        pdfDoc.attach(normalPdfBytes, 'file');
-      }).toThrowError(
-        new TypeError(
-          '`mimeType` must be of type `string`, but was actually of type `boolean`',
-        ),
-      );
-    });
-
     it('throws an error when file is not convertable to UInt8Array', async () => {
       const pdfDoc = await PDFDocument.create();
       expect(() => {
         // @ts-ignore Checking TypeError in toUInt8Array fn
-        pdfDoc.attach(null, 'file.pdf');
+        pdfDoc.attach(null, 'file.pdf', { mimeType: 'application/pdf' });
       }).toThrowError(
         new TypeError(
           '`file` must be of type `string` or `Uint8Array` or `ArrayBuffer`, but was actually of type `null`',
