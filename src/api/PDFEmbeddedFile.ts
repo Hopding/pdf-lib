@@ -1,11 +1,17 @@
 import Embeddable from 'src/api/Embeddable';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFAttachmentEmbedder from 'src/core/embedders/PDFAttachmentEmbedder';
-import { PDFName, PDFArray, PDFDict, PDFHexString } from 'src/core';
+import { PDFName, PDFArray, PDFDict, PDFHexString, PDFRef } from 'src/core';
 
 export default class PDFEmbeddedFile implements Embeddable {
-  static of = (doc: PDFDocument, embedder: PDFAttachmentEmbedder) =>
-    new PDFEmbeddedFile(doc, embedder);
+  static of = (
+    ref: PDFRef,
+    doc: PDFDocument,
+    embedder: PDFAttachmentEmbedder,
+  ) => new PDFEmbeddedFile(ref, doc, embedder);
+
+  /** The unique reference assigned to this embedded page within the document. */
+  readonly ref: PDFRef;
 
   /** The document to which this embedded page belongs. */
   readonly doc: PDFDocument;
@@ -13,7 +19,12 @@ export default class PDFEmbeddedFile implements Embeddable {
   private alreadyEmbedded = false;
   private readonly embedder: PDFAttachmentEmbedder;
 
-  private constructor(doc: PDFDocument, embedder: PDFAttachmentEmbedder) {
+  private constructor(
+    ref: PDFRef,
+    doc: PDFDocument,
+    embedder: PDFAttachmentEmbedder,
+  ) {
+    this.ref = ref;
     this.doc = doc;
     this.embedder = embedder;
   }
@@ -29,7 +40,10 @@ export default class PDFEmbeddedFile implements Embeddable {
    */
   async embed(): Promise<void> {
     if (!this.alreadyEmbedded) {
-      const ref = await this.embedder.embedIntoContext(this.doc.context);
+      const ref = await this.embedder.embedIntoContext(
+        this.doc.context,
+        this.ref,
+      );
 
       if (!this.doc.catalog.has(PDFName.of('Names'))) {
         this.doc.catalog.set(PDFName.of('Names'), this.doc.context.obj({}));

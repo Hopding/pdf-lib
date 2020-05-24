@@ -1,5 +1,6 @@
 import { PDFName, PDFString, PDFHexString, PDFContext } from 'src/core';
 import PDFNumber from '../objects/PDFNumber';
+import PDFRef from '../objects/PDFRef';
 import { AttachmentOptions } from 'src/api/PDFDocumentOptions';
 
 class PDFAttachmentEmbedder {
@@ -21,7 +22,7 @@ class PDFAttachmentEmbedder {
     this.options = options;
   }
 
-  async embedIntoContext(context: PDFContext) {
+  async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
     const embeddedFileStream = context.flateStream(this.fileData, {
       Type: 'EmbeddedFile',
       Subtype: PDFName.of(this.options.mimeType),
@@ -45,7 +46,13 @@ class PDFAttachmentEmbedder {
       EF: { F: embeddedFileStreamRef },
       Desc: PDFString.of(this.options.description ?? ''),
     });
-    return context.register(fileSpecDict);
+
+    if (ref) {
+      context.assign(ref, fileSpecDict);
+      return ref;
+    } else {
+      return context.register(fileSpecDict);
+    }
   }
 }
 
