@@ -59,6 +59,12 @@ class BaseParser {
       throw new NumberParsingError(this.bytes.position(), value);
     }
 
+    if (numberValue > Number.MAX_SAFE_INTEGER) {
+      const msg = `Parsed number that is too large for some PDF readers: ${value}, using Number.MAX_SAFE_INTEGER instead.`;
+      console.warn(msg);
+      return Number.MAX_SAFE_INTEGER;
+    }
+
     return numberValue;
   }
 
