@@ -36,7 +36,6 @@ import {
 } from 'src/core';
 import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
-import Mime from 'mime-types';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
   assertIs,
@@ -708,11 +707,7 @@ export default class PDFDocument {
   attach(file: string | Uint8Array | ArrayBuffer, fileName: string): void {
     assertIs(file, 'file', ['string', Uint8Array, ArrayBuffer]);
     assertIs(fileName, 'fileName', ['string']);
-    const mimeType = Mime.lookup(fileName);
-    if (mimeType === false) {
-      assertIs(mimeType, 'mimeType', ['string']);
-      return;
-    }
+    assertIs(options.mimeType, 'mimeType', ['string']);
     const bytes = toUint8Array(file);
     const embedder = PDFAttachmentEmbedder.for(bytes, fileName, mimeType);
     const pdfEmbeddedFile = PDFEmbeddedFile.of(this, embedder);
