@@ -51,7 +51,7 @@
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
-  - [Attach External Files](#attach-external-files)
+  - [Add Attachments](#add-attachments)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
@@ -84,6 +84,7 @@
 - Embed Fonts (supports UTF-8 and UTF-16 character sets)
 - Set document metadata
 - Read document metadata
+- Add attachments
 
 ## Motivation
 
@@ -359,7 +360,7 @@ const pdfBytes = await pdfDoc.save()
 //   • Rendered in an <iframe>
 ```
 
-### Attach External Files
+### Add Attachments
 
 _This example produces [this PDF](assets/pdfs/examples/file_with_attachment.pdf)_ (when [this PDF](assets/pdfs/normal.pdf) is used for the `fileAttachment` variable).
 
@@ -367,19 +368,17 @@ _This example produces [this PDF](assets/pdfs/examples/file_with_attachment.pdf)
 ```js
 import { PDFDocument, rgb } from 'pdf-lib'
 
-// These should be Uint8Arrays or ArrayBuffers
+// This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
 // If your running in a Node environment, you could use fs.readFile()
 // In the browser, you could make a fetch() call and use res.arrayBuffer()
-const fileAttachment = ...
-
-const fileName = "fileName.pdf"
+const attachmentBytes = ...
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
 
-// Attach the external file to the new PDFDocument
-await pdfDoc.attach(fileAttachment, fileName)
+// Add the attachment
+await pdfDoc.attach(attachmentBytes, "cool_stuff.pdf")
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
