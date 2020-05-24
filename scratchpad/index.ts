@@ -192,6 +192,24 @@ import { PDFDocument } from 'src/index';
   console.log('dd4.getSelected():', dd4.getSelected());
   console.log('dd4.getOptions():', dd4.getOptions());
 
+  // === Text Fields ===
+
+  const tf5 = form.getTextField('Text5');
+  tf5.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+  console.log('tf5.getText():', tf5.getText());
+
+  const tf6 = form.getTextField('Text6');
+  tf6.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+  console.log('tf6.getText():', tf6.getText());
+
+  const tf7 = form.getTextField('Text7');
+  tf7.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+  console.log('tf7.getText():', tf7.getText());
+
+  const tfDate = form.getTextField('Date1_af_date');
+  tfDate.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+  console.log('tfDate.getText():', tfDate.getText());
+
   fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
   openPdf('out.pdf', Reader.Preview);
 })();

@@ -4,6 +4,7 @@ import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFString from 'src/core/objects/PDFString';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
+import { AcroChoiceFlags } from 'src/core/acroform/flags';
 
 class PDFAcroChoice extends PDFAcroTerminal {
   // static fromDict = (dict: PDFDict) => new PDFAcroChoice(dict);

@@ -2,6 +2,10 @@ import PDFDocument from 'src/api/PDFDocument';
 import { PDFAcroField, AcroFieldFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
+// TODO: Should fields always have refs? What about the PDFForm?
+// TODO: Note in documentation that a single field can actually be rendered
+//       in multiple locations and pages of a single document.
+
 /**
  * Represents a field of a [[PDFForm]].
  */

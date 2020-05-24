@@ -3,6 +3,7 @@ import { PDFAcroText, AcroTextFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
+import { PDFHexString } from 'src/core';
 
 /**
  * Represents a text field of a [[PDFForm]].
@@ -27,9 +28,38 @@ export default class PDFTextField extends PDFField {
     this.doc = doc;
   }
 
-  // setText(text: string) {}
+  setText(text: string | undefined) {
+    const maxLength = this.getMaxLength();
+    if (maxLength !== undefined && text && text.length > maxLength) {
+      throw new Error(
+        `TODO: FIX ME! exceeds max length ${text.length}/${maxLength}`,
+      );
+    }
 
-  // getText(): string {}
+    if (text) {
+      this.setHasRichText(false);
+      this.acroField.setValue(PDFHexString.fromText(text));
+    } else {
+      this.acroField.removeValue();
+    }
+  }
+
+  getText(): string | undefined {
+    const value = this.acroField.getValue();
+    if (!value && this.hasRichText()) {
+      throw new Error('TODO: FIX ME! reading rich text fields not supported?');
+    }
+    return value?.decodeText();
+  }
+
+  setMaxLength(maxLength: number) {
+    // TODO: Assert >= 0
+    this.acroField.setMaxLength(maxLength);
+  }
+
+  getMaxLength(): number | undefined {
+    return this.acroField.getMaxLength();
+  }
 
   isMultiline(): boolean {
     return this.acroField.hasFlag(AcroTextFlags.Multiline);
@@ -77,26 +107,30 @@ export default class PDFTextField extends PDFField {
       this.acroField.hasFlag(AcroTextFlags.Comb) &&
       !this.isMultiline() &&
       !this.isPassword() &&
-      !this.isFileSelect()
-      // TODO: Should also require a `MaxLen` to be defined
+      !this.isFileSelect() &&
+      this.getMaxLength() !== undefined
     );
   }
 
-  // TODO: Should only be able to enable this is a `MaxLen` is available too
   setIsEvenlySpaced(isEvenlySpaced: boolean) {
+    if (this.getMaxLength() === undefined) {
+      throw new Error('TODO: FIX ME! need to have a maxLength defined');
+    }
+
     if (isEvenlySpaced) {
       this.setIsMultiline(false);
       this.setIsPassword(false);
       this.setIsFileSelect(false);
     }
+
     this.acroField.setFlagTo(AcroTextFlags.Comb, isEvenlySpaced);
   }
 
-  hasSimpleText(): boolean {
+  hasRichText(): boolean {
     return this.acroField.hasFlag(AcroTextFlags.RichText);
   }
 
-  setHasSimpleText(enable: boolean) {
+  setHasRichText(enable: boolean) {
     this.acroField.setFlagTo(AcroTextFlags.RichText, enable);
   }
 }

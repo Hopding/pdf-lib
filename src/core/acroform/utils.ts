@@ -16,6 +16,7 @@ import PDFAcroRadioButton from 'src/core/acroform/PDFAcroRadioButton';
 import PDFAcroCheckBox from 'src/core/acroform/PDFAcroCheckBox';
 import PDFAcroComboBox from 'src/core/acroform/PDFAcroComboBox';
 import PDFAcroListBox from 'src/core/acroform/PDFAcroListBox';
+import { AcroButtonFlags, AcroChoiceFlags } from 'src/core/acroform/flags';
 
 export const createPDFAcroFields = (kidDicts?: PDFArray): PDFAcroField[] => {
   if (!kidDicts) return [];

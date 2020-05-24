@@ -15,16 +15,6 @@ import {
 } from 'src/api';
 import { breakTextIntoLines } from 'src/utils';
 
-enum AcroTextFlags {
-  Multiline = 13 - 1,
-  Password = 14 - 1,
-  FileSelect = 21 - 1,
-  DoNotSpellCheck = 23 - 1,
-  DoNotScroll = 24 - 1,
-  Comb = 25 - 1,
-  RichText = 26 - 1,
-}
-
 const MIN_FONT_SIZE = 4;
 const MAX_FONT_SIZE = 500;
 
@@ -57,12 +47,22 @@ const computeFontSize = (
 class PDFAcroText extends PDFAcroTerminal {
   static fromDict = (dict: PDFDict) => new PDFAcroText(dict);
 
-  isComb(): boolean {
-    return this.hasFlag(AcroTextFlags.Comb);
+  MaxLen(): PDFNumber | undefined {
+    const maxLen = this.dict.lookup(PDFName.of('MaxLen'));
+    if (maxLen instanceof PDFNumber) return maxLen;
+    return undefined;
   }
 
-  setValue(value: string) {
-    this.dict.set(PDFName.of('V'), PDFHexString.fromText(value));
+  setMaxLength(maxLength: number) {
+    this.dict.set(PDFName.of('V'), PDFNumber.of(maxLength));
+  }
+
+  getMaxLength(): number | undefined {
+    return this.MaxLen()?.asNumber();
+  }
+
+  setValue(value: PDFHexString | PDFString) {
+    this.dict.set(PDFName.of('V'), value);
 
     // const widgets = this.getWidgets();
     // for (let idx = 0, len = widgets.length; idx < len; idx++) {
@@ -70,6 +70,10 @@ class PDFAcroText extends PDFAcroTerminal {
     //   const state = widget.getOnValue() === value ? value : PDFName.of('Off');
     //   widget.setAppearanceState(state);
     // }
+  }
+
+  removeValue() {
+    this.dict.delete(PDFName.of('V'));
   }
 
   getValue(): PDFString | PDFHexString | undefined {
