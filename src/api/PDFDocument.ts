@@ -700,7 +700,8 @@ export default class PDFDocument {
 
     const bytes = toUint8Array(file);
     const embedder = PDFAttachmentEmbedder.for(bytes, fileName, options);
-    const pdfEmbeddedFile = PDFEmbeddedFile.of(this, embedder);
+    const ref = this.context.nextRef();
+    const pdfEmbeddedFile = PDFEmbeddedFile.of(ref, this, embedder);
     this.embeddedFiles.push(pdfEmbeddedFile);
   }
 
