@@ -1,24 +1,40 @@
 import { PDFName, PDFString, PDFHexString, PDFContext } from 'src/core';
+import PDFNumber from '../objects/PDFNumber';
+import { AttachmentOptions } from 'src/api/PDFDocumentOptions';
 
 class PDFAttachmentEmbedder {
-  static for(bytes: Uint8Array, fileName: string, mime: string) {
-    return new PDFAttachmentEmbedder(bytes, fileName, mime);
+  static for(bytes: Uint8Array, fileName: string, options: AttachmentOptions) {
+    return new PDFAttachmentEmbedder(bytes, fileName, options);
   }
 
   private readonly fileData: Uint8Array;
   readonly fileName: string;
-  readonly mime: string;
+  readonly options: AttachmentOptions;
 
-  private constructor(fileData: Uint8Array, fileName: string, mime: string) {
+  private constructor(
+    fileData: Uint8Array,
+    fileName: string,
+    options: AttachmentOptions,
+  ) {
     this.fileData = fileData;
     this.fileName = fileName;
-    this.mime = mime;
+    this.options = options;
   }
 
   async embedIntoContext(context: PDFContext) {
     const embeddedFileStream = context.flateStream(this.fileData, {
       Type: 'EmbeddedFile',
-      Subtype: PDFName.of(this.mime),
+      Subtype: PDFName.of(this.options.mimeType),
+      Params: {
+        Size: PDFNumber.of(this.options.size ?? this.fileData.length),
+        CreationDate: PDFString.fromDate(
+          this.options.creationDate ?? new Date(),
+        ),
+        ModDate: PDFString.fromDate(
+          this.options.modificationDate ?? new Date(),
+        ),
+        CheckSum: PDFString.of(this.options.checkSum ?? ''),
+      },
     });
     const embeddedFileStreamRef = context.register(embeddedFileStream);
 
@@ -27,6 +43,7 @@ class PDFAttachmentEmbedder {
       F: PDFString.of(this.fileName),
       UF: PDFHexString.fromText(this.fileName),
       EF: { F: embeddedFileStreamRef },
+      Desc: PDFString.of(this.options.description ?? ''),
     });
     return context.register(fileSpecDict);
   }

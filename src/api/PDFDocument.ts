@@ -48,6 +48,7 @@ import { Fontkit } from 'src/types/fontkit';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
   assertIs,
+  assertOrUndefined,
   assertRange,
   Cache,
   canBeConvertedToUint8Array,
@@ -680,12 +681,25 @@ export default class PDFDocument {
    * @param file The input data containing the file to be attached.
    * @param fileName Name of file to be attached.
    */
-  attach(file: string | Uint8Array | ArrayBuffer, fileName: string): void {
+  attach(
+    file: string | Uint8Array | ArrayBuffer,
+    fileName: string,
+    options: AttachmentOptions,
+  ): void {
     assertIs(file, 'file', ['string', Uint8Array, ArrayBuffer]);
     assertIs(fileName, 'fileName', ['string']);
     assertIs(options.mimeType, 'mimeType', ['string']);
+    assertOrUndefined(options.size, 'options.size', ['number']);
+    assertOrUndefined(options.creationDate, 'options.creationDate', [
+      [Date, 'Date'],
+    ]);
+    assertOrUndefined(options.modificationDate, 'options.modificationDate', [
+      [Date, 'Date'],
+    ]);
+    assertOrUndefined(options.checkSum, 'options.checkSum', ['string']);
+
     const bytes = toUint8Array(file);
-    const embedder = PDFAttachmentEmbedder.for(bytes, fileName, mimeType);
+    const embedder = PDFAttachmentEmbedder.for(bytes, fileName, options);
     const pdfEmbeddedFile = PDFEmbeddedFile.of(this, embedder);
     this.embeddedFiles.push(pdfEmbeddedFile);
   }
