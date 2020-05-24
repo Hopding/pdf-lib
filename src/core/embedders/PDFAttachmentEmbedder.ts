@@ -1,4 +1,4 @@
-import { PDFName, PDFString, PDFHexString, PDFContext } from '..';
+import { PDFName, PDFString, PDFHexString, PDFContext } from 'src/core';
 
 class PDFAttachmentEmbedder {
   static for(bytes: Uint8Array, fileName: string, mime: string) {

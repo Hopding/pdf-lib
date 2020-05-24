@@ -50,7 +50,7 @@ import {
   toUint8Array,
 } from 'src/utils';
 import PDFAttachmentEmbedder from 'src/core/embedders/PDFAttachmentEmbedder';
-import PDFEmbeddedFile from './PDFEmbeddedFile';
+import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 
 export enum ParseSpeeds {
   Fastest = Infinity,

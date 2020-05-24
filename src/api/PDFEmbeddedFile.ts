@@ -1,5 +1,5 @@
 import Embeddable from 'src/api/Embeddable';
-import { PDFDocument } from '.';
+import PDFDocument from 'src/api/PDFDocument';
 import PDFAttachmentEmbedder from 'src/core/embedders/PDFAttachmentEmbedder';
 import { PDFName, PDFArray, PDFDict, PDFHexString } from 'src/core';
 
