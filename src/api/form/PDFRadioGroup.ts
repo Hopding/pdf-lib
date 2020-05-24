@@ -1,5 +1,5 @@
 import PDFDocument from 'src/api/PDFDocument';
-import { PDFAcroRadioButton } from 'src/core/acroform';
+import { PDFAcroRadioButton, AcroButtonFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
@@ -88,4 +88,20 @@ export default class PDFRadioGroup extends PDFField {
   }
 
   // clear() {}
+
+  allowsTogglingOff(): boolean {
+    return !this.acroField.hasFlag(AcroButtonFlags.NoToggleToOff);
+  }
+
+  setAllowTogglingOff(allow: boolean) {
+    this.acroField.setFlagTo(AcroButtonFlags.NoToggleToOff, !allow);
+  }
+
+  radiosAreMutuallyExclusive(): boolean {
+    return !this.acroField.hasFlag(AcroButtonFlags.RadiosInUnison);
+  }
+
+  setRadiosAreMutuallyExclusive(enable: boolean) {
+    this.acroField.setFlagTo(AcroButtonFlags.RadiosInUnison, !enable);
+  }
 }

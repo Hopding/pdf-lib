@@ -16,20 +16,6 @@ import PDFAcroRadioButton from 'src/core/acroform/PDFAcroRadioButton';
 import PDFAcroCheckBox from 'src/core/acroform/PDFAcroCheckBox';
 import PDFAcroComboBox from 'src/core/acroform/PDFAcroComboBox';
 import PDFAcroListBox from 'src/core/acroform/PDFAcroListBox';
-// import {
-//   ,
-//   ,
-//   ,
-//   ,
-//   ,
-//   ,
-//   ,
-//   ,
-//   ,
-//   ,
-//   ,
-//   ,
-// } from 'src/core/acroform';
 
 export const createPDFAcroFields = (kidDicts?: PDFArray): PDFAcroField[] => {
   if (!kidDicts) return [];
@@ -95,13 +81,6 @@ const createPDFAcroTerminal = (dict: PDFDict): PDFAcroTerminal => {
   return PDFAcroTerminal.fromDict(dict);
 };
 
-enum AcroButtonFlags {
-  NoToggleToOff = 15 - 1,
-  Radio = 16 - 1,
-  PushButton = 17 - 1,
-  RadiosInUnison = 26 - 1,
-}
-
 const createPDFAcroButton = (dict: PDFDict): PDFAcroButton => {
   const ffNumberOrRef = getInheritableAttribute(dict, PDFName.of('Ff'));
   const ffNumber = dict.context.lookupMaybe(ffNumberOrRef, PDFNumber);
@@ -115,10 +94,6 @@ const createPDFAcroButton = (dict: PDFDict): PDFAcroButton => {
     return PDFAcroCheckBox.fromDict(dict);
   }
 };
-
-enum AcroChoiceFlags {
-  Combo = 18 - 1,
-}
 
 const createPDFAcroChoice = (dict: PDFDict): PDFAcroChoice => {
   const ffNumberOrRef = getInheritableAttribute(dict, PDFName.of('Ff'));

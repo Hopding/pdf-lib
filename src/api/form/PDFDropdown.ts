@@ -1,5 +1,5 @@
 import PDFDocument from 'src/api/PDFDocument';
-import { PDFAcroComboBox } from 'src/core/acroform';
+import { PDFAcroComboBox, AcroChoiceFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
@@ -89,7 +89,7 @@ export default class PDFDropdown extends PDFField {
 
     // TODO: Assert options are valid
 
-    if (optionsArr.length > 1) this.acroField.setIsMultiSelect(true);
+    if (optionsArr.length > 1) this.setAllowMultiSelect(true);
 
     const values = new Array<PDFHexString>(optionsArr.length);
     for (let idx = 0, len = optionsArr.length; idx < len; idx++) {
@@ -111,4 +111,48 @@ export default class PDFDropdown extends PDFField {
   // deselectIndices(optionIndices: number[]) {}
 
   // clear() {}
+
+  allowsEditing(): boolean {
+    return this.acroField.hasFlag(AcroChoiceFlags.Edit);
+  }
+
+  setAllowEditing(allow: boolean) {
+    this.acroField.setFlagTo(AcroChoiceFlags.Edit, allow);
+  }
+
+  requiresSorting(): boolean {
+    return this.acroField.hasFlag(AcroChoiceFlags.Sort);
+  }
+
+  setRequireSorting(require: boolean) {
+    this.acroField.setFlagTo(AcroChoiceFlags.Sort, require);
+  }
+
+  allowsMultiSelect(): boolean {
+    return this.acroField.hasFlag(AcroChoiceFlags.MultiSelect);
+  }
+
+  setAllowMultiSelect(allow: boolean) {
+    this.acroField.setFlagTo(AcroChoiceFlags.MultiSelect, allow);
+  }
+
+  doesSpellCheck(): boolean {
+    return (
+      !this.acroField.hasFlag(AcroChoiceFlags.DoNotSpellCheck) &&
+      this.allowsEditing()
+    );
+  }
+
+  setSpellCheck(enable: boolean) {
+    if (enable) this.setAllowEditing(true);
+    this.acroField.setFlagTo(AcroChoiceFlags.DoNotSpellCheck, !enable);
+  }
+
+  commitsImmediately(): boolean {
+    return this.acroField.hasFlag(AcroChoiceFlags.CommitOnSelChange);
+  }
+
+  setCommitImmediately(enable: boolean) {
+    this.acroField.setFlagTo(AcroChoiceFlags.CommitOnSelChange, enable);
+  }
 }

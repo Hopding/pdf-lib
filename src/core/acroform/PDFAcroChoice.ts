@@ -5,10 +5,6 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
 
-enum AcroChoiceFlags {
-  MultiSelect = 20 - 1,
-}
-
 class PDFAcroChoice extends PDFAcroTerminal {
   // static fromDict = (dict: PDFDict) => new PDFAcroChoice(dict);
 
@@ -23,7 +19,9 @@ class PDFAcroChoice extends PDFAcroTerminal {
       this.dict.set(PDFName.of('V'), values[0]);
     }
     if (values.length > 1) {
-      if (!this.isMultiSelect()) throw new Error('TODO: FIX ME!');
+      if (!this.hasFlag(AcroChoiceFlags.MultiSelect)) {
+        throw new Error('TODO: FIX ME!');
+      }
       this.dict.set(PDFName.of('V'), this.dict.context.obj(values));
     }
 
@@ -142,15 +140,6 @@ class PDFAcroChoice extends PDFAcroTerminal {
     }
 
     return [];
-  }
-
-  isMultiSelect(): boolean {
-    return this.hasFlag(AcroChoiceFlags.MultiSelect);
-  }
-
-  setIsMultiSelect(enable: boolean) {
-    if (enable) this.setFlag(AcroChoiceFlags.MultiSelect);
-    else this.clearFlag(AcroChoiceFlags.MultiSelect);
   }
 }
 

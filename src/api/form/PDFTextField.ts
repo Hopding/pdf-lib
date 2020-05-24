@@ -1,5 +1,5 @@
 import PDFDocument from 'src/api/PDFDocument';
-import { PDFAcroText } from 'src/core/acroform';
+import { PDFAcroText, AcroTextFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
@@ -30,4 +30,73 @@ export default class PDFTextField extends PDFField {
   // setText(text: string) {}
 
   // getText(): string {}
+
+  isMultiline(): boolean {
+    return this.acroField.hasFlag(AcroTextFlags.Multiline);
+  }
+
+  setIsMultiline(isMultiline: boolean) {
+    this.acroField.setFlagTo(AcroTextFlags.Multiline, isMultiline);
+  }
+
+  isPassword(): boolean {
+    return this.acroField.hasFlag(AcroTextFlags.Password);
+  }
+
+  setIsPassword(isPassword: boolean) {
+    this.acroField.setFlagTo(AcroTextFlags.Password, isPassword);
+  }
+
+  isFileSelect(): boolean {
+    return this.acroField.hasFlag(AcroTextFlags.FileSelect);
+  }
+
+  setIsFileSelect(isFileSelect: boolean) {
+    this.acroField.setFlagTo(AcroTextFlags.FileSelect, isFileSelect);
+  }
+
+  doesSpellCheck(): boolean {
+    return !this.acroField.hasFlag(AcroTextFlags.DoNotSpellCheck);
+  }
+
+  setSpellCheck(enable: boolean) {
+    this.acroField.setFlagTo(AcroTextFlags.DoNotSpellCheck, !enable);
+  }
+
+  doesScroll(): boolean {
+    return !this.acroField.hasFlag(AcroTextFlags.DoNotScroll);
+  }
+
+  setScroll(enable: boolean) {
+    this.acroField.setFlagTo(AcroTextFlags.DoNotScroll, !enable);
+  }
+
+  /** Field is split into n equal-sized cells with one character in each (aka combed) */
+  isEvenlySpaced(): boolean {
+    return (
+      this.acroField.hasFlag(AcroTextFlags.Comb) &&
+      !this.isMultiline() &&
+      !this.isPassword() &&
+      !this.isFileSelect()
+      // TODO: Should also require a `MaxLen` to be defined
+    );
+  }
+
+  // TODO: Should only be able to enable this is a `MaxLen` is available too
+  setIsEvenlySpaced(isEvenlySpaced: boolean) {
+    if (isEvenlySpaced) {
+      this.setIsMultiline(false);
+      this.setIsPassword(false);
+      this.setIsFileSelect(false);
+    }
+    this.acroField.setFlagTo(AcroTextFlags.Comb, isEvenlySpaced);
+  }
+
+  hasSimpleText(): boolean {
+    return this.acroField.hasFlag(AcroTextFlags.RichText);
+  }
+
+  setHasSimpleText(enable: boolean) {
+    this.acroField.setFlagTo(AcroTextFlags.RichText, enable);
+  }
 }

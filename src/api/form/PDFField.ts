@@ -1,5 +1,5 @@
 import PDFDocument from 'src/api/PDFDocument';
-import { PDFAcroField } from 'src/core/acroform';
+import { PDFAcroField, AcroFieldFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 /**
@@ -22,5 +22,29 @@ export default class PDFField {
 
   getName(): string {
     return this.acroField.getFullyQualifiedName() ?? '';
+  }
+
+  isReadOnly(): boolean {
+    return this.acroField.hasFlag(AcroFieldFlags.ReadOnly);
+  }
+
+  setReadOnly(readOnly: boolean) {
+    this.acroField.setFlagTo(AcroFieldFlags.ReadOnly, readOnly);
+  }
+
+  isRequired(): boolean {
+    return this.acroField.hasFlag(AcroFieldFlags.Required);
+  }
+
+  setRequired(required: boolean) {
+    this.acroField.setFlagTo(AcroFieldFlags.Required, required);
+  }
+
+  isExported(): boolean {
+    return !this.acroField.hasFlag(AcroFieldFlags.NoExport);
+  }
+
+  setExported(exported: boolean) {
+    this.acroField.setFlagTo(AcroFieldFlags.NoExport, !exported);
   }
 }

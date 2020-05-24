@@ -82,6 +82,11 @@ class PDFAcroField {
     this.setFlags(flags & ~flag);
   }
 
+  setFlagTo(bitIndex: number, enable: boolean) {
+    if (enable) this.setFlag(bitIndex);
+    else this.clearFlag(bitIndex);
+  }
+
   getInheritableAttribute(name: PDFName): PDFObject | undefined {
     let attribute: PDFObject | undefined;
     this.ascend((node) => {
