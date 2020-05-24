@@ -1,5 +1,6 @@
 import { dirname } from 'https://deno.land/std@0.50.0/path/mod.ts';
 import { readLines } from 'https://deno.land/std@v0.50.0/io/bufio.ts';
+import { defineReader } from './parser.ts';
 
 import test1 from './tests/test1.ts';
 import test10 from './tests/test10.ts';
@@ -21,17 +22,15 @@ const promptToContinue = () => {
   return readLines(Deno.stdin).next();
 };
 
-// This needs to be more sophisticated to work on Linux and Windows as well.
-const openPdf = (path: string) => {
+// This needs to be more sophisticated to work on Linux as well.
+const openPdf = (path: string, reader: string) => {
   if (Deno.build.os === 'darwin') {
-    // TODO: Make this a CLI argument
-    Deno.run({ cmd: ['open', '-a', 'Preview', path] });
-    // Deno.run({ cmd: ['open', '-a', 'Adobe Acrobat', path] });
-    // Deno.run({ cmd: ['open', '-a', 'Foxit Reader', path] });
-    // Deno.run({ cmd: ['open', '-a', 'Google Chrome', path] });
-    // Deno.run({ cmd: ['open', '-a', 'Firefox', path] });
+    Deno.run({ cmd: ['open', '-a', reader, path] });
+  } else if (Deno.build.os === 'windows') {
+    // Opens with the default PDF Reader, has room for improvment
+    Deno.run({ cmd: ['start', path] });
   } else {
-    const msg1 = `Note: Automatically opening PDFs currently only works on Macs. If you're using a Windows or Linux machine, please consider contributing to expand support for this feature`;
+    const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
     const msg2 = `(https://github.com/Hopding/pdf-lib/blob/master/apps/node/index.ts#L8-L17)\n`;
     console.warn(msg1);
     console.warn(msg2);
@@ -139,7 +138,7 @@ const main = async () => {
     const pdfBytes = await test(assets);
     const path = writePdfToTmp(pdfBytes);
     console.log(`> PDF file written to: ${path}`);
-    openPdf(path);
+    openPdf(path, defineReader());
     idx += 1;
     await promptToContinue();
     console.log();
