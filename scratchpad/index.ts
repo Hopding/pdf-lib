@@ -187,7 +187,7 @@ import { PDFDocument } from 'src/index';
   console.log('dd1.getOptions():', dd1.getOptions());
 
   const dd4 = form.getDropdown('Dropdown4');
-  dd4.select(['ExportItem1', 'ExportItem2']);
+  dd4.select(['Item1', 'Item3']);
   console.log('dd4.getSelectedIndices():', dd4.getSelectedIndices());
   console.log('dd4.getSelected():', dd4.getSelected());
   console.log('dd4.getOptions():', dd4.getOptions());

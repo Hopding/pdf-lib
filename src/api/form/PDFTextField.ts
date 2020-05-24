@@ -26,4 +26,8 @@ export default class PDFTextField extends PDFField {
     this.acroField = acroText;
     this.doc = doc;
   }
+
+  // setText(text: string) {}
+
+  // getText(): string {}
 }

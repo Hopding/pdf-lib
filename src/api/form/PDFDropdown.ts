@@ -42,7 +42,11 @@ export default class PDFDropdown extends PDFField {
     return options;
   }
 
-  // getOption(index: number): string {}
+  getOption(index: number): string {
+    assertIs(index, 'index', ['number']);
+    // TODO: Assert `index` is in valid range
+    return this.getOptions()[index];
+  }
 
   getSelected(): string[] {
     const indices = this.getSelectedIndices();
@@ -58,12 +62,12 @@ export default class PDFDropdown extends PDFField {
 
   getSelectedIndices(): number[] {
     const values = this.acroField.getValues();
-    const rawOptions = this.acroField.getOptions();
+    const options = this.getOptions();
 
     const indices = new Array<number>(values.length);
     for (let idx = 0, len = values.length; idx < len; idx++) {
       const val = values[idx].decodeText();
-      indices[idx] = rawOptions.findIndex((o) => val === o.value.decodeText());
+      indices[idx] = options.findIndex((option) => val === option);
     }
 
     return indices;
@@ -77,11 +81,9 @@ export default class PDFDropdown extends PDFField {
 
   // removeIndices(option: number[]) {}
 
-  // TODO: Auto enable multiselect!
-  // TODO: Switch all this code to only use display or only use export to
-  //       avoid duplicate selections? Same issue for PDFRadioGroup I think.
   select(options: string | string[], merge = false) {
     assertIs(options, 'options', ['string', Array]);
+    assertIs(merge, 'merge', ['boolean']);
 
     const optionsArr = Array.isArray(options) ? options : [options];
 
@@ -91,7 +93,6 @@ export default class PDFDropdown extends PDFField {
 
     const values = new Array<PDFHexString>(optionsArr.length);
     for (let idx = 0, len = optionsArr.length; idx < len; idx++) {
-      // TODO: Need to convert `optionsArr` elements to `rawOptions.value`
       values[idx] = PDFHexString.fromText(optionsArr[idx]);
     }
 

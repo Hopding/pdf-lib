@@ -34,7 +34,9 @@ class PDFAcroChoice extends PDFAcroTerminal {
     const options = this.getOptions();
     for (let idx = 0, len = values.length; idx < len; idx++) {
       const val = values[idx].decodeText();
-      if (!options.find((o) => val === o.value.decodeText())) return false;
+      if (!options.find((o) => val === (o.display || o.value).decodeText())) {
+        return false;
+      }
     }
     return true;
   }
@@ -45,7 +47,9 @@ class PDFAcroChoice extends PDFAcroTerminal {
       const options = this.getOptions();
       for (let idx = 0, len = values.length; idx < len; idx++) {
         const val = values[idx].decodeText();
-        indices[idx] = options.findIndex((o) => val === o.value.decodeText());
+        indices[idx] = options.findIndex(
+          (o) => val === (o.display || o.value).decodeText(),
+        );
       }
       this.dict.set(PDFName.of('I'), this.dict.context.obj(indices.sort()));
     } else {
@@ -92,7 +96,7 @@ class PDFAcroChoice extends PDFAcroTerminal {
     const newOpt = new Array<PDFArray>(options.length);
     for (let idx = 0, len = options.length; idx < len; idx++) {
       const { value, display } = options[idx];
-      newOpt[idx] = this.dict.context.obj([value, value || display]);
+      newOpt[idx] = this.dict.context.obj([value, display || value]);
     }
     this.dict.set(PDFName.of('Opt'), this.dict.context.obj(newOpt));
   }
