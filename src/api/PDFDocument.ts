@@ -34,6 +34,15 @@ import {
   StandardFontEmbedder,
   UnexpectedObjectTypeError,
 } from 'src/core';
+import {
+  ParseSpeeds,
+  AttachmentOptions,
+  SaveOptions,
+  Base64SaveOptions,
+  LoadOptions,
+  CreateOptions,
+  EmbedFontOptions,
+} from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
 import { TransformationMatrix } from 'src/types/matrix';
@@ -50,39 +59,6 @@ import {
 } from 'src/utils';
 import PDFAttachmentEmbedder from 'src/core/embedders/PDFAttachmentEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
-
-export enum ParseSpeeds {
-  Fastest = Infinity,
-  Fast = 1500,
-  Medium = 500,
-  Slow = 100,
-}
-
-export interface SaveOptions {
-  useObjectStreams?: boolean;
-  addDefaultPage?: boolean;
-  objectsPerTick?: number;
-}
-
-export interface Base64SaveOptions extends SaveOptions {
-  dataUri?: boolean;
-}
-
-export interface LoadOptions {
-  ignoreEncryption?: boolean;
-  parseSpeed?: ParseSpeeds | number;
-  throwOnInvalidObject?: boolean;
-  updateMetadata?: boolean;
-  capNumbers?: boolean;
-}
-
-export interface CreateOptions {
-  updateMetadata?: boolean;
-}
-
-export interface EmbedFontOptions {
-  subset?: boolean;
-}
 
 /**
  * Represents a PDF document.
