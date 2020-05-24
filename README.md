@@ -378,7 +378,13 @@ const attachmentBytes = ...
 const pdfDoc = await PDFDocument.create()
 
 // Add the attachment
-await pdfDoc.attach(attachmentBytes, "cool_stuff.pdf")
+await pdfDoc.attach(attachmentBytes, "cool_stuff.pdf", {
+  mimeType: "application/pdf",
+  description: "Full of cool stuff",
+  creationDate: new Date("2019/12/24"),
+  modificationDate: new Date("2020/01/01"),
+  checkSum: "D7C816C0E7D35860A9505b2d64C9E3E3"
+})
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
