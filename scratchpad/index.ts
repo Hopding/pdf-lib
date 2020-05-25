@@ -182,7 +182,7 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
   cb7.updateAppearances((_checkBox, widget) => {
     const { width, height } = widget.getRectangle();
     const black = rgb(1, 0, 0);
-    const white = rgb(1, 0, 1);
+    const white = rgb(0, 0, 1);
     const options = {
       x: 0,
       y: 0,

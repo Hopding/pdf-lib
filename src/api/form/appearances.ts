@@ -16,47 +16,57 @@ import { rgb } from 'src/api/colors';
 type CheckBoxAppearanceProvider = (
   checkBox: PDFCheckBox,
   widget: PDFWidgetAnnotation,
-) => { checked: PDFOperator[]; unchecked: PDFOperator[] };
+) => AppearanceOrMapping<{
+  checked: PDFOperator[];
+  unchecked: PDFOperator[];
+}>;
 
 type RadioGroupAppearanceProvider = (
   radioGroup: PDFRadioGroup,
   widget: PDFWidgetAnnotation,
-) => { selected: PDFOperator[]; unselected: PDFOperator[] };
+) => AppearanceOrMapping<{
+  selected: PDFOperator[];
+  unselected: PDFOperator[];
+}>;
 
 type ButtonAppearanceProvider = (
   button: PDFButton,
   widget: PDFWidgetAnnotation,
   font: PDFFont,
-) => PDFOperator[];
+) => AppearanceOrMapping<PDFOperator[]>;
 
 type DropdownAppearanceProvider = (
   dropdown: PDFDropdown,
   widget: PDFWidgetAnnotation,
   font: PDFFont,
-) => PDFOperator[];
+) => AppearanceOrMapping<PDFOperator[]>;
 
 type OptionListAppearanceProvider = (
   optionList: PDFOptionList,
   widget: PDFWidgetAnnotation,
   font: PDFFont,
-) => PDFOperator[];
+) => AppearanceOrMapping<PDFOperator[]>;
 
 type TextFieldAppearanceProvider = (
   textField: PDFTextField,
   widget: PDFWidgetAnnotation,
   font: PDFFont,
-) => PDFOperator[];
+) => AppearanceOrMapping<PDFOperator[]>;
 
 type SignatureAppearanceProvider = (
   signature: PDFSignature,
   widget: PDFWidgetAnnotation,
   font: PDFFont,
-) => PDFOperator[];
+) => AppearanceOrMapping<PDFOperator[]>;
 
 /******************* Appearance Provider Utility Types ************************/
 
+type AppearanceMapping<T> = { normal: T; rollover?: T; down?: T };
+
+type AppearanceOrMapping<T> = T | AppearanceMapping<T>;
+
 // prettier-ignore
-type FieldToAppearanceProvider<T extends PDFField> = 
+export type AppearanceProviderFor<T extends PDFField> = 
   T extends PDFCheckBox   ? CheckBoxAppearanceProvider
 : T extends PDFRadioGroup ? RadioGroupAppearanceProvider
 : T extends PDFButton     ? ButtonAppearanceProvider
@@ -66,48 +76,34 @@ type FieldToAppearanceProvider<T extends PDFField> =
 : T extends PDFSignature  ? SignatureAppearanceProvider
 : never;
 
-type AppearanceMapping<T> = { normal: T; rollover?: T; down?: T };
-
-export type AppearanceProviderFor<T extends PDFField> =
-  | FieldToAppearanceProvider<T>
-  | AppearanceMapping<FieldToAppearanceProvider<T>>;
-
 /********************* Appearance Provider Functions **************************/
 
-export const normalizeProvider = <T extends PDFField>(
-  provider: AppearanceProviderFor<T>,
-): AppearanceMapping<FieldToAppearanceProvider<T>> => {
-  if ('normal' in provider) return provider;
-  return { normal: provider };
+export const normalizeAppearance = <T>(
+  appearance: T | AppearanceMapping<T>,
+): AppearanceMapping<T> => {
+  if ('normal' in appearance) return appearance;
+  return { normal: appearance };
 };
 
-// TODO:
-// Would this be cleaner if we refactored the types as follows?
-//
-//   AppearanceProviderFor<PDFCheckBox> =
-//     (checkBox: PDFCheckBox, widget: PDFWidgetAnnotation) =>
-//       { checked: PDFOperator[]; unchecked: PDFOperator[] } |
-//       {
-//         normal: { checked: PDFOperator[]; unchecked: PDFOperator[] },
-//         rollover?: { checked: PDFOperator[]; unchecked: PDFOperator[] },
-//         down?: { checked: PDFOperator[]; unchecked: PDFOperator[] },
-//       }
-//
-export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBox> = {
-  normal: (_checkBox, widget) => {
-    const { width, height } = widget.getRectangle();
-    const black = rgb(0, 0, 0);
-    const white = rgb(1, 1, 1);
-    const options = {
-      x: 0,
-      y: 0,
-      width,
-      height,
-      thickness: 1.5,
-      borderWidth: 2,
-      borderColor: black,
-    };
-    return {
+export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBox> = (
+  _checkBox,
+  widget,
+) => {
+  const { width, height } = widget.getRectangle();
+  const black = rgb(0, 0, 0);
+  const white = rgb(1, 1, 1);
+  const grey = rgb(0.8, 0.8, 0.8);
+  const options = {
+    x: 0,
+    y: 0,
+    width,
+    height,
+    thickness: 1.5,
+    borderWidth: 2,
+    borderColor: black,
+  };
+  return {
+    normal: {
       checked: drawCheckBox({
         ...options,
         color: white,
@@ -120,22 +116,8 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
         markColor: black,
         filled: false,
       }),
-    };
-  },
-  down: (_checkBox, widget) => {
-    const { width, height } = widget.getRectangle();
-    const black = rgb(0, 0, 0);
-    const grey = rgb(0.8, 0.8, 0.8);
-    const options = {
-      x: 0,
-      y: 0,
-      width,
-      height,
-      thickness: 1.5,
-      borderWidth: 2,
-      borderColor: black,
-    };
-    return {
+    },
+    down: {
       checked: drawCheckBox({
         ...options,
         color: grey,
@@ -148,6 +130,6 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
         markColor: black,
         filled: false,
       }),
-    };
-  },
+    },
+  };
 };

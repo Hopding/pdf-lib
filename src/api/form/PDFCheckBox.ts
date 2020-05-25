@@ -7,7 +7,7 @@ import { PDFName, PDFOperator, PDFContentStream, PDFDict } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
-  normalizeProvider,
+  normalizeAppearance,
   defaultCheckBoxAppearanceProvider,
 } from 'src/api/form/appearances';
 
@@ -54,28 +54,30 @@ export default class PDFCheckBox extends PDFField {
   }
 
   updateAppearances(provider?: AppearanceProviderFor<PDFCheckBox>) {
-    const apProvider = normalizeProvider(
-      provider ?? defaultCheckBoxAppearanceProvider,
-    );
+    const apProvider = provider ?? defaultCheckBoxAppearanceProvider;
 
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
+      const { normal, rollover, down } = normalizeAppearance(
+        apProvider(this, widget),
+      );
 
-      const normalOps = apProvider.normal(this, widget);
-      const normalDict = this.createAppearanceDict(widget, normalOps);
+      const normalDict = this.createAppearanceDict(widget, normal);
       if (normalDict) widget.setNormalAppearance(normalDict);
 
-      if (apProvider.rollover) {
-        const rolloverOps = apProvider.rollover(this, widget);
-        const rolloverDict = this.createAppearanceDict(widget, rolloverOps);
+      if (rollover) {
+        const rolloverDict = this.createAppearanceDict(widget, rollover);
         if (rolloverDict) widget.setRolloverAppearance(rolloverDict);
+      } else {
+        widget.removeRolloverAppearance();
       }
 
-      if (apProvider.down) {
-        const downOps = apProvider.down(this, widget);
-        const downDict = this.createAppearanceDict(widget, downOps);
+      if (down) {
+        const downDict = this.createAppearanceDict(widget, down);
         if (downDict) widget.setDownAppearance(downDict);
+      } else {
+        widget.removeDownAppearance();
       }
     }
   }
