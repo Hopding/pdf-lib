@@ -26,7 +26,7 @@ import {
   LineCapStyle,
   setLineCap,
 } from 'src/api/operators';
-import { Rotation, toRadians } from 'src/api/rotations';
+import { Rotation, toRadians, degrees } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
 
@@ -280,3 +280,104 @@ export const drawSvgPath = (
 
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
+
+export const drawCheckMark = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  size: number | PDFNumber;
+  thickness: number | PDFNumber;
+  color: Color | undefined;
+}) => {
+  const size = asNumber(options.size);
+
+  /*********************** Define Check Mark Points ***************************/
+  // A check mark is defined by three points in some coordinate space. Here, we
+  // define these points in a unit coordinate system, where the range of the x
+  // and y axis are both [-1, 1].
+  //
+  // Note that we do not hard code `p1y` in case we wish to change the
+  // size/shape of the check mark in the future. We want the check mark to
+  // always form a right angle. This means that the dot product between (p1-p2)
+  // and (p3-p2) should be zero:
+  //
+  //   (p1x-p2x) * (p3x-p2x) + (p1y-p2y) * (p3y-p2y) = 0
+  //
+  // We can now rejigger this equation to solve for `p1y`:
+  //
+  //   (p1y-p2y) * (p3y-p2y) = -((p1x-p2x) * (p3x-p2x))
+  //   (p1y-p2y) = -((p1x-p2x) * (p3x-p2x)) / (p3y-p2y)
+  //   p1y = -((p1x-p2x) * (p3x-p2x)) / (p3y-p2y) + p2y
+  //
+  // Thanks to my friend Joel Walker (https://github.com/JWalker1995) for
+  // devising the above equation and unit coordinate system approach!
+
+  // (x, y) coords of the check mark's bottommost point
+  const p2x = -1 + 0.75;
+  const p2y = -1 + 0.51;
+
+  // (x, y) coords of the check mark's topmost point
+  const p3y = 1 - 0.525;
+  const p3x = 1 - 0.31;
+
+  // (x, y) coords of the check mark's center (vertically) point
+  const p1x = -1 + 0.325;
+  const p1y = -((p1x - p2x) * (p3x - p2x)) / (p3y - p2y) + p2y;
+  /****************************************************************************/
+
+  return [
+    pushGraphicsState(),
+    options.color && setStrokingColor(options.color),
+    setLineWidth(options.thickness),
+
+    translate(options.x, options.y),
+    moveTo(p1x * size, p1y * size),
+    lineTo(p2x * size, p2y * size),
+    lineTo(p3x * size, p3y * size),
+
+    stroke(),
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
+};
+
+export const drawCheckBox = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  thickness: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  markColor: Color | undefined;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  filled: boolean;
+}) => {
+  const outline = drawRectangle({
+    x: options.x,
+    y: options.y,
+    width: options.width,
+    height: options.height,
+    borderWidth: options.borderWidth,
+    color: options.color,
+    borderColor: options.borderColor,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  if (!options.filled) return outline;
+
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+
+  const checkMarkSize = Math.min(width, height) / 2;
+
+  const checkMark = drawCheckMark({
+    x: width / 2,
+    y: height / 2,
+    size: checkMarkSize,
+    thickness: options.thickness,
+    color: options.markColor,
+  });
+
+  return [...outline, ...checkMark];
+};

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument } from 'src/index';
+import { PDFDocument, rgb, drawCheckBox } from 'src/index';
 
 // import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 // import {
@@ -161,6 +161,7 @@ import { PDFDocument } from 'src/index';
   const cb1 = form.getCheckBox('Check Box 1');
   cb1.check();
   console.log('cb1.isChecked():', cb1.isChecked());
+  cb1.updateAppearances();
 
   const cb2 = form.getCheckBox('Check Box 2');
   cb2.check();
@@ -169,6 +170,7 @@ import { PDFDocument } from 'src/index';
   const cb5 = form.getCheckBox('Check Box5');
   cb5.check();
   console.log('cb5.isChecked():', cb1.isChecked());
+  cb5.updateAppearances();
 
   const cb6 = form.getCheckBox('Check Box6');
   cb6.check();
@@ -177,6 +179,34 @@ import { PDFDocument } from 'src/index';
   const cb7 = form.getCheckBox('Check Box7');
   cb7.check();
   console.log('cb7.isChecked():', cb1.isChecked());
+  cb7.updateAppearances((_checkBox, widget) => {
+    const { width, height } = widget.getRectangle();
+    const black = rgb(1, 0, 0);
+    const white = rgb(1, 0, 1);
+    const options = {
+      x: 0,
+      y: 0,
+      width,
+      height,
+      thickness: 3,
+      borderWidth: 5,
+      borderColor: black,
+    };
+    return {
+      checked: drawCheckBox({
+        ...options,
+        color: white,
+        markColor: black,
+        filled: true,
+      }),
+      unchecked: drawCheckBox({
+        ...options,
+        color: white,
+        markColor: black,
+        filled: false,
+      }),
+    };
+  });
 
   // === Dropdowns ===
 
@@ -209,6 +239,12 @@ import { PDFDocument } from 'src/index';
   const tfDate = form.getTextField('Date1_af_date');
   tfDate.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
   console.log('tfDate.getText():', tfDate.getText());
+
+  // form.getFields().forEach((field) => {
+  //   if (field instanceof PDFCheckBox) {
+  //     field.updateAppearances();
+  //   }
+  // });
 
   fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
   openPdf('out.pdf', Reader.Preview);
