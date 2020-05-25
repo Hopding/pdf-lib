@@ -79,6 +79,13 @@ export default async () => {
     x: 30,
     y: 30,
   });
+  page2.drawLine({
+    start: { x: 30, y: 240 },
+    end: { x: 30 + lastPageTextWidth, y: 240 },
+    color: hotPink,
+    thickness: 5,
+    lineCap: LineCapStyle.Round,
+  });
 
   console.log('Title:', pdfDoc.getTitle());
   console.log('Author:', pdfDoc.getAuthor());

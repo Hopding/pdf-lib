@@ -135,8 +135,8 @@ export const drawLine = (options: {
   start: { x: number | PDFNumber; y: number | PDFNumber };
   end: { x: number | PDFNumber; y: number | PDFNumber };
   thickness: number | PDFNumber;
-  lineCap: LineCapStyle | undefined;
   color: Color | undefined;
+  lineCap?: LineCapStyle;
 }) =>
   [
     pushGraphicsState(),
