@@ -31,16 +31,22 @@ import { charFromCode } from 'src/utils';
 
 // TODO: Throw error if eof is reached before finishing object parse...
 class PDFObjectParser extends BaseParser {
-  static forBytes = (bytes: Uint8Array, context: PDFContext) =>
-    new PDFObjectParser(ByteStream.of(bytes), context);
+  static forBytes = (
+    bytes: Uint8Array,
+    context: PDFContext,
+    capNumbers?: boolean,
+  ) => new PDFObjectParser(ByteStream.of(bytes), context, capNumbers);
 
-  static forByteStream = (byteStream: ByteStream, context: PDFContext) =>
-    new PDFObjectParser(byteStream, context);
+  static forByteStream = (
+    byteStream: ByteStream,
+    context: PDFContext,
+    capNumbers = false,
+  ) => new PDFObjectParser(byteStream, context, capNumbers);
 
   protected readonly context: PDFContext;
 
-  constructor(byteStream: ByteStream, context: PDFContext) {
-    super(byteStream);
+  constructor(byteStream: ByteStream, context: PDFContext, capNumbers = false) {
+    super(byteStream, capNumbers);
     this.context = context;
   }
 
