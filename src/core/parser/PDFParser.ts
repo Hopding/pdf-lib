@@ -29,7 +29,9 @@ class PDFParser extends PDFObjectParser {
     pdfBytes: Uint8Array,
     objectsPerTick?: number,
     throwOnInvalidObject?: boolean,
-  ) => new PDFParser(pdfBytes, objectsPerTick, throwOnInvalidObject);
+    capNumbers?: boolean,
+  ) =>
+    new PDFParser(pdfBytes, objectsPerTick, throwOnInvalidObject, capNumbers);
 
   private readonly objectsPerTick: number;
   private readonly throwOnInvalidObject: boolean;
@@ -38,10 +40,11 @@ class PDFParser extends PDFObjectParser {
 
   constructor(
     pdfBytes: Uint8Array,
-    objectsPerTick: number = Infinity,
+    objectsPerTick = Infinity,
     throwOnInvalidObject = false,
+    capNumbers = false,
   ) {
-    super(ByteStream.of(pdfBytes), PDFContext.create());
+    super(ByteStream.of(pdfBytes), PDFContext.create(), capNumbers);
     this.objectsPerTick = objectsPerTick;
     this.throwOnInvalidObject = throwOnInvalidObject;
   }
