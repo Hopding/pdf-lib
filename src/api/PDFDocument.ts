@@ -689,7 +689,6 @@ export default class PDFDocument {
     assertIs(file, 'file', ['string', Uint8Array, ArrayBuffer]);
     assertIs(fileName, 'fileName', ['string']);
     assertIs(options.mimeType, 'mimeType', ['string']);
-    assertOrUndefined(options.size, 'options.size', ['number']);
     assertOrUndefined(options.creationDate, 'options.creationDate', [
       [Date, 'Date'],
     ]);

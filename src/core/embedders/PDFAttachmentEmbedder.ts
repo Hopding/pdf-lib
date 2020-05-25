@@ -27,7 +27,7 @@ class PDFAttachmentEmbedder {
       Type: 'EmbeddedFile',
       Subtype: PDFName.of(this.options.mimeType),
       Params: {
-        Size: PDFNumber.of(this.options.size ?? this.fileData.length),
+        Size: PDFNumber.of(this.fileData.length),
         CreationDate: PDFString.fromDate(
           this.options.creationDate ?? new Date(),
         ),

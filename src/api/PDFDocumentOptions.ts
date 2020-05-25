@@ -7,7 +7,6 @@ export enum ParseSpeeds {
 
 export interface AttachmentOptions {
   mimeType: string;
-  size?: number;
   description?: string;
   creationDate?: Date;
   modificationDate?: Date;
