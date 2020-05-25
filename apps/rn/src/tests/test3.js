@@ -72,7 +72,6 @@ export default async () => {
     end: { x: 30 + lastPageTextWidth, y: 205 },
     color: hotPink,
     thickness: 5,
-    lineCap: LineCapStyle.Round,
   });
   page2.drawImage(cmykImage, {
     ...cmykDims,
