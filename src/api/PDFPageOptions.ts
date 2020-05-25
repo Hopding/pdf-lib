@@ -55,9 +55,9 @@ export interface PDFPageDrawRectangleOptions {
 export interface PDFPageDrawLineOptions {
   start: { x: number; y: number };
   end: { x: number; y: number };
-  lineCap?: LineCapStyle;
   thickness?: number;
   color?: Color;
+  lineCap?: LineCapStyle;
 }
 
 export interface PDFPageDrawSquareOptions {
