@@ -16,20 +16,50 @@ import {
   PDFRef,
   PDFString,
   typedArrayFor,
+  numberToString,
 } from 'src/index';
 
-const parse = (value: string | Uint8Array) => {
+type ParseOptions = { capNumbers?: boolean };
+
+const parse = (value: string | Uint8Array, options: ParseOptions = {}) => {
   const context = PDFContext.create();
-  const parser = PDFObjectParser.forBytes(typedArrayFor(value), context);
+  const parser = PDFObjectParser.forBytes(
+    typedArrayFor(value),
+    context,
+    options.capNumbers,
+  );
   return parser.parseObject();
 };
 
-const expectParse = (value: string | Uint8Array) => expect(parse(value));
+const expectParse = (value: string | Uint8Array, options?: ParseOptions) =>
+  expect(parse(value, options));
 
-const expectParseStr = (value: string | Uint8Array) =>
-  expect(String(parse(value)));
+const expectParseStr = (value: string | Uint8Array, options?: ParseOptions) =>
+  expect(String(parse(value, options)));
 
 describe(`PDFObjectParser`, () => {
+  const origConsoleWarn = console.warn;
+
+  beforeAll(() => {
+    console.warn = jest.fn((...args) => {
+      if (
+        !args[0].includes(
+          'Parsed number that is too large for some PDF readers:',
+        )
+      ) {
+        origConsoleWarn(...args);
+      }
+    });
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    console.warn = origConsoleWarn;
+  });
+
   it(`throws an error when given empty input`, () => {
     expect(() => parse('')).toThrow();
   });
@@ -129,6 +159,42 @@ describe(`PDFObjectParser`, () => {
       expect(parser.parseObject().toString()).toBe('0.1');
       expect(parser.parseObject().toString()).toBe('-2');
       expect(parser.parseObject().toString()).toBe('-0.1');
+    });
+
+    it(`caps numbers at Number.MAX_SAFE_INTEGER when capNumbers=true`, () => {
+      expectParseStr(numberToString(Number.MAX_SAFE_INTEGER - 1), {
+        capNumbers: true,
+      }).toBe('9007199254740990');
+      expectParseStr(numberToString(Number.MAX_SAFE_INTEGER), {
+        capNumbers: true,
+      }).toBe('9007199254740991');
+      expectParseStr(numberToString(Number.MAX_SAFE_INTEGER + 1), {
+        capNumbers: true,
+      }).toBe('9007199254740991');
+      expectParseStr('340282346638528900000000000000000000000', {
+        capNumbers: true,
+      }).toBe('9007199254740991');
+      expectParseStr('340282346638528859811704183484516925440', {
+        capNumbers: true,
+      }).toBe('9007199254740991');
+    });
+
+    it(`does not cap numbers at Number.MAX_SAFE_INTEGER when capNumbers=false`, () => {
+      expectParseStr(numberToString(Number.MAX_SAFE_INTEGER - 1)).toBe(
+        '9007199254740990',
+      );
+      expectParseStr(numberToString(Number.MAX_SAFE_INTEGER)).toBe(
+        '9007199254740991',
+      );
+      expectParseStr(numberToString(Number.MAX_SAFE_INTEGER + 1)).toBe(
+        '9007199254740992',
+      );
+      expectParseStr('340282346638528900000000000000000000000').toBe(
+        '340282346638528900000000000000000000000',
+      );
+      expectParseStr('340282346638528859811704183484516925440').toBe(
+        '340282346638528900000000000000000000000',
+      );
     });
   });
 

@@ -1,12 +1,13 @@
-import { Assets } from '..';
+import { Assets } from '../index.ts';
 import {
   degrees,
   ParseSpeeds,
   PDFDocument,
   rgb,
+  decodeFromBase64,
   StandardFonts,
   LineCapStyle,
-} from '../../..';
+} from '../../../dist/pdf-lib.esm.js';
 
 export default async (assets: Assets) => {
   const { pdfs, images } = assets;
@@ -96,7 +97,7 @@ export default async (assets: Assets) => {
 
   const base64Pdf = await pdfDoc.saveAsBase64();
 
-  const pdfBytes = Buffer.from(base64Pdf, 'base64');
+  const pdfBytes = decodeFromBase64(base64Pdf);
 
   return pdfBytes;
 };

@@ -46,7 +46,7 @@
     };
 
     async function test() {
-      const { degrees, PDFDocument, rgb, StandardFonts } = PDFLib;
+      const { degrees, PDFDocument, rgb, StandardFonts, LineCapStyle } = PDFLib;
 
       const [
         inputPdfBase64,
@@ -116,8 +116,8 @@
         color: hotPink,
       });
       page2.drawLine({
-        start: { x: 30, y: 50 },
-        end: { x: 30 + lastPageTextWidth, y: 50 },
+        start: { x: 30, y: 205 },
+        end: { x: 30 + lastPageTextWidth, y: 205 },
         color: hotPink,
         thickness: 5,
       });
@@ -125,6 +125,13 @@
         ...cmykDims,
         x: 30,
         y: 30,
+      });
+      page2.drawLine({
+        start: { x: 30, y: 240 },
+        end: { x: 30 + lastPageTextWidth, y: 240 },
+        color: hotPink,
+        thickness: 5,
+        lineCap: LineCapStyle.Round,
       });
 
       console.log('Title:', pdfDoc.getTitle());

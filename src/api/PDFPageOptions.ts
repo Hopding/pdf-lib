@@ -1,6 +1,7 @@
 import { Color } from 'src/api/colors';
 import PDFFont from 'src/api/PDFFont';
 import { Rotation } from 'src/api/rotations';
+import { LineCapStyle } from 'src/api/operators';
 
 export interface PDFPageDrawTextOptions {
   color?: Color;
@@ -56,6 +57,7 @@ export interface PDFPageDrawLineOptions {
   end: { x: number; y: number };
   thickness?: number;
   color?: Color;
+  lineCap?: LineCapStyle;
 }
 
 export interface PDFPageDrawSquareOptions {

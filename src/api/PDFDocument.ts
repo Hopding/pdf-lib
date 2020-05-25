@@ -72,6 +72,7 @@ export interface LoadOptions {
   parseSpeed?: ParseSpeeds | number;
   throwOnInvalidObject?: boolean;
   updateMetadata?: boolean;
+  capNumbers?: boolean;
 }
 
 export interface CreateOptions {
@@ -147,6 +148,7 @@ export default class PDFDocument {
       parseSpeed = ParseSpeeds.Slow,
       throwOnInvalidObject = false,
       updateMetadata = true,
+      capNumbers = false,
     } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
@@ -159,6 +161,7 @@ export default class PDFDocument {
       bytes,
       parseSpeed,
       throwOnInvalidObject,
+      capNumbers,
     ).parseDocument();
     return new PDFDocument(context, ignoreEncryption, updateMetadata);
   }

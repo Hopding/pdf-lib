@@ -5,6 +5,7 @@ import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
+import { InvalidTargetIndexError, CorruptPageTreeError } from 'src/core/errors';
 
 export type TreeNode = PDFPageTree | PDFPageLeaf;
 
@@ -40,11 +41,7 @@ class PDFPageTree extends PDFDict {
 
   pushLeafNode(leafRef: PDFRef): void {
     const Kids = this.Kids();
-    Kids.push(leafRef);
-    this.ascend((node) => {
-      const Count = node.Count();
-      node.set(PDFName.of('Count'), PDFNumber.of(Count.asNumber() + 1));
-    });
+    this.insertLeafKid(Kids.size(), leafRef);
   }
 
   /**
@@ -58,85 +55,98 @@ class PDFPageTree extends PDFDict {
    */
   insertLeafNode(leafRef: PDFRef, targetIndex: number): PDFRef | undefined {
     const Kids = this.Kids();
-    const kidSize = Kids.size();
+    const Count = this.Count().asNumber();
 
-    let kidIdx = 0;
-    let pageIdx = 0;
-    while (pageIdx < targetIndex) {
-      if (kidIdx >= kidSize) {
-        throw new Error(`Index out of bounds: ${kidIdx}/${kidSize}`);
+    if (targetIndex > Count) {
+      throw new InvalidTargetIndexError(targetIndex, Count);
+    }
+
+    let leafsRemainingUntilTarget = targetIndex;
+    for (let idx = 0, len = Kids.size(); idx < len; idx++) {
+      if (leafsRemainingUntilTarget === 0) {
+        // Insert page and return
+        this.insertLeafKid(idx, leafRef);
+        return undefined;
       }
 
-      const kidRef = Kids.get(kidIdx++) as PDFRef;
-      const kid = this.context.lookup(kidRef) as TreeNode;
+      const kidRef = Kids.get(idx) as PDFRef;
+      const kid = this.context.lookup(kidRef);
 
       if (kid instanceof PDFPageTree) {
-        const kidCount = kid.Count().asNumber();
-        if (pageIdx + kidCount > targetIndex) {
-          return kid.insertLeafNode(leafRef, targetIndex - pageIdx) || kidRef;
+        if (kid.Count().asNumber() > leafsRemainingUntilTarget) {
+          // Dig in
+          return (
+            kid.insertLeafNode(leafRef, leafsRemainingUntilTarget) || kidRef
+          );
         } else {
-          pageIdx += kidCount;
+          // Move on
+          leafsRemainingUntilTarget -= kid.Count().asNumber();
         }
-      } else {
-        pageIdx += 1;
+      }
+
+      if (kid instanceof PDFPageLeaf) {
+        // Move on
+        leafsRemainingUntilTarget -= 1;
       }
     }
 
-    Kids.insert(kidIdx, leafRef);
-    this.ascend((node) => {
-      const Count = node.Count();
-      node.set(PDFName.of('Count'), PDFNumber.of(Count.asNumber() + 1));
-    });
+    if (leafsRemainingUntilTarget === 0) {
+      // Insert page at the end and return
+      this.insertLeafKid(Kids.size(), leafRef);
+      return undefined;
+    }
 
-    return undefined;
+    // Should never get here if `targetIndex` is valid
+    throw new CorruptPageTreeError(targetIndex, 'insertLeafNode');
   }
 
   /**
    * Removes the leaf node at the specified index (zero-based) from this page
    * tree. Also decrements the `Count` of each page tree in the hierarchy to
    * account for the removed page.
+   *
+   * If `prune` is true, then intermediate tree nodes will be removed from the
+   * tree if they contain 0 children after the leaf node is removed.
    */
-  removeLeafNode(targetIndex: number): void {
+  removeLeafNode(targetIndex: number, prune = true): void {
     const Kids = this.Kids();
-    const kidSize = Kids.size();
+    const Count = this.Count().asNumber();
 
-    let kidIdx = 0;
-    let pageIdx = 0;
-    while (pageIdx < targetIndex) {
-      if (kidIdx >= kidSize) {
-        throw new Error(`Index out of bounds: ${kidIdx}/${kidSize - 1} (a)`);
-      }
+    if (targetIndex >= Count) {
+      throw new InvalidTargetIndexError(targetIndex, Count);
+    }
 
-      const kidRef = Kids.get(kidIdx++) as PDFRef;
-      const kid = this.context.lookup(kidRef) as TreeNode;
+    let leafsRemainingUntilTarget = targetIndex;
+    for (let idx = 0, len = Kids.size(); idx < len; idx++) {
+      const kidRef = Kids.get(idx) as PDFRef;
+      const kid = this.context.lookup(kidRef);
 
       if (kid instanceof PDFPageTree) {
-        const kidCount = kid.Count().asNumber();
-        if (pageIdx + kidCount > targetIndex) {
-          kid.removeLeafNode(targetIndex - pageIdx);
+        if (kid.Count().asNumber() > leafsRemainingUntilTarget) {
+          // Dig in
+          kid.removeLeafNode(leafsRemainingUntilTarget, prune);
+          if (prune && kid.Kids().size() === 0) Kids.remove(idx);
           return;
         } else {
-          pageIdx += kidCount;
+          // Move on
+          leafsRemainingUntilTarget -= kid.Count().asNumber();
         }
-      } else {
-        pageIdx += 1;
+      }
+
+      if (kid instanceof PDFPageLeaf) {
+        if (leafsRemainingUntilTarget === 0) {
+          // Remove page and return
+          this.removeKid(idx);
+          return;
+        } else {
+          // Move on
+          leafsRemainingUntilTarget -= 1;
+        }
       }
     }
 
-    if (kidIdx >= kidSize) {
-      throw new Error(`Index out of bounds: ${kidIdx}/${kidSize - 1} (b)`);
-    }
-
-    const target = Kids.lookup(kidIdx);
-    if (target instanceof PDFPageTree) {
-      target.removeLeafNode(0);
-    } else {
-      Kids.remove(kidIdx);
-      this.ascend((node) => {
-        const Count = node.Count();
-        node.set(PDFName.of('Count'), PDFNumber.of(Count.asNumber() - 1));
-      });
-    }
+    // Should never get here if `targetIndex` is valid
+    throw new CorruptPageTreeError(targetIndex, 'removeLeafNode');
   }
 
   ascend(visitor: (node: PDFPageTree) => any): void {
@@ -154,6 +164,31 @@ class PDFPageTree extends PDFDict {
       if (kid instanceof PDFPageTree) kid.traverse(visitor);
       visitor(kid, kidRef);
     }
+  }
+
+  private insertLeafKid(kidIdx: number, leafRef: PDFRef): void {
+    const Kids = this.Kids();
+
+    this.ascend((node) => {
+      const newCount = node.Count().asNumber() + 1;
+      node.set(PDFName.of('Count'), PDFNumber.of(newCount));
+    });
+
+    Kids.insert(kidIdx, leafRef);
+  }
+
+  private removeKid(kidIdx: number): void {
+    const Kids = this.Kids();
+
+    const kid = Kids.lookup(kidIdx);
+    if (kid instanceof PDFPageLeaf) {
+      this.ascend((node) => {
+        const newCount = node.Count().asNumber() - 1;
+        node.set(PDFName.of('Count'), PDFNumber.of(newCount));
+      });
+    }
+
+    Kids.remove(kidIdx);
   }
 }
 

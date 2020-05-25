@@ -8,7 +8,7 @@
   <strong>Create and modify PDF documents in any JavaScript environment.</strong>
 </div>
 <div align="center">
-  Designed to work in any modern JavaScript runtime. Tested in Node, Browser, and React Native environments.
+  Designed to work in any modern JavaScript runtime. Tested in Node, Browser, Deno, and React Native environments.
 </div>
 
 <br />
@@ -55,6 +55,7 @@
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
   - [Draw SVG Paths](#draw-svg-paths)
+- [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
 - [Documentation](#documentation)
@@ -555,15 +556,117 @@ const pdfBytes = await pdfDoc.save()
 //   • Rendered in an <iframe>
 ```
 
+## Deno Usage
+
+`pdf-lib` fully supports the exciting new [Deno](https://deno.land/) runtime! All of the [usage examples](#usage-examples) work in Deno. The only thing you need to do is change the imports for `pdf-lib` and `@pdf-lib/fontkit` to use the [Pika](https://www.pika.dev/) CDN, because Deno requires all modules to be referenced via URLs.
+
+> **See also [How to Create and Modify PDF Files in Deno With pdf-lib](https://medium.com/@andrew.dillon.j/how-to-create-and-modify-pdf-files-in-deno-ffaad7099b0)**
+
+### Creating a Document with Deno
+
+Below is the [**create document**](#create-document) example modified for Deno:
+
+```js
+import {
+  PDFDocument,
+  StandardFonts,
+  rgb,
+} from 'https://cdn.pika.dev/pdf-lib@^1.6.0';
+
+const pdfDoc = await PDFDocument.create();
+const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+
+const page = pdfDoc.addPage();
+const { width, height } = page.getSize();
+const fontSize = 30;
+page.drawText('Creating PDFs in JavaScript is awesome!', {
+  x: 50,
+  y: height - 4 * fontSize,
+  size: fontSize,
+  font: timesRomanFont,
+  color: rgb(0, 0.53, 0.71),
+});
+
+const pdfBytes = await pdfDoc.save();
+
+await Deno.writeFile('out.pdf', pdfBytes);
+```
+
+If you save this script as `create-document.ts`, you can execute it using Deno with the following command:
+
+```
+deno run --allow-write create-document.ts
+```
+
+The resulting `out.pdf` file will look like [this PDF](assets/pdfs/examples/create_document.pdf).
+
+### Embedding a Font with Deno
+
+Here's a slightly more complicated example demonstrating how to embed a font and measure text in Deno:
+
+```js
+import {
+  degrees,
+  PDFDocument,
+  rgb,
+  StandardFonts,
+} from 'https://cdn.pika.dev/pdf-lib@^1.6.0';
+import fontkit from 'https://cdn.pika.dev/@pdf-lib/fontkit@^1.0.0';
+
+const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
+const fontBytes = await fetch(url).then((res) => res.arrayBuffer());
+
+const pdfDoc = await PDFDocument.create();
+
+pdfDoc.registerFontkit(fontkit);
+const customFont = await pdfDoc.embedFont(fontBytes);
+
+const page = pdfDoc.addPage();
+
+const text = 'This is text in an embedded font!';
+const textSize = 35;
+const textWidth = customFont.widthOfTextAtSize(text, textSize);
+const textHeight = customFont.heightAtSize(textSize);
+
+page.drawText(text, {
+  x: 40,
+  y: 450,
+  size: textSize,
+  font: customFont,
+  color: rgb(0, 0.53, 0.71),
+});
+page.drawRectangle({
+  x: 40,
+  y: 450,
+  width: textWidth,
+  height: textHeight,
+  borderColor: rgb(1, 0, 0),
+  borderWidth: 1.5,
+});
+
+const pdfBytes = await pdfDoc.save();
+
+await Deno.writeFile('out.pdf', pdfBytes);
+```
+
+If you save this script as `custom-font.ts`, you can execute it with the following command:
+
+```
+deno run --allow-write --allow-net custom-font.ts
+```
+
+The resulting `out.pdf` file will look like [this PDF](assets/pdfs/examples/embed_font_and_measure_text.pdf).
+
 ## Complete Examples
 
 The [usage examples](#usage-examples) provide code that is brief and to the point, demonstrating the different features of `pdf-lib`. You can find complete working examples in the [`apps/`](apps/) directory. These apps are used to do manual testing of `pdf-lib` before every release (in addition to the [automated tests](tests/)).
 
-There are currently three apps:
+There are currently four apps:
 
 - [**`node`**](apps/node/) - contains [tests](apps/node/tests/) for `pdf-lib` in Node environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` from the filesystem. They also allow you to quickly open your PDFs in different viewers (Acrobat, Preview, Foxit, Chrome, Firefox, etc...) to ensure compatibility.
 - [**`web`**](apps/web/) - contains [tests](apps/web/) for `pdf-lib` in browser environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` in a browser environment.
 - [**`rn`**](apps/rn) - contains [tests](apps/rn/src/tests/) for `pdf-lib` in React Native environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` in a React Native environment.
+- [**`deno`**](apps/deno) - contains [tests](apps/deno/tests/) for `pdf-lib` in Deno environments. These tests are a handy reference when trying to save/load PDFs, fonts, or images with `pdf-lib` from the filesystem.
 
 ## Installation
 

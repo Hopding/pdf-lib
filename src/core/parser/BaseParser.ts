@@ -10,9 +10,11 @@ const { Newline, CarriageReturn } = CharCodes;
 // TODO: Throw error if eof is reached before finishing object parse...
 class BaseParser {
   protected readonly bytes: ByteStream;
+  protected readonly capNumbers: boolean;
 
-  constructor(bytes: ByteStream) {
+  constructor(bytes: ByteStream, capNumbers = false) {
     this.bytes = bytes;
+    this.capNumbers = capNumbers;
   }
 
   protected parseRawInt(): number {
@@ -57,6 +59,17 @@ class BaseParser {
 
     if (!value || !isFinite(numberValue)) {
       throw new NumberParsingError(this.bytes.position(), value);
+    }
+
+    if (numberValue > Number.MAX_SAFE_INTEGER) {
+      if (this.capNumbers) {
+        const msg = `Parsed number that is too large for some PDF readers: ${value}, using Number.MAX_SAFE_INTEGER instead.`;
+        console.warn(msg);
+        return Number.MAX_SAFE_INTEGER;
+      } else {
+        const msg = `Parsed number that is too large for some PDF readers: ${value}, not capping.`;
+        console.warn(msg);
+      }
     }
 
     return numberValue;
