@@ -34,11 +34,21 @@ import {
   StandardFontEmbedder,
   UnexpectedObjectTypeError,
 } from 'src/core';
+import {
+  ParseSpeeds,
+  AttachmentOptions,
+  SaveOptions,
+  Base64SaveOptions,
+  LoadOptions,
+  CreateOptions,
+  EmbedFontOptions,
+} from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
   assertIs,
+  assertOrUndefined,
   assertRange,
   Cache,
   canBeConvertedToUint8Array,
@@ -48,39 +58,8 @@ import {
   range,
   toUint8Array,
 } from 'src/utils';
-
-export enum ParseSpeeds {
-  Fastest = Infinity,
-  Fast = 1500,
-  Medium = 500,
-  Slow = 100,
-}
-
-export interface SaveOptions {
-  useObjectStreams?: boolean;
-  addDefaultPage?: boolean;
-  objectsPerTick?: number;
-}
-
-export interface Base64SaveOptions extends SaveOptions {
-  dataUri?: boolean;
-}
-
-export interface LoadOptions {
-  ignoreEncryption?: boolean;
-  parseSpeed?: ParseSpeeds | number;
-  throwOnInvalidObject?: boolean;
-  updateMetadata?: boolean;
-  capNumbers?: boolean;
-}
-
-export interface CreateOptions {
-  updateMetadata?: boolean;
-}
-
-export interface EmbedFontOptions {
-  subset?: boolean;
-}
+import PDFAttachmentEmbedder from 'src/core/embedders/PDFAttachmentEmbedder';
+import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 
 /**
  * Represents a PDF document.
@@ -200,6 +179,7 @@ export default class PDFDocument {
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
   private readonly embeddedPages: PDFEmbeddedPage[];
+  private readonly embeddedFiles: PDFEmbeddedFile[];
 
   private constructor(
     context: PDFContext,
@@ -218,6 +198,7 @@ export default class PDFDocument {
     this.fonts = [];
     this.images = [];
     this.embeddedPages = [];
+    this.embeddedFiles = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
@@ -696,6 +677,34 @@ export default class PDFDocument {
   }
 
   /**
+   * Attaches a file to a [[PDFDocument]] instance.
+   * @param file The input data containing the file to be attached.
+   * @param fileName Name of file to be attached.
+   */
+  attach(
+    file: string | Uint8Array | ArrayBuffer,
+    fileName: string,
+    options: AttachmentOptions,
+  ): void {
+    assertIs(file, 'file', ['string', Uint8Array, ArrayBuffer]);
+    assertIs(fileName, 'fileName', ['string']);
+    assertIs(options.mimeType, 'mimeType', ['string']);
+    assertOrUndefined(options.creationDate, 'options.creationDate', [
+      [Date, 'Date'],
+    ]);
+    assertOrUndefined(options.modificationDate, 'options.modificationDate', [
+      [Date, 'Date'],
+    ]);
+    assertOrUndefined(options.checkSum, 'options.checkSum', ['string']);
+
+    const bytes = toUint8Array(file);
+    const embedder = PDFAttachmentEmbedder.for(bytes, fileName, options);
+    const ref = this.context.nextRef();
+    const pdfEmbeddedFile = PDFEmbeddedFile.of(ref, this, embedder);
+    this.embeddedFiles.push(pdfEmbeddedFile);
+  }
+
+  /**
    * Embed a font into this document. The input data can be provided in multiple
    * formats:
    *
@@ -1033,6 +1042,7 @@ export default class PDFDocument {
     await this.embedAll(this.fonts);
     await this.embedAll(this.images);
     await this.embedAll(this.embeddedPages);
+    await this.embedAll(this.embeddedFiles);
   }
 
   /**

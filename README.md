@@ -51,6 +51,7 @@
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
+  - [Add Attachments](#add-attachments)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
@@ -83,6 +84,7 @@
 - Embed Fonts (supports UTF-8 and UTF-16 character sets)
 - Set document metadata
 - Read document metadata
+- Add attachments
 
 ## Motivation
 
@@ -347,6 +349,41 @@ page.drawPage(preamble, {
   ...preambleDims,
   x: page.getWidth() / 2 - preambleDims.width / 2,
   y: page.getHeight() / 2 - preambleDims.height / 2 - 50,
+})
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Add Attachments
+
+_This example produces [this PDF](assets/pdfs/examples/file_with_attachment.pdf)_ (when [this PDF](assets/pdfs/normal.pdf) is used for the `fileAttachment` variable).
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, rgb } from 'pdf-lib'
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const attachmentBytes = ...
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Add the attachment
+await pdfDoc.attach(attachmentBytes, "cool_stuff.pdf", {
+  mimeType: "application/pdf",
+  description: "Full of cool stuff",
+  creationDate: new Date("2019/12/24"),
+  modificationDate: new Date("2020/01/01"),
+  checkSum: "D7C816C0E7D35860A9505b2d64C9E3E3"
 })
 
 // Serialize the PDFDocument to bytes (a Uint8Array)

@@ -19,6 +19,14 @@ export default async () => {
     updateMetadata: false,
   });
 
+  pdfDoc.attach(await fetchAsset('pdfs/normal.pdf'), 'normalPDF.pdf', {
+    mimeType: 'application/pdf',
+    description: 'This is a great file',
+    creationDate: new Date('2004/04/04'),
+    modificationDate: new Date('2005/05/05'),
+    checkSum: '75D6CC531AF6C03BF154B27B79A11B76',
+  });
+
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const catRidingUnicornImage = await pdfDoc.embedJpg(catRidingUnicornBytes);
   const cmykImage = await pdfDoc.embedJpg(cmykBytes);

@@ -52,14 +52,24 @@
         inputPdfBase64,
         catRidingUnicornBytes,
         cmykBytes,
+        normalPDF,
       ] = await Promise.all([
         fetchStringAsset('pdfs/with_update_sections.pdf.base64.uri'),
         fetchBinaryAsset('images/cat_riding_unicorn.jpg'),
         fetchBinaryAsset('images/cmyk_colorspace.jpg'),
+        fetchBinaryAsset('pdfs/normal.pdf'),
       ]);
 
       const pdfDoc = await PDFDocument.load(inputPdfBase64, {
         updateMetadata: false,
+      });
+
+      pdfDoc.attach(normalPDF, 'normalPDF.pdf', {
+        mimeType: 'application/pdf',
+        description: 'This is a great file',
+        creationDate: new Date('2004/04/04'),
+        modificationDate: new Date('2005/05/05'),
+        checkSum: '75D6CC531AF6C03BF154B27B79A11B76',
       });
 
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
