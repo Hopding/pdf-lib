@@ -11,7 +11,7 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
 //   PDFAcroChoice,
 // } from 'src/core/acroform';
 
-(() => [fs, openPdf, Reader])();
+(() => [fs, openPdf, Reader, rgb, drawCheckBox])();
 
 // (async () => {
 //   const pdfDoc = await PDFDocument.load(
@@ -166,6 +166,7 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
   const cb2 = form.getCheckBox('Check Box 2');
   cb2.check();
   console.log('cb2.isChecked():', cb1.isChecked());
+  cb2.updateAppearances();
 
   const cb5 = form.getCheckBox('Check Box5');
   cb5.check();
@@ -175,38 +176,40 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
   const cb6 = form.getCheckBox('Check Box6');
   cb6.check();
   console.log('cb6.isChecked():', cb1.isChecked());
+  cb6.updateAppearances();
 
   const cb7 = form.getCheckBox('Check Box7');
   cb7.check();
   console.log('cb7.isChecked():', cb1.isChecked());
-  cb7.updateAppearances((_checkBox, widget) => {
-    const { width, height } = widget.getRectangle();
-    const black = rgb(1, 0, 0);
-    const white = rgb(0, 0, 1);
-    const options = {
-      x: 0,
-      y: 0,
-      width,
-      height,
-      thickness: 3,
-      borderWidth: 5,
-      borderColor: black,
-    };
-    return {
-      checked: drawCheckBox({
-        ...options,
-        color: white,
-        markColor: black,
-        filled: true,
-      }),
-      unchecked: drawCheckBox({
-        ...options,
-        color: white,
-        markColor: black,
-        filled: false,
-      }),
-    };
-  });
+  cb7.updateAppearances();
+  // cb7.updateAppearances((_checkBox, widget) => {
+  //   const { width, height } = widget.getRectangle();
+  //   const black = rgb(1, 0, 0);
+  //   const white = rgb(0, 0, 1);
+  //   const options = {
+  //     x: 0,
+  //     y: 0,
+  //     width,
+  //     height,
+  //     thickness: 3,
+  //     borderWidth: 5,
+  //     borderColor: black,
+  //   };
+  //   return {
+  //     checked: drawCheckBox({
+  //       ...options,
+  //       color: white,
+  //       markColor: black,
+  //       filled: true,
+  //     }),
+  //     unchecked: drawCheckBox({
+  //       ...options,
+  //       color: white,
+  //       markColor: black,
+  //       filled: false,
+  //     }),
+  //   };
+  // });
 
   // === Dropdowns ===
 

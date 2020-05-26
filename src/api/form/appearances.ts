@@ -8,8 +8,9 @@ import PDFOptionList from 'src/api/form/PDFOptionList';
 import PDFRadioGroup from 'src/api/form/PDFRadioGroup';
 import PDFSignature from 'src/api/form/PDFSignature';
 import PDFTextField from 'src/api/form/PDFTextField';
-import { drawCheckBox } from 'src/api/operations';
+import { drawCheckBox, rotateInPlace } from 'src/api/operations';
 import { rgb } from 'src/api/colors';
+import { reduceRotation, adjustDimsForRotation } from '../rotations';
 
 /*********************** Appearance Provider Types ****************************/
 
@@ -89,7 +90,14 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
   _checkBox,
   widget,
 ) => {
-  const { width, height } = widget.getRectangle();
+  const rectangle = widget.getRectangle();
+  const rotation = reduceRotation(
+    widget.getAppearanceCharacteristics()?.getRotation(),
+  );
+  const { width, height } = adjustDimsForRotation(rectangle, rotation);
+
+  const rotate = rotateInPlace({ ...rectangle, rotation });
+
   const black = rgb(0, 0, 0);
   const white = rgb(1, 1, 1);
   const grey = rgb(0.8, 0.8, 0.8);
@@ -102,34 +110,47 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
     borderWidth: 2,
     borderColor: black,
   };
+
   return {
     normal: {
-      checked: drawCheckBox({
-        ...options,
-        color: white,
-        markColor: black,
-        filled: true,
-      }),
-      unchecked: drawCheckBox({
-        ...options,
-        color: white,
-        markColor: black,
-        filled: false,
-      }),
+      checked: [
+        ...rotate,
+        ...drawCheckBox({
+          ...options,
+          color: white,
+          markColor: black,
+          filled: true,
+        }),
+      ],
+      unchecked: [
+        ...rotate,
+        ...drawCheckBox({
+          ...options,
+          color: white,
+          markColor: black,
+          filled: false,
+        }),
+      ],
     },
     down: {
-      checked: drawCheckBox({
-        ...options,
-        color: grey,
-        markColor: black,
-        filled: true,
-      }),
-      unchecked: drawCheckBox({
-        ...options,
-        color: grey,
-        markColor: black,
-        filled: false,
-      }),
+      checked: [
+        ...rotate,
+        ...drawCheckBox({
+          ...options,
+          color: grey,
+          markColor: black,
+          filled: true,
+        }),
+      ],
+      unchecked: [
+        ...rotate,
+        ...drawCheckBox({
+          ...options,
+          color: grey,
+          markColor: black,
+          filled: false,
+        }),
+      ],
     },
   };
 };

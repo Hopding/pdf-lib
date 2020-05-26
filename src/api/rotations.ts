@@ -43,3 +43,22 @@ export const toDegrees = (rotation: Rotation) =>
     rotation.type === Radians ? radiansToDegrees(rotation.angle)
   : rotation.type === Degrees ? rotation.angle
   : error(`Invalid rotation: ${JSON.stringify(rotation)}`);
+
+export const reduceRotation = (degreeAngle = 0) => {
+  const quadrants = (degreeAngle / 90) % 4;
+  if (quadrants === 0) return 0;
+  if (quadrants === 1) return 90;
+  if (quadrants === 2) return 180;
+  if (quadrants === 3) return 270;
+  return 0; // `degreeAngle` is not a multiple of 90
+};
+
+export const adjustDimsForRotation = (
+  dims: { width: number; height: number },
+  degreeAngle = 0,
+) => {
+  const rotation = reduceRotation(degreeAngle);
+  return rotation === 90 || rotation === 270
+    ? { width: dims.height, height: dims.width }
+    : { width: dims.width, height: dims.height };
+};

@@ -25,6 +25,7 @@ import {
   translate,
   LineCapStyle,
   setLineCap,
+  rotateDegrees,
 } from 'src/api/operators';
 import { Rotation, toRadians, degrees } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
@@ -338,6 +339,30 @@ export const drawCheckMark = (options: {
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
 };
+
+// prettier-ignore
+export const rotateInPlace = (options: {
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  rotation: 0 | 90 | 180 | 270;
+}) =>
+    options.rotation === 0 ? [
+      translate(0, 0), 
+      rotateDegrees(0) 
+    ]
+  : options.rotation === 90 ? [
+      translate(options.width, 0), 
+      rotateDegrees(90)
+    ]
+  : options.rotation === 180 ? [
+      translate(options.width, options.height), 
+      rotateDegrees(180)
+    ]
+  : options.rotation === 270 ? [
+      translate(0, options.height), 
+      rotateDegrees(270)
+    ]
+  : []; // Invalid rotation - noop
 
 export const drawCheckBox = (options: {
   x: number | PDFNumber;
