@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import readline from 'readline';
+import { defineReader } from './parser';
 
 import test1 from './tests/test1';
 import test10 from './tests/test10';
@@ -26,17 +27,15 @@ const prompt = `Press <enter> to run the next test...`;
 const promptToContinue = () =>
   new Promise((resolve) => cli.question(prompt, (_answer) => resolve()));
 
-// This needs to be more sophisticated to work on Linux and Windows as well.
-const openPdf = (path: string) => {
+// This needs to be more sophisticated to work on Linux as well.
+const openPdf = (path: string, reader: string) => {
   if (process.platform === 'darwin') {
-    // TODO: Make this a CLI argument
-    execSync(`open -a "Preview" ${path}`);
-    // execSync(`open -a "Adobe Acrobat" ${path}`);
-    // execSync(`open -a "Foxit Reader" ${path}`);
-    // execSync(`open -a "Google Chrome" ${path}`);
-    // execSync(`open -a "Firefox" ${path}`);
+    execSync(`open -a "${reader}" ${path}`);
+  } else if (process.platform === 'win32') {
+    // Opens with the default PDF Reader, has room for improvment
+    execSync(`start ${path}`);
   } else {
-    const msg1 = `Note: Automatically opening PDFs currently only works on Macs. If you're using a Windows or Linux machine, please consider contributing to expand support for this feature`;
+    const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
     const msg2 = `(https://github.com/Hopding/pdf-lib/blob/master/apps/node/index.ts#L8-L17)\n`;
     console.warn(msg1);
     console.warn(msg2);
@@ -137,7 +136,8 @@ const main = async () => {
       const pdfBytes = await test(assets);
       const path = writePdfToTmp(pdfBytes);
       console.log(`> PDF file written to: ${path}`);
-      openPdf(path);
+
+      openPdf(path, defineReader());
       idx += 1;
       await promptToContinue();
       console.log();
