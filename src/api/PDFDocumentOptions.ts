@@ -1,3 +1,5 @@
+import { EmbeddedFileOptions } from 'src/core/embedders/FileEmbedder';
+
 export enum ParseSpeeds {
   Fastest = Infinity,
   Fast = 1500,
@@ -5,13 +7,7 @@ export enum ParseSpeeds {
   Slow = 100,
 }
 
-export interface AttachmentOptions {
-  mimeType: string;
-  description?: string;
-  creationDate?: Date;
-  modificationDate?: Date;
-  checkSum?: string;
-}
+export interface AttachmentOptions extends EmbeddedFileOptions {}
 
 export interface SaveOptions {
   useObjectStreams?: boolean;

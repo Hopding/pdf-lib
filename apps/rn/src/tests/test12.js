@@ -15,7 +15,6 @@ export default async () => {
       description: 'This is a file with comments',
       creationDate: new Date('2012/12/12'),
       modificationDate: new Date('2013/12/11'),
-      checkSum: 'D1A242A4E0903E882D860ECCA1E52CEA',
     },
   );
 

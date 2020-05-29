@@ -50,7 +50,6 @@ export default async (assets: Assets) => {
     description: 'This is a big file',
     creationDate: new Date('2006/06/06'),
     modificationDate: new Date('2007/07/07'),
-    checkSum: '59906A0f2FC5BB5983B34B49B011A805',
   });
 
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);

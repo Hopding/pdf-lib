@@ -25,6 +25,7 @@ export type TypeDescriptor =
   | 'boolean'
   | 'symbol'
   | 'bigint'
+  | DateConstructor
   | ArrayConstructor
   | Uint8ArrayConstructor
   | ArrayBufferConstructor
@@ -38,6 +39,7 @@ export const isType = (value: any, type: TypeDescriptor) => {
   if (type === 'boolean') return typeof value === 'boolean';
   if (type === 'symbol') return typeof value === 'symbol';
   if (type === 'bigint') return typeof value === 'bigint';
+  if (type === Date) return value instanceof Date;
   if (type === Array) return value instanceof Array;
   if (type === Uint8Array) return value instanceof Uint8Array;
   if (type === ArrayBuffer) return value instanceof ArrayBuffer;

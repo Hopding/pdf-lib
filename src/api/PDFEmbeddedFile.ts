@@ -1,29 +1,22 @@
 import Embeddable from 'src/api/Embeddable';
 import PDFDocument from 'src/api/PDFDocument';
-import PDFAttachmentEmbedder from 'src/core/embedders/PDFAttachmentEmbedder';
+import FileEmbedder from 'src/core/embedders/FileEmbedder';
 import { PDFName, PDFArray, PDFDict, PDFHexString, PDFRef } from 'src/core';
 
 export default class PDFEmbeddedFile implements Embeddable {
-  static of = (
-    ref: PDFRef,
-    doc: PDFDocument,
-    embedder: PDFAttachmentEmbedder,
-  ) => new PDFEmbeddedFile(ref, doc, embedder);
+  static of = (ref: PDFRef, doc: PDFDocument, embedder: FileEmbedder) =>
+    new PDFEmbeddedFile(ref, doc, embedder);
 
-  /** The unique reference assigned to this embedded page within the document. */
+  /** The unique reference assigned to this embedded file within the document. */
   readonly ref: PDFRef;
 
-  /** The document to which this embedded page belongs. */
+  /** The document to which this embedded file belongs. */
   readonly doc: PDFDocument;
 
   private alreadyEmbedded = false;
-  private readonly embedder: PDFAttachmentEmbedder;
+  private readonly embedder: FileEmbedder;
 
-  private constructor(
-    ref: PDFRef,
-    doc: PDFDocument,
-    embedder: PDFAttachmentEmbedder,
-  ) {
+  private constructor(ref: PDFRef, doc: PDFDocument, embedder: FileEmbedder) {
     this.ref = ref;
     this.doc = doc;
     this.embedder = embedder;

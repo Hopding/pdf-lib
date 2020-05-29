@@ -1,0 +1,76 @@
+import PDFString from 'src/core/objects/PDFString';
+import PDFHexString from 'src/core/objects/PDFHexString';
+import PDFContext from 'src/core/PDFContext';
+import PDFRef from 'src/core/objects/PDFRef';
+
+export interface EmbeddedFileOptions {
+  mimeType?: string;
+  description?: string;
+  creationDate?: Date;
+  modificationDate?: Date;
+}
+
+class FileEmbedder {
+  static for(
+    bytes: Uint8Array,
+    fileName: string,
+    options: EmbeddedFileOptions = {},
+  ) {
+    return new FileEmbedder(bytes, fileName, options);
+  }
+
+  private readonly fileData: Uint8Array;
+  readonly fileName: string;
+  readonly options: EmbeddedFileOptions;
+
+  private constructor(
+    fileData: Uint8Array,
+    fileName: string,
+    options: EmbeddedFileOptions = {},
+  ) {
+    this.fileData = fileData;
+    this.fileName = fileName;
+    this.options = options;
+  }
+
+  async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
+    const {
+      mimeType,
+      description,
+      creationDate,
+      modificationDate,
+    } = this.options;
+
+    const embeddedFileStream = context.flateStream(this.fileData, {
+      Type: 'EmbeddedFile',
+      Subtype: mimeType ?? undefined,
+      Params: {
+        Size: this.fileData.length,
+        CreationDate: creationDate
+          ? PDFString.fromDate(creationDate)
+          : undefined,
+        ModDate: modificationDate
+          ? PDFString.fromDate(modificationDate)
+          : undefined,
+      },
+    });
+    const embeddedFileStreamRef = context.register(embeddedFileStream);
+
+    const fileSpecDict = context.obj({
+      Type: 'Filespec',
+      F: PDFString.of(this.fileName), // TODO: Assert that this is plain ASCII
+      UF: PDFHexString.fromText(this.fileName),
+      EF: { F: embeddedFileStreamRef },
+      Desc: description ? PDFHexString.fromText(description) : undefined,
+    });
+
+    if (ref) {
+      context.assign(ref, fileSpecDict);
+      return ref;
+    } else {
+      return context.register(fileSpecDict);
+    }
+  }
+}
+
+export default FileEmbedder;

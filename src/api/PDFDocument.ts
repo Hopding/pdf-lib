@@ -58,7 +58,7 @@ import {
   range,
   toUint8Array,
 } from 'src/utils';
-import PDFAttachmentEmbedder from 'src/core/embedders/PDFAttachmentEmbedder';
+import FileEmbedder from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 
 /**
@@ -677,31 +677,80 @@ export default class PDFDocument {
   }
 
   /**
-   * Attaches a file to a [[PDFDocument]] instance.
-   * @param file The input data containing the file to be attached.
-   * @param fileName Name of file to be attached.
+   * Add an attachment to this document. Attachments are visible in the
+   * "Attachments" panel of Adobe Acrobat and some other PDF readers. Any
+   * type of file can be added as an attachment. This includes, but is not
+   * limited to, `.png`, `.jpg`, `.pdf`, `.csv`, `.docx`, and `.xlsx` files.
+   *
+   * The input data can be provided in multiple formats:
+   *
+   * | Type          | Contents                                                       |
+   * | ------------- | -------------------------------------------------------------- |
+   * | `string`      | A base64 encoded string (or data URI) containing an attachment |
+   * | `Uint8Array`  | The raw bytes of an attachment                                 |
+   * | `ArrayBuffer` | The raw bytes of an attachment                                 |
+   *
+   * For example:
+   * ```js
+   * // attachment=string
+   * await pdfDoc.attach('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBD...', 'cat_riding_unicorn.jpg', {
+   *   mimeType: 'image/jpeg',
+   *   description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+   *   creationDate: new Date('2019/12/01'),
+   *   modificationDate: new Date('2020/04/19'),
+   * })
+   * await pdfDoc.attach('data:image/jpeg;base64,/9j/4AAQ...', 'cat_riding_unicorn.jpg', {
+   *   mimeType: 'image/jpeg',
+   *   description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+   *   creationDate: new Date('2019/12/01'),
+   *   modificationDate: new Date('2020/04/19'),
+   * })
+   *
+   * // attachment=Uint8Array
+   * import fs from 'fs'
+   * const uint8Array = fs.readFileSync('cat_riding_unicorn.jpg')
+   * await pdfDoc.attach(uint8Array, 'cat_riding_unicorn.jpg', {
+   *   mimeType: 'image/jpeg',
+   *   description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+   *   creationDate: new Date('2019/12/01'),
+   *   modificationDate: new Date('2020/04/19'),
+   * })
+   *
+   * // attachment=ArrayBuffer
+   * const url = 'https://pdf-lib.js.org/assets/cat_riding_unicorn.jpg'
+   * const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+   * await pdfDoc.attach(arrayBuffer, 'cat_riding_unicorn.jpg', {
+   *   mimeType: 'image/jpeg',
+   *   description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+   *   creationDate: new Date('2019/12/01'),
+   *   modificationDate: new Date('2020/04/19'),
+   * })
+   * ```
+   *
+   * @param attachment The input data containing the file to be attached.
+   * @param name The name of the file to be attached.
+   * @returns Resolves when the attachment is complete.
    */
-  attach(
-    file: string | Uint8Array | ArrayBuffer,
-    fileName: string,
-    options: AttachmentOptions,
-  ): void {
-    assertIs(file, 'file', ['string', Uint8Array, ArrayBuffer]);
-    assertIs(fileName, 'fileName', ['string']);
-    assertIs(options.mimeType, 'mimeType', ['string']);
-    assertOrUndefined(options.creationDate, 'options.creationDate', [
-      [Date, 'Date'],
-    ]);
+  async attach(
+    attachment: string | Uint8Array | ArrayBuffer,
+    name: string,
+    options: AttachmentOptions = {},
+  ): Promise<void> {
+    assertIs(attachment, 'attachment', ['string', Uint8Array, ArrayBuffer]);
+    assertIs(name, 'name', ['string']);
+    assertOrUndefined(options.mimeType, 'mimeType', ['string']);
+    assertOrUndefined(options.description, 'description', ['string']);
+    assertOrUndefined(options.creationDate, 'options.creationDate', [Date]);
     assertOrUndefined(options.modificationDate, 'options.modificationDate', [
-      [Date, 'Date'],
+      Date,
     ]);
-    assertOrUndefined(options.checkSum, 'options.checkSum', ['string']);
 
-    const bytes = toUint8Array(file);
-    const embedder = PDFAttachmentEmbedder.for(bytes, fileName, options);
+    const bytes = toUint8Array(attachment);
+    const embedder = FileEmbedder.for(bytes, name, options);
+
     const ref = this.context.nextRef();
-    const pdfEmbeddedFile = PDFEmbeddedFile.of(ref, this, embedder);
-    this.embeddedFiles.push(pdfEmbeddedFile);
+    const embeddedFile = PDFEmbeddedFile.of(ref, this, embedder);
+    this.embeddedFiles.push(embeddedFile);
   }
 
   /**
