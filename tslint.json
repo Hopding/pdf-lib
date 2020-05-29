@@ -8,6 +8,7 @@
     "max-line-length": false,
     "member-access": [true, "no-public"],
     "no-console": false,
+    "no-empty-interface": false,
     "prefer-for-of": false,
     "object-literal-sort-keys": false,
     "interface-name": false,

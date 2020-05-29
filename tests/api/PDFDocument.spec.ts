@@ -181,20 +181,6 @@ describe(`PDFDocument`, () => {
     });
   });
 
-  describe(`attach() method`, () => {
-    it('throws an error when file is not convertable to UInt8Array', async () => {
-      const pdfDoc = await PDFDocument.create();
-      expect(() => {
-        // @ts-ignore Checking TypeError in toUInt8Array fn
-        pdfDoc.attach(null, 'file.pdf', { mimeType: 'application/pdf' });
-      }).toThrowError(
-        new TypeError(
-          '`file` must be of type `string` or `Uint8Array` or `ArrayBuffer`, but was actually of type `null`',
-        ),
-      );
-    });
-  });
-
   describe(`metadata getter methods`, () => {
     it(`they can retrieve the title, author, subject, producer, creator, keywords, creation date, and modification date from a new document`, async () => {
       const pdfDoc = await PDFDocument.create();

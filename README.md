@@ -51,8 +51,8 @@
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
-  - [Add Attachments](#add-attachments)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
+  - [Add Attachments](#add-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
   - [Draw SVG Paths](#draw-svg-paths)
@@ -360,41 +360,6 @@ const pdfBytes = await pdfDoc.save()
 //   • Rendered in an <iframe>
 ```
 
-### Add Attachments
-
-_This example produces [this PDF](assets/pdfs/examples/file_with_attachment.pdf)_ (when [this PDF](assets/pdfs/normal.pdf) is used for the `fileAttachment` variable).
-
-<!-- prettier-ignore -->
-```js
-import { PDFDocument, rgb } from 'pdf-lib'
-
-// This should be a Uint8Array or ArrayBuffer
-// This data can be obtained in a number of different ways
-// If your running in a Node environment, you could use fs.readFile()
-// In the browser, you could make a fetch() call and use res.arrayBuffer()
-const attachmentBytes = ...
-
-// Create a new PDFDocument
-const pdfDoc = await PDFDocument.create()
-
-// Add the attachment
-await pdfDoc.attach(attachmentBytes, "cool_stuff.pdf", {
-  mimeType: "application/pdf",
-  description: "Full of cool stuff",
-  creationDate: new Date("2019/12/24"),
-  modificationDate: new Date("2020/01/01"),
-  checkSum: "D7C816C0E7D35860A9505b2d64C9E3E3"
-})
-
-// Serialize the PDFDocument to bytes (a Uint8Array)
-const pdfBytes = await pdfDoc.save()
-
-// For example, `pdfBytes` can be:
-//   • Written to a file in Node
-//   • Downloaded from the browser
-//   • Rendered in an <iframe>
-```
-
 ### Embed Font and Measure Text
 
 `pdf-lib` relies on a sister module to support embedding custom fonts: [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit). You must add the `@pdf-lib/fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts.
@@ -452,6 +417,55 @@ page.drawRectangle({
   borderColor: rgb(1, 0, 0),
   borderWidth: 1.5,
 })
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Add Attachments
+
+_This example produces [this PDF](assets/pdfs/examples/add_attachments.pdf)_ (when [this image](assets/images/cat_riding_unicorn.jpg) is used for the `jpgAttachmentBytes` variable and [this PDF](assets/pdfs/us_constitution.pdf) is used for the `pdfAttachmentBytes` variable).
+
+<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/Lyb16ocj/13/) -->
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// These should be Uint8Arrays or ArrayBuffers
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const jpgAttachmentBytes = ...
+const pdfAttachmentBytes = ...
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Add the JPG attachment
+await pdfDoc.attach(jpgAttachmentBytes, 'cat_riding_unicorn.jpg', {
+  mimeType: 'image/jpeg',
+  description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+  creationDate: new Date('2019/12/01'),
+  modificationDate: new Date('2020/04/19'),
+})
+
+// Add the PDF attachment
+await pdfDoc.attach(pdfAttachmentBytes, 'us_constitution.pdf', {
+  mimeType: 'application/pdf',
+  description: 'Constitution of the United States 🇺🇸🦅',
+  creationDate: new Date('1787/09/17'),
+  modificationDate: new Date('1992/05/07'),
+})
+
+// Add a page with some text
+const page = pdfDoc.addPage();
+page.drawText('This PDF has two attachments', { x: 135, y: 415 })
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()

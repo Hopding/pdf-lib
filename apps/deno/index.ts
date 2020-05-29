@@ -1,6 +1,5 @@
 import { dirname } from 'https://deno.land/std@0.50.0/path/mod.ts';
 import { readLines } from 'https://deno.land/std@v0.50.0/io/bufio.ts';
-import { defineReader } from './parser.ts';
 
 import test1 from './tests/test1.ts';
 import test10 from './tests/test10.ts';
@@ -23,9 +22,14 @@ const promptToContinue = () => {
 };
 
 // This needs to be more sophisticated to work on Linux as well.
-const openPdf = (path: string, reader: string) => {
+const openPdf = (path: string, reader: string = '') => {
   if (Deno.build.os === 'darwin') {
     Deno.run({ cmd: ['open', '-a', reader, path] });
+    // Deno.run({ cmd: ['open', '-a', 'Preview', path] });
+    // Deno.run({ cmd: ['open', '-a', 'Adobe Acrobat', path] });
+    // Deno.run({ cmd: ['open', '-a', 'Foxit Reader', path] });
+    // Deno.run({ cmd: ['open', '-a', 'Google Chrome', path] });
+    // Deno.run({ cmd: ['open', '-a', 'Firefox', path] });
   } else if (Deno.build.os === 'windows') {
     // Opens with the default PDF Reader, has room for improvment
     Deno.run({ cmd: ['start', path] });
@@ -121,8 +125,26 @@ const assets = {
 
 export type Assets = typeof assets;
 
+// This script can be executed with 0, 1, or 2 CLI arguments:
+//   $ deno index.ts
+//   $ deno index.ts 3
+//   $ deno index.ts 'Adobe Acrobat'
+//   $ deno index.ts 3 'Adobe Acrobat'
+const loadCliArgs = (): { testIdx?: number; reader?: string } => {
+  const { args } = Deno;
+
+  if (args.length === 0) return {};
+
+  if (args.length === 1) {
+    if (isFinite(Number(args[0]))) return { testIdx: Number(args[0]) };
+    else return { reader: args[0] };
+  }
+
+  return { testIdx: Number(args[0]), reader: args[1] };
+};
+
 const main = async () => {
-  const testIdx = Deno.args[0] ? Number(Deno.args[0]) : undefined;
+  const { testIdx, reader } = loadCliArgs();
 
   // prettier-ignore
   const allTests = [
@@ -138,7 +160,7 @@ const main = async () => {
     const pdfBytes = await test(assets);
     const path = writePdfToTmp(pdfBytes);
     console.log(`> PDF file written to: ${path}`);
-    openPdf(path, defineReader());
+    openPdf(path, reader);
     idx += 1;
     await promptToContinue();
     console.log();

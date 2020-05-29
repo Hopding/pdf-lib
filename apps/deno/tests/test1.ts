@@ -45,13 +45,11 @@ export default async (assets: Assets) => {
 
   pdfDoc.registerFontkit(fontkit);
 
-
   pdfDoc.attach(assets.pdfs.with_large_page_count, 'largoPDF.pdf', {
     mimeType: 'application/pdf',
     description: 'This is a big file',
     creationDate: new Date('2006/06/06'),
     modificationDate: new Date('2007/07/07'),
-    checkSum: '59906A0f2FC5BB5983B34B49B011A805',
   });
 
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
