@@ -431,7 +431,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/add_attachments.pdf)_ (when [this image](assets/images/cat_riding_unicorn.jpg) is used for the `jpgAttachmentBytes` variable and [this PDF](assets/pdfs/us_constitution.pdf) is used for the `pdfAttachmentBytes` variable).
 
-<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/Lyb16ocj/13/) -->
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/9snL63wj/5/)
 
 <!-- prettier-ignore -->
 ```js
@@ -611,7 +611,7 @@ const pdfBytes = await pdfDoc.save()
 
 `pdf-lib` fully supports the exciting new [Deno](https://deno.land/) runtime! All of the [usage examples](#usage-examples) work in Deno. The only thing you need to do is change the imports for `pdf-lib` and `@pdf-lib/fontkit` to use the [Pika](https://www.pika.dev/) CDN, because Deno requires all modules to be referenced via URLs.
 
-> **See also [How to Create and Modify PDF Files in Deno With pdf-lib](https://medium.com/@andrew.dillon.j/how-to-create-and-modify-pdf-files-in-deno-ffaad7099b0)**
+> **See also [How to Create and Modify PDF Files in Deno With pdf-lib](https://medium.com/swlh/how-to-create-and-modify-pdf-files-in-deno-ffaad7099b0?source=friends_link&sk=3da183bb776d059df428eaea52102f19)**
 
 ### Creating a Document with Deno
 
