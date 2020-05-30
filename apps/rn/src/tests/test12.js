@@ -7,17 +7,6 @@ const inchToPt = (inches) => Math.round(inches * 72);
 export default async () => {
   const pdfDoc = await PDFDocument.create();
 
-  pdfDoc.attach(
-    await fetchAsset('pdfs/with_comments.pdf'),
-    'withComments.pdf',
-    {
-      mimeType: 'application/pdf',
-      description: 'This is a file with comments',
-      creationDate: new Date('2012/12/12'),
-      modificationDate: new Date('2013/12/11'),
-    },
-  );
-
   const page1 = pdfDoc.addPage(PageSizes.Letter);
 
   // SVG sample paths from

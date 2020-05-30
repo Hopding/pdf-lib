@@ -117,6 +117,7 @@ const assets = {
     ),
     with_comments: readPdf('with_comments.pdf'),
     with_cropbox: readPdf('with_cropbox.pdf'),
+    us_constitution: readPdf('us_constitution.pdf'),
   },
 };
 

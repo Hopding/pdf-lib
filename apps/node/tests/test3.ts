@@ -16,9 +16,9 @@ export default async (assets: Assets) => {
     updateMetadata: false,
   });
 
-  pdfDoc.attach(pdfs.normal, 'normalPDF.pdf', {
+  await pdfDoc.attach(pdfs.normal_base64, 'tax_form.pdf', {
     mimeType: 'application/pdf',
-    description: 'This is a great file',
+    description: 'D-2210 tax form for 2012 🏦',
     creationDate: new Date('2004/04/04'),
     modificationDate: new Date('2005/05/05'),
   });

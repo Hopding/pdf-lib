@@ -12,6 +12,24 @@ export default async (assets: Assets) => {
 
   pdfDoc.registerFontkit(fontkit);
 
+  await pdfDoc.attach(pdfs.us_constitution, 'us_constitution.pdf', {
+    mimeType: 'application/pdf',
+    description: 'Constitution of the United States 🇺🇸🦅',
+    creationDate: new Date('1787/09/17'),
+    modificationDate: new Date('1992/05/07'),
+  });
+
+  await pdfDoc.attach(
+    images.jpg.cat_riding_unicorn_base64,
+    'cat_riding_unicorn.jpg',
+    {
+      mimeType: 'image/jpeg',
+      description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+      creationDate: new Date('2019/12/01'),
+      modificationDate: new Date('2020/04/19'),
+    },
+  );
+
   const ubuntuFont = await pdfDoc.embedFont(fonts.ttf.ubuntu_r, {
     subset: true,
   });
