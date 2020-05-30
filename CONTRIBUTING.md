@@ -80,11 +80,16 @@ In addition to unit tests, we maintain a suite of integration tests for 3 differ
 
 > **Make sure to [compile the code](#compiling-the-project) before running these tests**
 
-There are integration tests for Node, browser, and React Native environments:
+There are integration tests for Node, Deno, browser, and React Native environments:
 
 - To run the tests for Node:
   ```
   yarn apps:node
+  # Follow the prompts in your terminal
+  ```
+- To run the tests for Deno:
+  ```
+  yarn apps:deno
   # Follow the prompts in your terminal
   ```
 - To run the tests for the browser:

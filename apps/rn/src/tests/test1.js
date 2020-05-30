@@ -11,6 +11,7 @@ import {
   LineCapStyle,
   LineJoinStyle,
   lineTo,
+  typedArrayFor,
   moveTo,
   PDFDocument,
   popGraphicsState,
