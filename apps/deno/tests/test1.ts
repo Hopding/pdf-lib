@@ -11,6 +11,7 @@ import {
   grayscale,
   LineCapStyle,
   LineJoinStyle,
+  typedArrayFor,
   lineTo,
   moveTo,
   PDFDocument,
@@ -45,11 +46,23 @@ export default async (assets: Assets) => {
 
   pdfDoc.registerFontkit(fontkit);
 
-  pdfDoc.attach(assets.pdfs.with_large_page_count, 'largoPDF.pdf', {
-    mimeType: 'application/pdf',
-    description: 'This is a big file',
+  await pdfDoc.attach(assets.images.png.greyscale_bird, 'bird.png', {
+    mimeType: 'image/png',
+    description: 'A bird in greyscale 🐦',
     creationDate: new Date('2006/06/06'),
     modificationDate: new Date('2007/07/07'),
+  });
+
+  const csvString = [
+    'Year,Make,Model',
+    '1997,Ford,E350',
+    '2000,Mercury,Cougar',
+  ].join('\n');
+  await pdfDoc.attach(typedArrayFor(csvString), 'cars.csv', {
+    mimeType: 'text/csv',
+    description: 'Some car info 🚗',
+    creationDate: new Date('2000/01/13'),
+    modificationDate: new Date('2012/12/12'),
   });
 
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);

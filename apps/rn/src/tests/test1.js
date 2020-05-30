@@ -46,16 +46,28 @@ export default async () => {
 
   pdfDoc.registerFontkit(fontkit);
 
-  pdfDoc.attach(
-    await fetchAsset('pdfs/with_large_page_count.pdf'),
-    'largoPDF.pdf',
+  await pdfDoc.attach(
+    await fetchAsset('images/greyscale_bird.png'),
+    'bird.png',
     {
-      mimeType: 'application/pdf',
-      description: 'This is a big file',
+      mimeType: 'image/png',
+      description: 'A bird in greyscale 🐦',
       creationDate: new Date('2006/06/06'),
       modificationDate: new Date('2007/07/07'),
     },
   );
+
+  const csvString = [
+    'Year,Make,Model',
+    '1997,Ford,E350',
+    '2000,Mercury,Cougar',
+  ].join('\n');
+  await pdfDoc.attach(typedArrayFor(csvString), 'cars.csv', {
+    mimeType: 'text/csv',
+    description: 'Some car info 🚗',
+    creationDate: new Date('2000/01/13'),
+    modificationDate: new Date('2012/12/12'),
+  });
 
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
 

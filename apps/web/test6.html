@@ -4,9 +4,9 @@
     <meta
       http-equiv="Content-Security-Policy"
       content="
-        default-src 'self' 'unsafe-inline' blob: resource: https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js;
-        object-src 'self' blob:;
-        frame-src 'self' blob:;
+        default-src 'self' 'unsafe-inline' blob: resource: data: https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js;
+        object-src 'self' blob: resource: data: ;
+        frame-src 'self' blob: resource: data: ;
       "
     />
     <meta charset="UTF-8" />
@@ -44,6 +44,9 @@
         .then((res) => res.arrayBuffer())
         .then((res) => new Uint8Array(res));
 
+    const fetchStringAsset = (asset) =>
+      fetch(`/assets/${asset}`).then((res) => res.text());
+
     const renderInIframe = (pdfBytes) => {
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const blobUrl = URL.createObjectURL(blob);
@@ -58,16 +61,34 @@
         ubuntuBytes,
         smallMarioBytes,
         withCropBoxPdfBytes,
+        usConstitutionPdfBytes,
+        catRidingUnicornJpgBase64,
       ] = await Promise.all([
         fetchAsset('pdfs/with_missing_endstream_eol_and_polluted_ctm.pdf'),
         fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
         fetchAsset('images/small_mario.png'),
         fetchAsset('pdfs/with_cropbox.pdf'),
+        fetchAsset('pdfs/us_constitution.pdf'),
+        fetchStringAsset('images/cat_riding_unicorn.jpg.base64'),
       ]);
 
       const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
       pdfDoc.registerFontkit(fontkit);
+
+      await pdfDoc.attach(usConstitutionPdfBytes, 'us_constitution.pdf', {
+        mimeType: 'application/pdf',
+        description: 'Constitution of the United States 🇺🇸🦅',
+        creationDate: new Date('1787/09/17'),
+        modificationDate: new Date('1992/05/07'),
+      });
+
+      await pdfDoc.attach(catRidingUnicornJpgBase64, 'cat_riding_unicorn.jpg', {
+        mimeType: 'image/jpeg',
+        description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+        creationDate: new Date('2019/12/01'),
+        modificationDate: new Date('2020/04/19'),
+      });
 
       const ubuntuFont = await pdfDoc.embedFont(ubuntuBytes, { subset: true });
       const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);
