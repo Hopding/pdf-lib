@@ -8,8 +8,12 @@ import PDFOptionList from 'src/api/form/PDFOptionList';
 import PDFRadioGroup from 'src/api/form/PDFRadioGroup';
 import PDFSignature from 'src/api/form/PDFSignature';
 import PDFTextField from 'src/api/form/PDFTextField';
-import { drawCheckBox, rotateInPlace } from 'src/api/operations';
-import { rgb } from 'src/api/colors';
+import {
+  drawCheckBox,
+  rotateInPlace,
+  drawRadioButton,
+} from 'src/api/operations';
+import { rgb, grayscale, cmyk } from 'src/api/colors';
 import { reduceRotation, adjustDimsForRotation } from '../rotations';
 
 /*********************** Appearance Provider Types ****************************/
@@ -86,29 +90,52 @@ export const normalizeAppearance = <T>(
   return { normal: appearance };
 };
 
+// prettier-ignore
+const componentsToColor = (comps?: number[], scale = 1) => (
+    comps?.length === 1 ? grayscale(
+      comps[0] * scale,
+    )
+  : comps?.length === 3 ? rgb(
+      comps[0] * scale, 
+      comps[1] * scale, 
+      comps[2] * scale,
+    )
+  : comps?.length === 4 ? cmyk(
+      comps[0] * scale, 
+      comps[1] * scale, 
+      comps[2] * scale, 
+      comps[3] * scale,
+    )
+  : undefined
+);
+
 export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBox> = (
   _checkBox,
   widget,
 ) => {
   const rectangle = widget.getRectangle();
-  const rotation = reduceRotation(
-    widget.getAppearanceCharacteristics()?.getRotation(),
-  );
+  const ap = widget.getAppearanceCharacteristics();
+  const bs = widget.getBorderStyle();
+
+  const borderWidth = bs?.getWidth() ?? 1;
+  const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
   const rotate = rotateInPlace({ ...rectangle, rotation });
 
   const black = rgb(0, 0, 0);
-  const white = rgb(1, 1, 1);
-  const grey = rgb(0.8, 0.8, 0.8);
+  const borderColor = componentsToColor(ap?.getBorderColor()) ?? black;
+  const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
+  const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
+
   const options = {
     x: 0,
     y: 0,
     width,
     height,
     thickness: 1.5,
-    borderWidth: 2,
-    borderColor: black,
+    borderWidth,
+    borderColor,
   };
 
   return {
@@ -117,8 +144,8 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
         ...rotate,
         ...drawCheckBox({
           ...options,
-          color: white,
-          markColor: black,
+          color: normalBackgroundColor,
+          markColor: borderColor,
           filled: true,
         }),
       ],
@@ -126,8 +153,8 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
         ...rotate,
         ...drawCheckBox({
           ...options,
-          color: white,
-          markColor: black,
+          color: normalBackgroundColor,
+          markColor: borderColor,
           filled: false,
         }),
       ],
@@ -137,8 +164,8 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
         ...rotate,
         ...drawCheckBox({
           ...options,
-          color: grey,
-          markColor: black,
+          color: downBackgroundColor,
+          markColor: borderColor,
           filled: true,
         }),
       ],
@@ -146,8 +173,80 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
         ...rotate,
         ...drawCheckBox({
           ...options,
-          color: grey,
-          markColor: black,
+          color: downBackgroundColor,
+          markColor: borderColor,
+          filled: false,
+        }),
+      ],
+    },
+  };
+};
+
+export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadioGroup> = (
+  _radioGroup,
+  widget,
+) => {
+  const rectangle = widget.getRectangle();
+  const ap = widget.getAppearanceCharacteristics();
+  const bs = widget.getBorderStyle();
+
+  const borderWidth = bs?.getWidth() ?? 1;
+  const rotation = reduceRotation(ap?.getRotation());
+  const { width, height } = adjustDimsForRotation(rectangle, rotation);
+
+  const rotate = rotateInPlace({ ...rectangle, rotation });
+
+  const black = rgb(0, 0, 0);
+  const borderColor = componentsToColor(ap?.getBorderColor()) ?? black;
+  const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
+  const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
+
+  const options = {
+    x: width / 2,
+    y: height / 2,
+    width,
+    height,
+    borderWidth,
+    borderColor,
+  };
+
+  return {
+    normal: {
+      selected: [
+        ...rotate,
+        ...drawRadioButton({
+          ...options,
+          color: normalBackgroundColor,
+          dotColor: borderColor,
+          filled: true,
+        }),
+      ],
+      unselected: [
+        ...rotate,
+        ...drawRadioButton({
+          ...options,
+          color: normalBackgroundColor,
+          dotColor: borderColor,
+          filled: false,
+        }),
+      ],
+    },
+    down: {
+      selected: [
+        ...rotate,
+        ...drawRadioButton({
+          ...options,
+          color: downBackgroundColor,
+          dotColor: borderColor,
+          filled: true,
+        }),
+      ],
+      unselected: [
+        ...rotate,
+        ...drawRadioButton({
+          ...options,
+          color: downBackgroundColor,
+          dotColor: borderColor,
           filled: false,
         }),
       ],

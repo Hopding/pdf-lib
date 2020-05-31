@@ -406,3 +406,44 @@ export const drawCheckBox = (options: {
 
   return [...outline, ...checkMark];
 };
+
+export const drawRadioButton = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  dotColor: Color | undefined;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  filled: boolean;
+}) => {
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+
+  const outlineScale = Math.min(width, height) / 2 - KAPPA;
+
+  const outline = drawEllipse({
+    x: options.x,
+    y: options.y,
+    xScale: outlineScale,
+    yScale: outlineScale,
+    color: options.color,
+    borderColor: options.borderColor,
+    borderWidth: options.borderWidth,
+  });
+
+  if (!options.filled) return outline;
+
+  const dot = drawEllipse({
+    x: options.x,
+    y: options.y,
+    xScale: outlineScale * 0.45,
+    yScale: outlineScale * 0.45,
+    color: options.dotColor,
+    borderColor: undefined,
+    borderWidth: 0,
+  });
+
+  return [...outline, ...dot];
+};

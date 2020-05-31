@@ -9,7 +9,7 @@ import {
   PDFFont,
   drawText,
 } from 'src/api';
-import PDFNumber from 'src/core/objects/PDFNumber';
+// import PDFNumber from 'src/core/objects/PDFNumber';
 // import PDFOperator from 'src/core/operators/PDFOperator';
 // import Ops from 'src/core/operators/PDFOperatorNames';
 
@@ -35,11 +35,29 @@ class PDFAcroPushButton extends PDFAcroButton {
       // const color = [PDFNumber.of(1), PDFNumber.of(1), PDFNumber.of(0)];
       // const borderColor = [PDFNumber.of(1), PDFNumber.of(0), PDFNumber.of(0)];
 
+      // // prettier-ignore
+      // const componentsToColor = (comps?: PDFNumber[], scale=1) => (
+      //     comps?.length === 1 ? grayscale(comps[0].asNumber()*scale)
+      //   : comps?.length === 3 ? rgb(comps[0].asNumber()*scale, comps[1].asNumber()*scale, comps[2].asNumber()*scale)
+      //   : comps?.length === 4 ? cmyk(comps[0].asNumber()*scale, comps[1].asNumber()*scale, comps[2].asNumber()*scale, comps[3].asNumber()*scale)
+      //   : undefined
+      // );
       // prettier-ignore
-      const componentsToColor = (comps?: PDFNumber[], scale=1) => (
-          comps?.length === 1 ? grayscale(comps[0].asNumber()*scale)
-        : comps?.length === 3 ? rgb(comps[0].asNumber()*scale, comps[1].asNumber()*scale, comps[2].asNumber()*scale)
-        : comps?.length === 4 ? cmyk(comps[0].asNumber()*scale, comps[1].asNumber()*scale, comps[2].asNumber()*scale, comps[3].asNumber()*scale)
+      const componentsToColor = (comps?: number[], scale = 1) => (
+          comps?.length === 1 ? grayscale(
+            comps[0] * scale,
+          )
+        : comps?.length === 3 ? rgb(
+            comps[0] * scale, 
+            comps[1] * scale, 
+            comps[2] * scale,
+          )
+        : comps?.length === 4 ? cmyk(
+            comps[0] * scale, 
+            comps[1] * scale, 
+            comps[2] * scale, 
+            comps[3] * scale,
+          )
         : undefined
       );
 

@@ -92,8 +92,6 @@ export default class PDFCheckBox extends PDFField {
 
     if (!onValue) return undefined;
 
-    console.log({ width, height });
-
     const xObjectDict = context.obj({
       Type: 'XObject',
       Subtype: 'Form',

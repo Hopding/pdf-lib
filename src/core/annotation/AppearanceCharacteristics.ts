@@ -55,29 +55,29 @@ class AppearanceCharacteristics {
     return this.R()?.asNumber();
   }
 
-  getBorderColor(): PDFNumber[] | undefined {
+  getBorderColor(): number[] | undefined {
     const BC = this.BC();
 
     if (!BC) return undefined;
 
-    const components: PDFNumber[] = [];
+    const components: number[] = [];
     for (let idx = 0, len = BC?.size(); idx < len; idx++) {
       const component = BC.get(idx);
-      if (component instanceof PDFNumber) components.push(component);
+      if (component instanceof PDFNumber) components.push(component.asNumber());
     }
 
     return components;
   }
 
-  getBackgroundColor(): PDFNumber[] | undefined {
+  getBackgroundColor(): number[] | undefined {
     const BG = this.BG();
 
     if (!BG) return undefined;
 
-    const components: PDFNumber[] = [];
+    const components: number[] = [];
     for (let idx = 0, len = BG?.size(); idx < len; idx++) {
       const component = BG.get(idx);
-      if (component instanceof PDFNumber) components.push(component);
+      if (component instanceof PDFNumber) components.push(component.asNumber());
     }
 
     return components;

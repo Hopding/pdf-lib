@@ -2,6 +2,7 @@ import PDFDict from 'src/core/objects/PDFDict';
 import PDFAnnotation from 'src/core/annotation/PDFAnnotation';
 import PDFName from 'src/core/objects/PDFName';
 import AppearanceCharacteristics from 'src/core/annotation/AppearanceCharacteristics';
+import BorderStyle from 'src/core/annotation/BorderStyle';
 
 class PDFWidgetAnnotation extends PDFAnnotation {
   static fromDict = (dict: PDFDict): PDFWidgetAnnotation =>
@@ -13,9 +14,21 @@ class PDFWidgetAnnotation extends PDFAnnotation {
     return undefined;
   }
 
+  BS(): PDFDict | undefined {
+    const BS = this.dict.lookup(PDFName.of('BS'));
+    if (BS instanceof PDFDict) return BS;
+    return undefined;
+  }
+
   getAppearanceCharacteristics(): AppearanceCharacteristics | undefined {
     const MK = this.MK();
     if (MK) return AppearanceCharacteristics.fromDict(MK);
+    return undefined;
+  }
+
+  getBorderStyle(): BorderStyle | undefined {
+    const BS = this.BS();
+    if (BS) return BorderStyle.fromDict(BS);
     return undefined;
   }
 

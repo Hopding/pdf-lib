@@ -3,7 +3,13 @@ import { PDFAcroRadioButton, AcroButtonFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
-import { PDFName } from 'src/core';
+import { PDFName, PDFOperator, PDFDict, PDFContentStream } from 'src/core';
+import { PDFWidgetAnnotation } from 'src/core/annotation';
+import {
+  AppearanceProviderFor,
+  normalizeAppearance,
+  defaultRadioGroupAppearanceProvider,
+} from 'src/api/form/appearances';
 
 /**
  * Represents a radio group field of a [[PDFForm]].
@@ -103,5 +109,64 @@ export default class PDFRadioGroup extends PDFField {
 
   setRadiosAreMutuallyExclusive(enable: boolean) {
     this.acroField.setFlagTo(AcroButtonFlags.RadiosInUnison, !enable);
+  }
+
+  updateAppearances(provider?: AppearanceProviderFor<PDFRadioGroup>) {
+    const apProvider = provider ?? defaultRadioGroupAppearanceProvider;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const { normal, rollover, down } = normalizeAppearance(
+        apProvider(this, widget),
+      );
+
+      const normalDict = this.createAppearanceDict(widget, normal);
+      if (normalDict) widget.setNormalAppearance(normalDict);
+
+      if (rollover) {
+        const rolloverDict = this.createAppearanceDict(widget, rollover);
+        if (rolloverDict) widget.setRolloverAppearance(rolloverDict);
+      } else {
+        widget.removeRolloverAppearance();
+      }
+
+      if (down) {
+        const downDict = this.createAppearanceDict(widget, down);
+        if (downDict) widget.setDownAppearance(downDict);
+      } else {
+        widget.removeDownAppearance();
+      }
+    }
+  }
+
+  private createAppearanceDict(
+    widget: PDFWidgetAnnotation,
+    appearance: { selected: PDFOperator[]; unselected: PDFOperator[] },
+  ): PDFDict | undefined {
+    const { context } = this.acroField.dict;
+    const { width, height } = widget.getRectangle();
+    const onValue = widget.getOnValue();
+
+    if (!onValue) return undefined;
+
+    const xObjectDict = context.obj({
+      Type: 'XObject',
+      Subtype: 'Form',
+      BBox: context.obj([0, 0, width, height]),
+      Matrix: context.obj([1, 0, 0, 1, 0, 0]),
+    });
+
+    const onStream = PDFContentStream.of(xObjectDict, appearance.selected);
+    const onStreamRef = context.register(onStream);
+
+    const offStream = PDFContentStream.of(xObjectDict, appearance.unselected);
+    const offStreamRef = context.register(offStream);
+
+    const appearanceDict = context.obj({});
+    appearanceDict.set(onValue, onStreamRef);
+    appearanceDict.set(PDFName.of('Off'), offStreamRef);
+
+    return appearanceDict;
   }
 }

@@ -150,11 +150,13 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
   rg1.select('Choice2 - 🦄');
   console.log('rg1.getSelected():', rg1.getSelected());
   console.log('rg1.getOptions():', rg1.getOptions());
+  rg1.updateAppearances();
 
   const rg2 = form.getRadioGroup('Group2');
   rg2.select('Choice3');
   console.log('rg2.getSelected():', rg2.getSelected());
   console.log('rg2.getOptions():', rg2.getOptions());
+  rg2.updateAppearances();
 
   // === Check Boxes ===
 
@@ -182,34 +184,6 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
   cb7.check();
   console.log('cb7.isChecked():', cb1.isChecked());
   cb7.updateAppearances();
-  // cb7.updateAppearances((_checkBox, widget) => {
-  //   const { width, height } = widget.getRectangle();
-  //   const black = rgb(1, 0, 0);
-  //   const white = rgb(0, 0, 1);
-  //   const options = {
-  //     x: 0,
-  //     y: 0,
-  //     width,
-  //     height,
-  //     thickness: 3,
-  //     borderWidth: 5,
-  //     borderColor: black,
-  //   };
-  //   return {
-  //     checked: drawCheckBox({
-  //       ...options,
-  //       color: white,
-  //       markColor: black,
-  //       filled: true,
-  //     }),
-  //     unchecked: drawCheckBox({
-  //       ...options,
-  //       color: white,
-  //       markColor: black,
-  //       filled: false,
-  //     }),
-  //   };
-  // });
 
   // === Dropdowns ===
 
