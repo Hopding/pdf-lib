@@ -35,11 +35,21 @@ import {
   StandardFontEmbedder,
   UnexpectedObjectTypeError,
 } from 'src/core';
+import {
+  ParseSpeeds,
+  AttachmentOptions,
+  SaveOptions,
+  Base64SaveOptions,
+  LoadOptions,
+  CreateOptions,
+  EmbedFontOptions,
+} from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
   assertIs,
+  assertOrUndefined,
   assertRange,
   Cache,
   canBeConvertedToUint8Array,
@@ -49,39 +59,8 @@ import {
   range,
   toUint8Array,
 } from 'src/utils';
-
-export enum ParseSpeeds {
-  Fastest = Infinity,
-  Fast = 1500,
-  Medium = 500,
-  Slow = 100,
-}
-
-export interface SaveOptions {
-  useObjectStreams?: boolean;
-  addDefaultPage?: boolean;
-  objectsPerTick?: number;
-}
-
-export interface Base64SaveOptions extends SaveOptions {
-  dataUri?: boolean;
-}
-
-export interface LoadOptions {
-  ignoreEncryption?: boolean;
-  parseSpeed?: ParseSpeeds | number;
-  throwOnInvalidObject?: boolean;
-  updateMetadata?: boolean;
-  capNumbers?: boolean;
-}
-
-export interface CreateOptions {
-  updateMetadata?: boolean;
-}
-
-export interface EmbedFontOptions {
-  subset?: boolean;
-}
+import FileEmbedder from 'src/core/embedders/FileEmbedder';
+import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 
 /**
  * Represents a PDF document.
@@ -201,6 +180,7 @@ export default class PDFDocument {
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
   private readonly embeddedPages: PDFEmbeddedPage[];
+  private readonly embeddedFiles: PDFEmbeddedFile[];
 
   private constructor(
     context: PDFContext,
@@ -219,6 +199,7 @@ export default class PDFDocument {
     this.fonts = [];
     this.images = [];
     this.embeddedPages = [];
+    this.embeddedFiles = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
@@ -704,6 +685,83 @@ export default class PDFDocument {
   }
 
   /**
+   * Add an attachment to this document. Attachments are visible in the
+   * "Attachments" panel of Adobe Acrobat and some other PDF readers. Any
+   * type of file can be added as an attachment. This includes, but is not
+   * limited to, `.png`, `.jpg`, `.pdf`, `.csv`, `.docx`, and `.xlsx` files.
+   *
+   * The input data can be provided in multiple formats:
+   *
+   * | Type          | Contents                                                       |
+   * | ------------- | -------------------------------------------------------------- |
+   * | `string`      | A base64 encoded string (or data URI) containing an attachment |
+   * | `Uint8Array`  | The raw bytes of an attachment                                 |
+   * | `ArrayBuffer` | The raw bytes of an attachment                                 |
+   *
+   * For example:
+   * ```js
+   * // attachment=string
+   * await pdfDoc.attach('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBD...', 'cat_riding_unicorn.jpg', {
+   *   mimeType: 'image/jpeg',
+   *   description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+   *   creationDate: new Date('2019/12/01'),
+   *   modificationDate: new Date('2020/04/19'),
+   * })
+   * await pdfDoc.attach('data:image/jpeg;base64,/9j/4AAQ...', 'cat_riding_unicorn.jpg', {
+   *   mimeType: 'image/jpeg',
+   *   description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+   *   creationDate: new Date('2019/12/01'),
+   *   modificationDate: new Date('2020/04/19'),
+   * })
+   *
+   * // attachment=Uint8Array
+   * import fs from 'fs'
+   * const uint8Array = fs.readFileSync('cat_riding_unicorn.jpg')
+   * await pdfDoc.attach(uint8Array, 'cat_riding_unicorn.jpg', {
+   *   mimeType: 'image/jpeg',
+   *   description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+   *   creationDate: new Date('2019/12/01'),
+   *   modificationDate: new Date('2020/04/19'),
+   * })
+   *
+   * // attachment=ArrayBuffer
+   * const url = 'https://pdf-lib.js.org/assets/cat_riding_unicorn.jpg'
+   * const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+   * await pdfDoc.attach(arrayBuffer, 'cat_riding_unicorn.jpg', {
+   *   mimeType: 'image/jpeg',
+   *   description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+   *   creationDate: new Date('2019/12/01'),
+   *   modificationDate: new Date('2020/04/19'),
+   * })
+   * ```
+   *
+   * @param attachment The input data containing the file to be attached.
+   * @param name The name of the file to be attached.
+   * @returns Resolves when the attachment is complete.
+   */
+  async attach(
+    attachment: string | Uint8Array | ArrayBuffer,
+    name: string,
+    options: AttachmentOptions = {},
+  ): Promise<void> {
+    assertIs(attachment, 'attachment', ['string', Uint8Array, ArrayBuffer]);
+    assertIs(name, 'name', ['string']);
+    assertOrUndefined(options.mimeType, 'mimeType', ['string']);
+    assertOrUndefined(options.description, 'description', ['string']);
+    assertOrUndefined(options.creationDate, 'options.creationDate', [Date]);
+    assertOrUndefined(options.modificationDate, 'options.modificationDate', [
+      Date,
+    ]);
+
+    const bytes = toUint8Array(attachment);
+    const embedder = FileEmbedder.for(bytes, name, options);
+
+    const ref = this.context.nextRef();
+    const embeddedFile = PDFEmbeddedFile.of(ref, this, embedder);
+    this.embeddedFiles.push(embeddedFile);
+  }
+
+  /**
    * Embed a font into this document. The input data can be provided in multiple
    * formats:
    *
@@ -1041,6 +1099,7 @@ export default class PDFDocument {
     await this.embedAll(this.fonts);
     await this.embedAll(this.images);
     await this.embedAll(this.embeddedPages);
+    await this.embedAll(this.embeddedFiles);
   }
 
   /**

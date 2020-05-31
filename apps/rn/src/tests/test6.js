@@ -9,16 +9,34 @@ export default async () => {
     ubuntuBytes,
     smallMarioBytes,
     withCropBoxPdfBytes,
+    usConstitutionPdfBytes,
+    catRidingUnicornJpgBytes,
   ] = await Promise.all([
     fetchAsset('pdfs/with_missing_endstream_eol_and_polluted_ctm.pdf'),
     fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
     fetchAsset('images/small_mario_resized.png'),
     fetchAsset('pdfs/with_cropbox.pdf'),
+    fetchAsset('pdfs/us_constitution.pdf'),
+    fetchAsset('images/cat_riding_unicorn_resized.jpg'),
   ]);
 
   const pdfDoc = await PDFDocument.load(inputPdfBytes);
 
   pdfDoc.registerFontkit(fontkit);
+
+  await pdfDoc.attach(usConstitutionPdfBytes, 'us_constitution.pdf', {
+    mimeType: 'application/pdf',
+    description: 'Constitution of the United States 🇺🇸🦅',
+    creationDate: new Date('1787/09/17'),
+    modificationDate: new Date('1992/05/07'),
+  });
+
+  await pdfDoc.attach(catRidingUnicornJpgBytes, 'cat_riding_unicorn.jpg', {
+    mimeType: 'image/jpeg',
+    description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+    creationDate: new Date('2019/12/01'),
+    modificationDate: new Date('2020/04/19'),
+  });
 
   const ubuntuFont = await pdfDoc.embedFont(ubuntuBytes, { subset: true });
   const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);

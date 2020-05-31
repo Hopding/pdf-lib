@@ -26,17 +26,20 @@ const prompt = `Press <enter> to run the next test...`;
 const promptToContinue = () =>
   new Promise((resolve) => cli.question(prompt, (_answer) => resolve()));
 
-// This needs to be more sophisticated to work on Linux and Windows as well.
-const openPdf = (path: string) => {
+// This needs to be more sophisticated to work on Linux as well.
+const openPdf = (path: string, reader?: string) => {
   if (process.platform === 'darwin') {
-    // TODO: Make this a CLI argument
-    execSync(`open -a "Preview" ${path}`);
-    // execSync(`open -a "Adobe Acrobat" ${path}`);
-    // execSync(`open -a "Foxit Reader" ${path}`);
-    // execSync(`open -a "Google Chrome" ${path}`);
-    // execSync(`open -a "Firefox" ${path}`);
+    execSync(`open -a "${reader || 'Preview'}" '${path}'`);
+    // execSync(`open -a "Preview" '${path}'`);
+    // execSync(`open -a "Adobe Acrobat" '${path}'`);
+    // execSync(`open -a "Foxit Reader" '${path}'`);
+    // execSync(`open -a "Google Chrome" '${path}'`);
+    // execSync(`open -a "Firefox" '${path}'`);
+  } else if (process.platform === 'win32') {
+    // Opens with the default PDF Reader, has room for improvment
+    execSync(`start '${path}'`);
   } else {
-    const msg1 = `Note: Automatically opening PDFs currently only works on Macs. If you're using a Windows or Linux machine, please consider contributing to expand support for this feature`;
+    const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
     const msg2 = `(https://github.com/Hopding/pdf-lib/blob/master/apps/node/index.ts#L8-L17)\n`;
     console.warn(msg1);
     console.warn(msg2);
@@ -114,14 +117,33 @@ const assets = {
     ),
     with_comments: readPdf('with_comments.pdf'),
     with_cropbox: readPdf('with_cropbox.pdf'),
+    us_constitution: readPdf('us_constitution.pdf'),
   },
 };
 
 export type Assets = typeof assets;
 
+// This script can be executed with 0, 1, or 2 CLI arguments:
+//   $ node index.js
+//   $ node index.js 3
+//   $ node index.js 'Adobe Acrobat'
+//   $ node index.js 3 'Adobe Acrobat'
+const loadCliArgs = (): { testIdx?: number; reader?: string } => {
+  const [, , ...args] = process.argv;
+
+  if (args.length === 0) return {};
+
+  if (args.length === 1) {
+    if (isFinite(Number(args[0]))) return { testIdx: Number(args[0]) };
+    else return { reader: args[0] };
+  }
+
+  return { testIdx: Number(args[0]), reader: args[1] };
+};
+
 const main = async () => {
   try {
-    const testIdx = process.argv[2] ? Number(process.argv[2]) : undefined;
+    const { testIdx, reader } = loadCliArgs();
 
     // prettier-ignore
     const allTests = [
@@ -137,7 +159,8 @@ const main = async () => {
       const pdfBytes = await test(assets);
       const path = writePdfToTmp(pdfBytes);
       console.log(`> PDF file written to: ${path}`);
-      openPdf(path);
+
+      openPdf(path, reader);
       idx += 1;
       await promptToContinue();
       console.log();

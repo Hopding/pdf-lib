@@ -21,17 +21,20 @@ const promptToContinue = () => {
   return readLines(Deno.stdin).next();
 };
 
-// This needs to be more sophisticated to work on Linux and Windows as well.
-const openPdf = (path: string) => {
+// This needs to be more sophisticated to work on Linux as well.
+const openPdf = (path: string, reader: string = '') => {
   if (Deno.build.os === 'darwin') {
-    // TODO: Make this a CLI argument
-    Deno.run({ cmd: ['open', '-a', 'Preview', path] });
+    Deno.run({ cmd: ['open', '-a', reader, path] });
+    // Deno.run({ cmd: ['open', '-a', 'Preview', path] });
     // Deno.run({ cmd: ['open', '-a', 'Adobe Acrobat', path] });
     // Deno.run({ cmd: ['open', '-a', 'Foxit Reader', path] });
     // Deno.run({ cmd: ['open', '-a', 'Google Chrome', path] });
     // Deno.run({ cmd: ['open', '-a', 'Firefox', path] });
+  } else if (Deno.build.os === 'windows') {
+    // Opens with the default PDF Reader, has room for improvment
+    Deno.run({ cmd: ['start', path] });
   } else {
-    const msg1 = `Note: Automatically opening PDFs currently only works on Macs. If you're using a Windows or Linux machine, please consider contributing to expand support for this feature`;
+    const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
     const msg2 = `(https://github.com/Hopding/pdf-lib/blob/master/apps/node/index.ts#L8-L17)\n`;
     console.warn(msg1);
     console.warn(msg2);
@@ -117,13 +120,32 @@ const assets = {
     ),
     with_comments: readPdf('with_comments.pdf'),
     with_cropbox: readPdf('with_cropbox.pdf'),
+    us_constitution: readPdf('us_constitution.pdf'),
   },
 };
 
 export type Assets = typeof assets;
 
+// This script can be executed with 0, 1, or 2 CLI arguments:
+//   $ deno index.ts
+//   $ deno index.ts 3
+//   $ deno index.ts 'Adobe Acrobat'
+//   $ deno index.ts 3 'Adobe Acrobat'
+const loadCliArgs = (): { testIdx?: number; reader?: string } => {
+  const { args } = Deno;
+
+  if (args.length === 0) return {};
+
+  if (args.length === 1) {
+    if (isFinite(Number(args[0]))) return { testIdx: Number(args[0]) };
+    else return { reader: args[0] };
+  }
+
+  return { testIdx: Number(args[0]), reader: args[1] };
+};
+
 const main = async () => {
-  const testIdx = Deno.args[0] ? Number(Deno.args[0]) : undefined;
+  const { testIdx, reader } = loadCliArgs();
 
   // prettier-ignore
   const allTests = [
@@ -139,7 +161,7 @@ const main = async () => {
     const pdfBytes = await test(assets);
     const path = writePdfToTmp(pdfBytes);
     console.log(`> PDF file written to: ${path}`);
-    openPdf(path);
+    openPdf(path, reader);
     idx += 1;
     await promptToContinue();
     console.log();

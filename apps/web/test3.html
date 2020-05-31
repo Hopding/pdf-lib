@@ -4,7 +4,7 @@
     <meta
       http-equiv="Content-Security-Policy"
       content="
-        default-src 'self' 'unsafe-inline' blob: resource:;
+        default-src 'self' 'unsafe-inline' blob: resource: data:;
         object-src 'self' data:;
         frame-src 'self' data:;
       "
@@ -52,14 +52,23 @@
         inputPdfBase64,
         catRidingUnicornBytes,
         cmykBytes,
+        normalPdfBase64,
       ] = await Promise.all([
         fetchStringAsset('pdfs/with_update_sections.pdf.base64.uri'),
         fetchBinaryAsset('images/cat_riding_unicorn.jpg'),
         fetchBinaryAsset('images/cmyk_colorspace.jpg'),
+        fetchStringAsset('pdfs/normal.pdf.base64'),
       ]);
 
       const pdfDoc = await PDFDocument.load(inputPdfBase64, {
         updateMetadata: false,
+      });
+
+      await pdfDoc.attach(normalPdfBase64, 'tax_form.pdf', {
+        mimeType: 'application/pdf',
+        description: 'D-2210 tax form for 2012 🏦',
+        creationDate: new Date('2004/04/04'),
+        modificationDate: new Date('2005/05/05'),
       });
 
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);

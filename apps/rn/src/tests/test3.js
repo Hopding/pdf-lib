@@ -9,14 +9,27 @@ import {
 import { fetchAsset, writePdf } from './assets';
 
 export default async () => {
-  const [inputPdfBytes, catRidingUnicornBytes, cmykBytes] = await Promise.all([
+  const [
+    inputPdfBytes,
+    catRidingUnicornBytes,
+    cmykBytes,
+    normalPdfBase64,
+  ] = await Promise.all([
     fetchAsset('pdfs/with_update_sections.pdf'),
     fetchAsset('images/cat_riding_unicorn_resized.jpg'),
     fetchAsset('images/cmyk_colorspace.jpg'),
+    fetchAsset('pdfs/normal.pdf'),
   ]);
 
   const pdfDoc = await PDFDocument.load(inputPdfBytes, {
     updateMetadata: false,
+  });
+
+  await pdfDoc.attach(normalPdfBase64, 'tax_form.pdf', {
+    mimeType: 'application/pdf',
+    description: 'D-2210 tax form for 2012 🏦',
+    creationDate: new Date('2004/04/04'),
+    modificationDate: new Date('2005/05/05'),
   });
 
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);

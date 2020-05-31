@@ -1,5 +1,7 @@
 import { PageSizes, PDFDocument, rgb } from 'pdf-lib';
 
+import { fetchAsset } from './assets';
+
 const inchToPt = (inches) => Math.round(inches * 72);
 
 export default async () => {

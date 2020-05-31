@@ -17,6 +17,13 @@ export default async (assets: Assets) => {
     updateMetadata: false,
   });
 
+  await pdfDoc.attach(pdfs.normal_base64, 'tax_form.pdf', {
+    mimeType: 'application/pdf',
+    description: 'D-2210 tax form for 2012 🏦',
+    creationDate: new Date('2004/04/04'),
+    modificationDate: new Date('2005/05/05'),
+  });
+
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const catRidingUnicornImage = await pdfDoc.embedJpg(
     images.jpg.cat_riding_unicorn,
