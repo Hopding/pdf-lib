@@ -12,6 +12,7 @@ import {
   drawCheckBox,
   rotateInPlace,
   drawRadioButton,
+  drawButton,
 } from 'src/api/operations';
 import { rgb, grayscale, cmyk } from 'src/api/colors';
 import { reduceRotation, adjustDimsForRotation } from '../rotations';
@@ -251,5 +252,67 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
         }),
       ],
     },
+  };
+};
+
+export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> = (
+  _radioGroup,
+  widget,
+  font,
+) => {
+  const rectangle = widget.getRectangle();
+  const ap = widget.getAppearanceCharacteristics();
+  const bs = widget.getBorderStyle();
+  const captions = ap?.getCaptions();
+  const normalText = captions?.normal ?? '';
+  const downText = captions?.down ?? normalText ?? '';
+
+  const borderWidth = bs?.getWidth() ?? 1;
+  const rotation = reduceRotation(ap?.getRotation());
+  const { width, height } = adjustDimsForRotation(rectangle, rotation);
+
+  const rotate = rotateInPlace({ ...rectangle, rotation });
+
+  const black = rgb(0, 0, 0);
+
+  // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
+  const borderColor = componentsToColor(ap?.getBorderColor()) ?? black;
+  const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
+  const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
+
+  const fontSize = 15;
+
+  const options = {
+    x: 0,
+    y: 0,
+    width,
+    height,
+    borderWidth,
+    borderColor,
+    textColor: borderColor,
+    font: font.name,
+    fontSize,
+    encodeText: (t: string) => font.encodeText(t),
+    widthOfText: (t: string) => font.widthOfTextAtSize(t, fontSize),
+    heightOfText: (_t: string) => font.heightAtSize(fontSize),
+  };
+
+  return {
+    normal: [
+      ...rotate,
+      ...drawButton({
+        ...options,
+        color: normalBackgroundColor,
+        text: normalText,
+      }),
+    ],
+    down: [
+      ...rotate,
+      ...drawButton({
+        ...options,
+        color: downBackgroundColor,
+        text: downText,
+      }),
+    ],
   };
 };

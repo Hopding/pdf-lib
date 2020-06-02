@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument, rgb, drawCheckBox } from 'src/index';
+import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
 
 // import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 // import {
@@ -135,6 +135,8 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
     fs.readFileSync('/Users/user/Desktop/radios.pdf'),
   );
 
+  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
   const form = pdfDoc.getForm()!;
 
   const fields = form.getFields();
@@ -143,6 +145,17 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
     'Fields:',
     fields.map((f) => [f.getName(), f.constructor.name]),
   );
+
+  // === Buttons ===
+
+  const btn8 = form.getButton('Button8');
+  btn8.updateAppearances(helvetica);
+
+  const btn9 = form.getButton('Button9');
+  btn9.updateAppearances(helvetica);
+
+  const btn10 = form.getButton('Button10');
+  btn10.updateAppearances(helvetica);
 
   // === Radio Groups ===
 
