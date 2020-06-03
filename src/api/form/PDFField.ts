@@ -24,6 +24,9 @@ export default class PDFField {
     this.doc = doc;
   }
 
+  /**
+   * Returns the fully qualified name of this field as a string.
+   */
   getName(): string {
     return this.acroField.getFullyQualifiedName() ?? '';
   }
