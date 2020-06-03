@@ -498,3 +498,84 @@ export const drawButton = (options: {
 
   return [...background, ...label];
 };
+
+export interface DrawTextLinesOptions {
+  color: Color;
+  font: string | PDFName;
+  size: number | PDFNumber;
+  rotate: Rotation;
+  xSkew: Rotation;
+  ySkew: Rotation;
+}
+
+export const drawTextLines = (
+  lines: { encoded: PDFHexString; x: number; y: number }[],
+  options: DrawTextLinesOptions,
+): PDFOperator[] => {
+  const operators = [
+    beginText(),
+    setFillingColor(options.color),
+    setFontAndSize(options.font, options.size),
+  ];
+
+  for (let idx = 0, len = lines.length; idx < len; idx++) {
+    const { encoded, x, y } = lines[idx];
+    operators.push(
+      rotateAndSkewTextRadiansAndTranslate(
+        toRadians(options.rotate),
+        toRadians(options.xSkew),
+        toRadians(options.ySkew),
+        x,
+        y,
+      ),
+      showText(encoded),
+    );
+  }
+
+  operators.push(endText());
+  return operators;
+};
+
+// TODO: Need to push/pop graphics state on all this stuff...
+export const drawTextField = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  textLines: { encoded: PDFHexString; x: number; y: number }[];
+  textColor: Color;
+  font: string | PDFName;
+  fontSize: number | PDFNumber;
+}) => {
+  const x = asNumber(options.x);
+  const y = asNumber(options.y);
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+
+  const background = drawRectangle({
+    x,
+    y,
+    width,
+    height,
+    borderWidth: options.borderWidth,
+    color: options.color,
+    borderColor: options.borderColor,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  const lines = drawTextLines(options.textLines, {
+    color: options.textColor,
+    font: options.font,
+    size: options.fontSize,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  return [...background, ...lines];
+};

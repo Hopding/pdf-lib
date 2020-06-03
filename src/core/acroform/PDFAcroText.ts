@@ -53,12 +53,36 @@ class PDFAcroText extends PDFAcroTerminal {
     return undefined;
   }
 
+  DA(): PDFString | PDFHexString | undefined {
+    const da = this.dict.lookup(PDFName.of('DA'));
+    if (da instanceof PDFString || da instanceof PDFHexString) return da;
+    return undefined;
+  }
+
+  Q(): PDFNumber | undefined {
+    const q = this.dict.lookup(PDFName.of('Q'));
+    if (q instanceof PDFNumber) return q;
+    return undefined;
+  }
+
   setMaxLength(maxLength: number) {
     this.dict.set(PDFName.of('V'), PDFNumber.of(maxLength));
   }
 
   getMaxLength(): number | undefined {
     return this.MaxLen()?.asNumber();
+  }
+
+  getDefaultAppearance(): string | undefined {
+    return this.DA()?.decodeText() ?? '';
+  }
+
+  setQuadding(quadding: number) {
+    this.dict.set(PDFName.of('Q'), PDFNumber.of(quadding));
+  }
+
+  getQuadding(): number | undefined {
+    return this.Q()?.asNumber();
   }
 
   setValue(value: PDFHexString | PDFString) {
@@ -128,10 +152,21 @@ class PDFAcroText extends PDFAcroTerminal {
       const borderColor = characteristics?.getBorderColor();
 
       // prettier-ignore
-      const componentsToColor = (comps?: PDFNumber[], scale=1) => (
-          comps?.length === 1 ? grayscale(comps[0].asNumber()*scale)
-        : comps?.length === 3 ? rgb(comps[0].asNumber()*scale, comps[1].asNumber()*scale, comps[2].asNumber()*scale)
-        : comps?.length === 4 ? cmyk(comps[0].asNumber()*scale, comps[1].asNumber()*scale, comps[2].asNumber()*scale, comps[3].asNumber()*scale)
+      const componentsToColor = (comps?: number[], scale = 1) => (
+          comps?.length === 1 ? grayscale(
+            comps[0] * scale,
+          )
+        : comps?.length === 3 ? rgb(
+            comps[0] * scale, 
+            comps[1] * scale, 
+            comps[2] * scale,
+          )
+        : comps?.length === 4 ? cmyk(
+            comps[0] * scale, 
+            comps[1] * scale, 
+            comps[2] * scale, 
+            comps[3] * scale,
+          )
         : undefined
       );
 

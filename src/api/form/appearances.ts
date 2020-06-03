@@ -13,9 +13,16 @@ import {
   rotateInPlace,
   drawRadioButton,
   drawButton,
+  drawTextField,
 } from 'src/api/operations';
 import { rgb, grayscale, cmyk } from 'src/api/colors';
 import { reduceRotation, adjustDimsForRotation } from '../rotations';
+import {
+  layoutMultilineText,
+  layoutCombedText,
+  TextPosition,
+  layoutSinglelineText,
+} from '../text/layout';
 
 /*********************** Appearance Provider Types ****************************/
 
@@ -124,8 +131,8 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
 
   const rotate = rotateInPlace({ ...rectangle, rotation });
 
-  const black = rgb(0, 0, 0);
-  const borderColor = componentsToColor(ap?.getBorderColor()) ?? black;
+  // const black = rgb(0, 0, 0);
+  const borderColor = componentsToColor(ap?.getBorderColor());
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
   const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
 
@@ -191,14 +198,14 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
   const ap = widget.getAppearanceCharacteristics();
   const bs = widget.getBorderStyle();
 
-  const borderWidth = bs?.getWidth() ?? 1;
+  const borderWidth = bs?.getWidth();
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
   const rotate = rotateInPlace({ ...rectangle, rotation });
 
-  const black = rgb(0, 0, 0);
-  const borderColor = componentsToColor(ap?.getBorderColor()) ?? black;
+  // const black = rgb(0, 0, 0);
+  const borderColor = componentsToColor(ap?.getBorderColor());
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
   const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
 
@@ -207,7 +214,7 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
     y: height / 2,
     width,
     height,
-    borderWidth,
+    borderWidth: borderWidth ?? 0,
     borderColor,
   };
 
@@ -255,6 +262,7 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
   };
 };
 
+// TODO: This should use `layoutSinglelineText`
 export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> = (
   _radioGroup,
   widget,
@@ -267,7 +275,7 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   const normalText = captions?.normal ?? '';
   const downText = captions?.down ?? normalText ?? '';
 
-  const borderWidth = bs?.getWidth() ?? 1;
+  const borderWidth = bs?.getWidth();
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -276,7 +284,7 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   const black = rgb(0, 0, 0);
 
   // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
-  const borderColor = componentsToColor(ap?.getBorderColor()) ?? black;
+  const borderColor = componentsToColor(ap?.getBorderColor());
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
   const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
 
@@ -287,9 +295,9 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
     y: 0,
     width,
     height,
-    borderWidth,
+    borderWidth: borderWidth ?? 0,
     borderColor,
-    textColor: borderColor,
+    textColor: borderColor ?? black,
     font: font.name,
     fontSize,
     encodeText: (t: string) => font.encodeText(t),
@@ -315,4 +323,87 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
       }),
     ],
   };
+};
+
+// Examples:
+//   `/Helv 12 Tf` -> ['Helv', '12']
+//   `/HeBo 8.00 Tf` -> ['HeBo', '8.00']
+const tfRegex = /\/([^\0\t\n\f\r\ ]+)[\0\t\n\f\r\ ]+(\d*\.\d+|\d+)[\0\t\n\f\r\ ]+Tf/;
+
+// TODO: Support auto-wrapping
+export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextField> = (
+  textField,
+  widget,
+  font,
+) => {
+  const da = textField.acroField.getDefaultAppearance() ?? '';
+  const daMatch = da.match(tfRegex) ?? [];
+  const defaultFontSize = isFinite(Number(daMatch[2]))
+    ? Number(daMatch[2])
+    : undefined;
+
+  const rectangle = widget.getRectangle();
+  const ap = widget.getAppearanceCharacteristics();
+  const bs = widget.getBorderStyle();
+  const text = textField.getText() ?? '';
+
+  const borderWidth = bs?.getWidth();
+  const rotation = reduceRotation(ap?.getRotation());
+  const { width, height } = adjustDimsForRotation(rectangle, rotation);
+
+  const rotate = rotateInPlace({ ...rectangle, rotation });
+
+  const black = rgb(0, 0, 0);
+
+  // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
+  const borderColor = componentsToColor(ap?.getBorderColor());
+  const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
+
+  let textLines: TextPosition[];
+  let fontSize: number;
+
+  if (textField.isMultiline()) {
+    const layout = layoutMultilineText(text, {
+      alignment: textField.getAlignment(),
+      fontSize: defaultFontSize,
+      font,
+      bounds: { x: 0, y: 0, width, height },
+    });
+    textLines = layout.lines;
+    fontSize = layout.fontSize;
+  } else if (textField.isEvenlySpaced()) {
+    const layout = layoutCombedText(text, {
+      fontSize: defaultFontSize,
+      font,
+      bounds: { x: 0, y: 0, width, height },
+      cellCount: textField.getMaxLength() ?? 0,
+    });
+    textLines = layout.cells;
+    fontSize = layout.fontSize;
+  } else {
+    const layout = layoutSinglelineText(text, {
+      alignment: textField.getAlignment(),
+      fontSize: defaultFontSize,
+      font,
+      bounds: { x: 0, y: 0, width, height },
+    });
+    textLines = [layout.line];
+    fontSize = layout.fontSize;
+  }
+
+  const options = {
+    x: 0,
+    y: 0,
+    width,
+    height,
+    borderWidth: borderWidth ?? 0,
+    borderColor,
+    textColor: borderColor ?? black,
+    font: font.name,
+    fontSize,
+    color: normalBackgroundColor,
+    textLines,
+  };
+
+  return [...rotate, ...drawTextField(options)];
 };
