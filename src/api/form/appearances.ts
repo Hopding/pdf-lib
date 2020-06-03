@@ -23,6 +23,7 @@ import {
   TextPosition,
   layoutSinglelineText,
 } from '../text/layout';
+import { PDFAcroText, PDFAcroComboBox } from 'src/core/acroform';
 
 /*********************** Appearance Provider Types ****************************/
 
@@ -330,17 +331,20 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
 //   `/HeBo 8.00 Tf` -> ['HeBo', '8.00']
 const tfRegex = /\/([^\0\t\n\f\r\ ]+)[\0\t\n\f\r\ ]+(\d*\.\d+|\d+)[\0\t\n\f\r\ ]+Tf/;
 
+const getDefaultFontSize = (field: PDFAcroText | PDFAcroComboBox) => {
+  const da = field.getDefaultAppearance() ?? '';
+  const daMatch = da.match(tfRegex) ?? [];
+  const defaultFontSize = Number(daMatch[2]);
+  return isFinite(defaultFontSize) ? defaultFontSize : undefined;
+};
+
 // TODO: Support auto-wrapping
 export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextField> = (
   textField,
   widget,
   font,
 ) => {
-  const da = textField.acroField.getDefaultAppearance() ?? '';
-  const daMatch = da.match(tfRegex) ?? [];
-  const defaultFontSize = isFinite(Number(daMatch[2]))
-    ? Number(daMatch[2])
-    : undefined;
+  const defaultFontSize = getDefaultFontSize(textField.acroField);
 
   const rectangle = widget.getRectangle();
   const ap = widget.getAppearanceCharacteristics();
@@ -403,6 +407,59 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
     fontSize,
     color: normalBackgroundColor,
     textLines,
+  };
+
+  return [...rotate, ...drawTextField(options)];
+};
+
+// TODO: Support auto-wrapping
+export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdown> = (
+  dropdown,
+  widget,
+  font,
+) => {
+  const defaultFontSize = getDefaultFontSize(dropdown.acroField);
+
+  const rectangle = widget.getRectangle();
+  const ap = widget.getAppearanceCharacteristics();
+  const bs = widget.getBorderStyle();
+  const text = dropdown.getSelected()[0] ?? '';
+
+  console.log('DROPDOWN:');
+  console.log(String(dropdown.acroField.dict));
+  console.log();
+
+  const borderWidth = bs?.getWidth();
+  const rotation = reduceRotation(ap?.getRotation());
+  const { width, height } = adjustDimsForRotation(rectangle, rotation);
+
+  const rotate = rotateInPlace({ ...rectangle, rotation });
+
+  const black = rgb(0, 0, 0);
+
+  // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
+  const borderColor = componentsToColor(ap?.getBorderColor());
+  const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
+
+  const { line, fontSize } = layoutSinglelineText(text, {
+    alignment: 'left',
+    fontSize: defaultFontSize,
+    font,
+    bounds: { x: 0, y: 0, width, height },
+  });
+
+  const options = {
+    x: 0,
+    y: 0,
+    width,
+    height,
+    borderWidth: borderWidth ?? 0,
+    borderColor,
+    textColor: borderColor ?? black,
+    font: font.name,
+    fontSize,
+    color: normalBackgroundColor,
+    textLines: [line],
   };
 
   return [...rotate, ...drawTextField(options)];

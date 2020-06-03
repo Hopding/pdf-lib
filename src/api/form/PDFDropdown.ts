@@ -1,9 +1,16 @@
 import PDFDocument from 'src/api/PDFDocument';
+import PDFFont from 'src/api/PDFFont';
 import { PDFAcroComboBox, AcroChoiceFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
-import { PDFHexString } from 'src/core';
+import { PDFHexString, PDFOperator, PDFRef, PDFContentStream } from 'src/core';
+import { PDFWidgetAnnotation } from 'src/core/annotation';
+import {
+  AppearanceProviderFor,
+  normalizeAppearance,
+  defaultDropdownAppearanceProvider,
+} from 'src/api/form/appearances';
 
 /**
  * Represents a dropdown field of a [[PDFForm]].
@@ -154,5 +161,64 @@ export default class PDFDropdown extends PDFField {
 
   setCommitImmediately(enable: boolean) {
     this.acroField.setFlagTo(AcroChoiceFlags.CommitOnSelChange, enable);
+  }
+
+  updateAppearances(
+    font: PDFFont,
+    provider?: AppearanceProviderFor<PDFDropdown>,
+  ) {
+    const apProvider = provider ?? defaultDropdownAppearanceProvider;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const { normal, rollover, down } = normalizeAppearance(
+        apProvider(this, widget, font),
+      );
+
+      const normalStream = this.createAppearanceStream(widget, normal, font);
+      if (normalStream) widget.setNormalAppearance(normalStream);
+
+      if (rollover) {
+        const rolloverStream = this.createAppearanceStream(
+          widget,
+          rollover,
+          font,
+        );
+        if (rolloverStream) widget.setRolloverAppearance(rolloverStream);
+      } else {
+        widget.removeRolloverAppearance();
+      }
+
+      if (down) {
+        const downStream = this.createAppearanceStream(widget, down, font);
+        if (downStream) widget.setDownAppearance(downStream);
+      } else {
+        widget.removeDownAppearance();
+      }
+    }
+  }
+
+  private createAppearanceStream(
+    widget: PDFWidgetAnnotation,
+    appearance: PDFOperator[],
+    font: PDFFont,
+  ): PDFRef | undefined {
+    const { context } = this.acroField.dict;
+    const { width, height } = widget.getRectangle();
+
+    // TODO: Use `context.formXObject` everywhere
+    const xObjectDict = context.obj({
+      Type: 'XObject',
+      Subtype: 'Form',
+      BBox: context.obj([0, 0, width, height]),
+      Matrix: context.obj([1, 0, 0, 1, 0, 0]),
+      Resources: { Font: { [font.name]: font.ref } },
+    });
+
+    const stream = PDFContentStream.of(xObjectDict, appearance);
+    const streamRef = context.register(stream);
+
+    return streamRef;
   }
 }
