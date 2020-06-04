@@ -9,6 +9,16 @@ import { AcroChoiceFlags } from 'src/core/acroform/flags';
 class PDFAcroChoice extends PDFAcroTerminal {
   // static fromDict = (dict: PDFDict) => new PDFAcroChoice(dict);
 
+  DA(): PDFString | PDFHexString | undefined {
+    const da = this.dict.lookup(PDFName.of('DA'));
+    if (da instanceof PDFString || da instanceof PDFHexString) return da;
+    return undefined;
+  }
+
+  getDefaultAppearance(): string | undefined {
+    return this.DA()?.decodeText() ?? '';
+  }
+
   // TODO: Remove duplicates
   setValues(values: (PDFString | PDFHexString)[]) {
     if (!this.valuesAreValid(values)) throw new Error('TODO: FIX ME! INVALID');

@@ -221,4 +221,7 @@ export default class PDFDropdown extends PDFField {
 
     return streamRef;
   }
+
+  // Hack to differentiate `PDFDropdown` from `PDFOptionList`
+  protected _isDropdown = true;
 }

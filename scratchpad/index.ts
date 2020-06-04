@@ -215,6 +215,15 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   console.log('dd4.getOptions():', dd4.getOptions());
   dd4.updateAppearances(courier);
 
+  // === Option Lists ===
+
+  const ol2 = form.getOptionList('List Box2');
+  ol2.select(['Item2', 'Item4']);
+  console.log('ol2.getSelectedIndices():', ol2.getSelectedIndices());
+  console.log('ol2.getSelected():', ol2.getSelected());
+  console.log('ol2.getOptions():', ol2.getOptions());
+  ol2.updateAppearances(helvetica);
+
   // === Text Fields ===
 
   const tf5 = form.getTextField('Text5');
@@ -254,5 +263,5 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   // });
 
   fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
-  openPdf('out.pdf', Reader.Preview);
+  openPdf('out.pdf', Reader.Chrome);
 })();

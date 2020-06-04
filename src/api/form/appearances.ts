@@ -14,9 +14,10 @@ import {
   drawRadioButton,
   drawButton,
   drawTextField,
+  drawRectangle,
 } from 'src/api/operations';
 import { rgb, grayscale, cmyk } from 'src/api/colors';
-import { reduceRotation, adjustDimsForRotation } from '../rotations';
+import { reduceRotation, adjustDimsForRotation, degrees } from '../rotations';
 import {
   layoutMultilineText,
   layoutCombedText,
@@ -412,7 +413,6 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
   return [...rotate, ...drawTextField(options)];
 };
 
-// TODO: Support auto-wrapping
 export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdown> = (
   dropdown,
   widget,
@@ -424,10 +424,6 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
   const ap = widget.getAppearanceCharacteristics();
   const bs = widget.getBorderStyle();
   const text = dropdown.getSelected()[0] ?? '';
-
-  console.log('DROPDOWN:');
-  console.log(String(dropdown.acroField.dict));
-  console.log();
 
   const borderWidth = bs?.getWidth();
   const rotation = reduceRotation(ap?.getRotation());
@@ -463,4 +459,90 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
   };
 
   return [...rotate, ...drawTextField(options)];
+};
+
+export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptionList> = (
+  optionList,
+  widget,
+  font,
+) => {
+  const defaultFontSize = getDefaultFontSize(optionList.acroField);
+
+  const rectangle = widget.getRectangle();
+  const ap = widget.getAppearanceCharacteristics();
+  const bs = widget.getBorderStyle();
+
+  const borderWidth = bs?.getWidth();
+  const rotation = reduceRotation(ap?.getRotation());
+  const { width, height } = adjustDimsForRotation(rectangle, rotation);
+
+  const rotate = rotateInPlace({ ...rectangle, rotation });
+
+  const black = rgb(0, 0, 0);
+
+  // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
+  const borderColor = componentsToColor(ap?.getBorderColor());
+  const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
+
+  const options = optionList.getOptions();
+  const selected = optionList.getSelected();
+
+  let text = '';
+  for (let idx = 0, len = options.length; idx < len; idx++) {
+    text += options[idx];
+    if (idx < len - 1) text += '\n';
+  }
+
+  const { lines, fontSize, lineHeight } = layoutMultilineText(text, {
+    alignment: 'left',
+    fontSize: defaultFontSize,
+    font,
+    bounds: { x: 0, y: 0, width, height },
+  });
+
+  const selectedLines: TextPosition[] = [];
+  for (let idx = 0, len = lines.length; idx < len; idx++) {
+    const line = lines[idx];
+    if (selected.includes(line.text)) selectedLines.push(line);
+  }
+
+  const blue = rgb(153 / 255, 193 / 255, 218 / 255);
+  const highlights: PDFOperator[] = [];
+  for (let idx = 0, len = lines.length; idx < len; idx++) {
+    const line = lines[idx];
+    if (selected.includes(line.text)) {
+      highlights.push(
+        ...drawRectangle({
+          x: line.x,
+          y: line.y - (lineHeight - line.height) / 2,
+          width,
+          height: line.height + (lineHeight - line.height) / 2,
+          borderWidth: 0,
+          color: blue,
+          borderColor: undefined,
+          rotate: degrees(0),
+          xSkew: degrees(0),
+          ySkew: degrees(0),
+        }),
+      );
+    }
+  }
+
+  return [
+    ...rotate,
+    ...highlights,
+    ...drawTextField({
+      x: 0,
+      y: 0,
+      width,
+      height,
+      borderWidth: borderWidth ?? 0,
+      borderColor,
+      textColor: borderColor ?? black,
+      font: font.name,
+      fontSize,
+      color: normalBackgroundColor,
+      textLines: lines,
+    }),
+  ];
 };

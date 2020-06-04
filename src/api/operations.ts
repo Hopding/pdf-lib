@@ -577,5 +577,5 @@ export const drawTextField = (options: {
     ySkew: degrees(0),
   });
 
-  return [...background, ...lines];
+  return [...([] || background), ...lines];
 };

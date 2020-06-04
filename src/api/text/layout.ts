@@ -56,6 +56,7 @@ export interface MultilineTextLayout {
   bounds: LayoutBounds;
   lines: TextPosition[];
   fontSize: number;
+  lineHeight: number;
 }
 
 export const layoutMultilineText = (
@@ -67,6 +68,8 @@ export const layoutMultilineText = (
   if (fontSize === undefined || fontSize === 0) {
     fontSize = computeFontSize(lines, font, bounds);
   }
+  const height = font.heightAtSize(fontSize);
+  const lineHeight = height + height * 0.2;
 
   const textLines: TextPosition[] = [];
 
@@ -81,7 +84,6 @@ export const layoutMultilineText = (
 
     const encoded = font.encodeText(line);
     const width = font.widthOfTextAtSize(line, fontSize);
-    const height = font.heightAtSize(fontSize);
 
     // prettier-ignore
     const x = (
@@ -91,7 +93,7 @@ export const layoutMultilineText = (
       : bounds.x
     );
 
-    y -= height;
+    y -= lineHeight;
 
     if (x < minX) minX = x;
     if (y < minY) minY = y;
@@ -103,6 +105,7 @@ export const layoutMultilineText = (
 
   return {
     fontSize,
+    lineHeight,
     lines: textLines,
     bounds: {
       x: minX,
