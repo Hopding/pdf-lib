@@ -182,14 +182,19 @@ class PDFPageLeaf extends PDFDict {
       Resources.lookupMaybe(PDFName.XObject, PDFDict) || context.obj({});
     Resources.set(PDFName.XObject, XObject);
 
+    const Annots = this.Annots() || context.obj([]);
+    this.set(PDFName.Annots, Annots);
+
     this.normalized = true;
   }
 
   normalizedEntries() {
     this.normalize();
+    const Annots = this.Annots()!;
     const Resources = this.Resources()!;
     const Contents = this.Contents() as PDFArray | undefined;
     return {
+      Annots,
       Resources,
       Contents,
       Font: Resources.lookup(PDFName.Font, PDFDict),

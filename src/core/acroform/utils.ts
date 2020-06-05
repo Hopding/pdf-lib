@@ -3,6 +3,7 @@ import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFArray from 'src/core/objects/PDFArray';
+import PDFRef from 'src/core/objects/PDFRef';
 
 import PDFAcroField from 'src/core/acroform/PDFAcroField';
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
@@ -18,14 +19,19 @@ import PDFAcroComboBox from 'src/core/acroform/PDFAcroComboBox';
 import PDFAcroListBox from 'src/core/acroform/PDFAcroListBox';
 import { AcroButtonFlags, AcroChoiceFlags } from 'src/core/acroform/flags';
 
-export const createPDFAcroFields = (kidDicts?: PDFArray): PDFAcroField[] => {
+export const createPDFAcroFields = (
+  kidDicts?: PDFArray,
+): [PDFAcroField, PDFRef][] => {
   if (!kidDicts) return [];
 
-  const kids: PDFAcroField[] = [];
+  const kids: [PDFAcroField, PDFRef][] = [];
   for (let idx = 0, len = kidDicts.size(); idx < len; idx++) {
+    const ref = kidDicts.get(idx);
     const dict = kidDicts.lookup(idx);
     // if (dict instanceof PDFDict) kids.push(PDFAcroField.fromDict(dict));
-    if (dict instanceof PDFDict) kids.push(createPDFAcroField(dict));
+    if (ref instanceof PDFRef && dict instanceof PDFDict) {
+      kids.push([createPDFAcroField(dict), ref]);
+    }
   }
 
   return kids;
@@ -108,10 +114,8 @@ const createPDFAcroChoice = (dict: PDFDict): PDFAcroChoice => {
   }
 };
 
-const flagIsSet = (flags: number, bitIndex: number): boolean => {
-  const flag = 1 << bitIndex;
-  return (flags & flag) !== 0;
-};
+const flagIsSet = (flags: number, flag: number): boolean =>
+  (flags & flag) !== 0;
 
 const getInheritableAttribute = (startNode: PDFDict, name: PDFName) => {
   let attribute: PDFObject | undefined;

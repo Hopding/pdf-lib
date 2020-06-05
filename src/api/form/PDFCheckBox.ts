@@ -3,7 +3,13 @@ import { PDFAcroCheckBox } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
-import { PDFName, PDFOperator, PDFContentStream, PDFDict } from 'src/core';
+import {
+  PDFName,
+  PDFOperator,
+  PDFContentStream,
+  PDFDict,
+  PDFRef,
+} from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -15,17 +21,18 @@ import {
  * Represents a check box field of a [[PDFForm]].
  */
 export default class PDFCheckBox extends PDFField {
-  static of = (acroCheckBox: PDFAcroCheckBox, doc: PDFDocument) =>
-    new PDFCheckBox(acroCheckBox, doc);
+  static of = (acroCheckBox: PDFAcroCheckBox, ref: PDFRef, doc: PDFDocument) =>
+    new PDFCheckBox(acroCheckBox, ref, doc);
 
   /** The low-level PDFAcroCheckBox wrapped by this check box. */
   readonly acroField: PDFAcroCheckBox;
 
-  /** The document to which this check box belongs. */
-  readonly doc: PDFDocument;
-
-  private constructor(acroCheckBox: PDFAcroCheckBox, doc: PDFDocument) {
-    super(acroCheckBox, doc);
+  private constructor(
+    acroCheckBox: PDFAcroCheckBox,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) {
+    super(acroCheckBox, ref, doc);
 
     assertIs(acroCheckBox, 'acroCheckBox', [
       [PDFAcroCheckBox, 'PDFAcroCheckBox'],
@@ -33,7 +40,6 @@ export default class PDFCheckBox extends PDFField {
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroCheckBox;
-    this.doc = doc;
   }
 
   // TODO: Allow supplying `AppearanceProvider` and updating APs

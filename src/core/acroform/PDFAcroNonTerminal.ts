@@ -1,24 +1,20 @@
 import PDFDict from 'src/core/objects/PDFDict';
+import PDFRef from 'src/core/objects/PDFRef';
+import PDFContext from 'src/core/PDFContext';
 import PDFAcroField from 'src/core/acroform/PDFAcroField';
-// import { createPDFAcroField } from './utils';
 
 class PDFAcroNonTerminal extends PDFAcroField {
   static fromDict = (dict: PDFDict) => new PDFAcroNonTerminal(dict);
 
-  // getKids(): PDFAcroField[] {
-  //   const kidDicts = this.Kids();
+  static create = (context: PDFContext) => {
+    const dict = context.obj({});
+    return new PDFAcroNonTerminal(dict);
+  };
 
-  //   if (!kidDicts) return [];
-
-  //   const kids: PDFAcroField[] = [];
-  //   for (let idx = 0, len = kidDicts.size(); idx < len; idx++) {
-  //     const dict = kidDicts.lookup(idx);
-  //     // if (dict instanceof PDFDict) kids.push(PDFAcroField.fromDict(dict));
-  //     if (dict instanceof PDFDict) kids.push(createPDFAcroField(dict));
-  //   }
-
-  //   return kids;
-  // }
+  addField(field: PDFRef) {
+    const { Kids } = this.normalizedEntries();
+    Kids?.push(field);
+  }
 }
 
 export default PDFAcroNonTerminal;

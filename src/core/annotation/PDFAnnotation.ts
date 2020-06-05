@@ -1,8 +1,8 @@
 import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from '../objects/PDFName';
-import PDFStream from '../objects/PDFStream';
-import PDFArray from '../objects/PDFArray';
-import PDFRef from '../objects/PDFRef';
+import PDFName from 'src/core/objects/PDFName';
+import PDFStream from 'src/core/objects/PDFStream';
+import PDFArray from 'src/core/objects/PDFArray';
+import PDFRef from 'src/core/objects/PDFRef';
 
 class PDFAnnotation {
   readonly dict: PDFDict;
@@ -25,6 +25,12 @@ class PDFAnnotation {
   getRectangle(): { x: number; y: number; width: number; height: number } {
     const Rect = this.Rect();
     return Rect?.asRectangle() ?? { x: 0, y: 0, width: 0, height: 0 };
+  }
+
+  setRectangle(rect: { x: number; y: number; width: number; height: number }) {
+    const { x, y, width, height } = rect;
+    const Rect = this.dict.context.obj([x, y, x + width, y + height]);
+    this.dict.set(PDFName.of('Rect'), Rect);
   }
 
   setAppearanceState(state: PDFName) {

@@ -3,22 +3,27 @@ import { PDFAcroSignature } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
+import { PDFRef } from 'src/core';
 
 /**
  * Represents a signature field of a [[PDFForm]].
  */
 export default class PDFSignature extends PDFField {
-  static of = (acroSignature: PDFAcroSignature, doc: PDFDocument) =>
-    new PDFSignature(acroSignature, doc);
+  static of = (
+    acroSignature: PDFAcroSignature,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) => new PDFSignature(acroSignature, ref, doc);
 
   /** The low-level PDFAcroSignature wrapped by this signature. */
   readonly acroField: PDFAcroSignature;
 
-  /** The document to which this signature belongs. */
-  readonly doc: PDFDocument;
-
-  private constructor(acroSignature: PDFAcroSignature, doc: PDFDocument) {
-    super(acroSignature, doc);
+  private constructor(
+    acroSignature: PDFAcroSignature,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) {
+    super(acroSignature, ref, doc);
 
     assertIs(acroSignature, 'acroSignature', [
       [PDFAcroSignature, 'PDFAcroSignature'],
@@ -26,6 +31,5 @@ export default class PDFSignature extends PDFField {
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroSignature;
-    this.doc = doc;
   }
 }

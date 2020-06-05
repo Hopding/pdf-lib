@@ -147,6 +147,68 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     fields.map((f) => [f.getName(), f.constructor.name]),
   );
 
+  const page1 = pdfDoc.getPage(0);
+  const page2 = pdfDoc.addPage();
+
+  const newRg3 = form.createRadioGroup('exia.kyrios.dynames.virtue');
+  newRg3.addOptionToPage('qux 💩', page1, {
+    x: 0,
+    y: 0,
+    width: 50,
+    height: 50,
+  });
+
+  // TODO: Need to use export values when adding these options
+  newRg3.addOptionToPage('baz 😊', page2, {
+    x: 0,
+    y: 50,
+    width: 50,
+    height: 50,
+  });
+
+  newRg3.addOptionToPage('qux 💩', page1, {
+    x: 0,
+    y: 100,
+    width: 50,
+    height: 50,
+  });
+
+  // newRg.setAllowTogglingOff(true);
+  newRg3.setRadiosAreMutuallyExclusive(false);
+  newRg3.select('qux');
+
+  // /*******/
+  // const button = form.createButton('a[0].b[1].c[3].button');
+  // button.setText('Foo Bar');
+  // button.addToPage(page, {
+  //   width: 21,
+  //   height: 42,
+  //   color: rgb(1, 0, 0),
+  //   borderColor: rgb(1, 0, 0),
+  //   borderWidth: 2,
+  // });
+
+  // const checkBox = form.createCheckBox('a[0].b[1].c[3].checkbox');
+  // checkBox.addToPage(page, {});
+
+  // const dropdown = form.createDropdown('a[0].b[1].c[3].dropdown');
+  // dropdown.addToPage(page, {});
+
+  // const optionList = form.createOptionList('a[0].b[1].c[3].optionlist');
+  // optionList.addToPage(page, {});
+
+  // // TODO: Can a single radio group have multiple widgets with the same value?
+  // const radioGroup = form.createRadioGroup('a[0].b[1].c[3].bar');
+  // radioGroup.addOptionToPage('quxbaz', page, {});
+
+  // const textField = form.createTextField('a[0].b[1].c[3].qux');
+  // textField.addToPage(page, {});
+  // /*******/
+  // // This API means you can also do this:
+  // const checkBox = form.getCheckBox('foo.bar.qux.baz');
+  // checkBox.addToPage(page, {});
+  // /*******/
+
   // === Buttons ===
 
   const btn8 = form.getButton('Button8');
@@ -171,6 +233,13 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   console.log('rg2.getSelected():', rg2.getSelected());
   console.log('rg2.getOptions():', rg2.getOptions());
   rg2.updateAppearances();
+
+  rg1.addOptionToPage('Testing lulz 🛁', page1, {
+    x: page2.getWidth() - 50,
+    y: 50,
+    width: 50,
+    height: 50,
+  });
 
   // === Check Boxes ===
 
@@ -246,7 +315,7 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   console.log('tfDate.getText():', tfDate.getText());
   tfDate.updateAppearances(helvetica);
 
-  // === Comb Form ===
+  // // === Comb Form ===
 
   // fields.forEach((field) => {
   //   if (field instanceof PDFTextField) {
@@ -263,5 +332,5 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   // });
 
   fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
-  openPdf('out.pdf', Reader.Chrome);
+  openPdf('out.pdf', Reader.Acrobat);
 })();

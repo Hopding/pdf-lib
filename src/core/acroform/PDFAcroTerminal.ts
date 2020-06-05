@@ -9,6 +9,7 @@ import PDFAcroField from 'src/core/acroform/PDFAcroField';
 //   PDFAcroSignature,
 // } from 'src/core/acroform';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
+import PDFRef from '../objects/PDFRef';
 
 class PDFAcroTerminal extends PDFAcroField {
   static fromDict = (dict: PDFDict) => new PDFAcroTerminal(dict);
@@ -32,6 +33,11 @@ class PDFAcroTerminal extends PDFAcroField {
     }
 
     return widgets;
+  }
+
+  addWidget(ref: PDFRef) {
+    const { Kids } = this.normalizedEntries();
+    Kids.push(ref);
   }
 }
 

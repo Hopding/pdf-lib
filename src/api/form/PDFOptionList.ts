@@ -16,23 +16,23 @@ import { PDFOperator, PDFRef, PDFHexString, PDFContentStream } from 'src/core';
  * Represents an option list field of a [[PDFForm]].
  */
 export default class PDFOptionList extends PDFField {
-  static of = (acroListBox: PDFAcroListBox, doc: PDFDocument) =>
-    new PDFOptionList(acroListBox, doc);
+  static of = (acroListBox: PDFAcroListBox, ref: PDFRef, doc: PDFDocument) =>
+    new PDFOptionList(acroListBox, ref, doc);
 
   /** The low-level PDFAcroListBox wrapped by this option list. */
   readonly acroField: PDFAcroListBox;
 
-  /** The document to which this option list belongs. */
-  readonly doc: PDFDocument;
-
-  private constructor(acroListBox: PDFAcroListBox, doc: PDFDocument) {
-    super(acroListBox, doc);
+  private constructor(
+    acroListBox: PDFAcroListBox,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) {
+    super(acroListBox, ref, doc);
 
     assertIs(acroListBox, 'acroListBox', [[PDFAcroListBox, 'PDFAcroListBox']]);
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroListBox;
-    this.doc = doc;
   }
 
   getOptions(): string[] {

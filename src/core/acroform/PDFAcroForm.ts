@@ -1,6 +1,7 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
+import PDFRef from 'src/core/objects/PDFRef';
 import PDFAcroField from 'src/core/acroform/PDFAcroField';
 import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
 import {
@@ -17,34 +18,38 @@ class PDFAcroForm {
     this.dict = dict;
   }
 
-  Fields(): PDFArray {
-    return this.dict.lookup(PDFName.of('Fields'), PDFArray);
+  Fields(): PDFArray | undefined {
+    const fields = this.dict.lookup(PDFName.of('Fields'));
+    if (fields instanceof PDFArray) return fields;
+    return undefined;
   }
 
-  getFields(): PDFAcroField[] {
-    const fieldDicts = this.Fields();
+  getFields(): [PDFAcroField, PDFRef][] {
+    const { Fields } = this.normalizedEntries();
 
-    const fields = new Array(fieldDicts.size());
-    for (let idx = 0, len = fieldDicts.size(); idx < len; idx++) {
-      const dict = fieldDicts.lookup(idx, PDFDict);
+    const fields = new Array(Fields.size());
+    for (let idx = 0, len = Fields.size(); idx < len; idx++) {
+      const ref = Fields.get(idx) as PDFRef;
+      const dict = Fields.lookup(idx, PDFDict);
       // fields[idx] = PDFAcroField.fromDict(dict);
-      fields[idx] = createPDFAcroField(dict);
+      fields[idx] = [createPDFAcroField(dict), ref];
     }
 
     return fields;
   }
 
-  getAllFields(): PDFAcroField[] {
-    const allFields: PDFAcroField[] = [];
+  getAllFields(): [PDFAcroField, PDFRef][] {
+    const allFields: [PDFAcroField, PDFRef][] = [];
 
-    const pushFields = (fields?: PDFAcroField[]) => {
+    const pushFields = (fields?: [PDFAcroField, PDFRef][]) => {
       if (!fields) return;
       for (let idx = 0, len = fields.length; idx < len; idx++) {
         const field = fields[idx];
         allFields.push(field);
         // if (field instanceof PDFAcroNonTerminal) pushFields(field.getKids());
-        if (field instanceof PDFAcroNonTerminal) {
-          pushFields(createPDFAcroFields(field.Kids()));
+        const [fieldModel] = field;
+        if (fieldModel instanceof PDFAcroNonTerminal) {
+          pushFields(createPDFAcroFields(fieldModel.Kids()));
         }
       }
     };
@@ -52,6 +57,22 @@ class PDFAcroForm {
     pushFields(this.getFields());
 
     return allFields;
+  }
+
+  addField(field: PDFRef) {
+    const { Fields } = this.normalizedEntries();
+    Fields?.push(field);
+  }
+
+  normalizedEntries() {
+    let Fields = this.Fields();
+
+    if (!Fields) {
+      Fields = this.dict.context.obj([]);
+      this.dict.set(PDFName.of('Fields'), Fields);
+    }
+
+    return { Fields };
   }
 }
 

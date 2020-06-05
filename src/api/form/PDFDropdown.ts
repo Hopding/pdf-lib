@@ -16,17 +16,18 @@ import {
  * Represents a dropdown field of a [[PDFForm]].
  */
 export default class PDFDropdown extends PDFField {
-  static of = (acroComboBox: PDFAcroComboBox, doc: PDFDocument) =>
-    new PDFDropdown(acroComboBox, doc);
+  static of = (acroComboBox: PDFAcroComboBox, ref: PDFRef, doc: PDFDocument) =>
+    new PDFDropdown(acroComboBox, ref, doc);
 
   /** The low-level PDFAcroComboBox wrapped by this dropdown. */
   readonly acroField: PDFAcroComboBox;
 
-  /** The document to which this dropdown belongs. */
-  readonly doc: PDFDocument;
-
-  private constructor(acroComboBox: PDFAcroComboBox, doc: PDFDocument) {
-    super(acroComboBox, doc);
+  private constructor(
+    acroComboBox: PDFAcroComboBox,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) {
+    super(acroComboBox, ref, doc);
 
     assertIs(acroComboBox, 'acroComboBox', [
       [PDFAcroComboBox, 'PDFAcroComboBox'],
@@ -34,7 +35,6 @@ export default class PDFDropdown extends PDFField {
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroComboBox;
-    this.doc = doc;
   }
 
   getOptions(): string[] {

@@ -5,8 +5,7 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFArray from 'src/core/objects/PDFArray';
-// import { createPDFAcroField } from './utils';
-// import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
+import PDFRef from 'src/core/objects/PDFRef';
 
 class PDFAcroField {
   readonly dict: PDFDict;
@@ -46,6 +45,11 @@ class PDFAcroField {
     // return createPDFAcroField(parent);
   }
 
+  setParent(parent: PDFRef | undefined) {
+    if (!parent) this.dict.delete(PDFName.of('Parent'));
+    else this.dict.set(PDFName.of('Parent'), parent);
+  }
+
   getFullyQualifiedName(): string | undefined {
     const parent = this.getParent();
     if (!parent) return this.getPartialName();
@@ -56,6 +60,11 @@ class PDFAcroField {
     return this.T()?.decodeText();
   }
 
+  setPartialName(partialName: string | undefined) {
+    if (!partialName) this.dict.delete(PDFName.of('T'));
+    else this.dict.set(PDFName.of('T'), PDFHexString.fromText(partialName));
+  }
+
   getFlags(): number {
     return this.Ff()?.asNumber() ?? 0;
   }
@@ -64,27 +73,24 @@ class PDFAcroField {
     this.dict.set(PDFName.of('Ff'), PDFNumber.of(flags));
   }
 
-  hasFlag(bitIndex: number): boolean {
+  hasFlag(flag: number): boolean {
     const flags = this.getFlags();
-    const flag = 1 << bitIndex;
     return (flags & flag) !== 0;
   }
 
-  setFlag(bitIndex: number) {
+  setFlag(flag: number) {
     const flags = this.getFlags();
-    const flag = 1 << bitIndex;
     this.setFlags(flags | flag);
   }
 
-  clearFlag(bitIndex: number) {
+  clearFlag(flag: number) {
     const flags = this.getFlags();
-    const flag = 1 << bitIndex;
     this.setFlags(flags & ~flag);
   }
 
-  setFlagTo(bitIndex: number, enable: boolean) {
-    if (enable) this.setFlag(bitIndex);
-    else this.clearFlag(bitIndex);
+  setFlagTo(flag: number, enable: boolean) {
+    if (enable) this.setFlag(flag);
+    else this.clearFlag(flag);
   }
 
   getInheritableAttribute(name: PDFName): PDFObject | undefined {
@@ -99,6 +105,21 @@ class PDFAcroField {
     visitor(this);
     const parent = this.getParent();
     if (parent) parent.ascend(visitor);
+  }
+
+  // TODO: If this field is itself a widget (because it was only rendered
+  // once in the document so the field and widget properties were merged)
+  // should we add itself to the `Kids` array? Should we try to split apart
+  // the widget properties and create a separate object for it?
+  normalizedEntries() {
+    let Kids = this.Kids();
+
+    if (!Kids) {
+      Kids = this.dict.context.obj([]);
+      this.dict.set(PDFName.of('Kids'), Kids);
+    }
+
+    return { Kids };
   }
 }
 

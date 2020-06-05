@@ -5,6 +5,7 @@ import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
 
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
+import PDFRef from '../objects/PDFRef';
 
 class PDFAcroButton extends PDFAcroTerminal {
   // static fromDict = (dict: PDFDict) => new PDFAcroButton(dict);
@@ -36,6 +37,33 @@ class PDFAcroButton extends PDFAcroTerminal {
     }
 
     return values;
+  }
+
+  // Enforce use use of /Opt even if it isn't strictly necessary
+  normalizeExportValues() {
+    const exportValues = this.getExportValues() ?? [];
+
+    const Opt = this.dict.context.obj([]);
+
+    const widgets = this.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const exportVal =
+        exportValues[idx] ??
+        PDFHexString.fromText(widget.getOnValue()?.decodeText() ?? '');
+      Opt.push(exportVal);
+    }
+
+    this.dict.set(PDFName.of('Opt'), Opt);
+  }
+
+  addWidgetWithOpt(widget: PDFRef, opt: PDFHexString | PDFString) {
+    this.normalizeExportValues();
+    const Opt = this.Opt() as PDFArray;
+    this.addWidget(widget);
+    Opt.push(opt);
+    const apStateValue = PDFName.of(String(Opt.size() - 1));
+    return apStateValue;
   }
 }
 

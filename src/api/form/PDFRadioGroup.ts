@@ -1,9 +1,17 @@
 import PDFDocument from 'src/api/PDFDocument';
+import PDFPage from 'src/api/PDFPage';
 import { PDFAcroRadioButton, AcroButtonFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
-import { PDFName, PDFOperator, PDFDict, PDFContentStream } from 'src/core';
+import {
+  PDFName,
+  PDFOperator,
+  PDFRef,
+  PDFDict,
+  PDFContentStream,
+  PDFHexString,
+} from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -15,17 +23,21 @@ import {
  * Represents a radio group field of a [[PDFForm]].
  */
 export default class PDFRadioGroup extends PDFField {
-  static of = (acroRadioButton: PDFAcroRadioButton, doc: PDFDocument) =>
-    new PDFRadioGroup(acroRadioButton, doc);
+  static of = (
+    acroRadioButton: PDFAcroRadioButton,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) => new PDFRadioGroup(acroRadioButton, ref, doc);
 
   /** The low-level PDFAcroRadioButton wrapped by this radio group. */
   readonly acroField: PDFAcroRadioButton;
 
-  /** The document to which this radio group belongs. */
-  readonly doc: PDFDocument;
-
-  private constructor(acroRadioButton: PDFAcroRadioButton, doc: PDFDocument) {
-    super(acroRadioButton, doc);
+  private constructor(
+    acroRadioButton: PDFAcroRadioButton,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) {
+    super(acroRadioButton, ref, doc);
 
     assertIs(acroRadioButton, 'acroRadioButton', [
       [PDFAcroRadioButton, 'PDFAcroRadioButton'],
@@ -33,7 +45,6 @@ export default class PDFRadioGroup extends PDFField {
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroRadioButton;
-    this.doc = doc;
   }
 
   getOptions(): string[] {
@@ -65,6 +76,41 @@ export default class PDFRadioGroup extends PDFField {
       }
     }
     return value.decodeText();
+  }
+
+  // TODO: Have default width and height
+  addOptionToPage(
+    option: string,
+    page: PDFPage,
+    options: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    },
+  ) {
+    const { x, y, width, height } = options;
+
+    // Create a widget for this radio button
+    const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
+    const widgetRef = this.doc.context.register(widget.dict);
+
+    // Add widget to this field
+    const apStateValue = this.acroField.addWidgetWithOpt(
+      widgetRef,
+      PDFHexString.fromText(option),
+    );
+
+    // Set widget properties
+    widget.setAppearanceState(PDFName.of('Off'));
+    widget.setRectangle({ x, y, width, height });
+
+    // Set appearance streams for widget
+    this.updateWidgetAppearance(widget, apStateValue);
+
+    // Add widget to the given page
+    const { Annots } = page.node.normalizedEntries();
+    Annots.push(widgetRef);
   }
 
   // setOptions(options: string[]) {}
@@ -112,43 +158,57 @@ export default class PDFRadioGroup extends PDFField {
   }
 
   updateAppearances(provider?: AppearanceProviderFor<PDFRadioGroup>) {
-    const apProvider = provider ?? defaultRadioGroupAppearanceProvider;
-
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const { normal, rollover, down } = normalizeAppearance(
-        apProvider(this, widget),
+      const onValue = widget.getOnValue();
+      if (!onValue) continue;
+      this.updateWidgetAppearance(widget, onValue, provider);
+    }
+  }
+
+  private updateWidgetAppearance(
+    widget: PDFWidgetAnnotation,
+    onValue: PDFName,
+    provider?: AppearanceProviderFor<PDFRadioGroup>,
+  ) {
+    const apProvider = provider ?? defaultRadioGroupAppearanceProvider;
+
+    const { normal, rollover, down } = normalizeAppearance(
+      apProvider(this, widget),
+    );
+
+    widget.setNormalAppearance(
+      this.createAppearanceDict(widget, onValue, normal),
+    );
+
+    if (rollover) {
+      widget.setRolloverAppearance(
+        this.createAppearanceDict(widget, onValue, rollover),
       );
+    } else {
+      widget.removeRolloverAppearance();
+    }
 
-      const normalDict = this.createAppearanceDict(widget, normal);
-      if (normalDict) widget.setNormalAppearance(normalDict);
-
-      if (rollover) {
-        const rolloverDict = this.createAppearanceDict(widget, rollover);
-        if (rolloverDict) widget.setRolloverAppearance(rolloverDict);
-      } else {
-        widget.removeRolloverAppearance();
-      }
-
-      if (down) {
-        const downDict = this.createAppearanceDict(widget, down);
-        if (downDict) widget.setDownAppearance(downDict);
-      } else {
-        widget.removeDownAppearance();
-      }
+    if (down) {
+      widget.setDownAppearance(
+        this.createAppearanceDict(widget, onValue, down),
+      );
+    } else {
+      widget.removeDownAppearance();
     }
   }
 
   private createAppearanceDict(
     widget: PDFWidgetAnnotation,
+    onValue: PDFName,
     appearance: { selected: PDFOperator[]; unselected: PDFOperator[] },
-  ): PDFDict | undefined {
+  ): PDFDict {
     const { context } = this.acroField.dict;
     const { width, height } = widget.getRectangle();
-    const onValue = widget.getOnValue();
-
-    if (!onValue) return undefined;
+    // const onValue = widget.getOnValue();
+    //
+    // if (!onValue) return undefined;
 
     const xObjectDict = context.obj({
       Type: 'XObject',

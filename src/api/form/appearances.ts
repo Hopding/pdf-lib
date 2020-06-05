@@ -206,8 +206,8 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
 
   const rotate = rotateInPlace({ ...rectangle, rotation });
 
-  // const black = rgb(0, 0, 0);
-  const borderColor = componentsToColor(ap?.getBorderColor());
+  const black = rgb(0, 0, 0);
+  const borderColor = componentsToColor(ap?.getBorderColor()) ?? black;
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
   const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
 

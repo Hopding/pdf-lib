@@ -1,12 +1,24 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFAnnotation from 'src/core/annotation/PDFAnnotation';
 import PDFName from 'src/core/objects/PDFName';
+import PDFRef from 'src/core/objects/PDFRef';
+import PDFContext from 'src/core/PDFContext';
 import AppearanceCharacteristics from 'src/core/annotation/AppearanceCharacteristics';
 import BorderStyle from 'src/core/annotation/BorderStyle';
 
 class PDFWidgetAnnotation extends PDFAnnotation {
   static fromDict = (dict: PDFDict): PDFWidgetAnnotation =>
     new PDFWidgetAnnotation(dict);
+
+  static create = (context: PDFContext, parent: PDFRef) => {
+    const dict = context.obj({
+      Type: 'Annot',
+      Subtype: 'Widget',
+      Rect: [0, 0, 0, 0],
+      Parent: parent,
+    });
+    return new PDFWidgetAnnotation(dict);
+  };
 
   MK(): PDFDict | undefined {
     const MK = this.dict.lookup(PDFName.of('MK'));

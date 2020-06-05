@@ -22,17 +22,21 @@ import PDFField from 'src/api/form/PDFField';
  * Represents a button field of a [[PDFForm]].
  */
 export default class PDFButton extends PDFField {
-  static of = (acroPushButton: PDFAcroPushButton, doc: PDFDocument) =>
-    new PDFButton(acroPushButton, doc);
+  static of = (
+    acroPushButton: PDFAcroPushButton,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) => new PDFButton(acroPushButton, ref, doc);
 
   /** The low-level PDFAcroPushButton wrapped by this button. */
   readonly acroField: PDFAcroPushButton;
 
-  /** The document to which this button belongs. */
-  readonly doc: PDFDocument;
-
-  private constructor(acroPushButton: PDFAcroPushButton, doc: PDFDocument) {
-    super(acroPushButton, doc);
+  private constructor(
+    acroPushButton: PDFAcroPushButton,
+    ref: PDFRef,
+    doc: PDFDocument,
+  ) {
+    super(acroPushButton, ref, doc);
 
     assertIs(acroPushButton, 'acroButton', [
       [PDFAcroPushButton, 'PDFAcroPushButton'],
@@ -40,7 +44,6 @@ export default class PDFButton extends PDFField {
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroPushButton;
-    this.doc = doc;
   }
 
   // TODO: Set caption...

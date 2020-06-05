@@ -2,9 +2,20 @@ import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import { rgb, drawEllipse } from 'src/api';
 import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
+import PDFContext from 'src/core/PDFContext';
+import { AcroButtonFlags } from 'src/core/acroform/flags';
 
 class PDFAcroRadioButton extends PDFAcroButton {
   static fromDict = (dict: PDFDict) => new PDFAcroRadioButton(dict);
+
+  static create = (context: PDFContext) => {
+    const dict = context.obj({
+      FT: 'Btn',
+      Ff: AcroButtonFlags.Radio,
+      Kids: [],
+    });
+    return new PDFAcroRadioButton(dict);
+  };
 
   setValue(value: PDFName) {
     const onValues = this.getOnValues();
@@ -30,6 +41,7 @@ class PDFAcroRadioButton extends PDFAcroButton {
     return PDFName.of('Off');
   }
 
+  // TODO: This should really use `AP` (maybe in combo with `AS`)
   getOnValues(): PDFName[] {
     const widgets = this.getWidgets();
 

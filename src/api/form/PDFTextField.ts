@@ -16,23 +16,19 @@ import {
  * Represents a text field of a [[PDFForm]].
  */
 export default class PDFTextField extends PDFField {
-  static of = (acroText: PDFAcroText, doc: PDFDocument) =>
-    new PDFTextField(acroText, doc);
+  static of = (acroText: PDFAcroText, ref: PDFRef, doc: PDFDocument) =>
+    new PDFTextField(acroText, ref, doc);
 
   /** The low-level PDFAcroText wrapped by this text field. */
   readonly acroField: PDFAcroText;
 
-  /** The document to which this text field belongs. */
-  readonly doc: PDFDocument;
-
-  private constructor(acroText: PDFAcroText, doc: PDFDocument) {
-    super(acroText, doc);
+  private constructor(acroText: PDFAcroText, ref: PDFRef, doc: PDFDocument) {
+    super(acroText, ref, doc);
 
     assertIs(acroText, 'acroText', [[PDFAcroText, 'PDFAcroText']]);
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroText;
-    this.doc = doc;
   }
 
   setText(text: string | undefined) {
