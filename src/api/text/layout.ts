@@ -35,9 +35,10 @@ const computeFontSize = (
       if (tooLong) return fontSize - 1;
     }
 
-    const lineHeight = font.heightAtSize(fontSize);
-    const height = lines.length * lineHeight;
-    if (height > bounds.height) return fontSize - 1;
+    const height = font.heightAtSize(fontSize);
+    const lineHeight = height + height * 0.2;
+    const totalHeight = lines.length * lineHeight;
+    if (totalHeight > bounds.height) return fontSize - 1;
 
     fontSize += 1;
   }

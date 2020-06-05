@@ -205,6 +205,15 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     height: 50,
   });
 
+  const newOl1 = form.createOptionList('booky poo!');
+  newOl1.setOptions(['foo', 'bar', 'qux', 'baz']);
+  newOl1.select('bar');
+  newOl1.addToPage(helvetica, page2, {
+    x: page2.getWidth() / 2 - 100 / 2,
+    y: page2.getHeight() - (100 + 50 + 5),
+    width: 100,
+    height: 50,
+  });
   // /*******/
   // const button = form.createButton('a[0].b[1].c[3].button');
   // button.setText('Foo Bar');

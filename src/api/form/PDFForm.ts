@@ -225,6 +225,29 @@ export default class PDFForm {
     return PDFDropdown.of(acroComboBox, acroComboBoxRef, this.doc);
   }
 
+  createOptionList(name: string): PDFOptionList {
+    assertIs(name, 'name', ['string']);
+
+    const nameParts = splitFieldName(name);
+    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+
+    // TODO: Verify that `terminalPart` is not empty
+
+    const acroListBox = PDFAcroListBox.create(this.doc.context);
+    acroListBox.setPartialName(nameParts.terminal);
+    const acroListBoxRef = this.doc.context.register(acroListBox.dict);
+
+    if (nonTerminal) {
+      // TODO: Make sure a terminal doesn't already exist with this `name`
+      nonTerminal[0].addField(acroListBoxRef);
+      acroListBox.setParent(nonTerminal[1]);
+    } else {
+      this.acroForm.addField(acroListBoxRef);
+    }
+
+    return PDFOptionList.of(acroListBox, acroListBoxRef, this.doc);
+  }
+
   createRadioGroup(name: string): PDFRadioGroup {
     assertIs(name, 'name', ['string']);
     const nameParts = splitFieldName(name);
