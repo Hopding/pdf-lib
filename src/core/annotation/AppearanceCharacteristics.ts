@@ -94,6 +94,25 @@ class AppearanceCharacteristics {
       down: AC?.decodeText(),
     };
   }
+
+  setCaptions(captions: { normal: string; rollover?: string; down?: string }) {
+    const CA = PDFHexString.fromText(captions.normal);
+    this.dict.set(PDFName.of('CA'), CA);
+
+    if (captions.rollover) {
+      const RC = PDFHexString.fromText(captions.rollover);
+      this.dict.set(PDFName.of('RC'), RC);
+    } else {
+      this.dict.delete(PDFName.of('RC'));
+    }
+
+    if (captions.down) {
+      const AC = PDFHexString.fromText(captions.down);
+      this.dict.set(PDFName.of('AC'), AC);
+    } else {
+      this.dict.delete(PDFName.of('AC'));
+    }
+  }
 }
 
 export default AppearanceCharacteristics;

@@ -38,6 +38,15 @@ class PDFWidgetAnnotation extends PDFAnnotation {
     return undefined;
   }
 
+  getOrCreateAppearanceCharacteristics(): AppearanceCharacteristics {
+    const MK = this.MK();
+    if (MK) return AppearanceCharacteristics.fromDict(MK);
+
+    const ac = AppearanceCharacteristics.fromDict(this.dict.context.obj({}));
+    this.dict.set(PDFName.of('MK'), ac.dict);
+    return ac;
+  }
+
   getBorderStyle(): BorderStyle | undefined {
     const BS = this.BS();
     if (BS) return BorderStyle.fromDict(BS);

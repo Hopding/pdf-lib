@@ -186,6 +186,14 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   });
   newCb1.check();
 
+  const newBtn1 = form.createButton('super duper button!');
+  newBtn1.addToPage('Foo Bar', helvetica, page2, {
+    x: page2.getWidth() - (100 + 5),
+    y: page2.getHeight() - (50 + 5),
+    width: 100,
+    height: 50,
+  });
+
   // /*******/
   // const button = form.createButton('a[0].b[1].c[3].button');
   // button.setText('Foo Bar');

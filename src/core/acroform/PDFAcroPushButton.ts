@@ -9,12 +9,20 @@ import {
   PDFFont,
   drawText,
 } from 'src/api';
-// import PDFNumber from 'src/core/objects/PDFNumber';
-// import PDFOperator from 'src/core/operators/PDFOperator';
-// import Ops from 'src/core/operators/PDFOperatorNames';
+import PDFContext from 'src/core/PDFContext';
+import { AcroButtonFlags } from 'src/core/acroform/flags';
 
 class PDFAcroPushButton extends PDFAcroButton {
   static fromDict = (dict: PDFDict) => new PDFAcroPushButton(dict);
+
+  static create = (context: PDFContext) => {
+    const dict = context.obj({
+      FT: 'Btn',
+      Ff: AcroButtonFlags.PushButton,
+      Kids: [],
+    });
+    return new PDFAcroPushButton(dict);
+  };
 
   updateAppearances(font: PDFFont) {
     const { context } = this.dict;

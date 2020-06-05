@@ -277,6 +277,8 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   const normalText = captions?.normal ?? '';
   const downText = captions?.down ?? normalText ?? '';
 
+  console.log(`NORMAL TEXT (${_radioGroup.getName()}):`, normalText);
+
   const borderWidth = bs?.getWidth();
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);

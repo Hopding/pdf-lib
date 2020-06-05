@@ -156,6 +156,29 @@ export default class PDFForm {
     throw new Error('TODO: FIX ME! not a text field...');
   }
 
+  createButton(name: string): PDFButton {
+    assertIs(name, 'name', ['string']);
+
+    const nameParts = splitFieldName(name);
+    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+
+    // TODO: Verify that `terminalPart` is not empty
+
+    const acroPushButton = PDFAcroPushButton.create(this.doc.context);
+    acroPushButton.setPartialName(nameParts.terminal);
+    const acroPushButtonRef = this.doc.context.register(acroPushButton.dict);
+
+    if (nonTerminal) {
+      // TODO: Make sure a terminal doesn't already exist with this `name`
+      nonTerminal[0].addField(acroPushButtonRef);
+      acroPushButton.setParent(nonTerminal[1]);
+    } else {
+      this.acroForm.addField(acroPushButtonRef);
+    }
+
+    return PDFButton.of(acroPushButton, acroPushButtonRef, this.doc);
+  }
+
   createCheckBox(name: string): PDFCheckBox {
     assertIs(name, 'name', ['string']);
 
