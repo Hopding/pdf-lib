@@ -1,9 +1,18 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
+import PDFContext from 'src/core/PDFContext';
 
 class PDFAcroCheckBox extends PDFAcroButton {
   static fromDict = (dict: PDFDict) => new PDFAcroCheckBox(dict);
+
+  static create = (context: PDFContext) => {
+    const dict = context.obj({
+      FT: 'Btn',
+      Kids: [],
+    });
+    return new PDFAcroCheckBox(dict);
+  };
 
   setValue(value: PDFName) {
     const onValue = this.getOnValue();

@@ -177,6 +177,15 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   newRg3.setRadiosAreMutuallyExclusive(false);
   newRg3.select('qux');
 
+  const newCb1 = form.createCheckBox('superbooster 🚀');
+  newCb1.addToPage(page2, {
+    x: 5,
+    y: page2.getHeight() - (50 + 5),
+    width: 50,
+    height: 50,
+  });
+  newCb1.check();
+
   // /*******/
   // const button = form.createButton('a[0].b[1].c[3].button');
   // button.setText('Foo Bar');

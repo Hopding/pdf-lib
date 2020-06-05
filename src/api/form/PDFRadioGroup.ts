@@ -206,9 +206,6 @@ export default class PDFRadioGroup extends PDFField {
   ): PDFDict {
     const { context } = this.acroField.dict;
     const { width, height } = widget.getRectangle();
-    // const onValue = widget.getOnValue();
-    //
-    // if (!onValue) return undefined;
 
     const xObjectDict = context.obj({
       Type: 'XObject',

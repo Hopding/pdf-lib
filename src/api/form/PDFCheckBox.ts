@@ -1,4 +1,5 @@
 import PDFDocument from 'src/api/PDFDocument';
+import PDFPage from 'src/api/PDFPage';
 import { PDFAcroCheckBox } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
@@ -59,44 +60,85 @@ export default class PDFCheckBox extends PDFField {
     return !!onValue && onValue === this.acroField.getValue();
   }
 
-  updateAppearances(provider?: AppearanceProviderFor<PDFCheckBox>) {
-    const apProvider = provider ?? defaultCheckBoxAppearanceProvider;
+  addToPage(
+    page: PDFPage,
+    options: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    },
+  ) {
+    const { x, y, width, height } = options;
 
+    // Create a widget for this check box
+    const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
+    const widgetRef = this.doc.context.register(widget.dict);
+
+    // Add widget to this field
+    this.acroField.addWidget(widgetRef);
+
+    // Set widget properties
+    widget.setAppearanceState(PDFName.of('Off'));
+    widget.setRectangle({ x, y, width, height });
+
+    // Set appearance streams for widget
+    this.updateWidgetAppearance(widget, PDFName.of('Yes'));
+
+    // Add widget to the given page
+    const { Annots } = page.node.normalizedEntries();
+    Annots.push(widgetRef);
+  }
+
+  updateAppearances(provider?: AppearanceProviderFor<PDFCheckBox>) {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const { normal, rollover, down } = normalizeAppearance(
-        apProvider(this, widget),
+      const onValue = widget.getOnValue();
+      if (!onValue) continue;
+      this.updateWidgetAppearance(widget, onValue, provider);
+    }
+  }
+
+  private updateWidgetAppearance(
+    widget: PDFWidgetAnnotation,
+    onValue: PDFName,
+    provider?: AppearanceProviderFor<PDFCheckBox>,
+  ) {
+    const apProvider = provider ?? defaultCheckBoxAppearanceProvider;
+
+    const { normal, rollover, down } = normalizeAppearance(
+      apProvider(this, widget),
+    );
+
+    widget.setNormalAppearance(
+      this.createAppearanceDict(widget, onValue, normal),
+    );
+
+    if (rollover) {
+      widget.setRolloverAppearance(
+        this.createAppearanceDict(widget, onValue, rollover),
       );
+    } else {
+      widget.removeRolloverAppearance();
+    }
 
-      const normalDict = this.createAppearanceDict(widget, normal);
-      if (normalDict) widget.setNormalAppearance(normalDict);
-
-      if (rollover) {
-        const rolloverDict = this.createAppearanceDict(widget, rollover);
-        if (rolloverDict) widget.setRolloverAppearance(rolloverDict);
-      } else {
-        widget.removeRolloverAppearance();
-      }
-
-      if (down) {
-        const downDict = this.createAppearanceDict(widget, down);
-        if (downDict) widget.setDownAppearance(downDict);
-      } else {
-        widget.removeDownAppearance();
-      }
+    if (down) {
+      widget.setDownAppearance(
+        this.createAppearanceDict(widget, onValue, down),
+      );
+    } else {
+      widget.removeDownAppearance();
     }
   }
 
   private createAppearanceDict(
     widget: PDFWidgetAnnotation,
+    onValue: PDFName,
     appearance: { checked: PDFOperator[]; unchecked: PDFOperator[] },
-  ): PDFDict | undefined {
+  ): PDFDict {
     const { context } = this.acroField.dict;
     const { width, height } = widget.getRectangle();
-    const onValue = widget.getOnValue();
-
-    if (!onValue) return undefined;
 
     const xObjectDict = context.obj({
       Type: 'XObject',

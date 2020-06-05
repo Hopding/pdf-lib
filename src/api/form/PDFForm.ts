@@ -22,7 +22,7 @@ import PDFRadioGroup from 'src/api/form/PDFRadioGroup';
 import PDFSignature from 'src/api/form/PDFSignature';
 import PDFTextField from 'src/api/form/PDFTextField';
 import { createPDFAcroFields } from 'src/core/acroform/utils';
-import { PDFRef, PDFHexString } from 'src/core';
+import { PDFRef } from 'src/core';
 
 const convertToPDFField = (
   field: PDFAcroField,
@@ -156,16 +156,32 @@ export default class PDFForm {
     throw new Error('TODO: FIX ME! not a text field...');
   }
 
+  createCheckBox(name: string): PDFCheckBox {
+    assertIs(name, 'name', ['string']);
+
+    const nameParts = splitFieldName(name);
+    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+
+    // TODO: Verify that `terminalPart` is not empty
+
+    const acroCheckBox = PDFAcroCheckBox.create(this.doc.context);
+    acroCheckBox.setPartialName(nameParts.terminal);
+    const acroCheckBoxRef = this.doc.context.register(acroCheckBox.dict);
+
+    if (nonTerminal) {
+      // TODO: Make sure a terminal doesn't already exist with this `name`
+      nonTerminal[0].addField(acroCheckBoxRef);
+      acroCheckBox.setParent(nonTerminal[1]);
+    } else {
+      this.acroForm.addField(acroCheckBoxRef);
+    }
+
+    return PDFCheckBox.of(acroCheckBox, acroCheckBoxRef, this.doc);
+  }
+
   createRadioGroup(name: string): PDFRadioGroup {
     assertIs(name, 'name', ['string']);
     const nameParts = splitFieldName(name);
-
-    // let nonTerminal: [PDFAcroNonTerminal, PDFRef] | undefined;
-    // for (let idx = 0, len = nameParts.nonTerminal.length; idx < len; idx++) {
-    //   const namePart = nameParts.nonTerminal[idx];
-    //   if (!namePart) throw new Error('TODO: FIX ME! invalid name part...');
-    //   nonTerminal = this.findNonTerminal(namePart, nonTerminal?.[0]);
-    // }
 
     const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
 
@@ -187,13 +203,6 @@ export default class PDFForm {
   }
 
   private findOrCreateNonTerminals(partialNames: string[]) {
-    console.log('USING PNs:', partialNames);
-
-    // let nonTerminal: [PDFAcroForm | PDFAcroNonTerminal, PDFRef | undefined] = [
-    //   this.acroForm,
-    //   this.ref,
-    // ];
-
     let nonTerminal: [PDFAcroForm] | [PDFAcroNonTerminal, PDFRef] = [
       this.acroForm,
     ];
@@ -210,22 +219,13 @@ export default class PDFForm {
         x.setPartialName(namePart);
         x.setParent(parentRef);
         const xRef = this.doc.context.register(x.dict);
-
-        console.log(
-          'Created non-terminal with partial name:',
-          namePart,
-          PDFHexString.fromText(namePart).toString(),
-        );
         parent.addField(xRef);
-
         nonTerminal = [x, xRef];
       }
     }
     return nonTerminal;
   }
 
-  // TODO: Handle partial nonTerminal matches where I have to create the
-  // intermediate nodes
   private findNonTerminal(
     partialName: string,
     parent: PDFAcroForm | PDFAcroNonTerminal,
