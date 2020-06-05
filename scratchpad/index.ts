@@ -194,6 +194,17 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     height: 50,
   });
 
+  const newDd1 = form.createDropdown('spooky boo 👻');
+  newDd1.setAllowEditing(true);
+  newDd1.setOptions(['foo', 'bar', 'qux', 'baz']);
+  newDd1.select('bar');
+  newDd1.addToPage(helvetica, page2, {
+    x: page2.getWidth() / 2 - 100 / 2,
+    y: page2.getHeight() - (50 + 5),
+    width: 100,
+    height: 50,
+  });
+
   // /*******/
   // const button = form.createButton('a[0].b[1].c[3].button');
   // button.setText('Foo Bar');
@@ -349,5 +360,5 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   // });
 
   fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
-  openPdf('out.pdf', Reader.Acrobat);
+  openPdf('out.pdf', Reader.Chrome);
 })();
