@@ -214,6 +214,37 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     width: 100,
     height: 50,
   });
+
+  const newTf1 = form.createTextField('lah dee dah');
+  newTf1.setText('Lorem ipsum dolor');
+  newTf1.addToPage(helvetica, page2, {
+    x: 5,
+    y: page2.getHeight() - (100 + 50 + 5),
+    width: 100,
+    height: 50,
+  });
+
+  const newTf2 = form.createTextField('lah dee dah');
+  newTf2.setText('Lorem ipsum dolor');
+  newTf2.setIsMultiline(true);
+  newTf2.addToPage(helvetica, page2, {
+    x: 5,
+    y: page2.getHeight() - (175 + 50 + 5),
+    width: 100,
+    height: 50,
+  });
+
+  const newTf3 = form.createTextField('lah dee dah');
+  newTf3.setText('Lorem');
+  newTf3.setMaxLength(5);
+  newTf3.setIsEvenlySpaced(true);
+  newTf3.addToPage(helvetica, page2, {
+    x: 5,
+    y: page2.getHeight() - (250 + 50 + 5),
+    width: 100,
+    height: 50,
+  });
+
   // /*******/
   // const button = form.createButton('a[0].b[1].c[3].button');
   // button.setText('Foo Bar');

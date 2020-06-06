@@ -271,6 +271,29 @@ export default class PDFForm {
     return PDFRadioGroup.of(acroRadioButton, acroRadioButtonRef, this.doc);
   }
 
+  createTextField(name: string): PDFTextField {
+    assertIs(name, 'name', ['string']);
+    const nameParts = splitFieldName(name);
+
+    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+
+    // TODO: Verify that `terminalPart` is not empty
+
+    const acroText = PDFAcroText.create(this.doc.context);
+    acroText.setPartialName(nameParts.terminal);
+    const acroTextRef = this.doc.context.register(acroText.dict);
+
+    if (nonTerminal) {
+      // TODO: Make sure a terminal doesn't already exist with this `name`
+      nonTerminal[0].addField(acroTextRef);
+      acroText.setParent(nonTerminal[1]);
+    } else {
+      this.acroForm.addField(acroTextRef);
+    }
+
+    return PDFTextField.of(acroText, acroTextRef, this.doc);
+  }
+
   private findOrCreateNonTerminals(partialNames: string[]) {
     let nonTerminal: [PDFAcroForm] | [PDFAcroNonTerminal, PDFRef] = [
       this.acroForm,

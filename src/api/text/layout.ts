@@ -21,6 +21,7 @@ export interface LayoutBounds {
 const MIN_FONT_SIZE = 4;
 const MAX_FONT_SIZE = 500;
 
+// TODO: Compute differently for combed fields
 const computeFontSize = (
   lines: string[],
   font: PDFFont,

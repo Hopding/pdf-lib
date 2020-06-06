@@ -14,6 +14,7 @@ import {
   drawLinesOfText,
 } from 'src/api';
 import { breakTextIntoLines } from 'src/utils';
+import PDFContext from 'src/core/PDFContext';
 
 const MIN_FONT_SIZE = 4;
 const MAX_FONT_SIZE = 500;
@@ -47,6 +48,14 @@ const computeFontSize = (
 class PDFAcroText extends PDFAcroTerminal {
   static fromDict = (dict: PDFDict) => new PDFAcroText(dict);
 
+  static create = (context: PDFContext) => {
+    const dict = context.obj({
+      FT: 'Tx',
+      Kids: [],
+    });
+    return new PDFAcroText(dict);
+  };
+
   MaxLen(): PDFNumber | undefined {
     const maxLen = this.dict.lookup(PDFName.of('MaxLen'));
     if (maxLen instanceof PDFNumber) return maxLen;
@@ -66,7 +75,7 @@ class PDFAcroText extends PDFAcroTerminal {
   }
 
   setMaxLength(maxLength: number) {
-    this.dict.set(PDFName.of('V'), PDFNumber.of(maxLength));
+    this.dict.set(PDFName.of('MaxLen'), PDFNumber.of(maxLength));
   }
 
   getMaxLength(): number | undefined {

@@ -1,4 +1,5 @@
 import PDFDocument from 'src/api/PDFDocument';
+import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroText, AcroTextFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
@@ -71,6 +72,7 @@ export default class PDFTextField extends PDFField {
     else return 'left';
   }
 
+  // TODO: What is value is already over `maxLength`?
   setMaxLength(maxLength: number) {
     // TODO: Assert >= 0
     this.acroField.setMaxLength(maxLength);
@@ -153,39 +155,75 @@ export default class PDFTextField extends PDFField {
     this.acroField.setFlagTo(AcroTextFlags.RichText, enable);
   }
 
+  // TODO: Have default width and height
+  addToPage(
+    font: PDFFont,
+    page: PDFPage,
+    options: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    },
+  ) {
+    const { x, y, width, height } = options;
+
+    // Create a widget for this button
+    const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
+    const widgetRef = this.doc.context.register(widget.dict);
+
+    // Add widget to this field
+    this.acroField.addWidget(widgetRef);
+
+    // Set widget properties
+    widget.setRectangle({ x, y, width, height });
+
+    // Set appearance streams for widget
+    this.updateWidgetAppearance(widget, font);
+
+    // Add widget to the given page
+    const { Annots } = page.node.normalizedEntries();
+    Annots.push(widgetRef);
+  }
+
   updateAppearances(
+    font: PDFFont,
+    provider?: AppearanceProviderFor<PDFTextField>,
+  ) {
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      this.updateWidgetAppearance(widget, font, provider);
+    }
+  }
+
+  private updateWidgetAppearance(
+    widget: PDFWidgetAnnotation,
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFTextField>,
   ) {
     const apProvider = provider ?? defaultTextFieldAppearanceProvider;
 
-    const widgets = this.acroField.getWidgets();
-    for (let idx = 0, len = widgets.length; idx < len; idx++) {
-      const widget = widgets[idx];
-      const { normal, rollover, down } = normalizeAppearance(
-        apProvider(this, widget, font),
+    const { normal, rollover, down } = normalizeAppearance(
+      apProvider(this, widget, font),
+    );
+
+    widget.setNormalAppearance(
+      this.createAppearanceStream(widget, normal, font),
+    );
+
+    if (rollover) {
+      widget.setRolloverAppearance(
+        this.createAppearanceStream(widget, rollover, font),
       );
+    } else {
+      widget.removeRolloverAppearance();
+    }
 
-      const normalStream = this.createAppearanceStream(widget, normal, font);
-      if (normalStream) widget.setNormalAppearance(normalStream);
-
-      if (rollover) {
-        const rolloverStream = this.createAppearanceStream(
-          widget,
-          rollover,
-          font,
-        );
-        if (rolloverStream) widget.setRolloverAppearance(rolloverStream);
-      } else {
-        widget.removeRolloverAppearance();
-      }
-
-      if (down) {
-        const downStream = this.createAppearanceStream(widget, down, font);
-        if (downStream) widget.setDownAppearance(downStream);
-      } else {
-        widget.removeDownAppearance();
-      }
+    if (down) {
+      widget.setDownAppearance(this.createAppearanceStream(widget, down, font));
+    } else {
+      widget.removeDownAppearance();
     }
   }
 
@@ -193,7 +231,7 @@ export default class PDFTextField extends PDFField {
     widget: PDFWidgetAnnotation,
     appearance: PDFOperator[],
     font: PDFFont,
-  ): PDFRef | undefined {
+  ): PDFRef {
     const { context } = this.acroField.dict;
     const { width, height } = widget.getRectangle();
 
