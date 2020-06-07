@@ -1,4 +1,9 @@
-import { PDFOperator, PDFWidgetAnnotation } from 'src/core';
+import {
+  PDFOperator,
+  PDFWidgetAnnotation,
+  PDFHexString,
+  PDFName,
+} from 'src/core';
 import PDFFont from 'src/api/PDFFont';
 import PDFButton from 'src/api/form/PDFButton';
 import PDFCheckBox from 'src/api/form/PDFCheckBox';
@@ -277,8 +282,6 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   const normalText = captions?.normal ?? '';
   const downText = captions?.down ?? normalText ?? '';
 
-  console.log(`NORMAL TEXT (${_radioGroup.getName()}):`, normalText);
-
   const borderWidth = bs?.getWidth();
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
@@ -398,6 +401,13 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
     fontSize = layout.fontSize;
   }
 
+  (() => [PDFName, PDFHexString])();
+  // textField.acroField.dict.set(
+  //   PDFName.of('DA'),
+  //   PDFHexString.fromText(`/${font.name} ${fontSize} Tf`),
+  // );
+  widget.getOrCreateAppearanceCharacteristics().setBackgroundColor([1, 1, 1]);
+
   const options = {
     x: 0,
     y: 0,
@@ -445,6 +455,8 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
     font,
     bounds: { x: 0, y: 0, width, height },
   });
+
+  widget.getOrCreateAppearanceCharacteristics().setBackgroundColor([1, 1, 1]);
 
   const options = {
     x: 0,
@@ -501,6 +513,8 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
     font,
     bounds: { x: 0, y: 0, width, height },
   });
+
+  widget.getOrCreateAppearanceCharacteristics().setBackgroundColor([1, 1, 1]);
 
   const selectedLines: TextPosition[] = [];
   for (let idx = 0, len = lines.length; idx < len; idx++) {

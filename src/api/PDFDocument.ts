@@ -219,10 +219,8 @@ export default class PDFDocument {
     this.fontkit = fontkit;
   }
 
-  // TODO: Document and insert default form to remove `| undefined`!
-  getForm(): PDFForm | undefined {
-    const acroForm = this.catalog.getAcroForm();
-    if (!acroForm) return undefined;
+  getForm(): PDFForm {
+    const acroForm = this.catalog.getOrCreateAcroForm();
     return PDFForm.of(acroForm, this);
   }
 

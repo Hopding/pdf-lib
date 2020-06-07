@@ -95,6 +95,11 @@ class AppearanceCharacteristics {
     };
   }
 
+  setBackgroundColor(color: number[]) {
+    const BG = this.dict.context.obj(color);
+    this.dict.set(PDFName.of('BG'), BG);
+  }
+
   setCaptions(captions: { normal: string; rollover?: string; down?: string }) {
     const CA = PDFHexString.fromText(captions.normal);
     this.dict.set(PDFName.of('CA'), CA);

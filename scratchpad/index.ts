@@ -135,10 +135,12 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     fs.readFileSync('/Users/user/Desktop/radios.pdf'),
   );
 
+  // const pdfDoc = await PDFDocument.create();
+
   const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const courier = await pdfDoc.embedFont(StandardFonts.CourierOblique);
 
-  const form = pdfDoc.getForm()!;
+  const form = pdfDoc.getForm();
 
   const fields = form.getFields();
 
@@ -147,6 +149,7 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     fields.map((f) => [f.getName(), f.constructor.name]),
   );
 
+  // const page1 = pdfDoc.addPage();
   const page1 = pdfDoc.getPage(0);
   const page2 = pdfDoc.addPage();
 
@@ -215,7 +218,7 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     height: 50,
   });
 
-  const newTf1 = form.createTextField('lah dee dah');
+  const newTf1 = form.createTextField('lah dee dah 1');
   newTf1.setText('Lorem ipsum dolor');
   newTf1.addToPage(helvetica, page2, {
     x: 5,
@@ -224,7 +227,7 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     height: 50,
   });
 
-  const newTf2 = form.createTextField('lah dee dah');
+  const newTf2 = form.createTextField('lah dee dah 2');
   newTf2.setText('Lorem ipsum dolor');
   newTf2.setIsMultiline(true);
   newTf2.addToPage(helvetica, page2, {
@@ -234,7 +237,7 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     height: 50,
   });
 
-  const newTf3 = form.createTextField('lah dee dah');
+  const newTf3 = form.createTextField('lah dee dah 3');
   newTf3.setText('Lorem');
   newTf3.setMaxLength(5);
   newTf3.setIsEvenlySpaced(true);
@@ -244,38 +247,6 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     width: 100,
     height: 50,
   });
-
-  // /*******/
-  // const button = form.createButton('a[0].b[1].c[3].button');
-  // button.setText('Foo Bar');
-  // button.addToPage(page, {
-  //   width: 21,
-  //   height: 42,
-  //   color: rgb(1, 0, 0),
-  //   borderColor: rgb(1, 0, 0),
-  //   borderWidth: 2,
-  // });
-
-  // const checkBox = form.createCheckBox('a[0].b[1].c[3].checkbox');
-  // checkBox.addToPage(page, {});
-
-  // const dropdown = form.createDropdown('a[0].b[1].c[3].dropdown');
-  // dropdown.addToPage(page, {});
-
-  // const optionList = form.createOptionList('a[0].b[1].c[3].optionlist');
-  // optionList.addToPage(page, {});
-
-  // // TODO: Can a single radio group have multiple widgets with the same value?
-  // const radioGroup = form.createRadioGroup('a[0].b[1].c[3].bar');
-  // radioGroup.addOptionToPage('quxbaz', page, {});
-
-  // const textField = form.createTextField('a[0].b[1].c[3].qux');
-  // textField.addToPage(page, {});
-  // /*******/
-  // // This API means you can also do this:
-  // const checkBox = form.getCheckBox('foo.bar.qux.baz');
-  // checkBox.addToPage(page, {});
-  // /*******/
 
   // === Buttons ===
 
@@ -400,5 +371,5 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   // });
 
   fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
-  openPdf('out.pdf', Reader.Chrome);
+  openPdf('out.pdf', Reader.Acrobat);
 })();

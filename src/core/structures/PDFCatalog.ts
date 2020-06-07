@@ -33,6 +33,16 @@ class PDFCatalog extends PDFDict {
     return PDFAcroForm.fromDict(dict);
   }
 
+  getOrCreateAcroForm(): PDFAcroForm {
+    let acroForm = this.getAcroForm();
+    if (!acroForm) {
+      acroForm = PDFAcroForm.create(this.context);
+      const acroFormRef = this.context.register(acroForm.dict);
+      this.set(PDFName.of('AcroForm'), acroFormRef);
+    }
+    return acroForm;
+  }
+
   /**
    * Inserts the given ref as a leaf node of this catalog's page tree at the
    * specified index (zero-based). Also increments the `Count` of each node in

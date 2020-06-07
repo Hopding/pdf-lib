@@ -1,3 +1,4 @@
+import PDFContext from 'src/core/PDFContext';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
@@ -13,6 +14,11 @@ class PDFAcroForm {
   readonly dict: PDFDict;
 
   static fromDict = (dict: PDFDict) => new PDFAcroForm(dict);
+
+  static create = (context: PDFContext) => {
+    const dict = context.obj({ Fields: [] });
+    return new PDFAcroForm(dict);
+  };
 
   private constructor(dict: PDFDict) {
     this.dict = dict;
