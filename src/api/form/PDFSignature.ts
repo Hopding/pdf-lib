@@ -28,7 +28,6 @@ export default class PDFSignature extends PDFField {
     assertIs(acroSignature, 'acroSignature', [
       [PDFAcroSignature, 'PDFAcroSignature'],
     ]);
-    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroSignature;
   }

@@ -3,13 +3,7 @@ import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroPushButton } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
-import {
-  // PDFName,
-  PDFOperator,
-  PDFContentStream,
-  // PDFDict,
-  PDFRef,
-} from 'src/core';
+import { PDFOperator, PDFContentStream, PDFRef } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -42,7 +36,6 @@ export default class PDFButton extends PDFField {
     assertIs(acroPushButton, 'acroButton', [
       [PDFAcroPushButton, 'PDFAcroPushButton'],
     ]);
-    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroPushButton;
   }

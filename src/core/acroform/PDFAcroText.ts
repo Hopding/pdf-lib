@@ -1,49 +1,10 @@
+import PDFContext from 'src/core/PDFContext';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFString from 'src/core/objects/PDFString';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFName from 'src/core/objects/PDFName';
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import {
-  PDFFont,
-  grayscale,
-  rgb,
-  cmyk,
-  drawRectangle,
-  degrees,
-  drawLinesOfText,
-} from 'src/api';
-import { breakTextIntoLines } from 'src/utils';
-import PDFContext from 'src/core/PDFContext';
-
-const MIN_FONT_SIZE = 4;
-const MAX_FONT_SIZE = 500;
-
-const computeFontSize = (
-  font: PDFFont,
-  text: string,
-  bounds: { width: number; height: number },
-) => {
-  const wordBreaks = [' '];
-
-  let fontSize = MIN_FONT_SIZE;
-  let lines: string[] = [];
-  while (fontSize < MAX_FONT_SIZE) {
-    lines = breakTextIntoLines(text, wordBreaks, bounds.width, (t) =>
-      font.widthOfTextAtSize(t, fontSize),
-    );
-    const tooLong = lines.some(
-      (l) => font.widthOfTextAtSize(l, fontSize) > bounds.width,
-    );
-    if (tooLong) return { fontSize: fontSize - 1, lines };
-    const lineHeight = font.heightAtSize(fontSize);
-    const height = lines.length * lineHeight;
-    if (height > bounds.height) return { fontSize: fontSize - 1, lines };
-    fontSize += 1;
-  }
-
-  return { fontSize, lines };
-};
 
 class PDFAcroText extends PDFAcroTerminal {
   static fromDict = (dict: PDFDict) => new PDFAcroText(dict);
@@ -145,93 +106,7 @@ class PDFAcroText extends PDFAcroTerminal {
     - Could be comb-mode (table cells)
     - Account for /Q (quadding) alignment of text
   */
-  updateAppearances(font: PDFFont) {
-    const { context } = this.dict;
-
-    const widgets = this.getWidgets();
-
-    for (let idx = 0, len = widgets.length; idx < len; idx++) {
-      const widget = widgets[idx];
-      const { width, height } = widget.getRectangle();
-      const characteristics = widget.getAppearanceCharacteristics();
-
-      const BBox = context.obj([0, 0, width, height]);
-
-      const color = characteristics?.getBackgroundColor();
-      const borderColor = characteristics?.getBorderColor();
-
-      // prettier-ignore
-      const componentsToColor = (comps?: number[], scale = 1) => (
-          comps?.length === 1 ? grayscale(
-            comps[0] * scale,
-          )
-        : comps?.length === 3 ? rgb(
-            comps[0] * scale, 
-            comps[1] * scale, 
-            comps[2] * scale,
-          )
-        : comps?.length === 4 ? cmyk(
-            comps[0] * scale, 
-            comps[1] * scale, 
-            comps[2] * scale, 
-            comps[3] * scale,
-          )
-        : undefined
-      );
-
-      const colorOperator = componentsToColor(color);
-      const borderColorOperator = componentsToColor(borderColor);
-
-      const upBackground =
-        colorOperator || borderColorOperator
-          ? drawRectangle({
-              x: 0,
-              y: 0,
-              width,
-              height,
-              borderWidth: borderColorOperator ? 2 : 0,
-              color: colorOperator,
-              borderColor: borderColorOperator,
-              rotate: degrees(0),
-              xSkew: degrees(0),
-              ySkew: degrees(0),
-            })
-          : [];
-
-      const value = this.getValue();
-      const text = value?.decodeText() || '';
-      const { fontSize, lines } = computeFontSize(font, text, {
-        width,
-        height,
-      });
-      const encodedLines = lines.map((x) => font.encodeText(x));
-
-      const normalText = drawLinesOfText(encodedLines, {
-        color: rgb(0, 0, 0),
-        font: font.name,
-        size: fontSize,
-        rotate: degrees(0),
-        xSkew: degrees(0),
-        ySkew: degrees(0),
-        x: 0,
-        y: height - font.heightAtSize(fontSize),
-        lineHeight: font.heightAtSize(fontSize), // TODO: check this
-      });
-
-      const normalStream = context.formXObject(
-        [...upBackground, ...normalText],
-        {
-          BBox,
-          Resources: { Font: { [font.name]: font.ref } },
-        },
-      );
-      const normalStreamRef = context.register(normalStream);
-
-      widget.setNormalAppearance(normalStreamRef);
-      widget.removeRolloverAppearance();
-      widget.removeDownAppearance();
-    }
-  }
+  // updateAppearances(font: PDFFont) {}
 }
 
 export default PDFAcroText;

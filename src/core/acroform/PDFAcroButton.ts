@@ -1,15 +1,11 @@
-// import PDFDict from 'src/core/objects/PDFDict';
 import PDFString from 'src/core/objects/PDFString';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
-
+import PDFRef from 'src/core/objects/PDFRef';
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import PDFRef from '../objects/PDFRef';
 
 class PDFAcroButton extends PDFAcroTerminal {
-  // static fromDict = (dict: PDFDict) => new PDFAcroButton(dict);
-
   Opt(): PDFString | PDFHexString | PDFArray | undefined {
     return this.dict.lookupMaybe(
       PDFName.of('Opt'),

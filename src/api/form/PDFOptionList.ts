@@ -31,7 +31,6 @@ export default class PDFOptionList extends PDFField {
     super(acroListBox, ref, doc);
 
     assertIs(acroListBox, 'acroListBox', [[PDFAcroListBox, 'PDFAcroListBox']]);
-    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroListBox;
   }

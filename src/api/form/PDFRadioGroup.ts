@@ -42,7 +42,6 @@ export default class PDFRadioGroup extends PDFField {
     assertIs(acroRadioButton, 'acroRadioButton', [
       [PDFAcroRadioButton, 'PDFAcroRadioButton'],
     ]);
-    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroRadioButton;
   }

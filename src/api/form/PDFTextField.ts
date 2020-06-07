@@ -27,7 +27,6 @@ export default class PDFTextField extends PDFField {
     super(acroText, ref, doc);
 
     assertIs(acroText, 'acroText', [[PDFAcroText, 'PDFAcroText']]);
-    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroText;
   }

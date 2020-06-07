@@ -37,7 +37,6 @@ class PDFAcroForm {
     for (let idx = 0, len = Fields.size(); idx < len; idx++) {
       const ref = Fields.get(idx) as PDFRef;
       const dict = Fields.lookup(idx, PDFDict);
-      // fields[idx] = PDFAcroField.fromDict(dict);
       fields[idx] = [createPDFAcroField(dict), ref];
     }
 
@@ -52,7 +51,6 @@ class PDFAcroForm {
       for (let idx = 0, len = fields.length; idx < len; idx++) {
         const field = fields[idx];
         allFields.push(field);
-        // if (field instanceof PDFAcroNonTerminal) pushFields(field.getKids());
         const [fieldModel] = field;
         if (fieldModel instanceof PDFAcroNonTerminal) {
           pushFields(createPDFAcroFields(fieldModel.Kids()));

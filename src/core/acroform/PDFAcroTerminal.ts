@@ -1,15 +1,8 @@
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
+import PDFRef from 'src/core/objects/PDFRef';
 import PDFAcroField from 'src/core/acroform/PDFAcroField';
-// import {
-//   PDFAcroField,
-//   PDFAcroButton,
-//   PDFAcroText,
-//   PDFAcroChoice,
-//   PDFAcroSignature,
-// } from 'src/core/acroform';
-import { PDFWidgetAnnotation } from 'src/core/annotation';
-import PDFRef from '../objects/PDFRef';
+import PDFWidgetAnnotation from 'src/core/annotation/PDFWidgetAnnotation';
 
 class PDFAcroTerminal extends PDFAcroField {
   static fromDict = (dict: PDFDict) => new PDFAcroTerminal(dict);
@@ -22,11 +15,11 @@ class PDFAcroTerminal extends PDFAcroField {
   getWidgets(): PDFWidgetAnnotation[] {
     const kidDicts = this.Kids();
 
-    // This field is itself represents a widget
+    // This field is itself a widget
     if (!kidDicts) return [PDFWidgetAnnotation.fromDict(this.dict)];
 
     // This field's kids are its widgets
-    const widgets = new Array(kidDicts.size());
+    const widgets = new Array<PDFWidgetAnnotation>(kidDicts.size());
     for (let idx = 0, len = kidDicts.size(); idx < len; idx++) {
       const dict = kidDicts.lookup(idx, PDFDict);
       widgets[idx] = PDFWidgetAnnotation.fromDict(dict);

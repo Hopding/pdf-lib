@@ -38,7 +38,6 @@ export default class PDFCheckBox extends PDFField {
     assertIs(acroCheckBox, 'acroCheckBox', [
       [PDFAcroCheckBox, 'PDFAcroCheckBox'],
     ]);
-    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroCheckBox;
   }

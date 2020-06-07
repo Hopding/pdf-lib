@@ -1,4 +1,3 @@
-// import PDFDict from 'src/core/objects/PDFDict';
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFString from 'src/core/objects/PDFString';
@@ -7,8 +6,6 @@ import PDFName from 'src/core/objects/PDFName';
 import { AcroChoiceFlags } from 'src/core/acroform/flags';
 
 class PDFAcroChoice extends PDFAcroTerminal {
-  // static fromDict = (dict: PDFDict) => new PDFAcroChoice(dict);
-
   DA(): PDFString | PDFHexString | undefined {
     const da = this.dict.lookup(PDFName.of('DA'));
     if (da instanceof PDFString || da instanceof PDFHexString) return da;

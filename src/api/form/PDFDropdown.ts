@@ -33,7 +33,6 @@ export default class PDFDropdown extends PDFField {
     assertIs(acroComboBox, 'acroComboBox', [
       [PDFAcroComboBox, 'PDFAcroComboBox'],
     ]);
-    assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroField = acroComboBox;
   }

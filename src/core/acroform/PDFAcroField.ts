@@ -10,8 +10,6 @@ import PDFRef from 'src/core/objects/PDFRef';
 class PDFAcroField {
   readonly dict: PDFDict;
 
-  static fromDict = (dict: PDFDict) => new PDFAcroField(dict);
-
   protected constructor(dict: PDFDict) {
     this.dict = dict;
   }
@@ -41,8 +39,8 @@ class PDFAcroField {
   getParent(): PDFAcroField | undefined {
     const parent = this.Parent();
     if (!parent) return undefined;
-    return PDFAcroField.fromDict(parent);
-    // return createPDFAcroField(parent);
+    // return PDFAcroField.fromDict(parent);
+    return new PDFAcroField(parent);
   }
 
   setParent(parent: PDFRef | undefined) {
