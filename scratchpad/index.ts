@@ -75,7 +75,16 @@ import { PDFDocument, rgb } from 'src/index';
    */
   // pdfDoc.removePage(1);
 
-  pdfDoc.addPage();
+  /**
+  * Testing assertIs and assertRange
+  */
+  /* out of range */
+  // outline.linkIndex(99);
+  // outline.linkIndex(-1);
+  // pdfDoc.addOutline('Last Outline', { expanded: true, linkIndex: -1 });
+  // pdfDoc.addOutline('Last Outline', { expanded: true, linkIndex: 99 });
+
+  const page = pdfDoc.addPage();
 
   const img = await pdfDoc.embedJpg(
     fs.readFileSync('assets/images/cmyk_colorspace.jpg'),
