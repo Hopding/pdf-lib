@@ -11,12 +11,16 @@ const IgnoredWarnings = [
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFImage.js -> es/api/PDFDocument.js',
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFPage.js -> es/api/PDFDocument.js',
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFEmbeddedPage.js -> es/api/PDFDocument.js',
+  'Circular dependency: es/api/PDFDocument.js -> es/api/PDFOutline.js -> es/api/PDFDocument.js',
+  'Circular dependency: es/api/PDFDocument.js -> es/api/PDFOutline.js -> es/api/PDFPage.js -> es/api/PDFDocument.js',
 
   // Windows
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFFont.js -> es\\api\\PDFDocument.js',
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFImage.js -> es\\api\\PDFDocument.js',
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFPage.js -> es\\api\\PDFDocument.js',
-  'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFEmbeddedPage.js -> es\\api\\PDFDocument.js'
+  'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFEmbeddedPage.js -> es\\api\\PDFDocument.js',
+  'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFOutline.js -> es\\api\\PDFDocument.js',
+  'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFOutline.js -> es\\api\\PDFPage.js -> es\\api\\PDFDocument.js',
 ];
 
 // Silence circular dependency warnings we don't care about

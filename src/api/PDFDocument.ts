@@ -1226,8 +1226,11 @@ export default class PDFDocument {
    * also update Count of expanded children. The Count for outlines works differently
    * than Pages, hence it is better to do it at the end.
    */
-  endOutline() {
-    this.catalog.Outlines().endOutline();
+  endOutline(): void {
+    const rootOutline = this.catalog.Outlines();
+    if (rootOutline) {
+      rootOutline.endOutline();
+    }
   }
 
   /**
