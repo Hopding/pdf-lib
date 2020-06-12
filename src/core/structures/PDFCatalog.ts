@@ -36,7 +36,6 @@ class PDFCatalog extends PDFDict {
     return new PDFCatalog(dict, context);
   };
 
-
   static fromMapWithContext = (map: DictMap, context: PDFContext) =>
     new PDFCatalog(map, context);
 

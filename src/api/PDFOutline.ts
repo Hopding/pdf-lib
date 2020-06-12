@@ -127,7 +127,7 @@ export default class PDFOutline {
    * const newOutline = pdfDoc.addOutline('title')
    * const nestedOutline = newOutline.addOutline('title2', { expanded: true, linkPage: newPage })
    * ```
-   * This will add a nested outline labeled "title2", 
+   * This will add a nested outline labeled "title2",
    * with an expanded view and linked to newPage.
    *
    * For example:
@@ -138,8 +138,7 @@ export default class PDFOutline {
    * ```
    * This will add a nested outline labeled "title2",
    * with an expanded view and linked to the first page of this PDFDocument.
-   * 
-   * 
+   *
    * @param title, the desired title of the nested outline.
    * @param outlineOptions oobject that may contain expanded, linkPage, and/or linkIndex.
    * @returns The newly created nested outline.
@@ -210,7 +209,10 @@ export default class PDFOutline {
     const parentRef = this.node.insertOutlineItem(this.ref, outline.ref, index);
     outline.node.setParent(parentRef);
 
-    if (options?.linkPage !== undefined && options?.linkPage?.ref !== undefined) {
+    if (
+      options?.linkPage !== undefined &&
+      options?.linkPage?.ref !== undefined
+    ) {
       outline.node.setDest(options?.linkPage?.ref);
     } else if (options?.linkIndex !== undefined) {
       const page = this.doc.getPage(options?.linkIndex);

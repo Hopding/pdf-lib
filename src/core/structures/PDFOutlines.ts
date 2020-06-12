@@ -129,10 +129,10 @@ class PDFOutlines extends PDFDict {
    * (12.3.3 Table 152)
    */
   /**
-  * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as
-  * this class borrows from:
-  *   https://github.com/foliojs/pdfkit/blob/a2abfb4765e6e154fd8e3ffc96ddd6d3fa0cd15d/lib/outline.js
-  */
+   * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as
+   * this class borrows from:
+   *   https://github.com/foliojs/pdfkit/blob/a2abfb4765e6e154fd8e3ffc96ddd6d3fa0cd15d/lib/outline.js
+   */
   endOutline(): number {
     /** Count for Outlines is different from Count for Pages.
      * Count for root Outlines is "total number of visible outline items at all levels of the outline."
@@ -152,7 +152,7 @@ class PDFOutlines extends PDFDict {
       this.set(PDFName.Last, last);
 
       let childrenCount = 0; // Step 1. Initialize `Count` to zero.
-      childrenCount = this.children.length; //Step 2. Add to `Count` the number of immediate children.
+      childrenCount = this.children.length; // Step 2. Add to `Count` the number of immediate children.
       for (let idx = 0, len = this.children.length; idx < len; idx++) {
         const childRef = this.children[idx] as PDFRef;
         const child = this.context.lookup(childRef) as PDFOutlines;
@@ -166,7 +166,10 @@ class PDFOutlines extends PDFDict {
         if (childCount > 0) childrenCount += childCount;
       }
       const sign = this.options?.expanded ? 1 : -1;
-      this.set(PDFName.Count, PDFNumber.of((this.children.length + childrenCount) * sign));
+      this.set(
+        PDFName.Count,
+        PDFNumber.of((this.children.length + childrenCount) * sign),
+      );
       return this.options?.expanded ? this.children.length + childrenCount : 0;
     }
     return 0;

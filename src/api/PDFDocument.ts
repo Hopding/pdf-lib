@@ -157,7 +157,9 @@ export default class PDFDocument {
     const context = PDFContext.create();
     const pageTree = PDFPageTree.withContext(context);
     const pageTreeRef = context.register(pageTree);
-    const outlines = PDFOutlines.withContext(context, { expanded: useOutlines });
+    const outlines = PDFOutlines.withContext(context, {
+      expanded: useOutlines,
+    });
     const outlinesRef = context.register(outlines);
     const catalog = PDFCatalog.withContextAndPages(
       context,
@@ -508,29 +510,29 @@ export default class PDFDocument {
   }
 
   /**
-   * Add a top-level outline to the end of this document's outline hierarchy. 
+   * Add a top-level outline to the end of this document's outline hierarchy.
    * This method accepts two parameters:
-   * 1) title, as a text string, 
+   * 1) title, as a text string,
    * 2) an optional object with three possible keys:
    *    i) expanded, a boolean to flag whether it should be expanded in the initial view,
-   *   ii) linkPage, a PDFRef of a PDFPage for the new outline to be linked to, 
+   *   ii) linkPage, a PDFRef of a PDFPage for the new outline to be linked to,
    *  iii) linkIndex, an integer of the zero-based index (aka page number) of the PDFDocument
    *       (index instead of page number to be in accordance with rest of PDFDocument, i.e. getPage())
    * Note: if user passes both linkPage and linkIndex, linkPage will take precedence.
-   * 
+   *
    * For example:
    * ```js
    * const newPage = pdfDoc.addPage()
    * const newOutline = pdfDoc.addOutline('title', { expanded: true, linkPage: newPage })
    * ```
-   * This will add a top-level outline labeled "title" at the end of the outline hierarchy, 
+   * This will add a top-level outline labeled "title" at the end of the outline hierarchy,
    * with an expanded view and linked to newPage.
-   * 
+   *
    * For example:
    * ```js
    * const newOutline = pdfDoc.addOutline('title', { expanded: true, linkIndex: 0 })
    * ```
-   * This will add a top-level outline labeled "title" at the end of the outline hierarchy, 
+   * This will add a top-level outline labeled "title" at the end of the outline hierarchy,
    * with an expanded view and linked to the first page of this PDFDocument.
    *
    * @param title, the desired title of the outline.
@@ -551,7 +553,7 @@ export default class PDFDocument {
   /**
    * Add a top-level outline at the index of this document's outline hierarchy.
    * This method accepts three parameters:
-   * 1) index, number where to insert, 
+   * 1) index, number where to insert,
    * 2) title, as a text string,
    * 3) an optional object with three possible keys:
    *    i) expanded, a boolean to flag whether it should be expanded in the initial view,
@@ -565,7 +567,7 @@ export default class PDFDocument {
    * const newPage = pdfDoc.addPage()
    * const newOutline = pdfDoc.insertOutline(2, 'title', { expanded: true, linkPage: newPage })
    * ```
-   * This will add a top-level outline labeled "title" at index 2, 
+   * This will add a top-level outline labeled "title" at index 2,
    * with an expanded view and linked to newPage.
    *
    * For example:
@@ -599,7 +601,10 @@ export default class PDFDocument {
     const parentRef = this.catalog.insertOutlineItem(outline.ref, index);
     outline.node.setParent(parentRef);
 
-    if (options?.linkPage !== undefined && options?.linkPage?.ref !== undefined) {
+    if (
+      options?.linkPage !== undefined &&
+      options?.linkPage?.ref !== undefined
+    ) {
       outline.node.setDest(options?.linkPage?.ref);
     } else if (options?.linkIndex !== undefined) {
       const page = this.getPage(options?.linkIndex);
