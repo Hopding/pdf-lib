@@ -40,6 +40,8 @@ export { default as PDFCatalog } from 'src/core/structures/PDFCatalog';
 export { default as PDFContentStream } from 'src/core/structures/PDFContentStream';
 export { default as PDFCrossRefStream } from 'src/core/structures/PDFCrossRefStream';
 export { default as PDFObjectStream } from 'src/core/structures/PDFObjectStream';
+export { default as PDFOutlines } from 'src/core/structures/PDFOutlines';
+export { outlineOptions } from 'src/core/structures/PDFOutlines';
 export { default as PDFPageTree } from 'src/core/structures/PDFPageTree';
 export { default as PDFPageLeaf } from 'src/core/structures/PDFPageLeaf';
 export { default as PDFFlateStream } from 'src/core/structures/PDFFlateStream';

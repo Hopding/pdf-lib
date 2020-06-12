@@ -29,6 +29,7 @@ export interface LoadOptions {
 
 export interface CreateOptions {
   updateMetadata?: boolean;
+  useOutlines?: boolean;
 }
 
 export interface EmbedFontOptions {
