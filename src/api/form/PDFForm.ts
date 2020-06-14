@@ -23,6 +23,7 @@ import PDFSignature from 'src/api/form/PDFSignature';
 import PDFTextField from 'src/api/form/PDFTextField';
 import { createPDFAcroFields } from 'src/core/acroform/utils';
 import { PDFRef } from 'src/core';
+import { NoSuchFieldError, UnexpectedFieldTypeError } from '../errors';
 
 const convertToPDFField = (
   field: PDFAcroField,
@@ -44,9 +45,19 @@ const convertToPDFField = (
 };
 
 const splitFieldName = (fullyQualifiedName: string) => {
+  if (fullyQualifiedName.length === 0) {
+    throw new Error('PDF field names must not be empty strings');
+  }
+
   const parts = fullyQualifiedName.split('.');
 
-  if (parts.length === 0) throw new Error('TODO: FIX ME!');
+  for (let idx = 0, len = parts.length; idx < len; idx++) {
+    if (parts[idx] === '') {
+      throw new Error(
+        `Periods in PDF field names must be separated by at least one character: "${fullyQualifiedName}"`,
+      );
+    }
+  }
 
   if (parts.length === 1) return { nonTerminal: [], terminal: parts[0] };
 
@@ -104,56 +115,56 @@ export default class PDFForm {
     assertIs(name, 'name', ['string']);
     const field = this.getFieldMaybe(name);
     if (field) return field;
-    throw new Error('TODO: FIX ME! no such field...');
+    throw new NoSuchFieldError(name);
   }
 
   getButton(name: string): PDFButton {
     assertIs(name, 'name', ['string']);
     const field = this.getField(name);
     if (field instanceof PDFButton) return field;
-    throw new Error('TODO: FIX ME! not a button...');
+    throw new UnexpectedFieldTypeError(name, PDFButton, field);
   }
 
   getCheckBox(name: string): PDFCheckBox {
     assertIs(name, 'name', ['string']);
     const field = this.getField(name);
     if (field instanceof PDFCheckBox) return field;
-    throw new Error('TODO: FIX ME! not a check box...');
+    throw new UnexpectedFieldTypeError(name, PDFCheckBox, field);
   }
 
   getDropdown(name: string): PDFDropdown {
     assertIs(name, 'name', ['string']);
     const field = this.getField(name);
     if (field instanceof PDFDropdown) return field;
-    throw new Error('TODO: FIX ME! not a dropdown...');
+    throw new UnexpectedFieldTypeError(name, PDFDropdown, field);
   }
 
   getOptionList(name: string): PDFOptionList {
     assertIs(name, 'name', ['string']);
     const field = this.getField(name);
     if (field instanceof PDFOptionList) return field;
-    throw new Error('TODO: FIX ME! not an option list...');
+    throw new UnexpectedFieldTypeError(name, PDFOptionList, field);
   }
 
   getRadioGroup(name: string): PDFRadioGroup {
     assertIs(name, 'name', ['string']);
     const field = this.getField(name);
     if (field instanceof PDFRadioGroup) return field;
-    throw new Error('TODO: FIX ME! not a radio group...');
+    throw new UnexpectedFieldTypeError(name, PDFRadioGroup, field);
   }
 
   getSignature(name: string): PDFSignature {
     assertIs(name, 'name', ['string']);
     const field = this.getField(name);
     if (field instanceof PDFSignature) return field;
-    throw new Error('TODO: FIX ME! not a signature...');
+    throw new UnexpectedFieldTypeError(name, PDFSignature, field);
   }
 
   getTextField(name: string): PDFTextField {
     assertIs(name, 'name', ['string']);
     const field = this.getField(name);
     if (field instanceof PDFTextField) return field;
-    throw new Error('TODO: FIX ME! not a text field...');
+    throw new UnexpectedFieldTypeError(name, PDFTextField, field);
   }
 
   createButton(name: string): PDFButton {
@@ -162,13 +173,13 @@ export default class PDFForm {
     const nameParts = splitFieldName(name);
     const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
 
-    // TODO: Verify that `terminalPart` is not empty
-
     const acroPushButton = PDFAcroPushButton.create(this.doc.context);
     acroPushButton.setPartialName(nameParts.terminal);
     const acroPushButtonRef = this.doc.context.register(acroPushButton.dict);
 
     if (nonTerminal) {
+      // const { Kids } = nonTerminal[0].normalizedEntries();
+      // for (let idx = 0, len = Kids.length; idx < len; idx++) {}
       // TODO: Make sure a terminal doesn't already exist with this `name`
       nonTerminal[0].addField(acroPushButtonRef);
       acroPushButton.setParent(nonTerminal[1]);

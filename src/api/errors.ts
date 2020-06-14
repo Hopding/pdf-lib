@@ -35,3 +35,21 @@ export class RemovePageFromEmptyDocumentError extends Error {
     super(msg);
   }
 }
+
+export class NoSuchFieldError extends Error {
+  constructor(name: string) {
+    const msg = `PDFDocument has no form field with the name "${name}"`;
+    super(msg);
+  }
+}
+
+export class UnexpectedFieldTypeError extends Error {
+  constructor(name: string, expected: any, actual: any) {
+    const expectedType = expected?.name;
+    const actualType = actual?.constructor?.name ?? actual;
+    const msg =
+      `Expected field "${name}" to be of type ${expectedType}, ` +
+      `but it is actually of type ${actualType}`;
+    super(msg);
+  }
+}
