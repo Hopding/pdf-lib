@@ -1095,9 +1095,11 @@ export default class PDFPage {
     assertOrUndefined(options.scale, 'options.scale', ['number']);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
+    assertOrUndefined(options.opacity, 'options.borderOpacity', ['number']);
 
     const contentStream = this.getContentStream();
     if (!('color' in options) && !('borderColor' in options)) {
@@ -1109,7 +1111,9 @@ export default class PDFPage {
         y: options.y ?? this.y,
         scale: options.scale,
         color: options.color ?? undefined,
+        opacity: options.opacity ?? 1,
         borderColor: options.borderColor ?? undefined,
+        borderOpacity: options.opacity ?? 1,
         borderWidth: options.borderWidth ?? 0,
       }),
     );
