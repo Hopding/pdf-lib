@@ -49,6 +49,7 @@ import {
   breakTextIntoLines,
   cleanText,
   rectanglesAreEqual,
+  assertRange,
 } from 'src/utils';
 
 /**
@@ -1110,22 +1111,25 @@ export default class PDFPage {
 
     const opacity = options.opacity ?? 1;
     const borderOpacity = options.borderOpacity ?? 1;
+    assertRange(opacity, "opacity", 0, 1);
+    assertRange(borderOpacity, "borderOpacity", 0, 1);
 
     const extGStateKey = addRandomSuffix('GS', 10);
     const {Resources} = this.node.normalizedEntries();
     const pdfNameExtGState = PDFName.of('ExtGState');
-    const gsObject = this.doc.context.obj({
-      [extGStateKey]: {
-        Type: 'ExtGState',
-        ca: opacity,
-        CA: borderOpacity
-      }
-    });
+    const gsObject = {
+      Type: 'ExtGState',
+      ca: opacity,
+      CA: borderOpacity
+    };
+
     let extGState = Resources.get(pdfNameExtGState) as PDFDict;
     if (extGState) {
-      extGState.set(PDFName.of(extGStateKey), gsObject);
+      extGState.set(PDFName.of(extGStateKey), this.doc.context.obj(gsObject));
     } else {
-      extGState = gsObject;
+      extGState = this.doc.context.obj({
+        [extGStateKey]: gsObject
+      });
       Resources.set(PDFName.of('ExtGState'), extGState);
     }
 
