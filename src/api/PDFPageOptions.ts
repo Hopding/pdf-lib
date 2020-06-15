@@ -97,5 +97,7 @@ export interface PDFPageDrawSVGOptions {
   scale?: number;
   borderWidth?: number;
   color?: Color;
+  opacity?: number;
   borderColor?: Color;
+  borderOpacity?: number;
 }
