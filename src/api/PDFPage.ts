@@ -1144,9 +1144,7 @@ export default class PDFPage {
         y: options.y ?? this.y,
         scale: options.scale,
         color: options.color ?? undefined,
-        opacity: opacity,
         borderColor: options.borderColor ?? undefined,
-        borderOpacity: borderOpacity,
         borderWidth: options.borderWidth ?? 0,
       }),
     );

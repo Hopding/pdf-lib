@@ -255,9 +255,7 @@ export const drawSvgPath = (
     y: number | PDFNumber;
     scale: number | PDFNumber | undefined;
     color: Color | undefined;
-    opacity: number | PDFNumber | undefined;
     borderColor: Color | undefined;
-    borderOpacity: number | PDFNumber | undefined;
     borderWidth: number | PDFNumber;
   },
 ) =>
