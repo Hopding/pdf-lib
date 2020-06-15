@@ -104,6 +104,9 @@ export enum LineJoinStyle {
 export const setLineJoin = (style: LineJoinStyle) =>
   PDFOperator.of(Ops.SetLineJoinStyle, [asPDFNumber(style)]);
 
+export const setGraphicsState = (state: string | PDFName) =>
+  PDFOperator.of(Ops.SetGraphicsStateParams, [asPDFName(state)]);
+
 export const pushGraphicsState = () => PDFOperator.of(Ops.PushGraphicsState);
 
 export const popGraphicsState = () => PDFOperator.of(Ops.PopGraphicsState);

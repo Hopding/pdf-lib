@@ -12,6 +12,7 @@ import {
   popGraphicsState,
   pushGraphicsState,
   translate,
+  setGraphicsState,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
@@ -37,6 +38,7 @@ import {
   PDFOperator,
   PDFPageLeaf,
   PDFRef,
+  PDFDict,
 } from 'src/core';
 import {
   addRandomSuffix,
@@ -1105,18 +1107,47 @@ export default class PDFPage {
     if (!('color' in options) && !('borderColor' in options)) {
       options.borderColor = rgb(0, 0, 0);
     }
+
+    const opacity = options.opacity ?? 1;
+    const borderOpacity = options.borderOpacity ?? 1;
+
+    const extGStateKey = addRandomSuffix('GS', 10);
+    const {Resources} = this.node.normalizedEntries();
+    const pdfNameExtGState = PDFName.of('ExtGState');
+    const gsObject = this.doc.context.obj({
+      [extGStateKey]: {
+        Type: 'ExtGState',
+        ca: opacity,
+        CA: borderOpacity
+      }
+    });
+    let extGState = Resources.get(pdfNameExtGState) as PDFDict;
+    if (extGState) {
+      extGState.set(PDFName.of(extGStateKey), gsObject);
+    } else {
+      extGState = gsObject;
+      Resources.set(PDFName.of('ExtGState'), extGState);
+    }
+
+    this.pushOperators(
+      pushGraphicsState(),
+      setGraphicsState(extGStateKey)
+    );
+
     contentStream.push(
       ...drawSvgPath(path, {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         scale: options.scale,
         color: options.color ?? undefined,
-        opacity: options.opacity ?? 1,
+        opacity: opacity,
         borderColor: options.borderColor ?? undefined,
-        borderOpacity: options.opacity ?? 1,
+        borderOpacity: borderOpacity,
         borderWidth: options.borderWidth ?? 0,
       }),
     );
+
+    this.pushOperators(popGraphicsState());
   }
 
   /**
