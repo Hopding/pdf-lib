@@ -958,9 +958,12 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
 
     const xObjectKey = addRandomSuffix('Image', 10);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
+
+    const isNewGraphicStatePushed = this.onBeforeDraw(options.opacity);
 
     const contentStream = this.getContentStream();
     contentStream.push(
@@ -974,6 +977,10 @@ export default class PDFPage {
         ySkew: options.ySkew ?? degrees(0),
       }),
     );
+
+    if (isNewGraphicStatePushed) {
+      this.onAfterDraw();
+    }
   }
 
   /**
@@ -1104,40 +1111,14 @@ export default class PDFPage {
     ]);
     assertOrUndefined(options.opacity, 'options.borderOpacity', ['number']);
 
-    const contentStream = this.getContentStream();
-    if (!('color' in options) && !('borderColor' in options)) {
+    if (!('color' in options) && !('borderColor' in options))
+    {
       options.borderColor = rgb(0, 0, 0);
     }
 
-    const opacity = options.opacity ?? 1;
-    const borderOpacity = options.borderOpacity ?? 1;
-    assertRange(opacity, "opacity", 0, 1);
-    assertRange(borderOpacity, "borderOpacity", 0, 1);
+    const isNewGraphicStatePushed = this.onBeforeDraw(options.opacity, options.borderOpacity);
 
-    const extGStateKey = addRandomSuffix('GS', 10);
-    const {Resources} = this.node.normalizedEntries();
-    const pdfNameExtGState = PDFName.of('ExtGState');
-    const gsObject = {
-      Type: 'ExtGState',
-      ca: opacity,
-      CA: borderOpacity
-    };
-
-    let extGState = Resources.get(pdfNameExtGState) as PDFDict;
-    if (extGState) {
-      extGState.set(PDFName.of(extGStateKey), this.doc.context.obj(gsObject));
-    } else {
-      extGState = this.doc.context.obj({
-        [extGStateKey]: gsObject
-      });
-      Resources.set(PDFName.of('ExtGState'), extGState);
-    }
-
-    this.pushOperators(
-      pushGraphicsState(),
-      setGraphicsState(extGStateKey)
-    );
-
+    const contentStream = this.getContentStream();
     contentStream.push(
       ...drawSvgPath(path, {
         x: options.x ?? this.x,
@@ -1149,7 +1130,9 @@ export default class PDFPage {
       }),
     );
 
-    this.pushOperators(popGraphicsState());
+    if (isNewGraphicStatePushed) {
+      this.onAfterDraw();
+    }
   }
 
   /**
@@ -1343,6 +1326,46 @@ export default class PDFPage {
       this.setFont(font);
     }
     return [this.font!, this.fontKey!];
+  }
+
+  private onBeforeDraw(opacity: number = 1, borderOpacity: number = 1): boolean {
+    if (opacity !== 1 || borderOpacity !== 1) {
+      assertRange(opacity, "opacity", 0, 1);
+      assertRange(borderOpacity, "borderOpacity", 0, 1);
+
+      const {Resources} = this.node.normalizedEntries();
+      const extGStateString = 'ExtGState';
+      const extGStateKey = addRandomSuffix('GS', 10);
+      const pdfNameExtGState = PDFName.of(extGStateString);
+      const gsObject = {
+        Type: extGStateString,
+        ca: opacity,
+        CA: borderOpacity
+      };
+
+      let extGState = Resources.get(pdfNameExtGState) as PDFDict;
+      if (extGState) {
+        extGState.set(PDFName.of(extGStateKey), this.doc.context.obj(gsObject));
+      } else {
+        extGState = this.doc.context.obj({
+          [extGStateKey]: gsObject
+        });
+        Resources.set(PDFName.of(extGStateString), extGState);
+      }
+
+      this.pushOperators(
+        pushGraphicsState(),
+        setGraphicsState(extGStateKey)
+      );
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private onAfterDraw(): void {
+    this.pushOperators(popGraphicsState());
   }
 
   private getContentStream(useExisting = true): PDFContentStream {
