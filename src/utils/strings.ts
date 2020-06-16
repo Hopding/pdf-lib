@@ -76,7 +76,7 @@ export const breakTextIntoLines = (
   for (let idx = 0, len = words.length; idx < len; idx++) {
     const word = words[idx];
     if (word === '\n' || word === '\r') {
-      currLine = word;
+      currLine += ' ';
       pushCurrLine();
     } else {
       const width = computeWidthOfText(word);

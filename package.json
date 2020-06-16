@@ -1,6 +1,6 @@
 {
   "name": "pdf-lib-ksiner-fork",
-  "version": "1.7.0 (forked from)",
+  "version": "1.7.1",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -114,7 +114,7 @@
   "license": "MIT",
   "private": false,
   "homepage": "https://pdf-lib.js.org",
-  "repository": "git+https://github.com/Hopding/pdf-lib.git",
+  "repository": "git+https://github.com/Ksiner/pdf-lib",
   "bugs": {
     "url": "https://github.com/Hopding/pdf-lib/issues"
   },
