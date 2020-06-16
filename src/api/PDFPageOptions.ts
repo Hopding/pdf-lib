@@ -5,6 +5,7 @@ import { LineCapStyle } from 'src/api/operators';
 
 export interface PDFPageDrawTextOptions {
   color?: Color;
+  opacity?: number;
   font?: PDFFont;
   size?: number;
   rotate?: Rotation;
@@ -50,7 +51,9 @@ export interface PDFPageDrawRectangleOptions {
   ySkew?: Rotation;
   borderWidth?: number;
   color?: Color;
+  opacity?: number;
   borderColor?: Color;
+  borderOpacity?: number;
 }
 
 export interface PDFPageDrawLineOptions {
@@ -59,6 +62,7 @@ export interface PDFPageDrawLineOptions {
   thickness?: number;
   color?: Color;
   lineCap?: LineCapStyle;
+  opacity?: number;
 }
 
 export interface PDFPageDrawSquareOptions {
@@ -70,7 +74,9 @@ export interface PDFPageDrawSquareOptions {
   ySkew?: Rotation;
   borderWidth?: number;
   color?: Color;
+  opacity?: number;
   borderColor?: Color;
+  borderOpacity?: number;
 }
 
 export interface PDFPageDrawEllipseOptions {
@@ -79,7 +85,9 @@ export interface PDFPageDrawEllipseOptions {
   xScale?: number;
   yScale?: number;
   color?: Color;
+  opacity?: number;
   borderColor?: Color;
+  borderOpacity?: number;
   borderWidth?: number;
 }
 
@@ -88,7 +96,9 @@ export interface PDFPageDrawCircleOptions {
   y?: number;
   size?: number;
   color?: Color;
+  opacity?: number;
   borderColor?: Color;
+  borderOpacity?: number;
   borderWidth?: number;
 }
 

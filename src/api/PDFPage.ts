@@ -877,6 +877,7 @@ export default class PDFPage {
   drawText(text: string, options: PDFPageDrawTextOptions = {}): void {
     assertIs(text, 'text', ['string']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
     assertOrUndefined(options.font, 'options.font', [[PDFFont, 'PDFFont']]);
     assertOrUndefined(options.size, 'options.size', ['number']);
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
@@ -906,20 +907,17 @@ export default class PDFPage {
       encodedLines[idx] = font.encodeText(lines[idx]);
     }
 
-    const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawLinesOfText(encodedLines, {
-        color: options.color ?? this.fontColor,
-        font: fontKey,
-        size: fontSize,
-        rotate: options.rotate ?? degrees(0),
-        xSkew: options.xSkew ?? degrees(0),
-        ySkew: options.ySkew ?? degrees(0),
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        lineHeight: options.lineHeight ?? this.lineHeight,
-      }),
-    );
+    this.addToContentStream(drawLinesOfText(encodedLines, {
+      color: options.color ?? this.fontColor,
+      font: fontKey,
+      size: fontSize,
+      rotate: options.rotate ?? degrees(0),
+      xSkew: options.xSkew ?? degrees(0),
+      ySkew: options.ySkew ?? degrees(0),
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      lineHeight: options.lineHeight ?? this.lineHeight,
+    }), options.opacity);
 
     if (options.font) this.setFont(originalFont);
   }
@@ -963,24 +961,15 @@ export default class PDFPage {
     const xObjectKey = addRandomSuffix('Image', 10);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
-    const isNewGraphicStatePushed = this.onBeforeDraw(options.opacity);
-
-    const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawImage(xObjectKey, {
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        width: options.width ?? image.size().width,
-        height: options.height ?? image.size().height,
-        rotate: options.rotate ?? degrees(0),
-        xSkew: options.xSkew ?? degrees(0),
-        ySkew: options.ySkew ?? degrees(0),
-      }),
-    );
-
-    if (isNewGraphicStatePushed) {
-      this.onAfterDraw();
-    }
+    this.addToContentStream(drawImage(xObjectKey, {
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      width: options.width ?? image.size().width,
+      height: options.height ?? image.size().height,
+      rotate: options.rotate ?? degrees(0),
+      xSkew: options.xSkew ?? degrees(0),
+      ySkew: options.ySkew ?? degrees(0),
+    }), options.opacity);
   }
 
   /**
@@ -1049,18 +1038,15 @@ export default class PDFPage {
       : 1
     );
 
-    const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawPage(xObjectKey, {
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        xScale,
-        yScale,
-        rotate: options.rotate ?? degrees(0),
-        xSkew: options.xSkew ?? degrees(0),
-        ySkew: options.ySkew ?? degrees(0),
-      }),
-    );
+    this.addToContentStream(drawPage(xObjectKey, {
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      xScale,
+      yScale,
+      rotate: options.rotate ?? degrees(0),
+      xSkew: options.xSkew ?? degrees(0),
+      ySkew: options.ySkew ?? degrees(0),
+    }));
   }
 
   /**
@@ -1116,11 +1102,7 @@ export default class PDFPage {
       options.borderColor = rgb(0, 0, 0);
     }
 
-    const isNewGraphicStatePushed = this.onBeforeDraw(options.opacity, options.borderOpacity);
-
-    const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawSvgPath(path, {
+    this.addToContentStream(drawSvgPath(path, {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         scale: options.scale,
@@ -1128,11 +1110,9 @@ export default class PDFPage {
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
       }),
+      options.opacity,
+      options.borderOpacity
     );
-
-    if (isNewGraphicStatePushed) {
-      this.onAfterDraw();
-    }
   }
 
   /**
@@ -1162,19 +1142,21 @@ export default class PDFPage {
     assertIs(options.end.y, 'options.end.y', ['number']);
     assertOrUndefined(options.thickness, 'options.thickness', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
 
-    const contentStream = this.getContentStream();
     if (!('color' in options)) {
       options.color = rgb(0, 0, 0);
     }
-    contentStream.push(
-      ...drawLine({
+
+    this.addToContentStream(drawLine({
         start: options.start,
         end: options.end,
         thickness: options.thickness ?? 1,
         color: options.color ?? undefined,
         lineCap: options.lineCap ?? undefined,
       }),
+      undefined,
+      options.opacity
     );
   }
 
@@ -1206,16 +1188,17 @@ export default class PDFPage {
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
+    assertOrUndefined(options.borderOpacity, 'options.borderOpacity', ['number']);
 
-    const contentStream = this.getContentStream();
     if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
     }
-    contentStream.push(
-      ...drawRectangle({
+
+    this.addToContentStream(drawRectangle({
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         width: options.width ?? 150,
@@ -1227,6 +1210,8 @@ export default class PDFPage {
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
       }),
+      options.opacity,
+      options.borderOpacity
     );
   }
 
@@ -1276,17 +1261,18 @@ export default class PDFPage {
     assertOrUndefined(options.xScale, 'options.xScale', ['number']);
     assertOrUndefined(options.yScale, 'options.yScale', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
+    assertOrUndefined(options.borderOpacity, 'options.borderOpacity', ['number']);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
 
-    const contentStream = this.getContentStream();
     if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
     }
-    contentStream.push(
-      ...drawEllipse({
+
+    this.addToContentStream(drawEllipse({
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         xScale: options.xScale ?? 100,
@@ -1295,6 +1281,8 @@ export default class PDFPage {
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
       }),
+      options.opacity,
+      options.borderOpacity
     );
   }
 
@@ -1328,7 +1316,20 @@ export default class PDFPage {
     return [this.font!, this.fontKey!];
   }
 
-  private onBeforeDraw(opacity: number = 1, borderOpacity: number = 1): boolean {
+  private addToContentStream(operators: PDFOperator[], opacity: number = 1, borderOpacity: number = 1): void {
+    const isNewGraphicStateAdded = this.addGraphicsStateMaybe(opacity, borderOpacity);
+
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...operators
+    );
+
+    if (isNewGraphicStateAdded) {
+      this.popGraphicsState();
+    }
+  }
+
+  private addGraphicsStateMaybe(opacity: number, borderOpacity: number): boolean {
     if (opacity !== 1 || borderOpacity !== 1) {
       assertRange(opacity, "opacity", 0, 1);
       assertRange(borderOpacity, "borderOpacity", 0, 1);
@@ -1364,7 +1365,7 @@ export default class PDFPage {
     }
   }
 
-  private onAfterDraw(): void {
+  private popGraphicsState(): void {
     this.pushOperators(popGraphicsState());
   }
 
