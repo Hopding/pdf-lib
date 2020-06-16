@@ -39,6 +39,8 @@ export interface PDFPageDrawPageOptions {
   rotate?: Rotation;
   xSkew?: Rotation;
   ySkew?: Rotation;
+  opacity?: number;
+  borderOpacity?: number;
 }
 
 export interface PDFPageDrawRectangleOptions {

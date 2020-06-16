@@ -1020,6 +1020,8 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+    assertOrUndefined(options.borderOpacity, 'options.borderOpacity', ['number']);
 
     const xObjectKey = addRandomSuffix('EmbeddedPdfPage', 10);
     this.node.setXObject(PDFName.of(xObjectKey), embeddedPage.ref);
@@ -1039,14 +1041,17 @@ export default class PDFPage {
     );
 
     this.addToContentStream(drawPage(xObjectKey, {
-      x: options.x ?? this.x,
-      y: options.y ?? this.y,
-      xScale,
-      yScale,
-      rotate: options.rotate ?? degrees(0),
-      xSkew: options.xSkew ?? degrees(0),
-      ySkew: options.ySkew ?? degrees(0),
-    }));
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
+        xScale,
+        yScale,
+        rotate: options.rotate ?? degrees(0),
+        xSkew: options.xSkew ?? degrees(0),
+        ySkew: options.ySkew ?? degrees(0),
+      }),
+      options.opacity,
+      options.borderOpacity
+    );
   }
 
   /**
