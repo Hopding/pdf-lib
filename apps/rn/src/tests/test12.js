@@ -101,14 +101,14 @@ export default async () => {
     opacity: 0.1,
     borderWidth: 3,
     borderColor: rgb(1, 0, 1),
-    borderOpacity: 0.2
+    borderOpacity: 0.2,
   });
-  page2.drawText("Semi-Transparent Text", {
+  page2.drawText('Semi-Transparent Text', {
     color: rgb(0, 1, 1),
     opacity: 0.5,
     x: inchToPt(1),
     y: inchToPt(2.5),
-    size: 50
+    size: 50,
   });
 
   const base64Pdf = await pdfDoc.saveAsBase64({ dataUri: true });
