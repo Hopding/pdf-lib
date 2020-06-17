@@ -1,5 +1,5 @@
 import { Assets } from '..';
-import { PageSizes, PDFDocument, rgb, degrees } from '../../..';
+import { PageSizes, PDFDocument, rgb } from '../../..';
 
 const inchToPt = (inches: number) => Math.round(inches * 72);
 
@@ -100,14 +100,14 @@ export default async (_assets: Assets) => {
     opacity: 0.1,
     borderWidth: 3,
     borderColor: rgb(1, 0, 1),
-    borderOpacity: 0.2
+    borderOpacity: 0.2,
   });
-  page2.drawText("Semi-Transparent Text", {
+  page2.drawText('Semi-Transparent Text', {
     color: rgb(0, 1, 1),
     opacity: 0.5,
     x: inchToPt(1),
     y: inchToPt(2.5),
-    size: 50
+    size: 50,
   });
 
   const pdfBytes = await pdfDoc.save();
