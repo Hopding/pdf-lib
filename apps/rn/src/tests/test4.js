@@ -48,6 +48,7 @@ export default async () => {
       ...minionsLaughingDims,
       x: centerX - minionsLaughingDims.width / 2,
       y: centerY - minionsLaughingDims.height / 2,
+      opacity: 0.9
     });
   };
 
