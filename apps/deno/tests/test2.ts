@@ -74,6 +74,7 @@ export default async (assets: Assets) => {
       width: textWidth + 10,
       height: boxHeight,
       color: solarizedWhite,
+      opacity: 0.85,
       borderColor: solarizedGray,
       borderWidth: 3,
     });
@@ -89,6 +90,7 @@ export default async (assets: Assets) => {
       width: embeddedPageFigure.width / 2 + embeddedPageFigure.padding * 2,
       height: embeddedPageFigure.height / 2 + embeddedPageFigure.padding * 2,
       color: solarizedWhite,
+      opacity: 0.6,
       borderColor: solarizedGray,
       borderWidth: 2,
     });
