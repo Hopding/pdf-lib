@@ -40,7 +40,26 @@ export interface PDFPageDrawPageOptions {
   xSkew?: Rotation;
   ySkew?: Rotation;
   opacity?: number;
+}
+
+export interface PDFPageDrawSVGOptions {
+  x?: number;
+  y?: number;
+  scale?: number;
+  borderWidth?: number;
+  color?: Color;
+  opacity?: number;
+  borderColor?: Color;
   borderOpacity?: number;
+}
+
+export interface PDFPageDrawLineOptions {
+  start: { x: number; y: number };
+  end: { x: number; y: number };
+  thickness?: number;
+  color?: Color;
+  lineCap?: LineCapStyle;
+  opacity?: number;
 }
 
 export interface PDFPageDrawRectangleOptions {
@@ -56,15 +75,6 @@ export interface PDFPageDrawRectangleOptions {
   opacity?: number;
   borderColor?: Color;
   borderOpacity?: number;
-}
-
-export interface PDFPageDrawLineOptions {
-  start: { x: number; y: number };
-  end: { x: number; y: number };
-  thickness?: number;
-  color?: Color;
-  lineCap?: LineCapStyle;
-  opacity?: number;
 }
 
 export interface PDFPageDrawSquareOptions {
@@ -102,15 +112,4 @@ export interface PDFPageDrawCircleOptions {
   borderColor?: Color;
   borderOpacity?: number;
   borderWidth?: number;
-}
-
-export interface PDFPageDrawSVGOptions {
-  x?: number;
-  y?: number;
-  scale?: number;
-  borderWidth?: number;
-  color?: Color;
-  opacity?: number;
-  borderColor?: Color;
-  borderOpacity?: number;
 }
