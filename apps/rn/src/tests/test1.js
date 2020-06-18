@@ -402,6 +402,7 @@ export default async () => {
     y: 100,
     xScale: 0.5,
     yScale: 0.5,
+    opacity: 0.5,
   });
   page4.drawPage(embeddedPage2, {
     x: 400,

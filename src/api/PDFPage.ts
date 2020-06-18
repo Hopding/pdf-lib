@@ -12,7 +12,6 @@ import {
   popGraphicsState,
   pushGraphicsState,
   translate,
-  setGraphicsState,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
@@ -38,7 +37,6 @@ import {
   PDFOperator,
   PDFPageLeaf,
   PDFRef,
-  PDFDict,
 } from 'src/core';
 import {
   addRandomSuffix,
@@ -49,7 +47,7 @@ import {
   breakTextIntoLines,
   cleanText,
   rectanglesAreEqual,
-  assertRange,
+  assertRangeOrUndefined,
 } from 'src/utils';
 
 /**
@@ -868,6 +866,7 @@ export default class PDFPage {
    *     size: 24,
    *     color: rgb(1, 0, 0),
    *     lineHeight: 24,
+   *     opacity: 0.75,
    *   },
    * )
    * ```
@@ -907,8 +906,13 @@ export default class PDFPage {
       encodedLines[idx] = font.encodeText(lines[idx]);
     }
 
-    this.addToContentStream(
-      drawLinesOfText(encodedLines, {
+    const graphicsStateKey = this.maybeEmbedGraphicsState({
+      opacity: options.opacity,
+    });
+
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawLinesOfText(encodedLines, {
         color: options.color ?? this.fontColor,
         font: fontKey,
         size: fontSize,
@@ -918,8 +922,8 @@ export default class PDFPage {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         lineHeight: options.lineHeight ?? this.lineHeight,
+        graphicsState: graphicsStateKey,
       }),
-      options.opacity,
     );
 
     if (options.font) this.setFont(originalFont);
@@ -943,7 +947,8 @@ export default class PDFPage {
    *   y: 25,
    *   width: jpgDims.width,
    *   height: jpgDims.height,
-   *   rotate: degrees(30)
+   *   rotate: degrees(30),
+   *   opacity: 0.75,
    * })
    * ```
    * @param image The image to be drawn.
@@ -964,8 +969,13 @@ export default class PDFPage {
     const xObjectKey = addRandomSuffix('Image', 10);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
-    this.addToContentStream(
-      drawImage(xObjectKey, {
+    const graphicsStateKey = this.maybeEmbedGraphicsState({
+      opacity: options.opacity,
+    });
+
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawImage(xObjectKey, {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         width: options.width ?? image.size().width,
@@ -973,8 +983,8 @@ export default class PDFPage {
         rotate: options.rotate ?? degrees(0),
         xSkew: options.xSkew ?? degrees(0),
         ySkew: options.ySkew ?? degrees(0),
+        graphicsState: graphicsStateKey,
       }),
-      options.opacity,
     );
   }
 
@@ -998,6 +1008,7 @@ export default class PDFPage {
    *   xScale: 0.5,
    *   yScale: 0.5,
    *   rotate: degrees(30),
+   *   opacity: 0.75,
    * })
    * ```
    *
@@ -1027,12 +1038,13 @@ export default class PDFPage {
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.opacity, 'options.opacity', ['number']);
-    assertOrUndefined(options.borderOpacity, 'options.borderOpacity', [
-      'number',
-    ]);
 
     const xObjectKey = addRandomSuffix('EmbeddedPdfPage', 10);
     this.node.setXObject(PDFName.of(xObjectKey), embeddedPage.ref);
+
+    const graphicsStateKey = this.maybeEmbedGraphicsState({
+      opacity: options.opacity,
+    });
 
     // prettier-ignore
     const xScale = (
@@ -1048,8 +1060,9 @@ export default class PDFPage {
       : 1
     );
 
-    this.addToContentStream(
-      drawPage(xObjectKey, {
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawPage(xObjectKey, {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         xScale,
@@ -1057,9 +1070,8 @@ export default class PDFPage {
         rotate: options.rotate ?? degrees(0),
         xSkew: options.xSkew ?? degrees(0),
         ySkew: options.ySkew ?? degrees(0),
+        graphicsState: graphicsStateKey,
       }),
-      options.opacity,
-      options.borderOpacity,
     );
   }
 
@@ -1073,19 +1085,21 @@ export default class PDFPage {
    * // Draw path as black line
    * page.drawSvgPath(svgPath, { x: 25, y: 75 })
    *
-   * // Change border style
+   * // Change border style and opacity
    * page.drawSvgPath(svgPath, {
    *   x: 25,
    *   y: 275,
    *   borderColor: rgb(0.5, 0.5, 0.5),
    *   borderWidth: 2,
+   *   borderOpacity: 0.75,
    * })
    *
-   * // Set fill color
+   * // Set fill color and opacity
    * page.drawSvgPath(svgPath, {
    * 	 x: 25,
    * 	 y: 475,
    * 	 color: rgb(1.0, 0, 0),
+   *   opacity: 0.75,
    * })
    *
    * // Draw 50% of original size
@@ -1111,21 +1125,26 @@ export default class PDFPage {
     ]);
     assertOrUndefined(options.opacity, 'options.borderOpacity', ['number']);
 
+    const graphicsStateKey = this.maybeEmbedGraphicsState({
+      opacity: options.opacity,
+      borderOpacity: options.borderOpacity,
+    });
+
     if (!('color' in options) && !('borderColor' in options)) {
       options.borderColor = rgb(0, 0, 0);
     }
 
-    this.addToContentStream(
-      drawSvgPath(path, {
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawSvgPath(path, {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         scale: options.scale,
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
+        graphicsState: graphicsStateKey,
       }),
-      options.opacity,
-      options.borderOpacity,
     );
   }
 
@@ -1138,7 +1157,8 @@ export default class PDFPage {
    *   start: { x: 25, y: 75 },
    *   end: { x: 125, y: 175 },
    *   thickness: 2,
-   *   color: rgb(0.75, 0.2, 0.2)
+   *   color: rgb(0.75, 0.2, 0.2),
+   *   opacity: 0.75,
    * })
    * ```
    * @param options The options to be used when drawing the line.
@@ -1156,22 +1176,27 @@ export default class PDFPage {
     assertIs(options.end.y, 'options.end.y', ['number']);
     assertOrUndefined(options.thickness, 'options.thickness', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    // TODO: Should assert `options.lineCap` here, but is a breaking change
     assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+
+    const graphicsStateKey = this.maybeEmbedGraphicsState({
+      borderOpacity: options.opacity,
+    });
 
     if (!('color' in options)) {
       options.color = rgb(0, 0, 0);
     }
 
-    this.addToContentStream(
-      drawLine({
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawLine({
         start: options.start,
         end: options.end,
         thickness: options.thickness ?? 1,
         color: options.color ?? undefined,
         lineCap: options.lineCap ?? undefined,
+        graphicsState: graphicsStateKey,
       }),
-      undefined,
-      options.opacity,
     );
   }
 
@@ -1188,7 +1213,9 @@ export default class PDFPage {
    *   rotate: degrees(-15),
    *   borderWidth: 5,
    *   borderColor: grayscale(0.5),
-   *   color: rgb(0.75, 0.2, 0.2)
+   *   color: rgb(0.75, 0.2, 0.2),
+   *   opacity: 0.5,
+   *   borderOpacity: 0.75,
    * })
    * ```
    * @param options The options to be used when drawing the rectangle.
@@ -1211,12 +1238,18 @@ export default class PDFPage {
       'number',
     ]);
 
+    const graphicsStateKey = this.maybeEmbedGraphicsState({
+      opacity: options.opacity,
+      borderOpacity: options.borderOpacity,
+    });
+
     if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
     }
 
-    this.addToContentStream(
-      drawRectangle({
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawRectangle({
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         width: options.width ?? 150,
@@ -1227,9 +1260,8 @@ export default class PDFPage {
         borderWidth: options.borderWidth ?? 0,
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
+        graphicsState: graphicsStateKey,
       }),
-      options.opacity,
-      options.borderOpacity,
     );
   }
 
@@ -1245,7 +1277,9 @@ export default class PDFPage {
    *   rotate: degrees(-15),
    *   borderWidth: 5,
    *   borderColor: grayscale(0.5),
-   *   color: rgb(0.75, 0.2, 0.2)
+   *   color: rgb(0.75, 0.2, 0.2),
+   *   opacity: 0.5,
+   *   borderOpacity: 0.75,
    * })
    * ```
    * @param options The options to be used when drawing the square.
@@ -1268,7 +1302,9 @@ export default class PDFPage {
    *   yScale: 50,
    *   borderWidth: 5,
    *   borderColor: grayscale(0.5),
-   *   color: rgb(0.75, 0.2, 0.2)
+   *   color: rgb(0.75, 0.2, 0.2),
+   *   opacity: 0.5,
+   *   borderOpacity: 0.75,
    * })
    * ```
    * @param options The options to be used when drawing the ellipse.
@@ -1288,12 +1324,18 @@ export default class PDFPage {
     ]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
 
+    const graphicsStateKey = this.maybeEmbedGraphicsState({
+      opacity: options.opacity,
+      borderOpacity: options.borderOpacity,
+    });
+
     if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
     }
 
-    this.addToContentStream(
-      drawEllipse({
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawEllipse({
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         xScale: options.xScale ?? 100,
@@ -1301,9 +1343,8 @@ export default class PDFPage {
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
+        graphicsState: graphicsStateKey,
       }),
-      options.opacity,
-      options.borderOpacity,
     );
   }
 
@@ -1318,7 +1359,9 @@ export default class PDFPage {
    *   size: 100,
    *   borderWidth: 5,
    *   borderColor: grayscale(0.5),
-   *   color: rgb(0.75, 0.2, 0.2)
+   *   color: rgb(0.75, 0.2, 0.2),
+   *   opacity: 0.5,
+   *   borderOpacity: 0.75,
    * })
    * ```
    * @param options The options to be used when drawing the ellipse.
@@ -1337,64 +1380,6 @@ export default class PDFPage {
     return [this.font!, this.fontKey!];
   }
 
-  private addToContentStream(
-    operators: PDFOperator[],
-    opacity: number = 1,
-    borderOpacity: number = 1,
-  ): void {
-    const isNewGraphicStateAdded = this.addGraphicsStateMaybe(
-      opacity,
-      borderOpacity,
-    );
-
-    const contentStream = this.getContentStream();
-    contentStream.push(...operators);
-
-    if (isNewGraphicStateAdded) {
-      this.popGraphicsState();
-    }
-  }
-
-  private addGraphicsStateMaybe(
-    opacity: number,
-    borderOpacity: number,
-  ): boolean {
-    if (opacity !== 1 || borderOpacity !== 1) {
-      assertRange(opacity, 'opacity', 0, 1);
-      assertRange(borderOpacity, 'borderOpacity', 0, 1);
-
-      const { Resources } = this.node.normalizedEntries();
-      const extGStateString = 'ExtGState';
-      const extGStateKey = addRandomSuffix('GS', 10);
-      const pdfNameExtGState = PDFName.of(extGStateString);
-      const gsObject = {
-        Type: extGStateString,
-        ca: opacity,
-        CA: borderOpacity,
-      };
-
-      let extGState = Resources.get(pdfNameExtGState) as PDFDict;
-      if (extGState) {
-        extGState.set(PDFName.of(extGStateKey), this.doc.context.obj(gsObject));
-      } else {
-        extGState = this.doc.context.obj({
-          [extGStateKey]: gsObject,
-        });
-        Resources.set(PDFName.of(extGStateString), extGState);
-      }
-
-      this.pushOperators(pushGraphicsState(), setGraphicsState(extGStateKey));
-
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  private popGraphicsState(): void {
-    this.pushOperators(popGraphicsState());
-  }
-
   private getContentStream(useExisting = true): PDFContentStream {
     if (useExisting && this.contentStream) return this.contentStream;
     this.contentStream = this.createContentStream();
@@ -1407,5 +1392,29 @@ export default class PDFPage {
     const dict = this.doc.context.obj({});
     const contentStream = PDFContentStream.of(dict, operators);
     return contentStream;
+  }
+
+  private maybeEmbedGraphicsState(options: {
+    opacity?: number;
+    borderOpacity?: number;
+  }): string | undefined {
+    const { opacity, borderOpacity } = options;
+
+    if (opacity === undefined && borderOpacity === undefined) return undefined;
+
+    assertRangeOrUndefined(opacity, 'opacity', 0, 1);
+    assertRangeOrUndefined(borderOpacity, 'borderOpacity', 0, 1);
+
+    const key = addRandomSuffix('GS', 10);
+
+    const graphicsState = this.doc.context.obj({
+      Type: 'ExtGState',
+      ca: opacity,
+      CA: borderOpacity,
+    });
+
+    this.node.setExtGState(PDFName.of(key), graphicsState);
+
+    return key;
   }
 }

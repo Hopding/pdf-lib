@@ -271,6 +271,22 @@ describe(`PDFPageLeaf`, () => {
     );
   });
 
+  it(`can set ExtGState refs and dicts`, () => {
+    const context = PDFContext.create();
+    const parentRef = PDFRef.of(1);
+    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
+
+    const ExtGState = PDFName.of('ExtGState');
+    pageTree.setExtGState(PDFName.of('Foo'), PDFRef.of(21));
+    expect(pageTree.Resources()!.get(ExtGState)!.toString()).toBe(
+      '<<\n/Foo 21 0 R\n>>',
+    );
+    pageTree.setExtGState(PDFName.of('Bar'), context.obj({ CA: 0.1 }));
+    expect(pageTree.Resources()!.get(ExtGState)!.toString()).toBe(
+      '<<\n/Foo 21 0 R\n/Bar <<\n/CA 0.1\n>>\n>>',
+    );
+  });
+
   it(`can be ascended`, () => {
     const context = PDFContext.create();
 
@@ -309,7 +325,7 @@ describe(`PDFPageLeaf`, () => {
 
     expect(pageTree.Contents()!.toString()).toBe('[ 21 0 R ]');
     expect(pageTree.Resources()!.toString()).toBe(
-      '<<\n/Font <<\n>>\n/XObject <<\n>>\n>>',
+      '<<\n/Font <<\n>>\n/XObject <<\n>>\n/ExtGState <<\n>>\n>>',
     );
   });
 
@@ -333,7 +349,7 @@ describe(`PDFPageLeaf`, () => {
       `[ ${pushRef} 21 0 R ${popRef} ]`,
     );
     expect(pageTree.Resources()!.toString()).toBe(
-      '<<\n/Font <<\n>>\n/XObject <<\n>>\n>>',
+      '<<\n/Font <<\n>>\n/XObject <<\n>>\n/ExtGState <<\n>>\n>>',
     );
   });
 });

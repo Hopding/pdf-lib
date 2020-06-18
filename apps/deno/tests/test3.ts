@@ -46,6 +46,13 @@ export default async (assets: Assets) => {
     font: helveticaFont,
     color: hotPink,
   });
+  page0.drawLine({
+    start: { x: 10, y: 207 },
+    end: { x: 295, y: 207 },
+    color: rgb(0, 1, 1),
+    thickness: 5,
+    opacity: 0.7,
+  });
   page0.drawImage(catRidingUnicornImage, {
     ...catRidingUnicornDims,
     x: 30,
