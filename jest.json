@@ -1,5 +1,6 @@
 {
   "preset": "ts-jest",
+  "testEnvironment": "node",
   "coverageReporters": ["html"],
   "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
   "roots": ["src", "tests"],
