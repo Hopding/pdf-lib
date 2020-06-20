@@ -13,7 +13,7 @@ export default async (_assets: Assets) => {
 
   // bezier curve example
   page1.drawSvgPath('M100,200 C100,100 250,100 250,200 S400,300 400,200', {
-    x: inchToPt(2),
+    x: inchToPt(0.25),
     y: inchToPt(12),
   });
 

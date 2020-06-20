@@ -27,9 +27,9 @@ const promptToContinue = () =>
   new Promise((resolve) => cli.question(prompt, (_answer) => resolve()));
 
 // This needs to be more sophisticated to work on Linux as well.
-const openPdf = (path: string, reader?: string) => {
+const openPdf = (path: string, _reader?: string) => {
   if (process.platform === 'darwin') {
-    execSync(`open -a "${reader || 'Preview'}" '${path}'`);
+    execSync(`open -a "${_reader || 'Preview'}" '${path}'`);
     // execSync(`open -a "Preview" '${path}'`);
     // execSync(`open -a "Adobe Acrobat" '${path}'`);
     // execSync(`open -a "Foxit Reader" '${path}'`);
