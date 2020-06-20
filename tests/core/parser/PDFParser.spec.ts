@@ -21,7 +21,8 @@ describe(`PDFParser`, () => {
     console.warn = jest.fn((...args) => {
       if (
         !args[0].includes('Trying to parse invalid object:') &&
-        !args[0].includes('Invalid object ref:')
+        !args[0].includes('Invalid object ref:') &&
+        !args[0].includes('Removing parsed object: 0 0 R')
       ) {
         origConsoleWarn(...args);
       }
@@ -367,5 +368,31 @@ describe(`PDFParser`, () => {
     expect(object22).toBeInstanceOf(PDFString);
     const object28 = context.lookup(PDFRef.of(28));
     expect(object28).toBeInstanceOf(PDFDict);
+  });
+
+  it(`removes indirect objects with objectNumber=0`, async () => {
+    const input = `
+    %PDF-1.7
+    1 0 obj
+      (foo)
+    endobj
+    0 0 obj
+      (bar)
+    endobj
+    2 0 obj
+      (baz)
+    endobj
+    %%EOF
+  `;
+    const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
+    const context = await parser.parseDocument();
+
+    expect(context.enumerateIndirectObjects().length).toBe(2);
+    const object1 = context.lookup(PDFRef.of(1));
+    expect(object1).toBeInstanceOf(PDFString);
+    const object0 = context.lookup(PDFRef.of(0));
+    expect(object0).toBe(undefined);
+    const object2 = context.lookup(PDFRef.of(2));
+    expect(object2).toBeInstanceOf(PDFString);
   });
 });

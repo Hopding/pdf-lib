@@ -69,6 +69,11 @@ class PDFParser extends PDFObjectParser {
 
     this.maybeRecoverRoot();
 
+    if (this.context.lookup(PDFRef.of(0))) {
+      console.warn('Removing parsed object: 0 0 R');
+      this.context.delete(PDFRef.of(0));
+    }
+
     return this.context;
   }
 
