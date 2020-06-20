@@ -11,7 +11,7 @@ import {
   normalizeAppearance,
   defaultOptionListAppearanceProvider,
 } from 'src/api/form/appearances';
-import { PDFOperator, PDFRef, PDFHexString, PDFContentStream } from 'src/core';
+import { PDFRef, PDFHexString } from 'src/core';
 
 /**
  * Represents an option list field of a [[PDFForm]].
@@ -215,51 +215,8 @@ export default class PDFOptionList extends PDFField {
     provider?: AppearanceProviderFor<PDFOptionList>,
   ) {
     const apProvider = provider ?? defaultOptionListAppearanceProvider;
-
-    const { normal, rollover, down } = normalizeAppearance(
-      apProvider(this, widget, font),
-    );
-
-    widget.setNormalAppearance(
-      this.createAppearanceStream(widget, normal, font),
-    );
-
-    if (rollover) {
-      widget.setRolloverAppearance(
-        this.createAppearanceStream(widget, rollover, font),
-      );
-    } else {
-      widget.removeRolloverAppearance();
-    }
-
-    if (down) {
-      widget.setDownAppearance(this.createAppearanceStream(widget, down, font));
-    } else {
-      widget.removeDownAppearance();
-    }
-  }
-
-  private createAppearanceStream(
-    widget: PDFWidgetAnnotation,
-    appearance: PDFOperator[],
-    font: PDFFont,
-  ): PDFRef {
-    const { context } = this.acroField.dict;
-    const { width, height } = widget.getRectangle();
-
-    // TODO: Use `context.formXObject` everywhere
-    const xObjectDict = context.obj({
-      Type: 'XObject',
-      Subtype: 'Form',
-      BBox: context.obj([0, 0, width, height]),
-      Matrix: context.obj([1, 0, 0, 1, 0, 0]),
-      Resources: { Font: { [font.name]: font.ref } },
-    });
-
-    const stream = PDFContentStream.of(xObjectDict, appearance);
-    const streamRef = context.register(stream);
-
-    return streamRef;
+    const appearances = normalizeAppearance(apProvider(this, widget, font));
+    this.updateWidgetAppearanceWithFont(widget, font, appearances);
   }
 
   // Hack to differentiate `PDFOptionList` from `PDFDropdown`

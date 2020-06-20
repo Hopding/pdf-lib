@@ -1,7 +1,15 @@
 import PDFDocument from 'src/api/PDFDocument';
 import { PDFAcroField, AcroFieldFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
-import { PDFRef } from 'src/core';
+import {
+  PDFRef,
+  PDFWidgetAnnotation,
+  PDFOperator,
+  PDFName,
+  PDFDict,
+} from 'src/core';
+import { PDFFont } from '..';
+import { AppearanceMapping } from './appearances';
 
 // TODO: Should fields always have refs? What about the PDFForm?
 // TODO: Note in documentation that a single field can actually be rendered
@@ -63,5 +71,89 @@ export default class PDFField {
 
   setExported(exported: boolean) {
     this.acroField.setFlagTo(AcroFieldFlags.NoExport, !exported);
+  }
+
+  protected updateWidgetAppearanceWithFont(
+    widget: PDFWidgetAnnotation,
+    font: PDFFont,
+    { normal, rollover, down }: AppearanceMapping<PDFOperator[]>,
+  ) {
+    this.updateWidgetAppearances(widget, {
+      normal: this.createAppearanceStream(widget, normal, font),
+      rollover: rollover && this.createAppearanceStream(widget, rollover, font),
+      down: down && this.createAppearanceStream(widget, down, font),
+    });
+  }
+
+  protected updateOnOffWidgetAppearance(
+    widget: PDFWidgetAnnotation,
+    onValue: PDFName,
+    {
+      normal,
+      rollover,
+      down,
+    }: AppearanceMapping<{ on: PDFOperator[]; off: PDFOperator[] }>,
+  ) {
+    this.updateWidgetAppearances(widget, {
+      normal: this.createAppearanceDict(widget, normal, onValue),
+      rollover:
+        rollover && this.createAppearanceDict(widget, rollover, onValue),
+      down: down && this.createAppearanceDict(widget, down, onValue),
+    });
+  }
+
+  private updateWidgetAppearances(
+    widget: PDFWidgetAnnotation,
+    { normal, rollover, down }: AppearanceMapping<PDFRef | PDFDict>,
+  ) {
+    widget.setNormalAppearance(normal);
+
+    if (rollover) {
+      widget.setRolloverAppearance(rollover);
+    } else {
+      widget.removeRolloverAppearance();
+    }
+
+    if (down) {
+      widget.setDownAppearance(down);
+    } else {
+      widget.removeDownAppearance();
+    }
+  }
+
+  private createAppearanceStream(
+    widget: PDFWidgetAnnotation,
+    appearance: PDFOperator[],
+    font?: PDFFont,
+  ): PDFRef {
+    const { context } = this.acroField.dict;
+    const { width, height } = widget.getRectangle();
+
+    const Resources = font && { Font: { [font.name]: font.ref } };
+    const stream = context.formXObject(appearance, {
+      Resources,
+      BBox: context.obj([0, 0, width, height]),
+      Matrix: context.obj([1, 0, 0, 1, 0, 0]),
+    });
+    const streamRef = context.register(stream);
+
+    return streamRef;
+  }
+
+  private createAppearanceDict(
+    widget: PDFWidgetAnnotation,
+    appearance: { on: PDFOperator[]; off: PDFOperator[] },
+    onValue: PDFName,
+  ): PDFDict {
+    const { context } = this.acroField.dict;
+
+    const onStreamRef = this.createAppearanceStream(widget, appearance.on);
+    const offStreamRef = this.createAppearanceStream(widget, appearance.off);
+
+    const appearanceDict = context.obj({});
+    appearanceDict.set(onValue, onStreamRef);
+    appearanceDict.set(PDFName.of('Off'), offStreamRef);
+
+    return appearanceDict;
   }
 }

@@ -4,13 +4,7 @@ import { PDFAcroCheckBox } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
-import {
-  PDFName,
-  PDFOperator,
-  PDFContentStream,
-  PDFDict,
-  PDFRef,
-} from 'src/core';
+import { PDFName, PDFRef } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -105,57 +99,7 @@ export default class PDFCheckBox extends PDFField {
     provider?: AppearanceProviderFor<PDFCheckBox>,
   ) {
     const apProvider = provider ?? defaultCheckBoxAppearanceProvider;
-
-    const { normal, rollover, down } = normalizeAppearance(
-      apProvider(this, widget),
-    );
-
-    widget.setNormalAppearance(
-      this.createAppearanceDict(widget, onValue, normal),
-    );
-
-    if (rollover) {
-      widget.setRolloverAppearance(
-        this.createAppearanceDict(widget, onValue, rollover),
-      );
-    } else {
-      widget.removeRolloverAppearance();
-    }
-
-    if (down) {
-      widget.setDownAppearance(
-        this.createAppearanceDict(widget, onValue, down),
-      );
-    } else {
-      widget.removeDownAppearance();
-    }
-  }
-
-  private createAppearanceDict(
-    widget: PDFWidgetAnnotation,
-    onValue: PDFName,
-    appearance: { checked: PDFOperator[]; unchecked: PDFOperator[] },
-  ): PDFDict {
-    const { context } = this.acroField.dict;
-    const { width, height } = widget.getRectangle();
-
-    const xObjectDict = context.obj({
-      Type: 'XObject',
-      Subtype: 'Form',
-      BBox: context.obj([0, 0, width, height]),
-      Matrix: context.obj([1, 0, 0, 1, 0, 0]),
-    });
-
-    const onStream = PDFContentStream.of(xObjectDict, appearance.checked);
-    const onStreamRef = context.register(onStream);
-
-    const offStream = PDFContentStream.of(xObjectDict, appearance.unchecked);
-    const offStreamRef = context.register(offStream);
-
-    const appearanceDict = context.obj({});
-    appearanceDict.set(onValue, onStreamRef);
-    appearanceDict.set(PDFName.of('Off'), offStreamRef);
-
-    return appearanceDict;
+    const appearances = normalizeAppearance(apProvider(this, widget));
+    this.updateOnOffWidgetAppearance(widget, onValue, appearances);
   }
 }

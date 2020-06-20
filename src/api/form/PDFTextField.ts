@@ -5,7 +5,7 @@ import { PDFAcroText, AcroTextFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
-import { PDFHexString, PDFOperator, PDFRef, PDFContentStream } from 'src/core';
+import { PDFHexString, PDFRef } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -202,50 +202,7 @@ export default class PDFTextField extends PDFField {
     provider?: AppearanceProviderFor<PDFTextField>,
   ) {
     const apProvider = provider ?? defaultTextFieldAppearanceProvider;
-
-    const { normal, rollover, down } = normalizeAppearance(
-      apProvider(this, widget, font),
-    );
-
-    widget.setNormalAppearance(
-      this.createAppearanceStream(widget, normal, font),
-    );
-
-    if (rollover) {
-      widget.setRolloverAppearance(
-        this.createAppearanceStream(widget, rollover, font),
-      );
-    } else {
-      widget.removeRolloverAppearance();
-    }
-
-    if (down) {
-      widget.setDownAppearance(this.createAppearanceStream(widget, down, font));
-    } else {
-      widget.removeDownAppearance();
-    }
-  }
-
-  private createAppearanceStream(
-    widget: PDFWidgetAnnotation,
-    appearance: PDFOperator[],
-    font: PDFFont,
-  ): PDFRef {
-    const { context } = this.acroField.dict;
-    const { width, height } = widget.getRectangle();
-
-    // TODO: Use `context.formXObject` everywhere
-    const xObjectDict = context.obj({
-      Type: 'XObject',
-      Subtype: 'Form',
-      BBox: context.obj([0, 0, width, height]),
-      Matrix: context.obj([1, 0, 0, 1, 0, 0]),
-      Resources: { Font: { [font.name]: font.ref } },
-    });
-
-    const stream = PDFContentStream.of(xObjectDict, appearance);
-    const streamRef = context.register(stream);
-
-    return streamRef;
+    const appearances = normalizeAppearance(apProvider(this, widget, font));
+    this.updateWidgetAppearanceWithFont(widget, font, appearances);
   }
 }

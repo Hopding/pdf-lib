@@ -37,16 +37,16 @@ type CheckBoxAppearanceProvider = (
   checkBox: PDFCheckBox,
   widget: PDFWidgetAnnotation,
 ) => AppearanceOrMapping<{
-  checked: PDFOperator[];
-  unchecked: PDFOperator[];
+  on: PDFOperator[];
+  off: PDFOperator[];
 }>;
 
 type RadioGroupAppearanceProvider = (
   radioGroup: PDFRadioGroup,
   widget: PDFWidgetAnnotation,
 ) => AppearanceOrMapping<{
-  selected: PDFOperator[];
-  unselected: PDFOperator[];
+  on: PDFOperator[];
+  off: PDFOperator[];
 }>;
 
 type ButtonAppearanceProvider = (
@@ -81,7 +81,7 @@ type SignatureAppearanceProvider = (
 
 /******************* Appearance Provider Utility Types ************************/
 
-type AppearanceMapping<T> = { normal: T; rollover?: T; down?: T };
+export type AppearanceMapping<T> = { normal: T; rollover?: T; down?: T };
 
 type AppearanceOrMapping<T> = T | AppearanceMapping<T>;
 
@@ -136,7 +136,7 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
 
   return {
     normal: {
-      checked: [
+      on: [
         ...rotate,
         ...drawCheckBox({
           ...options,
@@ -145,7 +145,7 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
           filled: true,
         }),
       ],
-      unchecked: [
+      off: [
         ...rotate,
         ...drawCheckBox({
           ...options,
@@ -156,7 +156,7 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
       ],
     },
     down: {
-      checked: [
+      on: [
         ...rotate,
         ...drawCheckBox({
           ...options,
@@ -165,7 +165,7 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
           filled: true,
         }),
       ],
-      unchecked: [
+      off: [
         ...rotate,
         ...drawCheckBox({
           ...options,
@@ -208,7 +208,7 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
 
   return {
     normal: {
-      selected: [
+      on: [
         ...rotate,
         ...drawRadioButton({
           ...options,
@@ -217,7 +217,7 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
           filled: true,
         }),
       ],
-      unselected: [
+      off: [
         ...rotate,
         ...drawRadioButton({
           ...options,
@@ -228,7 +228,7 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
       ],
     },
     down: {
-      selected: [
+      on: [
         ...rotate,
         ...drawRadioButton({
           ...options,
@@ -237,7 +237,7 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
           filled: true,
         }),
       ],
-      unselected: [
+      off: [
         ...rotate,
         ...drawRadioButton({
           ...options,
