@@ -24,7 +24,7 @@ const promptToContinue = () => {
 // This needs to be more sophisticated to work on Linux as well.
 const openPdf = (path: string, reader: string = '') => {
   if (Deno.build.os === 'darwin') {
-    Deno.run({ cmd: ['open', '-a', reader, path] });
+    Deno.run({ cmd: ['open', '-a', reader || 'Preview', path] });
     // Deno.run({ cmd: ['open', '-a', 'Preview', path] });
     // Deno.run({ cmd: ['open', '-a', 'Adobe Acrobat', path] });
     // Deno.run({ cmd: ['open', '-a', 'Foxit Reader', path] });

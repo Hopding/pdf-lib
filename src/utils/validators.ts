@@ -119,6 +119,16 @@ export const assertRange = (
   }
 };
 
+export const assertRangeOrUndefined = (
+  value: any,
+  valueName: string,
+  min: number,
+  max: number,
+) => {
+  assertIs(value, valueName, ['number', 'undefined']);
+  if (typeof value === 'number') assertRange(value, valueName, min, max);
+};
+
 export const assertMultiple = (
   value: any,
   valueName: string,

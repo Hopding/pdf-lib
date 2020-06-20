@@ -142,6 +142,11 @@ class PDFPageLeaf extends PDFDict {
     XObject.set(name, xObjectRef);
   }
 
+  setExtGState(name: PDFName, extGStateRef: PDFRef | PDFDict): void {
+    const { ExtGState } = this.normalizedEntries();
+    ExtGState.set(name, extGStateRef);
+  }
+
   ascend(visitor: (node: PDFPageTree | PDFPageLeaf) => any): void {
     visitor(this);
     const Parent = this.Parent();
@@ -182,6 +187,11 @@ class PDFPageLeaf extends PDFDict {
       Resources.lookupMaybe(PDFName.XObject, PDFDict) || context.obj({});
     Resources.set(PDFName.XObject, XObject);
 
+    // TODO: Clone `ExtGState` if it is inherited
+    const ExtGState =
+      Resources.lookupMaybe(PDFName.ExtGState, PDFDict) || context.obj({});
+    Resources.set(PDFName.ExtGState, ExtGState);
+
     const Annots = this.Annots() || context.obj([]);
     this.set(PDFName.Annots, Annots);
 
@@ -199,6 +209,7 @@ class PDFPageLeaf extends PDFDict {
       Contents,
       Font: Resources.lookup(PDFName.Font, PDFDict),
       XObject: Resources.lookup(PDFName.XObject, PDFDict),
+      ExtGState: Resources.lookup(PDFName.ExtGState, PDFDict),
     };
   }
 }

@@ -11,6 +11,12 @@ export default async (_assets: Assets) => {
   // SVG sample paths from
   // https://svgwg.org/svg2-draft/paths.html
 
+  // bezier curve example
+  page1.drawSvgPath('M100,200 C100,100 250,100 250,200 S400,300 400,200', {
+    x: inchToPt(0.25),
+    y: inchToPt(12),
+  });
+
   // downward facing triangle
   page1.drawSvgPath('M 100 100 L 300 100 L 200 300 z', {
     x: inchToPt(-1),
@@ -18,12 +24,8 @@ export default async (_assets: Assets) => {
     color: rgb(1, 0, 0),
     borderColor: rgb(0, 0, 1),
     borderWidth: 1,
-  });
-
-  // bezier curve example
-  page1.drawSvgPath('M100,200 C100,100 250,100 250,200 S400,300 400,200', {
-    x: inchToPt(2),
-    y: inchToPt(12),
+    opacity: 0.7,
+    borderOpacity: 0.7,
   });
 
   // bezier control point adjustments
@@ -93,6 +95,22 @@ export default async (_assets: Assets) => {
       borderWidth: 2,
     },
   );
+  page2.drawCircle({
+    x: inchToPt(3),
+    y: inchToPt(5),
+    color: rgb(0, 1, 1),
+    opacity: 0.1,
+    borderWidth: 3,
+    borderColor: rgb(1, 0, 1),
+    borderOpacity: 0.2,
+  });
+  page2.drawText('Semi-Transparent Text', {
+    color: rgb(0, 1, 1),
+    opacity: 0.5,
+    x: inchToPt(1),
+    y: inchToPt(2.5),
+    size: 50,
+  });
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
