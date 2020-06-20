@@ -1103,7 +1103,7 @@ export default class PDFPage {
    * })
    *
    * // Draw 50% of original size
-   *   page.drawSvgPath(svgPath, {
+   * page.drawSvgPath(svgPath, {
    *   x: 25,
    *   y: 675,
    *   scale: 0.5,
