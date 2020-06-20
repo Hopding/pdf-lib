@@ -1096,17 +1096,17 @@ export default class PDFPage {
    *
    * // Set fill color and opacity
    * page.drawSvgPath(svgPath, {
-   * 	 x: 25,
-   * 	 y: 475,
-   * 	 color: rgb(1.0, 0, 0),
+   *   x: 25,
+   *   y: 475,
+   *   color: rgb(1.0, 0, 0),
    *   opacity: 0.75,
    * })
    *
    * // Draw 50% of original size
-   * page.drawSvgPath(svgPath, {
-   * 	 x: 25,
-   * 	 y: 675,
-   * 	 scale: 0.5,
+   *   page.drawSvgPath(svgPath, {
+   *   x: 25,
+   *   y: 675,
+   *   scale: 0.5,
    * })
    * ```
    * @param path The SVG path to be drawn.
