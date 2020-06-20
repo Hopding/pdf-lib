@@ -23,7 +23,7 @@ import PDFSignature from 'src/api/form/PDFSignature';
 import PDFTextField from 'src/api/form/PDFTextField';
 import { createPDFAcroFields } from 'src/core/acroform/utils';
 import { PDFRef } from 'src/core';
-import { NoSuchFieldError, UnexpectedFieldTypeError } from '../errors';
+import { NoSuchFieldError, UnexpectedFieldTypeError } from 'src/api/errors';
 
 const convertToPDFField = (
   field: PDFAcroField,
@@ -65,6 +65,24 @@ const splitFieldName = (fullyQualifiedName: string) => {
     nonTerminal: parts.slice(0, parts.length - 1),
     terminal: parts[parts.length - 1],
   };
+};
+
+const addFieldToParent = (
+  [parent, parentRef]: [PDFAcroForm] | [PDFAcroNonTerminal, PDFRef],
+  [field, fieldRef]: [PDFAcroField, PDFRef],
+  partialName: string,
+) => {
+  const entries = parent.normalizedEntries();
+  const fields = createPDFAcroFields(
+    'Kids' in entries ? entries.Kids : entries.Fields,
+  );
+  for (let idx = 0, len = fields.length; idx < len; idx++) {
+    if (fields[idx][0].getPartialName() === partialName) {
+      throw new Error('TODO: FIX ME!!! Duplicate field name');
+    }
+  }
+  parent.addField(fieldRef);
+  field.setParent(parentRef);
 };
 
 /**
@@ -171,138 +189,90 @@ export default class PDFForm {
     assertIs(name, 'name', ['string']);
 
     const nameParts = splitFieldName(name);
-    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+    const parent = this.findOrCreateNonTerminals(nameParts.nonTerminal);
 
-    const acroPushButton = PDFAcroPushButton.create(this.doc.context);
-    acroPushButton.setPartialName(nameParts.terminal);
-    const acroPushButtonRef = this.doc.context.register(acroPushButton.dict);
+    const button = PDFAcroPushButton.create(this.doc.context);
+    button.setPartialName(nameParts.terminal);
+    const buttonRef = this.doc.context.register(button.dict);
 
-    if (nonTerminal) {
-      // const { Kids } = nonTerminal[0].normalizedEntries();
-      // for (let idx = 0, len = Kids.length; idx < len; idx++) {}
-      // TODO: Make sure a terminal doesn't already exist with this `name`
-      nonTerminal[0].addField(acroPushButtonRef);
-      acroPushButton.setParent(nonTerminal[1]);
-    } else {
-      this.acroForm.addField(acroPushButtonRef);
-    }
+    addFieldToParent(parent, [button, buttonRef], nameParts.terminal);
 
-    return PDFButton.of(acroPushButton, acroPushButtonRef, this.doc);
+    return PDFButton.of(button, buttonRef, this.doc);
   }
 
   createCheckBox(name: string): PDFCheckBox {
     assertIs(name, 'name', ['string']);
 
     const nameParts = splitFieldName(name);
-    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+    const parent = this.findOrCreateNonTerminals(nameParts.nonTerminal);
 
-    // TODO: Verify that `terminalPart` is not empty
+    const checkBox = PDFAcroCheckBox.create(this.doc.context);
+    checkBox.setPartialName(nameParts.terminal);
+    const checkBoxRef = this.doc.context.register(checkBox.dict);
 
-    const acroCheckBox = PDFAcroCheckBox.create(this.doc.context);
-    acroCheckBox.setPartialName(nameParts.terminal);
-    const acroCheckBoxRef = this.doc.context.register(acroCheckBox.dict);
+    addFieldToParent(parent, [checkBox, checkBoxRef], nameParts.terminal);
 
-    if (nonTerminal) {
-      // TODO: Make sure a terminal doesn't already exist with this `name`
-      nonTerminal[0].addField(acroCheckBoxRef);
-      acroCheckBox.setParent(nonTerminal[1]);
-    } else {
-      this.acroForm.addField(acroCheckBoxRef);
-    }
-
-    return PDFCheckBox.of(acroCheckBox, acroCheckBoxRef, this.doc);
+    return PDFCheckBox.of(checkBox, checkBoxRef, this.doc);
   }
 
   createDropdown(name: string): PDFDropdown {
     assertIs(name, 'name', ['string']);
 
     const nameParts = splitFieldName(name);
-    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+    const parent = this.findOrCreateNonTerminals(nameParts.nonTerminal);
 
-    // TODO: Verify that `terminalPart` is not empty
+    const comboBox = PDFAcroComboBox.create(this.doc.context);
+    comboBox.setPartialName(nameParts.terminal);
+    const comboBoxRef = this.doc.context.register(comboBox.dict);
 
-    const acroComboBox = PDFAcroComboBox.create(this.doc.context);
-    acroComboBox.setPartialName(nameParts.terminal);
-    const acroComboBoxRef = this.doc.context.register(acroComboBox.dict);
+    addFieldToParent(parent, [comboBox, comboBoxRef], nameParts.terminal);
 
-    if (nonTerminal) {
-      // TODO: Make sure a terminal doesn't already exist with this `name`
-      nonTerminal[0].addField(acroComboBoxRef);
-      acroComboBox.setParent(nonTerminal[1]);
-    } else {
-      this.acroForm.addField(acroComboBoxRef);
-    }
-
-    return PDFDropdown.of(acroComboBox, acroComboBoxRef, this.doc);
+    return PDFDropdown.of(comboBox, comboBoxRef, this.doc);
   }
 
   createOptionList(name: string): PDFOptionList {
     assertIs(name, 'name', ['string']);
 
     const nameParts = splitFieldName(name);
-    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+    const parent = this.findOrCreateNonTerminals(nameParts.nonTerminal);
 
-    // TODO: Verify that `terminalPart` is not empty
+    const listBox = PDFAcroListBox.create(this.doc.context);
+    listBox.setPartialName(nameParts.terminal);
+    const listBoxRef = this.doc.context.register(listBox.dict);
 
-    const acroListBox = PDFAcroListBox.create(this.doc.context);
-    acroListBox.setPartialName(nameParts.terminal);
-    const acroListBoxRef = this.doc.context.register(acroListBox.dict);
+    addFieldToParent(parent, [listBox, listBoxRef], nameParts.terminal);
 
-    if (nonTerminal) {
-      // TODO: Make sure a terminal doesn't already exist with this `name`
-      nonTerminal[0].addField(acroListBoxRef);
-      acroListBox.setParent(nonTerminal[1]);
-    } else {
-      this.acroForm.addField(acroListBoxRef);
-    }
-
-    return PDFOptionList.of(acroListBox, acroListBoxRef, this.doc);
+    return PDFOptionList.of(listBox, listBoxRef, this.doc);
   }
 
   createRadioGroup(name: string): PDFRadioGroup {
     assertIs(name, 'name', ['string']);
     const nameParts = splitFieldName(name);
 
-    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+    const parent = this.findOrCreateNonTerminals(nameParts.nonTerminal);
 
-    // TODO: Verify that `terminalPart` is not empty
+    const radioButton = PDFAcroRadioButton.create(this.doc.context);
+    radioButton.setPartialName(nameParts.terminal);
+    const radioButtonRef = this.doc.context.register(radioButton.dict);
 
-    const acroRadioButton = PDFAcroRadioButton.create(this.doc.context);
-    acroRadioButton.setPartialName(nameParts.terminal);
-    const acroRadioButtonRef = this.doc.context.register(acroRadioButton.dict);
+    addFieldToParent(parent, [radioButton, radioButtonRef], nameParts.terminal);
 
-    if (nonTerminal) {
-      // TODO: Make sure a terminal doesn't already exist with this `name`
-      nonTerminal[0].addField(acroRadioButtonRef);
-      acroRadioButton.setParent(nonTerminal[1]);
-    } else {
-      this.acroForm.addField(acroRadioButtonRef);
-    }
-
-    return PDFRadioGroup.of(acroRadioButton, acroRadioButtonRef, this.doc);
+    return PDFRadioGroup.of(radioButton, radioButtonRef, this.doc);
   }
 
   createTextField(name: string): PDFTextField {
     assertIs(name, 'name', ['string']);
     const nameParts = splitFieldName(name);
 
-    const nonTerminal = this.findOrCreateNonTerminals(nameParts.nonTerminal);
+    const parent = this.findOrCreateNonTerminals(nameParts.nonTerminal);
 
-    // TODO: Verify that `terminalPart` is not empty
+    const text = PDFAcroText.create(this.doc.context);
+    text.setPartialName(nameParts.terminal);
+    const textRef = this.doc.context.register(text.dict);
 
-    const acroText = PDFAcroText.create(this.doc.context);
-    acroText.setPartialName(nameParts.terminal);
-    const acroTextRef = this.doc.context.register(acroText.dict);
+    addFieldToParent(parent, [text, textRef], nameParts.terminal);
 
-    if (nonTerminal) {
-      // TODO: Make sure a terminal doesn't already exist with this `name`
-      nonTerminal[0].addField(acroTextRef);
-      acroText.setParent(nonTerminal[1]);
-    } else {
-      this.acroForm.addField(acroTextRef);
-    }
-
-    return PDFTextField.of(acroText, acroTextRef, this.doc);
+    return PDFTextField.of(text, textRef, this.doc);
   }
 
   private findOrCreateNonTerminals(partialNames: string[]) {
@@ -318,12 +288,12 @@ export default class PDFForm {
       if (res) {
         nonTerminal = res;
       } else {
-        const x = PDFAcroNonTerminal.create(this.doc.context);
-        x.setPartialName(namePart);
-        x.setParent(parentRef);
-        const xRef = this.doc.context.register(x.dict);
-        parent.addField(xRef);
-        nonTerminal = [x, xRef];
+        const node = PDFAcroNonTerminal.create(this.doc.context);
+        node.setPartialName(namePart);
+        node.setParent(parentRef);
+        const nodeRef = this.doc.context.register(node.dict);
+        parent.addField(nodeRef);
+        nonTerminal = [node, nodeRef];
       }
     }
     return nonTerminal;

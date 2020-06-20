@@ -53,6 +53,15 @@ class PDFWidgetAnnotation extends PDFAnnotation {
     return undefined;
   }
 
+  getOrCreateBorderStyle(): BorderStyle {
+    const BS = this.BS();
+    if (BS) return BorderStyle.fromDict(BS);
+
+    const bs = BorderStyle.fromDict(this.dict.context.obj({}));
+    this.dict.set(PDFName.of('BS'), bs.dict);
+    return bs;
+  }
+
   getOnValue(): PDFName | undefined {
     const normal = this.getAppearances()?.normal;
 

@@ -2,7 +2,7 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroPushButton } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertMultiple } from 'src/utils';
 import { PDFOperator, PDFContentStream, PDFRef } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
@@ -12,6 +12,8 @@ import {
 } from 'src/api/form/appearances';
 
 import PDFField from 'src/api/form/PDFField';
+import { Color, rgb, colorToComponents } from '../colors';
+import { Rotation, degrees, toDegrees } from '../rotations';
 
 /**
  * Represents a button field of a [[PDFForm]].
@@ -40,19 +42,31 @@ export default class PDFButton extends PDFField {
     this.acroField = acroPushButton;
   }
 
-  // TODO: Have default width and height
   addToPage(
     text: string,
     font: PDFFont,
     page: PDFPage,
     options: {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
+      x?: number;
+      y?: number;
+      width?: number;
+      height?: number;
+      color?: Color;
+      borderColor?: Color;
+      borderWidth?: number;
+      rotation?: Rotation;
     },
   ) {
-    const { x, y, width, height } = options;
+    const x = options.x ?? 0;
+    const y = options.y ?? 0;
+    const width = options.width ?? 100;
+    const height = options.height ?? 50;
+    const color = options.color ?? rgb(0, 0, 0);
+    const borderColor = options.borderColor;
+    const borderWidth = options.borderWidth;
+    const degreesAngle = toDegrees(options.rotation ?? degrees(0));
+
+    assertMultiple(degreesAngle, 'degreesAngle', 90);
 
     // Create a widget for this button
     const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
@@ -63,7 +77,14 @@ export default class PDFButton extends PDFField {
 
     // Set widget properties
     widget.setRectangle({ x, y, width, height });
-    widget.getOrCreateAppearanceCharacteristics().setCaptions({ normal: text });
+
+    const ac = widget.getOrCreateAppearanceCharacteristics();
+    ac.setCaptions({ normal: text });
+    ac.setBackgroundColor(colorToComponents(color));
+    if (borderColor) ac.setBorderColor(colorToComponents(borderColor));
+
+    const bs = widget.getOrCreateBorderStyle();
+    if (borderWidth) bs.setWidth(borderWidth);
 
     // Set appearance streams for widget
     this.updateWidgetAppearance(widget, font);

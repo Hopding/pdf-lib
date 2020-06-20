@@ -95,6 +95,16 @@ class AppearanceCharacteristics {
     };
   }
 
+  setRotation(rotation: number) {
+    const R = this.dict.context.obj(rotation);
+    this.dict.set(PDFName.of('R'), R);
+  }
+
+  setBorderColor(color: number[]) {
+    const BC = this.dict.context.obj(color);
+    this.dict.set(PDFName.of('BC'), BC);
+  }
+
   setBackgroundColor(color: number[]) {
     const BG = this.dict.context.obj(color);
     this.dict.set(PDFName.of('BG'), BG);

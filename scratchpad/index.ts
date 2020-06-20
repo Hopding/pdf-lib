@@ -1,6 +1,12 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
+import {
+  PDFDocument,
+  rgb,
+  drawCheckBox,
+  StandardFonts,
+  degrees,
+} from 'src/index';
 
 // import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 // import {
@@ -195,6 +201,10 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
     y: page2.getHeight() - (50 + 5),
     width: 100,
     height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    rotation: degrees(90),
   });
 
   const newDd1 = form.createDropdown('spooky boo 👻');

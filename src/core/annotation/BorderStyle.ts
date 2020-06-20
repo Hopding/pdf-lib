@@ -21,6 +21,11 @@ class BorderStyle {
   getWidth(): number | undefined {
     return this.W()?.asNumber() ?? 1;
   }
+
+  setWidth(width: number) {
+    const W = this.dict.context.obj(width);
+    this.dict.set(PDFName.of('W'), W);
+  }
 }
 
 export default BorderStyle;

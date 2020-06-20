@@ -21,7 +21,7 @@ import {
   drawTextField,
   drawRectangle,
 } from 'src/api/operations';
-import { rgb, grayscale, cmyk } from 'src/api/colors';
+import { rgb, componentsToColor } from 'src/api/colors';
 import { reduceRotation, adjustDimsForRotation, degrees } from '../rotations';
 import {
   layoutMultilineText,
@@ -104,25 +104,6 @@ export const normalizeAppearance = <T>(
   if ('normal' in appearance) return appearance;
   return { normal: appearance };
 };
-
-// prettier-ignore
-const componentsToColor = (comps?: number[], scale = 1) => (
-    comps?.length === 1 ? grayscale(
-      comps[0] * scale,
-    )
-  : comps?.length === 3 ? rgb(
-      comps[0] * scale, 
-      comps[1] * scale, 
-      comps[2] * scale,
-    )
-  : comps?.length === 4 ? cmyk(
-      comps[0] * scale, 
-      comps[1] * scale, 
-      comps[2] * scale, 
-      comps[3] * scale,
-    )
-  : undefined
-);
 
 export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBox> = (
   _checkBox,
