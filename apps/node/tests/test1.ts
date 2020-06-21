@@ -17,8 +17,6 @@ import {
   popGraphicsState,
   pushGraphicsState,
   rgb,
-  setDashPattern,
-  setLineCap,
   setLineJoin,
   StandardFonts,
   typedArrayFor,
@@ -143,10 +141,7 @@ export default async (assets: Assets) => {
   // Lower-left quadrant
   page1.moveTo(0, 0);
   page1.drawSquare({ size: size / 2, color: cmyk(1, 0, 0, 0) });
-  page1.pushOperators(
-    pushGraphicsState(),
-    setLineCap(LineCapStyle.Round),
-  );
+
   page1.drawCircle({
     x: size / 4,
     y: size / 4,
@@ -155,8 +150,8 @@ export default async (assets: Assets) => {
     dashArray: [25],
     dashPhase: 25,
     borderColor: cmyk(0, 1, 0, 0),
+    lineCap: LineCapStyle.Round,
   });
-  page1.pushOperators(popGraphicsState());
 
   page1.drawLine({
     start: {
@@ -170,6 +165,7 @@ export default async (assets: Assets) => {
     color: rgb(0, 1, 0),
     thickness: 3,
     dashArray: [12, 6],
+    lineCap: LineCapStyle.Round,
   });
 
   // Lower-right quadrant

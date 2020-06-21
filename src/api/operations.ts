@@ -162,8 +162,8 @@ export const drawLine = (options: {
     options.color && setStrokingColor(options.color),
     setLineWidth(options.thickness),
     setDashPattern(options.dashArray, options.dashPhase),
-    moveTo(options.start.x, options.start.y),
     options.lineCap && setLineCap(options.lineCap),
+    moveTo(options.start.x, options.start.y),
     lineTo(options.end.x, options.end.y),
     stroke(),
     popGraphicsState(),
@@ -182,6 +182,7 @@ export const drawRectangle = (options: {
   ySkew: Rotation;
   dashArray: (number | PDFNumber)[];
   dashPhase: number | PDFNumber;
+  lineCap?: LineCapStyle;
   graphicsState?: string | PDFName;
 }) =>
   [
@@ -191,6 +192,7 @@ export const drawRectangle = (options: {
     options.borderColor && setStrokingColor(options.borderColor),
     setLineWidth(options.borderWidth),
     setDashPattern(options.dashArray, options.dashPhase),
+    options.lineCap && setLineCap(options.lineCap),
     translate(options.x, options.y),
     rotateRadians(toRadians(options.rotate)),
     skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
@@ -254,6 +256,7 @@ export const drawEllipse = (options: {
   dashArray: (number | PDFNumber)[];
   dashPhase: number | PDFNumber;
   graphicsState?: string | PDFName;
+  lineCap?: LineCapStyle;
 }) =>
   [
     pushGraphicsState(),
@@ -261,6 +264,7 @@ export const drawEllipse = (options: {
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     setLineWidth(options.borderWidth),
+    options.lineCap && setLineCap(options.lineCap),
     setDashPattern(options.dashArray, options.dashPhase),
     ...drawEllipsePath({
       x: options.x,
@@ -289,6 +293,7 @@ export const drawSvgPath = (
     borderWidth: number | PDFNumber;
     dashArray: (number | PDFNumber)[];
     dashPhase: number | PDFNumber;
+    lineCap?: LineCapStyle;
     graphicsState?: string | PDFName;
   },
 ) =>
@@ -304,6 +309,7 @@ export const drawSvgPath = (
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     options.borderWidth && setLineWidth(options.borderWidth),
+    options.lineCap && setLineCap(options.lineCap),
 
     setDashPattern(options.dashArray, options.dashPhase),
 

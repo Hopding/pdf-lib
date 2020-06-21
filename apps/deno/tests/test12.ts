@@ -1,5 +1,5 @@
 import { Assets } from '../index.ts';
-import { PageSizes, PDFDocument, rgb } from '../../../dist/pdf-lib.esm.js';
+import { PageSizes, PDFDocument, rgb, LineCapStyle } from '../../../dist/pdf-lib.esm.js';
 
 const inchToPt = (inches: number) => Math.round(inches * 72);
 
@@ -61,8 +61,9 @@ export default async (_assets: Assets) => {
     x: inchToPt(-1),
     y: inchToPt(11),
     scale: 0.5,
-    borderWidth: 2,
-    dashArray: [12, 6],
+    borderWidth: 4,
+    dashArray: [24, 12],
+    lineCap: LineCapStyle.Round,
   });
   page2.drawSvgPath('M200,300 L400,50 L600,300 L800,550 L1000,300', {
     x: inchToPt(-1),
