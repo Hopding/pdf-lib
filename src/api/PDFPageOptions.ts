@@ -59,6 +59,8 @@ export interface PDFPageDrawLineOptions {
   thickness?: number;
   color?: Color;
   lineCap?: LineCapStyle;
+  dashArray?: number[];
+  dashPhase?: number; 
   opacity?: number;
 }
 

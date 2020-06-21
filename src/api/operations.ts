@@ -26,6 +26,7 @@ import {
   LineCapStyle,
   setLineCap,
   setGraphicsState,
+  setDashPattern,
 } from 'src/api/operators';
 import { Rotation, toRadians } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
@@ -151,6 +152,8 @@ export const drawLine = (options: {
   thickness: number | PDFNumber;
   color: Color | undefined;
   lineCap?: LineCapStyle;
+  dashArray: number[];
+  dashPhase: number;
   graphicsState?: string | PDFName;
 }) =>
   [
@@ -158,6 +161,7 @@ export const drawLine = (options: {
     options.graphicsState && setGraphicsState(options.graphicsState),
     options.color && setStrokingColor(options.color),
     setLineWidth(options.thickness),
+    setDashPattern(options.dashArray, options.dashPhase),
     moveTo(options.start.x, options.start.y),
     options.lineCap && setLineCap(options.lineCap),
     lineTo(options.end.x, options.end.y),

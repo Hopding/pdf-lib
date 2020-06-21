@@ -1177,6 +1177,8 @@ export default class PDFPage {
     assertOrUndefined(options.thickness, 'options.thickness', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     // TODO: Should assert `options.lineCap` here, but is a breaking change
+    assertOrUndefined(options.dashArray, 'options.dashArray', [Array]);
+    assertOrUndefined(options.dashPhase, 'options.dashPhase', ['number']);
     assertOrUndefined(options.opacity, 'options.opacity', ['number']);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
@@ -1193,6 +1195,8 @@ export default class PDFPage {
         start: options.start,
         end: options.end,
         thickness: options.thickness ?? 1,
+        dashArray: options.dashArray || [],
+        dashPhase: options.dashPhase ?? 0,
         color: options.color ?? undefined,
         lineCap: options.lineCap ?? undefined,
         graphicsState: graphicsStateKey,

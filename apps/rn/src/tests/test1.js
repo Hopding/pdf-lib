@@ -160,6 +160,20 @@ export default async () => {
   });
   page1.pushOperators(popGraphicsState());
 
+  page1.drawLine({
+    start: {
+      x: size / 4,
+      y: size / 4
+    },
+    end: {
+      x: size / 4 + 100,
+      y: size / 4 + 100
+    },
+    color: rgb(0, 1, 0),
+    thickness: 3,
+    dashArray: [12, 12]
+  });
+
   // Lower-right quadrant
   page1.moveTo(size / 2, 0);
   page1.drawSquare({ size: size / 2, color: grayscale(0.8) });
