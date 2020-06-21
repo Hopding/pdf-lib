@@ -62,6 +62,7 @@ export default async (_assets: Assets) => {
     y: inchToPt(11),
     scale: 0.5,
     borderWidth: 2,
+    dashArray: [12, 6],
   });
   page2.drawSvgPath('M200,300 L400,50 L600,300 L800,550 L1000,300', {
     x: inchToPt(-1),

@@ -98,6 +98,8 @@ export default async (assets: Assets) => {
       xSkew: degrees(0),
       ySkew: degrees(0),
       color: undefined,
+      dashArray: [],
+      dashPhase: 0,
     }),
     popGraphicsState(),
   );
@@ -143,7 +145,6 @@ export default async (assets: Assets) => {
   page1.drawSquare({ size: size / 2, color: cmyk(1, 0, 0, 0) });
   page1.pushOperators(
     pushGraphicsState(),
-    setDashPattern([25], 25),
     setLineCap(LineCapStyle.Round),
   );
   page1.drawCircle({
@@ -151,6 +152,8 @@ export default async (assets: Assets) => {
     y: size / 4,
     size: 150,
     borderWidth: 10,
+    dashArray: [25],
+    dashPhase: 25,
     borderColor: cmyk(0, 1, 0, 0),
   });
   page1.pushOperators(popGraphicsState());
@@ -166,7 +169,7 @@ export default async (assets: Assets) => {
     },
     color: rgb(0, 1, 0),
     thickness: 3,
-    dashArray: [12, 12]
+    dashArray: [12, 6],
   });
 
   // Lower-right quadrant
