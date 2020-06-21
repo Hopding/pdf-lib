@@ -152,8 +152,8 @@ export const drawLine = (options: {
   thickness: number | PDFNumber;
   color: Color | undefined;
   lineCap?: LineCapStyle;
-  dashArray: number[];
-  dashPhase: number;
+  dashArray: (number | PDFNumber)[];
+  dashPhase: number | PDFNumber;
   graphicsState?: string | PDFName;
 }) =>
   [
@@ -180,6 +180,8 @@ export const drawRectangle = (options: {
   rotate: Rotation;
   xSkew: Rotation;
   ySkew: Rotation;
+  dashArray: (number | PDFNumber)[];
+  dashPhase: number | PDFNumber;
   graphicsState?: string | PDFName;
 }) =>
   [
@@ -188,6 +190,7 @@ export const drawRectangle = (options: {
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     setLineWidth(options.borderWidth),
+    setDashPattern(options.dashArray, options.dashPhase),
     translate(options.x, options.y),
     rotateRadians(toRadians(options.rotate)),
     skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
@@ -248,6 +251,8 @@ export const drawEllipse = (options: {
   color: Color | undefined;
   borderColor: Color | undefined;
   borderWidth: number | PDFNumber;
+  dashArray: (number | PDFNumber)[];
+  dashPhase: number | PDFNumber;
   graphicsState?: string | PDFName;
 }) =>
   [
@@ -256,6 +261,7 @@ export const drawEllipse = (options: {
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     setLineWidth(options.borderWidth),
+    setDashPattern(options.dashArray, options.dashPhase),
     ...drawEllipsePath({
       x: options.x,
       y: options.y,
@@ -281,6 +287,8 @@ export const drawSvgPath = (
     color: Color | undefined;
     borderColor: Color | undefined;
     borderWidth: number | PDFNumber;
+    dashArray: (number | PDFNumber)[];
+    dashPhase: number | PDFNumber;
     graphicsState?: string | PDFName;
   },
 ) =>
@@ -296,6 +304,8 @@ export const drawSvgPath = (
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     options.borderWidth && setLineWidth(options.borderWidth),
+
+    setDashPattern(options.dashArray, options.dashPhase),
 
     ...svgPathToOperators(path),
 
