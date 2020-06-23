@@ -1,5 +1,6 @@
 import { dirname } from 'https://deno.land/std@0.50.0/path/mod.ts';
 import { readLines } from 'https://deno.land/std@v0.50.0/io/bufio.ts';
+import { sep } from 'https://deno.land/std@v0.50.0/path/mod.ts';
 
 import test1 from './tests/test1.ts';
 import test10 from './tests/test10.ts';
@@ -32,7 +33,7 @@ const openPdf = (path: string, reader: string = '') => {
     // Deno.run({ cmd: ['open', '-a', 'Firefox', path] });
   } else if (Deno.build.os === 'windows') {
     // Opens with the default PDF Reader, has room for improvment
-    Deno.run({ cmd: ['start', path] });
+    Deno.run({ cmd: ['cmd', '/c', 'start', path] });
   } else {
     const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
     const msg2 = `(https://github.com/Hopding/pdf-lib/blob/master/apps/node/index.ts#L8-L17)\n`;
@@ -44,7 +45,7 @@ const openPdf = (path: string, reader: string = '') => {
 const tempDir = () => dirname(Deno.makeTempDirSync());
 
 const writePdfToTmp = (pdf: Uint8Array) => {
-  const path = `${tempDir()}/${Date.now()}.pdf`;
+  const path = `${tempDir()}${sep}${Date.now()}.pdf`;
   Deno.writeFileSync(path, pdf);
   return path;
 };
