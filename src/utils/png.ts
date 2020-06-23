@@ -58,7 +58,7 @@ export class PNG {
 
     this.rgbChannel = rgbChannel;
 
-    const hasAlphaValues = alphaChannel.some((a) => a < 1);
+    const hasAlphaValues = alphaChannel.some((a) => a < 255);
     if (hasAlphaValues) this.alphaChannel = alphaChannel;
 
     this.type = getImageType(upng.ctype);
