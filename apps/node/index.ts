@@ -2,12 +2,14 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import readline from 'readline';
+import {sep} from 'path';
 
 import test1 from './tests/test1';
 import test10 from './tests/test10';
 import test11 from './tests/test11';
 import test12 from './tests/test12';
 import test13 from './tests/test13';
+import test14 from './tests/test14';
 import test2 from './tests/test2';
 import test3 from './tests/test3';
 import test4 from './tests/test4';
@@ -47,7 +49,7 @@ const openPdf = (path: string, _reader?: string) => {
 };
 
 const writePdfToTmp = (pdf: Uint8Array) => {
-  const path = `${os.tmpdir()}/${Date.now()}.pdf`;
+  const path = `${os.tmpdir()}${sep}${Date.now()}.pdf`;
   fs.writeFileSync(path, pdf);
   return path;
 };
@@ -148,7 +150,7 @@ const main = async () => {
     // prettier-ignore
     const allTests = [
     test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
-    test11, test12, test13
+    test11, test12, test13, test14
   ];
 
     const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
