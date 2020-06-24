@@ -3,6 +3,7 @@ import fs from 'fs';
 import os from 'os';
 import { sep } from 'path';
 import readline from 'readline';
+import { sep } from 'path';
 
 import test1 from './tests/test1';
 import test10 from './tests/test10';

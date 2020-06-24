@@ -15,3 +15,5 @@ isolate*.log
 .DS_Store
 out.pdf
 *.tgz
+
+.vscode/settings.json

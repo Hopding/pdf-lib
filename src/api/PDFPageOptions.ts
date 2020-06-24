@@ -3,9 +3,29 @@ import PDFFont from 'src/api/PDFFont';
 import { Rotation } from 'src/api/rotations';
 import { LineCapStyle } from 'src/api/operators';
 
+// export type BlendMode = 'Normal' | 'Multiply' | 'Screen' | 'Overlay' | 'Darken' | 'Lighten' | 'ColorDodge' | 'ColorBurn' | 'HardLight' | 'SoftLight' | 'Difference' | 'Exclusion';
+
+export enum BlendMode {
+  Normal = 'Normal',
+  Multiply = 'Multiply',
+  Screen = 'Screen',
+  Overlay = 'Overlay',
+  Darken = 'Darken',
+  Lighten = 'Lighten',
+  ColorDodge = 'ColorDodge',
+  ColorBurn = 'ColorBurn',
+  HardLight = 'HardLight',
+  SoftLight = 'SoftLight',
+  Difference = 'Difference',
+  Exclusion = 'Exclusion',
+}
+
+// export const knownBlendMode = (mode:string) => mode in BlendModes;
+
 export interface PDFPageDrawTextOptions {
   color?: Color;
   opacity?: number;
+  blendMode?: BlendMode;
   font?: PDFFont;
   size?: number;
   rotate?: Rotation;
@@ -27,6 +47,7 @@ export interface PDFPageDrawImageOptions {
   xSkew?: Rotation;
   ySkew?: Rotation;
   opacity?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawPageOptions {
@@ -40,6 +61,7 @@ export interface PDFPageDrawPageOptions {
   xSkew?: Rotation;
   ySkew?: Rotation;
   opacity?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawSVGOptions {
@@ -51,6 +73,7 @@ export interface PDFPageDrawSVGOptions {
   opacity?: number;
   borderColor?: Color;
   borderOpacity?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawLineOptions {
@@ -60,6 +83,7 @@ export interface PDFPageDrawLineOptions {
   color?: Color;
   lineCap?: LineCapStyle;
   opacity?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawRectangleOptions {
@@ -75,6 +99,7 @@ export interface PDFPageDrawRectangleOptions {
   opacity?: number;
   borderColor?: Color;
   borderOpacity?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawSquareOptions {
@@ -89,6 +114,7 @@ export interface PDFPageDrawSquareOptions {
   opacity?: number;
   borderColor?: Color;
   borderOpacity?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawEllipseOptions {
@@ -101,6 +127,7 @@ export interface PDFPageDrawEllipseOptions {
   borderColor?: Color;
   borderOpacity?: number;
   borderWidth?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawCircleOptions {
@@ -112,4 +139,5 @@ export interface PDFPageDrawCircleOptions {
   borderColor?: Color;
   borderOpacity?: number;
   borderWidth?: number;
+  blendMode?: BlendMode;
 }
