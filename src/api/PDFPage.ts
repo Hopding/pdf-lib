@@ -1126,7 +1126,7 @@ export default class PDFPage {
     assertOrUndefined(options.opacity, 'options.borderOpacity', ['number']);
     assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
     assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
-    assertOrUndefined(options.lineCap, 'options.lineCap', ['number']);
+    assertOrUndefined(options.borderLineCap, 'options.borderLineCap', ['number']);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -1148,7 +1148,7 @@ export default class PDFPage {
         borderWidth: options.borderWidth ?? 0,
         borderDashArray: options.borderDashArray ?? undefined,
         borderDashPhase: options.borderDashPhase ?? undefined,
-        lineCap: options.lineCap ?? undefined,
+        borderLineCap: options.borderLineCap ?? undefined,
         graphicsState: graphicsStateKey,
       }),
     );
@@ -1249,7 +1249,7 @@ export default class PDFPage {
     ]);
     assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
     assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
-    assertOrUndefined(options.lineCap, 'options.lineCap', ['number']);
+    assertOrUndefined(options.borderLineCap, 'options.borderLineCap', ['number']);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -1276,7 +1276,7 @@ export default class PDFPage {
         borderDashArray: options.borderDashArray ?? undefined,
         borderDashPhase: options.borderDashPhase ?? undefined,
         graphicsState: graphicsStateKey,
-        lineCap: options.lineCap ?? undefined,
+        borderLineCap: options.borderLineCap ?? undefined,
       }),
     );
   }
@@ -1341,7 +1341,7 @@ export default class PDFPage {
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
     assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
-    assertOrUndefined(options.lineCap, 'options.lineCap', ['number']);
+    assertOrUndefined(options.borderLineCap, 'options.borderLineCap', ['number']);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -1364,7 +1364,7 @@ export default class PDFPage {
         borderWidth: options.borderWidth ?? 0,
         borderDashArray: options.borderDashArray ?? undefined,
         borderDashPhase: options.borderDashPhase ?? undefined,
-        lineCap: options.lineCap ?? undefined,
+        borderLineCap: options.borderLineCap ?? undefined,
         graphicsState: graphicsStateKey,
       }),
     );

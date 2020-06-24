@@ -156,7 +156,7 @@ export default async () => {
     borderDashArray: [25],
     borderDashPhase: 25,
     borderColor: cmyk(0, 1, 0, 0),
-    lineCap: LineCapStyle.Round,
+    borderLineCap: LineCapStyle.Round,
   });
 
   page1.drawLine({

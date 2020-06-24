@@ -18,7 +18,6 @@ import {
   popGraphicsState,
   pushGraphicsState,
   rgb,
-  setLineCap,
   setLineJoin,
   StandardFonts,
 } from '../../../dist/pdf-lib.esm.js';
@@ -152,7 +151,7 @@ export default async (assets: Assets) => {
     borderDashArray: [25],
     borderDashPhase: 25,
     borderColor: cmyk(0, 1, 0, 0),
-    lineCap: LineCapStyle.Round,
+    borderLineCap: LineCapStyle.Round,
   });
 
   page1.drawLine({

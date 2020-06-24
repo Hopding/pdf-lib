@@ -181,7 +181,7 @@ export const drawRectangle = (options: {
   rotate: Rotation;
   xSkew: Rotation;
   ySkew: Rotation;
-  lineCap?: LineCapStyle;
+  borderLineCap?: LineCapStyle;
   borderDashArray?: (number | PDFNumber)[];
   borderDashPhase?: number | PDFNumber;
   graphicsState?: string | PDFName;
@@ -192,7 +192,7 @@ export const drawRectangle = (options: {
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     setLineWidth(options.borderWidth),
-    options.lineCap && setLineCap(options.lineCap),
+    options.borderLineCap && setLineCap(options.borderLineCap),
     setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
     translate(options.x, options.y),
     rotateRadians(toRadians(options.rotate)),
@@ -257,7 +257,7 @@ export const drawEllipse = (options: {
   borderDashArray?: (number | PDFNumber)[];
   borderDashPhase?: number | PDFNumber;
   graphicsState?: string | PDFName;
-  lineCap?: LineCapStyle;
+  borderLineCap?: LineCapStyle;
 }) =>
   [
     pushGraphicsState(),
@@ -265,7 +265,7 @@ export const drawEllipse = (options: {
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     setLineWidth(options.borderWidth),
-    options.lineCap && setLineCap(options.lineCap),
+    options.borderLineCap && setLineCap(options.borderLineCap),
     setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
     ...drawEllipsePath({
       x: options.x,
@@ -294,7 +294,7 @@ export const drawSvgPath = (
     borderWidth: number | PDFNumber;
     borderDashArray?: (number | PDFNumber)[];
     borderDashPhase?: number | PDFNumber;
-    lineCap?: LineCapStyle;
+    borderLineCap?: LineCapStyle;
     graphicsState?: string | PDFName;
   },
 ) =>
@@ -310,7 +310,7 @@ export const drawSvgPath = (
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     options.borderWidth && setLineWidth(options.borderWidth),
-    options.lineCap && setLineCap(options.lineCap),
+    options.borderLineCap && setLineCap(options.borderLineCap),
 
     setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
 

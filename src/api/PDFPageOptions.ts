@@ -53,7 +53,7 @@ export interface PDFPageDrawSVGOptions {
   borderOpacity?: number;
   borderDashArray?: number[];
   borderDashPhase?: number; 
-  lineCap?: LineCapStyle;
+  borderLineCap?: LineCapStyle;
 }
 
 export interface PDFPageDrawLineOptions {
@@ -82,7 +82,7 @@ export interface PDFPageDrawRectangleOptions {
   borderOpacity?: number;
   borderDashArray?: number[];
   borderDashPhase?: number;
-  lineCap?: LineCapStyle;
+  borderLineCap?: LineCapStyle;
 }
 
 export interface PDFPageDrawSquareOptions {
@@ -99,7 +99,7 @@ export interface PDFPageDrawSquareOptions {
   borderOpacity?: number;
   borderDashArray?: number[];
   borderDashPhase?: number;
-  lineCap?: LineCapStyle;
+  borderLineCap?: LineCapStyle;
 }
 
 export interface PDFPageDrawEllipseOptions {
@@ -114,7 +114,7 @@ export interface PDFPageDrawEllipseOptions {
   borderWidth?: number;
   borderDashArray?: number[];
   borderDashPhase?: number;
-  lineCap?: LineCapStyle;
+  borderLineCap?: LineCapStyle;
 }
 
 export interface PDFPageDrawCircleOptions {
@@ -128,5 +128,5 @@ export interface PDFPageDrawCircleOptions {
   borderWidth?: number;
   borderDashArray?: number[];
   borderDashPhase?: number;
-  lineCap?: LineCapStyle;
+  borderLineCap?: LineCapStyle;
 }
