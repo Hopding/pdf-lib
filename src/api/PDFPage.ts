@@ -27,7 +27,7 @@ import {
   PDFPageDrawSquareOptions,
   PDFPageDrawSVGOptions,
   PDFPageDrawTextOptions,
-  BlendMode
+  BlendMode,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
 import { StandardFonts } from 'src/api/StandardFonts';
@@ -909,7 +909,7 @@ export default class PDFPage {
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
-      blendMode: options.blendMode
+      blendMode: options.blendMode,
     });
 
     const contentStream = this.getContentStream();
@@ -973,7 +973,7 @@ export default class PDFPage {
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
-      blendMode: options.blendMode
+      blendMode: options.blendMode,
     });
 
     const contentStream = this.getContentStream();
@@ -1047,7 +1047,7 @@ export default class PDFPage {
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
-      blendMode: options.blendMode
+      blendMode: options.blendMode,
     });
 
     // prettier-ignore
@@ -1132,7 +1132,7 @@ export default class PDFPage {
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
       borderOpacity: options.borderOpacity,
-      blendMode: options.blendMode
+      blendMode: options.blendMode,
     });
 
     if (!('color' in options) && !('borderColor' in options)) {
@@ -1186,7 +1186,7 @@ export default class PDFPage {
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       borderOpacity: options.opacity,
-      blendMode: options.blendMode
+      blendMode: options.blendMode,
     });
 
     if (!('color' in options)) {
@@ -1247,7 +1247,7 @@ export default class PDFPage {
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
       borderOpacity: options.borderOpacity,
-      blendMode: options.blendMode
+      blendMode: options.blendMode,
     });
 
     if (!('color' in options) && !('borderColor' in options)) {
@@ -1336,7 +1336,7 @@ export default class PDFPage {
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
       borderOpacity: options.borderOpacity,
-      blendMode: options.blendMode
+      blendMode: options.blendMode,
     });
 
     if (!('color' in options) && !('borderColor' in options)) {
@@ -1411,11 +1411,17 @@ export default class PDFPage {
   }): string | undefined {
     const { opacity, borderOpacity, blendMode } = options;
 
-    if (opacity === undefined && borderOpacity === undefined && blendMode === undefined) return undefined;
+    if (
+      opacity === undefined &&
+      borderOpacity === undefined &&
+      blendMode === undefined
+    ) {
+      return undefined;
+    }
 
     assertRangeOrUndefined(opacity, 'opacity', 0, 1);
     assertRangeOrUndefined(borderOpacity, 'borderOpacity', 0, 1);
-    assertOrUndefined(blendMode, 'blendMode',['string']);
+    assertOrUndefined(blendMode, 'blendMode', ['string']);
 
     const key = addRandomSuffix('GS', 10);
 
@@ -1423,7 +1429,7 @@ export default class PDFPage {
       Type: 'ExtGState',
       ca: opacity,
       CA: borderOpacity,
-      BM: blendMode
+      BM: blendMode,
     });
 
     this.node.setExtGState(PDFName.of(key), graphicsState);
