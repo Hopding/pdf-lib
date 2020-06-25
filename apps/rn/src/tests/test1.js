@@ -17,7 +17,6 @@ import {
   popGraphicsState,
   pushGraphicsState,
   rgb,
-  setDashPattern,
   setLineCap,
   setLineJoin,
   StandardFonts,
@@ -117,6 +116,9 @@ export default async () => {
     xScale: 25,
     yScale: 150,
     color: rgb(255 / 255, 153 / 255, 51 / 255),
+    borderWidth: 2,
+    borderColor: rgb(0, 1, 1),
+    borderDashArray: [10],
   });
   page1.drawEllipse({
     x: size / 2 + size / 4,
@@ -148,7 +150,6 @@ export default async () => {
   page1.drawSquare({ size: size / 2, color: cmyk(1, 0, 0, 0) });
   page1.pushOperators(
     pushGraphicsState(),
-    setDashPattern([25], 25),
     setLineCap(LineCapStyle.Round),
   );
   page1.drawCircle({
@@ -156,9 +157,25 @@ export default async () => {
     y: size / 4,
     size: 150,
     borderWidth: 10,
+    borderDashArray: [25],
+    borderDashPhase: 25,
     borderColor: cmyk(0, 1, 0, 0),
   });
   page1.pushOperators(popGraphicsState());
+
+  page1.drawLine({
+    start: {
+      x: size / 4,
+      y: size / 4
+    },
+    end: {
+      x: size / 4 + 100,
+      y: size / 4 + 100
+    },
+    color: rgb(0, 1, 0),
+    thickness: 3,
+    dashArray: [12, 6],
+  });
 
   // Lower-right quadrant
   page1.moveTo(size / 2, 0);
@@ -185,6 +202,29 @@ export default async () => {
     borderWidth: 15,
   });
   page1.pushOperators(popGraphicsState());
+
+  // Middle
+  const squareSize = 40;
+  page1.drawSquare({
+    x: size / 2 - squareSize / 2,
+    y: size / 2 - squareSize / 2,
+    size: squareSize,
+    borderWidth: 2,
+    borderColor: rgb(1, 0, 1),
+    borderDashArray: [2, 4],
+  });
+
+  const rectangleSizeX = 60;
+  const rectangleSizeY = 50;
+  page1.drawRectangle({
+    x: size / 2 - rectangleSizeX / 2,
+    y: size / 2 - rectangleSizeY / 2,
+    width: rectangleSizeX,
+    height: rectangleSizeY,
+    borderWidth: 2,
+    borderColor: rgb(1, 1, 1),
+    borderDashArray: [4, 8],
+  });
 
   /********************** Page 2 **********************/
 
