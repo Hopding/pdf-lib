@@ -1,6 +1,54 @@
 /* tslint:disable:ban-types */
 
+import { values as objectValues } from 'src/utils';
+
 export const backtick = (val: any) => `\`${val}\``;
+export const singleQuote = (val: any) => `'${val}'`;
+
+type Primitive = string | number | boolean | undefined | null;
+
+export const createValueErrorMsg = (
+  value: any,
+  valueName: string,
+  values: Primitive[],
+) => {
+  const allowedValues = new Array(values.length);
+
+  for (let idx = 0, len = values.length; idx < len; idx++) {
+    const v = values[idx];
+    const type = typeof v;
+
+    if (type === 'string') allowedValues[idx] = singleQuote(v);
+    else if (type === 'undefined') allowedValues[idx] = backtick('undefined');
+    else allowedValues[idx] = v;
+  }
+
+  const joinedValues = allowedValues.join(' or ');
+
+  // prettier-ignore
+  return `${backtick(valueName)} must be one of ${joinedValues}, but was actually ${value}`;
+};
+
+export const assertIsOneOf = (
+  value: any,
+  valueName: string,
+  values: Primitive[] | { [key: string]: Primitive },
+) => {
+  if (!Array.isArray(values)) values = objectValues(values);
+  for (let idx = 0, len = values.length; idx < len; idx++) {
+    if (value === values[idx]) return;
+  }
+  throw new TypeError(createValueErrorMsg(value, valueName, values));
+};
+
+export const assertIsOneOfOrUndefined = (
+  value: any,
+  valueName: string,
+  values: Primitive[] | { [key: string]: Primitive },
+) => {
+  if (!Array.isArray(values)) values = objectValues(values);
+  assertIsOneOf(value, valueName, values.concat(undefined));
+};
 
 export const getType = (val: any) => {
   if (val === null) return 'null';
@@ -71,7 +119,7 @@ export const createTypeErrorMsg = (
   const joinedTypes = allowedTypes.join(' or ');
 
   // prettier-ignore
-  return  `${backtick(valueName)} must be of type ${joinedTypes}, but was actually of type ${backtick(getType(value))}`;
+  return `${backtick(valueName)} must be of type ${joinedTypes}, but was actually of type ${backtick(getType(value))}`;
 };
 
 export const assertIs = (

@@ -147,7 +147,6 @@ export default async () => {
   // Lower-left quadrant
   page1.moveTo(0, 0);
   page1.drawSquare({ size: size / 2, color: cmyk(1, 0, 0, 0) });
-
   page1.drawCircle({
     x: size / 4,
     y: size / 4,
@@ -172,6 +171,20 @@ export default async () => {
     thickness: 3,
     dashArray: [12, 6],
     lineCap: LineCapStyle.Round,
+  });
+
+  page1.drawLine({
+    start: {
+      x: size / 4,
+      y: size / 4
+    },
+    end: {
+      x: size / 4 + 100,
+      y: size / 4 + 100
+    },
+    color: rgb(0, 1, 0),
+    thickness: 3,
+    dashArray: [12, 6],
   });
 
   // Lower-right quadrant

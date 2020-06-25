@@ -3,9 +3,25 @@ import PDFFont from 'src/api/PDFFont';
 import { Rotation } from 'src/api/rotations';
 import { LineCapStyle } from 'src/api/operators';
 
+export enum BlendMode {
+  Normal = 'Normal',
+  Multiply = 'Multiply',
+  Screen = 'Screen',
+  Overlay = 'Overlay',
+  Darken = 'Darken',
+  Lighten = 'Lighten',
+  ColorDodge = 'ColorDodge',
+  ColorBurn = 'ColorBurn',
+  HardLight = 'HardLight',
+  SoftLight = 'SoftLight',
+  Difference = 'Difference',
+  Exclusion = 'Exclusion',
+}
+
 export interface PDFPageDrawTextOptions {
   color?: Color;
   opacity?: number;
+  blendMode?: BlendMode;
   font?: PDFFont;
   size?: number;
   rotate?: Rotation;
@@ -27,6 +43,7 @@ export interface PDFPageDrawImageOptions {
   xSkew?: Rotation;
   ySkew?: Rotation;
   opacity?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawPageOptions {
@@ -40,6 +57,7 @@ export interface PDFPageDrawPageOptions {
   xSkew?: Rotation;
   ySkew?: Rotation;
   opacity?: number;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawSVGOptions {
@@ -54,6 +72,7 @@ export interface PDFPageDrawSVGOptions {
   borderDashArray?: number[];
   borderDashPhase?: number; 
   borderLineCap?: LineCapStyle;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawLineOptions {
@@ -62,9 +81,10 @@ export interface PDFPageDrawLineOptions {
   thickness?: number;
   color?: Color;
   opacity?: number;
-  dashArray?: number[];
-  dashPhase?: number;
   lineCap?: LineCapStyle;
+  dashArray?: number[];
+  dashPhase?: number; 
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawRectangleOptions {
@@ -83,6 +103,7 @@ export interface PDFPageDrawRectangleOptions {
   borderDashArray?: number[];
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawSquareOptions {
@@ -100,6 +121,7 @@ export interface PDFPageDrawSquareOptions {
   borderDashArray?: number[];
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawEllipseOptions {
@@ -115,6 +137,7 @@ export interface PDFPageDrawEllipseOptions {
   borderDashArray?: number[];
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
+  blendMode?: BlendMode;
 }
 
 export interface PDFPageDrawCircleOptions {
@@ -129,4 +152,5 @@ export interface PDFPageDrawCircleOptions {
   borderDashArray?: number[];
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
+  blendMode?: BlendMode;
 }
