@@ -12,6 +12,7 @@ import {
   popGraphicsState,
   pushGraphicsState,
   translate,
+  LineCapStyle,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
@@ -49,6 +50,8 @@ import {
   cleanText,
   rectanglesAreEqual,
   assertRangeOrUndefined,
+  assertIsOneOf,
+  assertIsOneOfOrUndefined,
 } from 'src/utils';
 
 /**
@@ -877,7 +880,7 @@ export default class PDFPage {
   drawText(text: string, options: PDFPageDrawTextOptions = {}): void {
     assertIs(text, 'text', ['string']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+    assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.font, 'options.font', [[PDFFont, 'PDFFont']]);
     assertOrUndefined(options.size, 'options.size', ['number']);
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
@@ -888,6 +891,7 @@ export default class PDFPage {
     assertOrUndefined(options.lineHeight, 'options.lineHeight', ['number']);
     assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const [originalFont] = this.getFont();
     if (options.font) this.setFont(options.font);
@@ -966,7 +970,8 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
-    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+    assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const xObjectKey = addRandomSuffix('Image', 10);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
@@ -1040,7 +1045,8 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
-    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+    assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const xObjectKey = addRandomSuffix('EmbeddedPdfPage', 10);
     this.node.setXObject(PDFName.of(xObjectKey), embeddedPage.ref);
@@ -1123,11 +1129,17 @@ export default class PDFPage {
     assertOrUndefined(options.scale, 'options.scale', ['number']);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+    assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
-    assertOrUndefined(options.opacity, 'options.borderOpacity', ['number']);
+    assertRangeOrUndefined(
+      options.borderOpacity,
+      'options.borderOpacity',
+      0,
+      1,
+    );
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -1181,8 +1193,9 @@ export default class PDFPage {
     assertIs(options.end.y, 'options.end.y', ['number']);
     assertOrUndefined(options.thickness, 'options.thickness', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    // TODO: Should assert `options.lineCap` here, but is a breaking change
-    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+    assertIsOneOf(options.lineCap, 'options.lineCap', LineCapStyle);
+    assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       borderOpacity: options.opacity,
@@ -1236,13 +1249,17 @@ export default class PDFPage {
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+    assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
-    assertOrUndefined(options.borderOpacity, 'options.borderOpacity', [
-      'number',
-    ]);
+    assertRangeOrUndefined(
+      options.borderOpacity,
+      'options.borderOpacity',
+      0,
+      1,
+    );
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -1322,16 +1339,18 @@ export default class PDFPage {
     assertOrUndefined(options.xScale, 'options.xScale', ['number']);
     assertOrUndefined(options.yScale, 'options.yScale', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    assertOrUndefined(options.opacity, 'options.opacity', ['number']);
+    assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
-    assertOrUndefined(options.borderOpacity, 'options.borderOpacity', [
-      'number',
-    ]);
+    assertRangeOrUndefined(
+      options.borderOpacity,
+      'options.borderOpacity',
+      0,
+      1,
+    );
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
-
-    assertOrUndefined(options.blendMode, 'options.blendMode', ['string']);
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -1418,10 +1437,6 @@ export default class PDFPage {
     ) {
       return undefined;
     }
-
-    assertRangeOrUndefined(opacity, 'opacity', 0, 1);
-    assertRangeOrUndefined(borderOpacity, 'borderOpacity', 0, 1);
-    assertOrUndefined(blendMode, 'blendMode', ['string']);
 
     const key = addRandomSuffix('GS', 10);
 

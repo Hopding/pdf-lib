@@ -122,6 +122,7 @@ const assets = {
     with_comments: readPdf('with_comments.pdf'),
     with_cropbox: readPdf('with_cropbox.pdf'),
     us_constitution: readPdf('us_constitution.pdf'),
+    simple_pdf_2_example: readPdf('pdf20examples/Simple PDF 2.0 file.pdf'),
   },
 };
 
