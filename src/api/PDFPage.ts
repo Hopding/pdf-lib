@@ -1133,6 +1133,8 @@ export default class PDFPage {
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
+    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
+    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
     assertRangeOrUndefined(
       options.borderOpacity,
       'options.borderOpacity',
@@ -1160,6 +1162,8 @@ export default class PDFPage {
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
+        borderDashArray: options.borderDashArray ?? undefined,
+        borderDashPhase: options.borderDashPhase ?? undefined,
         graphicsState: graphicsStateKey,
       }),
     );
@@ -1193,6 +1197,8 @@ export default class PDFPage {
     assertIs(options.end.y, 'options.end.y', ['number']);
     assertOrUndefined(options.thickness, 'options.thickness', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.dashArray, 'options.dashArray', [Array]);
+    assertOrUndefined(options.dashPhase, 'options.dashPhase', ['number']);
     assertIsOneOf(options.lineCap, 'options.lineCap', LineCapStyle);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
@@ -1213,6 +1219,8 @@ export default class PDFPage {
         end: options.end,
         thickness: options.thickness ?? 1,
         color: options.color ?? undefined,
+        dashArray: options.dashArray ?? undefined,
+        dashPhase: options.dashPhase ?? undefined,
         lineCap: options.lineCap ?? undefined,
         graphicsState: graphicsStateKey,
       }),
@@ -1253,6 +1261,8 @@ export default class PDFPage {
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
+    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
+    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
     assertRangeOrUndefined(
       options.borderOpacity,
       'options.borderOpacity',
@@ -1284,6 +1294,8 @@ export default class PDFPage {
         borderWidth: options.borderWidth ?? 0,
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
+        borderDashArray: options.borderDashArray ?? undefined,
+        borderDashPhase: options.borderDashPhase ?? undefined,
         graphicsState: graphicsStateKey,
       }),
     );
@@ -1350,6 +1362,8 @@ export default class PDFPage {
       1,
     );
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
+    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
+    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
@@ -1372,6 +1386,8 @@ export default class PDFPage {
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
+        borderDashArray: options.borderDashArray ?? undefined,
+        borderDashPhase: options.borderDashPhase ?? undefined,
         graphicsState: graphicsStateKey,
       }),
     );
