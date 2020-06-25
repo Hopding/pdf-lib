@@ -3,8 +3,6 @@ import PDFFont from 'src/api/PDFFont';
 import { Rotation } from 'src/api/rotations';
 import { LineCapStyle } from 'src/api/operators';
 
-// export type BlendMode = 'Normal' | 'Multiply' | 'Screen' | 'Overlay' | 'Darken' | 'Lighten' | 'ColorDodge' | 'ColorBurn' | 'HardLight' | 'SoftLight' | 'Difference' | 'Exclusion';
-
 export enum BlendMode {
   Normal = 'Normal',
   Multiply = 'Multiply',
@@ -19,8 +17,6 @@ export enum BlendMode {
   Difference = 'Difference',
   Exclusion = 'Exclusion',
 }
-
-// export const knownBlendMode = (mode:string) => mode in BlendModes;
 
 export interface PDFPageDrawTextOptions {
   color?: Color;

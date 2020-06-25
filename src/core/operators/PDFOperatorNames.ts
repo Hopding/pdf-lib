@@ -15,9 +15,6 @@ enum PDFOperatorNames {
   StrokingColorCmyk = 'K',
   StrokingColorspace = 'CS',
 
-  // Blend mode operator
-  BlendModeOperator = 'BM',
-
   // Marked Content Operators
   BeginMarkedContentSequence = 'BDC',
   BeginMarkedContent = 'BMC',

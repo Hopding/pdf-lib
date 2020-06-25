@@ -6,16 +6,17 @@ import {
   cmyk,
   degrees,
   rgb,
+  values,
 } from '../../..';
 
 const inchToPt = (inches: number) => Math.round(inches * 72);
 
 const firstPage = async (pdfDoc: PDFDocument) => {
   const page = pdfDoc.addPage(PageSizes.Letter);
-  
+
   // SVG sample paths from
   // https://svgwg.org/svg2-draft/paths.html
-  
+
   // bezier curve example
   page.drawSvgPath('M100,200 C100,100 250,100 250,200 S400,300 400,200', {
     x: inchToPt(0.25),
@@ -120,11 +121,11 @@ const secondPage = async (pdfDoc: PDFDocument) => {
   });
 };
 
-const thirdPage = async (pdfDoc: PDFDocument, _assets: Assets) => {
+const thirdPage = async (pdfDoc: PDFDocument, assets: Assets) => {
   const page = pdfDoc.addPage(PageSizes.Letter);
 
-  const modeNames = Object.values<string>(BlendMode);
-  
+  const modeNames = values(BlendMode);
+
   page.drawRectangle({
     x: 30,
     y: 30,
@@ -213,12 +214,10 @@ const thirdPage = async (pdfDoc: PDFDocument, _assets: Assets) => {
   });
 
   // add alpha-image with 'Screen' blend mode
-  const pngImage = await pdfDoc.embedPng(
-    _assets.images.png.minions_banana_alpha,
-  );
-  const pngDims = pngImage.scale(0.5);
+  const pngImage = await pdfDoc.embedPng(assets.images.png.self_drive);
+  const pngDims = pngImage.scale(1.0);
 
-  const cx = page.getWidth() / 2;
+  const cx = page.getWidth() / 2 - 70;
   const cy = page.getHeight() / 2;
 
   page.drawImage(pngImage, {
@@ -230,11 +229,12 @@ const thirdPage = async (pdfDoc: PDFDocument, _assets: Assets) => {
   });
 
   // embed page from other PDF using blendMode
+  const [embeddedPage] = await pdfDoc.embedPdf(
+    assets.pdfs.simple_pdf_2_example,
+    [0],
+  );
 
-  const [embeddedPage] = await pdfDoc.embedPdf(_assets.pdfs.normal, [0]);
-  //const embeddedPage = await pdfDoc.embedPage(embeddedPdf.getPage(0));
-
-  const [px, py, scale] = [380, 100, 0.33];
+  const [px, py, scale] = [300, 100, 0.33];
 
   const { width, height } = embeddedPage.scale(scale);
 
@@ -249,8 +249,8 @@ const thirdPage = async (pdfDoc: PDFDocument, _assets: Assets) => {
   page.drawRectangle({
     x: px,
     y: py,
-    width: width,
-    height: height,
+    width,
+    height,
     borderColor: cmyk(0, 1, 1, 0),
     borderWidth: 2,
     blendMode: BlendMode.Normal,
@@ -265,11 +265,11 @@ const thirdPage = async (pdfDoc: PDFDocument, _assets: Assets) => {
   });
 };
 
-export default async (_assets: Assets) => {
+export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.create();
   await firstPage(pdfDoc);
   await secondPage(pdfDoc);
-  await thirdPage(pdfDoc, _assets);
+  await thirdPage(pdfDoc, assets);
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
