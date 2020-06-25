@@ -69,6 +69,8 @@ export interface PDFPageDrawSVGOptions {
   opacity?: number;
   borderColor?: Color;
   borderOpacity?: number;
+  borderDashArray?: number[];
+  borderDashPhase?: number; 
   blendMode?: BlendMode;
 }
 
@@ -77,8 +79,10 @@ export interface PDFPageDrawLineOptions {
   end: { x: number; y: number };
   thickness?: number;
   color?: Color;
-  lineCap?: LineCapStyle;
   opacity?: number;
+  lineCap?: LineCapStyle;
+  dashArray?: number[];
+  dashPhase?: number; 
   blendMode?: BlendMode;
 }
 
@@ -95,6 +99,8 @@ export interface PDFPageDrawRectangleOptions {
   opacity?: number;
   borderColor?: Color;
   borderOpacity?: number;
+  borderDashArray?: number[];
+  borderDashPhase?: number; 
   blendMode?: BlendMode;
 }
 
@@ -110,6 +116,8 @@ export interface PDFPageDrawSquareOptions {
   opacity?: number;
   borderColor?: Color;
   borderOpacity?: number;
+  borderDashArray?: number[];
+  borderDashPhase?: number; 
   blendMode?: BlendMode;
 }
 
@@ -123,6 +131,8 @@ export interface PDFPageDrawEllipseOptions {
   borderColor?: Color;
   borderOpacity?: number;
   borderWidth?: number;
+  borderDashArray?: number[];
+  borderDashPhase?: number; 
   blendMode?: BlendMode;
 }
 
@@ -135,5 +145,7 @@ export interface PDFPageDrawCircleOptions {
   borderColor?: Color;
   borderOpacity?: number;
   borderWidth?: number;
+  borderDashArray?: number[];
+  borderDashPhase?: number; 
   blendMode?: BlendMode;
 }
