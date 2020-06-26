@@ -50,7 +50,6 @@ import {
   cleanText,
   rectanglesAreEqual,
   assertRangeOrUndefined,
-  assertIsOneOf,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
 
@@ -1133,9 +1132,17 @@ export default class PDFPage {
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
-    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
-    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
-    assertOrUndefined(options.borderLineCap, 'options.borderLineCap', ['number']);
+    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [
+      Array,
+    ]);
+    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', [
+      'number',
+    ]);
+    assertIsOneOfOrUndefined(
+      options.borderLineCap,
+      'options.borderLineCap',
+      LineCapStyle,
+    );
     assertRangeOrUndefined(
       options.borderOpacity,
       'options.borderOpacity',
@@ -1201,9 +1208,8 @@ export default class PDFPage {
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     assertOrUndefined(options.dashArray, 'options.dashArray', [Array]);
     assertOrUndefined(options.dashPhase, 'options.dashPhase', ['number']);
-    assertIsOneOf(options.lineCap, 'options.lineCap', LineCapStyle);
+    assertIsOneOfOrUndefined(options.lineCap, 'options.lineCap', LineCapStyle);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
-    assertOrUndefined(options.lineCap, 'options.lineCap', ['number']);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
@@ -1264,9 +1270,17 @@ export default class PDFPage {
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
-    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
-    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
-    assertOrUndefined(options.borderLineCap, 'options.borderLineCap', ['number']);
+    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [
+      Array,
+    ]);
+    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', [
+      'number',
+    ]);
+    assertIsOneOfOrUndefined(
+      options.borderLineCap,
+      'options.borderLineCap',
+      LineCapStyle,
+    );
     assertRangeOrUndefined(
       options.borderOpacity,
       'options.borderOpacity',
@@ -1367,9 +1381,17 @@ export default class PDFPage {
       1,
     );
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
-    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [Array]);
-    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', ['number']);
-    assertOrUndefined(options.borderLineCap, 'options.borderLineCap', ['number']);
+    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [
+      Array,
+    ]);
+    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', [
+      'number',
+    ]);
+    assertIsOneOfOrUndefined(
+      options.borderLineCap,
+      'options.borderLineCap',
+      LineCapStyle,
+    );
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
