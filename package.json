@@ -1,6 +1,6 @@
 {
   "name": "pdf-lib",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -21,7 +21,8 @@
     "Tim Kräuter (https://github.com/timKraeuter)",
     "Richard Bateman (https://github.com/taxilian)",
     "Sebastian Martinez (https://github.com/sebastinez)",
-    "soadzoor (https://github.com/soadzoor)"
+    "soadzoor (https://github.com/soadzoor)",
+    "Slobodan Babic (https://github.com/bockoblur)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
