@@ -2,6 +2,7 @@ import {
   PageSizes,
   PDFDocument,
   BlendMode,
+  LineCapStyle,
   cmyk,
   degrees,
   rgb,
@@ -70,8 +71,9 @@ const secondPage = async (pdfDoc) => {
     x: inchToPt(-1),
     y: inchToPt(11),
     scale: 0.5,
-    borderWidth: 2,
-    borderDashArray: [12, 6],
+    borderWidth: 4,
+    borderDashArray: [24, 12],
+    borderLineCap: LineCapStyle.Round,
   });
   page.drawSvgPath('M200,300 L400,50 L600,300 L800,550 L1000,300', {
     x: inchToPt(-1),
