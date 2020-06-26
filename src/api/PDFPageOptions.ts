@@ -70,7 +70,7 @@ export interface PDFPageDrawSVGOptions {
   borderColor?: Color;
   borderOpacity?: number;
   borderDashArray?: number[];
-  borderDashPhase?: number; 
+  borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
 }
@@ -83,7 +83,7 @@ export interface PDFPageDrawLineOptions {
   opacity?: number;
   lineCap?: LineCapStyle;
   dashArray?: number[];
-  dashPhase?: number; 
+  dashPhase?: number;
   blendMode?: BlendMode;
 }
 
