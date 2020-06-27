@@ -1,17 +1,12 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
 
-import { PDFDocument, rgb } from 'src/index';
+import { PDFDocument, DisplayMode } from 'src/index';
 
 (async () => {
   const pdfDoc = await PDFDocument.create();
 
-  const page = pdfDoc.addPage();
-  page.drawText('Semi-Transparent Text', {
-    color: rgb(0, 1, 1),
-    opacity: 0.5,
-    size: 50,
-  });
+  pdfDoc.setDisplayMode(DisplayMode.FullScreen);
 
   pdfDoc.addPage();
   pdfDoc.addPage();
@@ -62,6 +57,9 @@ import { PDFDocument, rgb } from 'src/index';
   suboutline.setExpanded(false);
   thirdChild.setPage(newPage2);
   thirdChild.setTitle('link changed to newPage2: Page9');
+
+  /* Testing changing DisplayMode*/
+  // pdfDoc.setDisplayMode(DisplayMode.ShowThumbnails);
 
   /* Testing removing: */
   // suboutline.remove();

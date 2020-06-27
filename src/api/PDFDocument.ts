@@ -39,6 +39,7 @@ import {
 } from 'src/core';
 import {
   ParseSpeeds,
+  DisplayMode,
   AttachmentOptions,
   SaveOptions,
   Base64SaveOptions,
@@ -152,20 +153,17 @@ export default class PDFDocument {
    * @returns Resolves with the newly created document.
    */
   static async create(options: CreateOptions = {}) {
-    const { updateMetadata = true, useOutlines = false } = options;
+    const { updateMetadata = true } = options;
 
     const context = PDFContext.create();
     const pageTree = PDFPageTree.withContext(context);
     const pageTreeRef = context.register(pageTree);
-    const outlines = PDFOutlines.withContext(context, {
-      expanded: useOutlines,
-    });
+    const outlines = PDFOutlines.withContext(context, { expanded: true });
     const outlinesRef = context.register(outlines);
     const catalog = PDFCatalog.withContextAndPages(
       context,
       pageTreeRef,
       outlinesRef,
-      options,
     );
     context.trailerInfo.Root = context.register(catalog);
 
@@ -484,6 +482,22 @@ export default class PDFDocument {
     assertIs(modificationDate, 'modificationDate', [[Date, 'Date']]);
     const key = PDFName.of('ModDate');
     this.getInfoDict().set(key, PDFString.fromDate(modificationDate));
+  }
+
+  /**
+   * Set this document's DisplayMode (PageMode). This will specify how the document shall
+   * be displayed when opened. For example:
+   * ```js
+   * pdfDoc.setDisplayMode(DisplayMode.FullScreen)
+   * ```
+   * This will cause the document to be opened in full-screen mode.
+   * 
+   * @param DisplayMode The options are: None, UseOutlines, ShowThumbnails, FullScreen, ShowOptionalContent, ShowAttachments.
+   */
+  setDisplayMode(mode: DisplayMode): void {
+    // assertIs(mode, 'mode', [[DisplayMode, 'DisplayMode']]);
+    const key = PDFName.PageMode;
+    this.catalog.set(key, PDFName.of(mode));
   }
 
   /**

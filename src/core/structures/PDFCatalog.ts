@@ -4,35 +4,17 @@ import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import PDFOutlines from 'src/core/structures/PDFOutlines';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
-import { CreateOptions } from 'src/api/PDFDocumentOptions';
 
 class PDFCatalog extends PDFDict {
   static withContextAndPages = (
     context: PDFContext,
     pages: PDFPageTree | PDFRef,
     outlines?: PDFOutlines | PDFRef,
-    options?: CreateOptions,
   ) => {
     const dict = new Map();
     dict.set(PDFName.of('Type'), PDFName.of('Catalog'));
     dict.set(PDFName.of('Pages'), pages);
     dict.set(PDFName.Outlines, outlines);
-    if (options?.useOutlines) dict.set(PDFName.PageMode, PDFName.UseOutlines);
-    return new PDFCatalog(dict, context);
-  };
-
-  /* Recommending replacing the above with the following with always creating outlines */
-  static withContextAndPagesOutlines = (
-    context: PDFContext,
-    pages: PDFPageTree | PDFRef,
-    outlines: PDFOutlines | PDFRef,
-    options?: CreateOptions,
-  ) => {
-    const dict = new Map();
-    dict.set(PDFName.of('Type'), PDFName.of('Catalog'));
-    dict.set(PDFName.of('Pages'), pages);
-    dict.set(PDFName.Outlines, outlines);
-    if (options?.useOutlines) dict.set(PDFName.PageMode, PDFName.UseOutlines);
     return new PDFCatalog(dict, context);
   };
 
