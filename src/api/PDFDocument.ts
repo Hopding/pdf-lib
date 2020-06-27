@@ -513,40 +513,28 @@ export default class PDFDocument {
    * Add a top-level outline to the end of this document's outline hierarchy.
    * This method accepts two parameters:
    * 1) title, as a text string,
-   * 2) an optional object with three possible keys:
+   * 2) an optional object with two possible keys:
    *    i) expanded, a boolean to flag whether it should be expanded in the initial view,
-   *   ii) linkPage, a PDFRef of a PDFPage for the new outline to be linked to,
-   *  iii) linkIndex, an integer of the zero-based index (aka page number) of the PDFDocument
-   *       (index instead of page number to be in accordance with rest of PDFDocument, i.e. getPage())
-   * Note: if user passes both linkPage and linkIndex, linkPage will take precedence.
+   *   ii) page, a PDFRef of a PDFPage for the new outline to be linked to.
    *
    * For example:
    * ```js
    * const newPage = pdfDoc.addPage()
-   * const newOutline = pdfDoc.addOutline('title', { expanded: true, linkPage: newPage })
+   * const newOutline = pdfDoc.addOutline('title', { expanded: true, page: newPage })
    * ```
    * This will add a top-level outline labeled "title" at the end of the outline hierarchy,
    * with an expanded view and linked to newPage.
    *
-   * For example:
-   * ```js
-   * const newOutline = pdfDoc.addOutline('title', { expanded: true, linkIndex: 0 })
-   * ```
-   * This will add a top-level outline labeled "title" at the end of the outline hierarchy,
-   * with an expanded view and linked to the first page of this PDFDocument.
-   *
    * @param title, the desired title of the outline.
-   * @param outlineOptions object that may contain expanded, linkPage, and/or linkIndex.
+   * @param outlineOptions object that may contain `expanded`, and/or `page`.
    * @returns The newly created outline.
    */
   addOutline(title: string, options?: outlineOptions): PDFOutline {
     assertIs(title, 'title', ['string']);
     if (options?.expanded) assertIs(options?.expanded, 'expanded', ['boolean']);
-    if (options?.linkPage) {
-      assertIs(options?.linkPage, 'linkPage', [[PDFPage, 'PDFPage']]);
-    } else if (options?.linkIndex) {
-      assertRange(options?.linkIndex, 'linkIndex', 0, this.getPageCount());
-    }
+    if (options?.page) {
+      assertIs(options?.page, 'page', [[PDFPage, 'PDFPage']]);
+    } 
     return this.insertOutline(this.getOutlineCount(), title, options);
   }
 
@@ -557,29 +545,19 @@ export default class PDFDocument {
    * 2) title, as a text string,
    * 3) an optional object with three possible keys:
    *    i) expanded, a boolean to flag whether it should be expanded in the initial view,
-   *   ii) linkPage, a PDFRef of a PDFPage for the new outline to be linked to,
-   *  iii) linkIndex, an integer of the zero-based index (aka page number) of the PDFDocument
-   *       (index instead of page number to be in accordance with rest of PDFDocument, i.e. getPage())
-   * Note: if user passes both linkPage and linkIndex, linkPage will take precedence.
+   *   ii) page, a PDFRef of a PDFPage for the new outline to be linked to.
    *
    * For example:
    * ```js
    * const newPage = pdfDoc.addPage()
-   * const newOutline = pdfDoc.insertOutline(2, 'title', { expanded: true, linkPage: newPage })
+   * const newOutline = pdfDoc.insertOutline(2, 'title', { expanded: true, page: newPage })
    * ```
    * This will add a top-level outline labeled "title" at index 2,
    * with an expanded view and linked to newPage.
    *
-   * For example:
-   * ```js
-   * const newOutline = pdfDoc.insertOutline(2, 'title', { expanded: true, linkIndex: 0 })
-   * ```
-   * This will add a top-level outline labeled "title" at index 2,
-   * with an expanded view and linked to the first page of this PDFDocument.
-   *
    * @param index The index at which the page should be inserted (zero-based).
    * @param title The desired title of the outline.
-   * @param outlineOptions object that may contain expanded, linkPage, and/or linkIndex.
+   * @param outlineOptions object that may contain `expanded`, and/or `page`.
    * @returns The newly created outline.
    */
   insertOutline(
@@ -591,24 +569,19 @@ export default class PDFDocument {
     assertRange(index, 'index', 0, outlineCount);
     assertIs(title, 'title', ['string']);
     if (options?.expanded) assertIs(options?.expanded, 'expanded', ['boolean']);
-    if (options?.linkPage) {
-      assertIs(options?.linkPage, 'linkPage', [[PDFPage, 'PDFPage']]);
-    } else if (options?.linkIndex) {
-      assertRange(options?.linkIndex, 'linkIndex', 0, this.getPageCount());
-    }
+    if (options?.page) {
+      assertIs(options?.page, 'page', [[PDFPage, 'PDFPage']]);
+    } 
 
     const outline = PDFOutline.create(this, title, options);
     const parentRef = this.catalog.insertOutlineItem(outline.ref, index);
     outline.node.setParent(parentRef);
 
     if (
-      options?.linkPage !== undefined &&
-      options?.linkPage?.ref !== undefined
+      options?.page !== undefined &&
+      options?.page?.ref !== undefined
     ) {
-      outline.node.setDest(options?.linkPage?.ref);
-    } else if (options?.linkIndex !== undefined) {
-      const page = this.getPage(options?.linkIndex);
-      outline.node.setDest(page.ref);
+      outline.node.setDest(options?.page?.ref);
     }
 
     return outline;

@@ -23,45 +23,45 @@ import { PDFDocument, rgb } from 'src/index';
   
   /* Declaration required for testing removing below */
   // const first = 
-  pdfDoc.addOutline('First Outline', { expanded: true, linkIndex: 0 });
-  const outline = pdfDoc.addOutline('Second Outline (page2)', {
+  pdfDoc.addOutline('First Outline', { expanded: true, page: pdfDoc.getPage(0) });
+  const outline = pdfDoc.addOutline('Second Outline (Page2)', {
     expanded: false,
-    linkIndex: 1,
+    page: pdfDoc.getPage(1),
   });
-  const suboutline = outline.addOutline('Child of Second (page3)', {
+  const suboutline = outline.addOutline('Child of Second (Page3)', {
     expanded: true,
-    linkIndex: 2,
+    page: pdfDoc.getPage(2),
   });
-  suboutline.addOutline('Grandchild of Second (page4)', { expanded: true, linkIndex: 3 });
-  outline.addOutline('Another Child of Second (page5)', {
+  suboutline.addOutline('Grandchild of Second (Page4)', { expanded: true, page: pdfDoc.getPage(3) });
+  outline.addOutline('Another Child of Second (Page5)', {
     expanded: true,
-    linkIndex: 4,
+    page: pdfDoc.getPage(4),
   });
-  const thirdChild = outline.addOutline('3rd Child of Second (page5)', {
+  const thirdChild = outline.addOutline('3rd Child of Second (Page5)', {
     expanded: true,
-    linkIndex: 4,
+    page: pdfDoc.getPage(4),
   });
   thirdChild.addOutline('3rd`s progeny');
-  outline.addOutline('4th Child of Second (page5)', {
+  outline.addOutline('4th Child of Second (Page5)', {
     expanded: true,
-    linkIndex: 4,
+    page: pdfDoc.getPage(4),
   });
-  pdfDoc.addOutline('Third Outline (Page6)', { expanded: true, linkIndex: 5 });
-  pdfDoc.addOutline('Fourth Outline (Page7)', { expanded: true, linkIndex: 6 });
+  pdfDoc.addOutline('Third Outline (Page6)', { expanded: true, page: pdfDoc.getPage(5) });
+  pdfDoc.addOutline('Fourth Outline (Page7)', { expanded: true, page: pdfDoc.getPage(6) });
 
 
   const newPage = pdfDoc.addPage();
-  const fifthSuboutline = pdfDoc.addOutline('Fifth Outline (newPage: Page8)', { expanded: true, linkPage: newPage });
+  const fifthSuboutline = pdfDoc.addOutline('Fifth Outline (newPage: Page8)', { expanded: true, page: newPage });
   const newPage2 = pdfDoc.addPage();
-  fifthSuboutline.addOutline('Grandchild of Fifth (newPage2: page9)', { expanded: true, linkPage: newPage2 });
+  fifthSuboutline.addOutline('Grandchild of Fifth (newPage2: Page9)', { expanded: true, page: newPage2 });
 
   /* Testing editing: */
-  // suboutline.setTitle('Changed title');
-  // outline.linkIndex(7);
-  // outline.setTitle('link changed to index 7');
-  // suboutline.setExpanded(false);
-  // thirdChild.linkPage(newPage2);
-  // thirdChild.setTitle('link changed to newPage2: page9');
+  suboutline.setTitle('Changed title');
+  outline.setPage(pdfDoc.getPage(7));
+  outline.setTitle('link changed to index 7: Page8');
+  suboutline.setExpanded(false);
+  thirdChild.setPage(newPage2);
+  thirdChild.setTitle('link changed to newPage2: Page9');
 
   /* Testing removing: */
   // suboutline.remove();
@@ -79,10 +79,8 @@ import { PDFDocument, rgb } from 'src/index';
   * Testing assertIs and assertRange
   */
   /* out of range */
-  // outline.linkIndex(99);
-  // outline.linkIndex(-1);
-  // pdfDoc.addOutline('Last Outline', { expanded: true, linkIndex: -1 });
-  // pdfDoc.addOutline('Last Outline', { expanded: true, linkIndex: 99 });
+  // outline.setPage(null);
+  // outline.setPage(undefined);
 
   const page = pdfDoc.addPage();
 

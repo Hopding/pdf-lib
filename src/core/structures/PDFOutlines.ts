@@ -11,8 +11,7 @@ export type OutlineNode = PDFOutlines;
 
 export interface outlineOptions {
   expanded?: boolean;
-  linkPage?: PDFPage;
-  linkIndex?: number;
+  page?: PDFPage;
 }
 
 class PDFOutlines extends PDFDict {
