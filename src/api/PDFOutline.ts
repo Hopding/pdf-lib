@@ -108,7 +108,7 @@ export default class PDFOutline {
    * Add a nested outline as the last child of this outline.
    * This method accepts two parameters:
    * 1) title, as a text string,
-   * 2) an optional object with three possible keys:
+   * 2) an optional object with two possible options:
    *    i) expanded, a boolean to flag whether it should be expanded in the initial view,
    *   ii) page, a PDFRef of a PDFPage for the new outline to be linked to.
    *
@@ -140,7 +140,7 @@ export default class PDFOutline {
    * This method accepts three prameters:
    * 1) index, number where to insert,
    * 2) title, as a text string,
-   * 3) an optional object with three possible keys:
+   * 3) an optional object with two possible options:
    *    i) expanded, a boolean to flag whether it should be expanded in the initial view,
    *   ii) page, a PDFRef of a PDFPage for the new outline to be linked to.
    *
@@ -175,12 +175,9 @@ export default class PDFOutline {
     const parentRef = this.node.insertOutlineItem(this.ref, outline.ref, index);
     outline.node.setParent(parentRef);
 
-    if (
-      options?.page !== undefined &&
-      options?.page?.ref !== undefined
-    ) {
+    if (options?.page !== undefined && options?.page?.ref !== undefined) {
       outline.node.setDest(options?.page?.ref);
-    } 
+    }
 
     return outline;
   }
