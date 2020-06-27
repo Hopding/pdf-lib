@@ -35,6 +35,13 @@
       alt="Prettier Badge"
     />
   </a>
+  <!-- Discord Badge -->
+  <a href="https://discord.gg/Y7uuVMc">
+    <img
+      src="https://img.shields.io/static/v1?label=discord&message=pdf-lib&color=566fbb&style=flat-square"
+      alt="Discord Badge"
+    />
+  </a>
 </div>
 
 <br />
@@ -60,6 +67,7 @@
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
 - [Documentation](#documentation)
+- [Help and Discussion](#help-and-discussion)
 - [Encryption Handling](#encryption-handling)
 - [Migrating to v1.0.0](#migrating-to-v1)
 - [Contributing](#contributing)
@@ -817,6 +825,10 @@ API documentation is available on the project site at https://pdf-lib.js.org/doc
 
 The repo for the project site (and generated documentation files) is
 located here: https://github.com/Hopding/pdf-lib-docs.
+
+## Help and Discussion
+
+[Our Discord server](https://discord.gg/Y7uuVMc) is a great place to chat with us, ask questions, and learn more about pdf-lib. Come join us!
 
 ## Encryption Handling
 
