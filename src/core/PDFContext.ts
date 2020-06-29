@@ -21,15 +21,15 @@ import { typedArrayFor } from 'src/utils';
 
 type LookupKey = PDFRef | PDFObject | undefined;
 
-interface LiteralObject {
+export interface LiteralObject {
   [name: string]: Literal | PDFObject;
 }
 
-interface LiteralArray {
+export interface LiteralArray {
   [index: number]: Literal | PDFObject;
 }
 
-type Literal =
+export type Literal =
   | LiteralObject
   | LiteralArray
   | string
