@@ -84,6 +84,7 @@
     "@pdf-lib/standard-fonts": "^0.0.4",
     "@pdf-lib/upng": "^1.0.1",
     "pako": "^1.0.11",
+    "ts-exif-parser": "^0.2.1",
     "tslib": "^1.11.1"
   },
   "devDependencies": {

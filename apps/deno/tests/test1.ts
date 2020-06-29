@@ -67,6 +67,7 @@ export default async (assets: Assets) => {
 
   const size = 750;
 
+  //#region page1
   /********************** Page 1 **********************/
 
   // This page tests different drawing operations as well as adding custom
@@ -216,7 +217,9 @@ export default async (assets: Assets) => {
     borderColor: rgb(1, 1, 1),
     borderDashArray: [4, 8],
   });
+  //#endregion page1
 
+  //#region page2
   /********************** Page 2 **********************/
 
   // This page tests placement of text with different fonts
@@ -303,7 +306,9 @@ export default async (assets: Assets) => {
     font: hussar3DFont,
     lineHeight: 25,
   });
+  //#endregion page2
 
+  //#region page3
   /********************** Page 3 **********************/
 
   // This page tests embedding and placing different images.
@@ -376,7 +381,9 @@ export default async (assets: Assets) => {
 
   page3.moveDown(smallMarioDims.height);
   page3.drawImage(smallMarioImage, smallMarioDims);
+  //#endregion page3
 
+  //#region page4
   /********************** Page 4 **********************/
 
   // This page tests embedding other PDF pages. First we embed page 3 of this document
@@ -411,6 +418,19 @@ export default async (assets: Assets) => {
     xScale: 0.5,
     yScale: 0.5,
   });
+  //#endregion page4
+
+  //#region page5
+   /********************** Page 5 **********************/
+
+  // This page tests embedding jpg and png images using their 
+  // resolution, to achieve placing at natural sizes
+  //
+
+  const page5 = pdfDoc.addPage([size, size]);
+
+
+  //#endregion page5
 
   /********************** Print Metadata **********************/
 

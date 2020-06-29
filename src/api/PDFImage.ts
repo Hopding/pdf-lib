@@ -35,6 +35,9 @@ export default class PDFImage implements Embeddable {
   /** The height of this image in pixels. */
   readonly height: number;
 
+  /** The resolution of the image in pixels per inch */
+  readonly resolution: number;
+
   private alreadyEmbedded = false;
   private readonly embedder: ImageEmbedder;
 
@@ -50,7 +53,8 @@ export default class PDFImage implements Embeddable {
     this.doc = doc;
     this.width = embedder.width;
     this.height = embedder.height;
-
+    this.resolution = embedder.resolution;
+    
     this.embedder = embedder;
   }
 
