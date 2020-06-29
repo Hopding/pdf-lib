@@ -86,6 +86,7 @@ class PDFArray extends PDFObject {
   lookup(index: number, type: typeof PDFNull): typeof PDFNull;
   lookup(index: number, type: typeof PDFNumber): PDFNumber;
   lookup(index: number, type: typeof PDFStream): PDFStream;
+  lookup(index: number, type: typeof PDFRawStream): PDFRawStream;
   lookup(index: number, type: typeof PDFRef): PDFRef;
   lookup(index: number, type: typeof PDFString): PDFString;
   lookup(
