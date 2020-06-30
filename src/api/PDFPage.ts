@@ -1369,6 +1369,7 @@ export default class PDFPage {
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.xScale, 'options.xScale', ['number']);
     assertOrUndefined(options.yScale, 'options.yScale', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
@@ -1411,6 +1412,7 @@ export default class PDFPage {
         y: options.y ?? this.y,
         xScale: options.xScale ?? 100,
         yScale: options.yScale ?? 100,
+        rotate: options.rotate ?? degrees(0),
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,

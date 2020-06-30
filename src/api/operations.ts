@@ -219,6 +219,7 @@ export const drawEllipsePath = (config: {
   y: number | PDFNumber;
   xScale: number | PDFNumber;
   yScale: number | PDFNumber;
+  rotate: Rotation;
 }): PDFOperator[] => {
   let x = asNumber(config.x);
   let y = asNumber(config.y);
@@ -237,6 +238,7 @@ export const drawEllipsePath = (config: {
 
   return [
     pushGraphicsState(),
+    rotateRadians(toRadians(config.rotate)),
     moveTo(x, ym),
     appendBezierCurve(x, ym - oy, xm - ox, y, xm, y),
     appendBezierCurve(xm + ox, y, xe, ym - oy, xe, ym),
@@ -251,6 +253,7 @@ export const drawEllipse = (options: {
   y: number | PDFNumber;
   xScale: number | PDFNumber;
   yScale: number | PDFNumber;
+  rotate: Rotation;
   color: Color | undefined;
   borderColor: Color | undefined;
   borderWidth: number | PDFNumber;
@@ -272,6 +275,7 @@ export const drawEllipse = (options: {
       y: options.y,
       xScale: options.xScale,
       yScale: options.yScale,
+      rotate: options.rotate,
     }),
 
     // prettier-ignore

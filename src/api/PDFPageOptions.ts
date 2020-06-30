@@ -129,6 +129,7 @@ export interface PDFPageDrawEllipseOptions {
   y?: number;
   xScale?: number;
   yScale?: number;
+  rotate?: Rotation;
   color?: Color;
   opacity?: number;
   borderColor?: Color;
