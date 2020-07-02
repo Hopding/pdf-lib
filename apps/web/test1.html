@@ -168,6 +168,20 @@
         borderDashArray: [10],
         rotate: degrees(30),
       });
+      page1.drawEllipse({
+        x: size / 2 + size / 4,
+        y: size / 2 + size / 4,
+        xScale: 75,
+        yScale: 50,
+        color: undefined,
+      });
+      page1.drawEllipse({
+        x: size / 2 + size / 4,
+        y: size / 2 + size / 4,
+        xScale: 150,
+        yScale: 100,
+        color: undefined,
+      });
       page1.pushOperators(clipEvenOdd(), endPath());
       page1.setFont(timesRomanFont);
       page1.setFontColor(rgb(1, 0, 1));
