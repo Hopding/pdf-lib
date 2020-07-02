@@ -183,58 +183,15 @@ export const drawRectangle = (options: {
   rotate: Rotation;
   xSkew: Rotation;
   ySkew: Rotation;
-  borderLineCap?: LineCapStyle;
-  borderDashArray?: (number | PDFNumber)[];
-  borderDashPhase?: number | PDFNumber;
-  graphicsState?: string | PDFName;
-}) =>
-  [
-    pushGraphicsState(),
-    options.graphicsState && setGraphicsState(options.graphicsState),
-    options.color && setFillingColor(options.color),
-    options.borderColor && setStrokingColor(options.borderColor),
-    setLineWidth(options.borderWidth),
-    options.borderLineCap && setLineCap(options.borderLineCap),
-    setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
-    translate(options.x, options.y),
-    rotateRadians(toRadians(options.rotate)),
-    skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
-    moveTo(0, 0),
-    lineTo(0, options.height),
-    lineTo(options.width, options.height),
-    lineTo(options.width, 0),
-    closePath(),
-
-    // prettier-ignore
-    options.color && options.borderWidth ? fillAndStroke()
-  : options.color                      ? fill()
-  : options.borderColor                ? stroke()
-  : closePath(),
-
-    popGraphicsState(),
-  ].filter(Boolean) as PDFOperator[];
-
-
-export const drawRoundedRectangle = (options: {
-  x: number | PDFNumber;
-  y: number | PDFNumber;
-  width: number | PDFNumber;
-  height: number | PDFNumber;
-  radius: number | PDFNumber;
-  borderWidth: number | PDFNumber;
-  color: Color | undefined;
-  borderColor: Color | undefined;
-  rotate: Rotation;
-  xSkew: Rotation;
-  ySkew: Rotation;
+  borderRadius?: number | PDFNumber;
   borderLineCap?: LineCapStyle;
   borderDashArray?: (number | PDFNumber)[];
   borderDashPhase?: number | PDFNumber;
   graphicsState?: string | PDFName;
 }) => {
-  const {x: xN, y: yN, radius: rN, width: wN, height: hN} = options;
+  const {x: xN, y: yN, borderRadius: rN, width: wN, height: hN} = options;
   const [x, y, r, w, h] = [
-    asNumber(xN), asNumber(yN), asNumber(rN), asNumber(wN), asNumber(hN),
+    asNumber(xN), asNumber(yN), asNumber(rN || 0), asNumber(wN), asNumber(hN),
   ];
   const c = r * (1.0 - KAPPA);
   return [
@@ -250,19 +207,19 @@ export const drawRoundedRectangle = (options: {
     skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
     moveTo(r, 0),
     lineTo(w - r, 0),
-    appendBezierCurve(w - c, 0, w, c, w, r),
+    r > 0 ? appendBezierCurve(w - c, 0, w, c, w, r) : null,
     lineTo(w, h - r),
-    appendBezierCurve(w, h - c, w - c, h, w - r, h),
+    r > 0 ? appendBezierCurve(w, h - c, w - c, h, w - r, h) : null,
     lineTo(r, h),
-    appendBezierCurve(c, h, 0, h - c, 0, h - r),
-    lineTo(0, r),
-    appendBezierCurve(0, c, c, 0, r, 0),
+    r > 0 ? appendBezierCurve(c, h, 0, h - c, 0, h - r) : null,
+    r > 0 ? lineTo(0, r) : null,
+    r > 0 ? appendBezierCurve(0, c, c, 0, r, 0) : null,
     closePath(),
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()
-  : options.color                        ? fill()
-  : options.borderColor                  ? stroke()
-  : closePath(),
+    : options.color                      ? fill()
+    : options.borderColor                ? stroke()
+    : null,
 
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];

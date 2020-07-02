@@ -98,6 +98,7 @@ export interface PDFPageDrawRectangleOptions {
   borderWidth?: number;
   color?: Color;
   opacity?: number;
+  borderRadius?: number;
   borderColor?: Color;
   borderOpacity?: number;
   borderDashArray?: number[];
