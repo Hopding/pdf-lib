@@ -243,8 +243,6 @@ export const drawSvgPath = (
 
     setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
 
-    setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
-
     ...svgPathToOperators(path),
 
     // prettier-ignore
