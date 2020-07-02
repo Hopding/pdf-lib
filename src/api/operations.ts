@@ -27,6 +27,8 @@ import {
   setLineCap,
   setGraphicsState,
   setDashPattern,
+  setLineJoin,
+  LineJoinStyle,
 } from 'src/api/operators';
 import { Rotation, toRadians } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
@@ -265,6 +267,49 @@ export const drawRoundedRectangle = (options: {
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
 };
+
+export const drawLines = (options: {
+  points: { x: number | PDFNumber; y: number | PDFNumber }[],
+  borderWidth: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  rotate: Rotation;
+  xSkew: Rotation;
+  ySkew: Rotation;
+  closePath: boolean | undefined;
+  lineJoin?: LineJoinStyle;
+  lineCap?: LineCapStyle;
+  dashArray?: (number | PDFNumber)[];
+  dashPhase?: number | PDFNumber;
+  graphicsState?: string | PDFName;
+}) =>
+  [
+    pushGraphicsState(),
+    options.graphicsState && setGraphicsState(options.graphicsState),
+    options.color && setFillingColor(options.color),
+    options.borderColor && setStrokingColor(options.borderColor),
+    setLineWidth(options.borderWidth),
+    options.lineCap && setLineCap(options.lineCap),
+    setDashPattern(options.dashArray ?? [], options.dashPhase ?? 0),
+    setLineJoin(options.lineJoin || LineJoinStyle.Miter),
+    translate(options.points[0].x, options.points[0].y),
+    rotateRadians(toRadians(options.rotate)),
+    skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
+    ...(options.points.slice(1).map(p =>
+          lineTo(
+            asNumber(p.x) - asNumber(options.points[0].x),
+            asNumber(p.y) - asNumber(options.points[0].y),
+    ))),
+    // Close only if instructed to
+    ...(options.closePath ? [closePath()] : []),
+    // prettier-ignore
+    options.color && options.borderWidth ? fillAndStroke()
+    : options.color                      ? fill()
+    : options.borderColor                ? stroke()
+    : null,
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
+
 
 const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
 
