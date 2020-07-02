@@ -212,6 +212,60 @@ export const drawRectangle = (options: {
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
 
+
+export const drawRoundedRectangle = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  radius: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  rotate: Rotation;
+  xSkew: Rotation;
+  ySkew: Rotation;
+  borderLineCap?: LineCapStyle;
+  borderDashArray?: (number | PDFNumber)[];
+  borderDashPhase?: number | PDFNumber;
+  graphicsState?: string | PDFName;
+}) => {
+  const {x: xN, y: yN, radius: rN, width: wN, height: hN} = options;
+  const [x, y, r, w, h] = [
+    asNumber(xN), asNumber(yN), asNumber(rN), asNumber(wN), asNumber(hN),
+  ];
+  const c = r * (1.0 - KAPPA);
+  return [
+    pushGraphicsState(),
+    options.graphicsState && setGraphicsState(options.graphicsState),
+    options.color && setFillingColor(options.color),
+    options.borderColor && setStrokingColor(options.borderColor),
+    setLineWidth(options.borderWidth),
+    options.borderLineCap && setLineCap(options.borderLineCap),
+    setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
+    translate(x, y),
+    rotateRadians(toRadians(options.rotate)),
+    skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
+    moveTo(r, 0),
+    lineTo(w - r, 0),
+    appendBezierCurve(w - c, 0, w, c, w, r),
+    lineTo(w, h - r),
+    appendBezierCurve(w, h - c, w - c, h, w - r, h),
+    lineTo(r, h),
+    appendBezierCurve(c, h, 0, h - c, 0, h - r),
+    lineTo(0, r),
+    appendBezierCurve(0, c, c, 0, r, 0),
+    closePath(),
+    // prettier-ignore
+    options.color && options.borderWidth ? fillAndStroke()
+  : options.color                        ? fill()
+  : options.borderColor                  ? stroke()
+  : closePath(),
+
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
+};
+
 const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
 
 export const drawEllipsePath = (config: {
