@@ -1425,7 +1425,9 @@ export default class PDFPage {
       y: centerY,
       rotate: options.rotate,
       color: options.color,
+      opacity: options.opacity,
       borderColor: options.borderColor,
+      borderOpacity: options.borderOpacity,
       borderWidth: options.borderWidth,
       borderDashArray: options.borderDashArray,
       borderDashPhase: options.borderDashPhase,
@@ -1452,8 +1454,9 @@ export default class PDFPage {
    * @param options The options to be used when drawing the ellipse.
    */
   drawCircle(options: PDFPageDrawCircleOptions = {}): void {
-    const { size } = options;
+    let { size } = options;
     assertOrUndefined(size, 'size', ['number']);
+    size = asNumber(size ?? 100);
     this.drawEllipse({ ...options, xScale: size, yScale: size });
   }
 
