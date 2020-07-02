@@ -64,6 +64,7 @@ export interface PDFPageDrawSVGOptions {
   x?: number;
   y?: number;
   scale?: number;
+  rotate?: Rotation;
   borderWidth?: number;
   color?: Color;
   opacity?: number;

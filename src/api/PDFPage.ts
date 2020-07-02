@@ -1,6 +1,5 @@
 import { Color, rgb } from 'src/api/colors';
 import {
-  drawEllipse,
   drawImage,
   drawLine,
   drawLinesOfText,
@@ -52,6 +51,7 @@ import {
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
+import {asNumber} from "./objects";
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -1126,6 +1126,7 @@ export default class PDFPage {
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.scale, 'options.scale', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
@@ -1167,6 +1168,7 @@ export default class PDFPage {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         scale: options.scale,
+        rotate: options.rotate ?? degrees(0),
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
@@ -1395,33 +1397,40 @@ export default class PDFPage {
     );
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
-    const graphicsStateKey = this.maybeEmbedGraphicsState({
-      opacity: options.opacity,
-      borderOpacity: options.borderOpacity,
-      blendMode: options.blendMode,
+    const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
+
+    const centerX = asNumber(options.x ?? this.x);
+    const centerY = asNumber(options.y ?? this.y);
+    const xScale = asNumber(options.xScale ?? 100);
+    const yScale = asNumber(options.yScale ?? 50);
+
+    const x = -xScale;
+    const y = -yScale;
+
+    const ox = xScale * KAPPA;
+    const oy = yScale * KAPPA;
+    const xe = x + xScale * 2;
+    const ye = y + yScale * 2;
+    const xm = x + xScale;
+    const ym = y + yScale;
+
+    const path = `M${x},${ym}
+                  C${x},${ym - oy} ${xm - ox},${y} ${xm},${y}
+                  C${xm + ox},${y} ${xe},${ym - oy} ${xe},${ym}
+                  C${xe},${ym + oy} ${xm+ox},${ye} ${xm},${ye}
+                  C${xm - ox},${ye} ${x},${ym + oy} ${x},${ym}z`;
+
+    this.drawSvgPath(path, {
+      x: centerX,
+      y: centerY,
+      rotate: options.rotate,
+      color: options.color,
+      borderColor: options.borderColor,
+      borderWidth: options.borderWidth,
+      borderDashArray: options.borderDashArray,
+      borderDashPhase: options.borderDashPhase,
+      borderLineCap: options.borderLineCap,
     });
-
-    if (!('color' in options) && !('borderColor' in options)) {
-      options.color = rgb(0, 0, 0);
-    }
-
-    const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawEllipse({
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        xScale: options.xScale ?? 100,
-        yScale: options.yScale ?? 100,
-        rotate: options.rotate ?? degrees(0),
-        color: options.color ?? undefined,
-        borderColor: options.borderColor ?? undefined,
-        borderWidth: options.borderWidth ?? 0,
-        borderDashArray: options.borderDashArray ?? undefined,
-        borderDashPhase: options.borderDashPhase ?? undefined,
-        borderLineCap: options.borderLineCap ?? undefined,
-        graphicsState: graphicsStateKey,
-      }),
-    );
   }
 
   /**
