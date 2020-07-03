@@ -186,7 +186,7 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
   const ap = widget.getAppearanceCharacteristics();
   const bs = widget.getBorderStyle();
 
-  const borderWidth = bs?.getWidth();
+  const borderWidth = bs?.getWidth() ?? 0;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -200,9 +200,9 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
   const options = {
     x: width / 2,
     y: height / 2,
-    width,
-    height,
-    borderWidth: borderWidth ?? 0,
+    width: width - borderWidth,
+    height: height - borderWidth,
+    borderWidth,
     borderColor,
   };
 
@@ -263,7 +263,7 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   const normalText = captions?.normal ?? '';
   const downText = captions?.down ?? normalText ?? '';
 
-  const borderWidth = bs?.getWidth();
+  const borderWidth = bs?.getWidth() ?? 1;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -279,11 +279,11 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   const fontSize = 15;
 
   const options = {
-    x: 0,
-    y: 0,
-    width,
-    height,
-    borderWidth: borderWidth ?? 0,
+    x: 0 + borderWidth / 2,
+    y: 0 + borderWidth / 2,
+    width: width - borderWidth,
+    height: height - borderWidth,
+    borderWidth,
     borderColor,
     textColor: borderColor ?? black,
     font: font.name,

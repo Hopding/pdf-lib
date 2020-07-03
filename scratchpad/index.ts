@@ -165,6 +165,10 @@ import {
     y: 0,
     width: 50,
     height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 0.1, 0),
+    borderWidth: 5,
+    rotate: degrees(270),
   });
 
   // TODO: Need to use export values when adding these options
@@ -204,7 +208,82 @@ import {
     color: rgb(1, 0, 0),
     borderColor: rgb(0, 1, 0.75),
     borderWidth: 5,
-    rotation: degrees(90),
+    // borderWidth: 1,
+    rotate: degrees(0),
+  });
+  newBtn1.addToPage('Foo Bar', helvetica, page2, {
+    x: page2.getWidth() - (100 + 5),
+    y: page2.getHeight() - (50 + 5),
+    width: 100,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    // borderWidth: 1,
+    rotate: degrees(90),
+  });
+  newBtn1.addToPage('Foo Bar', helvetica, page2, {
+    x: page2.getWidth() - (100 + 5),
+    y: page2.getHeight() - (50 + 5),
+    width: 100,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    // borderWidth: 1,
+    rotate: degrees(180),
+  });
+  newBtn1.addToPage('Foo Bar', helvetica, page2, {
+    x: page2.getWidth() - (100 + 5),
+    y: page2.getHeight() - (50 + 5),
+    width: 100,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    // borderWidth: 1,
+    rotate: degrees(270),
+  });
+
+  page2.drawRectangle({
+    x: page2.getWidth() - (100 + 5) * 4,
+    y: page2.getHeight() - (50 + 5) * 2,
+    width: 100,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    rotate: degrees(0),
+  });
+  page2.drawRectangle({
+    x: page2.getWidth() - (100 + 5) * 4,
+    y: page2.getHeight() - (50 + 5) * 2,
+    width: 100,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    rotate: degrees(90),
+  });
+  page2.drawRectangle({
+    x: page2.getWidth() - (100 + 5) * 4,
+    y: page2.getHeight() - (50 + 5) * 2,
+    width: 100,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    rotate: degrees(180),
+  });
+  page2.drawRectangle({
+    x: page2.getWidth() - (100 + 5) * 4,
+    y: page2.getHeight() - (50 + 5) * 2,
+    width: 100,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    rotate: degrees(270),
   });
 
   const newDd1 = form.createDropdown('spooky boo 👻');

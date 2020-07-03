@@ -1,7 +1,7 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import { PDFAcroRadioButton, AcroButtonFlags } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertMultiple } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
 import { PDFName, PDFRef, PDFHexString } from 'src/core';
@@ -11,6 +11,13 @@ import {
   normalizeAppearance,
   defaultRadioGroupAppearanceProvider,
 } from 'src/api/form/appearances';
+import { Color, rgb, colorToComponents } from '../colors';
+import {
+  Rotation,
+  toDegrees,
+  degrees,
+  adjustDimsForRotation,
+} from '../rotations';
 
 /**
  * Represents a radio group field of a [[PDFForm]].
@@ -70,18 +77,30 @@ export default class PDFRadioGroup extends PDFField {
     return value.decodeText();
   }
 
-  // TODO: Have default width and height
   addOptionToPage(
     option: string,
     page: PDFPage,
-    options: {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
+    options?: {
+      x?: number;
+      y?: number;
+      width?: number;
+      height?: number;
+      color?: Color;
+      borderColor?: Color;
+      borderWidth?: number;
+      rotate?: Rotation;
     },
   ) {
-    const { x, y, width, height } = options;
+    const x = options?.x ?? 0;
+    const y = options?.y ?? 0;
+    const color = options?.color ?? rgb(1, 1, 1);
+    const borderColor = options?.borderColor;
+    const borderWidth = options?.borderWidth ?? 0;
+    const degreesAngle = toDegrees(options?.rotate ?? degrees(0));
+    const width = (options?.width ?? 50) + borderWidth;
+    const height = (options?.height ?? 50) + borderWidth;
+
+    assertMultiple(degreesAngle, 'degreesAngle', 90);
 
     // Create a widget for this radio button
     const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
@@ -95,14 +114,23 @@ export default class PDFRadioGroup extends PDFField {
 
     // Set widget properties
     widget.setAppearanceState(PDFName.of('Off'));
-    widget.setRectangle({ x, y, width, height });
+
+    const adjustedDims = adjustDimsForRotation({ width, height }, degreesAngle);
+    widget.setRectangle({ x, y, ...adjustedDims });
+
+    const ac = widget.getOrCreateAppearanceCharacteristics();
+    ac.setBackgroundColor(colorToComponents(color));
+    ac.setRotation(degreesAngle);
+    if (borderColor) ac.setBorderColor(colorToComponents(borderColor));
+
+    const bs = widget.getOrCreateBorderStyle();
+    if (borderWidth) bs.setWidth(borderWidth);
 
     // Set appearance streams for widget
     this.updateWidgetAppearance(widget, apStateValue);
 
     // Add widget to the given page
-    const { Annots } = page.node.normalizedEntries();
-    Annots.push(widgetRef);
+    page.node.addAnnot(widgetRef);
   }
 
   // setOptions(options: string[]) {}

@@ -467,7 +467,7 @@ export const drawRadioButton = (options: {
   const width = asNumber(options.width);
   const height = asNumber(options.height);
 
-  const outlineScale = Math.min(width, height) / 2 - KAPPA;
+  const outlineScale = Math.min(width, height) / 2;
 
   const outline = drawEllipse({
     x: options.x,

@@ -1,6 +1,6 @@
 import PDFDocument from 'src/api/PDFDocument';
 import { PDFAcroField, AcroFieldFlags } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertMultiple } from 'src/utils';
 import {
   PDFRef,
   PDFWidgetAnnotation,
@@ -10,6 +10,8 @@ import {
 } from 'src/core';
 import { PDFFont } from '..';
 import { AppearanceMapping } from './appearances';
+import { Color, colorToComponents } from '../colors';
+import { Rotation, toDegrees, rotateRectangle } from '../rotations';
 
 // TODO: Should fields always have refs? What about the PDFForm?
 // TODO: Note in documentation that a single field can actually be rendered
@@ -71,6 +73,67 @@ export default class PDFField {
 
   setExported(exported: boolean) {
     this.acroField.setFlagTo(AcroFieldFlags.NoExport, !exported);
+  }
+
+  protected embedWidget(options: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    color: Color;
+    borderColor?: Color;
+    borderWidth: number;
+    rotate: Rotation;
+    caption?: string;
+  }): PDFWidgetAnnotation {
+    const color = options.color;
+    const borderColor = options.borderColor;
+    const borderWidth = options.borderWidth;
+    const degreesAngle = toDegrees(options.rotate);
+    const caption = options.caption;
+    const x = options.x - borderWidth / 2;
+    const y = options.y - borderWidth / 2;
+    const width = options.width + borderWidth;
+    const height = options.height + borderWidth;
+
+    assertMultiple(degreesAngle, 'degreesAngle', 90);
+
+    // Create a widget for this field
+    const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
+    // const widgetRef = this.doc.context.register(widget.dict);
+
+    // // Add widget to this field
+    // const apStateValue = this.acroField.addWidgetWithOpt(
+    //   widgetRef,
+    //   PDFHexString.fromText(option),
+    // );
+
+    // Set widget properties
+    widget.setAppearanceState(PDFName.of('Off'));
+
+    const rect = rotateRectangle(
+      { x, y, width, height },
+      borderWidth,
+      degreesAngle,
+    );
+    widget.setRectangle(rect);
+
+    const ac = widget.getOrCreateAppearanceCharacteristics();
+    ac.setBackgroundColor(colorToComponents(color));
+    ac.setRotation(degreesAngle);
+    if (caption) ac.setCaptions({ normal: caption });
+    if (borderColor) ac.setBorderColor(colorToComponents(borderColor));
+
+    const bs = widget.getOrCreateBorderStyle();
+    if (borderWidth) bs.setWidth(borderWidth);
+
+    // // Set appearance streams for widget
+    // this.updateWidgetAppearance(widget, apStateValue);
+
+    // // Add widget to the given page
+    // page.node.addAnnot(widgetRef);
+
+    return widget;
   }
 
   protected updateWidgetAppearanceWithFont(

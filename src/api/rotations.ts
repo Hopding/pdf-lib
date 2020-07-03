@@ -62,3 +62,26 @@ export const adjustDimsForRotation = (
     ? { width: dims.height, height: dims.width }
     : { width: dims.width, height: dims.height };
 };
+
+export const rotateRectangle = (
+  rectangle: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  },
+  borderWidth = 0,
+  degreeAngle = 0,
+) => {
+  const { x, y, width: w, height: h } = rectangle;
+
+  const r = reduceRotation(degreeAngle);
+  const b = borderWidth / 2;
+
+  // prettier-ignore
+  if (r === 0) return { x: x - b, y: y - b, width: w, height: h };
+  else if (r === 90) return { x: x - h + b, y: y - b, width: h, height: w };
+  else if (r === 180) return { x: x - w + b, y: y - h + b, width: w, height: h };
+  else if (r === 270) return { x: x - b, y: y - w + b, width: h, height: w };
+  else return { x: x - b, y: y - b, width: w, height: h };
+};

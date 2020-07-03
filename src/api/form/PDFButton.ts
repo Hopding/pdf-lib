@@ -2,7 +2,7 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroPushButton } from 'src/core/acroform';
-import { assertIs, assertMultiple } from 'src/utils';
+import { assertIs } from 'src/utils';
 import { PDFRef } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
@@ -12,8 +12,8 @@ import {
 } from 'src/api/form/appearances';
 
 import PDFField from 'src/api/form/PDFField';
-import { Color, rgb, colorToComponents } from '../colors';
-import { Rotation, degrees, toDegrees } from '../rotations';
+import { Color, rgb } from '../colors';
+import { Rotation, degrees } from '../rotations';
 
 /**
  * Represents a button field of a [[PDFForm]].
@@ -46,7 +46,7 @@ export default class PDFButton extends PDFField {
     text: string,
     font: PDFFont,
     page: PDFPage,
-    options: {
+    options?: {
       x?: number;
       y?: number;
       width?: number;
@@ -54,37 +54,67 @@ export default class PDFButton extends PDFField {
       color?: Color;
       borderColor?: Color;
       borderWidth?: number;
-      rotation?: Rotation;
+      rotate?: Rotation;
     },
   ) {
-    const x = options.x ?? 0;
-    const y = options.y ?? 0;
-    const width = options.width ?? 100;
-    const height = options.height ?? 50;
-    const color = options.color ?? rgb(0, 0, 0);
-    const borderColor = options.borderColor;
-    const borderWidth = options.borderWidth;
-    const degreesAngle = toDegrees(options.rotation ?? degrees(0));
+    // const color = options?.color ?? rgb(0, 0, 0);
+    // const borderColor = options?.borderColor;
+    // const borderWidth = options?.borderWidth ?? 0;
+    // const degreesAngle = toDegrees(options?.rotate ?? degrees(0));
+    // const x = (options?.x ?? 0) - borderWidth / 2;
+    // const y = (options?.y ?? 0) - borderWidth / 2;
+    // const width = (options?.width ?? 100) + borderWidth;
+    // const height = (options?.height ?? 50) + borderWidth;
 
-    assertMultiple(degreesAngle, 'degreesAngle', 90);
+    // assertMultiple(degreesAngle, 'degreesAngle', 90);
+
+    // // Create a widget for this button
+    // const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
+    // const widgetRef = this.doc.context.register(widget.dict);
+
+    // // Add widget to this field
+    // this.acroField.addWidget(widgetRef);
+
+    // // Set widget properties
+    // const rect = rotateRectangle(
+    //   { x, y, width, height },
+    //   borderWidth,
+    //   degreesAngle,
+    // );
+    // widget.setRectangle(rect);
+
+    // const ac = widget.getOrCreateAppearanceCharacteristics();
+    // ac.setCaptions({ normal: text });
+    // ac.setBackgroundColor(colorToComponents(color));
+    // ac.setRotation(degreesAngle);
+    // if (borderColor) ac.setBorderColor(colorToComponents(borderColor));
+
+    // const bs = widget.getOrCreateBorderStyle();
+    // if (borderWidth !== undefined) bs.setWidth(borderWidth);
+
+    // // Set appearance streams for widget
+    // this.updateWidgetAppearance(widget, font);
+
+    // // Add widget to the given page
+    // page.node.addAnnot(widgetRef);
 
     // Create a widget for this button
-    const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
+    const widget = this.embedWidget({
+      x: options?.x ?? 0,
+      y: options?.y ?? 0,
+      width: options?.width ?? 100,
+      height: options?.height ?? 50,
+      color: options?.color ?? rgb(0, 0, 0),
+      borderColor: options?.borderColor,
+      borderWidth: options?.borderWidth ?? 0,
+      rotate: options?.rotate ?? degrees(0),
+      caption: text,
+    });
+
     const widgetRef = this.doc.context.register(widget.dict);
 
     // Add widget to this field
     this.acroField.addWidget(widgetRef);
-
-    // Set widget properties
-    widget.setRectangle({ x, y, width, height });
-
-    const ac = widget.getOrCreateAppearanceCharacteristics();
-    ac.setCaptions({ normal: text });
-    ac.setBackgroundColor(colorToComponents(color));
-    if (borderColor) ac.setBorderColor(colorToComponents(borderColor));
-
-    const bs = widget.getOrCreateBorderStyle();
-    if (borderWidth) bs.setWidth(borderWidth);
 
     // Set appearance streams for widget
     this.updateWidgetAppearance(widget, font);
