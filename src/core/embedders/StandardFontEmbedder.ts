@@ -9,6 +9,7 @@ import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import { toCodePoint, toHexString } from 'src/utils';
+import { BoundingBox } from 'src/types/fontkit';
 
 export interface Glyph {
   code: number;
@@ -79,6 +80,21 @@ class StandardFontEmbedder {
     const yTop = Ascender || FontBBox[3];
     const yBottom = Descender || FontBBox[1];
     return (1000 * height) / (yTop - yBottom);
+  }
+
+  getFontMetrics() {
+    const bbox = this.font.FontBBox;
+    return {
+      ascent: this.font.Ascender,
+      descent: this.font.Descender,
+      // It would be nice to figure out how to get this value
+      lineGap: 0,
+      bbox: {
+        minX: bbox[0], minY: bbox[1], maxX: bbox[2], maxY: bbox[3],
+        width: Math.abs(bbox[2] - bbox[0]),
+        height: Math.abs(bbox[3] - bbox[1]),
+      } as BoundingBox
+    };
   }
 
   embedIntoContext(context: PDFContext, ref?: PDFRef): PDFRef {

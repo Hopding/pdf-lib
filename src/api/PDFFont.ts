@@ -7,6 +7,18 @@ import {
   StandardFontEmbedder,
 } from 'src/core';
 import { assertIs } from 'src/utils';
+import { BoundingBox } from 'src/types/fontkit';
+
+export interface FontMetrics {
+  /** The font's ascender */
+  ascent: number | void;
+  /** The font's descender */
+  descent: number | void;
+  /** The font's line gap if known; only works on custom fonts currently */
+  lineGap: number;
+  /** Font bounding box */
+  bbox: BoundingBox,
+}
 
 export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
 
@@ -87,6 +99,13 @@ export default class PDFFont implements Embeddable {
     assertIs(text, 'text', ['string']);
     assertIs(size, 'size', ['number']);
     return this.embedder.widthOfTextAtSize(text, size);
+  }
+
+  /**
+   * Returns basic metrics about the font
+   */
+  getFontMetrics() : FontMetrics {
+    return this.embedder.getFontMetrics();
   }
 
   /**
