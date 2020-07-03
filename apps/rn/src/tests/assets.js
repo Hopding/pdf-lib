@@ -20,7 +20,7 @@ export const writePdf = async (pdfBytes, chunkSize = 100000): Promise<string> =>
 export const fetchAsset = async (path) => {
   const res = await RNFetchBlob.config({ fileCache: false }).fetch(
     'GET',
-    `http://localhost:8080/assets/${path}`,
+    `http://localhost:8080/assets/${encodeURI(path)}`,
     { 'Cache-Control': 'no-store' },
   );
   return res.base64();

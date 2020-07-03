@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import os from 'os';
+import { sep } from 'path';
 import readline from 'readline';
 
 import test1 from './tests/test1';
@@ -36,8 +37,8 @@ const openPdf = (path: string, _reader?: string) => {
     // execSync(`open -a "Google Chrome" '${path}'`);
     // execSync(`open -a "Firefox" '${path}'`);
   } else if (process.platform === 'win32') {
-    // Opens with the default PDF Reader, has room for improvment
-    execSync(`start '${path}'`);
+    // Opens with the default PDF Reader, has room for improvement
+    execSync(`start ${path}`);
   } else {
     const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
     const msg2 = `(https://github.com/Hopding/pdf-lib/blob/master/apps/node/index.ts#L8-L17)\n`;
@@ -47,7 +48,7 @@ const openPdf = (path: string, _reader?: string) => {
 };
 
 const writePdfToTmp = (pdf: Uint8Array) => {
-  const path = `${os.tmpdir()}/${Date.now()}.pdf`;
+  const path = `${os.tmpdir()}${sep}${Date.now()}.pdf`;
   fs.writeFileSync(path, pdf);
   return path;
 };
@@ -118,6 +119,7 @@ const assets = {
     with_comments: readPdf('with_comments.pdf'),
     with_cropbox: readPdf('with_cropbox.pdf'),
     us_constitution: readPdf('us_constitution.pdf'),
+    simple_pdf_2_example: readPdf('pdf20examples/Simple PDF 2.0 file.pdf'),
   },
 };
 
