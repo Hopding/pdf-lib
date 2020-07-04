@@ -3,7 +3,7 @@ import PDFPage from 'src/api/PDFPage';
 import { PDFAcroCheckBox } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
-import PDFField from 'src/api/form/PDFField';
+import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
 import { PDFName, PDFRef } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
@@ -11,6 +11,8 @@ import {
   normalizeAppearance,
   defaultCheckBoxAppearanceProvider,
 } from 'src/api/form/appearances';
+import { rgb } from '../colors';
+import { degrees } from '../rotations';
 
 /**
  * Represents a check box field of a [[PDFForm]].
@@ -53,34 +55,29 @@ export default class PDFCheckBox extends PDFField {
     return !!onValue && onValue === this.acroField.getValue();
   }
 
-  addToPage(
-    page: PDFPage,
-    options: {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    },
-  ) {
-    const { x, y, width, height } = options;
-
+  addToPage(page: PDFPage, options?: FieldAppearanceOptions) {
     // Create a widget for this check box
-    const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
+    const widget = this.createWidget({
+      x: options?.x ?? 0,
+      y: options?.y ?? 0,
+      width: options?.width ?? 50,
+      height: options?.height ?? 50,
+      color: options?.color ?? rgb(1, 1, 1),
+      borderColor: options?.borderColor,
+      borderWidth: options?.borderWidth ?? 0,
+      rotate: options?.rotate ?? degrees(0),
+    });
     const widgetRef = this.doc.context.register(widget.dict);
 
     // Add widget to this field
     this.acroField.addWidget(widgetRef);
 
-    // Set widget properties
-    widget.setAppearanceState(PDFName.of('Off'));
-    widget.setRectangle({ x, y, width, height });
-
     // Set appearance streams for widget
+    widget.setAppearanceState(PDFName.of('Off'));
     this.updateWidgetAppearance(widget, PDFName.of('Yes'));
 
     // Add widget to the given page
-    const { Annots } = page.node.normalizedEntries();
-    Annots.push(widgetRef);
+    page.node.addAnnot(widgetRef);
   }
 
   updateAppearances(provider?: AppearanceProviderFor<PDFCheckBox>) {

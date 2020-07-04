@@ -168,7 +168,6 @@ import {
     color: rgb(1, 0, 0),
     borderColor: rgb(0, 0.1, 0),
     borderWidth: 5,
-    rotate: degrees(270),
   });
 
   // TODO: Need to use export values when adding these options
@@ -192,12 +191,55 @@ import {
 
   const newCb1 = form.createCheckBox('superbooster 🚀');
   newCb1.addToPage(page2, {
-    x: 5,
+    x: 5 + 1,
     y: page2.getHeight() - (50 + 5),
     width: 50,
     height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 0.1, 0),
+    borderWidth: 2,
+    rotate: degrees(0),
+  });
+  newCb1.addToPage(page2, {
+    x: 5 + 1,
+    y: page2.getHeight() - (50 + 5),
+    width: 50,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 0.1, 0),
+    borderWidth: 2,
+    rotate: degrees(90),
+  });
+  newCb1.addToPage(page2, {
+    x: 5 + 1,
+    y: page2.getHeight() - (50 + 5),
+    width: 50,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 0.1, 0),
+    borderWidth: 2,
+    rotate: degrees(180),
+  });
+  newCb1.addToPage(page2, {
+    x: 5 + 1,
+    y: page2.getHeight() - (50 + 5),
+    width: 50,
+    height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 0.1, 0),
+    borderWidth: 2,
+    rotate: degrees(270),
   });
   newCb1.check();
+  page2.drawRectangle({
+    x: 5 + 1,
+    y: page2.getHeight() - (50 + 5) * 2,
+    width: 50,
+    height: 50,
+    color: rgb(0, 0.1, 0),
+    borderColor: rgb(1, 0, 0),
+    borderWidth: 2,
+  });
 
   const newBtn1 = form.createButton('super duper button!');
   newBtn1.addToPage('Foo Bar', helvetica, page2, {
@@ -309,11 +351,28 @@ import {
 
   const newTf1 = form.createTextField('lah dee dah 1');
   newTf1.setText('Lorem ipsum dolor');
+  console.log('---------------');
   newTf1.addToPage(helvetica, page2, {
-    x: 5,
-    y: page2.getHeight() - (100 + 50 + 5),
+    x: 250,
+    y: page2.getHeight() - (100 + 50 + 5) - 250,
     width: 100,
     height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
+    // borderWidth: 0,
+    // rotate: degrees(90),
+  });
+  console.log('---------------');
+  page2.drawRectangle({
+    x: 305 + 1,
+    y: page2.getHeight() - (100 + 50 + 5) - 250,
+    width: 100,
+    height: 50,
+    color: rgb(0, 1, 0.75),
+    borderColor: rgb(1, 0, 0),
+    borderWidth: 5,
+    rotate: degrees(90),
   });
 
   const newTf2 = form.createTextField('lah dee dah 2');
@@ -325,6 +384,15 @@ import {
     width: 100,
     height: 50,
   });
+  newTf2.addToPage(helvetica, page2, {
+    x: 5,
+    y: page2.getHeight() - (175 + 50 + 5) - 200,
+    width: 100,
+    height: 50,
+    color: rgb(0, 1, 0.75),
+    borderColor: rgb(1, 0, 0),
+    borderWidth: 5,
+  });
 
   const newTf3 = form.createTextField('lah dee dah 3');
   newTf3.setText('Lorem');
@@ -335,6 +403,15 @@ import {
     y: page2.getHeight() - (250 + 50 + 5),
     width: 100,
     height: 50,
+  });
+  newTf3.addToPage(helvetica, page2, {
+    x: 5,
+    y: page2.getHeight() - (250 + 50 + 5) - 200,
+    width: 100,
+    height: 50,
+    color: rgb(0, 1, 0.75),
+    borderColor: rgb(1, 0, 0),
+    borderWidth: 5,
   });
 
   // === Buttons ===

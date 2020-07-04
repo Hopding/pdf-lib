@@ -17,6 +17,17 @@ import { Rotation, toDegrees, rotateRectangle } from '../rotations';
 // TODO: Note in documentation that a single field can actually be rendered
 //       in multiple locations and pages of a single document.
 
+export interface FieldAppearanceOptions {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  color?: Color;
+  borderColor?: Color;
+  borderWidth?: number;
+  rotate?: Rotation;
+}
+
 /**
  * Represents a field of a [[PDFForm]].
  */
@@ -75,7 +86,7 @@ export default class PDFField {
     this.acroField.setFlagTo(AcroFieldFlags.NoExport, !exported);
   }
 
-  protected embedWidget(options: {
+  protected createWidget(options: {
     x: number;
     y: number;
     width: number;
@@ -91,8 +102,8 @@ export default class PDFField {
     const borderWidth = options.borderWidth;
     const degreesAngle = toDegrees(options.rotate);
     const caption = options.caption;
-    const x = options.x - borderWidth / 2;
-    const y = options.y - borderWidth / 2;
+    const x = options.x;
+    const y = options.y;
     const width = options.width + borderWidth;
     const height = options.height + borderWidth;
 
@@ -100,13 +111,6 @@ export default class PDFField {
 
     // Create a widget for this field
     const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
-    // const widgetRef = this.doc.context.register(widget.dict);
-
-    // // Add widget to this field
-    // const apStateValue = this.acroField.addWidgetWithOpt(
-    //   widgetRef,
-    //   PDFHexString.fromText(option),
-    // );
 
     // Set widget properties
     widget.setAppearanceState(PDFName.of('Off'));
@@ -125,13 +129,7 @@ export default class PDFField {
     if (borderColor) ac.setBorderColor(colorToComponents(borderColor));
 
     const bs = widget.getOrCreateBorderStyle();
-    if (borderWidth) bs.setWidth(borderWidth);
-
-    // // Set appearance streams for widget
-    // this.updateWidgetAppearance(widget, apStateValue);
-
-    // // Add widget to the given page
-    // page.node.addAnnot(widgetRef);
+    if (borderWidth !== undefined) bs.setWidth(borderWidth);
 
     return widget;
   }

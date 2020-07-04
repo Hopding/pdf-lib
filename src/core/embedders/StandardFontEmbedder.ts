@@ -67,11 +67,20 @@ class StandardFontEmbedder {
     return totalWidth * scale;
   }
 
-  heightOfFontAtSize(size: number): number {
+  heightOfFontAtSize(
+    size: number,
+    options: { descender?: boolean } = {},
+  ): number {
+    const { descender = true } = options;
+
     const { Ascender, Descender, FontBBox } = this.font;
     const yTop = Ascender || FontBBox[3];
     const yBottom = Descender || FontBBox[1];
-    return ((yTop - yBottom) / 1000) * size;
+
+    let height = yTop - yBottom;
+    if (!descender) height += Descender || 0;
+
+    return (height / 1000) * size;
   }
 
   sizeOfFontAtHeight(height: number): number {

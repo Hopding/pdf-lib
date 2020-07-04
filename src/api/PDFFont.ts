@@ -6,7 +6,7 @@ import {
   PDFRef,
   StandardFontEmbedder,
 } from 'src/core';
-import { assertIs } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
 export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
 
@@ -97,9 +97,13 @@ export default class PDFFont implements Embeddable {
    * @param size The font size to be used for this measurement.
    * @returns The height of this font at the given size.
    */
-  heightAtSize(size: number): number {
+  // TODO: Document `ascender` and `descender` options
+  heightAtSize(size: number, options?: { descender?: boolean }): number {
     assertIs(size, 'size', ['number']);
-    return this.embedder.heightOfFontAtSize(size);
+    assertOrUndefined(options?.descender, 'options.descender', ['boolean']);
+    return this.embedder.heightOfFontAtSize(size, {
+      descender: options?.descender ?? true,
+    });
   }
 
   /**

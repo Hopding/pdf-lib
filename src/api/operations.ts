@@ -494,7 +494,57 @@ export const drawRadioButton = (options: {
   return [...outline, ...dot];
 };
 
-// TODO: Need to push/pop graphics state on all this stuff...
+// // TODO: Need to push/pop graphics state on all this stuff...
+// export const drawButton = (options: {
+//   x: number | PDFNumber;
+//   y: number | PDFNumber;
+//   width: number | PDFNumber;
+//   height: number | PDFNumber;
+//   borderWidth: number | PDFNumber;
+//   color: Color | undefined;
+//   borderColor: Color | undefined;
+//   text: string;
+//   textColor: Color;
+//   font: string | PDFName;
+//   fontSize: number | PDFNumber;
+//   encodeText: (t: string) => PDFHexString;
+//   widthOfText: (t: string) => number;
+//   heightOfText: (t: string) => number;
+// }) => {
+//   const x = asNumber(options.x);
+//   const y = asNumber(options.y);
+//   const width = asNumber(options.width);
+//   const height = asNumber(options.height);
+//   const textWidth = options.widthOfText(options.text);
+//   const textHeight = options.heightOfText(options.text);
+
+//   const background = drawRectangle({
+//     x,
+//     y,
+//     width,
+//     height,
+//     borderWidth: options.borderWidth,
+//     color: options.color,
+//     borderColor: options.borderColor,
+//     rotate: degrees(0),
+//     xSkew: degrees(0),
+//     ySkew: degrees(0),
+//   });
+
+//   const label = drawText(options.encodeText(options.text), {
+//     color: options.textColor,
+//     font: options.font,
+//     size: options.fontSize,
+//     rotate: degrees(0),
+//     xSkew: degrees(0),
+//     ySkew: degrees(0),
+//     x: x + (width / 2 - textWidth / 2),
+//     y: y + (height / 2 - textHeight / 2),
+//   });
+
+//   return [...background, ...label];
+// };
+
 export const drawButton = (options: {
   x: number | PDFNumber;
   y: number | PDFNumber;
@@ -503,20 +553,15 @@ export const drawButton = (options: {
   borderWidth: number | PDFNumber;
   color: Color | undefined;
   borderColor: Color | undefined;
-  text: string;
+  textLines: { encoded: PDFHexString; x: number; y: number }[];
   textColor: Color;
   font: string | PDFName;
   fontSize: number | PDFNumber;
-  encodeText: (t: string) => PDFHexString;
-  widthOfText: (t: string) => number;
-  heightOfText: (t: string) => number;
 }) => {
   const x = asNumber(options.x);
   const y = asNumber(options.y);
   const width = asNumber(options.width);
   const height = asNumber(options.height);
-  const textWidth = options.widthOfText(options.text);
-  const textHeight = options.heightOfText(options.text);
 
   const background = drawRectangle({
     x,
@@ -531,18 +576,16 @@ export const drawButton = (options: {
     ySkew: degrees(0),
   });
 
-  const label = drawText(options.encodeText(options.text), {
+  const lines = drawTextLines(options.textLines, {
     color: options.textColor,
     font: options.font,
     size: options.fontSize,
     rotate: degrees(0),
     xSkew: degrees(0),
     ySkew: degrees(0),
-    x: x + (width / 2 - textWidth / 2),
-    y: y + (height / 2 - textHeight / 2),
   });
 
-  return [...background, ...label];
+  return [...background, ...lines];
 };
 
 export interface DrawTextLinesOptions {
@@ -623,5 +666,5 @@ export const drawTextField = (options: {
     ySkew: degrees(0),
   });
 
-  return [...([] || background), ...lines];
+  return [...background, ...lines];
 };

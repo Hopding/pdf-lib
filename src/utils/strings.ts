@@ -74,6 +74,18 @@ export const charAtIndex = (text: string, index: number): [string, number] => {
   return [text.slice(index, index + length), length];
 };
 
+export const charSplit = (text: string) => {
+  const chars: string[] = [];
+
+  for (let idx = 0, len = text.length; idx < len; ) {
+    const [c, cLen] = charAtIndex(text, idx);
+    chars.push(c);
+    idx += cLen;
+  }
+
+  return chars;
+};
+
 const buildWordBreakRegex = (wordBreaks: string[]) => {
   const newlineCharUnion = escapedNewlineChars.join('|');
 

@@ -1,6 +1,12 @@
 import PDFFont from 'src/api/PDFFont';
 import { PDFHexString } from 'src/core';
-import { cleanText, lineSplit, mergeLines, charAtIndex } from 'src/utils';
+import {
+  cleanText,
+  lineSplit,
+  mergeLines,
+  charAtIndex,
+  charSplit,
+} from 'src/utils';
 
 export interface TextPosition {
   text: string;
@@ -21,7 +27,6 @@ export interface LayoutBounds {
 const MIN_FONT_SIZE = 4;
 const MAX_FONT_SIZE = 500;
 
-// TODO: Compute differently for combed fields
 const computeFontSize = (
   lines: string[],
   font: PDFFont,
@@ -40,6 +45,34 @@ const computeFontSize = (
     const lineHeight = height + height * 0.2;
     const totalHeight = lines.length * lineHeight;
     if (totalHeight > bounds.height) return fontSize - 1;
+
+    fontSize += 1;
+  }
+
+  return fontSize;
+};
+
+const computeCombedFontSize = (
+  line: string,
+  font: PDFFont,
+  bounds: LayoutBounds,
+  cellCount: number,
+) => {
+  const cellWidth = bounds.width / cellCount;
+  const cellHeight = bounds.height;
+
+  let fontSize = MIN_FONT_SIZE;
+
+  const chars = charSplit(line);
+  while (fontSize < MAX_FONT_SIZE) {
+    for (let idx = 0, len = chars.length; idx < len; idx++) {
+      const c = chars[idx];
+      const tooLong = font.widthOfTextAtSize(c, fontSize) > cellWidth * 0.75;
+      if (tooLong) return fontSize - 1;
+    }
+
+    const height = font.heightAtSize(fontSize, { descender: false });
+    if (height > cellHeight) return fontSize - 1;
 
     fontSize += 1;
   }
@@ -75,12 +108,12 @@ export const layoutMultilineText = (
 
   const textLines: TextPosition[] = [];
 
-  let minX = bounds.width;
-  let minY = bounds.height;
-  let maxX = bounds.x;
-  let maxY = bounds.y;
+  let minX = bounds.x;
+  let minY = bounds.y;
+  let maxX = bounds.x + bounds.width;
+  let maxY = bounds.y + bounds.height;
 
-  let y = bounds.height;
+  let y = bounds.y + bounds.height;
   for (let idx = 0, len = lines.length; idx < len; idx++) {
     const line = lines[idx];
 
@@ -142,20 +175,20 @@ export const layoutCombedText = (
   }
 
   if (fontSize === undefined || fontSize === 0) {
-    fontSize = computeFontSize([line], font, bounds);
+    fontSize = computeCombedFontSize(line, font, bounds, cellCount);
   }
 
   const cellWidth = bounds.width / cellCount;
 
-  const height = font.heightAtSize(fontSize);
-  const y = bounds.height / 2 - height / 2;
+  const height = font.heightAtSize(fontSize, { descender: false });
+  const y = bounds.y + (bounds.height / 2 - height / 2);
 
   const cells: TextPosition[] = [];
 
-  let minX = bounds.width;
-  let minY = bounds.height;
-  let maxX = bounds.x;
-  let maxY = bounds.y;
+  let minX = bounds.x;
+  let minY = bounds.y;
+  let maxX = bounds.x + bounds.width;
+  let maxY = bounds.y + bounds.height;
 
   let cellOffset = 0;
   let charOffset = 0;
@@ -165,7 +198,7 @@ export const layoutCombedText = (
     const encoded = font.encodeText(char);
     const width = font.widthOfTextAtSize(char, fontSize);
 
-    const cellCenter = cellWidth * cellOffset + cellWidth / 2;
+    const cellCenter = bounds.x + (cellWidth * cellOffset + cellWidth / 2);
     const x = cellCenter - width / 2;
 
     if (x < minX) minX = x;
@@ -216,7 +249,7 @@ export const layoutSinglelineText = (
 
   const encoded = font.encodeText(line);
   const width = font.widthOfTextAtSize(line, fontSize);
-  const height = font.heightAtSize(fontSize);
+  const height = font.heightAtSize(fontSize, { descender: false });
 
   // prettier-ignore
   const x = (
@@ -226,7 +259,7 @@ export const layoutSinglelineText = (
     : bounds.x
   );
 
-  const y = bounds.height / 2 - height / 2;
+  const y = bounds.y + (bounds.height / 2 - height / 2);
 
   return {
     fontSize,

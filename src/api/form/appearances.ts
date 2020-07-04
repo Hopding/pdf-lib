@@ -1,9 +1,4 @@
-import {
-  PDFOperator,
-  PDFWidgetAnnotation,
-  PDFHexString,
-  PDFName,
-} from 'src/core';
+import { PDFOperator, PDFWidgetAnnotation } from 'src/core';
 import PDFFont from 'src/api/PDFFont';
 import PDFButton from 'src/api/form/PDFButton';
 import PDFCheckBox from 'src/api/form/PDFCheckBox';
@@ -125,10 +120,16 @@ export const defaultCheckBoxAppearanceProvider: AppearanceProviderFor<PDFCheckBo
   const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
 
   const options = {
-    x: 0,
-    y: 0,
-    width,
-    height,
+    // x: 0,
+    // y: 0,
+    // width,
+    // height,
+    //
+    x: 0 + borderWidth / 2,
+    y: 0 + borderWidth / 2,
+    width: width - borderWidth,
+    height: height - borderWidth,
+    //
     thickness: 1.5,
     borderWidth,
     borderColor,
@@ -250,7 +251,6 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
   };
 };
 
-// TODO: This should use `layoutSinglelineText`
 export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> = (
   _radioGroup,
   widget,
@@ -276,7 +276,24 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
   const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
 
-  const fontSize = 15;
+  const bounds = {
+    x: borderWidth,
+    y: borderWidth,
+    width: width - borderWidth * 2,
+    height: height - borderWidth * 2,
+  };
+  const normalLayout = layoutSinglelineText(normalText, {
+    alignment: 'center',
+    // fontSize: defaultFontSize,
+    font,
+    bounds,
+  });
+  const downLayout = layoutSinglelineText(downText, {
+    alignment: 'center',
+    // fontSize: defaultFontSize,
+    font,
+    bounds,
+  });
 
   const options = {
     x: 0 + borderWidth / 2,
@@ -287,10 +304,6 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
     borderColor,
     textColor: borderColor ?? black,
     font: font.name,
-    fontSize,
-    encodeText: (t: string) => font.encodeText(t),
-    widthOfText: (t: string) => font.widthOfTextAtSize(t, fontSize),
-    heightOfText: (_t: string) => font.heightAtSize(fontSize),
   };
 
   return {
@@ -299,7 +312,8 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
       ...drawButton({
         ...options,
         color: normalBackgroundColor,
-        text: normalText,
+        textLines: [normalLayout.line],
+        fontSize: normalLayout.fontSize,
       }),
     ],
     down: [
@@ -307,7 +321,8 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
       ...drawButton({
         ...options,
         color: downBackgroundColor,
-        text: downText,
+        textLines: [downLayout.line],
+        fontSize: downLayout.fontSize,
       }),
     ],
   };
@@ -338,7 +353,7 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
   const bs = widget.getBorderStyle();
   const text = textField.getText() ?? '';
 
-  const borderWidth = bs?.getWidth();
+  const borderWidth = bs?.getWidth() ?? 1;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -353,12 +368,18 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
   let textLines: TextPosition[];
   let fontSize: number;
 
+  const bounds = {
+    x: borderWidth,
+    y: borderWidth,
+    width: width - borderWidth * 2,
+    height: height - borderWidth * 2,
+  };
   if (textField.isMultiline()) {
     const layout = layoutMultilineText(text, {
       alignment: textField.getAlignment(),
       fontSize: defaultFontSize,
       font,
-      bounds: { x: 0, y: 0, width, height },
+      bounds,
     });
     textLines = layout.lines;
     fontSize = layout.fontSize;
@@ -366,7 +387,7 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
     const layout = layoutCombedText(text, {
       fontSize: defaultFontSize,
       font,
-      bounds: { x: 0, y: 0, width, height },
+      bounds,
       cellCount: textField.getMaxLength() ?? 0,
     });
     textLines = layout.cells;
@@ -376,24 +397,19 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
       alignment: textField.getAlignment(),
       fontSize: defaultFontSize,
       font,
-      bounds: { x: 0, y: 0, width, height },
+      bounds,
     });
     textLines = [layout.line];
     fontSize = layout.fontSize;
   }
 
-  (() => [PDFName, PDFHexString])();
-  // textField.acroField.dict.set(
-  //   PDFName.of('DA'),
-  //   PDFHexString.fromText(`/${font.name} ${fontSize} Tf`),
-  // );
   widget.getOrCreateAppearanceCharacteristics().setBackgroundColor([1, 1, 1]);
 
   const options = {
-    x: 0,
-    y: 0,
-    width,
-    height,
+    x: 0 + borderWidth / 2,
+    y: 0 + borderWidth / 2,
+    width: width - borderWidth,
+    height: height - borderWidth,
     borderWidth: borderWidth ?? 0,
     borderColor,
     textColor: borderColor ?? black,
