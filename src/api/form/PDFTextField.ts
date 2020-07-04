@@ -33,7 +33,8 @@ export default class PDFTextField extends PDFField {
     this.acroField = acroText;
   }
 
-  setText(text: string | undefined) {
+  // TODO: Make `font` optional (like it is for `PDFPage` stuff)
+  setText(text: string | undefined, font: PDFFont) {
     const maxLength = this.getMaxLength();
     if (maxLength !== undefined && text && text.length > maxLength) {
       throw new Error(
@@ -47,6 +48,8 @@ export default class PDFTextField extends PDFField {
     } else {
       this.acroField.removeValue();
     }
+
+    this.updateAppearances(font);
   }
 
   getText(): string | undefined {

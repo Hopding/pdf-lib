@@ -79,21 +79,21 @@ export const setStrokingColor = (color: Color) =>
 
 // prettier-ignore
 export const componentsToColor = (comps?: number[], scale = 1) => (
-  comps?.length === 1 ? grayscale(
-    comps[0] * scale,
-  )
-: comps?.length === 3 ? rgb(
-    comps[0] * scale, 
-    comps[1] * scale, 
-    comps[2] * scale,
-  )
-: comps?.length === 4 ? cmyk(
-    comps[0] * scale, 
-    comps[1] * scale, 
-    comps[2] * scale, 
-    comps[3] * scale,
-  )
-: undefined
+    comps?.length === 1 ? grayscale(
+      comps[0] * scale,
+    )
+  : comps?.length === 3 ? rgb(
+      comps[0] * scale, 
+      comps[1] * scale, 
+      comps[2] * scale,
+    )
+  : comps?.length === 4 ? cmyk(
+      comps[0] * scale, 
+      comps[1] * scale, 
+      comps[2] * scale, 
+      comps[3] * scale,
+    )
+  : undefined
 );
 
 // prettier-ignore

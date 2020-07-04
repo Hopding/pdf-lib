@@ -43,8 +43,12 @@ class PDFAcroText extends PDFAcroTerminal {
     return this.MaxLen()?.asNumber();
   }
 
+  setDefaultAppearance(appearance: string) {
+    this.dict.set(PDFName.of('DA'), PDFString.of(appearance));
+  }
+
   getDefaultAppearance(): string | undefined {
-    return this.DA()?.decodeText() ?? '';
+    return this.DA()?.asString() ?? '';
   }
 
   setQuadding(quadding: number) {

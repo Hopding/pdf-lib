@@ -139,7 +139,7 @@ import {
 
     const p = d.addPage([300, 300]);
     const tf = f.createTextField('foo.bar');
-    tf.addToPage(h, p, { color: rgb(1, 1, 0) });
+    tf.addToPage(h, p, { color: rgb(1, 1, 0), borderColor: rgb(1, 0, 1) });
 
     fs.writeFileSync('out2.pdf', await d.save({ useObjectStreams: false }));
     console.log('-------------------------');
@@ -370,7 +370,7 @@ import {
   });
 
   const newTf1 = form.createTextField('lah dee dah 1');
-  newTf1.setText('Lorem ipsum dolor');
+  newTf1.setText('Lorem ipsum dolor', helvetica);
   console.log('---------------');
   newTf1.addToPage(helvetica, page2, {
     x: 250,
@@ -396,7 +396,7 @@ import {
   });
 
   const newTf2 = form.createTextField('lah dee dah 2');
-  newTf2.setText('Lorem ipsum dolor');
+  newTf2.setText('Lorem ipsum dolor', helvetica);
   newTf2.setIsMultiline(true);
   newTf2.addToPage(helvetica, page2, {
     x: 5,
@@ -415,7 +415,7 @@ import {
   });
 
   const newTf3 = form.createTextField('lah dee dah 3');
-  newTf3.setText('Lorem');
+  newTf3.setText('Lorem', helvetica);
   newTf3.setMaxLength(5);
   newTf3.setIsEvenlySpaced(true);
   newTf3.addToPage(helvetica, page2, {
@@ -521,24 +521,24 @@ import {
   // === Text Fields ===
 
   const tf5 = form.getTextField('Text5');
-  tf5.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+  tf5.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor', helvetica);
   console.log('tf5.getText():', tf5.getText());
-  tf5.updateAppearances(helvetica);
+  // tf5.updateAppearances(helvetica);
 
   const tf6 = form.getTextField('Text6');
-  tf6.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+  tf6.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor', helvetica);
   console.log('tf6.getText():', tf6.getText());
-  tf6.updateAppearances(helvetica);
+  // tf6.updateAppearances(helvetica);
 
   const tf7 = form.getTextField('Text7');
-  tf7.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+  tf7.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor', helvetica);
   console.log('tf7.getText():', tf7.getText());
-  tf7.updateAppearances(helvetica);
+  // tf7.updateAppearances(helvetica);
 
   const tfDate = form.getTextField('Date1_af_date');
-  tfDate.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
+  tfDate.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor', helvetica);
   console.log('tfDate.getText():', tfDate.getText());
-  tfDate.updateAppearances(helvetica);
+  // tfDate.updateAppearances(helvetica);
 
   // // === Comb Form ===
 

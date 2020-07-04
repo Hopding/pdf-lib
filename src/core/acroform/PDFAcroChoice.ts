@@ -12,6 +12,10 @@ class PDFAcroChoice extends PDFAcroTerminal {
     return undefined;
   }
 
+  setDefaultAppearance(appearance: string) {
+    this.dict.set(PDFName.of('DA'), PDFString.of(appearance));
+  }
+
   getDefaultAppearance(): string | undefined {
     return this.DA()?.decodeText() ?? '';
   }
