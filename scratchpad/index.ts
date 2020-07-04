@@ -131,6 +131,20 @@ import {
 // })();
 
 (async () => {
+  await (async () => {
+    console.log('---------- DOC ----------');
+    const d = await PDFDocument.create();
+    const f = d.getForm();
+    const h = await d.embedFont(StandardFonts.Helvetica);
+
+    const p = d.addPage([300, 300]);
+    const tf = f.createTextField('foo.bar');
+    tf.addToPage(h, p, { color: rgb(1, 1, 0) });
+
+    fs.writeFileSync('out2.pdf', await d.save({ useObjectStreams: false }));
+    console.log('-------------------------');
+  })();
+
   const pdfDoc = await PDFDocument.load(
     // fs.readFileSync('/Users/user/Desktop/f1040.pdf'),
     // fs.readFileSync('/Users/user/Desktop/copy_f1040.pdf'),
@@ -337,6 +351,9 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 100,
     height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
   });
 
   const newOl1 = form.createOptionList('booky poo!');
@@ -347,6 +364,9 @@ import {
     y: page2.getHeight() - (100 + 50 + 5),
     width: 100,
     height: 50,
+    color: rgb(1, 0, 0),
+    borderColor: rgb(0, 1, 0.75),
+    borderWidth: 5,
   });
 
   const newTf1 = form.createTextField('lah dee dah 1');

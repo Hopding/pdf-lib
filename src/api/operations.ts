@@ -668,3 +668,71 @@ export const drawTextField = (options: {
 
   return [...background, ...lines];
 };
+
+// TODO: Need to push/pop graphics state on all this stuff...
+export const drawOptionList = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  textLines: { encoded: PDFHexString; x: number; y: number; height: number }[];
+  textColor: Color;
+  font: string | PDFName;
+  fontSize: number | PDFNumber;
+  lineHeight: number | PDFNumber;
+  selectedLines: number[];
+  selectedColor: Color;
+}) => {
+  const x = asNumber(options.x);
+  const y = asNumber(options.y);
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+  const lineHeight = asNumber(options.lineHeight);
+  const borderWidth = asNumber(options.borderWidth);
+
+  const background = drawRectangle({
+    x,
+    y,
+    width,
+    height,
+    borderWidth: options.borderWidth,
+    color: options.color,
+    borderColor: options.borderColor,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  const highlights: PDFOperator[] = [];
+  for (let idx = 0, len = options.selectedLines.length; idx < len; idx++) {
+    const line = options.textLines[options.selectedLines[idx]];
+    highlights.push(
+      ...drawRectangle({
+        x: line.x,
+        y: line.y - (lineHeight - line.height) / 2,
+        width: width - borderWidth,
+        height: line.height + (lineHeight - line.height) / 2,
+        borderWidth: 0,
+        color: options.selectedColor,
+        borderColor: undefined,
+        rotate: degrees(0),
+        xSkew: degrees(0),
+        ySkew: degrees(0),
+      }),
+    );
+  }
+
+  const lines = drawTextLines(options.textLines, {
+    color: options.textColor,
+    font: options.font,
+    size: options.fontSize,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  return [...background, ...highlights, ...lines];
+};

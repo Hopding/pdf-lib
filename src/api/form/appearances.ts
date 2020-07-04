@@ -14,10 +14,10 @@ import {
   drawRadioButton,
   drawButton,
   drawTextField,
-  drawRectangle,
+  drawOptionList,
 } from 'src/api/operations';
 import { rgb, componentsToColor } from 'src/api/colors';
-import { reduceRotation, adjustDimsForRotation, degrees } from '../rotations';
+import { reduceRotation, adjustDimsForRotation } from '../rotations';
 import {
   layoutMultilineText,
   layoutCombedText,
@@ -403,8 +403,6 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
     fontSize = layout.fontSize;
   }
 
-  widget.getOrCreateAppearanceCharacteristics().setBackgroundColor([1, 1, 1]);
-
   const options = {
     x: 0 + borderWidth / 2,
     y: 0 + borderWidth / 2,
@@ -434,7 +432,7 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
   const bs = widget.getBorderStyle();
   const text = dropdown.getSelected()[0] ?? '';
 
-  const borderWidth = bs?.getWidth();
+  const borderWidth = bs?.getWidth() ?? 1;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -446,20 +444,24 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
   const borderColor = componentsToColor(ap?.getBorderColor());
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
 
+  const bounds = {
+    x: borderWidth,
+    y: borderWidth,
+    width: width - borderWidth * 2,
+    height: height - borderWidth * 2,
+  };
   const { line, fontSize } = layoutSinglelineText(text, {
     alignment: 'left',
     fontSize: defaultFontSize,
     font,
-    bounds: { x: 0, y: 0, width, height },
+    bounds,
   });
 
-  widget.getOrCreateAppearanceCharacteristics().setBackgroundColor([1, 1, 1]);
-
   const options = {
-    x: 0,
-    y: 0,
-    width,
-    height,
+    x: 0 + borderWidth / 2,
+    y: 0 + borderWidth / 2,
+    width: width - borderWidth,
+    height: height - borderWidth,
     borderWidth: borderWidth ?? 0,
     borderColor,
     textColor: borderColor ?? black,
@@ -483,7 +485,7 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
   const ap = widget.getAppearanceCharacteristics();
   const bs = widget.getBorderStyle();
 
-  const borderWidth = bs?.getWidth();
+  const borderWidth = bs?.getWidth() ?? 1;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -504,51 +506,34 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
     if (idx < len - 1) text += '\n';
   }
 
+  const bounds = {
+    x: borderWidth,
+    y: borderWidth,
+    width: width - borderWidth * 2,
+    height: height - borderWidth * 2,
+  };
   const { lines, fontSize, lineHeight } = layoutMultilineText(text, {
     alignment: 'left',
     fontSize: defaultFontSize,
     font,
-    bounds: { x: 0, y: 0, width, height },
+    bounds,
   });
 
-  widget.getOrCreateAppearanceCharacteristics().setBackgroundColor([1, 1, 1]);
-
-  const selectedLines: TextPosition[] = [];
+  const selectedLines: number[] = [];
   for (let idx = 0, len = lines.length; idx < len; idx++) {
     const line = lines[idx];
-    if (selected.includes(line.text)) selectedLines.push(line);
+    if (selected.includes(line.text)) selectedLines.push(idx);
   }
 
   const blue = rgb(153 / 255, 193 / 255, 218 / 255);
-  const highlights: PDFOperator[] = [];
-  for (let idx = 0, len = lines.length; idx < len; idx++) {
-    const line = lines[idx];
-    if (selected.includes(line.text)) {
-      highlights.push(
-        ...drawRectangle({
-          x: line.x,
-          y: line.y - (lineHeight - line.height) / 2,
-          width,
-          height: line.height + (lineHeight - line.height) / 2,
-          borderWidth: 0,
-          color: blue,
-          borderColor: undefined,
-          rotate: degrees(0),
-          xSkew: degrees(0),
-          ySkew: degrees(0),
-        }),
-      );
-    }
-  }
 
   return [
     ...rotate,
-    ...highlights,
-    ...drawTextField({
-      x: 0,
-      y: 0,
-      width,
-      height,
+    ...drawOptionList({
+      x: 0 + borderWidth / 2,
+      y: 0 + borderWidth / 2,
+      width: width - borderWidth,
+      height: height - borderWidth,
       borderWidth: borderWidth ?? 0,
       borderColor,
       textColor: borderColor ?? black,
@@ -556,6 +541,9 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
       fontSize,
       color: normalBackgroundColor,
       textLines: lines,
+      lineHeight,
+      selectedColor: blue,
+      selectedLines,
     }),
   ];
 };

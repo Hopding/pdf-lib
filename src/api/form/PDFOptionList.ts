@@ -4,7 +4,7 @@ import PDFFont from 'src/api/PDFFont';
 import { PDFAcroListBox, AcroChoiceFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
-import PDFField from 'src/api/form/PDFField';
+import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -12,6 +12,8 @@ import {
   defaultOptionListAppearanceProvider,
 } from 'src/api/form/appearances';
 import { PDFRef, PDFHexString } from 'src/core';
+import { rgb } from '../colors';
+import { degrees } from '../rotations';
 
 /**
  * Represents an option list field of a [[PDFForm]].
@@ -167,35 +169,28 @@ export default class PDFOptionList extends PDFField {
     this.acroField.setFlagTo(AcroChoiceFlags.CommitOnSelChange, enable);
   }
 
-  // TODO: Have default width and height
-  addToPage(
-    font: PDFFont,
-    page: PDFPage,
-    options: {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    },
-  ) {
-    const { x, y, width, height } = options;
-
-    // Create a widget for this button
-    const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
+  addToPage(font: PDFFont, page: PDFPage, options?: FieldAppearanceOptions) {
+    // Create a widget for this option list
+    const widget = this.createWidget({
+      x: options?.x ?? 0,
+      y: options?.y ?? 0,
+      width: options?.width ?? 100,
+      height: options?.height ?? 50,
+      color: options?.color ?? rgb(1, 1, 1),
+      borderColor: options?.borderColor ?? rgb(0, 0, 0),
+      borderWidth: options?.borderWidth ?? 0,
+      rotate: options?.rotate ?? degrees(0),
+    });
     const widgetRef = this.doc.context.register(widget.dict);
 
     // Add widget to this field
     this.acroField.addWidget(widgetRef);
 
-    // Set widget properties
-    widget.setRectangle({ x, y, width, height });
-
     // Set appearance streams for widget
     this.updateWidgetAppearance(widget, font);
 
     // Add widget to the given page
-    const { Annots } = page.node.normalizedEntries();
-    Annots.push(widgetRef);
+    page.node.addAnnot(widgetRef);
   }
 
   updateAppearances(
