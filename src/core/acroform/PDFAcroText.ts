@@ -23,12 +23,6 @@ class PDFAcroText extends PDFAcroTerminal {
     return undefined;
   }
 
-  DA(): PDFString | PDFHexString | undefined {
-    const da = this.dict.lookup(PDFName.of('DA'));
-    if (da instanceof PDFString || da instanceof PDFHexString) return da;
-    return undefined;
-  }
-
   Q(): PDFNumber | undefined {
     const q = this.dict.lookup(PDFName.of('Q'));
     if (q instanceof PDFNumber) return q;
@@ -41,14 +35,6 @@ class PDFAcroText extends PDFAcroTerminal {
 
   getMaxLength(): number | undefined {
     return this.MaxLen()?.asNumber();
-  }
-
-  setDefaultAppearance(appearance: string) {
-    this.dict.set(PDFName.of('DA'), PDFString.of(appearance));
-  }
-
-  getDefaultAppearance(): string | undefined {
-    return this.DA()?.asString() ?? '';
   }
 
   setQuadding(quadding: number) {

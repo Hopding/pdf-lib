@@ -10,7 +10,7 @@ import {
 } from 'src/core';
 import { PDFFont } from '..';
 import { AppearanceMapping } from './appearances';
-import { Color, colorToComponents } from '../colors';
+import { Color, colorToComponents, setFillingColor } from '../colors';
 import { Rotation, toDegrees, rotateRectangle } from '../rotations';
 
 // TODO: Should fields always have refs? What about the PDFForm?
@@ -22,7 +22,8 @@ export interface FieldAppearanceOptions {
   y?: number;
   width?: number;
   height?: number;
-  color?: Color;
+  textColor?: Color;
+  backgroundColor?: Color;
   borderColor?: Color;
   borderWidth?: number;
   rotate?: Rotation;
@@ -91,13 +92,15 @@ export default class PDFField {
     y: number;
     width: number;
     height: number;
-    color: Color;
+    textColor?: Color;
+    backgroundColor: Color;
     borderColor?: Color;
     borderWidth: number;
     rotate: Rotation;
     caption?: string;
   }): PDFWidgetAnnotation {
-    const color = options.color;
+    const textColor = options.textColor;
+    const backgroundColor = options.backgroundColor;
     const borderColor = options.borderColor;
     const borderWidth = options.borderWidth;
     const degreesAngle = toDegrees(options.rotate);
@@ -113,8 +116,6 @@ export default class PDFField {
     const widget = PDFWidgetAnnotation.create(this.doc.context, this.ref);
 
     // Set widget properties
-    widget.setAppearanceState(PDFName.of('Off'));
-
     const rect = rotateRectangle(
       { x, y, width, height },
       borderWidth,
@@ -123,13 +124,20 @@ export default class PDFField {
     widget.setRectangle(rect);
 
     const ac = widget.getOrCreateAppearanceCharacteristics();
-    ac.setBackgroundColor(colorToComponents(color));
+    ac.setBackgroundColor(colorToComponents(backgroundColor));
     ac.setRotation(degreesAngle);
     if (caption) ac.setCaptions({ normal: caption });
     if (borderColor) ac.setBorderColor(colorToComponents(borderColor));
 
     const bs = widget.getOrCreateBorderStyle();
     if (borderWidth !== undefined) bs.setWidth(borderWidth);
+
+    // Set acrofield properties
+    if (textColor) {
+      const da = this.acroField.getDefaultAppearance() ?? '';
+      const newDa = da + '\n' + setFillingColor(textColor).toString();
+      this.acroField.setDefaultAppearance(newDa);
+    }
 
     return widget;
   }

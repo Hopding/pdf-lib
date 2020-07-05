@@ -5,6 +5,8 @@ import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import AppearanceCharacteristics from 'src/core/annotation/AppearanceCharacteristics';
 import BorderStyle from 'src/core/annotation/BorderStyle';
+import PDFString from '../objects/PDFString';
+import PDFHexString from '../objects/PDFHexString';
 
 class PDFWidgetAnnotation extends PDFAnnotation {
   static fromDict = (dict: PDFDict): PDFWidgetAnnotation =>
@@ -30,6 +32,20 @@ class PDFWidgetAnnotation extends PDFAnnotation {
     const BS = this.dict.lookup(PDFName.of('BS'));
     if (BS instanceof PDFDict) return BS;
     return undefined;
+  }
+
+  DA(): PDFString | PDFHexString | undefined {
+    const da = this.dict.lookup(PDFName.of('DA'));
+    if (da instanceof PDFString || da instanceof PDFHexString) return da;
+    return undefined;
+  }
+
+  setDefaultAppearance(appearance: string) {
+    this.dict.set(PDFName.of('DA'), PDFString.of(appearance));
+  }
+
+  getDefaultAppearance(): string | undefined {
+    return this.DA()?.asString() ?? '';
   }
 
   getAppearanceCharacteristics(): AppearanceCharacteristics | undefined {

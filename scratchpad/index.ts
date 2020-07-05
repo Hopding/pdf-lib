@@ -139,7 +139,10 @@ import {
 
     const p = d.addPage([300, 300]);
     const tf = f.createTextField('foo.bar');
-    tf.addToPage(h, p, { color: rgb(1, 1, 0), borderColor: rgb(1, 0, 1) });
+    tf.addToPage(h, p, {
+      backgroundColor: rgb(1, 1, 0),
+      borderColor: rgb(1, 0, 1),
+    });
 
     fs.writeFileSync('out2.pdf', await d.save({ useObjectStreams: false }));
     console.log('-------------------------');
@@ -179,7 +182,7 @@ import {
     y: 0,
     width: 50,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 0.1, 0),
     borderWidth: 5,
   });
@@ -209,7 +212,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 50,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 0.1, 0),
     borderWidth: 2,
     rotate: degrees(0),
@@ -219,7 +222,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 50,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 0.1, 0),
     borderWidth: 2,
     rotate: degrees(90),
@@ -229,7 +232,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 50,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 0.1, 0),
     borderWidth: 2,
     rotate: degrees(180),
@@ -239,7 +242,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 50,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 0.1, 0),
     borderWidth: 2,
     rotate: degrees(270),
@@ -261,7 +264,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 100,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 1, 0.75),
     borderWidth: 5,
     // borderWidth: 1,
@@ -272,7 +275,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 100,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 1, 0.75),
     borderWidth: 5,
     // borderWidth: 1,
@@ -283,7 +286,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 100,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 1, 0.75),
     borderWidth: 5,
     // borderWidth: 1,
@@ -294,7 +297,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 100,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 1, 0.75),
     borderWidth: 5,
     // borderWidth: 1,
@@ -351,7 +354,7 @@ import {
     y: page2.getHeight() - (50 + 5),
     width: 100,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 1, 0.75),
     borderWidth: 5,
   });
@@ -364,7 +367,7 @@ import {
     y: page2.getHeight() - (100 + 50 + 5),
     width: 100,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 1, 0.75),
     borderWidth: 5,
   });
@@ -377,7 +380,7 @@ import {
     y: page2.getHeight() - (100 + 50 + 5) - 250,
     width: 100,
     height: 50,
-    color: rgb(1, 0, 0),
+    backgroundColor: rgb(1, 0, 0),
     borderColor: rgb(0, 1, 0.75),
     borderWidth: 5,
     // borderWidth: 0,
@@ -409,7 +412,7 @@ import {
     y: page2.getHeight() - (175 + 50 + 5) - 200,
     width: 100,
     height: 50,
-    color: rgb(0, 1, 0.75),
+    backgroundColor: rgb(0, 1, 0.75),
     borderColor: rgb(1, 0, 0),
     borderWidth: 5,
   });
@@ -429,7 +432,7 @@ import {
     y: page2.getHeight() - (250 + 50 + 5) - 200,
     width: 100,
     height: 50,
-    color: rgb(0, 1, 0.75),
+    backgroundColor: rgb(0, 1, 0.75),
     borderColor: rgb(1, 0, 0),
     borderWidth: 5,
   });

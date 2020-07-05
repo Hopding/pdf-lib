@@ -83,7 +83,8 @@ export default class PDFRadioGroup extends PDFField {
       y: options?.y ?? 0,
       width: options?.width ?? 50,
       height: options?.height ?? 50,
-      color: options?.color ?? rgb(1, 1, 1),
+      textColor: options?.textColor ?? rgb(0, 0, 0),
+      backgroundColor: options?.backgroundColor ?? rgb(1, 1, 1),
       borderWidth: options?.borderWidth ?? 0,
       rotate: options?.rotate ?? degrees(0),
     });

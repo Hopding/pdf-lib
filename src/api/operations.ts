@@ -28,6 +28,8 @@ import {
   rotateDegrees,
   setGraphicsState,
   setDashPattern,
+  beginMarkedContent,
+  endMarkedContent,
 } from 'src/api/operators';
 import { Rotation, toRadians, degrees } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
@@ -601,6 +603,13 @@ export const drawTextLines = (
   lines: { encoded: PDFHexString; x: number; y: number }[],
   options: DrawTextLinesOptions,
 ): PDFOperator[] => {
+  // /Tx BMC
+  //   q
+  //     BT
+  //       ...
+  //     ET
+  //   Q
+  // EMC
   const operators = [
     beginText(),
     setFillingColor(options.color),
@@ -666,7 +675,15 @@ export const drawTextField = (options: {
     ySkew: degrees(0),
   });
 
-  return [...background, ...lines];
+  const markedContent = [
+    beginMarkedContent('Tx'),
+    pushGraphicsState(),
+    ...lines,
+    popGraphicsState(),
+    endMarkedContent(),
+  ];
+
+  return [...background, ...markedContent];
 };
 
 // TODO: Need to push/pop graphics state on all this stuff...
@@ -734,5 +751,13 @@ export const drawOptionList = (options: {
     ySkew: degrees(0),
   });
 
-  return [...background, ...highlights, ...lines];
+  const markedContent = [
+    beginMarkedContent('Tx'),
+    pushGraphicsState(),
+    ...lines,
+    popGraphicsState(),
+    endMarkedContent(),
+  ];
+
+  return [...background, ...highlights, ...markedContent];
 };

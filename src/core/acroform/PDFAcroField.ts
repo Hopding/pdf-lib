@@ -36,6 +36,12 @@ class PDFAcroField {
     return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
   }
 
+  DA(): PDFString | PDFHexString | undefined {
+    const da = this.dict.lookup(PDFName.of('DA'));
+    if (da instanceof PDFString || da instanceof PDFHexString) return da;
+    return undefined;
+  }
+
   getParent(): PDFAcroField | undefined {
     const parent = this.Parent();
     if (!parent) return undefined;
@@ -61,6 +67,14 @@ class PDFAcroField {
   setPartialName(partialName: string | undefined) {
     if (!partialName) this.dict.delete(PDFName.of('T'));
     else this.dict.set(PDFName.of('T'), PDFHexString.fromText(partialName));
+  }
+
+  setDefaultAppearance(appearance: string) {
+    this.dict.set(PDFName.of('DA'), PDFString.of(appearance));
+  }
+
+  getDefaultAppearance(): string | undefined {
+    return this.DA()?.asString() ?? '';
   }
 
   getFlags(): number {
