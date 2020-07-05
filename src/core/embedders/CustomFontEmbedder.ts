@@ -82,6 +82,20 @@ class CustomFontEmbedder {
     return (1000 * height) / (yTop - yBottom);
   }
 
+  getFontMetrics() {
+    return {
+      ascent: this.font.ascent,
+      descent: this.font.descent,
+      lineGap: this.font.lineGap,
+      bbox: {
+        width: this.font.bbox.width,
+        height: this.font.bbox.height,
+        x: this.font.bbox.minX,
+        y: this.font.bbox.minY,
+      },
+    };
+  }
+
   embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
     this.baseFontName = addRandomSuffix(this.fontName);
     return this.embedFontDict(context, ref);

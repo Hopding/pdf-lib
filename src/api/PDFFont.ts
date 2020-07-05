@@ -8,6 +8,17 @@ import {
 } from 'src/core';
 import { assertIs } from 'src/utils';
 
+export interface FontMetrics {
+  /** The font's ascender */
+  ascent: number | void;
+  /** The font's descender */
+  descent: number | void;
+  /** The font's line gap; for most fonts this is 0 */
+  lineGap: number;
+  /** Font bounding box */
+  bbox: { x: number; y: number; width: number; height: number };
+}
+
 export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
 
 /**
@@ -87,6 +98,13 @@ export default class PDFFont implements Embeddable {
     assertIs(text, 'text', ['string']);
     assertIs(size, 'size', ['number']);
     return this.embedder.widthOfTextAtSize(text, size);
+  }
+
+  /**
+   * Returns basic metrics about the font
+   */
+  getFontMetrics() : FontMetrics {
+    return this.embedder.getFontMetrics();
   }
 
   /**

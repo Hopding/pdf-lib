@@ -27,8 +27,10 @@ import {
   setLineCap,
   setGraphicsState,
   setDashPattern,
+  setLineJoin,
+  LineJoinStyle,
 } from 'src/api/operators';
-import { Rotation, toRadians } from 'src/api/rotations';
+import { Rotation, toRadians, NoRotation } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
 
@@ -181,12 +183,19 @@ export const drawRectangle = (options: {
   rotate: Rotation;
   xSkew: Rotation;
   ySkew: Rotation;
+  borderRadius?: number | PDFNumber;
   borderLineCap?: LineCapStyle;
   borderDashArray?: (number | PDFNumber)[];
   borderDashPhase?: number | PDFNumber;
   graphicsState?: string | PDFName;
-}) =>
-  [
+}) => {
+  const x = asNumber(options.x);
+  const y = asNumber(options.y);
+  const r = asNumber(options.borderRadius ?? 0);
+  const w = asNumber(options.width);
+  const h = asNumber(options.height);
+  const c = r * (1.0 - KAPPA);
+  return [
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
     options.color && setFillingColor(options.color),
@@ -194,23 +203,86 @@ export const drawRectangle = (options: {
     setLineWidth(options.borderWidth),
     options.borderLineCap && setLineCap(options.borderLineCap),
     setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
-    translate(options.x, options.y),
+    translate(x, y),
     rotateRadians(toRadians(options.rotate)),
     skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
-    moveTo(0, 0),
-    lineTo(0, options.height),
-    lineTo(options.width, options.height),
-    lineTo(options.width, 0),
+    moveTo(r, 0),
+    lineTo(w - r, 0),
+    r > 0 ? appendBezierCurve(w - c, 0, w, c, w, r) : undefined,
+    lineTo(w, h - r),
+    r > 0 ? appendBezierCurve(w, h - c, w - c, h, w - r, h) : undefined,
+    lineTo(r, h),
+    r > 0 ? appendBezierCurve(c, h, 0, h - c, 0, h - r) : undefined,
+    r > 0 ? lineTo(0, r) : undefined,
+    r > 0 ? appendBezierCurve(0, c, c, 0, r, 0) : undefined,
     closePath(),
-
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()
-  : options.color                      ? fill()
-  : options.borderColor                ? stroke()
-  : closePath(),
+    : options.color                      ? fill()
+    : options.borderColor                ? stroke()
+    : undefined,
 
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
+};
+
+export const drawLines = (points: { x: number | PDFNumber; y: number | PDFNumber }[], options: {
+  borderWidth?: number | PDFNumber;
+  color?: Color;
+  borderColor?: Color;
+  rotate?: Rotation;
+  xSkew?: Rotation;
+  ySkew?: Rotation;
+  closePath?: boolean;
+  lineJoin?: LineJoinStyle;
+  lineCap?: LineCapStyle;
+  dashArray?: (number | PDFNumber)[];
+  dashPhase?: number | PDFNumber;
+  graphicsState?: string | PDFName;
+}) =>
+  [
+    pushGraphicsState(),
+    options.graphicsState && setGraphicsState(options.graphicsState),
+    options.color && setFillingColor(options.color),
+    options.borderColor && setStrokingColor(options.borderColor),
+    options.borderWidth && setLineWidth(options.borderWidth),
+    options.lineCap && setLineCap(options.lineCap),
+    options.dashArray && setDashPattern(options.dashArray ?? [], options.dashPhase ?? 0),
+    options.lineJoin && setLineJoin(options.lineJoin),
+    points?.[0] && translate(points[0].x, points[0].y),
+    options.rotate && rotateRadians(toRadians(options.rotate)),
+    (options.xSkew || options.ySkew) && skewRadians(
+      toRadians(options.xSkew || NoRotation), toRadians(options.ySkew || NoRotation)
+    ),
+    ...((points ?? []).slice(1).map(p =>
+          lineTo(
+            asNumber(p.x) - asNumber(points[0].x),
+            asNumber(p.y) - asNumber(points[0].y),
+    ))),
+    // Close only if instructed to
+    options.closePath && closePath(),
+    // prettier-ignore
+    options.color && options.borderWidth ? fillAndStroke()
+    : options.color                      ? fill()
+    : options.borderColor                ? stroke()
+    : undefined,
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
+
+export const drawPolygon = (points: { x: number | PDFNumber; y: number | PDFNumber }[], options: {
+  borderWidth?: number | PDFNumber;
+  color?: Color;
+  borderColor?: Color;
+  rotate?: Rotation;
+  xSkew?: Rotation;
+  ySkew?: Rotation;
+  lineJoin?: LineJoinStyle;
+  lineCap?: LineCapStyle;
+  dashArray?: (number | PDFNumber)[];
+  dashPhase?: number | PDFNumber;
+  graphicsState?: string | PDFName;
+}) => drawLines(points, {closePath: true, ...options});
+
 
 const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
 
