@@ -30,7 +30,7 @@ import {
   setLineJoin,
   LineJoinStyle,
 } from 'src/api/operators';
-import { Rotation, toRadians } from 'src/api/rotations';
+import { Rotation, toRadians, NoRotation } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
 
@@ -226,15 +226,14 @@ export const drawRectangle = (options: {
   ].filter(Boolean) as PDFOperator[];
 };
 
-export const drawLines = (options: {
-  points: { x: number | PDFNumber; y: number | PDFNumber }[],
-  borderWidth: number | PDFNumber;
-  color: Color | undefined;
-  borderColor: Color | undefined;
-  rotate: Rotation;
-  xSkew: Rotation;
-  ySkew: Rotation;
-  closePath: boolean | undefined;
+export const drawLines = (points: { x: number | PDFNumber; y: number | PDFNumber }[], options: {
+  borderWidth?: number | PDFNumber;
+  color?: Color;
+  borderColor?: Color;
+  rotate?: Rotation;
+  xSkew?: Rotation;
+  ySkew?: Rotation;
+  closePath?: boolean;
   lineJoin?: LineJoinStyle;
   lineCap?: LineCapStyle;
   dashArray?: (number | PDFNumber)[];
@@ -246,20 +245,22 @@ export const drawLines = (options: {
     options.graphicsState && setGraphicsState(options.graphicsState),
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
-    setLineWidth(options.borderWidth),
+    options.borderWidth && setLineWidth(options.borderWidth),
     options.lineCap && setLineCap(options.lineCap),
-    setDashPattern(options.dashArray ?? [], options.dashPhase ?? 0),
+    options.dashArray && setDashPattern(options.dashArray ?? [], options.dashPhase ?? 0),
     options.lineJoin && setLineJoin(options.lineJoin),
-    translate(options.points[0]?.x ?? 0, options.points[0]?.y ?? 0),
-    rotateRadians(toRadians(options.rotate)),
-    skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
-    ...(options.points.slice(1).map(p =>
+    points?.[0] && translate(points[0].x, points[0].y),
+    options.rotate && rotateRadians(toRadians(options.rotate)),
+    (options.xSkew || options.ySkew) && skewRadians(
+      toRadians(options.xSkew || NoRotation), toRadians(options.ySkew || NoRotation)
+    ),
+    ...((points ?? []).slice(1).map(p =>
           lineTo(
-            asNumber(p.x) - asNumber(options.points[0].x),
-            asNumber(p.y) - asNumber(options.points[0].y),
+            asNumber(p.x) - asNumber(points[0].x),
+            asNumber(p.y) - asNumber(points[0].y),
     ))),
     // Close only if instructed to
-    ...(options.closePath ? [closePath()] : []),
+    options.closePath && closePath(),
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()
     : options.color                      ? fill()
@@ -267,6 +268,20 @@ export const drawLines = (options: {
     : undefined,
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
+
+export const drawPolygon = (points: { x: number | PDFNumber; y: number | PDFNumber }[], options: {
+  borderWidth?: number | PDFNumber;
+  color?: Color;
+  borderColor?: Color;
+  rotate?: Rotation;
+  xSkew?: Rotation;
+  ySkew?: Rotation;
+  lineJoin?: LineJoinStyle;
+  lineCap?: LineCapStyle;
+  dashArray?: (number | PDFNumber)[];
+  dashPhase?: number | PDFNumber;
+  graphicsState?: string | PDFName;
+}) => drawLines(points, {closePath: true, ...options});
 
 
 const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
