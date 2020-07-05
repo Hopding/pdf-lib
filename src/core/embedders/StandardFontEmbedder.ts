@@ -90,10 +90,10 @@ class StandardFontEmbedder {
       // It would be nice to figure out how to get this value
       lineGap: 0,
       bbox: {
-        minX: bbox[0], minY: bbox[1], maxX: bbox[2], maxY: bbox[3],
+        x: bbox[0], y: bbox[1],
         width: Math.abs(bbox[2] - bbox[0]),
         height: Math.abs(bbox[3] - bbox[1]),
-      } as BoundingBox
+      },
     };
   }
 

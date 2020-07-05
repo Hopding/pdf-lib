@@ -87,7 +87,12 @@ class CustomFontEmbedder {
       ascent: this.font.ascent,
       descent: this.font.descent,
       lineGap: this.font.lineGap,
-      bbox: this.font.bbox,
+      bbox: {
+        width: this.font.bbox.width,
+        height: this.font.bbox.height,
+        x: this.font.bbox.minX,
+        y: this.font.bbox.minY,
+      },
     };
   }
 

@@ -7,7 +7,6 @@ import {
   StandardFontEmbedder,
 } from 'src/core';
 import { assertIs } from 'src/utils';
-import { BoundingBox } from 'src/types/fontkit';
 
 export interface FontMetrics {
   /** The font's ascender */
@@ -17,7 +16,7 @@ export interface FontMetrics {
   /** The font's line gap if known; only works on custom fonts currently */
   lineGap: number;
   /** Font bounding box */
-  bbox: BoundingBox,
+  bbox: { x: number; y: number; width: number; height: number };
 }
 
 export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
