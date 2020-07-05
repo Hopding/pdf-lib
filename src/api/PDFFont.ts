@@ -13,7 +13,7 @@ export interface FontMetrics {
   ascent: number | void;
   /** The font's descender */
   descent: number | void;
-  /** The font's line gap if known; only works on custom fonts currently */
+  /** The font's line gap; for most fonts this is 0 */
   lineGap: number;
   /** Font bounding box */
   bbox: { x: number; y: number; width: number; height: number };
