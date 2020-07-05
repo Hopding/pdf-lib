@@ -189,10 +189,11 @@ export const drawRectangle = (options: {
   borderDashPhase?: number | PDFNumber;
   graphicsState?: string | PDFName;
 }) => {
-  const {x: xN, y: yN, borderRadius: rN, width: wN, height: hN} = options;
-  const [x, y, r, w, h] = [
-    asNumber(xN), asNumber(yN), asNumber(rN || 0), asNumber(wN), asNumber(hN),
-  ];
+  const x = asNumber(options.x);
+  const y = asNumber(options.y);
+  const r = asNumber(options.borderRadius ?? 0);
+  const w = asNumber(options.width);
+  const h = asNumber(options.height);
   const c = r * (1.0 - KAPPA);
   return [
     pushGraphicsState(),
@@ -248,8 +249,8 @@ export const drawLines = (options: {
     setLineWidth(options.borderWidth),
     options.lineCap && setLineCap(options.lineCap),
     setDashPattern(options.dashArray ?? [], options.dashPhase ?? 0),
-    setLineJoin(options.lineJoin || LineJoinStyle.Miter),
-    translate(options.points[0].x, options.points[0].y),
+    options.lineJoin && setLineJoin(options.lineJoin),
+    translate(options.points[0]?.x ?? 0, options.points[0]?.y ?? 0),
     rotateRadians(toRadians(options.rotate)),
     skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
     ...(options.points.slice(1).map(p =>
