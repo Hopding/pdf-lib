@@ -208,19 +208,19 @@ export const drawRectangle = (options: {
     skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
     moveTo(r, 0),
     lineTo(w - r, 0),
-    r > 0 ? appendBezierCurve(w - c, 0, w, c, w, r) : null,
+    r > 0 ? appendBezierCurve(w - c, 0, w, c, w, r) : undefined,
     lineTo(w, h - r),
-    r > 0 ? appendBezierCurve(w, h - c, w - c, h, w - r, h) : null,
+    r > 0 ? appendBezierCurve(w, h - c, w - c, h, w - r, h) : undefined,
     lineTo(r, h),
-    r > 0 ? appendBezierCurve(c, h, 0, h - c, 0, h - r) : null,
-    r > 0 ? lineTo(0, r) : null,
-    r > 0 ? appendBezierCurve(0, c, c, 0, r, 0) : null,
+    r > 0 ? appendBezierCurve(c, h, 0, h - c, 0, h - r) : undefined,
+    r > 0 ? lineTo(0, r) : undefined,
+    r > 0 ? appendBezierCurve(0, c, c, 0, r, 0) : undefined,
     closePath(),
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()
     : options.color                      ? fill()
     : options.borderColor                ? stroke()
-    : null,
+    : undefined,
 
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
@@ -264,7 +264,7 @@ export const drawLines = (options: {
     options.color && options.borderWidth ? fillAndStroke()
     : options.color                      ? fill()
     : options.borderColor                ? stroke()
-    : null,
+    : undefined,
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
 
