@@ -6,6 +6,7 @@ import {
   drawPage,
   drawRectangle,
   drawSvgPath,
+  drawEllipse,
 } from 'src/api/operations';
 import {
   popGraphicsState,
@@ -1377,62 +1378,34 @@ export default class PDFPage {
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
-    assertRangeOrUndefined(
-      options.borderOpacity,
-      'options.borderOpacity',
-      0,
-      1,
-    );
-    assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
-    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [
-      Array,
-    ]);
-    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', [
-      'number',
-    ]);
-    assertIsOneOfOrUndefined(
-      options.borderLineCap,
-      'options.borderLineCap',
-      LineCapStyle,
-    );
-    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
-
-    const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
-
-    const centerX = asNumber(options.x ?? this.x);
-    const centerY = asNumber(options.y ?? this.y);
-    const xScale = asNumber(options.xScale ?? 100);
-    const yScale = asNumber(options.yScale ?? 50);
-
-    const x = -xScale;
-    const y = -yScale;
-
-    const ox = xScale * KAPPA;
-    const oy = yScale * KAPPA;
-    const xe = x + xScale * 2;
-    const ye = y + yScale * 2;
-    const xm = x + xScale;
-    const ym = y + yScale;
-
-    const path = `M${x},${ym}
-                  C${x},${ym - oy} ${xm - ox},${y} ${xm},${y}
-                  C${xm + ox},${y} ${xe},${ym - oy} ${xe},${ym}
-                  C${xe},${ym + oy} ${xm+ox},${ye} ${xm},${ye}
-                  C${xm - ox},${ye} ${x},${ym + oy} ${x},${ym}z`;
-
-    this.drawSvgPath(path, {
-      x: centerX,
-      y: centerY,
-      rotate: options.rotate,
-      color: options.color,
+    const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
-      borderColor: options.borderColor,
       borderOpacity: options.borderOpacity,
-      borderWidth: options.borderWidth,
-      borderDashArray: options.borderDashArray,
-      borderDashPhase: options.borderDashPhase,
-      borderLineCap: options.borderLineCap,
+      blendMode: options.blendMode,
     });
+
+    if (!('color' in options) && !('borderColor' in options))
+    {
+      options.color = rgb(0, 0, 0);
+    }
+
+    const contentStream = this.getContentStream();
+    contentStream.push(
+      ...drawEllipse({
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
+        xScale: options.xScale ?? 100,
+        yScale: options.yScale ?? 100,
+        rotate: options.rotate ?? degrees(0),
+        color: options.color ?? undefined,
+        borderColor: options.borderColor ?? undefined,
+        borderWidth: options.borderWidth ?? 0,
+        borderDashArray: options.borderDashArray ?? undefined,
+        borderDashPhase: options.borderDashPhase ?? undefined,
+        borderLineCap: options.borderLineCap ?? undefined,
+        graphicsState: graphicsStateKey,
+      }),
+    );
   }
 
   /**
