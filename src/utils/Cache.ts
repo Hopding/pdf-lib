@@ -10,7 +10,7 @@ class Cache<T> {
   }
 
   access(): T {
-    if (!this.value) this.value = this.populate();
+    if (this.value === undefined) this.value = this.populate();
     return this.value;
   }
 
