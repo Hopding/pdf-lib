@@ -17,7 +17,7 @@ class PngEmbedder {
   readonly height: number;
   readonly width: number;
   readonly colorSpace: 'DeviceRGB';
-  readonly resolution: number;
+  private _resolution: number;
 
   private readonly image: PNG;
 
@@ -27,7 +27,12 @@ class PngEmbedder {
     this.width = png.width;
     this.height = png.height;
     this.colorSpace = 'DeviceRGB';
-    this.resolution = png.resolution;
+    this._resolution = png.resolution;
+  }
+
+  // defined as async for consistency with jpeg method
+  async resolution() : Promise<number> {
+    return Promise.resolve(this._resolution);
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {

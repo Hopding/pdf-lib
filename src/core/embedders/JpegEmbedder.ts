@@ -68,7 +68,7 @@ class JpegEmbedder {
       width,
       height,
       colorSpace,
-      getJpgResolution(dataView),
+      undefined  // resolution is undefined when constructing new,
     );
   }
 
@@ -76,7 +76,7 @@ class JpegEmbedder {
   readonly height: number;
   readonly width: number;
   readonly colorSpace: ColorSpace;
-  readonly resolution: number;  // in pixels per inch
+  private  _resolution: number | undefined;  // in pixels per inch
 
   private readonly imageData: Uint8Array;
 
@@ -86,14 +86,24 @@ class JpegEmbedder {
     width: number,
     height: number,
     colorSpace: ColorSpace,
-    resolution: number,
+    resolution: number | undefined,
   ) {
     this.imageData = imageData;
     this.bitsPerComponent = bitsPerComponent;
     this.width = width;
     this.height = height;
     this.colorSpace = colorSpace;
-    this.resolution = resolution;
+    this._resolution = resolution;
+  }
+
+  async resolution() : Promise<number>{
+    if (this._resolution === undefined){
+      let r : number = await getJpgResolution(new DataView(this.imageData.buffer));
+      this._resolution = r;
+      return r;
+    }else{
+      return this._resolution;
+    }
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {

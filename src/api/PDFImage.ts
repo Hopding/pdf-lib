@@ -36,7 +36,7 @@ export default class PDFImage implements Embeddable {
   readonly height: number;
 
   /** The resolution of the image in pixels per inch */
-  readonly resolution: number;
+  private _resolution: number | undefined;
 
   private alreadyEmbedded = false;
   private readonly embedder: ImageEmbedder;
@@ -53,11 +53,12 @@ export default class PDFImage implements Embeddable {
     this.doc = doc;
     this.width = embedder.width;
     this.height = embedder.height;
-    this.resolution = embedder.resolution;
+    this._resolution = undefined; // resolution TBD
     
     this.embedder = embedder;
   }
 
+  
   /**
    * Compute the width and height of this image after being scaled by the
    * given `factor`. For example:
@@ -103,6 +104,16 @@ export default class PDFImage implements Embeddable {
     if (!this.alreadyEmbedded) {
       await this.embedder.embedIntoContext(this.doc.context, this.ref);
       this.alreadyEmbedded = true;
+    }
+  }
+
+  async resolution() : Promise<number> {
+    if (this._resolution === undefined){
+      let r = await this.embedder.resolution();
+      this._resolution = r;
+      return r;
+    }else{
+      return this._resolution;
     }
   }
 }

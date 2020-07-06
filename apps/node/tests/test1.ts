@@ -421,7 +421,8 @@ const page5 = pdfDoc.addPage(PageSizes.A4);
 
 const jpegWithResolution = await pdfDoc.embedJpg(assets.images.jpg.cmyk_colorspace);
 
-let naturalSize = jpegWithResolution.scale( 72 / jpegWithResolution.resolution);
+let resolutionPpi = await jpegWithResolution.resolution();
+let naturalSize = jpegWithResolution.scale( 72 / resolutionPpi);
 
 page5.moveTo(100, 600);
 page5.drawImage(jpegWithResolution, {
@@ -430,13 +431,15 @@ page5.drawImage(jpegWithResolution, {
 });
 
 page5.moveDown(20);
-page5.drawText( `Image drawn at resolution ${jpegWithResolution.resolution} dpi`, {size: 12});
+page5.drawText( `Image drawn at resolution ${resolutionPpi} dpi`, {size: 12});
 
 page5.moveDown(naturalSize.height + 100);
 
 const pngWithResolution = await pdfDoc.embedPng(assets.images.png.with_physical_dimensions);
 
-naturalSize = pngWithResolution.scale( 72 / pngWithResolution.resolution);
+resolutionPpi = await pngWithResolution.resolution();
+
+naturalSize = pngWithResolution.scale( 72 / resolutionPpi);
 
 page5.drawImage(pngWithResolution, {
   width: naturalSize.width,
@@ -444,7 +447,7 @@ page5.drawImage(pngWithResolution, {
 });
 
 page5.moveDown(20);
-page5.drawText( `Image drawn at resolution ${pngWithResolution.resolution} dpi`, {size: 12} );
+page5.drawText( `Image drawn at resolution ${resolutionPpi} dpi`, {size: 12} );
 
   /********************** Print Metadata **********************/
 

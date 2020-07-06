@@ -1,4 +1,4 @@
-import { ExifParserFactory } from 'ts-exif-parser';
+import { parse } from 'exifr';
 
 // default resolution
 const DEFAULT_RESOLUTION = 72;
@@ -29,21 +29,18 @@ const getJfifResolution = (dataView: DataView): number => {
     return resolution;
 }
 
-export const getJpgResolution = (dataView: DataView): number => {
+export const getJpgResolution = async (dataView: DataView): Promise<number> => {
 
     if (isEXIF(dataView)) {
         // parse exif data
         // console.time("Exif parse");
-        let parser = ExifParserFactory.create(dataView.buffer);
-        let exif = parser.parse();
+        //let parser = ExifParserFactory.create(dataView.buffer);
+        let exif = await parse(dataView, {
+            translateValues:false, 
+            pick:['XResolution', 'YResolution', 'ResolutionUnit']
+        });
 
-        const { XResolution, YResolution, ResolutionUnit } = exif.tags!;
-
-        // patch for wrong type definition in ts-exif-parser
-        // ResolutionUnit is declared as string, when in fact it is a number
-        // submitted PR to fix this
-        const correctedResUnit: number = (ResolutionUnit as unknown) as number;
-        // end patch
+        const { XResolution, YResolution, ResolutionUnit } = exif!;
 
         // console.timeEnd("Exif parse");
 
@@ -59,7 +56,7 @@ export const getJpgResolution = (dataView: DataView): number => {
         // '1' means no-unit, '2' means inch, '3' means centimeter.
         //
 
-        switch (correctedResUnit) {
+        switch (ResolutionUnit) {
             case 2:
                 resolutionPpi = XResolution;
                 break;
