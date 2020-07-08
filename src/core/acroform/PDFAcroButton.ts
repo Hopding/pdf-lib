@@ -4,6 +4,8 @@ import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
+import { IndexOutOfBoundsError } from '../errors';
+import PDFObject from '../objects/PDFObject';
 
 class PDFAcroButton extends PDFAcroTerminal {
   Opt(): PDFString | PDFHexString | PDFArray | undefined {
@@ -13,6 +15,10 @@ class PDFAcroButton extends PDFAcroTerminal {
       PDFHexString,
       PDFArray,
     );
+  }
+
+  setOpt(opt: PDFObject[]) {
+    this.dict.set(PDFName.of('Opt'), this.dict.context.obj(opt));
   }
 
   getExportValues(): (PDFString | PDFHexString)[] | undefined {
@@ -35,11 +41,27 @@ class PDFAcroButton extends PDFAcroTerminal {
     return values;
   }
 
+  removeExportValue(idx: number) {
+    const opt = this.Opt();
+
+    if (!opt) return;
+
+    if (opt instanceof PDFString || opt instanceof PDFHexString) {
+      if (idx !== 0) throw new IndexOutOfBoundsError(idx, 0, 0);
+      this.setOpt([]);
+    } else {
+      if (idx < 0 || idx > opt.size()) {
+        throw new IndexOutOfBoundsError(idx, 0, opt.size());
+      }
+      opt.remove(idx);
+    }
+  }
+
   // Enforce use use of /Opt even if it isn't strictly necessary
   normalizeExportValues() {
     const exportValues = this.getExportValues() ?? [];
 
-    const Opt = this.dict.context.obj([]);
+    const Opt: (PDFString | PDFHexString)[] = [];
 
     const widgets = this.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
@@ -50,7 +72,7 @@ class PDFAcroButton extends PDFAcroTerminal {
       Opt.push(exportVal);
     }
 
-    this.dict.set(PDFName.of('Opt'), Opt);
+    this.setOpt(Opt);
   }
 
   addWidgetWithOpt(widget: PDFRef, opt: PDFHexString | PDFString) {

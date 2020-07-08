@@ -85,7 +85,8 @@ export default class PDFRadioGroup extends PDFField {
       height: options?.height ?? 50,
       textColor: options?.textColor ?? rgb(0, 0, 0),
       backgroundColor: options?.backgroundColor ?? rgb(1, 1, 1),
-      borderWidth: options?.borderWidth ?? 0,
+      borderColor: options?.borderColor ?? rgb(0, 0, 0),
+      borderWidth: options?.borderWidth ?? 1,
       rotate: options?.rotate ?? degrees(0),
     });
     const widgetRef = this.doc.context.register(widget.dict);
@@ -104,11 +105,31 @@ export default class PDFRadioGroup extends PDFField {
     page.node.addAnnot(widgetRef);
   }
 
-  // setOptions(options: string[]) {}
+  // TODO: Figure out why this seems to crash Acrobat. Maybe it's because we
+  //       aren't removing the widget reference from the page's Annots?
+  removeOption(option: string) {
+    assertIs(option, 'option', ['string']);
+    // TODO: Assert is valid `option`!
 
-  // addOption(option: string) {}
-
-  // removeOption(option: string) {}
+    const onValues = this.acroField.getOnValues();
+    const exportValues = this.acroField.getExportValues();
+    if (exportValues) {
+      for (let idx = 0, len = exportValues.length; idx < len; idx++) {
+        if (exportValues[idx].decodeText() === option) {
+          this.acroField.removeWidget(idx);
+          this.acroField.removeExportValue(idx);
+        }
+      }
+    } else {
+      for (let idx = 0, len = onValues.length; idx < len; idx++) {
+        const value = onValues[idx];
+        if (value.decodeText() === option) {
+          this.acroField.removeWidget(idx);
+          this.acroField.removeExportValue(idx);
+        }
+      }
+    }
+  }
 
   select(option: string) {
     assertIs(option, 'option', ['string']);
@@ -122,15 +143,17 @@ export default class PDFRadioGroup extends PDFField {
           this.acroField.setValue(onValues[idx]);
         }
       }
-    }
-
-    for (let idx = 0, len = onValues.length; idx < len; idx++) {
-      const value = onValues[idx];
-      if (value.decodeText() === option) this.acroField.setValue(value);
+    } else {
+      for (let idx = 0, len = onValues.length; idx < len; idx++) {
+        const value = onValues[idx];
+        if (value.decodeText() === option) this.acroField.setValue(value);
+      }
     }
   }
 
-  // clear() {}
+  clear() {
+    this.acroField.setValue(PDFName.of('Off'));
+  }
 
   allowsTogglingOff(): boolean {
     return !this.acroField.hasFlag(AcroButtonFlags.NoToggleToOff);

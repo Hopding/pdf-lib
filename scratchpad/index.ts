@@ -452,12 +452,19 @@ import {
 
   const rg1 = form.getRadioGroup('Group1');
   rg1.select('Choice2 - 🦄');
+  rg1.removeOption('Choice2 - 🦄');
+  // rg1
+  //   .getOptions()
+  //   .slice(1)
+  //   .forEach((option) => rg1.removeOption(option));
+  rg1.clear();
   console.log('rg1.getSelected():', rg1.getSelected());
   console.log('rg1.getOptions():', rg1.getOptions());
   rg1.updateAppearances();
 
   const rg2 = form.getRadioGroup('Group2');
   rg2.select('Choice3');
+  rg2.clear();
   console.log('rg2.getSelected():', rg2.getSelected());
   console.log('rg2.getOptions():', rg2.getOptions());
   rg2.updateAppearances();

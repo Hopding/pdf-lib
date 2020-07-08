@@ -42,6 +42,10 @@ class PDFAcroField {
     return undefined;
   }
 
+  setKids(kids: PDFObject[]) {
+    this.dict.set(PDFName.of('Kids'), this.dict.context.obj(kids));
+  }
+
   getParent(): PDFAcroField | undefined {
     const parent = this.Parent();
     if (!parent) return undefined;

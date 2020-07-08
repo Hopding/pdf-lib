@@ -38,14 +38,12 @@ export default class PDFCheckBox extends PDFField {
     this.acroField = acroCheckBox;
   }
 
-  // TODO: Allow supplying `AppearanceProvider` and updating APs
   check() {
     const onValue = this.acroField.getOnValue();
     if (!onValue) throw new Error('TODO: FIX ME!');
     this.acroField.setValue(onValue);
   }
 
-  // TODO: Allow supplying `AppearanceProvider` and updating APs
   uncheck() {
     this.acroField.setValue(PDFName.of('Off'));
   }

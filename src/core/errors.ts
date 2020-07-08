@@ -99,6 +99,13 @@ export class CorruptPageTreeError extends Error {
   }
 }
 
+export class IndexOutOfBoundsError extends Error {
+  constructor(index: number, min: number, max: number) {
+    const msg = `index should be at least ${min} and at most ${max}, but was actually ${index}`;
+    super(msg);
+  }
+}
+
 /***** Parser Errors ******/
 
 export interface Position {
