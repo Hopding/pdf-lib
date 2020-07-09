@@ -105,31 +105,31 @@ export default class PDFRadioGroup extends PDFField {
     page.node.addAnnot(widgetRef);
   }
 
-  // TODO: Figure out why this seems to crash Acrobat. Maybe it's because we
-  //       aren't removing the widget reference from the page's Annots?
-  removeOption(option: string) {
-    assertIs(option, 'option', ['string']);
-    // TODO: Assert is valid `option`!
+  // // TODO: Figure out why this seems to crash Acrobat. Maybe it's because we
+  // //       aren't removing the widget reference from the page's Annots?
+  // removeOption(option: string) {
+  //   assertIs(option, 'option', ['string']);
+  //   // TODO: Assert is valid `option`!
 
-    const onValues = this.acroField.getOnValues();
-    const exportValues = this.acroField.getExportValues();
-    if (exportValues) {
-      for (let idx = 0, len = exportValues.length; idx < len; idx++) {
-        if (exportValues[idx].decodeText() === option) {
-          this.acroField.removeWidget(idx);
-          this.acroField.removeExportValue(idx);
-        }
-      }
-    } else {
-      for (let idx = 0, len = onValues.length; idx < len; idx++) {
-        const value = onValues[idx];
-        if (value.decodeText() === option) {
-          this.acroField.removeWidget(idx);
-          this.acroField.removeExportValue(idx);
-        }
-      }
-    }
-  }
+  //   const onValues = this.acroField.getOnValues();
+  //   const exportValues = this.acroField.getExportValues();
+  //   if (exportValues) {
+  //     for (let idx = 0, len = exportValues.length; idx < len; idx++) {
+  //       if (exportValues[idx].decodeText() === option) {
+  //         this.acroField.removeWidget(idx);
+  //         this.acroField.removeExportValue(idx);
+  //       }
+  //     }
+  //   } else {
+  //     for (let idx = 0, len = onValues.length; idx < len; idx++) {
+  //       const value = onValues[idx];
+  //       if (value.decodeText() === option) {
+  //         this.acroField.removeWidget(idx);
+  //         this.acroField.removeExportValue(idx);
+  //       }
+  //     }
+  //   }
+  // }
 
   select(option: string) {
     assertIs(option, 'option', ['string']);

@@ -5,7 +5,7 @@ import { PDFAcroComboBox, AcroChoiceFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
-import { PDFHexString, PDFRef } from 'src/core';
+import { PDFHexString, PDFRef, PDFString } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -90,7 +90,23 @@ export default class PDFDropdown extends PDFField {
     this.acroField.setOptions(optionObjects);
   }
 
-  // addOptions(option: string | string[]) {}
+  addOptions(options: string | string[]) {
+    assertIs(options, 'options', ['string', Array]);
+
+    const optionsArr = Array.isArray(options) ? options : [options];
+
+    const existingOptions: {
+      value: PDFString | PDFHexString;
+      display?: PDFString | PDFHexString;
+    }[] = this.acroField.getOptions();
+
+    const newOptions = new Array<{ value: PDFHexString }>(optionsArr.length);
+    for (let idx = 0, len = optionsArr.length; idx < len; idx++) {
+      newOptions[idx] = { value: PDFHexString.fromText(optionsArr[idx]) };
+    }
+
+    this.acroField.setOptions(existingOptions.concat(newOptions));
+  }
 
   // removeOptions(option: string | string[]) {}
 
