@@ -135,13 +135,33 @@ export default class PDFDropdown extends PDFField {
     }
   }
 
-  // selectIndices(optionIndices: number[]) {}
+  selectIndices(optionIndices: number[]) {
+    assertIs(optionIndices, 'optionIndices', [Array]);
+
+    // TODO: Assert option indices are valid
+
+    if (optionsArr.length > 1) this.setAllowMultiSelect(true);
+
+    const values = new Array<PDFHexString>(optionsArr.length);
+    for (let idx = 0, len = optionsArr.length; idx < len; idx++) {
+      values[idx] = PDFHexString.fromText(optionsArr[idx]);
+    }
+
+    if (merge) {
+      const existingValues = this.acroField.getValues();
+      this.acroField.setValues(existingValues.concat(values));
+    } else {
+      this.acroField.setValues(values);
+    }
+  }
 
   // deselect(options: string | string[]) {}
 
   // deselectIndices(optionIndices: number[]) {}
 
-  // clear() {}
+  clear() {
+    this.acroField.setValues([]);
+  }
 
   allowsEditing(): boolean {
     return this.acroField.hasFlag(AcroChoiceFlags.Edit);
