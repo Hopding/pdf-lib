@@ -214,7 +214,7 @@ export const drawRectangle = (options: {
 
 const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
 
-export const drawEllipsePath = (config: {
+const drawEllipsePath = (config: {
   x: number | PDFNumber;
   y: number | PDFNumber;
   xScale: number | PDFNumber;
