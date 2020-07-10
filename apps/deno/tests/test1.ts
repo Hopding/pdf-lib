@@ -14,6 +14,7 @@ import {
   typedArrayFor,
   lineTo,
   moveTo,
+  PageSizes,
   PDFDocument,
   popGraphicsState,
   pushGraphicsState,
@@ -421,15 +422,52 @@ export default async (assets: Assets) => {
   //#endregion page4
 
   //#region page5
-   /********************** Page 5 **********************/
+  /********************** Page 5 **********************/
 
-  // This page tests embedding jpg and png images using their 
+  // This page tests embedding jpg and png images using their
   // resolution, to achieve placing at natural sizes
   //
 
-  const page5 = pdfDoc.addPage([size, size]);
+  const page5 = pdfDoc.addPage(PageSizes.A4);
 
+  const jpegWithResolution = await pdfDoc.embedJpg(
+    assets.images.jpg.cmyk_colorspace,
+  );
 
+  let naturalSize = jpegWithResolution.scale(
+    72 / jpegWithResolution.resolution,
+  );
+
+  page5.moveTo(100, 600);
+  page5.drawImage(jpegWithResolution, {
+    width: naturalSize.width,
+    height: naturalSize.height,
+  });
+
+  page5.moveDown(20);
+  page5.drawText(
+    `Image drawn at resolution ${jpegWithResolution.resolution} dpi`,
+    { size: 12 },
+  );
+
+  page5.moveDown(naturalSize.height + 100);
+
+  const pngWithResolution = await pdfDoc.embedPng(
+    assets.images.png.with_physical_dimensions,
+  );
+
+  naturalSize = pngWithResolution.scale(72 / pngWithResolution.resolution);
+
+  page5.drawImage(pngWithResolution, {
+    width: naturalSize.width,
+    height: naturalSize.height,
+  });
+
+  page5.moveDown(20);
+  page5.drawText(
+    `Image drawn at resolution ${pngWithResolution.resolution} dpi`,
+    { size: 12 },
+  );
   //#endregion page5
 
   /********************** Print Metadata **********************/

@@ -100,6 +100,7 @@ const assets = {
       small_mario: readImage('small_mario.png'),
       etwe: readImage('etwe.png'),
       self_drive: readImage('self_drive.png'),
+      with_physical_dimensions: readImage('with_physical_dimensions.png'),
     },
   },
   pdfs: {
