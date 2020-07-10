@@ -293,7 +293,7 @@ export const drawSvgPath = (
   options: {
     x: number | PDFNumber;
     y: number | PDFNumber;
-    rotate: Rotation;
+    rotate?: Rotation;
     scale: number | PDFNumber | undefined;
     color: Color | undefined;
     borderColor: Color | undefined;
