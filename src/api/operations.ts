@@ -27,7 +27,7 @@ import {
   setDashPattern,
   appendBezierCurve,
 } from 'src/api/operators';
-import { Rotation, toRadians } from 'src/api/rotations';
+import { Rotation, toRadians, degrees } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
 import { asNumber } from 'src/api/objects';
@@ -239,7 +239,7 @@ export const drawEllipsePath = (config: {
 
   return [
     translate(centerX, centerY),
-    rotateRadians(toRadians(config.rotate)),
+    rotateRadians(toRadians(config.rotate ?? degrees(0))),
     moveTo(x, ym),
     appendBezierCurve(x, ym - oy, xm - ox, y, xm, y),
     appendBezierCurve(xm + ox, y, xe, ym - oy, xe, ym),
@@ -309,7 +309,7 @@ export const drawSvgPath = (
     options.graphicsState && setGraphicsState(options.graphicsState),
 
     translate(options.x, options.y),
-    rotateRadians(toRadians(options.rotate)),
+    rotateRadians(toRadians(options.rotate ?? degrees(0))),
 
     // SVG path Y axis is opposite pdf-lib's
     options.scale ? scale(options.scale, -options.scale) : scale(1, -1),
