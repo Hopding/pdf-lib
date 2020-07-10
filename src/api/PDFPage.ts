@@ -52,7 +52,6 @@ import {
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
-import {asNumber} from "./objects";
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -1378,6 +1377,25 @@ export default class PDFPage {
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
+    assertRangeOrUndefined(
+      options.borderOpacity,
+      'options.borderOpacity',
+      0,
+      1,
+    );
+    assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
+    assertOrUndefined(options.borderDashArray, 'options.borderDashArray', [
+      Array,
+    ]);
+    assertOrUndefined(options.borderDashPhase, 'options.borderDashPhase', [
+      'number',
+    ]);
+    assertIsOneOfOrUndefined(
+      options.borderLineCap,
+      'options.borderLineCap',
+      LineCapStyle,
+    );
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
       borderOpacity: options.borderOpacity,
