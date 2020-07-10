@@ -1427,9 +1427,8 @@ export default class PDFPage {
    * @param options The options to be used when drawing the ellipse.
    */
   drawCircle(options: PDFPageDrawCircleOptions = {}): void {
-    let { size } = options;
+    const { size = 100 } = options;
     assertOrUndefined(size, 'size', ['number']);
-    size = asNumber(size ?? 100);
     this.drawEllipse({ ...options, xScale: size, yScale: size });
   }
 
