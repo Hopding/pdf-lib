@@ -219,7 +219,7 @@ export const drawEllipsePath = (config: {
   y: number | PDFNumber;
   xScale: number | PDFNumber;
   yScale: number | PDFNumber;
-  rotate: Rotation;
+  rotate?: Rotation;
 }): PDFOperator[] =>
 {
   const centerX = asNumber(config.x);
