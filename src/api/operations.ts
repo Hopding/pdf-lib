@@ -253,7 +253,7 @@ export const drawEllipse = (options: {
   y: number | PDFNumber;
   xScale: number | PDFNumber;
   yScale: number | PDFNumber;
-  rotate: Rotation;
+  rotate?: Rotation;
   color: Color | undefined;
   borderColor: Color | undefined;
   borderWidth: number | PDFNumber;
