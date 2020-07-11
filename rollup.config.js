@@ -11,12 +11,14 @@ const IgnoredWarnings = [
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFImage.js -> es/api/PDFDocument.js',
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFPage.js -> es/api/PDFDocument.js',
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFEmbeddedPage.js -> es/api/PDFDocument.js',
+  'Circular dependency: es/utils/index.js -> es/utils/validators.js -> es/utils/index.js',
 
   // Windows
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFFont.js -> es\\api\\PDFDocument.js',
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFImage.js -> es\\api\\PDFDocument.js',
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFPage.js -> es\\api\\PDFDocument.js',
-  'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFEmbeddedPage.js -> es\\api\\PDFDocument.js'
+  'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFEmbeddedPage.js -> es\\api\\PDFDocument.js',
+  'Circular dependency: es\\utils\\index.js -> es\\utils\\validators.js -> es\\utils\\index.js'
 ];
 
 // Silence circular dependency warnings we don't care about
@@ -33,5 +35,6 @@ export default {
     format: MODULE_TYPE,
     sourcemap: true,
   },
+  external: [ 'fs' ],
   plugins: [resolve(), commonjs(), json(), MINIFY === 'true' && terser()],
 };
