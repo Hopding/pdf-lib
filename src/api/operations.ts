@@ -635,6 +635,7 @@ export const drawTextLines = (
 };
 
 // TODO: Need to push/pop graphics state on all this stuff...
+// TODO: Need to draw clipping area as part of this
 export const drawTextField = (options: {
   x: number | PDFNumber;
   y: number | PDFNumber;

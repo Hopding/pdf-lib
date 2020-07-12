@@ -41,10 +41,12 @@ export default class PDFCheckBox extends PDFField {
   check() {
     const onValue = this.acroField.getOnValue();
     if (!onValue) throw new Error('TODO: FIX ME!');
+    this.markAsDirty();
     this.acroField.setValue(onValue);
   }
 
   uncheck() {
+    this.markAsDirty();
     this.acroField.setValue(PDFName.of('Off'));
   }
 
@@ -79,6 +81,10 @@ export default class PDFCheckBox extends PDFField {
     page.node.addAnnot(widgetRef);
   }
 
+  defaultUpdateAppearances() {
+    this.updateAppearances();
+  }
+
   updateAppearances(provider?: AppearanceProviderFor<PDFCheckBox>) {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
@@ -87,6 +93,7 @@ export default class PDFCheckBox extends PDFField {
       if (!onValue) continue;
       this.updateWidgetAppearance(widget, onValue, provider);
     }
+    this.markAsClean();
   }
 
   private updateWidgetAppearance(

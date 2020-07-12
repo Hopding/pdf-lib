@@ -9,6 +9,10 @@ class Cache<T> {
     this.value = undefined;
   }
 
+  getValue(): T | undefined {
+    return this.value;
+  }
+
   access(): T {
     if (!this.value) this.value = this.populate();
     return this.value;

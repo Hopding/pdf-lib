@@ -11,7 +11,7 @@ import {
   PDFAcroPushButton,
   PDFAcroNonTerminal,
 } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, Cache } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
 import PDFButton from 'src/api/form/PDFButton';
@@ -22,8 +22,10 @@ import PDFRadioGroup from 'src/api/form/PDFRadioGroup';
 import PDFSignature from 'src/api/form/PDFSignature';
 import PDFTextField from 'src/api/form/PDFTextField';
 import { createPDFAcroFields } from 'src/core/acroform/utils';
-import { PDFRef } from 'src/core';
+import { PDFRef, PDFDict, PDFStream } from 'src/core';
 import { NoSuchFieldError, UnexpectedFieldTypeError } from 'src/api/errors';
+import { PDFFont } from '..';
+import { StandardFonts } from '../StandardFonts';
 
 const convertToPDFField = (
   field: PDFAcroField,
@@ -98,12 +100,18 @@ export default class PDFForm {
   /** The document to which this form belongs. */
   readonly doc: PDFDocument;
 
+  private readonly dirtyFields: Set<PDFRef>;
+  private readonly defaultFontCache: Cache<PDFFont>;
+
   private constructor(acroForm: PDFAcroForm, doc: PDFDocument) {
     assertIs(acroForm, 'acroForm', [[PDFAcroForm, 'PDFAcroForm']]);
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
     this.acroForm = acroForm;
     this.doc = doc;
+
+    this.dirtyFields = new Set();
+    this.defaultFontCache = Cache.populatedBy(this.computeDefaultFont);
   }
 
   getFields(): PDFField[] {
@@ -275,6 +283,42 @@ export default class PDFForm {
     return PDFTextField.of(text, textRef, this.doc);
   }
 
+  updateDirtyFieldAppearances(font?: PDFFont) {
+    font = font ?? this.defaultFontCache.access();
+
+    const fields = this.getFields();
+
+    for (let idx = 0, len = fields.length; idx < len; idx++) {
+      const field = fields[idx];
+      if (this.dirtyFields.has(field.ref)) {
+        field.defaultUpdateAppearances(font);
+      }
+    }
+  }
+
+  foo(field: PDFField) {
+    if (field instanceof PDFCheckBox || field instanceof PDFRadioGroup) {
+      const widgets = field.acroField.getWidgets();
+      for (let idx = 0, len = widgets.length; idx < len; idx++) {
+        const widget = field.acroField.getWidgets()[idx];
+        const value = field.acroField.getValue();
+        const normal = widget.getAppearances()?.normal;
+        if (normal instanceof PDFDict) {
+          if (normal.lookup(value) instanceof PDFStream) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  markFieldAsDirty(fieldRef: PDFRef) {
+    this.dirtyFields.add(fieldRef);
+  }
+
+  markFieldAsClean(fieldRef: PDFRef) {
+    this.dirtyFields.delete(fieldRef);
+  }
+
   private findOrCreateNonTerminals(partialNames: string[]) {
     let nonTerminal: [PDFAcroForm] | [PDFAcroNonTerminal, PDFRef] = [
       this.acroForm,
@@ -318,4 +362,7 @@ export default class PDFForm {
 
     return undefined;
   }
+
+  private computeDefaultFont = (): PDFFont =>
+    this.doc.embedStandardFont(StandardFonts.Helvetica);
 }

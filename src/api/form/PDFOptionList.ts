@@ -11,7 +11,7 @@ import {
   normalizeAppearance,
   defaultOptionListAppearanceProvider,
 } from 'src/api/form/appearances';
-import { PDFRef, PDFHexString } from 'src/core';
+import { PDFRef, PDFHexString, PDFString } from 'src/core';
 import { rgb } from '../colors';
 import { degrees } from '../rotations';
 
@@ -49,38 +49,38 @@ export default class PDFOptionList extends PDFField {
     return options;
   }
 
-  getOption(index: number): string {
-    assertIs(index, 'index', ['number']);
-    // TODO: Assert `index` is in valid range
-    return this.getOptions()[index];
-  }
+  // getOption(index: number): string {
+  //   assertIs(index, 'index', ['number']);
+  //   // TODO: Assert `index` is in valid range
+  //   return this.getOptions()[index];
+  // }
 
   getSelected(): string[] {
-    const indices = this.getSelectedIndices();
-    const options = this.getOptions();
+    const values = this.acroField.getValues();
 
-    const selected = new Array<string>(indices.length);
-    for (let idx = 0, len = indices.length; idx < len; idx++) {
-      selected[idx] = options[indices[idx]];
+    const selected = new Array<string>(values.length);
+    for (let idx = 0, len = values.length; idx < len; idx++) {
+      selected[idx] = values[idx].decodeText();
     }
 
     return selected;
   }
 
-  getSelectedIndices(): number[] {
-    const values = this.acroField.getValues();
-    const options = this.getOptions();
+  // getSelectedIndices(): number[] {
+  //   const values = this.acroField.getValues();
+  //   const options = this.getOptions();
 
-    const indices = new Array<number>(values.length);
-    for (let idx = 0, len = values.length; idx < len; idx++) {
-      const val = values[idx].decodeText();
-      indices[idx] = options.findIndex((option) => val === option);
-    }
+  //   const indices = new Array<number>(values.length);
+  //   for (let idx = 0, len = values.length; idx < len; idx++) {
+  //     const val = values[idx].decodeText();
+  //     indices[idx] = options.findIndex((option) => val === option);
+  //   }
 
-    return indices;
-  }
+  //   return indices;
+  // }
 
   setOptions(options: string[]) {
+    this.markAsDirty();
     const optionObjects = new Array<{ value: PDFHexString }>(options.length);
     for (let idx = 0, len = options.length; idx < len; idx++) {
       optionObjects[idx] = { value: PDFHexString.fromText(options[idx]) };
@@ -88,7 +88,25 @@ export default class PDFOptionList extends PDFField {
     this.acroField.setOptions(optionObjects);
   }
 
-  // addOptions(option: string | string[]) {}
+  addOptions(options: string | string[]) {
+    assertIs(options, 'options', ['string', Array]);
+
+    this.markAsDirty();
+
+    const optionsArr = Array.isArray(options) ? options : [options];
+
+    const existingOptions: {
+      value: PDFString | PDFHexString;
+      display?: PDFString | PDFHexString;
+    }[] = this.acroField.getOptions();
+
+    const newOptions = new Array<{ value: PDFHexString }>(optionsArr.length);
+    for (let idx = 0, len = optionsArr.length; idx < len; idx++) {
+      newOptions[idx] = { value: PDFHexString.fromText(optionsArr[idx]) };
+    }
+
+    this.acroField.setOptions(existingOptions.concat(newOptions));
+  }
 
   // removeOptions(option: string | string[]) {}
 
@@ -97,6 +115,8 @@ export default class PDFOptionList extends PDFField {
   select(options: string | string[], merge = false) {
     assertIs(options, 'options', ['string', Array]);
     assertIs(merge, 'merge', ['boolean']);
+
+    this.markAsDirty();
 
     const optionsArr = Array.isArray(options) ? options : [options];
 
@@ -117,13 +137,14 @@ export default class PDFOptionList extends PDFField {
     }
   }
 
-  // selectIndices(optionIndices: number[]) {}
-
   // deselect(options: string | string[]) {}
 
   // deselectIndices(optionIndices: number[]) {}
 
-  // clear() {}
+  clear() {
+    this.markAsDirty();
+    this.acroField.setValues([]);
+  }
 
   // allowsEditing(): boolean {
   //   return this.acroField.hasFlag(AcroChoiceFlags.Edit);
@@ -194,6 +215,10 @@ export default class PDFOptionList extends PDFField {
     page.node.addAnnot(widgetRef);
   }
 
+  defaultUpdateAppearances(font: PDFFont) {
+    this.updateAppearances(font);
+  }
+
   updateAppearances(
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFOptionList>,
@@ -203,6 +228,7 @@ export default class PDFOptionList extends PDFField {
       const widget = widgets[idx];
       this.updateWidgetAppearance(widget, font, provider);
     }
+    this.markAsClean();
   }
 
   private updateWidgetAppearance(

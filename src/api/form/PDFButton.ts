@@ -73,6 +73,10 @@ export default class PDFButton extends PDFField {
     page.node.addAnnot(widgetRef);
   }
 
+  defaultUpdateAppearances(font: PDFFont) {
+    this.updateAppearances(font);
+  }
+
   updateAppearances(
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFButton>,

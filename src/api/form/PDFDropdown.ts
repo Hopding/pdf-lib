@@ -51,36 +51,35 @@ export default class PDFDropdown extends PDFField {
     return options;
   }
 
-  getOption(index: number): string {
-    assertIs(index, 'index', ['number']);
-    // TODO: Assert `index` is in valid range
-    return this.getOptions()[index];
-  }
+  // getOption(index: number): string {
+  //   assertIs(index, 'index', ['number']);
+  //   // TODO: Assert `index` is in valid range
+  //   return this.getOptions()[index];
+  // }
 
   getSelected(): string[] {
-    const indices = this.getSelectedIndices();
-    const options = this.getOptions();
+    const values = this.acroField.getValues();
 
-    const selected = new Array<string>(indices.length);
-    for (let idx = 0, len = indices.length; idx < len; idx++) {
-      selected[idx] = options[indices[idx]];
+    const selected = new Array<string>(values.length);
+    for (let idx = 0, len = values.length; idx < len; idx++) {
+      selected[idx] = values[idx].decodeText();
     }
 
     return selected;
   }
 
-  getSelectedIndices(): number[] {
-    const values = this.acroField.getValues();
-    const options = this.getOptions();
+  // getSelectedIndices(): number[] {
+  //   const values = this.acroField.getValues();
+  //   const options = this.getOptions();
 
-    const indices = new Array<number>(values.length);
-    for (let idx = 0, len = values.length; idx < len; idx++) {
-      const val = values[idx].decodeText();
-      indices[idx] = options.findIndex((option) => val === option);
-    }
+  //   const indices = new Array<number>(values.length);
+  //   for (let idx = 0, len = values.length; idx < len; idx++) {
+  //     const val = values[idx].decodeText();
+  //     indices[idx] = options.findIndex((option) => val === option);
+  //   }
 
-    return indices;
-  }
+  //   return indices;
+  // }
 
   setOptions(options: string[]) {
     const optionObjects = new Array<{ value: PDFHexString }>(options.length);
@@ -116,29 +115,11 @@ export default class PDFDropdown extends PDFField {
     assertIs(options, 'options', ['string', Array]);
     assertIs(merge, 'merge', ['boolean']);
 
+    this.markAsDirty();
+
     const optionsArr = Array.isArray(options) ? options : [options];
 
     // TODO: Assert options are valid
-
-    if (optionsArr.length > 1) this.setAllowMultiSelect(true);
-
-    const values = new Array<PDFHexString>(optionsArr.length);
-    for (let idx = 0, len = optionsArr.length; idx < len; idx++) {
-      values[idx] = PDFHexString.fromText(optionsArr[idx]);
-    }
-
-    if (merge) {
-      const existingValues = this.acroField.getValues();
-      this.acroField.setValues(existingValues.concat(values));
-    } else {
-      this.acroField.setValues(values);
-    }
-  }
-
-  selectIndices(optionIndices: number[]) {
-    assertIs(optionIndices, 'optionIndices', [Array]);
-
-    // TODO: Assert option indices are valid
 
     if (optionsArr.length > 1) this.setAllowMultiSelect(true);
 
@@ -160,6 +141,7 @@ export default class PDFDropdown extends PDFField {
   // deselectIndices(optionIndices: number[]) {}
 
   clear() {
+    this.markAsDirty();
     this.acroField.setValues([]);
   }
 
@@ -232,6 +214,10 @@ export default class PDFDropdown extends PDFField {
     page.node.addAnnot(widgetRef);
   }
 
+  defaultUpdateAppearances(font: PDFFont) {
+    this.updateAppearances(font);
+  }
+
   updateAppearances(
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFDropdown>,
@@ -241,6 +227,7 @@ export default class PDFDropdown extends PDFField {
       const widget = widgets[idx];
       this.updateWidgetAppearance(widget, font, provider);
     }
+    this.markAsClean();
   }
 
   private updateWidgetAppearance(

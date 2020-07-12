@@ -7,6 +7,7 @@ import {
   PDFOperator,
   PDFName,
   PDFDict,
+  MethodNotImplementedError,
 } from 'src/core';
 import { PDFFont } from '..';
 import { AppearanceMapping } from './appearances';
@@ -85,6 +86,21 @@ export default class PDFField {
 
   setExported(exported: boolean) {
     this.acroField.setFlagTo(AcroFieldFlags.NoExport, !exported);
+  }
+
+  defaultUpdateAppearances(_font: PDFFont) {
+    throw new MethodNotImplementedError(
+      this.constructor.name,
+      'defaultUpdateAppearances',
+    );
+  }
+
+  protected markAsDirty() {
+    this.doc.getForm().markFieldAsDirty(this.ref);
+  }
+
+  protected markAsClean() {
+    this.doc.getForm().markFieldAsClean(this.ref);
   }
 
   protected createWidget(options: {

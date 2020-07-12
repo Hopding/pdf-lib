@@ -33,8 +33,7 @@ export default class PDFTextField extends PDFField {
     this.acroField = acroText;
   }
 
-  // TODO: Make `font` optional (like it is for `PDFPage` stuff)
-  setText(text: string | undefined, font: PDFFont) {
+  setText(text: string | undefined) {
     const maxLength = this.getMaxLength();
     if (maxLength !== undefined && text && text.length > maxLength) {
       throw new Error(
@@ -42,14 +41,14 @@ export default class PDFTextField extends PDFField {
       );
     }
 
+    this.markAsDirty();
+
     if (text) {
       this.setHasRichText(false);
       this.acroField.setValue(PDFHexString.fromText(text));
     } else {
       this.acroField.removeValue();
     }
-
-    this.updateAppearances(font);
   }
 
   getText(): string | undefined {
@@ -62,6 +61,7 @@ export default class PDFTextField extends PDFField {
 
   setAlignment(alignment: 'left' | 'center' | 'right') {
     // TODO: Validate `alignment`
+    this.markAsDirty();
     if (alignment === 'left') this.acroField.setQuadding(0);
     else if (alignment === 'center') this.acroField.setQuadding(1);
     else if (alignment === 'right') this.acroField.setQuadding(2);
@@ -76,9 +76,10 @@ export default class PDFTextField extends PDFField {
     else return 'left';
   }
 
-  // TODO: What is value is already over `maxLength`?
+  // TODO: What if value is already over `maxLength`?
   setMaxLength(maxLength: number) {
     // TODO: Assert >= 0
+    this.markAsDirty();
     this.acroField.setMaxLength(maxLength);
   }
 
@@ -91,6 +92,7 @@ export default class PDFTextField extends PDFField {
   }
 
   setIsMultiline(isMultiline: boolean) {
+    this.markAsDirty();
     this.acroField.setFlagTo(AcroTextFlags.Multiline, isMultiline);
   }
 
@@ -142,6 +144,8 @@ export default class PDFTextField extends PDFField {
       throw new Error('TODO: FIX ME! need to have a maxLength defined');
     }
 
+    this.markAsDirty();
+
     if (isEvenlySpaced) {
       this.setIsMultiline(false);
       this.setIsPassword(false);
@@ -184,6 +188,10 @@ export default class PDFTextField extends PDFField {
     page.node.addAnnot(widgetRef);
   }
 
+  defaultUpdateAppearances(font: PDFFont) {
+    this.updateAppearances(font);
+  }
+
   updateAppearances(
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFTextField>,
@@ -193,6 +201,7 @@ export default class PDFTextField extends PDFField {
       const widget = widgets[idx];
       this.updateWidgetAppearance(widget, font, provider);
     }
+    this.markAsClean();
   }
 
   private updateWidgetAppearance(

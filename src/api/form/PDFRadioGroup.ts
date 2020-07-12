@@ -171,6 +171,10 @@ export default class PDFRadioGroup extends PDFField {
     this.acroField.setFlagTo(AcroButtonFlags.RadiosInUnison, !enable);
   }
 
+  defaultUpdateAppearances() {
+    this.updateAppearances();
+  }
+
   updateAppearances(provider?: AppearanceProviderFor<PDFRadioGroup>) {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {

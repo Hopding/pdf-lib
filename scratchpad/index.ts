@@ -373,7 +373,7 @@ import {
   });
 
   const newTf1 = form.createTextField('lah dee dah 1');
-  newTf1.setText('Lorem ipsum dolor', helvetica);
+  newTf1.setText('Lorem ipsum dolor');
   console.log('---------------');
   newTf1.addToPage(helvetica, page2, {
     x: 250,
@@ -399,7 +399,7 @@ import {
   });
 
   const newTf2 = form.createTextField('lah dee dah 2');
-  newTf2.setText('Lorem ipsum dolor', helvetica);
+  newTf2.setText('Lorem ipsum dolor');
   newTf2.setIsMultiline(true);
   newTf2.addToPage(helvetica, page2, {
     x: 5,
@@ -418,7 +418,7 @@ import {
   });
 
   const newTf3 = form.createTextField('lah dee dah 3');
-  newTf3.setText('Lorem', helvetica);
+  newTf3.setText('Lorem');
   newTf3.setMaxLength(5);
   newTf3.setIsEvenlySpaced(true);
   newTf3.addToPage(helvetica, page2, {
@@ -504,14 +504,12 @@ import {
   dd1.addOptions('foo');
   dd1.addOptions(['bar', 'qux']);
   dd1.select('Item2');
-  console.log('dd1.getSelectedIndices():', dd1.getSelectedIndices());
   console.log('dd1.getSelected():', dd1.getSelected());
   console.log('dd1.getOptions():', dd1.getOptions());
   dd1.updateAppearances(courier);
 
   const dd4 = form.getDropdown('Dropdown4');
   dd4.select(['Item3', 'Item1']);
-  console.log('dd4.getSelectedIndices():', dd4.getSelectedIndices());
   console.log('dd4.getSelected():', dd4.getSelected());
   console.log('dd4.getOptions():', dd4.getOptions());
   dd4.updateAppearances(courier);
@@ -520,7 +518,6 @@ import {
 
   const ol2 = form.getOptionList('List Box2');
   ol2.select(['Item2', 'Item4']);
-  console.log('ol2.getSelectedIndices():', ol2.getSelectedIndices());
   console.log('ol2.getSelected():', ol2.getSelected());
   console.log('ol2.getOptions():', ol2.getOptions());
   ol2.updateAppearances(helvetica);
@@ -528,22 +525,22 @@ import {
   // === Text Fields ===
 
   const tf5 = form.getTextField('Text5');
-  tf5.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor', helvetica);
+  tf5.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
   console.log('tf5.getText():', tf5.getText());
   // tf5.updateAppearances(helvetica);
 
   const tf6 = form.getTextField('Text6');
-  tf6.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor', helvetica);
+  tf6.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
   console.log('tf6.getText():', tf6.getText());
   // tf6.updateAppearances(helvetica);
 
   const tf7 = form.getTextField('Text7');
-  tf7.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor', helvetica);
+  tf7.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
   console.log('tf7.getText():', tf7.getText());
   // tf7.updateAppearances(helvetica);
 
   const tfDate = form.getTextField('Date1_af_date');
-  tfDate.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor', helvetica);
+  tfDate.setText('Foo\nbar\nQuxbaz\nLorem ipsum\nDolor');
   console.log('tfDate.getText():', tfDate.getText());
   // tfDate.updateAppearances(helvetica);
 

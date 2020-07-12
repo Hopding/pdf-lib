@@ -177,6 +177,7 @@ export default class PDFDocument {
   private pageCount: number | undefined;
   private readonly pageCache: Cache<PDFPage[]>;
   private readonly pageMap: Map<PDFPageLeaf, PDFPage>;
+  private readonly formCache: Cache<PDFForm>;
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
   private readonly embeddedPages: PDFEmbeddedPage[];
@@ -196,6 +197,7 @@ export default class PDFDocument {
 
     this.pageCache = Cache.populatedBy(this.computePages);
     this.pageMap = new Map();
+    this.formCache = Cache.populatedBy(this.getOrCreateForm);
     this.fonts = [];
     this.images = [];
     this.embeddedPages = [];
@@ -208,7 +210,7 @@ export default class PDFDocument {
 
   /**
    * Register a fontkit instance. This must be done before custom fonts can
-   * be embedded. See [here](https://github.com/Hopding/pdf-lib/tree/Rewrite#fontkit-installation)
+   * be embedded. See [here](https://github.com/Hopding/pdf-lib/tree/master#fontkit-installation)
    * for instructions on how to install and register a fontkit instance.
    *
    * > You do **not** need to call this method to embed standard fonts.
@@ -220,8 +222,7 @@ export default class PDFDocument {
   }
 
   getForm(): PDFForm {
-    const acroForm = this.catalog.getOrCreateAcroForm();
-    return PDFForm.of(acroForm, this);
+    return this.formCache.access();
   }
 
   /**
@@ -1130,6 +1131,9 @@ export default class PDFDocument {
     if (addDefaultPage && this.getPageCount() === 0) this.addPage();
     await this.flush();
 
+    const form = this.formCache.getValue();
+    if (form) form.updateDirtyFieldAppearances();
+
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context, objectsPerTick).serializeToBuffer();
   }
@@ -1204,6 +1208,11 @@ export default class PDFDocument {
       }
     });
     return pages;
+  };
+
+  private getOrCreateForm = (): PDFForm => {
+    const acroForm = this.catalog.getOrCreateAcroForm();
+    return PDFForm.of(acroForm, this);
   };
 }
 
