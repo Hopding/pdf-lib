@@ -1,12 +1,12 @@
 import { Color, rgb } from 'src/api/colors';
 import {
-  drawEllipse,
   drawImage,
   drawLine,
   drawLinesOfText,
   drawPage,
   drawRectangle,
   drawSvgPath,
+  drawEllipse,
 } from 'src/api/operations';
 import {
   popGraphicsState,
@@ -1126,6 +1126,7 @@ export default class PDFPage {
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.scale, 'options.scale', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
@@ -1167,6 +1168,7 @@ export default class PDFPage {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         scale: options.scale,
+        rotate: options.rotate ?? degrees(0),
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
@@ -1369,6 +1371,7 @@ export default class PDFPage {
     assertOrUndefined(options.y, 'options.y', ['number']);
     assertOrUndefined(options.xScale, 'options.xScale', ['number']);
     assertOrUndefined(options.yScale, 'options.yScale', ['number']);
+    assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
@@ -1393,14 +1396,14 @@ export default class PDFPage {
       LineCapStyle,
     );
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
-
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
       borderOpacity: options.borderOpacity,
       blendMode: options.blendMode,
     });
 
-    if (!('color' in options) && !('borderColor' in options)) {
+    if (!('color' in options) && !('borderColor' in options))
+    {
       options.color = rgb(0, 0, 0);
     }
 
@@ -1411,6 +1414,7 @@ export default class PDFPage {
         y: options.y ?? this.y,
         xScale: options.xScale ?? 100,
         yScale: options.yScale ?? 100,
+        rotate: options.rotate ?? degrees(0),
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
@@ -1441,7 +1445,7 @@ export default class PDFPage {
    * @param options The options to be used when drawing the ellipse.
    */
   drawCircle(options: PDFPageDrawCircleOptions = {}): void {
-    const { size } = options;
+    const { size = 100 } = options;
     assertOrUndefined(size, 'size', ['number']);
     this.drawEllipse({ ...options, xScale: size, yScale: size });
   }

@@ -64,6 +64,7 @@ export interface PDFPageDrawSVGOptions {
   x?: number;
   y?: number;
   scale?: number;
+  rotate?: Rotation;
   borderWidth?: number;
   color?: Color;
   opacity?: number;
@@ -129,6 +130,7 @@ export interface PDFPageDrawEllipseOptions {
   y?: number;
   xScale?: number;
   yScale?: number;
+  rotate?: Rotation;
   color?: Color;
   opacity?: number;
   borderColor?: Color;

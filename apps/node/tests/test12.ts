@@ -67,12 +67,13 @@ const secondPage = async (pdfDoc: PDFDocument) => {
 
   // quadratic bezier example
   page.drawSvgPath('M200,300 Q400,50 600,300 T1000,300', {
-    x: inchToPt(-1),
-    y: inchToPt(11),
+    x: 100,
+    y: 700,
     scale: 0.5,
     borderWidth: 4,
     borderDashArray: [24, 12],
     borderLineCap: LineCapStyle.Round,
+    rotate: degrees(30),
   });
   page.drawSvgPath('M200,300 L400,50 L600,300 L800,550 L1000,300', {
     x: inchToPt(-1),
