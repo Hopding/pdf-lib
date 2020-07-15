@@ -220,15 +220,14 @@ export const drawEllipsePath = (config: {
   y: number | PDFNumber;
   xScale: number | PDFNumber;
   yScale: number | PDFNumber;
-  rotate?: Rotation;
 }): PDFOperator[] => {
-  const centerX = asNumber(config.x);
-  const centerY = asNumber(config.y);
+  let x = asNumber(config.x);
+  let y = asNumber(config.y);
   const xScale = asNumber(config.xScale);
   const yScale = asNumber(config.yScale);
 
-  const x = -xScale;
-  const y = -yScale;
+  x -= xScale;
+  y -= yScale;
 
   const ox = xScale * KAPPA;
   const oy = yScale * KAPPA;
@@ -239,8 +238,6 @@ export const drawEllipsePath = (config: {
 
   return [
     pushGraphicsState(),
-    translate(centerX, centerY),
-    rotateRadians(toRadians(config.rotate ?? degrees(0))),
     moveTo(x, ym),
     appendBezierCurve(x, ym - oy, xm - ox, y, xm, y),
     appendBezierCurve(xm + ox, y, xe, ym - oy, xe, ym),
@@ -255,7 +252,7 @@ const drawEllipseCurves = (config: {
   y: number | PDFNumber;
   xScale: number | PDFNumber;
   yScale: number | PDFNumber;
-  rotate?: Rotation;
+  rotate: Rotation;
 }): PDFOperator[] => {
   const centerX = asNumber(config.x);
   const centerY = asNumber(config.y);
@@ -274,7 +271,7 @@ const drawEllipseCurves = (config: {
 
   return [
     translate(centerX, centerY),
-    rotateRadians(toRadians(config.rotate ?? degrees(0))),
+    rotateRadians(toRadians(config.rotate)),
     moveTo(x, ym),
     appendBezierCurve(x, ym - oy, xm - ox, y, xm, y),
     appendBezierCurve(xm + ox, y, xe, ym - oy, xe, ym),
@@ -310,18 +307,17 @@ export const drawEllipse = (options: {
       y: options.y,
       xScale: options.xScale,
       yScale: options.yScale,
-      rotate: options.rotate,
+      rotate: options.rotate ?? degrees(0),
     }),
 
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()
-  : options.color ? fill()
-  : options.borderColor ? stroke()
+  : options.color                      ? fill()
+  : options.borderColor                ? stroke()
   : closePath(),
 
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
-
 
 export const drawSvgPath = (
   path: string,
