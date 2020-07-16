@@ -5,7 +5,7 @@ import { PDFAcroText, AcroTextFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
-import { PDFHexString, PDFRef } from 'src/core';
+import { PDFHexString, PDFRef, PDFStream } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -186,6 +186,20 @@ export default class PDFTextField extends PDFField {
 
     // Add widget to the given page
     page.node.addAnnot(widgetRef);
+  }
+
+  needsAppearancesUpdate(): boolean {
+    if (this.isDirty()) return true;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const hasAppearances =
+        widget.getAppearances()?.normal instanceof PDFStream;
+      if (!hasAppearances) return true;
+    }
+
+    return false;
   }
 
   defaultUpdateAppearances(font: PDFFont) {

@@ -11,7 +11,7 @@ import {
   normalizeAppearance,
   defaultOptionListAppearanceProvider,
 } from 'src/api/form/appearances';
-import { PDFRef, PDFHexString, PDFString } from 'src/core';
+import { PDFRef, PDFHexString, PDFString, PDFStream } from 'src/core';
 import { rgb } from '../colors';
 import { degrees } from '../rotations';
 
@@ -213,6 +213,20 @@ export default class PDFOptionList extends PDFField {
 
     // Add widget to the given page
     page.node.addAnnot(widgetRef);
+  }
+
+  needsAppearancesUpdate(): boolean {
+    if (this.isDirty()) return true;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const hasAppearances =
+        widget.getAppearances()?.normal instanceof PDFStream;
+      if (!hasAppearances) return true;
+    }
+
+    return false;
   }
 
   defaultUpdateAppearances(font: PDFFont) {

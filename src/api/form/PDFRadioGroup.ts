@@ -4,7 +4,7 @@ import { PDFAcroRadioButton, AcroButtonFlags } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
-import { PDFName, PDFRef, PDFHexString } from 'src/core';
+import { PDFName, PDFRef, PDFHexString, PDFDict } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -169,6 +169,26 @@ export default class PDFRadioGroup extends PDFField {
 
   setRadiosAreMutuallyExclusive(enable: boolean) {
     this.acroField.setFlagTo(AcroButtonFlags.RadiosInUnison, !enable);
+  }
+
+  needsAppearancesUpdate(): boolean {
+    if (this.isDirty()) return true;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const onValue = widget.getOnValue();
+      const normal = widget.getAppearances()?.normal;
+
+      const hasOnAppearance =
+        normal instanceof PDFDict && onValue && normal.has(onValue);
+      const hasOffAppearance =
+        normal instanceof PDFDict && normal.has(PDFName.of('Off'));
+
+      if (!hasOnAppearance || !hasOffAppearance) return true;
+    }
+
+    return false;
   }
 
   defaultUpdateAppearances() {

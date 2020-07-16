@@ -22,7 +22,7 @@ import PDFRadioGroup from 'src/api/form/PDFRadioGroup';
 import PDFSignature from 'src/api/form/PDFSignature';
 import PDFTextField from 'src/api/form/PDFTextField';
 import { createPDFAcroFields } from 'src/core/acroform/utils';
-import { PDFRef, PDFDict, PDFStream } from 'src/core';
+import { PDFRef } from 'src/core';
 import { NoSuchFieldError, UnexpectedFieldTypeError } from 'src/api/errors';
 import { PDFFont } from '..';
 import { StandardFonts } from '../StandardFonts';
@@ -290,25 +290,10 @@ export default class PDFForm {
 
     for (let idx = 0, len = fields.length; idx < len; idx++) {
       const field = fields[idx];
-      if (this.dirtyFields.has(field.ref)) {
+      if (field.needsAppearancesUpdate()) {
         field.defaultUpdateAppearances(font);
       }
     }
-  }
-
-  foo(field: PDFField) {
-    if (field instanceof PDFCheckBox || field instanceof PDFRadioGroup) {
-      const widgets = field.acroField.getWidgets();
-      for (let idx = 0, len = widgets.length; idx < len; idx++) {
-        const widget = field.acroField.getWidgets()[idx];
-        const value = field.acroField.getValue();
-        const normal = widget.getAppearances()?.normal;
-        if (normal instanceof PDFDict) {
-          if (normal.lookup(value) instanceof PDFStream) return true;
-        }
-      }
-    }
-    return false;
   }
 
   markFieldAsDirty(fieldRef: PDFRef) {
@@ -317,6 +302,10 @@ export default class PDFForm {
 
   markFieldAsClean(fieldRef: PDFRef) {
     this.dirtyFields.delete(fieldRef);
+  }
+
+  fieldIsDirty(fieldRef: PDFRef): boolean {
+    return this.dirtyFields.has(fieldRef);
   }
 
   private findOrCreateNonTerminals(partialNames: string[]) {

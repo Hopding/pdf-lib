@@ -162,6 +162,7 @@ import {
 
   const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const courier = await pdfDoc.embedFont(StandardFonts.CourierOblique);
+  (() => courier)();
 
   const form = pdfDoc.getForm();
 
@@ -439,14 +440,14 @@ import {
 
   // === Buttons ===
 
-  const btn8 = form.getButton('Button8');
-  btn8.updateAppearances(helvetica);
+  // const btn8 = form.getButton('Button8');
+  // btn8.updateAppearances(helvetica);
 
-  const btn9 = form.getButton('Button9');
-  btn9.updateAppearances(helvetica);
+  // const btn9 = form.getButton('Button9');
+  // btn9.updateAppearances(helvetica);
 
-  const btn10 = form.getButton('Button10');
-  btn10.updateAppearances(helvetica);
+  // const btn10 = form.getButton('Button10');
+  // btn10.updateAppearances(helvetica);
 
   // === Radio Groups ===
 
@@ -455,14 +456,14 @@ import {
   rg1.clear();
   console.log('rg1.getSelected():', rg1.getSelected());
   console.log('rg1.getOptions():', rg1.getOptions());
-  rg1.updateAppearances();
+  // rg1.updateAppearances();
 
   const rg2 = form.getRadioGroup('Group2');
   rg2.select('Choice3');
   rg2.clear();
   console.log('rg2.getSelected():', rg2.getSelected());
   console.log('rg2.getOptions():', rg2.getOptions());
-  rg2.updateAppearances();
+  // rg2.updateAppearances();
 
   rg1.addOptionToPage('Testing lulz 🛁', page1, {
     x: page2.getWidth() - 50,
@@ -476,27 +477,27 @@ import {
   const cb1 = form.getCheckBox('Check Box 1');
   cb1.check();
   console.log('cb1.isChecked():', cb1.isChecked());
-  cb1.updateAppearances();
+  // cb1.updateAppearances();
 
   const cb2 = form.getCheckBox('Check Box 2');
   cb2.check();
   console.log('cb2.isChecked():', cb1.isChecked());
-  cb2.updateAppearances();
+  // cb2.updateAppearances();
 
   const cb5 = form.getCheckBox('Check Box5');
   cb5.check();
   console.log('cb5.isChecked():', cb1.isChecked());
-  cb5.updateAppearances();
+  // cb5.updateAppearances();
 
   const cb6 = form.getCheckBox('Check Box6');
   cb6.check();
   console.log('cb6.isChecked():', cb1.isChecked());
-  cb6.updateAppearances();
+  // cb6.updateAppearances();
 
   const cb7 = form.getCheckBox('Check Box7');
   cb7.check();
   console.log('cb7.isChecked():', cb1.isChecked());
-  cb7.updateAppearances();
+  // cb7.updateAppearances();
 
   // === Dropdowns ===
 
@@ -506,13 +507,13 @@ import {
   dd1.select('Item2');
   console.log('dd1.getSelected():', dd1.getSelected());
   console.log('dd1.getOptions():', dd1.getOptions());
-  dd1.updateAppearances(courier);
+  // dd1.updateAppearances(courier);
 
   const dd4 = form.getDropdown('Dropdown4');
   dd4.select(['Item3', 'Item1']);
   console.log('dd4.getSelected():', dd4.getSelected());
   console.log('dd4.getOptions():', dd4.getOptions());
-  dd4.updateAppearances(courier);
+  // dd4.updateAppearances(courier);
 
   // === Option Lists ===
 
@@ -520,7 +521,7 @@ import {
   ol2.select(['Item2', 'Item4']);
   console.log('ol2.getSelected():', ol2.getSelected());
   console.log('ol2.getOptions():', ol2.getOptions());
-  ol2.updateAppearances(helvetica);
+  // ol2.updateAppearances(helvetica);
 
   // === Text Fields ===
 
@@ -560,6 +561,12 @@ import {
   //   }
   // });
 
-  fs.writeFileSync('out.pdf', await pdfDoc.save({ useObjectStreams: false }));
+  fs.writeFileSync(
+    'out.pdf',
+    await pdfDoc.save({
+      useObjectStreams: false,
+      // updateFieldAppearances: false,
+    }),
+  );
   openPdf('out.pdf', Reader.Acrobat);
 })();

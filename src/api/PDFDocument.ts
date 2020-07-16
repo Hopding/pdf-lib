@@ -1122,17 +1122,21 @@ export default class PDFDocument {
       useObjectStreams = true,
       addDefaultPage = true,
       objectsPerTick = 50,
+      updateFieldAppearances = true,
     } = options;
 
     assertIs(useObjectStreams, 'useObjectStreams', ['boolean']);
     assertIs(addDefaultPage, 'addDefaultPage', ['boolean']);
     assertIs(objectsPerTick, 'objectsPerTick', ['number']);
+    assertIs(updateFieldAppearances, 'updateFieldAppearances', ['boolean']);
 
     if (addDefaultPage && this.getPageCount() === 0) this.addPage();
     await this.flush();
 
-    const form = this.formCache.getValue();
-    if (form) form.updateDirtyFieldAppearances();
+    if (updateFieldAppearances) {
+      const form = this.formCache.getValue();
+      if (form) form.updateDirtyFieldAppearances();
+    }
 
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context, objectsPerTick).serializeToBuffer();

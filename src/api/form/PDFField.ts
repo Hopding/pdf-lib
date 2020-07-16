@@ -88,6 +88,13 @@ export default class PDFField {
     this.acroField.setFlagTo(AcroFieldFlags.NoExport, !exported);
   }
 
+  needsAppearancesUpdate(): boolean {
+    throw new MethodNotImplementedError(
+      this.constructor.name,
+      'needsAppearancesUpdate',
+    );
+  }
+
   defaultUpdateAppearances(_font: PDFFont) {
     throw new MethodNotImplementedError(
       this.constructor.name,
@@ -101,6 +108,10 @@ export default class PDFField {
 
   protected markAsClean() {
     this.doc.getForm().markFieldAsClean(this.ref);
+  }
+
+  protected isDirty(): boolean {
+    return this.doc.getForm().fieldIsDirty(this.ref);
   }
 
   protected createWidget(options: {

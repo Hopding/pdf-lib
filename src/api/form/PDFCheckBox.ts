@@ -4,7 +4,7 @@ import { PDFAcroCheckBox } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
 
 import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
-import { PDFName, PDFRef } from 'src/core';
+import { PDFName, PDFRef, PDFDict } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -79,6 +79,26 @@ export default class PDFCheckBox extends PDFField {
 
     // Add widget to the given page
     page.node.addAnnot(widgetRef);
+  }
+
+  needsAppearancesUpdate(): boolean {
+    if (this.isDirty()) return true;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const onValue = widget.getOnValue();
+      const normal = widget.getAppearances()?.normal;
+
+      const hasOnAppearance =
+        normal instanceof PDFDict && onValue && normal.has(onValue);
+      const hasOffAppearance =
+        normal instanceof PDFDict && normal.has(PDFName.of('Off'));
+
+      if (!hasOnAppearance || !hasOffAppearance) return true;
+    }
+
+    return false;
   }
 
   defaultUpdateAppearances() {

@@ -3,7 +3,7 @@ import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroPushButton } from 'src/core/acroform';
 import { assertIs } from 'src/utils';
-import { PDFRef } from 'src/core';
+import { PDFRef, PDFStream } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -71,6 +71,20 @@ export default class PDFButton extends PDFField {
 
     // Add widget to the given page
     page.node.addAnnot(widgetRef);
+  }
+
+  needsAppearancesUpdate(): boolean {
+    if (this.isDirty()) return true;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const hasAppearances =
+        widget.getAppearances()?.normal instanceof PDFStream;
+      if (!hasAppearances) return true;
+    }
+
+    return false;
   }
 
   defaultUpdateAppearances(font: PDFFont) {
