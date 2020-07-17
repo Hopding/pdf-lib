@@ -3,6 +3,7 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
 import PDFContext from 'src/core/PDFContext';
 import { AcroButtonFlags } from 'src/core/acroform/flags';
+import { InvalidAcroFieldValueError } from '../errors';
 
 class PDFAcroRadioButton extends PDFAcroButton {
   static fromDict = (dict: PDFDict) => new PDFAcroRadioButton(dict);
@@ -19,9 +20,7 @@ class PDFAcroRadioButton extends PDFAcroButton {
   setValue(value: PDFName) {
     const onValues = this.getOnValues();
     if (!onValues.includes(value) && value !== PDFName.of('Off')) {
-      throw new Error(
-        'TODO: FIX ME - INVALID VALUE FOR <FIELD> ... SHOW VALID OPTIONS...',
-      );
+      throw new InvalidAcroFieldValueError();
     }
 
     this.dict.set(PDFName.of('V'), value);
@@ -29,6 +28,11 @@ class PDFAcroRadioButton extends PDFAcroButton {
     const widgets = this.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
+      if (widget.getOnValue() === value) {
+        console.log('---------');
+        console.log('Found widget with value:', value);
+        console.log('---------');
+      }
       const state = widget.getOnValue() === value ? value : PDFName.of('Off');
       widget.setAppearanceState(state);
     }

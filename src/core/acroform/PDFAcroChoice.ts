@@ -4,11 +4,15 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFName from 'src/core/objects/PDFName';
 import { AcroChoiceFlags } from 'src/core/acroform/flags';
+import {
+  InvalidAcroFieldValueError,
+  MultiSelectValueError,
+} from 'src/core/errors';
 
 class PDFAcroChoice extends PDFAcroTerminal {
   // TODO: Remove duplicates
   setValues(values: (PDFString | PDFHexString)[]) {
-    if (!this.valuesAreValid(values)) throw new Error('TODO: FIX ME! INVALID');
+    if (!this.valuesAreValid(values)) throw new InvalidAcroFieldValueError();
 
     if (values.length === 0) {
       this.dict.delete(PDFName.of('V'));
@@ -18,7 +22,7 @@ class PDFAcroChoice extends PDFAcroTerminal {
     }
     if (values.length > 1) {
       if (!this.hasFlag(AcroChoiceFlags.MultiSelect)) {
-        throw new Error('TODO: FIX ME!');
+        throw new MultiSelectValueError();
       }
       this.dict.set(PDFName.of('V'), this.dict.context.obj(values));
     }

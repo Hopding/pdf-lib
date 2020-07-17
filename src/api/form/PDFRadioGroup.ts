@@ -140,13 +140,23 @@ export default class PDFRadioGroup extends PDFField {
     if (exportValues) {
       for (let idx = 0, len = exportValues.length; idx < len; idx++) {
         if (exportValues[idx].decodeText() === option) {
+          console.log('----------');
+          console.log('Setting value (A):', onValues[idx]);
+          console.log('----------');
           this.acroField.setValue(onValues[idx]);
         }
       }
     } else {
       for (let idx = 0, len = onValues.length; idx < len; idx++) {
         const value = onValues[idx];
-        if (value.decodeText() === option) this.acroField.setValue(value);
+        // if (value.decodeText() === option) this.acroField.setValue(value);
+
+        if (value.decodeText() === option) {
+          console.log('----------');
+          console.log('Setting value (B):', onValues[idx]);
+          console.log('----------');
+          this.acroField.setValue(value);
+        }
       }
     }
   }

@@ -7,6 +7,8 @@ import {
   charAtIndex,
   charSplit,
 } from 'src/utils';
+import { CombedTextLayoutError } from 'src/api/errors';
+import { TextAlignment } from './alignment';
 
 export interface TextPosition {
   text: string;
@@ -81,7 +83,7 @@ const computeCombedFontSize = (
 };
 
 export interface LayoutTextOptions {
-  alignment: 'left' | 'center' | 'right';
+  alignment: TextAlignment;
   fontSize?: number;
   font: PDFFont;
   bounds: LayoutBounds;
@@ -122,9 +124,9 @@ export const layoutMultilineText = (
 
     // prettier-ignore
     const x = (
-        alignment === 'left'   ? bounds.x
-      : alignment === 'center' ? bounds.x + (bounds.width / 2) - (width / 2)
-      : alignment === 'right'  ? bounds.x + bounds.width - width
+        alignment === TextAlignment.Left   ? bounds.x
+      : alignment === TextAlignment.Center ? bounds.x + (bounds.width / 2) - (width / 2)
+      : alignment === TextAlignment.Right  ? bounds.x + bounds.width - width
       : bounds.x
     );
 
@@ -171,7 +173,7 @@ export const layoutCombedText = (
   const line = mergeLines(cleanText(text));
 
   if (line.length > cellCount) {
-    throw new Error('TODO: FIX ME!!! length mismatch');
+    throw new CombedTextLayoutError(line.length, cellCount);
   }
 
   if (fontSize === undefined || fontSize === 0) {
@@ -225,7 +227,7 @@ export const layoutCombedText = (
 };
 
 export interface LayoutSinglelineTextOptions {
-  alignment: 'left' | 'center' | 'right';
+  alignment: TextAlignment;
   fontSize?: number;
   font: PDFFont;
   bounds: LayoutBounds;
@@ -253,9 +255,9 @@ export const layoutSinglelineText = (
 
   // prettier-ignore
   const x = (
-      alignment === 'left'   ? bounds.x
-    : alignment === 'center' ? bounds.x + (bounds.width / 2) - (width / 2)
-    : alignment === 'right'  ? bounds.x + bounds.width - width
+      alignment === TextAlignment.Left   ? bounds.x
+    : alignment === TextAlignment.Center ? bounds.x + (bounds.width / 2) - (width / 2)
+    : alignment === TextAlignment.Right  ? bounds.x + bounds.width - width
     : bounds.x
   );
 

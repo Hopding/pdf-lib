@@ -32,6 +32,7 @@ import {
   layoutSinglelineText,
 } from '../text/layout';
 import { setFontAndSize } from '../operators';
+import { TextAlignment } from '../text/alignment';
 
 /*********************** Appearance Provider Types ****************************/
 
@@ -369,13 +370,13 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
     height: height - borderWidth * 2,
   };
   const normalLayout = layoutSinglelineText(normalText, {
-    alignment: 'center',
+    alignment: TextAlignment.Center,
     fontSize: widgetFontSize ?? fieldFontSize,
     font,
     bounds,
   });
   const downLayout = layoutSinglelineText(downText, {
-    alignment: 'center',
+    alignment: TextAlignment.Center,
     fontSize: widgetFontSize ?? fieldFontSize,
     font,
     bounds,
@@ -549,7 +550,7 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
     height: height - borderWidth * 2,
   };
   const { line, fontSize } = layoutSinglelineText(text, {
-    alignment: 'left',
+    alignment: TextAlignment.Left,
     fontSize: widgetFontSize ?? fieldFontSize,
     font,
     bounds,
@@ -623,7 +624,7 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
     height: height - borderWidth * 2,
   };
   const { lines, fontSize, lineHeight } = layoutMultilineText(text, {
-    alignment: 'left',
+    alignment: TextAlignment.Left,
     fontSize: widgetFontSize ?? fieldFontSize,
     font,
     bounds,

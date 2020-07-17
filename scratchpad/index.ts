@@ -456,14 +456,14 @@ import {
   rg1.clear();
   console.log('rg1.getSelected():', rg1.getSelected());
   console.log('rg1.getOptions():', rg1.getOptions());
-  // rg1.updateAppearances();
+  rg1.updateAppearances();
 
   const rg2 = form.getRadioGroup('Group2');
-  rg2.select('Choice3');
+  rg2.select('Choice1');
   rg2.clear();
   console.log('rg2.getSelected():', rg2.getSelected());
   console.log('rg2.getOptions():', rg2.getOptions());
-  // rg2.updateAppearances();
+  rg2.updateAppearances();
 
   rg1.addOptionToPage('Testing lulz 🛁', page1, {
     x: page2.getWidth() - 50,

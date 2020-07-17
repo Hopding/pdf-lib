@@ -2,7 +2,7 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroText, AcroTextFlags } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertIsOneOf } from 'src/utils';
 
 import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
 import { PDFHexString, PDFRef, PDFStream } from 'src/core';
@@ -14,6 +14,8 @@ import {
 } from 'src/api/form/appearances';
 import { rgb } from '../colors';
 import { degrees } from '../rotations';
+import { RichTextFieldReadError } from '../errors';
+import { TextAlignment } from '../text/alignment';
 
 /**
  * Represents a text field of a [[PDFForm]].
@@ -54,26 +56,27 @@ export default class PDFTextField extends PDFField {
   getText(): string | undefined {
     const value = this.acroField.getValue();
     if (!value && this.hasRichText()) {
-      throw new Error('TODO: FIX ME! reading rich text fields not supported?');
+      throw new RichTextFieldReadError(this.getName());
     }
     return value?.decodeText();
   }
 
-  setAlignment(alignment: 'left' | 'center' | 'right') {
-    // TODO: Validate `alignment`
+  setAlignment(alignment: TextAlignment) {
+    assertIsOneOf(alignment, 'alignment', TextAlignment);
     this.markAsDirty();
-    if (alignment === 'left') this.acroField.setQuadding(0);
-    else if (alignment === 'center') this.acroField.setQuadding(1);
-    else if (alignment === 'right') this.acroField.setQuadding(2);
-    else throw new Error('TODO: FIX ME! Invalid alignment');
+    this.acroField.setQuadding(alignment);
   }
 
-  getAlignment(): 'left' | 'center' | 'right' {
+  getAlignment(): TextAlignment {
     const quadding = this.acroField.getQuadding();
-    if (quadding === 0) return 'left';
-    else if (quadding === 1) return 'center';
-    else if (quadding === 2) return 'right';
-    else return 'left';
+
+    // prettier-ignore
+    return (
+        quadding === 0 ? TextAlignment.Left
+      : quadding === 1 ? TextAlignment.Center
+      : quadding === 2 ? TextAlignment.Right
+      : TextAlignment.Left
+    );
   }
 
   // TODO: What if value is already over `maxLength`?
@@ -140,9 +143,8 @@ export default class PDFTextField extends PDFField {
   }
 
   setIsEvenlySpaced(isEvenlySpaced: boolean) {
-    if (this.getMaxLength() === undefined) {
-      throw new Error('TODO: FIX ME! need to have a maxLength defined');
-    }
+    // TODO: `console.warn` if `this.getMaxLength() === undefined` since
+    //       otherwise the field will not take on a combed appearance.
 
     this.markAsDirty();
 

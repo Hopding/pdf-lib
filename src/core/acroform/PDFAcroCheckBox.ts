@@ -3,6 +3,8 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
 import PDFContext from 'src/core/PDFContext';
 
+import { InvalidAcroFieldValueError } from 'src/core/errors';
+
 class PDFAcroCheckBox extends PDFAcroButton {
   static fromDict = (dict: PDFDict) => new PDFAcroCheckBox(dict);
 
@@ -17,9 +19,7 @@ class PDFAcroCheckBox extends PDFAcroButton {
   setValue(value: PDFName) {
     const onValue = this.getOnValue();
     if (value !== onValue && value !== PDFName.of('Off')) {
-      throw new Error(
-        'TODO: FIX ME - INVALID VALUE FOR <FIELD> ... SHOW VALID OPTIONS...',
-      );
+      throw new InvalidAcroFieldValueError();
     }
 
     this.dict.set(PDFName.of('V'), value);

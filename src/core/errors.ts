@@ -106,6 +106,20 @@ export class IndexOutOfBoundsError extends Error {
   }
 }
 
+export class InvalidAcroFieldValueError extends Error {
+  constructor() {
+    const msg = `Attempted to set invalid field value`;
+    super(msg);
+  }
+}
+
+export class MultiSelectValueError extends Error {
+  constructor() {
+    const msg = `Attempted to select multiple values for single-select field`;
+    super(msg);
+  }
+}
+
 /***** Parser Errors ******/
 
 export interface Position {

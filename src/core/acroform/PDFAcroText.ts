@@ -37,7 +37,7 @@ class PDFAcroText extends PDFAcroTerminal {
     return this.MaxLen()?.asNumber();
   }
 
-  setQuadding(quadding: number) {
+  setQuadding(quadding: 0 | 1 | 2) {
     this.dict.set(PDFName.of('Q'), PDFNumber.of(quadding));
   }
 

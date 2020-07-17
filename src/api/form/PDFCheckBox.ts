@@ -13,6 +13,7 @@ import {
 } from 'src/api/form/appearances';
 import { rgb } from '../colors';
 import { degrees } from '../rotations';
+import { MissingOnValueCheckError } from '../errors';
 
 /**
  * Represents a check box field of a [[PDFForm]].
@@ -40,7 +41,7 @@ export default class PDFCheckBox extends PDFField {
 
   check() {
     const onValue = this.acroField.getOnValue();
-    if (!onValue) throw new Error('TODO: FIX ME!');
+    if (!onValue) throw new MissingOnValueCheckError(onValue);
     this.markAsDirty();
     this.acroField.setValue(onValue);
   }

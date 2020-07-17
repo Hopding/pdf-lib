@@ -23,7 +23,12 @@ import PDFSignature from 'src/api/form/PDFSignature';
 import PDFTextField from 'src/api/form/PDFTextField';
 import { createPDFAcroFields } from 'src/core/acroform/utils';
 import { PDFRef } from 'src/core';
-import { NoSuchFieldError, UnexpectedFieldTypeError } from 'src/api/errors';
+import {
+  NoSuchFieldError,
+  UnexpectedFieldTypeError,
+  FieldAlreadyExistsError,
+  InvalidFieldNamePartError,
+} from 'src/api/errors';
 import { PDFFont } from '..';
 import { StandardFonts } from '../StandardFonts';
 
@@ -80,7 +85,7 @@ const addFieldToParent = (
   );
   for (let idx = 0, len = fields.length; idx < len; idx++) {
     if (fields[idx][0].getPartialName() === partialName) {
-      throw new Error('TODO: FIX ME!!! Duplicate field name');
+      throw new FieldAlreadyExistsError(partialName);
     }
   }
   parent.addField(fieldRef);
@@ -314,7 +319,7 @@ export default class PDFForm {
     ];
     for (let idx = 0, len = partialNames.length; idx < len; idx++) {
       const namePart = partialNames[idx];
-      if (!namePart) throw new Error('TODO: FIX ME! invalid name part...');
+      if (!namePart) throw new InvalidFieldNamePartError(namePart);
       const [parent, parentRef] = nonTerminal;
       const res = this.findNonTerminal(namePart, parent);
 
@@ -345,7 +350,7 @@ export default class PDFForm {
       const [field, ref] = fields[idx];
       if (field.getPartialName() === partialName) {
         if (field instanceof PDFAcroNonTerminal) return [field, ref];
-        throw new Error('TODO: FIX ME! Found field, but is not a non-terminal');
+        throw new FieldAlreadyExistsError(partialName);
       }
     }
 
