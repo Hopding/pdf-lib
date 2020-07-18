@@ -28,11 +28,6 @@ class PDFAcroRadioButton extends PDFAcroButton {
     const widgets = this.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      if (widget.getOnValue() === value) {
-        console.log('---------');
-        console.log('Found widget with value:', value);
-        console.log('---------');
-      }
       const state = widget.getOnValue() === value ? value : PDFName.of('Off');
       widget.setAppearanceState(state);
     }

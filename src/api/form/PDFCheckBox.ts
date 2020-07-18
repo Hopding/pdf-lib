@@ -1,9 +1,12 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import { PDFAcroCheckBox } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
-import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
+import PDFField, {
+  FieldAppearanceOptions,
+  assertFieldAppearanceOptions,
+} from 'src/api/form/PDFField';
 import { PDFName, PDFRef, PDFDict } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
@@ -57,6 +60,9 @@ export default class PDFCheckBox extends PDFField {
   }
 
   addToPage(page: PDFPage, options?: FieldAppearanceOptions) {
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    assertFieldAppearanceOptions(options);
+
     // Create a widget for this check box
     const widget = this.createWidget({
       x: options?.x ?? 0,
@@ -107,6 +113,8 @@ export default class PDFCheckBox extends PDFField {
   }
 
   updateAppearances(provider?: AppearanceProviderFor<PDFCheckBox>) {
+    assertOrUndefined(provider, 'provider', [Function]);
+
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];

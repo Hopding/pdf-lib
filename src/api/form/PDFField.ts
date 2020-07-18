@@ -1,6 +1,6 @@
 import PDFDocument from 'src/api/PDFDocument';
 import { PDFAcroField, AcroFieldFlags } from 'src/core/acroform';
-import { assertIs, assertMultiple } from 'src/utils';
+import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 import {
   PDFRef,
   PDFWidgetAnnotation,
@@ -29,6 +29,26 @@ export interface FieldAppearanceOptions {
   borderWidth?: number;
   rotate?: Rotation;
 }
+
+export const assertFieldAppearanceOptions = (
+  options?: FieldAppearanceOptions,
+) => {
+  assertOrUndefined(options?.x, 'options.x', ['number']);
+  assertOrUndefined(options?.y, 'options.y', ['number']);
+  assertOrUndefined(options?.width, 'options.width', ['number']);
+  assertOrUndefined(options?.height, 'options.height', ['number']);
+  assertOrUndefined(options?.textColor, 'options.textColor', [
+    [Object, 'Color'],
+  ]);
+  assertOrUndefined(options?.backgroundColor, 'options.backgroundColor', [
+    [Object, 'Color'],
+  ]);
+  assertOrUndefined(options?.borderColor, 'options.borderColor', [
+    [Object, 'Color'],
+  ]);
+  assertOrUndefined(options?.borderWidth, 'options.borderWidth', ['number']);
+  assertOrUndefined(options?.rotate, 'options.rotate', [[Object, 'Rotation']]);
+};
 
 /**
  * Represents a field of a [[PDFForm]].
@@ -69,6 +89,7 @@ export default class PDFField {
   }
 
   setReadOnly(readOnly: boolean) {
+    assertIs(readOnly, 'readOnly', ['boolean']);
     this.acroField.setFlagTo(AcroFieldFlags.ReadOnly, readOnly);
   }
 
@@ -77,6 +98,7 @@ export default class PDFField {
   }
 
   setRequired(required: boolean) {
+    assertIs(required, 'required', ['boolean']);
     this.acroField.setFlagTo(AcroFieldFlags.Required, required);
   }
 
@@ -85,6 +107,7 @@ export default class PDFField {
   }
 
   setExported(exported: boolean) {
+    assertIs(exported, 'exported', ['boolean']);
     this.acroField.setFlagTo(AcroFieldFlags.NoExport, !exported);
   }
 

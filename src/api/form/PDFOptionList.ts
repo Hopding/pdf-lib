@@ -2,9 +2,12 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroListBox, AcroChoiceFlags } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
-import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
+import PDFField, {
+  FieldAppearanceOptions,
+  assertFieldAppearanceOptions,
+} from 'src/api/form/PDFField';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
@@ -80,6 +83,8 @@ export default class PDFOptionList extends PDFField {
   // }
 
   setOptions(options: string[]) {
+    assertIs(options, 'options', [Array]);
+
     this.markAsDirty();
     const optionObjects = new Array<{ value: PDFHexString }>(options.length);
     for (let idx = 0, len = options.length; idx < len; idx++) {
@@ -159,6 +164,7 @@ export default class PDFOptionList extends PDFField {
   }
 
   setRequireSorting(require: boolean) {
+    assertIs(require, 'require', ['boolean']);
     this.acroField.setFlagTo(AcroChoiceFlags.Sort, require);
   }
 
@@ -167,6 +173,7 @@ export default class PDFOptionList extends PDFField {
   }
 
   setAllowMultiSelect(allow: boolean) {
+    assertIs(allow, 'allow', ['boolean']);
     this.acroField.setFlagTo(AcroChoiceFlags.MultiSelect, allow);
   }
 
@@ -187,10 +194,15 @@ export default class PDFOptionList extends PDFField {
   }
 
   setCommitImmediately(enable: boolean) {
+    assertIs(enable, 'enable', ['boolean']);
     this.acroField.setFlagTo(AcroChoiceFlags.CommitOnSelChange, enable);
   }
 
   addToPage(font: PDFFont, page: PDFPage, options?: FieldAppearanceOptions) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    assertFieldAppearanceOptions(options);
+
     // Create a widget for this option list
     const widget = this.createWidget({
       x: options?.x ?? 0,
@@ -230,6 +242,7 @@ export default class PDFOptionList extends PDFField {
   }
 
   defaultUpdateAppearances(font: PDFFont) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.updateAppearances(font);
   }
 
@@ -237,6 +250,9 @@ export default class PDFOptionList extends PDFField {
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFOptionList>,
   ) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+    assertOrUndefined(provider, 'provider', [Function]);
+
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];

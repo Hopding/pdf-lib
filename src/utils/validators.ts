@@ -77,6 +77,7 @@ export type TypeDescriptor =
   | ArrayConstructor
   | Uint8ArrayConstructor
   | ArrayBufferConstructor
+  | FunctionConstructor
   | [Function, string];
 
 export const isType = (value: any, type: TypeDescriptor) => {
@@ -91,6 +92,7 @@ export const isType = (value: any, type: TypeDescriptor) => {
   if (type === Array) return value instanceof Array;
   if (type === Uint8Array) return value instanceof Uint8Array;
   if (type === ArrayBuffer) return value instanceof ArrayBuffer;
+  if (type === Function) return value instanceof Function;
   return value instanceof (type as [Function, string])[0];
 };
 

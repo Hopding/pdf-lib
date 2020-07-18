@@ -11,7 +11,7 @@ import {
   PDFAcroPushButton,
   PDFAcroNonTerminal,
 } from 'src/core/acroform';
-import { assertIs, Cache } from 'src/utils';
+import { assertIs, Cache, assertOrUndefined } from 'src/utils';
 
 import PDFField from 'src/api/form/PDFField';
 import PDFButton from 'src/api/form/PDFButton';
@@ -289,6 +289,8 @@ export default class PDFForm {
   }
 
   updateDirtyFieldAppearances(font?: PDFFont) {
+    assertOrUndefined(font, 'font', [[PDFFont, 'PDFFont']]);
+
     font = font ?? this.defaultFontCache.access();
 
     const fields = this.getFields();
@@ -302,14 +304,17 @@ export default class PDFForm {
   }
 
   markFieldAsDirty(fieldRef: PDFRef) {
+    assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
     this.dirtyFields.add(fieldRef);
   }
 
   markFieldAsClean(fieldRef: PDFRef) {
+    assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
     this.dirtyFields.delete(fieldRef);
   }
 
   fieldIsDirty(fieldRef: PDFRef): boolean {
+    assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
     return this.dirtyFields.has(fieldRef);
   }
 

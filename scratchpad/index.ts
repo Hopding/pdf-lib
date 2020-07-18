@@ -460,7 +460,6 @@ import {
 
   const rg2 = form.getRadioGroup('Group2');
   rg2.select('Choice1');
-  rg2.clear();
   console.log('rg2.getSelected():', rg2.getSelected());
   console.log('rg2.getOptions():', rg2.getOptions());
   rg2.updateAppearances();

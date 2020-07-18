@@ -2,9 +2,12 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroComboBox, AcroChoiceFlags } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
-import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
+import PDFField, {
+  FieldAppearanceOptions,
+  assertFieldAppearanceOptions,
+} from 'src/api/form/PDFField';
 import { PDFHexString, PDFRef, PDFString, PDFStream } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
@@ -82,6 +85,8 @@ export default class PDFDropdown extends PDFField {
   // }
 
   setOptions(options: string[]) {
+    assertIs(options, 'options', [Array]);
+
     const optionObjects = new Array<{ value: PDFHexString }>(options.length);
     for (let idx = 0, len = options.length; idx < len; idx++) {
       optionObjects[idx] = { value: PDFHexString.fromText(options[idx]) };
@@ -150,6 +155,7 @@ export default class PDFDropdown extends PDFField {
   }
 
   setAllowEditing(allow: boolean) {
+    assertIs(allow, 'allow', ['boolean']);
     this.acroField.setFlagTo(AcroChoiceFlags.Edit, allow);
   }
 
@@ -158,6 +164,7 @@ export default class PDFDropdown extends PDFField {
   }
 
   setRequireSorting(require: boolean) {
+    assertIs(require, 'require', ['boolean']);
     this.acroField.setFlagTo(AcroChoiceFlags.Sort, require);
   }
 
@@ -166,6 +173,7 @@ export default class PDFDropdown extends PDFField {
   }
 
   setAllowMultiSelect(allow: boolean) {
+    assertIs(allow, 'allow', ['boolean']);
     this.acroField.setFlagTo(AcroChoiceFlags.MultiSelect, allow);
   }
 
@@ -177,6 +185,7 @@ export default class PDFDropdown extends PDFField {
   }
 
   setSpellCheck(enable: boolean) {
+    assertIs(enable, 'enable', ['boolean']);
     if (enable) this.setAllowEditing(true);
     this.acroField.setFlagTo(AcroChoiceFlags.DoNotSpellCheck, !enable);
   }
@@ -186,10 +195,15 @@ export default class PDFDropdown extends PDFField {
   }
 
   setCommitImmediately(enable: boolean) {
+    assertIs(enable, 'enable', ['boolean']);
     this.acroField.setFlagTo(AcroChoiceFlags.CommitOnSelChange, enable);
   }
 
   addToPage(font: PDFFont, page: PDFPage, options?: FieldAppearanceOptions) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    assertFieldAppearanceOptions(options);
+
     // Create a widget for this dropdown
     const widget = this.createWidget({
       x: options?.x ?? 0,
@@ -229,6 +243,7 @@ export default class PDFDropdown extends PDFField {
   }
 
   defaultUpdateAppearances(font: PDFFont) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.updateAppearances(font);
   }
 
@@ -236,6 +251,9 @@ export default class PDFDropdown extends PDFField {
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFDropdown>,
   ) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+    assertOrUndefined(provider, 'provider', [Function]);
+
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];

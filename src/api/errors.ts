@@ -95,3 +95,10 @@ export class CombedTextLayoutError extends Error {
     super(msg);
   }
 }
+
+export class ExceededMaxLengthError extends Error {
+  constructor(textLength: number, maxLength: number) {
+    const msg = `Attempted to set text with length=${textLength} for TextField with maxLength=${maxLength}`;
+    super(msg);
+  }
+}

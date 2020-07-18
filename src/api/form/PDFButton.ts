@@ -2,7 +2,7 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroPushButton } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 import { PDFRef, PDFStream } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
@@ -11,7 +11,10 @@ import {
   defaultButtonAppearanceProvider,
 } from 'src/api/form/appearances';
 
-import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
+import PDFField, {
+  FieldAppearanceOptions,
+  assertFieldAppearanceOptions,
+} from 'src/api/form/PDFField';
 import { rgb } from '../colors';
 import { degrees } from '../rotations';
 
@@ -48,6 +51,11 @@ export default class PDFButton extends PDFField {
     page: PDFPage,
     options?: FieldAppearanceOptions,
   ) {
+    assertOrUndefined(text, 'text', ['string']);
+    assertOrUndefined(font, 'font', [[PDFFont, 'PDFFont']]);
+    assertOrUndefined(page, 'page', [[PDFPage, 'PDFPage']]);
+    assertFieldAppearanceOptions(options);
+
     // Create a widget for this button
     const widget = this.createWidget({
       x: (options?.x ?? 0) - (options?.borderWidth ?? 0) / 2,
@@ -88,6 +96,7 @@ export default class PDFButton extends PDFField {
   }
 
   defaultUpdateAppearances(font: PDFFont) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.updateAppearances(font);
   }
 
@@ -95,6 +104,9 @@ export default class PDFButton extends PDFField {
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFButton>,
   ) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+    assertOrUndefined(provider, 'provider', [Function]);
+
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];

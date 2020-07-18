@@ -2,9 +2,17 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroText, AcroTextFlags } from 'src/core/acroform';
-import { assertIs, assertIsOneOf } from 'src/utils';
+import {
+  assertIs,
+  assertIsOneOf,
+  assertOrUndefined,
+  assertRange,
+} from 'src/utils';
 
-import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
+import PDFField, {
+  FieldAppearanceOptions,
+  assertFieldAppearanceOptions,
+} from 'src/api/form/PDFField';
 import { PDFHexString, PDFRef, PDFStream } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
@@ -14,7 +22,7 @@ import {
 } from 'src/api/form/appearances';
 import { rgb } from '../colors';
 import { degrees } from '../rotations';
-import { RichTextFieldReadError } from '../errors';
+import { RichTextFieldReadError, ExceededMaxLengthError } from '../errors';
 import { TextAlignment } from '../text/alignment';
 
 /**
@@ -36,11 +44,11 @@ export default class PDFTextField extends PDFField {
   }
 
   setText(text: string | undefined) {
+    assertOrUndefined(text, 'text', ['string']);
+
     const maxLength = this.getMaxLength();
     if (maxLength !== undefined && text && text.length > maxLength) {
-      throw new Error(
-        `TODO: FIX ME! exceeds max length ${text.length}/${maxLength}`,
-      );
+      throw new ExceededMaxLengthError(text.length, maxLength);
     }
 
     this.markAsDirty();
@@ -81,7 +89,7 @@ export default class PDFTextField extends PDFField {
 
   // TODO: What if value is already over `maxLength`?
   setMaxLength(maxLength: number) {
-    // TODO: Assert >= 0
+    assertRange(maxLength, 'maxLength', 0, Number.MAX_SAFE_INTEGER);
     this.markAsDirty();
     this.acroField.setMaxLength(maxLength);
   }
@@ -95,6 +103,7 @@ export default class PDFTextField extends PDFField {
   }
 
   setIsMultiline(isMultiline: boolean) {
+    assertIs(isMultiline, 'isMultiline', ['boolean']);
     this.markAsDirty();
     this.acroField.setFlagTo(AcroTextFlags.Multiline, isMultiline);
   }
@@ -104,6 +113,7 @@ export default class PDFTextField extends PDFField {
   }
 
   setIsPassword(isPassword: boolean) {
+    assertIs(isPassword, 'isPassword', ['boolean']);
     this.acroField.setFlagTo(AcroTextFlags.Password, isPassword);
   }
 
@@ -112,6 +122,7 @@ export default class PDFTextField extends PDFField {
   }
 
   setIsFileSelect(isFileSelect: boolean) {
+    assertIs(isFileSelect, 'isFileSelect', ['boolean']);
     this.acroField.setFlagTo(AcroTextFlags.FileSelect, isFileSelect);
   }
 
@@ -120,6 +131,7 @@ export default class PDFTextField extends PDFField {
   }
 
   setSpellCheck(enable: boolean) {
+    assertIs(enable, 'enable', ['boolean']);
     this.acroField.setFlagTo(AcroTextFlags.DoNotSpellCheck, !enable);
   }
 
@@ -128,6 +140,7 @@ export default class PDFTextField extends PDFField {
   }
 
   setScroll(enable: boolean) {
+    assertIs(enable, 'enable', ['boolean']);
     this.acroField.setFlagTo(AcroTextFlags.DoNotScroll, !enable);
   }
 
@@ -143,6 +156,8 @@ export default class PDFTextField extends PDFField {
   }
 
   setIsEvenlySpaced(isEvenlySpaced: boolean) {
+    assertIs(isEvenlySpaced, 'isEvenlySpaced', ['boolean']);
+
     // TODO: `console.warn` if `this.getMaxLength() === undefined` since
     //       otherwise the field will not take on a combed appearance.
 
@@ -162,10 +177,15 @@ export default class PDFTextField extends PDFField {
   }
 
   setHasRichText(enable: boolean) {
+    assertIs(enable, 'enable', ['boolean']);
     this.acroField.setFlagTo(AcroTextFlags.RichText, enable);
   }
 
   addToPage(font: PDFFont, page: PDFPage, options?: FieldAppearanceOptions) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    assertFieldAppearanceOptions(options);
+
     // Create a widget for this text field
     const widget = this.createWidget({
       x: options?.x ?? 0,
@@ -205,6 +225,7 @@ export default class PDFTextField extends PDFField {
   }
 
   defaultUpdateAppearances(font: PDFFont) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.updateAppearances(font);
   }
 
@@ -212,6 +233,9 @@ export default class PDFTextField extends PDFField {
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFTextField>,
   ) {
+    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+    assertIs(provider, 'provider', [Function]);
+
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
