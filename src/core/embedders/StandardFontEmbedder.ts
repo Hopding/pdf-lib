@@ -1,9 +1,4 @@
-import {
-  Encodings,
-  Font,
-  FontNames,
-  IEncoding as Encoding,
-} from '@pdf-lib/standard-fonts';
+import { Encodings, Font, FontNames, Encoding } from '@pdf-lib/standard-fonts';
 
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFRef from 'src/core/objects/PDFRef';

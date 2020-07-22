@@ -1,9 +1,12 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import { PDFAcroRadioButton, AcroButtonFlags } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
-import PDFField, { FieldAppearanceOptions } from 'src/api/form/PDFField';
+import PDFField, {
+  FieldAppearanceOptions,
+  assertFieldAppearanceOptions,
+} from 'src/api/form/PDFField';
 import { PDFName, PDFRef, PDFHexString, PDFDict } from 'src/core';
 import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
@@ -77,6 +80,10 @@ export default class PDFRadioGroup extends PDFField {
     page: PDFPage,
     options?: FieldAppearanceOptions,
   ) {
+    assertIs(option, 'option', ['string']);
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    assertFieldAppearanceOptions(options);
+
     // Create a widget for this radio button
     const widget = this.createWidget({
       x: options?.x ?? 0,
@@ -160,6 +167,7 @@ export default class PDFRadioGroup extends PDFField {
   }
 
   setAllowTogglingOff(allow: boolean) {
+    assertIs(allow, 'allow', ['boolean']);
     this.acroField.setFlagTo(AcroButtonFlags.NoToggleToOff, !allow);
   }
 
@@ -168,6 +176,7 @@ export default class PDFRadioGroup extends PDFField {
   }
 
   setRadiosAreMutuallyExclusive(enable: boolean) {
+    assertIs(enable, 'enable', ['boolean']);
     this.acroField.setFlagTo(AcroButtonFlags.RadiosInUnison, !enable);
   }
 
@@ -196,6 +205,8 @@ export default class PDFRadioGroup extends PDFField {
   }
 
   updateAppearances(provider?: AppearanceProviderFor<PDFRadioGroup>) {
+    assertOrUndefined(provider, 'provider', [Function]);
+
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];

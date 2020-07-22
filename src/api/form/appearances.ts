@@ -108,21 +108,28 @@ export const normalizeAppearance = <T>(
   return { normal: appearance };
 };
 
+const findLastMatch = (value: string, regex: RegExp) => {
+  let position = 0;
+  let lastMatch: RegExpMatchArray | undefined;
+  while (position < value.length) {
+    const match = value.substring(position).match(regex);
+    if (!match) return lastMatch;
+    lastMatch = match;
+    position += (match.index ?? 0) + match[0].length;
+  }
+  return lastMatch;
+};
+
 // Examples:
 //   `/Helv 12 Tf` -> ['Helv', '12']
 //   `/HeBo 8.00 Tf` -> ['HeBo', '8.00']
 const tfRegex = /\/([^\0\t\n\f\r\ ]+)[\0\t\n\f\r\ ]+(\d*\.\d+|\d+)[\0\t\n\f\r\ ]+Tf/;
 
-// TODO: Does this take the _last_ match?
-const getDefaultFontSize = (
-  field: {
-    setDefaultAppearance(appearance: string): void;
-    getDefaultAppearance(): string | undefined;
-  },
-  // field: PDFAcroText | PDFAcroComboBox | PDFAcroPushButton,
-) => {
+const getDefaultFontSize = (field: {
+  getDefaultAppearance(): string | undefined;
+}) => {
   const da = field.getDefaultAppearance() ?? '';
-  const daMatch = da.match(tfRegex) ?? [];
+  const daMatch = findLastMatch(da, tfRegex) ?? [];
   const defaultFontSize = Number(daMatch[2]);
   return isFinite(defaultFontSize) ? defaultFontSize : undefined;
 };
@@ -133,13 +140,11 @@ const getDefaultFontSize = (
 //   `0.3 1 .3 0 k` -> ['0.3', '1', '.3', '0', 'k']
 const colorRegex = /(\d*\.\d+|\d+)[\0\t\n\f\r\ ]*(\d*\.\d+|\d+)?[\0\t\n\f\r\ ]*(\d*\.\d+|\d+)?[\0\t\n\f\r\ ]*(\d*\.\d+|\d+)?[\0\t\n\f\r\ ]+(g|rg|k)/;
 
-// TODO: Does this take the _last_ match?
 const getDefaultColor = (field: {
-  setDefaultAppearance(appearance: string): void;
   getDefaultAppearance(): string | undefined;
 }) => {
   const da = field.getDefaultAppearance() ?? '';
-  const daMatch = da.match(colorRegex);
+  const daMatch = findLastMatch(da, colorRegex);
 
   const [, c1, c2, c3, c4, colorSpace] = daMatch ?? [];
 
@@ -358,7 +363,6 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
 
   const black = rgb(0, 0, 0);
 
-  // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
   const borderColor = componentsToColor(ap?.getBorderColor());
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
   const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
@@ -448,18 +452,18 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
 
   const black = rgb(0, 0, 0);
 
-  // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
   const borderColor = componentsToColor(ap?.getBorderColor());
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
 
   let textLines: TextPosition[];
   let fontSize: number;
 
+  const padding = 1;
   const bounds = {
-    x: borderWidth,
-    y: borderWidth,
-    width: width - borderWidth * 2,
-    height: height - borderWidth * 2,
+    x: borderWidth + padding,
+    y: borderWidth + padding,
+    width: width - (borderWidth + padding) * 2,
+    height: height - (borderWidth + padding) * 2,
   };
   if (textField.isMultiline()) {
     const layout = layoutMultilineText(text, {
@@ -510,6 +514,7 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
     fontSize,
     color: normalBackgroundColor,
     textLines,
+    padding,
   };
 
   return [...rotate, ...drawTextField(options)];
@@ -539,15 +544,15 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
 
   const black = rgb(0, 0, 0);
 
-  // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
   const borderColor = componentsToColor(ap?.getBorderColor());
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
 
+  const padding = 1;
   const bounds = {
-    x: borderWidth,
-    y: borderWidth,
-    width: width - borderWidth * 2,
-    height: height - borderWidth * 2,
+    x: borderWidth + padding,
+    y: borderWidth + padding,
+    width: width - (borderWidth + padding) * 2,
+    height: height - (borderWidth + padding) * 2,
   };
   const { line, fontSize } = layoutSinglelineText(text, {
     alignment: TextAlignment.Left,
@@ -576,6 +581,7 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
     fontSize,
     color: normalBackgroundColor,
     textLines: [line],
+    padding,
   };
 
   return [...rotate, ...drawTextField(options)];
@@ -604,7 +610,6 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
 
   const black = rgb(0, 0, 0);
 
-  // TODO: Probably shouldn't default this so it can be transparent (e.g. check box and radio group)
   const borderColor = componentsToColor(ap?.getBorderColor());
   const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
 
@@ -617,11 +622,12 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
     if (idx < len - 1) text += '\n';
   }
 
+  const padding = 1;
   const bounds = {
-    x: borderWidth,
-    y: borderWidth,
-    width: width - borderWidth * 2,
-    height: height - borderWidth * 2,
+    x: borderWidth + padding,
+    y: borderWidth + padding,
+    width: width - (borderWidth + padding) * 2,
+    height: height - (borderWidth + padding) * 2,
   };
   const { lines, fontSize, lineHeight } = layoutMultilineText(text, {
     alignment: TextAlignment.Left,
@@ -663,6 +669,7 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
       lineHeight,
       selectedColor: blue,
       selectedLines,
+      padding,
     }),
   ];
 };

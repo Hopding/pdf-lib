@@ -30,6 +30,8 @@ import {
   setDashPattern,
   beginMarkedContent,
   endMarkedContent,
+  clip,
+  endPath,
 } from 'src/api/operators';
 import { Rotation, toRadians, degrees } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
@@ -452,7 +454,7 @@ export const drawCheckBox = (options: {
     color: options.markColor,
   });
 
-  return [...outline, ...checkMark];
+  return [pushGraphicsState(), ...outline, ...checkMark, popGraphicsState()];
 };
 
 export const drawRadioButton = (options: {
@@ -493,59 +495,8 @@ export const drawRadioButton = (options: {
     borderWidth: 0,
   });
 
-  return [...outline, ...dot];
+  return [pushGraphicsState(), ...outline, ...dot, popGraphicsState()];
 };
-
-// // TODO: Need to push/pop graphics state on all this stuff...
-// export const drawButton = (options: {
-//   x: number | PDFNumber;
-//   y: number | PDFNumber;
-//   width: number | PDFNumber;
-//   height: number | PDFNumber;
-//   borderWidth: number | PDFNumber;
-//   color: Color | undefined;
-//   borderColor: Color | undefined;
-//   text: string;
-//   textColor: Color;
-//   font: string | PDFName;
-//   fontSize: number | PDFNumber;
-//   encodeText: (t: string) => PDFHexString;
-//   widthOfText: (t: string) => number;
-//   heightOfText: (t: string) => number;
-// }) => {
-//   const x = asNumber(options.x);
-//   const y = asNumber(options.y);
-//   const width = asNumber(options.width);
-//   const height = asNumber(options.height);
-//   const textWidth = options.widthOfText(options.text);
-//   const textHeight = options.heightOfText(options.text);
-
-//   const background = drawRectangle({
-//     x,
-//     y,
-//     width,
-//     height,
-//     borderWidth: options.borderWidth,
-//     color: options.color,
-//     borderColor: options.borderColor,
-//     rotate: degrees(0),
-//     xSkew: degrees(0),
-//     ySkew: degrees(0),
-//   });
-
-//   const label = drawText(options.encodeText(options.text), {
-//     color: options.textColor,
-//     font: options.font,
-//     size: options.fontSize,
-//     rotate: degrees(0),
-//     xSkew: degrees(0),
-//     ySkew: degrees(0),
-//     x: x + (width / 2 - textWidth / 2),
-//     y: y + (height / 2 - textHeight / 2),
-//   });
-
-//   return [...background, ...label];
-// };
 
 export const drawButton = (options: {
   x: number | PDFNumber;
@@ -587,7 +538,7 @@ export const drawButton = (options: {
     ySkew: degrees(0),
   });
 
-  return [...background, ...lines];
+  return [pushGraphicsState(), ...background, ...lines, popGraphicsState()];
 };
 
 export interface DrawTextLinesOptions {
@@ -603,13 +554,6 @@ export const drawTextLines = (
   lines: { encoded: PDFHexString; x: number; y: number }[],
   options: DrawTextLinesOptions,
 ): PDFOperator[] => {
-  // /Tx BMC
-  //   q
-  //     BT
-  //       ...
-  //     ET
-  //   Q
-  // EMC
   const operators = [
     beginText(),
     setFillingColor(options.color),
@@ -631,11 +575,10 @@ export const drawTextLines = (
   }
 
   operators.push(endText());
+
   return operators;
 };
 
-// TODO: Need to push/pop graphics state on all this stuff...
-// TODO: Need to draw clipping area as part of this
 export const drawTextField = (options: {
   x: number | PDFNumber;
   y: number | PDFNumber;
@@ -648,11 +591,29 @@ export const drawTextField = (options: {
   textColor: Color;
   font: string | PDFName;
   fontSize: number | PDFNumber;
+  padding: number | PDFNumber;
 }) => {
   const x = asNumber(options.x);
   const y = asNumber(options.y);
   const width = asNumber(options.width);
   const height = asNumber(options.height);
+  const borderWidth = asNumber(options.borderWidth);
+  const padding = asNumber(options.padding);
+
+  const clipX = x + borderWidth / 2 + padding;
+  const clipY = y + borderWidth / 2 + padding;
+  const clipWidth = width - (borderWidth / 2 + padding) * 2;
+  const clipHeight = height - (borderWidth / 2 + padding) * 2;
+
+  const clippingArea = [
+    moveTo(clipX, clipY),
+    lineTo(clipX, clipY + clipHeight),
+    lineTo(clipX + clipWidth, clipY + clipHeight),
+    lineTo(clipX + clipWidth, clipY),
+    closePath(),
+    clip(),
+    endPath(),
+  ];
 
   const background = drawRectangle({
     x,
@@ -684,10 +645,15 @@ export const drawTextField = (options: {
     endMarkedContent(),
   ];
 
-  return [...background, ...markedContent];
+  return [
+    pushGraphicsState(),
+    ...background,
+    ...clippingArea,
+    ...markedContent,
+    popGraphicsState(),
+  ];
 };
 
-// TODO: Need to push/pop graphics state on all this stuff...
 export const drawOptionList = (options: {
   x: number | PDFNumber;
   y: number | PDFNumber;
@@ -703,6 +669,7 @@ export const drawOptionList = (options: {
   lineHeight: number | PDFNumber;
   selectedLines: number[];
   selectedColor: Color;
+  padding: number | PDFNumber;
 }) => {
   const x = asNumber(options.x);
   const y = asNumber(options.y);
@@ -710,6 +677,22 @@ export const drawOptionList = (options: {
   const height = asNumber(options.height);
   const lineHeight = asNumber(options.lineHeight);
   const borderWidth = asNumber(options.borderWidth);
+  const padding = asNumber(options.padding);
+
+  const clipX = x + borderWidth / 2 + padding;
+  const clipY = y + borderWidth / 2 + padding;
+  const clipWidth = width - (borderWidth / 2 + padding) * 2;
+  const clipHeight = height - (borderWidth / 2 + padding) * 2;
+
+  const clippingArea = [
+    moveTo(clipX, clipY),
+    lineTo(clipX, clipY + clipHeight),
+    lineTo(clipX + clipWidth, clipY + clipHeight),
+    lineTo(clipX + clipWidth, clipY),
+    closePath(),
+    clip(),
+    endPath(),
+  ];
 
   const background = drawRectangle({
     x,
@@ -729,7 +712,7 @@ export const drawOptionList = (options: {
     const line = options.textLines[options.selectedLines[idx]];
     highlights.push(
       ...drawRectangle({
-        x: line.x,
+        x: line.x - padding,
         y: line.y - (lineHeight - line.height) / 2,
         width: width - borderWidth,
         height: line.height + (lineHeight - line.height) / 2,
@@ -760,5 +743,12 @@ export const drawOptionList = (options: {
     endMarkedContent(),
   ];
 
-  return [...background, ...highlights, ...markedContent];
+  return [
+    pushGraphicsState(),
+    ...background,
+    ...highlights,
+    ...clippingArea,
+    ...markedContent,
+    popGraphicsState(),
+  ];
 };
