@@ -1,12 +1,12 @@
 import PDFDict from 'src/core/objects/PDFDict';
-import PDFAnnotation from 'src/core/annotation/PDFAnnotation';
 import PDFName from 'src/core/objects/PDFName';
 import PDFRef from 'src/core/objects/PDFRef';
+import PDFString from 'src/core/objects/PDFString';
+import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFContext from 'src/core/PDFContext';
-import AppearanceCharacteristics from 'src/core/annotation/AppearanceCharacteristics';
 import BorderStyle from 'src/core/annotation/BorderStyle';
-import PDFString from '../objects/PDFString';
-import PDFHexString from '../objects/PDFHexString';
+import PDFAnnotation from 'src/core/annotation/PDFAnnotation';
+import AppearanceCharacteristics from 'src/core/annotation/AppearanceCharacteristics';
 
 class PDFWidgetAnnotation extends PDFAnnotation {
   static fromDict = (dict: PDFDict): PDFWidgetAnnotation =>
