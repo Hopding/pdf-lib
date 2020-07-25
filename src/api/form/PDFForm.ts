@@ -92,9 +92,6 @@ const addFieldToParent = (
   field.setParent(parentRef);
 };
 
-// TODO: Remove this:
-(() => [splitFieldName, addFieldToParent])();
-
 /**
  * Represents the form of a [[PDFDocument]].
  */
@@ -322,10 +319,6 @@ export default class PDFForm {
 
   fieldIsDirty(fieldRef: PDFRef): boolean {
     assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
-
-    // TODO: Remove this:
-    (() => this.findOrCreateNonTerminals)();
-
     return this.dirtyFields.has(fieldRef);
   }
 
