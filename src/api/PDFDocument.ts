@@ -9,9 +9,9 @@ import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
+import PDFForm from 'src/api/form/PDFForm';
 import { PageSizes } from 'src/api/sizes';
 import { StandardFonts } from 'src/api/StandardFonts';
-import { PDFForm } from 'src/api/form';
 import {
   CustomFontEmbedder,
   CustomFontSubsetEmbedder,

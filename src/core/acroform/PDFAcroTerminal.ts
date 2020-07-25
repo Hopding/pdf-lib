@@ -50,6 +50,17 @@ class PDFAcroTerminal extends PDFAcroField {
       kidDicts.remove(idx);
     }
   }
+
+  normalizedEntries() {
+    let Kids = this.Kids();
+
+    if (!Kids) {
+      Kids = this.dict.context.obj([this.ref]);
+      this.dict.set(PDFName.of('Kids'), Kids);
+    }
+
+    return { Kids };
+  }
 }
 
 export default PDFAcroTerminal;

@@ -6,7 +6,6 @@ import PDFObject from 'src/core/objects/PDFObject';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFRef from 'src/core/objects/PDFRef';
-import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
 
 class PDFAcroField {
   readonly dict: PDFDict;
@@ -145,20 +144,20 @@ class PDFAcroField {
   // the widget properties and create a separate object for it?
   // --------------------------------------------------------------------------
   //
-  normalizedEntries() {
-    let Kids = this.Kids();
+  // normalizedEntries() {
+  //   let Kids = this.Kids();
 
-    if (!Kids) {
-      if (this instanceof PDFAcroTerminal) {
-        Kids = this.dict.context.obj([this.ref]);
-      } else {
-        Kids = this.dict.context.obj([]);
-      }
-      this.dict.set(PDFName.of('Kids'), Kids);
-    }
+  //   if (!Kids) {
+  //     if (this instanceof PDFAcroTerminal) {
+  //       Kids = this.dict.context.obj([this.ref]);
+  //     } else {
+  //       Kids = this.dict.context.obj([]);
+  //     }
+  //     this.dict.set(PDFName.of('Kids'), Kids);
+  //   }
 
-    return { Kids };
-  }
+  //   return { Kids };
+  // }
 }
 
 export default PDFAcroField;
