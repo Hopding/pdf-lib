@@ -4,8 +4,8 @@ import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFString from 'src/core/objects/PDFString';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFName from 'src/core/objects/PDFName';
+import PDFRef from 'src/core/objects/PDFRef';
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import PDFRef from '../objects/PDFRef';
 
 class PDFAcroText extends PDFAcroTerminal {
   static fromDict = (dict: PDFDict, ref: PDFRef) => new PDFAcroText(dict, ref);

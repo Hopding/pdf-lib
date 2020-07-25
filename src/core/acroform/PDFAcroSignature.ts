@@ -1,6 +1,6 @@
 import PDFDict from 'src/core/objects/PDFDict';
+import PDFRef from 'src/core/objects/PDFRef';
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import PDFRef from '../objects/PDFRef';
 
 class PDFAcroSignature extends PDFAcroTerminal {
   static fromDict = (dict: PDFDict, ref: PDFRef) =>

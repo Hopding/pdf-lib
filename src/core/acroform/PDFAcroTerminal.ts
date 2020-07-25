@@ -3,7 +3,7 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFAcroField from 'src/core/acroform/PDFAcroField';
 import PDFWidgetAnnotation from 'src/core/annotation/PDFWidgetAnnotation';
-import { IndexOutOfBoundsError } from '../errors';
+import { IndexOutOfBoundsError } from 'src/core/errors';
 
 class PDFAcroTerminal extends PDFAcroField {
   static fromDict = (dict: PDFDict, ref: PDFRef) =>

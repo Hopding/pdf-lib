@@ -1,10 +1,9 @@
+import PDFContext from 'src/core/PDFContext';
+import PDFRef from 'src/core/objects/PDFRef';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
-import PDFContext from 'src/core/PDFContext';
-
 import { InvalidAcroFieldValueError } from 'src/core/errors';
-import PDFRef from '../objects/PDFRef';
 
 class PDFAcroCheckBox extends PDFAcroButton {
   static fromDict = (dict: PDFDict, ref: PDFRef) =>

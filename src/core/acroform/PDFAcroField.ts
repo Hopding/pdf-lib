@@ -6,7 +6,7 @@ import PDFObject from 'src/core/objects/PDFObject';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFRef from 'src/core/objects/PDFRef';
-import PDFAcroTerminal from './PDFAcroTerminal';
+import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
 
 class PDFAcroField {
   readonly dict: PDFDict;
