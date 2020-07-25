@@ -1,3 +1,4 @@
+export * from 'src/api/form/appearances';
 export { default as PDFButton } from 'src/api/form/PDFButton';
 export { default as PDFCheckBox } from 'src/api/form/PDFCheckBox';
 export { default as PDFDropdown } from 'src/api/form/PDFDropdown';

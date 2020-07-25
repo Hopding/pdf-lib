@@ -1,9 +1,8 @@
 import PDFDocument from 'src/api/PDFDocument';
-import { PDFAcroSignature } from 'src/core/acroform';
-import { assertIs } from 'src/utils';
-
 import PDFField from 'src/api/form/PDFField';
-import { PDFRef } from 'src/core';
+
+import { PDFRef, PDFAcroSignature } from 'src/core';
+import { assertIs } from 'src/utils';
 
 /**
  * Represents a signature field of a [[PDFForm]].

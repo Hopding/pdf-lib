@@ -1,22 +1,28 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
-import { PDFAcroComboBox, AcroChoiceFlags } from 'src/core/acroform';
-import { assertIs, assertOrUndefined, assertIsSubset } from 'src/utils';
-
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
 } from 'src/api/form/PDFField';
-import { PDFHexString, PDFRef, PDFString, PDFStream } from 'src/core';
-import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
   defaultDropdownAppearanceProvider,
 } from 'src/api/form/appearances';
-import { rgb } from '../colors';
-import { degrees } from '../rotations';
+import { rgb } from 'src/api/colors';
+import { degrees } from 'src/api/rotations';
+
+import {
+  PDFHexString,
+  PDFRef,
+  PDFString,
+  PDFStream,
+  PDFWidgetAnnotation,
+  PDFAcroComboBox,
+  AcroChoiceFlags,
+} from 'src/core';
+import { assertIs, assertOrUndefined, assertIsSubset } from 'src/utils';
 
 /**
  * Represents a dropdown field of a [[PDFForm]].

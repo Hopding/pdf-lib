@@ -1,4 +1,21 @@
 import PDFDocument from 'src/api/PDFDocument';
+import PDFField from 'src/api/form/PDFField';
+import PDFButton from 'src/api/form/PDFButton';
+import PDFCheckBox from 'src/api/form/PDFCheckBox';
+import PDFDropdown from 'src/api/form/PDFDropdown';
+import PDFOptionList from 'src/api/form/PDFOptionList';
+import PDFRadioGroup from 'src/api/form/PDFRadioGroup';
+import PDFSignature from 'src/api/form/PDFSignature';
+import PDFTextField from 'src/api/form/PDFTextField';
+import {
+  NoSuchFieldError,
+  UnexpectedFieldTypeError,
+  FieldAlreadyExistsError,
+  InvalidFieldNamePartError,
+} from 'src/api/errors';
+import PDFFont from 'src/api/PDFFont';
+import { StandardFonts } from 'src/api/StandardFonts';
+
 import {
   PDFAcroForm,
   PDFAcroField,
@@ -10,27 +27,10 @@ import {
   PDFAcroText,
   PDFAcroPushButton,
   PDFAcroNonTerminal,
-} from 'src/core/acroform';
+  PDFRef,
+  createPDFAcroFields,
+} from 'src/core';
 import { assertIs, Cache, assertOrUndefined } from 'src/utils';
-
-import PDFField from 'src/api/form/PDFField';
-import PDFButton from 'src/api/form/PDFButton';
-import PDFCheckBox from 'src/api/form/PDFCheckBox';
-import PDFDropdown from 'src/api/form/PDFDropdown';
-import PDFOptionList from 'src/api/form/PDFOptionList';
-import PDFRadioGroup from 'src/api/form/PDFRadioGroup';
-import PDFSignature from 'src/api/form/PDFSignature';
-import PDFTextField from 'src/api/form/PDFTextField';
-import { createPDFAcroFields } from 'src/core/acroform/utils';
-import { PDFRef } from 'src/core';
-import {
-  NoSuchFieldError,
-  UnexpectedFieldTypeError,
-  FieldAlreadyExistsError,
-  InvalidFieldNamePartError,
-} from 'src/api/errors';
-import { PDFFont } from '..';
-import { StandardFonts } from '../StandardFonts';
 
 const convertToPDFField = (
   field: PDFAcroField,

@@ -1,21 +1,27 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
-import { PDFAcroRadioButton, AcroButtonFlags } from 'src/core/acroform';
-import { assertIs, assertOrUndefined, assertIsOneOf } from 'src/utils';
-
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
 } from 'src/api/form/PDFField';
-import { PDFName, PDFRef, PDFHexString, PDFDict } from 'src/core';
-import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
   defaultRadioGroupAppearanceProvider,
 } from 'src/api/form/appearances';
-import { rgb } from '../colors';
-import { degrees } from '../rotations';
+import { rgb } from 'src/api/colors';
+import { degrees } from 'src/api/rotations';
+
+import {
+  PDFName,
+  PDFRef,
+  PDFHexString,
+  PDFDict,
+  PDFWidgetAnnotation,
+  PDFAcroRadioButton,
+  AcroButtonFlags,
+} from 'src/core';
+import { assertIs, assertOrUndefined, assertIsOneOf } from 'src/utils';
 
 /**
  * Represents a radio group field of a [[PDFForm]].

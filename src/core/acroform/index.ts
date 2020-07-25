@@ -12,3 +12,4 @@ export { default as PDFAcroSignature } from './PDFAcroSignature';
 export { default as PDFAcroTerminal } from './PDFAcroTerminal';
 export { default as PDFAcroText } from './PDFAcroText';
 export * from './flags';
+export * from './utils';

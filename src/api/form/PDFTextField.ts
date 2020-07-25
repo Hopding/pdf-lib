@@ -1,29 +1,34 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
-import { PDFAcroText, AcroTextFlags } from 'src/core/acroform';
+import PDFField, {
+  FieldAppearanceOptions,
+  assertFieldAppearanceOptions,
+} from 'src/api/form/PDFField';
+import {
+  AppearanceProviderFor,
+  normalizeAppearance,
+  defaultTextFieldAppearanceProvider,
+} from 'src/api/form/appearances';
+import { rgb } from 'src/api/colors';
+import { degrees } from 'src/api/rotations';
+import { RichTextFieldReadError, ExceededMaxLengthError } from 'src/api/errors';
+import { TextAlignment } from 'src/api/text/alignment';
+
+import {
+  PDFHexString,
+  PDFRef,
+  PDFStream,
+  PDFAcroText,
+  AcroTextFlags,
+  PDFWidgetAnnotation,
+} from 'src/core';
 import {
   assertIs,
   assertIsOneOf,
   assertOrUndefined,
   assertRange,
 } from 'src/utils';
-
-import PDFField, {
-  FieldAppearanceOptions,
-  assertFieldAppearanceOptions,
-} from 'src/api/form/PDFField';
-import { PDFHexString, PDFRef, PDFStream } from 'src/core';
-import { PDFWidgetAnnotation } from 'src/core/annotation';
-import {
-  AppearanceProviderFor,
-  normalizeAppearance,
-  defaultTextFieldAppearanceProvider,
-} from 'src/api/form/appearances';
-import { rgb } from '../colors';
-import { degrees } from '../rotations';
-import { RichTextFieldReadError, ExceededMaxLengthError } from '../errors';
-import { TextAlignment } from '../text/alignment';
 
 /**
  * Represents a text field of a [[PDFForm]].

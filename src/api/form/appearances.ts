@@ -24,15 +24,15 @@ import {
   cmyk,
   Color,
 } from 'src/api/colors';
-import { reduceRotation, adjustDimsForRotation } from '../rotations';
+import { reduceRotation, adjustDimsForRotation } from 'src/api/rotations';
 import {
   layoutMultilineText,
   layoutCombedText,
   TextPosition,
   layoutSinglelineText,
-} from '../text/layout';
-import { setFontAndSize } from '../operators';
-import { TextAlignment } from '../text/alignment';
+} from 'src/api/text/layout';
+import { TextAlignment } from 'src/api/text/alignment';
+import { setFontAndSize } from 'src/api/operators';
 
 /*********************** Appearance Provider Types ****************************/
 

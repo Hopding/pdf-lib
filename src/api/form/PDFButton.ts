@@ -1,22 +1,25 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
-import { PDFAcroPushButton } from 'src/core/acroform';
-import { assertIs, assertOrUndefined } from 'src/utils';
-import { PDFRef, PDFStream } from 'src/core';
-import { PDFWidgetAnnotation } from 'src/core/annotation';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
   defaultButtonAppearanceProvider,
 } from 'src/api/form/appearances';
-
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
 } from 'src/api/form/PDFField';
-import { rgb } from '../colors';
-import { degrees } from '../rotations';
+import { rgb } from 'src/api/colors';
+import { degrees } from 'src/api/rotations';
+
+import {
+  PDFRef,
+  PDFStream,
+  PDFAcroPushButton,
+  PDFWidgetAnnotation,
+} from 'src/core';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
 /**
  * Represents a button field of a [[PDFForm]].

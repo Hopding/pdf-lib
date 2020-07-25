@@ -1,4 +1,7 @@
 import PDFFont from 'src/api/PDFFont';
+import { CombedTextLayoutError } from 'src/api/errors';
+import { TextAlignment } from 'src/api/text/alignment';
+
 import { PDFHexString } from 'src/core';
 import {
   cleanText,
@@ -7,8 +10,6 @@ import {
   charAtIndex,
   charSplit,
 } from 'src/utils';
-import { CombedTextLayoutError } from 'src/api/errors';
-import { TextAlignment } from './alignment';
 
 export interface TextPosition {
   text: string;

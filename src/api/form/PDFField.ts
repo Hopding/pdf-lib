@@ -1,6 +1,9 @@
 import PDFDocument from 'src/api/PDFDocument';
-import { PDFAcroField, AcroFieldFlags } from 'src/core/acroform';
-import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
+import PDFFont from 'src/api/PDFFont';
+import { AppearanceMapping } from 'src/api/form/appearances';
+import { Color, colorToComponents, setFillingColor } from 'src/api/colors';
+import { Rotation, toDegrees, rotateRectangle } from 'src/api/rotations';
+
 import {
   PDFRef,
   PDFWidgetAnnotation,
@@ -8,11 +11,10 @@ import {
   PDFName,
   PDFDict,
   MethodNotImplementedError,
+  PDFAcroField,
+  AcroFieldFlags,
 } from 'src/core';
-import { PDFFont } from '..';
-import { AppearanceMapping } from './appearances';
-import { Color, colorToComponents, setFillingColor } from '../colors';
-import { Rotation, toDegrees, rotateRectangle } from '../rotations';
+import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 
 // TODO: Note in documentation that a single field can actually be rendered
 //       in multiple locations and pages of a single document.
