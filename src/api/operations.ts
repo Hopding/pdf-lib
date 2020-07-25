@@ -1,7 +1,5 @@
 import { Color, setFillingColor, setStrokingColor } from 'src/api/colors';
-import { asNumber } from 'src/api/objects';
 import {
-  appendBezierCurve,
   beginText,
   closePath,
   drawObject,
@@ -32,10 +30,12 @@ import {
   endMarkedContent,
   clip,
   endPath,
+  appendBezierCurve,
 } from 'src/api/operators';
 import { Rotation, toRadians, degrees } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
+import { asNumber } from 'src/api/objects';
 
 export interface DrawTextOptions {
   color: Color;
@@ -219,6 +219,7 @@ export const drawRectangle = (options: {
 
 const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
 
+/** @deprecated */
 export const drawEllipsePath = (config: {
   x: number | PDFNumber;
   y: number | PDFNumber;
@@ -251,11 +252,45 @@ export const drawEllipsePath = (config: {
   ];
 };
 
+const drawEllipseCurves = (config: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  xScale: number | PDFNumber;
+  yScale: number | PDFNumber;
+  rotate: Rotation;
+}): PDFOperator[] => {
+  const centerX = asNumber(config.x);
+  const centerY = asNumber(config.y);
+  const xScale = asNumber(config.xScale);
+  const yScale = asNumber(config.yScale);
+
+  const x = -xScale;
+  const y = -yScale;
+
+  const ox = xScale * KAPPA;
+  const oy = yScale * KAPPA;
+  const xe = x + xScale * 2;
+  const ye = y + yScale * 2;
+  const xm = x + xScale;
+  const ym = y + yScale;
+
+  return [
+    translate(centerX, centerY),
+    rotateRadians(toRadians(config.rotate)),
+    moveTo(x, ym),
+    appendBezierCurve(x, ym - oy, xm - ox, y, xm, y),
+    appendBezierCurve(xm + ox, y, xe, ym - oy, xe, ym),
+    appendBezierCurve(xe, ym + oy, xm + ox, ye, xm, ye),
+    appendBezierCurve(xm - ox, ye, x, ym + oy, x, ym),
+  ];
+};
+
 export const drawEllipse = (options: {
   x: number | PDFNumber;
   y: number | PDFNumber;
   xScale: number | PDFNumber;
   yScale: number | PDFNumber;
+  rotate?: Rotation;
   color: Color | undefined;
   borderColor: Color | undefined;
   borderWidth: number | PDFNumber;
@@ -272,11 +307,12 @@ export const drawEllipse = (options: {
     setLineWidth(options.borderWidth),
     options.borderLineCap && setLineCap(options.borderLineCap),
     setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
-    ...drawEllipsePath({
+    ...drawEllipseCurves({
       x: options.x,
       y: options.y,
       xScale: options.xScale,
       yScale: options.yScale,
+      rotate: options.rotate ?? degrees(0),
     }),
 
     // prettier-ignore
@@ -293,6 +329,7 @@ export const drawSvgPath = (
   options: {
     x: number | PDFNumber;
     y: number | PDFNumber;
+    rotate?: Rotation;
     scale: number | PDFNumber | undefined;
     color: Color | undefined;
     borderColor: Color | undefined;
@@ -308,6 +345,7 @@ export const drawSvgPath = (
     options.graphicsState && setGraphicsState(options.graphicsState),
 
     translate(options.x, options.y),
+    rotateRadians(toRadians(options.rotate ?? degrees(0))),
 
     // SVG path Y axis is opposite pdf-lib's
     options.scale ? scale(options.scale, -options.scale) : scale(1, -1),
@@ -316,8 +354,6 @@ export const drawSvgPath = (
     options.borderColor && setStrokingColor(options.borderColor),
     options.borderWidth && setLineWidth(options.borderWidth),
     options.borderLineCap && setLineCap(options.borderLineCap),
-
-    setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
 
     setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
 
