@@ -280,5 +280,5 @@ export default class PDFDropdown extends PDFField {
   }
 
   // Hack to differentiate `PDFDropdown` from `PDFOptionList`
-  protected _isDropdown = true;
+  // protected _isDropdown = true;
 }

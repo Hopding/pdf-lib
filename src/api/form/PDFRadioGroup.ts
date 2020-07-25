@@ -81,43 +81,6 @@ export default class PDFRadioGroup extends PDFField {
     return value.decodeText();
   }
 
-  addOptionToPage(
-    option: string,
-    page: PDFPage,
-    options?: FieldAppearanceOptions,
-  ) {
-    assertIs(option, 'option', ['string']);
-    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
-    assertFieldAppearanceOptions(options);
-
-    // Create a widget for this radio button
-    const widget = this.createWidget({
-      x: options?.x ?? 0,
-      y: options?.y ?? 0,
-      width: options?.width ?? 50,
-      height: options?.height ?? 50,
-      textColor: options?.textColor ?? rgb(0, 0, 0),
-      backgroundColor: options?.backgroundColor ?? rgb(1, 1, 1),
-      borderColor: options?.borderColor ?? rgb(0, 0, 0),
-      borderWidth: options?.borderWidth ?? 1,
-      rotate: options?.rotate ?? degrees(0),
-    });
-    const widgetRef = this.doc.context.register(widget.dict);
-
-    // Add widget to this field
-    const apStateValue = this.acroField.addWidgetWithOpt(
-      widgetRef,
-      PDFHexString.fromText(option),
-    );
-
-    // Set appearance streams for widget
-    widget.setAppearanceState(PDFName.of('Off'));
-    this.updateWidgetAppearance(widget, apStateValue);
-
-    // Add widget to the given page
-    page.node.addAnnot(widgetRef);
-  }
-
   // // TODO: Figure out why this seems to crash Acrobat. Maybe it's because we
   // //       aren't removing the widget reference from the page's Annots?
   // removeOption(option: string) {
@@ -186,6 +149,43 @@ export default class PDFRadioGroup extends PDFField {
   setRadiosAreMutuallyExclusive(enable: boolean) {
     assertIs(enable, 'enable', ['boolean']);
     this.acroField.setFlagTo(AcroButtonFlags.RadiosInUnison, !enable);
+  }
+
+  addOptionToPage(
+    option: string,
+    page: PDFPage,
+    options?: FieldAppearanceOptions,
+  ) {
+    assertIs(option, 'option', ['string']);
+    assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
+    assertFieldAppearanceOptions(options);
+
+    // Create a widget for this radio button
+    const widget = this.createWidget({
+      x: options?.x ?? 0,
+      y: options?.y ?? 0,
+      width: options?.width ?? 50,
+      height: options?.height ?? 50,
+      textColor: options?.textColor ?? rgb(0, 0, 0),
+      backgroundColor: options?.backgroundColor ?? rgb(1, 1, 1),
+      borderColor: options?.borderColor ?? rgb(0, 0, 0),
+      borderWidth: options?.borderWidth ?? 1,
+      rotate: options?.rotate ?? degrees(0),
+    });
+    const widgetRef = this.doc.context.register(widget.dict);
+
+    // Add widget to this field
+    const apStateValue = this.acroField.addWidgetWithOpt(
+      widgetRef,
+      PDFHexString.fromText(option),
+    );
+
+    // Set appearance streams for widget
+    widget.setAppearanceState(PDFName.of('Off'));
+    this.updateWidgetAppearance(widget, apStateValue);
+
+    // Add widget to the given page
+    page.node.addAnnot(widgetRef);
   }
 
   needsAppearancesUpdate(): boolean {

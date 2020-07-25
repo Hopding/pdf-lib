@@ -116,7 +116,7 @@ export default class PDFForm {
     this.doc = doc;
 
     this.dirtyFields = new Set();
-    this.defaultFontCache = Cache.populatedBy(this.computeDefaultFont);
+    this.defaultFontCache = Cache.populatedBy(this.embedDefaultFont);
   }
 
   getFields(): PDFField[] {
@@ -366,6 +366,6 @@ export default class PDFForm {
     return undefined;
   }
 
-  private computeDefaultFont = (): PDFFont =>
+  private embedDefaultFont = (): PDFFont =>
     this.doc.embedStandardFont(StandardFonts.Helvetica);
 }
