@@ -1,7 +1,7 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import { PDFAcroRadioButton, AcroButtonFlags } from 'src/core/acroform';
-import { assertIs, assertOrUndefined } from 'src/utils';
+import { assertIs, assertOrUndefined, assertIsOneOf } from 'src/utils';
 
 import PDFField, {
   FieldAppearanceOptions,
@@ -140,7 +140,9 @@ export default class PDFRadioGroup extends PDFField {
 
   select(option: string) {
     assertIs(option, 'option', ['string']);
-    // TODO: Assert is valid `option`!
+
+    const validOptions = this.getOptions();
+    assertIsOneOf(option, 'option', validOptions);
 
     const onValues = this.acroField.getOnValues();
     const exportValues = this.acroField.getExportValues();

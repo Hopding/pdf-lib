@@ -92,6 +92,9 @@ const addFieldToParent = (
   field.setParent(parentRef);
 };
 
+// TODO: Remove this:
+(() => [splitFieldName, addFieldToParent])();
+
 /**
  * Represents the form of a [[PDFDocument]].
  */
@@ -206,11 +209,11 @@ export default class PDFForm {
 
     const button = PDFAcroPushButton.create(this.doc.context);
     button.setPartialName(nameParts.terminal);
-    const buttonRef = this.doc.context.register(button.dict);
+    // const buttonRef = this.doc.context.register(button.dict);
 
-    addFieldToParent(parent, [button, buttonRef], nameParts.terminal);
+    addFieldToParent(parent, [button, button.ref], nameParts.terminal);
 
-    return PDFButton.of(button, buttonRef, this.doc);
+    return PDFButton.of(button, button.ref, this.doc);
   }
 
   createCheckBox(name: string): PDFCheckBox {
@@ -221,11 +224,11 @@ export default class PDFForm {
 
     const checkBox = PDFAcroCheckBox.create(this.doc.context);
     checkBox.setPartialName(nameParts.terminal);
-    const checkBoxRef = this.doc.context.register(checkBox.dict);
+    // const checkBoxRef = this.doc.context.register(checkBox.dict);
 
-    addFieldToParent(parent, [checkBox, checkBoxRef], nameParts.terminal);
+    addFieldToParent(parent, [checkBox, checkBox.ref], nameParts.terminal);
 
-    return PDFCheckBox.of(checkBox, checkBoxRef, this.doc);
+    return PDFCheckBox.of(checkBox, checkBox.ref, this.doc);
   }
 
   createDropdown(name: string): PDFDropdown {
@@ -236,11 +239,11 @@ export default class PDFForm {
 
     const comboBox = PDFAcroComboBox.create(this.doc.context);
     comboBox.setPartialName(nameParts.terminal);
-    const comboBoxRef = this.doc.context.register(comboBox.dict);
+    // const comboBoxRef = this.doc.context.register(comboBox.dict);
 
-    addFieldToParent(parent, [comboBox, comboBoxRef], nameParts.terminal);
+    addFieldToParent(parent, [comboBox, comboBox.ref], nameParts.terminal);
 
-    return PDFDropdown.of(comboBox, comboBoxRef, this.doc);
+    return PDFDropdown.of(comboBox, comboBox.ref, this.doc);
   }
 
   createOptionList(name: string): PDFOptionList {
@@ -251,11 +254,11 @@ export default class PDFForm {
 
     const listBox = PDFAcroListBox.create(this.doc.context);
     listBox.setPartialName(nameParts.terminal);
-    const listBoxRef = this.doc.context.register(listBox.dict);
+    // const listBoxRef = this.doc.context.register(listBox.dict);
 
-    addFieldToParent(parent, [listBox, listBoxRef], nameParts.terminal);
+    addFieldToParent(parent, [listBox, listBox.ref], nameParts.terminal);
 
-    return PDFOptionList.of(listBox, listBoxRef, this.doc);
+    return PDFOptionList.of(listBox, listBox.ref, this.doc);
   }
 
   createRadioGroup(name: string): PDFRadioGroup {
@@ -266,11 +269,15 @@ export default class PDFForm {
 
     const radioButton = PDFAcroRadioButton.create(this.doc.context);
     radioButton.setPartialName(nameParts.terminal);
-    const radioButtonRef = this.doc.context.register(radioButton.dict);
+    // const radioButtonRef = this.doc.context.register(radioButton.dict);
 
-    addFieldToParent(parent, [radioButton, radioButtonRef], nameParts.terminal);
+    addFieldToParent(
+      parent,
+      [radioButton, radioButton.ref],
+      nameParts.terminal,
+    );
 
-    return PDFRadioGroup.of(radioButton, radioButtonRef, this.doc);
+    return PDFRadioGroup.of(radioButton, radioButton.ref, this.doc);
   }
 
   createTextField(name: string): PDFTextField {
@@ -281,11 +288,11 @@ export default class PDFForm {
 
     const text = PDFAcroText.create(this.doc.context);
     text.setPartialName(nameParts.terminal);
-    const textRef = this.doc.context.register(text.dict);
+    // const textRef = this.doc.context.register(text.dict);
 
-    addFieldToParent(parent, [text, textRef], nameParts.terminal);
+    addFieldToParent(parent, [text, text.ref], nameParts.terminal);
 
-    return PDFTextField.of(text, textRef, this.doc);
+    return PDFTextField.of(text, text.ref, this.doc);
   }
 
   updateDirtyFieldAppearances(font?: PDFFont) {
@@ -315,6 +322,10 @@ export default class PDFForm {
 
   fieldIsDirty(fieldRef: PDFRef): boolean {
     assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
+
+    // TODO: Remove this:
+    (() => this.findOrCreateNonTerminals)();
+
     return this.dirtyFields.has(fieldRef);
   }
 

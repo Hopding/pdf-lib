@@ -10,7 +10,7 @@ import {
 } from 'src/core/errors';
 
 class PDFAcroChoice extends PDFAcroTerminal {
-  // TODO: Remove duplicates
+  // TODO: Should we remove duplicates here?
   setValues(values: (PDFString | PDFHexString)[]) {
     if (!this.valuesAreValid(values)) throw new InvalidAcroFieldValueError();
 

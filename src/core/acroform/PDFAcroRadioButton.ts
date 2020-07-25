@@ -4,9 +4,11 @@ import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
 import PDFContext from 'src/core/PDFContext';
 import { AcroButtonFlags } from 'src/core/acroform/flags';
 import { InvalidAcroFieldValueError } from '../errors';
+import PDFRef from '../objects/PDFRef';
 
 class PDFAcroRadioButton extends PDFAcroButton {
-  static fromDict = (dict: PDFDict) => new PDFAcroRadioButton(dict);
+  static fromDict = (dict: PDFDict, ref: PDFRef) =>
+    new PDFAcroRadioButton(dict, ref);
 
   static create = (context: PDFContext) => {
     const dict = context.obj({
@@ -14,7 +16,8 @@ class PDFAcroRadioButton extends PDFAcroButton {
       Ff: AcroButtonFlags.Radio,
       Kids: [],
     });
-    return new PDFAcroRadioButton(dict);
+    const ref = context.register(dict);
+    return new PDFAcroRadioButton(dict, ref);
   };
 
   setValue(value: PDFName) {

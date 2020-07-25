@@ -5,16 +5,18 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFName from 'src/core/objects/PDFName';
 import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
+import PDFRef from '../objects/PDFRef';
 
 class PDFAcroText extends PDFAcroTerminal {
-  static fromDict = (dict: PDFDict) => new PDFAcroText(dict);
+  static fromDict = (dict: PDFDict, ref: PDFRef) => new PDFAcroText(dict, ref);
 
   static create = (context: PDFContext) => {
     const dict = context.obj({
       FT: 'Tx',
       Kids: [],
     });
-    return new PDFAcroText(dict);
+    const ref = context.register(dict);
+    return new PDFAcroText(dict, ref);
   };
 
   MaxLen(): PDFNumber | undefined {

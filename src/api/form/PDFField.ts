@@ -14,7 +14,6 @@ import { AppearanceMapping } from './appearances';
 import { Color, colorToComponents, setFillingColor } from '../colors';
 import { Rotation, toDegrees, rotateRectangle } from '../rotations';
 
-// TODO: Should fields always have refs? What about the PDFForm?
 // TODO: Note in documentation that a single field can actually be rendered
 //       in multiple locations and pages of a single document.
 

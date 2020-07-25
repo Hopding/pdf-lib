@@ -2,7 +2,7 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import { PDFAcroListBox, AcroChoiceFlags } from 'src/core/acroform';
-import { assertIs, assertOrUndefined } from 'src/utils';
+import { assertIs, assertOrUndefined, assertIsSubset } from 'src/utils';
 
 import PDFField, {
   FieldAppearanceOptions,
@@ -121,11 +121,12 @@ export default class PDFOptionList extends PDFField {
     assertIs(options, 'options', ['string', Array]);
     assertIs(merge, 'merge', ['boolean']);
 
-    this.markAsDirty();
-
     const optionsArr = Array.isArray(options) ? options : [options];
 
-    // TODO: Assert options are valid
+    const validOptions = this.getOptions();
+    assertIsSubset(optionsArr, 'option', validOptions);
+
+    this.markAsDirty();
 
     if (optionsArr.length > 1) this.setAllowMultiSelect(true);
 

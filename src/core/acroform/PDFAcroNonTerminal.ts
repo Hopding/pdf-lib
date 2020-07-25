@@ -4,11 +4,13 @@ import PDFContext from 'src/core/PDFContext';
 import PDFAcroField from 'src/core/acroform/PDFAcroField';
 
 class PDFAcroNonTerminal extends PDFAcroField {
-  static fromDict = (dict: PDFDict) => new PDFAcroNonTerminal(dict);
+  static fromDict = (dict: PDFDict, ref: PDFRef) =>
+    new PDFAcroNonTerminal(dict, ref);
 
   static create = (context: PDFContext) => {
     const dict = context.obj({});
-    return new PDFAcroNonTerminal(dict);
+    const ref = context.register(dict);
+    return new PDFAcroNonTerminal(dict, ref);
   };
 
   addField(field: PDFRef) {

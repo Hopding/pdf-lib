@@ -131,23 +131,6 @@ import {
 // })();
 
 (async () => {
-  await (async () => {
-    console.log('---------- DOC ----------');
-    const d = await PDFDocument.create();
-    const f = d.getForm();
-    const h = await d.embedFont(StandardFonts.Helvetica);
-
-    const p = d.addPage([300, 300]);
-    const tf = f.createTextField('foo.bar');
-    tf.addToPage(h, p, {
-      backgroundColor: rgb(1, 1, 0),
-      borderColor: rgb(1, 0, 1),
-    });
-
-    fs.writeFileSync('out2.pdf', await d.save({ useObjectStreams: false }));
-    console.log('-------------------------');
-  })();
-
   const pdfDoc = await PDFDocument.load(
     // fs.readFileSync('/Users/user/Desktop/f1040.pdf'),
     // fs.readFileSync('/Users/user/Desktop/copy_f1040.pdf'),
@@ -205,7 +188,7 @@ import {
 
   // newRg.setAllowTogglingOff(true);
   newRg3.setRadiosAreMutuallyExclusive(false);
-  newRg3.select('qux');
+  newRg3.select('qux 💩');
 
   const newCb1 = form.createCheckBox('superbooster 🚀');
   newCb1.addToPage(page2, {
@@ -503,7 +486,8 @@ import {
   const dd1 = form.getDropdown('Dropdown1');
   dd1.addOptions('foo');
   dd1.addOptions(['bar', 'qux']);
-  dd1.select('Item2');
+  // dd1.select('Item2');
+  dd1.select(['Item2']);
   console.log('dd1.getSelected():', dd1.getSelected());
   console.log('dd1.getOptions():', dd1.getOptions());
   // dd1.updateAppearances(courier);

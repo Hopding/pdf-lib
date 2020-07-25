@@ -4,16 +4,19 @@ import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
 import PDFContext from 'src/core/PDFContext';
 
 import { InvalidAcroFieldValueError } from 'src/core/errors';
+import PDFRef from '../objects/PDFRef';
 
 class PDFAcroCheckBox extends PDFAcroButton {
-  static fromDict = (dict: PDFDict) => new PDFAcroCheckBox(dict);
+  static fromDict = (dict: PDFDict, ref: PDFRef) =>
+    new PDFAcroCheckBox(dict, ref);
 
   static create = (context: PDFContext) => {
     const dict = context.obj({
       FT: 'Btn',
       Kids: [],
     });
-    return new PDFAcroCheckBox(dict);
+    const ref = context.register(dict);
+    return new PDFAcroCheckBox(dict, ref);
   };
 
   setValue(value: PDFName) {

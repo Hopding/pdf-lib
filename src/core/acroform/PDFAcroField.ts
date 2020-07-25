@@ -6,12 +6,15 @@ import PDFObject from 'src/core/objects/PDFObject';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFRef from 'src/core/objects/PDFRef';
+import PDFAcroTerminal from './PDFAcroTerminal';
 
 class PDFAcroField {
   readonly dict: PDFDict;
+  readonly ref: PDFRef;
 
-  protected constructor(dict: PDFDict) {
+  protected constructor(dict: PDFDict, ref: PDFRef) {
     this.dict = dict;
+    this.ref = ref;
   }
 
   T(): PDFString | PDFHexString | undefined {
@@ -32,9 +35,9 @@ class PDFAcroField {
     return this.dict.lookupMaybe(PDFName.of('Kids'), PDFArray);
   }
 
-  Parent(): PDFDict | undefined {
-    return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
-  }
+  // Parent(): PDFDict | undefined {
+  //   return this.dict.lookupMaybe(PDFName.of('Parent'), PDFDict);
+  // }
 
   DA(): PDFString | PDFHexString | undefined {
     const da = this.dict.lookup(PDFName.of('DA'));
@@ -47,10 +50,17 @@ class PDFAcroField {
   }
 
   getParent(): PDFAcroField | undefined {
-    const parent = this.Parent();
-    if (!parent) return undefined;
-    // return PDFAcroField.fromDict(parent);
-    return new PDFAcroField(parent);
+    // const parent = this.Parent();
+    // if (!parent) return undefined;
+    // return new PDFAcroField(parent);
+
+    const parentRef = this.dict.get(PDFName.of('Parent'));
+    if (parentRef instanceof PDFRef) {
+      const parent = this.dict.lookup(PDFName.of('Parent'), PDFDict);
+      return new PDFAcroField(parent, parentRef);
+    }
+
+    return undefined;
   }
 
   setParent(parent: PDFRef | undefined) {
@@ -123,15 +133,27 @@ class PDFAcroField {
     if (parent) parent.ascend(visitor);
   }
 
+  //
+  // TODO: Make sure to properly unit test this and maybe clean it up so we
+  // don't require an `instanceof` check in this method... (maybe put on
+  // `PDFAcroTerminal` and `PDFAcroNonTerminal` separately?)
+  //
+  // --------------------------------------------------------------------------
   // TODO: If this field is itself a widget (because it was only rendered
   // once in the document so the field and widget properties were merged)
   // should we add itself to the `Kids` array? Should we try to split apart
   // the widget properties and create a separate object for it?
+  // --------------------------------------------------------------------------
+  //
   normalizedEntries() {
     let Kids = this.Kids();
 
     if (!Kids) {
-      Kids = this.dict.context.obj([]);
+      if (this instanceof PDFAcroTerminal) {
+        Kids = this.dict.context.obj([this.ref]);
+      } else {
+        Kids = this.dict.context.obj([]);
+      }
       this.dict.set(PDFName.of('Kids'), Kids);
     }
 

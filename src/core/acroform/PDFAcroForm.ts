@@ -37,7 +37,7 @@ class PDFAcroForm {
     for (let idx = 0, len = Fields.size(); idx < len; idx++) {
       const ref = Fields.get(idx) as PDFRef;
       const dict = Fields.lookup(idx, PDFDict);
-      fields[idx] = [createPDFAcroField(dict), ref];
+      fields[idx] = [createPDFAcroField(dict, ref), ref];
     }
 
     return fields;

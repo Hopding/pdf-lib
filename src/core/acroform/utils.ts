@@ -30,17 +30,20 @@ export const createPDFAcroFields = (
     const dict = kidDicts.lookup(idx);
     // if (dict instanceof PDFDict) kids.push(PDFAcroField.fromDict(dict));
     if (ref instanceof PDFRef && dict instanceof PDFDict) {
-      kids.push([createPDFAcroField(dict), ref]);
+      kids.push([createPDFAcroField(dict, ref), ref]);
     }
   }
 
   return kids;
 };
 
-export const createPDFAcroField = (dict: PDFDict): PDFAcroField => {
+export const createPDFAcroField = (
+  dict: PDFDict,
+  ref: PDFRef,
+): PDFAcroField => {
   const isNonTerminal = isNonTerminalAcroField(dict);
-  if (isNonTerminal) return PDFAcroNonTerminal.fromDict(dict);
-  return createPDFAcroTerminal(dict);
+  if (isNonTerminal) return PDFAcroNonTerminal.fromDict(dict, ref);
+  return createPDFAcroTerminal(dict, ref);
 };
 
 // TODO: Maybe just check if the dict is *not* a widget? That might be better.
@@ -73,44 +76,44 @@ const isNonTerminalAcroField = (dict: PDFDict): boolean => {
   return false;
 };
 
-const createPDFAcroTerminal = (dict: PDFDict): PDFAcroTerminal => {
+const createPDFAcroTerminal = (dict: PDFDict, ref: PDFRef): PDFAcroTerminal => {
   const ftNameOrRef = getInheritableAttribute(dict, PDFName.of('FT'));
-  const fieldType = dict.context.lookup(ftNameOrRef, PDFName);
+  const type = dict.context.lookup(ftNameOrRef, PDFName);
 
-  if (fieldType === PDFName.of('Btn')) return createPDFAcroButton(dict);
-  if (fieldType === PDFName.of('Ch')) return createPDFAcroChoice(dict);
-  if (fieldType === PDFName.of('Tx')) return PDFAcroText.fromDict(dict);
-  if (fieldType === PDFName.of('Sig')) return PDFAcroSignature.fromDict(dict);
+  if (type === PDFName.of('Btn')) return createPDFAcroButton(dict, ref);
+  if (type === PDFName.of('Ch')) return createPDFAcroChoice(dict, ref);
+  if (type === PDFName.of('Tx')) return PDFAcroText.fromDict(dict, ref);
+  if (type === PDFName.of('Sig')) return PDFAcroSignature.fromDict(dict, ref);
 
   // We should never reach this line. But there are a lot of weird PDFs out
   // there. So, just to be safe, we'll try to handle things gracefully instead
   // of throwing an error.
-  return PDFAcroTerminal.fromDict(dict);
+  return PDFAcroTerminal.fromDict(dict, ref);
 };
 
-const createPDFAcroButton = (dict: PDFDict): PDFAcroButton => {
+const createPDFAcroButton = (dict: PDFDict, ref: PDFRef): PDFAcroButton => {
   const ffNumberOrRef = getInheritableAttribute(dict, PDFName.of('Ff'));
   const ffNumber = dict.context.lookupMaybe(ffNumberOrRef, PDFNumber);
   const flags = ffNumber?.asNumber() ?? 0;
 
   if (flagIsSet(flags, AcroButtonFlags.PushButton)) {
-    return PDFAcroPushButton.fromDict(dict);
+    return PDFAcroPushButton.fromDict(dict, ref);
   } else if (flagIsSet(flags, AcroButtonFlags.Radio)) {
-    return PDFAcroRadioButton.fromDict(dict);
+    return PDFAcroRadioButton.fromDict(dict, ref);
   } else {
-    return PDFAcroCheckBox.fromDict(dict);
+    return PDFAcroCheckBox.fromDict(dict, ref);
   }
 };
 
-const createPDFAcroChoice = (dict: PDFDict): PDFAcroChoice => {
+const createPDFAcroChoice = (dict: PDFDict, ref: PDFRef): PDFAcroChoice => {
   const ffNumberOrRef = getInheritableAttribute(dict, PDFName.of('Ff'));
   const ffNumber = dict.context.lookupMaybe(ffNumberOrRef, PDFNumber);
   const flags = ffNumber?.asNumber() ?? 0;
 
   if (flagIsSet(flags, AcroChoiceFlags.Combo)) {
-    return PDFAcroComboBox.fromDict(dict);
+    return PDFAcroComboBox.fromDict(dict, ref);
   } else {
-    return PDFAcroListBox.fromDict(dict);
+    return PDFAcroListBox.fromDict(dict, ref);
   }
 };
 
