@@ -1131,12 +1131,13 @@ export default class PDFDocument {
     assertIs(updateFieldAppearances, 'updateFieldAppearances', ['boolean']);
 
     if (addDefaultPage && this.getPageCount() === 0) this.addPage();
-    await this.flush();
 
     if (updateFieldAppearances) {
       const form = this.formCache.getValue();
       if (form) form.updateDirtyFieldAppearances();
     }
+
+    await this.flush();
 
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context, objectsPerTick).serializeToBuffer();

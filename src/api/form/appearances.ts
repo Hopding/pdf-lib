@@ -458,13 +458,35 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
   let textLines: TextPosition[];
   let fontSize: number;
 
-  const padding = 1;
-  const bounds = {
-    x: borderWidth + padding,
-    y: borderWidth + padding,
-    width: width - (borderWidth + padding) * 2,
-    height: height - (borderWidth + padding) * 2,
-  };
+  // if (textField.isEvenlySpaced()) {
+  //   console.log('BORDER_WIDTH:', borderWidth);
+  // }
+  const padding = textField.isEvenlySpaced() ? 0 : 1;
+  const bounds = textField.isEvenlySpaced()
+    ? {
+        // TODO: We probably should keep the `borderWidth` calcs here...
+        // x: borderWidth,
+        // y: borderWidth,
+        // width: width - borderWidth,
+        // height: height - borderWidth,
+        x: 0,
+        y: 0,
+        width,
+        height,
+      }
+    : {
+        x: borderWidth + padding,
+        y: borderWidth + padding,
+        width: width - (borderWidth + padding) * 2,
+        height: height - (borderWidth + padding) * 2,
+      };
+  // const padding = 1;
+  // const bounds = {
+  // x: borderWidth + padding,
+  // y: borderWidth + padding,
+  // width: width - (borderWidth + padding) * 2,
+  // height: height - (borderWidth + padding) * 2,
+  // };
   if (textField.isMultiline()) {
     const layout = layoutMultilineText(text, {
       alignment: textField.getAlignment(),

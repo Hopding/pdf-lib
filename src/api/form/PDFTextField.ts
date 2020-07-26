@@ -53,7 +53,7 @@ export default class PDFTextField extends PDFField {
 
     const maxLength = this.getMaxLength();
     if (maxLength !== undefined && text && text.length > maxLength) {
-      throw new ExceededMaxLengthError(text.length, maxLength);
+      throw new ExceededMaxLengthError(text.length, maxLength, this.getName());
     }
 
     this.markAsDirty();

@@ -68,6 +68,7 @@ class PDFAcroText extends PDFAcroTerminal {
     return undefined;
   }
 
+  // TODO: Remove this
   /*
   0. Replace newline chars with space if multiline flag is not set
   1. Noop if width or height is 0?

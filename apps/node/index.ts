@@ -18,6 +18,7 @@ import test11 from './tests/test11';
 import test12 from './tests/test12';
 import test13 from './tests/test13';
 import test14 from './tests/test14';
+import test15 from './tests/test15';
 
 const cli = readline.createInterface({
   input: process.stdin,
@@ -122,6 +123,7 @@ const assets = {
     us_constitution: readPdf('us_constitution.pdf'),
     simple_pdf_2_example: readPdf('pdf20examples/Simple PDF 2.0 file.pdf'),
     with_combed_fields: readPdf('with_combed_fields.pdf'),
+    dod_character: readPdf('dod_character.pdf'),
   },
 };
 
@@ -152,7 +154,7 @@ const main = async () => {
     // prettier-ignore
     const allTests = [
     test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
-    test11, test12, test13, test14
+    test11, test12, test13, test14, test15
   ];
 
     const tests = testIdx ? [allTests[testIdx - 1]] : allTests;

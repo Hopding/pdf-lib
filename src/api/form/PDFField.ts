@@ -241,6 +241,21 @@ export default class PDFField {
     }
   }
 
+  // // TODO: Do we need to do this...?
+  // private foo(font: PDFFont, dict: PDFDict) {
+  //   if (!dict.lookup(PDFName.of('DR'))) {
+  //     dict.set(PDFName.of('DR'), dict.context.obj({}));
+  //   }
+  //   const DR = dict.lookup(PDFName.of('DR'), PDFDict);
+
+  //   if (!DR.lookup(PDFName.of('Font'))) {
+  //     DR.set(PDFName.of('Font'), dict.context.obj({}));
+  //   }
+  //   const Font = DR.lookup(PDFName.of('Font'), PDFDict);
+
+  //   Font.set(PDFName.of(font.name), font.ref);
+  // }
+
   private createAppearanceStream(
     widget: PDFWidgetAnnotation,
     appearance: PDFOperator[],
@@ -248,6 +263,13 @@ export default class PDFField {
   ): PDFRef {
     const { context } = this.acroField.dict;
     const { width, height } = widget.getRectangle();
+
+    // TODO: Do we need to do this...?
+    // if (font) {
+    //   this.foo(font, widget.dict);
+    //   this.foo(font, this.doc.getForm().acroForm.dict);
+    // }
+    // END TODO
 
     const Resources = font && { Font: { [font.name]: font.ref } };
     const stream = context.formXObject(appearance, {
