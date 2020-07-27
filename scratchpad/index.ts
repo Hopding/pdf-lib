@@ -548,10 +548,17 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
     fs.readFileSync('./assets/images/small_mario.png'),
   );
 
+  const emblemImage = await pdfDoc.embedPng(
+    fs.readFileSync('./assets/images/mario_emblem.png'),
+  );
+
   const form = pdfDoc.getForm();
 
   const characterImage = form.getButton('CHARACTER IMAGE');
   characterImage.setImage(marioImage);
+
+  const factionSymbolImage = form.getButton('Faction Symbol Image');
+  factionSymbolImage.setImage(emblemImage);
 
   // const widgets = characterImage.acroField.getWidgets();
   // console.log('-------------------');

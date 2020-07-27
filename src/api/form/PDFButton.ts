@@ -62,8 +62,6 @@ export default class PDFButton extends PDFField {
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
 
-      // const { width, height } = widget.getRectangle();
-
       ////////////
       const rectangle = widget.getRectangle();
       const ap = widget.getAppearanceCharacteristics();
@@ -75,13 +73,21 @@ export default class PDFButton extends PDFField {
 
       const rotate = rotateInPlace({ ...rectangle, rotation });
 
-      // Support borders on images and maybe other properties
-      const options = {
+      const imageDims = image.scaleToFit(width, height);
+
+      const drawingArea = {
         x: 0 + borderWidth / 2,
         y: 0 + borderWidth / 2,
-        // TODO: Need to maintain image aspect ratio when calculating these (probably with `PDFImage.scale()`)
         width: width - borderWidth,
         height: height - borderWidth,
+      };
+
+      // Support borders on images and maybe other properties
+      const options = {
+        x: drawingArea.x + (drawingArea.width / 2 - imageDims.width / 2),
+        y: drawingArea.y + (drawingArea.height / 2 - imageDims.height / 2),
+        width: imageDims.width,
+        height: imageDims.height,
         //
         rotate: degrees(0),
         xSkew: degrees(0),

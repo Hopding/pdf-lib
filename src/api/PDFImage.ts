@@ -75,6 +75,18 @@ export default class PDFImage implements Embeddable {
     return { width: this.width * factor, height: this.height * factor };
   }
 
+  // TODO: Document this
+  scaleToFit(width: number, height: number) {
+    assertIs(width, 'width', ['number']);
+    assertIs(height, 'height', ['number']);
+
+    const imgWidthScale = width / this.width;
+    const imgHeightScale = height / this.height;
+    const scale = Math.min(imgWidthScale, imgHeightScale);
+
+    return this.scale(scale);
+  }
+
   /**
    * Get the width and height of this image. For example:
    * ```js
