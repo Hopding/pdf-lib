@@ -11,7 +11,11 @@ import PDFField, {
   assertFieldAppearanceOptions,
 } from 'src/api/form/PDFField';
 import { rgb } from 'src/api/colors';
-import { degrees } from 'src/api/rotations';
+import {
+  degrees,
+  adjustDimsForRotation,
+  reduceRotation,
+} from 'src/api/rotations';
 
 import {
   PDFRef,
@@ -20,6 +24,8 @@ import {
   PDFWidgetAnnotation,
 } from 'src/core';
 import { assertIs, assertOrUndefined } from 'src/utils';
+import { PDFImage } from '..';
+import { drawImage, rotateInPlace } from '../operations';
 
 /**
  * Represents a button field of a [[PDFForm]].
@@ -48,7 +54,61 @@ export default class PDFButton extends PDFField {
     this.acroField = acroPushButton;
   }
 
+  setImage(image: PDFImage) {
+    // Create appearance stream with image, ignoring caption property
+    const { context } = this.acroField.dict;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+
+      // const { width, height } = widget.getRectangle();
+
+      ////////////
+      const rectangle = widget.getRectangle();
+      const ap = widget.getAppearanceCharacteristics();
+      const bs = widget.getBorderStyle();
+
+      const borderWidth = bs?.getWidth() ?? 1;
+      const rotation = reduceRotation(ap?.getRotation());
+      const { width, height } = adjustDimsForRotation(rectangle, rotation);
+
+      const rotate = rotateInPlace({ ...rectangle, rotation });
+
+      // Support borders on images and maybe other properties
+      const options = {
+        x: 0 + borderWidth / 2,
+        y: 0 + borderWidth / 2,
+        // TODO: Need to maintain image aspect ratio when calculating these (probably with `PDFImage.scale()`)
+        width: width - borderWidth,
+        height: height - borderWidth,
+        //
+        rotate: degrees(0),
+        xSkew: degrees(0),
+        ySkew: degrees(0),
+      };
+
+      // TODO: Improve this with random suffix
+      const imageName = 'FOO_BAR';
+      const appearance = [...rotate, ...drawImage(imageName, options)];
+      ////////////
+
+      const Resources = { XObject: { [imageName]: image.ref } };
+      const stream = context.formXObject(appearance, {
+        Resources,
+        BBox: context.obj([0, 0, width, height]),
+        Matrix: context.obj([1, 0, 0, 1, 0, 0]),
+      });
+      const streamRef = context.register(stream);
+
+      this.updateWidgetAppearances(widget, { normal: streamRef });
+    }
+
+    this.markAsClean();
+  }
+
   addToPage(
+    // TODO: This needs to be optional, e.g. for image buttons
     text: string,
     font: PDFFont,
     page: PDFPage,

@@ -99,6 +99,7 @@ const assets = {
       small_mario: readImage('small_mario.png'),
       etwe: readImage('etwe.png'),
       self_drive: readImage('self_drive.png'),
+      mario_emblem: readImage('mario_emblem.png'),
     },
   },
   pdfs: {

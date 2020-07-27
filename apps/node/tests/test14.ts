@@ -129,6 +129,8 @@ export default async (assets: Assets) => {
   const signatureDate = form.getTextField(fieldNames.SignatureDate);
   signatureDate.setText(['2020', '07', '13'].join(''));
 
+  // TODO: Fill in all other fields with random (seeded) numbers
+
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
 };

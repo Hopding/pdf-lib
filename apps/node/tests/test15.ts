@@ -18,8 +18,13 @@ import { PDFDocument } from '../../..';
 //   CharacterImage: 'CHARACTER IMAGE',
 // };
 
+// TODO: Test rotated image field (sample PDF/URL should be in one of the GitHub issues...)
+
 export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.load(assets.pdfs.dod_character);
+
+  const marioImage = await pdfDoc.embedPng(assets.images.png.small_mario);
+  const emblemImage = await pdfDoc.embedPng(assets.images.png.mario_emblem);
 
   const form = pdfDoc.getForm();
 
@@ -106,6 +111,12 @@ export default async (assets: Assets) => {
 
   const factionName = form.getTextField('FactionName');
   factionName.setText(`Mario's Emblem`);
+
+  const characterImage = form.getButton('CHARACTER IMAGE');
+  characterImage.setImage(marioImage);
+
+  const factionSymbolImage = form.getButton('Faction Symbol Image');
+  factionSymbolImage.setImage(emblemImage);
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;

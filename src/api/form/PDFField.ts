@@ -222,7 +222,7 @@ export default class PDFField {
     });
   }
 
-  private updateWidgetAppearances(
+  protected updateWidgetAppearances(
     widget: PDFWidgetAnnotation,
     { normal, rollover, down }: AppearanceMapping<PDFRef | PDFDict>,
   ) {
