@@ -1,5 +1,5 @@
 import { Assets } from '..';
-import { PDFDocument, PDFName } from '../../..';
+import { PDFDocument } from '../../..';
 
 // TODO: Fill in DoD form!
 
@@ -52,9 +52,6 @@ export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.load(assets.pdfs.with_combed_fields);
 
   const form = pdfDoc.getForm();
-
-  // TODO: Do this automatically with a warning...
-  form.acroForm.dict.delete(PDFName.of('XFA'));
 
   const fields = form.getFields();
   fields.forEach((field) => {

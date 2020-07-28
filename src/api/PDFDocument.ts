@@ -222,7 +222,14 @@ export default class PDFDocument {
   }
 
   getForm(): PDFForm {
-    return this.formCache.access();
+    const form = this.formCache.access();
+    if (form.hasXFA()) {
+      console.warn(
+        'Removing XFA form data as pdf-lib does not support reading or writing XFA',
+      );
+      form.deleteXFA();
+    }
+    return form;
   }
 
   /**

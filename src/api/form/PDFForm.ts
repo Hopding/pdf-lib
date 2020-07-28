@@ -29,6 +29,7 @@ import {
   PDFAcroNonTerminal,
   PDFRef,
   createPDFAcroFields,
+  PDFName,
 } from 'src/core';
 import { assertIs, Cache, assertOrUndefined } from 'src/utils';
 
@@ -117,6 +118,14 @@ export default class PDFForm {
 
     this.dirtyFields = new Set();
     this.defaultFontCache = Cache.populatedBy(this.embedDefaultFont);
+  }
+
+  hasXFA(): boolean {
+    return this.acroForm.dict.has(PDFName.of('XFA'));
+  }
+
+  deleteXFA(): void {
+    this.acroForm.dict.delete(PDFName.of('XFA'));
   }
 
   getFields(): PDFField[] {
