@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument, rgb, drawCheckBox } from 'src/index';
+import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
 
 // import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 // import {
@@ -540,25 +540,90 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
 
   // --------------------------
   const pdfDoc = await PDFDocument.load(
-    // fs.readFileSync('./assets/pdfs/dod_character.pdf'),
-    fs.readFileSync('./m.pdf'),
-  );
-
-  const marioImage = await pdfDoc.embedPng(
-    fs.readFileSync('./assets/images/small_mario.png'),
-  );
-
-  const emblemImage = await pdfDoc.embedPng(
-    fs.readFileSync('./assets/images/mario_emblem.png'),
+    fs.readFileSync('./assets/pdfs/dod_character.pdf'),
   );
 
   const form = pdfDoc.getForm();
 
-  const characterImage = form.getButton('CHARACTER IMAGE');
-  characterImage.setImage(marioImage);
+  // const marioImage = await pdfDoc.embedPng(
+  //   fs.readFileSync('./assets/images/small_mario.png'),
+  // );
 
-  const factionSymbolImage = form.getButton('Faction Symbol Image');
-  factionSymbolImage.setImage(emblemImage);
+  // const emblemImage = await pdfDoc.embedPng(
+  //   fs.readFileSync('./assets/images/mario_emblem.png'),
+  // );
+
+  // const characterImage = form.getButton('CHARACTER IMAGE');
+  // characterImage.setImage(marioImage);
+
+  // const factionSymbolImage = form.getButton('Faction Symbol Image');
+  // factionSymbolImage.setImage(emblemImage);
+  const characterName = form.getTextField('CharacterName 2');
+  characterName.setText('Mario');
+
+  const age = form.getTextField('Age');
+  age.setText('24 years');
+
+  const height = form.getTextField('Height');
+  height.setText(`5' 1"`);
+
+  const weight = form.getTextField('Weight');
+  weight.setText('196 lbs');
+
+  const eyes = form.getTextField('Eyes');
+  eyes.setText('blue');
+
+  const skin = form.getTextField('Skin');
+  skin.setText('white');
+
+  const hair = form.getTextField('Hair');
+  hair.setText('brown');
+
+  const backstory = form.getTextField('Backstory');
+  backstory.setText(
+    `Mario is a fictional character in the Mario video game franchise, owned by Nintendo and created by Japanese video game designer Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist of the series, Mario has appeared in over 200 video games since his creation. Depicted as a short, pudgy, Italian plumber who resides in the Mushroom Kingdom, his adventures generally center upon rescuing Princess Peach from the Koopa villain Bowser. His younger brother and sidekick is Luigi.`,
+  );
+
+  const featuresAndTraits = form.getTextField('Feat+Traits');
+  featuresAndTraits.setText(
+    [
+      `   Mario can use three basic three power-ups:`,
+      `    - the Super Mushroom, which causes Mario to grow larger`,
+      `    - the Fire Flower, which allows Mario to throw fireballs`,
+      `    - the Starman, which gives Mario temporary invincibility`,
+    ].join('\n'),
+  );
+
+  const allies = form.getTextField('Allies');
+  allies.setText(
+    [
+      `Allies:`,
+      `    - Princess Daisy`,
+      `    - Princess Peach`,
+      `    - Rosalina`,
+      `    - Geno`,
+      `    - Luigi`,
+      `    - Donkey Kong`,
+      `    - Yoshi`,
+      `    - Diddy Kong`,
+      ``,
+      `Organizations:`,
+      `    - Italian Plumbers Association`,
+    ].join('\n'),
+  );
+
+  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const page = pdfDoc.insertPage(0);
+  const tf = form.createTextField('my.tf');
+  tf.setIsMultiline(true);
+  tf.setText(
+    `Mario is a fictional character in the Mario video game franchise, owned by Nintendo and created by Japanese video game designer Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist of the series, Mario has appeared in over 200 video games since his creation. Depicted as a short, pudgy, Italian plumber who resides in the Mushroom Kingdom, his adventures generally center upon rescuing Princess Peach from the Koopa villain Bowser. His younger brother and sidekick is Luigi.`,
+  );
+  tf.addToPage(helvetica, page, {
+    borderWidth: 1,
+    width: 1,
+    height: 1,
+  });
 
   // const widgets = characterImage.acroField.getWidgets();
   // console.log('-------------------');

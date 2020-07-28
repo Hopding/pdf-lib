@@ -1,23 +1,6 @@
 import { Assets } from '..';
 import { PDFDocument } from '../../..';
 
-// const fieldNames = {
-//   CharacterName: 'CharacterName 2',
-//   Age: 'Age',
-//   Height: 'Height',
-//   Weight: 'Weight',
-//   Eyes: 'Eyes',
-//   Skin: 'Skin',
-//   Hair: 'Hair',
-//   Allies: 'Allies',
-//   FactionName: 'FactionName',
-//   Backstory: 'Backstory',
-//   Traits: 'Feat+Traits',
-//   Treasure: 'Treasure',
-//   FactionSymbolImage: 'Faction Symbol Image',
-//   CharacterImage: 'CHARACTER IMAGE',
-// };
-
 // TODO: Test rotated image field (sample PDF/URL should be in one of the GitHub issues...)
 
 export default async (assets: Assets) => {
@@ -28,95 +11,58 @@ export default async (assets: Assets) => {
 
   const form = pdfDoc.getForm();
 
-  // const fields = form.getFields();
-  // fields.forEach((field) => {
-  //   const type = field.constructor.name;
-  //   const namex = field.getName();
-  //   console.log(`${type}: ${namex}`);
-  // });
+  form.getTextField('CharacterName 2').setText('Mario');
+  form.getTextField('Age').setText('24 years');
+  form.getTextField('Height').setText(`5' 1"`);
+  form.getTextField('Weight').setText('196 lbs');
+  form.getTextField('Eyes').setText('blue');
+  form.getTextField('Skin').setText('white');
+  form.getTextField('Hair').setText('brown');
 
-  const characterName = form.getTextField('CharacterName 2');
-  characterName.setText('Mario');
+  form.getButton('CHARACTER IMAGE').setImage(marioImage);
 
-  const age = form.getTextField('Age');
-  age.setText('24 years');
+  form
+    .getTextField('Allies')
+    .setText(
+      [
+        `Allies:`,
+        `  • Princess Daisy`,
+        `  • Princess Peach`,
+        `  • Rosalina`,
+        `  • Geno`,
+        `  • Luigi`,
+        `  • Donkey Kong`,
+        `  • Yoshi`,
+        `  • Diddy Kong`,
+        ``,
+        `Organizations:`,
+        `    - Italian Plumbers Association`,
+      ].join('\n'),
+    );
 
-  const height = form.getTextField('Height');
-  height.setText(`5' 1"`);
+  form.getTextField('FactionName').setText(`Mario's Emblem`);
+  form.getButton('Faction Symbol Image').setImage(emblemImage);
 
-  const weight = form.getTextField('Weight');
-  weight.setText('196 lbs');
+  form
+    .getTextField('Backstory')
+    .setText(
+      `Mario is a fictional character in the Mario video game franchise, owned by Nintendo and created by Japanese video game designer Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist of the series, Mario has appeared in over 200 video games since his creation. Depicted as a short, pudgy, Italian plumber who resides in the Mushroom Kingdom, his adventures generally center upon rescuing Princess Peach from the Koopa villain Bowser. His younger brother and sidekick is Luigi.`,
+    );
 
-  const eyes = form.getTextField('Eyes');
-  eyes.setText('blue');
+  form
+    .getTextField('Feat+Traits')
+    .setText(
+      [
+        `Mario can use three basic three power-ups:`,
+        `  • the Super Mushroom, which causes Mario to grow larger`,
+        `  • the Fire Flower, which allows Mario to throw fireballs`,
+        `  • the Starman, which gives Mario temporary invincibility`,
+      ].join('\n'),
+    );
 
-  const skin = form.getTextField('Skin');
-  skin.setText('white');
-
-  const hair = form.getTextField('Hair');
-  hair.setText('brown');
-
-  const backstory = form.getTextField('Backstory');
-  backstory.setText(
-    [
-      `Mario is a fictional character in the`,
-      `Mario video game franchise, owned`,
-      `by Nintendo and created by`,
-      `Japanese video game designer`,
-      `Shigeru Miyamoto. Serving as the`,
-      `company's mascot and the`,
-      `eponymous protagonist of the series,`,
-      `Mario has appeared in over 200`,
-      `video games since his creation.`,
-      `Depicted as a short, pudgy, Italian`,
-      `plumber who resides in the`,
-      `Mushroom Kingdom, his adventures`,
-      `generally center upon rescuing`,
-      `Princess Peach from the Koopa `,
-      `villain Bowser. His younger brother`,
-      `and sidekick is Luigi.`,
-    ].join('\n'),
-
-    // TODO: Add automatic line wrapping to handle this type of thing:
-    // `Mario is a fictional character in the Mario video game franchise, owned by Nintendo and created by Japanese video game designer Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist of the series, Mario has appeared in over 200 video games since his creation. Depicted as a short, pudgy, Italian plumber who resides in the Mushroom Kingdom, his adventures generally center upon rescuing Princess Peach from the Koopa villain Bowser. His younger brother and sidekick is Luigi.`,
-  );
-
-  const featuresAndTraits = form.getTextField('Feat+Traits');
-  featuresAndTraits.setText(
-    [
-      `   Mario can use three basic three power-ups:`,
-      `    - the Super Mushroom, which causes Mario to grow larger`,
-      `    - the Fire Flower, which allows Mario to throw fireballs`,
-      `    - the Starman, which gives Mario temporary invincibility`,
-    ].join('\n'),
-  );
-
-  const allies = form.getTextField('Allies');
-  allies.setText(
-    [
-      `Allies:`,
-      `    - Princess Daisy`,
-      `    - Princess Peach`,
-      `    - Rosalina`,
-      `    - Geno`,
-      `    - Luigi`,
-      `    - Donkey Kong`,
-      `    - Yoshi`,
-      `    - Diddy Kong`,
-      ``,
-      `Organizations:`,
-      `    - Italian Plumbers Association`,
-    ].join('\n'),
-  );
-
-  const factionName = form.getTextField('FactionName');
-  factionName.setText(`Mario's Emblem`);
-
-  const characterImage = form.getButton('CHARACTER IMAGE');
-  characterImage.setImage(marioImage);
-
-  const factionSymbolImage = form.getButton('Faction Symbol Image');
-  factionSymbolImage.setImage(emblemImage);
+  form
+    .getTextField('Treasure')
+    .setText(['• Gold coins', '• Treasure chests'].join('\n'));
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;

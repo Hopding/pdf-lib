@@ -97,6 +97,98 @@ export interface MultilineTextLayout {
   lineHeight: number;
 }
 
+// export const layoutMultilineText = (
+//   text: string,
+//   { alignment, fontSize, font, bounds }: LayoutTextOptions,
+// ): MultilineTextLayout => {
+//   const lines = lineSplit(cleanText(text));
+
+//   if (fontSize === undefined || fontSize === 0) {
+//     fontSize = computeFontSize(lines, font, bounds);
+//   }
+//   const height = font.heightAtSize(fontSize);
+//   const lineHeight = height + height * 0.2;
+
+//   const textLines: TextPosition[] = [];
+
+//   let minX = bounds.x;
+//   let minY = bounds.y;
+//   let maxX = bounds.x + bounds.width;
+//   let maxY = bounds.y + bounds.height;
+
+//   let y = bounds.y + bounds.height;
+//   for (let idx = 0, len = lines.length; idx < len; idx++) {
+//     const line = lines[idx];
+
+//     const encoded = font.encodeText(line);
+//     const width = font.widthOfTextAtSize(line, fontSize);
+
+//     // prettier-ignore
+//     const x = (
+//         alignment === TextAlignment.Left   ? bounds.x
+//       : alignment === TextAlignment.Center ? bounds.x + (bounds.width / 2) - (width / 2)
+//       : alignment === TextAlignment.Right  ? bounds.x + bounds.width - width
+//       : bounds.x
+//     );
+
+//     y -= lineHeight;
+
+//     if (x < minX) minX = x;
+//     if (y < minY) minY = y;
+//     if (x + width > maxX) maxX = x + width;
+//     if (y + height > maxY) maxY = y + height;
+
+//     textLines.push({ text: line, encoded, width, height, x, y });
+//   }
+
+//   return {
+//     fontSize,
+//     lineHeight,
+//     lines: textLines,
+//     bounds: {
+//       x: minX,
+//       y: minY,
+//       width: maxX - minX,
+//       height: maxY - minY,
+//     },
+//   };
+// };
+
+const lastIndexOfWhitespace = (line: string) => {
+  for (let idx = line.length; idx > 0; idx--) {
+    if (/\s/.test(line[idx])) return idx;
+  }
+  return undefined;
+};
+
+const splitOutLines = (
+  input: string,
+  maxWidth: number,
+  font: PDFFont,
+  fontSize: number,
+) => {
+  let lastWhitespaceIdx = input.length;
+  while (lastWhitespaceIdx > 0) {
+    const line = input.substring(0, lastWhitespaceIdx);
+    const encoded = font.encodeText(line);
+    const width = font.widthOfTextAtSize(line, fontSize);
+    if (width < maxWidth) {
+      const remainder = input.substring(lastWhitespaceIdx);
+      return { line, encoded, width, remainder };
+    }
+    lastWhitespaceIdx = lastIndexOfWhitespace(line) ?? 0;
+  }
+
+  // We were unable to split the input enough to get a chunk that would fit
+  // within the specified `maxWidth` so we'll just return everything
+  return {
+    line: input,
+    encoded: font.encodeText(input),
+    width: font.widthOfTextAtSize(input, fontSize),
+    remainder: '',
+  };
+};
+
 export const layoutMultilineText = (
   text: string,
   { alignment, fontSize, font, bounds }: LayoutTextOptions,
@@ -104,7 +196,8 @@ export const layoutMultilineText = (
   const lines = lineSplit(cleanText(text));
 
   if (fontSize === undefined || fontSize === 0) {
-    fontSize = computeFontSize(lines, font, bounds);
+    // fontSize = computeFontSize(lines, font, bounds);
+    fontSize = 12;
   }
   const height = font.heightAtSize(fontSize);
   const lineHeight = height + height * 0.2;
@@ -118,27 +211,37 @@ export const layoutMultilineText = (
 
   let y = bounds.y + bounds.height;
   for (let idx = 0, len = lines.length; idx < len; idx++) {
-    const line = lines[idx];
+    // TODO: Cleanup this name...
+    let remainderXX = lines[idx];
+    while (remainderXX.length > 0) {
+      const { line, encoded, width, remainder } = splitOutLines(
+        remainderXX,
+        bounds.width,
+        font,
+        fontSize,
+      );
 
-    const encoded = font.encodeText(line);
-    const width = font.widthOfTextAtSize(line, fontSize);
+      // prettier-ignore
+      const x = (
+          alignment === TextAlignment.Left   ? bounds.x
+        : alignment === TextAlignment.Center ? bounds.x + (bounds.width / 2) - (width / 2)
+        : alignment === TextAlignment.Right  ? bounds.x + bounds.width - width
+        : bounds.x
+      );
 
-    // prettier-ignore
-    const x = (
-        alignment === TextAlignment.Left   ? bounds.x
-      : alignment === TextAlignment.Center ? bounds.x + (bounds.width / 2) - (width / 2)
-      : alignment === TextAlignment.Right  ? bounds.x + bounds.width - width
-      : bounds.x
-    );
+      y -= lineHeight;
 
-    y -= lineHeight;
+      if (x < minX) minX = x;
+      if (y < minY) minY = y;
+      if (x + width > maxX) maxX = x + width;
+      if (y + height > maxY) maxY = y + height;
 
-    if (x < minX) minX = x;
-    if (y < minY) minY = y;
-    if (x + width > maxX) maxX = x + width;
-    if (y + height > maxY) maxY = y + height;
+      textLines.push({ text: line, encoded, width, height, x, y });
 
-    textLines.push({ text: line, encoded, width, height, x, y });
+      // Only trim lines that we had to split ourselves. So we won't trim lines
+      // that the user provided themselves with whitespace.
+      remainderXX = remainder.trim();
+    }
   }
 
   return {

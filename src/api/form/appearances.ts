@@ -427,67 +427,6 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   };
 };
 
-// export const defaultImageAppearanceProvider: AppearanceProviderFor<PDFButton> = (
-//   _button,
-//   widget,
-
-//   // TODO: Figure out how to not require this for images...
-//   _font,
-// ) => {
-//   // // The `/DA` entry can be at the widget or field level - so we handle both
-//   // const widgetColor = getDefaultColor(widget);
-//   // const fieldColor = getDefaultColor(button.acroField);
-//   // const widgetFontSize = getDefaultFontSize(widget);
-//   // const fieldFontSize = getDefaultFontSize(button.acroField);
-
-//   const rectangle = widget.getRectangle();
-//   const ap = widget.getAppearanceCharacteristics();
-//   const bs = widget.getBorderStyle();
-//   // const captions = ap?.getCaptions();
-//   // const normalText = captions?.normal ?? '';
-//   // const downText = captions?.down ?? normalText ?? '';
-
-//   const borderWidth = bs?.getWidth() ?? 1;
-//   const rotation = reduceRotation(ap?.getRotation());
-//   const { width, height } = adjustDimsForRotation(rectangle, rotation);
-
-//   const rotate = rotateInPlace({ ...rectangle, rotation });
-
-//   // const black = rgb(0, 0, 0);
-
-//   // const borderColor = componentsToColor(ap?.getBorderColor());
-//   // const normalBackgroundColor = componentsToColor(ap?.getBackgroundColor());
-//   // const downBackgroundColor = componentsToColor(ap?.getBackgroundColor(), 0.8);
-
-//   // const bounds = {
-//   //   x: borderWidth,
-//   //   y: borderWidth,
-//   //   width: width - borderWidth * 2,
-//   //   height: height - borderWidth * 2,
-//   // };
-
-//   // Support borders on images and maybe other properties
-//   const options = {
-//     x: 0 + borderWidth / 2,
-//     y: 0 + borderWidth / 2,
-//     width: width - borderWidth,
-//     height: height - borderWidth,
-//     //
-//     rotate: degrees(0),
-//     xSkew: degrees(0),
-//     ySkew: degrees(0),
-//   };
-
-//   return {
-//     normal: [
-//       ...rotate,
-//       ...drawImage(imgName, {
-//         ...options,
-//       }),
-//     ],
-//   };
-// };
-
 // TODO: Support auto-wrapping
 export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextField> = (
   textField,
