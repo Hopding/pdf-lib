@@ -36,7 +36,7 @@ export default async (assets: Assets) => {
         `  • Diddy Kong`,
         ``,
         `Organizations:`,
-        `    - Italian Plumbers Association`,
+        `  • Italian Plumbers Association`,
       ].join('\n'),
     );
 
