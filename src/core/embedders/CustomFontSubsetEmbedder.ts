@@ -10,7 +10,11 @@ import { Cache, mergeUint8Arrays, toHexStringOfMinLength } from 'src/utils';
  *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
  */
 class CustomFontSubsetEmbedder extends CustomFontEmbedder {
-  static async for(fontkit: Fontkit, fontData: Uint8Array, customFontName?: string) {
+  static async for(
+    fontkit: Fontkit,
+    fontData: Uint8Array,
+    customFontName?: string,
+  ) {
     const font = await fontkit.create(fontData);
     return new CustomFontSubsetEmbedder(font, fontData, customFontName);
   }
@@ -19,7 +23,11 @@ class CustomFontSubsetEmbedder extends CustomFontEmbedder {
   private readonly glyphs: Glyph[];
   private readonly glyphIdMap: Map<number, number>;
 
-  private constructor(font: Font, fontData: Uint8Array, customFontName?: string) {
+  private constructor(
+    font: Font,
+    fontData: Uint8Array,
+    customFontName?: string,
+  ) {
     super(font, fontData, customFontName);
 
     this.subset = this.font.createSubset();

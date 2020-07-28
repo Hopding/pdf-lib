@@ -30,7 +30,7 @@ describe(`CustomFontEmbedder`, () => {
     const embedder = await CustomFontEmbedder.for(
       fontkit,
       new Uint8Array(ubuntuFont),
-      customFontName
+      customFontName,
     );
     expect(embedder.customFontName).toBe(customFontName);
   });

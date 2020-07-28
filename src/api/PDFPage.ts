@@ -1402,8 +1402,7 @@ export default class PDFPage {
       blendMode: options.blendMode,
     });
 
-    if (!('color' in options) && !('borderColor' in options))
-    {
+    if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
     }
 
