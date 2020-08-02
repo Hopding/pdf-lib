@@ -1,4 +1,11 @@
-import { PDFDocument, PDFPage, radians, StandardFonts } from 'pdf-lib';
+import {
+  PDFDocument,
+  PDFPage,
+  radians,
+  StandardFonts,
+  rgb,
+  degrees,
+} from 'pdf-lib';
 
 import { fetchAsset, writePdf } from './assets';
 
@@ -38,6 +45,18 @@ export default async () => {
       xSkew: radians(Math.PI / 10),
       ySkew: radians(Math.PI / 10),
     });
+  });
+
+  middlePage.drawEllipse({
+    x: 450,
+    y: 225,
+    xScale: 25,
+    yScale: 150,
+    color: rgb(0, 1, 0),
+    borderWidth: 2,
+    borderColor: rgb(1, 0, 1),
+    rotate: degrees(45),
+    opacity: 0.5,
   });
 
   const stampImage = (page) => {
