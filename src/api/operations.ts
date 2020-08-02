@@ -302,13 +302,23 @@ export const drawEllipse = (options: {
     setLineWidth(options.borderWidth),
     options.borderLineCap && setLineCap(options.borderLineCap),
     setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
-    ...drawEllipseCurves({
-      x: options.x,
-      y: options.y,
-      xScale: options.xScale,
-      yScale: options.yScale,
-      rotate: options.rotate ?? degrees(0),
-    }),
+
+    // The `drawEllipsePath` branch is only here for backwards compatibility.
+    // See https://github.com/Hopding/pdf-lib/pull/511#issuecomment-667685655.
+    ...(options.rotate === undefined
+      ? drawEllipsePath({
+          x: options.x,
+          y: options.y,
+          xScale: options.xScale,
+          yScale: options.yScale,
+        })
+      : drawEllipseCurves({
+          x: options.x,
+          y: options.y,
+          xScale: options.xScale,
+          yScale: options.yScale,
+          rotate: options.rotate ?? degrees(0),
+        })),
 
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()
