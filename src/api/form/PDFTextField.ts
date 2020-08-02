@@ -27,7 +27,7 @@ import {
   assertIs,
   assertIsOneOf,
   assertOrUndefined,
-  assertRange,
+  assertRangeOrUndefined,
 } from 'src/utils';
 
 /**
@@ -92,17 +92,21 @@ export default class PDFTextField extends PDFField {
     );
   }
 
-  setMaxLength(maxLength: number) {
-    assertRange(maxLength, 'maxLength', 0, Number.MAX_SAFE_INTEGER);
-
-    const text = this.getText();
-    if (text && text.length > maxLength) {
-      const msg = `maxLength of ${maxLength} is less than ${text.length}, the length of this field's current value`;
-      console.warn(msg);
-    }
+  setMaxLength(maxLength?: number) {
+    assertRangeOrUndefined(maxLength, 'maxLength', 0, Number.MAX_SAFE_INTEGER);
 
     this.markAsDirty();
-    this.acroField.setMaxLength(maxLength);
+
+    if (maxLength === undefined) {
+      this.acroField.removeMaxLength();
+    } else {
+      const text = this.getText();
+      if (text && text.length > maxLength) {
+        const msg = `maxLength of ${maxLength} is less than ${text.length}, the length of this field's current value`;
+        console.warn(msg);
+      }
+      this.acroField.setMaxLength(maxLength);
+    }
   }
 
   getMaxLength(): number | undefined {

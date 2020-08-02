@@ -35,6 +35,10 @@ class PDFAcroText extends PDFAcroTerminal {
     this.dict.set(PDFName.of('MaxLen'), PDFNumber.of(maxLength));
   }
 
+  removeMaxLength() {
+    this.dict.delete(PDFName.of('MaxLen'));
+  }
+
   getMaxLength(): number | undefined {
     return this.MaxLen()?.asNumber();
   }
