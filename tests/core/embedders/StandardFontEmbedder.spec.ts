@@ -18,6 +18,15 @@ describe(`StandardFontEmbedder`, () => {
     expect(embedder.fontName).toBe('Helvetica-Oblique');
   });
 
+  it(`can use a custom font name`, () => {
+    const customName = 'Roboto 2';
+    const embedder = StandardFontEmbedder.for(
+      FontNames.HelveticaOblique,
+      customName,
+    );
+    expect(embedder.fontName).toBe(customName);
+  });
+
   it(`can embed standard font dictionaries into PDFContexts without a predefined ref`, () => {
     const context = PDFContext.create();
     const embedder = StandardFontEmbedder.for(FontNames.Courier);

@@ -21,13 +21,14 @@ export interface Glyph {
  *   https://github.com/foliojs/pdfkit/blob/f91bdd61c164a72ea06be1a43dc0a412afc3925f/lib/font/afm.coffee
  */
 class StandardFontEmbedder {
-  static for = (fontName: FontNames) => new StandardFontEmbedder(fontName);
+  static for = (fontName: FontNames, customName?: string) =>
+    new StandardFontEmbedder(fontName, customName);
 
   readonly font: Font;
   readonly encoding: Encoding;
   readonly fontName: string;
 
-  private constructor(fontName: FontNames) {
+  private constructor(fontName: FontNames, customName?: string) {
     // prettier-ignore
     this.encoding = (
         fontName === FontNames.ZapfDingbats ? Encodings.ZapfDingbats
@@ -35,7 +36,7 @@ class StandardFontEmbedder {
       : Encodings.WinAnsi
     );
     this.font = Font.load(fontName);
-    this.fontName = this.font.FontName;
+    this.fontName = customName || this.font.FontName;
   }
 
   /**

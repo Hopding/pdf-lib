@@ -23,31 +23,27 @@ class CustomFontEmbedder {
   static async for(
     fontkit: Fontkit,
     fontData: Uint8Array,
-    customFontName?: string,
+    customName?: string,
   ) {
     const font = await fontkit.create(fontData);
-    return new CustomFontEmbedder(font, fontData, customFontName);
+    return new CustomFontEmbedder(font, fontData, customName);
   }
 
   readonly font: Font;
   readonly scale: number;
   readonly fontData: Uint8Array;
   readonly fontName: string;
-  readonly customFontName: string | undefined;
+  readonly customName: string | undefined;
 
   protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
-  protected constructor(
-    font: Font,
-    fontData: Uint8Array,
-    customFontName?: string,
-  ) {
+  protected constructor(font: Font, fontData: Uint8Array, customName?: string) {
     this.font = font;
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;
     this.fontName = this.font.postscriptName || 'Font';
-    this.customFontName = customFontName;
+    this.customName = customName;
 
     this.baseFontName = '';
     this.glyphCache = Cache.populatedBy(this.allGlyphsInFontSortedById);
@@ -93,7 +89,7 @@ class CustomFontEmbedder {
   }
 
   embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    this.baseFontName = this.customFontName || addRandomSuffix(this.fontName);
+    this.baseFontName = this.customName || addRandomSuffix(this.fontName);
     return this.embedFontDict(context, ref);
   }
 
