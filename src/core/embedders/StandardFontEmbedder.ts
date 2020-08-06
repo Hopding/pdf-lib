@@ -27,6 +27,7 @@ class StandardFontEmbedder {
   readonly font: Font;
   readonly encoding: Encoding;
   readonly fontName: string;
+  readonly customName: string | undefined;
 
   private constructor(fontName: FontNames, customName?: string) {
     // prettier-ignore
@@ -36,7 +37,8 @@ class StandardFontEmbedder {
       : Encodings.WinAnsi
     );
     this.font = Font.load(fontName);
-    this.fontName = customName || this.font.FontName;
+    this.fontName = this.font.FontName;
+    this.customName = customName;
   }
 
   /**
@@ -83,10 +85,11 @@ class StandardFontEmbedder {
   }
 
   embedIntoContext(context: PDFContext, ref?: PDFRef): PDFRef {
+    console.log(this.customName);
     const fontDict = context.obj({
       Type: 'Font',
       Subtype: 'Type1',
-      BaseFont: this.font.FontName,
+      BaseFont: this.customName || this.fontName,
 
       Encoding:
         this.encoding === Encodings.WinAnsi ? 'WinAnsiEncoding' : undefined,

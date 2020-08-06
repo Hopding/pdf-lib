@@ -24,7 +24,7 @@ describe(`StandardFontEmbedder`, () => {
       FontNames.HelveticaOblique,
       customName,
     );
-    expect(embedder.fontName).toBe(customName);
+    expect(embedder.customName).toBe(customName);
   });
 
   it(`can embed standard font dictionaries into PDFContexts without a predefined ref`, () => {

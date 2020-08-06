@@ -128,8 +128,8 @@ describe(`PDFDocument`, () => {
     it(`serializes the same value on every save when using a custom font name`, async () => {
       const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
       const customName = 'Custom-Font-Name';
-      const pdfDoc1 = await PDFDocument.create();
-      const pdfDoc2 = await PDFDocument.create();
+      const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
+      const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
 
       pdfDoc1.registerFontkit(fontkit);
       pdfDoc2.registerFontkit(fontkit);
