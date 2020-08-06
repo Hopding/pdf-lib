@@ -25,6 +25,16 @@ describe(`CustomFontEmbedder`, () => {
     expect(embedder.fontName).toBe('Ubuntu');
   });
 
+  it(`can set a custom font name`, async () => {
+    const customName = 'abc123';
+    const embedder = await CustomFontEmbedder.for(
+      fontkit,
+      new Uint8Array(ubuntuFont),
+      customName,
+    );
+    expect(embedder.customName).toBe(customName);
+  });
+
   it(`can embed font dictionaries into PDFContexts without a predefined ref`, async () => {
     const context = PDFContext.create();
     const embedder = await CustomFontEmbedder.for(
