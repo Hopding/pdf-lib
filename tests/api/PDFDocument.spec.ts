@@ -1,3 +1,4 @@
+import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import {
   EncryptedPDFError,
@@ -120,6 +121,43 @@ describe(`PDFDocument`, () => {
           throwOnInvalidObject: true,
         }),
       ).rejects.toEqual(expectedError);
+    });
+  });
+
+  describe(`embedFont() method`, () => {
+    it(`serializes the same value on every save when using a custom font name`, async () => {
+      const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
+      const customName = 'Custom-Font-Name';
+      const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
+      const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
+
+      pdfDoc1.registerFontkit(fontkit);
+      pdfDoc2.registerFontkit(fontkit);
+
+      await pdfDoc1.embedFont(customFont, { customName });
+      await pdfDoc2.embedFont(customFont, { customName });
+
+      const savedDoc1 = await pdfDoc1.save();
+      const savedDoc2 = await pdfDoc2.save();
+
+      expect(savedDoc1).toEqual(savedDoc2);
+    });
+
+    it(`does not serialize the same on save when not using a custom font name`, async () => {
+      const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
+      const pdfDoc1 = await PDFDocument.create();
+      const pdfDoc2 = await PDFDocument.create();
+
+      pdfDoc1.registerFontkit(fontkit);
+      pdfDoc2.registerFontkit(fontkit);
+
+      await pdfDoc1.embedFont(customFont);
+      await pdfDoc2.embedFont(customFont);
+
+      const savedDoc1 = await pdfDoc1.save();
+      const savedDoc2 = await pdfDoc2.save();
+
+      expect(savedDoc1).not.toEqual(savedDoc2);
     });
   });
 
