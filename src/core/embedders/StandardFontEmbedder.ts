@@ -85,7 +85,6 @@ class StandardFontEmbedder {
   }
 
   embedIntoContext(context: PDFContext, ref?: PDFRef): PDFRef {
-    console.log(this.customName);
     const fontDict = context.obj({
       Type: 'Font',
       Subtype: 'Type1',
