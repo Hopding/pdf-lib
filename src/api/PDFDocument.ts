@@ -806,20 +806,20 @@ export default class PDFDocument {
     font: StandardFonts | string | Uint8Array | ArrayBuffer,
     options: EmbedFontOptions = {},
   ): Promise<PDFFont> {
-    const { subset = false } = options;
+    const { subset = false, customName } = options;
 
     assertIs(font, 'font', ['string', Uint8Array, ArrayBuffer]);
     assertIs(subset, 'subset', ['boolean']);
 
     let embedder: CustomFontEmbedder | StandardFontEmbedder;
     if (isStandardFont(font)) {
-      embedder = StandardFontEmbedder.for(font);
+      embedder = StandardFontEmbedder.for(font, customName);
     } else if (canBeConvertedToUint8Array(font)) {
       const bytes = toUint8Array(font);
       const fontkit = this.assertFontkit();
       embedder = subset
-        ? await CustomFontSubsetEmbedder.for(fontkit, bytes)
-        : await CustomFontEmbedder.for(fontkit, bytes);
+        ? await CustomFontSubsetEmbedder.for(fontkit, bytes, customName)
+        : await CustomFontEmbedder.for(fontkit, bytes, customName);
     } else {
       throw new TypeError(
         '`font` must be one of `StandardFonts | string | Uint8Array | ArrayBuffer`',
@@ -841,15 +841,16 @@ export default class PDFDocument {
    * const helveticaFont = pdfDoc.embedFont(StandardFonts.Helvetica)
    * ```
    * @param font The standard font to be embedded.
+   * @param customName The name to be used when embedding the font.
    * @returns The embedded font.
    */
-  embedStandardFont(font: StandardFonts): PDFFont {
+  embedStandardFont(font: StandardFonts, customName?: string): PDFFont {
     assertIs(font, 'font', ['string']);
     if (!isStandardFont(font)) {
-      throw new TypeError('`font` must be one of type `StandardFontsr`');
+      throw new TypeError('`font` must be one of type `StandardFonts`');
     }
 
-    const embedder = StandardFontEmbedder.for(font);
+    const embedder = StandardFontEmbedder.for(font, customName);
 
     const ref = this.context.nextRef();
     const pdfFont = PDFFont.of(ref, this, embedder);

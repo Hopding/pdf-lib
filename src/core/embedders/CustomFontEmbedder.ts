@@ -20,24 +20,30 @@ import {
  *   https://github.com/devongovett/pdfkit/blob/e71edab0dd4657b5a767804ba86c94c58d01fbca/lib/image/jpeg.coffee
  */
 class CustomFontEmbedder {
-  static async for(fontkit: Fontkit, fontData: Uint8Array) {
+  static async for(
+    fontkit: Fontkit,
+    fontData: Uint8Array,
+    customName?: string,
+  ) {
     const font = await fontkit.create(fontData);
-    return new CustomFontEmbedder(font, fontData);
+    return new CustomFontEmbedder(font, fontData, customName);
   }
 
   readonly font: Font;
   readonly scale: number;
   readonly fontData: Uint8Array;
   readonly fontName: string;
+  readonly customName: string | undefined;
 
   protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
-  protected constructor(font: Font, fontData: Uint8Array) {
+  protected constructor(font: Font, fontData: Uint8Array, customName?: string) {
     this.font = font;
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;
     this.fontName = this.font.postscriptName || 'Font';
+    this.customName = customName;
 
     this.baseFontName = '';
     this.glyphCache = Cache.populatedBy(this.allGlyphsInFontSortedById);
@@ -92,7 +98,7 @@ class CustomFontEmbedder {
   }
 
   embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    this.baseFontName = addRandomSuffix(this.fontName);
+    this.baseFontName = this.customName || addRandomSuffix(this.fontName);
     return this.embedFontDict(context, ref);
   }
 

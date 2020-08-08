@@ -1403,8 +1403,7 @@ export default class PDFPage {
       blendMode: options.blendMode,
     });
 
-    if (!('color' in options) && !('borderColor' in options))
-    {
+    if (!('color' in options) && !('borderColor' in options)) {
       options.color = rgb(0, 0, 0);
     }
 
@@ -1415,7 +1414,7 @@ export default class PDFPage {
         y: options.y ?? this.y,
         xScale: options.xScale ?? 100,
         yScale: options.yScale ?? 100,
-        rotate: options.rotate ?? degrees(0),
+        rotate: options.rotate ?? undefined,
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
         borderWidth: options.borderWidth ?? 0,
