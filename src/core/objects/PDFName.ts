@@ -34,7 +34,21 @@ class PDFName extends PDFObject {
   };
 
   /* tslint:disable member-ordering */
+  static readonly PageMode = PDFName.of('PageMode');
+  static readonly UseOutlines = PDFName.of('UseOutlines');
+  static readonly Fit = PDFName.of('Fit');
+  static readonly Root = PDFName.of('Root');
+  static readonly Encrypt = PDFName.of('Encrypt');
+  static readonly Info = PDFName.of('Info');
+  static readonly ID = PDFName.of('ID');
+  static readonly Filter = PDFName.of('Filter');
+  static readonly Size = PDFName.of('Size');
+  static readonly Index = PDFName.of('Index');
+  static readonly W = PDFName.of('W');
   static readonly Length = PDFName.of('Length');
+  static readonly N = PDFName.of('N');
+  static readonly ObjStm = PDFName.of('ObjStm');
+  static readonly XRef = PDFName.of('XRef');
   static readonly FlateDecode = PDFName.of('FlateDecode');
   static readonly Resources = PDFName.of('Resources');
   static readonly Font = PDFName.of('Font');
@@ -44,6 +58,9 @@ class PDFName extends PDFObject {
   static readonly Type = PDFName.of('Type');
   static readonly Parent = PDFName.of('Parent');
   static readonly MediaBox = PDFName.of('MediaBox');
+  static readonly Catalog = PDFName.of('Catalog');
+  static readonly Outlines = PDFName.of('Outlines');
+  static readonly Pages = PDFName.of('Pages');
   static readonly Page = PDFName.of('Page');
   static readonly Annots = PDFName.of('Annots');
   static readonly TrimBox = PDFName.of('TrimBox');
@@ -57,8 +74,22 @@ class PDFName extends PDFObject {
   static readonly Creator = PDFName.of('Creator');
   static readonly Keywords = PDFName.of('Keywords');
   static readonly Producer = PDFName.of('Producer');
+  static readonly Lang = PDFName.of('Lang');
   static readonly CreationDate = PDFName.of('CreationDate');
   static readonly ModDate = PDFName.of('ModDate');
+  static readonly Prev = PDFName.of('Prev');
+  static readonly Next = PDFName.of('Next');
+  static readonly First = PDFName.of('First');
+  static readonly Last = PDFName.of('Last');
+  static readonly Dest = PDFName.of('Dest');
+  static readonly Kids = PDFName.of('Kids');
+  static readonly Count = PDFName.of('Count');
+  static readonly DecodeParms = PDFName.of('DecodeParms');
+  static readonly ASCII85Decode = PDFName.of('ASCII85Decode');
+  static readonly ASCIIHexDecode = PDFName.of('ASCIIHexDecode');
+  static readonly RunLengthDecode = PDFName.of('RunLengthDecode');
+  static readonly LZWDecode = PDFName.of('LZWDecode');
+  static readonly EarlyChange = PDFName.of('EarlyChange');
   /* tslint:enable member-ordering */
 
   private readonly encodedName: string;

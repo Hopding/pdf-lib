@@ -8,6 +8,7 @@ import {
 import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
+import PDFOutline from 'src/api/PDFOutline';
 import PDFPage from 'src/api/PDFPage';
 import { PageSizes } from 'src/api/sizes';
 import { StandardFonts } from 'src/api/StandardFonts';
@@ -23,6 +24,8 @@ import {
   PDFHexString,
   PDFName,
   PDFObjectCopier,
+  PDFOutlines,
+  outlineOptions,
   PDFPageEmbedder,
   PDFPageLeaf,
   PDFPageTree,
@@ -36,6 +39,7 @@ import {
 } from 'src/core';
 import {
   ParseSpeeds,
+  DisplayMode,
   AttachmentOptions,
   SaveOptions,
   Base64SaveOptions,
@@ -154,7 +158,13 @@ export default class PDFDocument {
     const context = PDFContext.create();
     const pageTree = PDFPageTree.withContext(context);
     const pageTreeRef = context.register(pageTree);
-    const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
+    const outlines = PDFOutlines.withContext(context, { expanded: true });
+    const outlinesRef = context.register(outlines);
+    const catalog = PDFCatalog.withContextAndPages(
+      context,
+      pageTreeRef,
+      outlinesRef,
+    );
     context.trailerInfo.Root = context.register(catalog);
 
     return new PDFDocument(context, false, updateMetadata);
@@ -173,6 +183,8 @@ export default class PDFDocument {
   defaultWordBreaks: string[] = [' '];
 
   private fontkit?: Fontkit;
+  private readonly outlineCache: Cache<PDFOutline[]>;
+  private readonly outlineMap: Map<PDFOutlines, PDFOutline>;
   private pageCount: number | undefined;
   private readonly pageCache: Cache<PDFPage[]>;
   private readonly pageMap: Map<PDFPageLeaf, PDFPage>;
@@ -193,6 +205,8 @@ export default class PDFDocument {
     this.catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
     this.isEncrypted = !!context.lookup(context.trailerInfo.Encrypt);
 
+    this.outlineCache = Cache.populatedBy(this.computeOutlines);
+    this.outlineMap = new Map();
     this.pageCache = Cache.populatedBy(this.computePages);
     this.pageMap = new Map();
     this.fonts = [];
@@ -468,6 +482,120 @@ export default class PDFDocument {
     assertIs(modificationDate, 'modificationDate', [[Date, 'Date']]);
     const key = PDFName.of('ModDate');
     this.getInfoDict().set(key, PDFString.fromDate(modificationDate));
+  }
+
+  /**
+   * Set this document's DisplayMode (PageMode). This will specify how the document shall
+   * be displayed when opened. For example:
+   * ```js
+   * pdfDoc.setDisplayMode(DisplayMode.FullScreen)
+   * ```
+   * This will cause the document to be opened in full-screen mode.
+   *
+   * @param DisplayMode The options are: None, UseOutlines, ShowThumbnails, FullScreen, ShowOptionalContent, ShowAttachments.
+   */
+  setDisplayMode(mode: DisplayMode): void {
+    // assertIs(mode, 'mode', [[DisplayMode, 'DisplayMode']]);
+    const key = PDFName.PageMode;
+    this.catalog.set(key, PDFName.of(mode));
+  }
+
+  /**
+   * Get the root Outlines of the document (12.3.3). For
+   * example:
+   * ```js
+   * const outlines = pdfDoc.getOutlines()
+   * ```
+   * @returns the root outlines for this document.
+   */
+  getOutlines(): PDFOutline[] {
+    return this.outlineCache.access();
+  }
+
+  /**
+   * Get the number of top-level outlines contained in this document. For example:
+   * ```js
+   * const totalOutlines = pdfDoc.getOutlineCount()
+   * ```
+   * @returns The number of top-level outlines in this document.
+   */
+  getOutlineCount(): number {
+    return this.catalog.Outlines().children.length;
+  }
+
+  /**
+   * Add a top-level outline to the end of this document's outline hierarchy.
+   * This method accepts two parameters:
+   * 1) title, as a text string,
+   * 2) an optional object with two possible options:
+   *    i) expanded, a boolean to flag whether it should be expanded in the initial view,
+   *   ii) page, a PDFRef of a PDFPage for the new outline to be linked to.
+   *
+   * For example:
+   * ```js
+   * const newPage = pdfDoc.addPage()
+   * const newOutline = pdfDoc.addOutline('title', { expanded: true, page: newPage })
+   * ```
+   * This will add a top-level outline labeled "title" at the end of the outline hierarchy,
+   * with an expanded view and linked to newPage.
+   *
+   * @param title, the desired title of the outline.
+   * @param outlineOptions object that may contain `expanded`, and/or `page`.
+   * @returns The newly created outline.
+   */
+  addOutline(title: string, options?: outlineOptions): PDFOutline {
+    assertIs(title, 'title', ['string']);
+    if (options?.expanded) assertIs(options?.expanded, 'expanded', ['boolean']);
+    if (options?.page) {
+      assertIs(options?.page, 'page', [[PDFPage, 'PDFPage']]);
+    }
+    return this.insertOutline(this.getOutlineCount(), title, options);
+  }
+
+  /**
+   * Add a top-level outline at the index of this document's outline hierarchy.
+   * This method accepts three parameters:
+   * 1) index, number where to insert,
+   * 2) title, as a text string,
+   * 3) an optional object with two possible options:
+   *    i) expanded, a boolean to flag whether it should be expanded in the initial view,
+   *   ii) page, a PDFRef of a PDFPage for the new outline to be linked to.
+   *
+   * For example:
+   * ```js
+   * const newPage = pdfDoc.addPage()
+   * const newOutline = pdfDoc.insertOutline(2, 'title', { expanded: true, page: newPage })
+   * ```
+   * This will add a top-level outline labeled "title" at index 2,
+   * with an expanded view and linked to newPage.
+   *
+   * @param index The index at which the page should be inserted (zero-based).
+   * @param title The desired title of the outline.
+   * @param outlineOptions object that may contain `expanded`, and/or `page`.
+   * @returns The newly created outline.
+   */
+  insertOutline(
+    index: number,
+    title: string,
+    options?: outlineOptions,
+  ): PDFOutline {
+    const outlineCount = this.getOutlineCount();
+    assertRange(index, 'index', 0, outlineCount);
+    assertIs(title, 'title', ['string']);
+    if (options?.expanded) assertIs(options?.expanded, 'expanded', ['boolean']);
+    if (options?.page) {
+      assertIs(options?.page, 'page', [[PDFPage, 'PDFPage']]);
+    }
+
+    const outline = PDFOutline.create(this, title, options);
+    const parentRef = this.catalog.insertOutlineItem(outline.ref, index);
+    outline.node.setParent(parentRef);
+
+    if (options?.page !== undefined && options?.page?.ref !== undefined) {
+      outline.node.setDest(options?.page?.ref);
+    }
+
+    return outline;
   }
 
   /**
@@ -1079,6 +1207,18 @@ export default class PDFDocument {
   }
 
   /**
+   * This will traverse through all the outlines and add the required fields and
+   * also update Count of expanded children. The Count for outlines works differently
+   * than Pages, hence it is better to do it at the end.
+   */
+  endOutline(): void {
+    const rootOutline = this.catalog.Outlines();
+    if (rootOutline) {
+      rootOutline.endOutline();
+    }
+  }
+
+  /**
    * > **NOTE:** You shouldn't need to call this method directly. The [[save]]
    * > and [[saveAsBase64]] methods will automatically ensure that all embedded
    * > assets are flushed before serializing the document.
@@ -1121,6 +1261,8 @@ export default class PDFDocument {
     assertIs(useObjectStreams, 'useObjectStreams', ['boolean']);
     assertIs(addDefaultPage, 'addDefaultPage', ['boolean']);
     assertIs(objectsPerTick, 'objectsPerTick', ['number']);
+
+    await this.endOutline();
 
     if (addDefaultPage && this.getPageCount() === 0) this.addPage();
     await this.flush();
@@ -1185,6 +1327,21 @@ export default class PDFDocument {
     if (!this.fontkit) throw new FontkitNotRegisteredError();
     return this.fontkit;
   }
+
+  private computeOutlines = (): PDFOutline[] => {
+    const outlines: PDFOutline[] = [];
+    this.catalog.Outlines().traverse((node, ref) => {
+      if (node instanceof PDFOutline) {
+        let outline = this.outlineMap.get(node);
+        if (!outline) {
+          outline = PDFOutline.of(node, ref, this);
+          this.outlineMap.set(node, outline);
+        }
+        outlines.push(outline);
+      }
+    });
+    return outlines;
+  };
 
   private computePages = (): PDFPage[] => {
     const pages: PDFPage[] = [];

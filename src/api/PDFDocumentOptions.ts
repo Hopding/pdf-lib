@@ -7,6 +7,15 @@ export enum ParseSpeeds {
   Slow = 100,
 }
 
+export enum DisplayMode {
+  None = 'UseNone',
+  UseOutlines = 'UseOutlines',
+  ShowThumbnails = 'UseThumbs',
+  FullScreen = 'FullScreen',
+  ShowOptionalContent = 'UseOC',
+  ShowAttachments = 'UseAttachments',
+}
+
 export interface AttachmentOptions extends EmbeddedFileOptions {}
 
 export interface SaveOptions {
