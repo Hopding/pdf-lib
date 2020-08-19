@@ -93,20 +93,16 @@ export default class PDFCheckBox extends PDFField {
   }
 
   needsAppearancesUpdate(): boolean {
-    if (this.isDirty()) return true;
+    // TODO: Does this always make sense? What is user wants to override the
+    //       appearances anyways?
+    if (!this.isDirty()) return false;
 
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const onValue = widget.getOnValue();
+      const value = this.acroField.getValue();
       const normal = widget.getAppearances()?.normal;
-
-      const hasOnAppearance =
-        normal instanceof PDFDict && onValue && normal.has(onValue);
-      const hasOffAppearance =
-        normal instanceof PDFDict && normal.has(PDFName.of('Off'));
-
-      if (!hasOnAppearance || !hasOffAppearance) return true;
+      return !(normal instanceof PDFDict && normal.has(value));
     }
 
     return false;

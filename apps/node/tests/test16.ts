@@ -51,6 +51,20 @@ const fieldNames = {
       'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row3[0].f1_22[0]',
       'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row4[0].f1_25[0]',
     ],
+
+    // Checkboxes
+    ChildTaxCredit: [
+      'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row1[0].c1_12[0]',
+      'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row2[0].c1_14[0]',
+      'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row3[0].c1_16[0]',
+      'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row4[0].c1_18[0]',
+    ],
+    OtherDependentsCredit: [
+      'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row1[0].c1_13[0]',
+      'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row2[0].c1_15[0]',
+      'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row3[0].c1_17[0]',
+      'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row4[0].c1_19[0]',
+    ],
   },
 
   TaxExemptInterest:
@@ -132,6 +146,45 @@ const fieldNames = {
     'topmostSubform[0].Page2[0].PaidPreparer[0].Preparer[0].f2_36[0]',
   PreparerEIN:
     'topmostSubform[0].Page2[0].PaidPreparer[0].Preparer[0].f2_37[0]',
+
+  // Checkboxes
+  PresidentialElectionFund:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].PresidentialElection[0].c1_02[0]',
+  PresidentialElectionFundSpouse:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].PresidentialElection[0].c1_03[0]',
+  YouAsDependent:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].StandardDeduction[0].c1_04[0]',
+  SpouseAsDependent:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].StandardDeduction[0].c1_05[0]',
+  SpouseItemizes:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].StandardDeduction[0].c1_06[0]',
+  BlindBefore1995:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].AgeBlindness[0].c1_07[0]',
+  AreBlind:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].AgeBlindness[0].c1_08[0]',
+  SpouseBlindBefore1995:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].AgeBlindness[0].c1_09[0]',
+  SpouseIsBlind:
+    'topmostSubform[0].Page1[0].ReadOrderControl[1].AgeBlindness[0].c1_10[0]',
+  MoreThanFourDependents:
+    'topmostSubform[0].Page1[0].IfMoreThanFour[0].c1_11[0]',
+  CapitalGainOrLossRequired:
+    'topmostSubform[0].Page1[0].ReadOrderControl_Lns1-8b[0].c1_20[0]',
+  TaxForm8814: 'topmostSubform[0].Page2[0].Lines12a-12b_ReadOrder[0].c2_01[0]',
+  TaxForm4972: 'topmostSubform[0].Page2[0].Lines12a-12b_ReadOrder[0].c2_02[0]',
+  TaxFormCustom:
+    'topmostSubform[0].Page2[0].Lines12a-12b_ReadOrder[0].c2_03[0]',
+  Form8888Attached: 'topmostSubform[0].Page2[0].c2_04[0]',
+  CheckingAccountType: 'topmostSubform[0].Page2[0].c2_05[0]',
+  SavingsAccountType: 'topmostSubform[0].Page2[0].c2_05[1]',
+  AllowOthersToDiscussReturn:
+    'topmostSubform[0].Page2[0].ThirdPartyDesignee[0].c2_06[0]',
+  DoNotAllowOthersToDiscussReturn:
+    'topmostSubform[0].Page2[0].ThirdPartyDesignee[0].c2_06[1]',
+  Is3rdPartyDesignee:
+    'topmostSubform[0].Page2[0].PaidPreparer[0].Preparer[0].CheckIf[0].c2_07[0]',
+  IsSelfEmployed:
+    'topmostSubform[0].Page2[0].PaidPreparer[0].Preparer[0].CheckIf[0].c2_07[1]',
 };
 
 (() => [fieldNames, PDFName, PDFTextField])();
@@ -141,19 +194,15 @@ export default async (assets: Assets) => {
 
   const form = pdfDoc.getForm();
 
-  // TODO: Do this automatically with a warning...
-  // form.acroForm.dict.delete(PDFName.of('XFA'));
-
   // const fields = form.getFields();
   // fields.forEach((field) => {
-  //   // const type = field.constructor.name;
+  //   const type = field.constructor.name;
   //   const namex = field.getName();
-  //   // console.log(`${type}: ${namex}`);
-  //   console.log(`'${namex}',`);
 
-  //   if (field instanceof PDFTextField) {
-  //     field.setMaxLength();
-  //     field.setText(field.getName());
+  //   if (!(field instanceof PDFTextField)) {
+  //     console.log(`${type}: ${namex}`);
+  //     // field.setMaxLength();
+  //     // field.setText(field.getName());
   //   }
   // });
 
@@ -407,6 +456,21 @@ export default async (assets: Assets) => {
 
   const preparerEIN = form.getTextField(fieldNames.PreparerEIN);
   preparerEIN.setText('218932783');
+
+  ['Son', 'Grandson', 'Daughter', 'Granddaughter'].forEach(
+    (relationship, idx) => {
+      const field = form.getTextField(fieldNames.Dependents.Relationship[idx]);
+      field.setText(relationship);
+    },
+  );
+
+  fieldNames.Dependents.ChildTaxCredit.map((fieldName) =>
+    form.getCheckBox(fieldName),
+  ).forEach((field) => field.check());
+
+  fieldNames.Dependents.OtherDependentsCredit.map((fieldName) =>
+    form.getCheckBox(fieldName),
+  ).forEach((field) => field.check());
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
