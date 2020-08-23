@@ -268,7 +268,7 @@ export const defaultRadioGroupAppearanceProvider: AppearanceProviderFor<PDFRadio
   const ap = widget.getAppearanceCharacteristics();
   const bs = widget.getBorderStyle();
 
-  const borderWidth = bs?.getWidth() ?? 1;
+  const borderWidth = bs?.getWidth() ?? 0;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 

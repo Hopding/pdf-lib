@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument, rgb, drawCheckBox } from 'src/index';
+import { PDFDocument, rgb, drawCheckBox, degrees } from 'src/index';
+import fontkit from '@pdf-lib/fontkit';
 
 // import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 // import {
@@ -539,33 +540,115 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
   // // });
 
   // --------------------------
-  const pdfDoc = await PDFDocument.load(
-    fs.readFileSync('./assets/pdfs/with_xfa_fields.pdf'),
+  const pdfDoc = await PDFDocument.create();
+
+  pdfDoc.registerFontkit(fontkit);
+
+  const size = 750;
+  const ubuntuFont = await pdfDoc.embedFont(
+    fs.readFileSync('assets/fonts/ubuntu/Ubuntu-R.ttf'),
   );
+
+  /********************** Page 5 **********************/
+
+  // This page tests creating new AcroForm fields.
+
+  const page5 = pdfDoc.addPage([size, size]);
 
   const form = pdfDoc.getForm();
 
-  const ChildTaxCredit = [
-    'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row1[0].c1_12[0]',
-    'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row2[0].c1_14[0]',
-    'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row3[0].c1_16[0]',
-    'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row4[0].c1_18[0]',
-  ];
+  const tfWidth = 100;
+  const tfHeight = 50;
+  const olWidth = 100;
+  const olHeight = 50;
+  const btnWidth = 100;
 
-  const OtherDependentsCredit = [
-    'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row1[0].c1_13[0]',
-    'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row2[0].c1_15[0]',
-    'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row3[0].c1_17[0]',
-    'topmostSubform[0].Page1[0].Dependents[0].Table_Dependents[0].Row4[0].c1_19[0]',
-  ];
+  //
 
-  [ChildTaxCredit[0], ChildTaxCredit[2]]
-    .map((fieldName) => form.getCheckBox(fieldName))
-    .forEach((field) => field.check());
+  const rbWidth = 50;
+  const rbHeight = 50;
 
-  OtherDependentsCredit.map((fieldName) =>
-    form.getCheckBox(fieldName),
-  ).forEach((field) => field.check());
+  const radioGroup = form.createRadioGroup('moi.radioGroup.field[0]');
+
+  radioGroup.addOptionToPage('Bing', page5, {
+    x: tfWidth * 2 + btnWidth * 2 + rbWidth + 25 * 2,
+    y:
+      size - Math.max(tfWidth, tfHeight) * 2 - Math.max(olWidth, olHeight) - 25,
+    width: rbWidth,
+    height: rbHeight,
+    rotate: degrees(0),
+    // borderWidth: 1,
+  });
+
+  radioGroup.addOptionToPage('Bang', page5, {
+    x: tfWidth * 2 + btnWidth * 2 + rbWidth + 25 * 2,
+    y:
+      size - Math.max(tfWidth, tfHeight) * 2 - Math.max(olWidth, olHeight) - 25,
+    width: rbWidth,
+    height: rbHeight,
+    rotate: degrees(90),
+    // borderWidth: 1,
+  });
+
+  radioGroup.addOptionToPage('Boing', page5, {
+    x: tfWidth * 2 + btnWidth * 2 + rbWidth + 25 * 2,
+    y:
+      size - Math.max(tfWidth, tfHeight) * 2 - Math.max(olWidth, olHeight) - 25,
+    width: rbWidth,
+    height: rbHeight,
+    rotate: degrees(180),
+    // borderWidth: 1,
+  });
+
+  radioGroup.addOptionToPage('Bloop', page5, {
+    x: tfWidth * 2 + btnWidth * 2 + rbWidth + 25 * 2,
+    y:
+      size - Math.max(tfWidth, tfHeight) * 2 - Math.max(olWidth, olHeight) - 25,
+    width: rbWidth,
+    height: rbHeight,
+    rotate: degrees(270),
+    // borderWidth: 1,
+  });
+
+  //
+
+  const fWidth = 100;
+  const fHeight = 50;
+  const fPadding = 25;
+  const fMax = Math.max(fWidth, fHeight);
+
+  // Option Lists
+  [
+    { name: 'moi.optionList.field[0]', choice: 'Foo', font: ubuntuFont },
+    { name: 'moi.optionList.field[1]', choice: 'Bar', font: ubuntuFont },
+    { name: 'moi.optionList.field[2]', choice: 'Qux', font: ubuntuFont },
+    { name: 'moi.optionList.field[3]', choice: 'Baz', font: ubuntuFont },
+  ].forEach(({ name, choice, font }, idx) => {
+    const optionList = form.createOptionList(name);
+    optionList.addOptions(['Foo', 'Bar', 'Qux', 'Baz']);
+    optionList.select(choice);
+    optionList.addToPage(font, page5, {
+      x: fPadding * 2 + fWidth * 3,
+      y: size - fMax * 3 - fPadding * 2,
+      width: fWidth,
+      height: fHeight,
+      rotate: degrees(90 * idx),
+      borderWidth: 1,
+    });
+  });
+
+  const multilineTf = form.createTextField('moi.multiline.text.field');
+  multilineTf.setIsMultiline(true);
+  multilineTf.setText(
+    `In the morning, when you can't get out of bed, tell yourself: "I'm getting up to do the work only a man can do. How can I possibly hesitate or complain when I'm about to accomplish the task for which I was born? Was I made for lying warm in bed under a pile of blankets?"\n\n"But I enjoy it here."\n\nWas it for enjoyment you were born? Are you designed to act or to be acted upon?\n\n\t\t\t\t\t\t\t\t\t\t - Marcus Aurelius`,
+  );
+  multilineTf.addToPage(ubuntuFont, page5, {
+    x: fPadding * 3 + fWidth / 2 + fWidth * 2.5,
+    y: size - fMax * 5 - fPadding * 3 - fHeight * 3,
+    width: fWidth * 2.5,
+    height: fHeight * 5,
+    borderWidth: 1,
+  });
 
   // --------------------------
 

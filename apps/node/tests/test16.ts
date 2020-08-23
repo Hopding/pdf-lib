@@ -1,5 +1,5 @@
 import { Assets } from '..';
-import { PDFDocument, PDFName, PDFTextField } from '../../..';
+import { PDFDocument } from '../../..';
 
 const fieldNames = {
   // Page 1
@@ -187,27 +187,11 @@ const fieldNames = {
     'topmostSubform[0].Page2[0].PaidPreparer[0].Preparer[0].CheckIf[0].c2_07[1]',
 };
 
-(() => [fieldNames, PDFName, PDFTextField])();
-
 export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.load(assets.pdfs.with_xfa_fields);
 
   const form = pdfDoc.getForm();
 
-  // const fields = form.getFields();
-  // fields.forEach((field) => {
-  //   const type = field.constructor.name;
-  //   const namex = field.getName();
-
-  //   if (!(field instanceof PDFTextField)) {
-  //     console.log(`${type}: ${namex}`);
-  //     // field.setMaxLength();
-  //     // field.setText(field.getName());
-  //   }
-  // });
-
-  // TODO: Figure out why we're not correctly using the existing APs for these
-  //       widgets...
   const mfs = form.getCheckBox(fieldNames.MarriedFilingSeparately);
   mfs.check();
 
@@ -464,13 +448,47 @@ export default async (assets: Assets) => {
     },
   );
 
-  fieldNames.Dependents.ChildTaxCredit.map((fieldName) =>
-    form.getCheckBox(fieldName),
-  ).forEach((field) => field.check());
+  const ctc0 = form.getCheckBox(fieldNames.Dependents.ChildTaxCredit[0]);
+  ctc0.check();
 
-  fieldNames.Dependents.OtherDependentsCredit.map((fieldName) =>
-    form.getCheckBox(fieldName),
-  ).forEach((field) => field.check());
+  const ctc2 = form.getCheckBox(fieldNames.Dependents.ChildTaxCredit[2]);
+  ctc2.check();
+
+  const odc1 = form.getCheckBox(fieldNames.Dependents.OtherDependentsCredit[1]);
+  odc1.check();
+
+  const odc3 = form.getCheckBox(fieldNames.Dependents.OtherDependentsCredit[3]);
+  odc3.check();
+
+  const pefs = form.getCheckBox(fieldNames.PresidentialElectionFundSpouse);
+  pefs.check();
+
+  const mtfd = form.getCheckBox(fieldNames.MoreThanFourDependents);
+  mtfd.check();
+
+  const si = form.getCheckBox(fieldNames.SpouseItemizes);
+  si.check();
+
+  const ab = form.getCheckBox(fieldNames.AreBlind);
+  ab.check();
+
+  const sib = form.getCheckBox(fieldNames.SpouseIsBlind);
+  sib.check();
+
+  const cgolr = form.getCheckBox(fieldNames.CapitalGainOrLossRequired);
+  cgolr.check();
+
+  const f888a = form.getCheckBox(fieldNames.Form8888Attached);
+  f888a.check();
+
+  const cat = form.getCheckBox(fieldNames.CheckingAccountType);
+  cat.check();
+
+  const aotdr = form.getCheckBox(fieldNames.AllowOthersToDiscussReturn);
+  aotdr.check();
+
+  const ise = form.getCheckBox(fieldNames.IsSelfEmployed);
+  ise.check();
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;

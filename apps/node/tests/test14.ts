@@ -1,7 +1,5 @@
 import { Assets } from '..';
-import { PDFDocument } from '../../..';
-
-// TODO: Fill in DoD form!
+import { PDFDocument, values, PDFTextField } from '../../..';
 
 const fieldNames = {
   // Page 1
@@ -52,13 +50,6 @@ export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.load(assets.pdfs.with_combed_fields);
 
   const form = pdfDoc.getForm();
-
-  const fields = form.getFields();
-  fields.forEach((field) => {
-    const type = field.constructor.name;
-    const namex = field.getName();
-    console.log(`${type}: ${namex}`);
-  });
 
   const legalName = form.getTextField(fieldNames.LegalName);
   legalName.setText('Purple People Eater');
@@ -126,7 +117,17 @@ export default async (assets: Assets) => {
   const signatureDate = form.getTextField(fieldNames.SignatureDate);
   signatureDate.setText(['2020', '07', '13'].join(''));
 
-  // TODO: Fill in all other fields with random (seeded) numbers
+  // Fill in remaining fields with random numeric values
+  const fieldNameValues = values(fieldNames);
+  const fields = form.getFields();
+  fields.forEach((field) => {
+    if (!fieldNameValues.includes(field.getName())) {
+      if (field instanceof PDFTextField) {
+        const value = String(Math.floor(Math.random() * 1000000) / 100);
+        field.setText(value.substring(0, field.getMaxLength()));
+      }
+    }
+  });
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;

@@ -189,7 +189,7 @@ export default class PDFRadioGroup extends PDFField {
   }
 
   needsAppearancesUpdate(): boolean {
-    // TODO: Does this always make sense? What is user wants to override the
+    // TODO: Does this always make sense? What if user wants to override the
     //       appearances anyways?
     if (!this.isDirty()) return false;
 

@@ -7,7 +7,6 @@ import {
 } from 'src/api/form/appearances';
 import { rgb } from 'src/api/colors';
 import { degrees } from 'src/api/rotations';
-import { MissingOnValueCheckError } from 'src/api/errors';
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
@@ -47,8 +46,7 @@ export default class PDFCheckBox extends PDFField {
   }
 
   check() {
-    const onValue = this.acroField.getOnValue();
-    if (!onValue) throw new MissingOnValueCheckError(onValue);
+    const onValue = this.acroField.getOnValue() ?? PDFName.of('Yes');
     this.markAsDirty();
     this.acroField.setValue(onValue);
   }
@@ -93,7 +91,7 @@ export default class PDFCheckBox extends PDFField {
   }
 
   needsAppearancesUpdate(): boolean {
-    // TODO: Does this always make sense? What is user wants to override the
+    // TODO: Does this always make sense? What if user wants to override the
     //       appearances anyways?
     if (!this.isDirty()) return false;
 

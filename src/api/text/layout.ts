@@ -97,63 +97,6 @@ export interface MultilineTextLayout {
   lineHeight: number;
 }
 
-// export const layoutMultilineText = (
-//   text: string,
-//   { alignment, fontSize, font, bounds }: LayoutTextOptions,
-// ): MultilineTextLayout => {
-//   const lines = lineSplit(cleanText(text));
-
-//   if (fontSize === undefined || fontSize === 0) {
-//     fontSize = computeFontSize(lines, font, bounds);
-//   }
-//   const height = font.heightAtSize(fontSize);
-//   const lineHeight = height + height * 0.2;
-
-//   const textLines: TextPosition[] = [];
-
-//   let minX = bounds.x;
-//   let minY = bounds.y;
-//   let maxX = bounds.x + bounds.width;
-//   let maxY = bounds.y + bounds.height;
-
-//   let y = bounds.y + bounds.height;
-//   for (let idx = 0, len = lines.length; idx < len; idx++) {
-//     const line = lines[idx];
-
-//     const encoded = font.encodeText(line);
-//     const width = font.widthOfTextAtSize(line, fontSize);
-
-//     // prettier-ignore
-//     const x = (
-//         alignment === TextAlignment.Left   ? bounds.x
-//       : alignment === TextAlignment.Center ? bounds.x + (bounds.width / 2) - (width / 2)
-//       : alignment === TextAlignment.Right  ? bounds.x + bounds.width - width
-//       : bounds.x
-//     );
-
-//     y -= lineHeight;
-
-//     if (x < minX) minX = x;
-//     if (y < minY) minY = y;
-//     if (x + width > maxX) maxX = x + width;
-//     if (y + height > maxY) maxY = y + height;
-
-//     textLines.push({ text: line, encoded, width, height, x, y });
-//   }
-
-//   return {
-//     fontSize,
-//     lineHeight,
-//     lines: textLines,
-//     bounds: {
-//       x: minX,
-//       y: minY,
-//       width: maxX - minX,
-//       height: maxY - minY,
-//     },
-//   };
-// };
-
 const lastIndexOfWhitespace = (line: string) => {
   for (let idx = line.length; idx > 0; idx--) {
     if (/\s/.test(line[idx])) return idx;
@@ -173,7 +116,7 @@ const splitOutLines = (
     const encoded = font.encodeText(line);
     const width = font.widthOfTextAtSize(line, fontSize);
     if (width < maxWidth) {
-      const remainder = input.substring(lastWhitespaceIdx);
+      const remainder = input.substring(lastWhitespaceIdx) || undefined;
       return { line, encoded, width, remainder };
     }
     lastWhitespaceIdx = lastIndexOfWhitespace(line) ?? 0;
@@ -185,7 +128,7 @@ const splitOutLines = (
     line: input,
     encoded: font.encodeText(input),
     width: font.widthOfTextAtSize(input, fontSize),
-    remainder: '',
+    remainder: undefined,
   };
 };
 
@@ -197,6 +140,11 @@ export const layoutMultilineText = (
 
   if (fontSize === undefined || fontSize === 0) {
     // fontSize = computeFontSize(lines, font, bounds);
+
+    // This is hardcoded to make it easier to perform automatic line-wrapping.
+    //
+    // TODO: Update `computeFontSize` to support automatic line-wrapping and
+    //       automatic font size calculation.
     fontSize = 12;
   }
   const height = font.heightAtSize(fontSize);
@@ -211,11 +159,10 @@ export const layoutMultilineText = (
 
   let y = bounds.y + bounds.height;
   for (let idx = 0, len = lines.length; idx < len; idx++) {
-    // TODO: Cleanup this name...
-    let remainderXX = lines[idx];
-    while (remainderXX.length > 0) {
+    let prevRemainder: string | undefined = lines[idx];
+    while (prevRemainder !== undefined) {
       const { line, encoded, width, remainder } = splitOutLines(
-        remainderXX,
+        prevRemainder,
         bounds.width,
         font,
         fontSize,
@@ -240,7 +187,7 @@ export const layoutMultilineText = (
 
       // Only trim lines that we had to split ourselves. So we won't trim lines
       // that the user provided themselves with whitespace.
-      remainderXX = remainder.trim();
+      prevRemainder = remainder?.trim();
     }
   }
 
