@@ -13,6 +13,7 @@ import {
   sortedUniq,
   toHexStringOfMinLength,
 } from 'src/utils';
+import seedrandom from 'seedrandom';
 
 /**
  * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as
@@ -24,9 +25,10 @@ class CustomFontEmbedder {
     fontkit: Fontkit,
     fontData: Uint8Array,
     customName?: string,
+    rng?: () => number,
   ) {
     const font = await fontkit.create(fontData);
-    return new CustomFontEmbedder(font, fontData, customName);
+    return new CustomFontEmbedder(font, fontData, customName, rng);
   }
 
   readonly font: Font;
@@ -38,15 +40,27 @@ class CustomFontEmbedder {
   protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
-  protected constructor(font: Font, fontData: Uint8Array, customName?: string) {
+  /**
+   * The random number generator that must be used during the document
+   * creation or mutation to enable deterministic documents
+   */
+  private readonly rng: () => number;
+
+  protected constructor(
+    font: Font,
+    fontData: Uint8Array,
+    customName?: string,
+    rng?: () => number,
+  ) {
     this.font = font;
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;
     this.fontName = this.font.postscriptName || 'Font';
     this.customName = customName;
-
+    
     this.baseFontName = '';
     this.glyphCache = Cache.populatedBy(this.allGlyphsInFontSortedById);
+    this.rng = rng ?? seedrandom('static CustomFontEmbedder seed');
   }
 
   /**
@@ -89,7 +103,8 @@ class CustomFontEmbedder {
   }
 
   embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    this.baseFontName = this.customName || addRandomSuffix(this.fontName);
+    this.baseFontName =
+      this.customName || addRandomSuffix(this.rng, this.fontName);
     return this.embedFontDict(context, ref);
   }
 

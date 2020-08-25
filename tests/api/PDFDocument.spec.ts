@@ -143,7 +143,7 @@ describe(`PDFDocument`, () => {
       expect(savedDoc1).toEqual(savedDoc2);
     });
 
-    it(`does not serialize the same on save when not using a custom font name`, async () => {
+    it(`does serialize the same on save when not using a custom font name`, async () => {
       const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
       const pdfDoc1 = await PDFDocument.create();
       const pdfDoc2 = await PDFDocument.create();
@@ -157,7 +157,7 @@ describe(`PDFDocument`, () => {
       const savedDoc1 = await pdfDoc1.save();
       const savedDoc2 = await pdfDoc2.save();
 
-      expect(savedDoc1).not.toEqual(savedDoc2);
+      expect(savedDoc1).toEqual(savedDoc2);
     });
   });
 

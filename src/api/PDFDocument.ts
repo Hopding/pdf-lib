@@ -60,6 +60,7 @@ import {
 } from 'src/utils';
 import FileEmbedder from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
+import seedrandom from 'seedrandom';
 
 /**
  * Represents a PDF document.
@@ -181,6 +182,12 @@ export default class PDFDocument {
   private readonly embeddedPages: PDFEmbeddedPage[];
   private readonly embeddedFiles: PDFEmbeddedFile[];
 
+  /**
+   * The random number generator that must be used during the document
+   * creation or mutation to enable deterministic documents
+   */
+  private readonly rng: () => number;
+
   private constructor(
     context: PDFContext,
     ignoreEncryption: boolean,
@@ -188,6 +195,8 @@ export default class PDFDocument {
   ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
+
+    this.rng = seedrandom('static PDFDocument seed');
 
     this.context = context;
     this.catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
@@ -671,7 +680,7 @@ export default class PDFDocument {
       const srcPage = srcPages[indices[idx]];
       const copiedPage = copier.copy(srcPage.node);
       const ref = this.context.register(copiedPage);
-      copiedPages[idx] = PDFPage.of(copiedPage, ref, this);
+      copiedPages[idx] = PDFPage.of(copiedPage, ref, this, this.rng);
     }
     return copiedPages;
   }
@@ -805,7 +814,7 @@ export default class PDFDocument {
       const fontkit = this.assertFontkit();
       embedder = subset
         ? await CustomFontSubsetEmbedder.for(fontkit, bytes, customName)
-        : await CustomFontEmbedder.for(fontkit, bytes, customName);
+        : await CustomFontEmbedder.for(fontkit, bytes, customName, this.rng);
     } else {
       throw new TypeError(
         '`font` must be one of `StandardFonts | string | Uint8Array | ArrayBuffer`',

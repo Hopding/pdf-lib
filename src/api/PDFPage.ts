@@ -52,6 +52,7 @@ import {
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
+import seedrandom from 'seedrandom';
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -67,9 +68,14 @@ export default class PDFPage {
    * @param leafNode The leaf node to be wrapped.
    * @param ref The unique reference for the page.
    * @param doc The document to which the page will belong.
+   * @param rng The random number generator that should be used inside this page.
    */
-  static of = (leafNode: PDFPageLeaf, ref: PDFRef, doc: PDFDocument) =>
-    new PDFPage(leafNode, ref, doc);
+  static of = (
+    leafNode: PDFPageLeaf,
+    ref: PDFRef,
+    doc: PDFDocument,
+    rng?: () => number,
+  ) => new PDFPage(leafNode, ref, doc, rng);
 
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
@@ -107,10 +113,23 @@ export default class PDFPage {
   private contentStream?: PDFContentStream;
   private contentStreamRef?: PDFRef;
 
-  private constructor(leafNode: PDFPageLeaf, ref: PDFRef, doc: PDFDocument) {
+  /**
+   * The random number generator that must be used during the document
+   * creation or mutation to enable deterministic documents
+   */
+  private readonly rng: () => number;
+
+  private constructor(
+    leafNode: PDFPageLeaf,
+    ref: PDFRef,
+    doc: PDFDocument,
+    rng?: () => number,
+  ) {
     assertIs(leafNode, 'leafNode', [[PDFPageLeaf, 'PDFPageLeaf']]);
     assertIs(ref, 'ref', [[PDFRef, 'PDFRef']]);
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
+
+    this.rng = rng ?? seedrandom('static PDFPage seed');
 
     this.node = leafNode;
     this.ref = ref;
@@ -612,7 +631,7 @@ export default class PDFPage {
     // TODO: Reuse image Font name if we've already added this image to Resources.Fonts
     assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.font = font;
-    this.fontKey = addRandomSuffix(this.font.name);
+    this.fontKey = addRandomSuffix(this.rng, this.font.name);
     this.node.setFontDictionary(PDFName.of(this.fontKey), this.font.ref);
   }
 
@@ -972,7 +991,7 @@ export default class PDFPage {
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
-    const xObjectKey = addRandomSuffix('Image', 10);
+    const xObjectKey = addRandomSuffix(this.rng, 'Image', 10);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
@@ -1047,7 +1066,7 @@ export default class PDFPage {
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
-    const xObjectKey = addRandomSuffix('EmbeddedPdfPage', 10);
+    const xObjectKey = addRandomSuffix(this.rng, 'EmbeddedPdfPage', 10);
     this.node.setXObject(PDFName.of(xObjectKey), embeddedPage.ref);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
@@ -1486,7 +1505,7 @@ export default class PDFPage {
       return undefined;
     }
 
-    const key = addRandomSuffix('GS', 10);
+    const key = addRandomSuffix(this.rng, 'GS', 10);
 
     const graphicsState = this.doc.context.obj({
       Type: 'ExtGState',
