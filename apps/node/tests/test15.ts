@@ -1,5 +1,6 @@
 import { Assets } from '..';
-import { PDFDocument } from '../../..';
+import { PDFDocument, StandardFonts, rgb } from '../../..';
+import { TextAlignment } from '../../../cjs/api/text/alignment';
 
 // TODO: Test rotated image field (sample PDF/URL should be in one of the GitHub issues...)
 
@@ -63,6 +64,83 @@ export default async (assets: Assets) => {
   form
     .getTextField('Treasure')
     .setText(['• Gold coins', '• Treasure chests'].join('\n'));
+
+  // Add new page with custom form fields to exercise options not used in test1
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const { width, height } = pdfDoc.getPage(0).getSize();
+  const page2 = pdfDoc.addPage([width, height]);
+
+  // Singleline, centered
+  const singlelineCenteredTf = form.createTextField('singleline.centered.tf');
+  singlelineCenteredTf.setAlignment(TextAlignment.Center);
+  singlelineCenteredTf.setText('Sum centered text yo');
+  singlelineCenteredTf.addToPage(helveticaFont, page2, {
+    y: height - 50,
+    width: 250,
+    height: 25,
+    borderWidth: 3,
+    borderColor: rgb(1, 0, 1),
+  });
+
+  // Multiline, centered
+  const multilineCenteredTf = form.createTextField('multiline.centered.tf');
+  multilineCenteredTf.setIsMultiline(true);
+  multilineCenteredTf.setAlignment(TextAlignment.Center);
+  multilineCenteredTf.setText('Sum\ncentered\rtext\nyo');
+  multilineCenteredTf.addToPage(helveticaFont, page2, {
+    y: height - 50 - 150,
+    width: 250,
+    height: 100,
+    borderWidth: 3,
+    borderColor: rgb(1, 0, 1),
+  });
+
+  // Singleline, right justified
+  const singlelineRightTf = form.createTextField('singleline.right.tf');
+  singlelineRightTf.setAlignment(TextAlignment.Right);
+  singlelineRightTf.setText('Sum right justified text yo');
+  singlelineRightTf.addToPage(helveticaFont, page2, {
+    y: height - 50,
+    x: 300,
+    width: 250,
+    height: 25,
+    borderWidth: 3,
+    borderColor: rgb(1, 0, 1),
+  });
+
+  // Multiline, right justified
+  const multilineRightTf = form.createTextField('multiline.right.tf');
+  multilineRightTf.setIsMultiline(true);
+  multilineRightTf.setAlignment(TextAlignment.Right);
+  multilineRightTf.setText('Sum\nright justified\rtext\nyo');
+  multilineRightTf.addToPage(helveticaFont, page2, {
+    y: height - 50 - 150,
+    x: 300,
+    width: 250,
+    height: 100,
+    borderWidth: 3,
+    borderColor: rgb(1, 0, 1),
+  });
+
+  // Multiselect Option List
+  const optionList = form.createOptionList('option.list');
+  optionList.addToPage(helveticaFont, page2, {
+    y: height - 50 - 150 - 250,
+    width: 250,
+    height: 200,
+    backgroundColor: rgb(1, 0.25, 0.25),
+    borderWidth: 5,
+    borderColor: rgb(1, 0, 1),
+  });
+  optionList.setOptions([
+    'Sojourner',
+    'Spirit',
+    'Opportunity',
+    'Curiosity',
+    'Perseverance',
+  ]);
+  optionList.setAllowMultiSelect(true);
+  optionList.select(['Sojourner', 'Curiosity', 'Perseverance']);
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;

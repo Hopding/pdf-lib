@@ -416,6 +416,21 @@ export default async (assets: Assets) => {
 
   // This page tests creating new AcroForm fields.
 
+  // TODO: Copy ITs between all environments
+  // TODO: Then write unit tests to read values from existing filled forms
+  const pastels = {
+    greyishGreen: rgb(85 / 255, 117 / 255, 113 / 255),
+    brownish: rgb(212 / 255, 154 / 255, 137 / 255),
+    tan: rgb(247 / 255, 209 / 255, 186 / 255),
+    whiteish: rgb(244 / 255, 244 / 255, 244 / 255),
+    lightBlue: rgb(221 / 255, 243 / 255, 245 / 255),
+    blue: rgb(166 / 255, 220 / 255, 239 / 255),
+    pinkish: rgb(242 / 255, 170 / 255, 170 / 255),
+    hotPink: rgb(227 / 255, 99 / 255, 135 / 255),
+    yellow: rgb(250 / 255, 240 / 255, 175 / 255),
+    darkBlue: rgb(7 / 255, 104 / 255, 159 / 255),
+  };
+
   const page5 = pdfDoc.addPage([size, size]);
 
   const form = pdfDoc.getForm();
@@ -440,17 +455,20 @@ export default async (assets: Assets) => {
       width: fWidth,
       height: fHeight,
       rotate: degrees(90 * idx),
-      borderWidth: 1,
+      borderWidth: 4,
+      backgroundColor: pastels.pinkish,
+      borderColor: pastels.blue,
+      textColor: pastels.whiteish,
     });
     if (font) textField.updateAppearances(font);
   });
 
   // Buttons
   [
-    { name: 'moi.button.field[0]', text: 'Foo', font: ubuntuFont },
-    { name: 'moi.button.field[1]', text: 'Bar', font: timesRomanFont },
-    { name: 'moi.button.field[2]', text: 'Qux', font: ubuntuFont },
-    { name: 'moi.button.field[3]', text: 'Baz', font: timesRomanFont },
+    { name: 'moi.button.field[0]', text: 'Earth', font: ubuntuFont },
+    { name: 'moi.button.field[1]', text: 'Mars', font: timesRomanFont },
+    { name: 'moi.button.field[2]', text: 'Venus', font: ubuntuFont },
+    { name: 'moi.button.field[3]', text: 'Saturn', font: timesRomanFont },
   ].forEach(({ name, text, font }, idx) => {
     const button = form.createButton(name);
     button.addToPage(text, font, page5, {
@@ -459,7 +477,10 @@ export default async (assets: Assets) => {
       width: fWidth,
       height: fHeight,
       rotate: degrees(90 * idx),
-      borderWidth: 1,
+      borderWidth: 4,
+      backgroundColor: pastels.brownish,
+      borderColor: pastels.tan,
+      textColor: pastels.greyishGreen,
     });
   });
 
@@ -479,7 +500,10 @@ export default async (assets: Assets) => {
       width: fWidth,
       height: fHeight,
       rotate: degrees(90 * idx),
-      borderWidth: 1,
+      borderWidth: 4,
+      backgroundColor: pastels.greyishGreen,
+      borderColor: pastels.hotPink,
+      textColor: pastels.brownish,
     });
   });
 
@@ -498,19 +522,22 @@ export default async (assets: Assets) => {
       width: fHeight,
       height: fHeight,
       rotate: degrees(90 * idx),
-      borderWidth: 1,
+      borderWidth: 4,
+      backgroundColor: pastels.whiteish,
+      borderColor: pastels.greyishGreen,
+      textColor: pastels.hotPink,
     });
   });
 
   // Option Lists
   [
-    { name: 'moi.optionList.field[0]', choice: 'Foo', font: ubuntuFont },
-    { name: 'moi.optionList.field[1]', choice: 'Bar', font: timesRomanFont },
-    { name: 'moi.optionList.field[2]', choice: 'Qux', font: ubuntuFont },
-    { name: 'moi.optionList.field[3]', choice: 'Baz', font: timesRomanFont },
+    { name: 'moi.optionList.field[0]', choice: 'TypeScript', font: ubuntuFont },
+    { name: 'moi.optionList.field[1]', choice: 'Kotlin', font: timesRomanFont },
+    { name: 'moi.optionList.field[2]', choice: 'Python', font: ubuntuFont },
+    { name: 'moi.optionList.field[3]', choice: 'Swift', font: timesRomanFont },
   ].forEach(({ name, choice, font }, idx) => {
     const optionList = form.createOptionList(name);
-    optionList.addOptions(['Foo', 'Bar', 'Qux', 'Baz']);
+    optionList.addOptions(['TypeScript', 'Kotlin', 'Python', 'Swift']);
     optionList.select(choice);
     optionList.addToPage(font, page5, {
       x: fPadding * 2 + fWidth * 3,
@@ -518,7 +545,10 @@ export default async (assets: Assets) => {
       width: fWidth,
       height: fHeight,
       rotate: degrees(90 * idx),
-      borderWidth: 1,
+      borderWidth: 4,
+      backgroundColor: pastels.tan,
+      borderColor: pastels.yellow,
+      textColor: pastels.hotPink,
     });
   });
 
@@ -537,12 +567,16 @@ export default async (assets: Assets) => {
       width: fHeight,
       height: fHeight,
       rotate: degrees(90 * idx),
+      borderWidth: 4,
+      backgroundColor: pastels.blue,
+      borderColor: pastels.pinkish,
+      textColor: pastels.yellow,
     });
   });
 
   radioGroup.select('Bing');
 
-  // Misc
+  // Combed Text Field
   const combedTf = form.createTextField('moi.combed.text.field');
   combedTf.setIsEvenlySpaced(true);
   combedTf.setMaxLength(7);
@@ -552,9 +586,13 @@ export default async (assets: Assets) => {
     y: size - fMax * 5 - fPadding * 3,
     width: fWidth * 2.5,
     height: fHeight,
-    borderWidth: 1,
+    borderWidth: 4,
+    backgroundColor: pastels.yellow,
+    borderColor: pastels.brownish,
+    textColor: pastels.darkBlue,
   });
 
+  // Multiline Text Field
   const multilineTf = form.createTextField('moi.multiline.text.field');
   multilineTf.setIsMultiline(true);
   multilineTf.setText(
@@ -565,7 +603,10 @@ export default async (assets: Assets) => {
     y: size - fMax * 5 - fPadding * 3 - fHeight * 3,
     width: fWidth * 2.5,
     height: fHeight * 5,
-    borderWidth: 1,
+    borderWidth: 4,
+    backgroundColor: pastels.whiteish,
+    borderColor: pastels.brownish,
+    textColor: pastels.greyishGreen,
   });
 
   /********************** Print Metadata **********************/

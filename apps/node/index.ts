@@ -20,6 +20,7 @@ import test13 from './tests/test13';
 import test14 from './tests/test14';
 import test15 from './tests/test15';
 import test16 from './tests/test16';
+import test17 from './tests/test17';
 
 const cli = readline.createInterface({
   input: process.stdin,
@@ -127,6 +128,7 @@ const assets = {
     with_combed_fields: readPdf('with_combed_fields.pdf'),
     dod_character: readPdf('dod_character.pdf'),
     with_xfa_fields: readPdf('with_xfa_fields.pdf'),
+    fancy_fields: readPdf('fancy_fields.pdf'),
   },
 };
 
@@ -157,7 +159,7 @@ const main = async () => {
     // prettier-ignore
     const allTests = [
     test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
-    test11, test12, test13, test14, test15, test16,
+    test11, test12, test13, test14, test15, test16, test17
   ];
 
     const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
