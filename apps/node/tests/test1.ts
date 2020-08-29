@@ -416,8 +416,6 @@ export default async (assets: Assets) => {
 
   // This page tests creating new AcroForm fields.
 
-  // TODO: Copy ITs between all environments
-  // TODO: Then write unit tests to read values from existing filled forms
   const pastels = {
     greyishGreen: rgb(85 / 255, 117 / 255, 113 / 255),
     brownish: rgb(212 / 255, 154 / 255, 137 / 255),

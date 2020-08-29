@@ -1,13 +1,18 @@
-import { Assets } from '..';
-import { PDFDocument, StandardFonts, rgb, TextAlignment } from '../../..';
+import { PDFDocument, StandardFonts, rgb, TextAlignment } from 'pdf-lib';
 
-// TODO: Test rotated image field (sample PDF/URL should be in one of the GitHub issues...)
+import { fetchAsset, writePdf } from './assets';
 
-export default async (assets: Assets) => {
-  const pdfDoc = await PDFDocument.load(assets.pdfs.dod_character);
+export default async () => {
+  const [dodCharacterPdf, smallMarioPng, marioEmblemPng] = await Promise.all([
+    fetchAsset('pdfs/dod_character.pdf'),
+    fetchAsset('images/small_mario.png'),
+    fetchAsset('images/mario_emblem.png'),
+  ]);
 
-  const marioImage = await pdfDoc.embedPng(assets.images.png.small_mario);
-  const emblemImage = await pdfDoc.embedPng(assets.images.png.mario_emblem);
+  const pdfDoc = await PDFDocument.load(dodCharacterPdf);
+
+  const marioImage = await pdfDoc.embedPng(smallMarioPng);
+  const emblemImage = await pdfDoc.embedPng(marioEmblemPng);
 
   const form = pdfDoc.getForm();
 
@@ -141,6 +146,7 @@ export default async (assets: Assets) => {
   optionList.setAllowMultiSelect(true);
   optionList.select(['Sojourner', 'Curiosity', 'Perseverance']);
 
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  const base64Pdf = await pdfDoc.saveAsBase64({ dataUri: true });
+
+  return { base64Pdf };
 };

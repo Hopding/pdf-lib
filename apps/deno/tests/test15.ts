@@ -1,5 +1,10 @@
-import { Assets } from '..';
-import { PDFDocument, StandardFonts, rgb, TextAlignment } from '../../..';
+import { Assets } from '../index.ts';
+import {
+  PDFDocument,
+  StandardFonts,
+  rgb,
+  TextAlignment,
+} from '../../../dist/pdf-lib.esm.js';
 
 // TODO: Test rotated image field (sample PDF/URL should be in one of the GitHub issues...)
 

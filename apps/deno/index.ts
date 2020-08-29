@@ -3,10 +3,6 @@ import { readLines } from 'https://deno.land/std@v0.50.0/io/bufio.ts';
 import { sep } from 'https://deno.land/std@v0.50.0/path/mod.ts';
 
 import test1 from './tests/test1.ts';
-import test10 from './tests/test10.ts';
-import test11 from './tests/test11.ts';
-import test12 from './tests/test12.ts';
-import test13 from './tests/test13.ts';
 import test2 from './tests/test2.ts';
 import test3 from './tests/test3.ts';
 import test4 from './tests/test4.ts';
@@ -15,6 +11,14 @@ import test6 from './tests/test6.ts';
 import test7 from './tests/test7.ts';
 import test8 from './tests/test8.ts';
 import test9 from './tests/test9.ts';
+import test10 from './tests/test10.ts';
+import test11 from './tests/test11.ts';
+import test12 from './tests/test12.ts';
+import test13 from './tests/test13.ts';
+import test14 from './tests/test14.ts';
+import test15 from './tests/test15.ts';
+import test16 from './tests/test16.ts';
+import test17 from './tests/test17.ts';
 
 const promptToContinue = () => {
   const prompt = 'Press <enter> to run the next test...';
@@ -100,6 +104,7 @@ const assets = {
       small_mario: readImage('small_mario.png'),
       etwe: readImage('etwe.png'),
       self_drive: readImage('self_drive.png'),
+      mario_emblem: readImage('mario_emblem.png'),
     },
   },
   pdfs: {
@@ -123,6 +128,10 @@ const assets = {
     with_cropbox: readPdf('with_cropbox.pdf'),
     us_constitution: readPdf('us_constitution.pdf'),
     simple_pdf_2_example: readPdf('pdf20examples/Simple PDF 2.0 file.pdf'),
+    with_combed_fields: readPdf('with_combed_fields.pdf'),
+    dod_character: readPdf('dod_character.pdf'),
+    with_xfa_fields: readPdf('with_xfa_fields.pdf'),
+    fancy_fields: readPdf('fancy_fields.pdf'),
   },
 };
 
@@ -152,7 +161,7 @@ const main = async () => {
   // prettier-ignore
   const allTests = [
       test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
-      test11, test12, test13
+      test11, test12, test13, test14, test15, test16, test17
     ];
 
   const tests = testIdx ? [allTests[testIdx - 1]] : allTests;
