@@ -11,7 +11,7 @@ import {
 
 const fancyFieldsPdfBytes = fs.readFileSync('assets/pdfs/fancy_fields.pdf');
 // const sampleFormPdfBytes = fs.readFileSync('assets/pdfs/sample_form.pdf');
-// const cannabisPdfBytes = fs.readFileSync('assets/pdfs/with_combed_fields.pdf');
+// const combedPdfBytes = fs.readFileSync('assets/pdfs/with_combed_fields.pdf');
 // const dodPdfBytes = fs.readFileSync('assets/pdfs/dod_character.pdf');
 // const xfaPdfBytes = fs.readFileSync('assets/pdfs/with_xfa_fields.pdf');
 
@@ -60,5 +60,10 @@ describe(`PDFForm`, () => {
     expect(fieldDicts).toContain(getFieldDict('Choose A Gundam 🤖'));
   });
 
+  // TODO: Verify that existing APs are not overridden if they already exist
   // it(``, () => {});
+
+  // TODO: Verify that APs are added when necessary
+
+  // TODO: Add method to remove APs and use `NeedsAppearances`?
 });

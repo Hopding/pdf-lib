@@ -133,7 +133,9 @@ export default class PDFDropdown extends PDFField {
 
     this.markAsDirty();
 
-    if (optionsArr.length > 1) this.setAllowMultiSelect(true);
+    if (optionsArr.length > 1 || (optionsArr.length === 1 && merge)) {
+      this.setAllowMultiSelect(true);
+    }
 
     const values = new Array<PDFHexString>(optionsArr.length);
     for (let idx = 0, len = optionsArr.length; idx < len; idx++) {
