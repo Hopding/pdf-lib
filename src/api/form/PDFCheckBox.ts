@@ -91,10 +91,6 @@ export default class PDFCheckBox extends PDFField {
   }
 
   needsAppearancesUpdate(): boolean {
-    // TODO: Does this always make sense? What if user wants to override the
-    //       appearances anyways?
-    if (!this.isDirty()) return false;
-
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
@@ -116,7 +112,7 @@ export default class PDFCheckBox extends PDFField {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const onValue = widget.getOnValue();
+      const onValue = widget.getOnValue() ?? PDFName.of('Yes');
       if (!onValue) continue;
       this.updateWidgetAppearance(widget, onValue, provider);
     }

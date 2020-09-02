@@ -189,10 +189,6 @@ export default class PDFRadioGroup extends PDFField {
   }
 
   needsAppearancesUpdate(): boolean {
-    // TODO: Does this always make sense? What if user wants to override the
-    //       appearances anyways?
-    if (!this.isDirty()) return false;
-
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];

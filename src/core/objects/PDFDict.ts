@@ -50,7 +50,11 @@ class PDFDict extends PDFObject {
   }
 
   has(key: PDFName): boolean {
-    return this.dict.has(key);
+    // NOTE: This might be a bit inconsistent with `PDFDict.get()` - should
+    //       calls to `PDFDict.get()` return `undefined` if the underlying
+    //       value is `PDFNull`? This would be a breaking change.
+    const value = this.dict.get(key);
+    return value !== undefined && value !== PDFNull;
   }
 
   lookupMaybe(key: PDFName, type: typeof PDFArray): PDFArray | undefined;

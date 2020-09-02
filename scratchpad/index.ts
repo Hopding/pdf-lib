@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
 import { PDFDocument, rgb, drawCheckBox } from 'src/index';
-import fontkit from '@pdf-lib/fontkit';
 
 // import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 // import {
@@ -540,39 +539,12 @@ import fontkit from '@pdf-lib/fontkit';
   // // });
 
   // --------------------------
-  const pdfDoc = await PDFDocument.create();
-
-  pdfDoc.registerFontkit(fontkit);
-
-  const size = 750;
-  const ubuntuFont = await pdfDoc.embedFont(
-    fs.readFileSync('assets/fonts/ubuntu/Ubuntu-R.ttf'),
+  const pdfDoc = await PDFDocument.load(
+    // fs.readFileSync('assets/pdfs/fancy_fields.pdf'),
+    fs.readFileSync('assets/pdfs/with_xfa_fields.pdf'),
   );
 
-  /********************** Page 5 **********************/
-
-  // This page tests creating new AcroForm fields.
-
-  const page5 = pdfDoc.addPage([size, size]);
-
-  const form = pdfDoc.getForm();
-
-  // Multiselect Option List
-  const optionList = form.createOptionList('option.list');
-  optionList.addToPage(ubuntuFont, page5, {
-    width: 250,
-    height: 350,
-    backgroundColor: rgb(1, 0.25, 0.25),
-  });
-  optionList.setOptions([
-    'Sojourner',
-    'Spirit',
-    'Opportunity',
-    'Curiosity',
-    'Perseverance',
-  ]);
-  optionList.setAllowMultiSelect(true);
-  optionList.select('Sojourner');
+  pdfDoc.getForm().updateDirtyFieldAppearances();
 
   // --------------------------
 

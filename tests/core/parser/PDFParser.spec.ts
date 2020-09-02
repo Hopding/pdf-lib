@@ -18,14 +18,14 @@ describe(`PDFParser`, () => {
   const origConsoleWarn = console.warn;
 
   beforeAll(() => {
+    const ignoredWarnings = [
+      'Trying to parse invalid object:',
+      'Invalid object ref:',
+      'Removing parsed object: 0 0 R',
+    ];
     console.warn = jest.fn((...args) => {
-      if (
-        !args[0].includes('Trying to parse invalid object:') &&
-        !args[0].includes('Invalid object ref:') &&
-        !args[0].includes('Removing parsed object: 0 0 R')
-      ) {
-        origConsoleWarn(...args);
-      }
+      const isIgnored = ignoredWarnings.find((iw) => args[0].includes(iw));
+      if (!isIgnored) origConsoleWarn(...args);
     });
   });
 
