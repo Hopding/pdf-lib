@@ -23,7 +23,7 @@ import {
   PDFAcroPushButton,
   PDFWidgetAnnotation,
 } from 'src/core';
-import { assertIs, assertOrUndefined } from 'src/utils';
+import { assertIs, assertOrUndefined, addRandomSuffix } from 'src/utils';
 import { PDFImage } from '..';
 import { drawImage, rotateInPlace } from '../operations';
 
@@ -94,8 +94,7 @@ export default class PDFButton extends PDFField {
         ySkew: degrees(0),
       };
 
-      // TODO: Improve this with random suffix
-      const imageName = 'FOO_BAR';
+      const imageName = addRandomSuffix('Image', 10);
       const appearance = [...rotate, ...drawImage(imageName, options)];
       ////////////
 

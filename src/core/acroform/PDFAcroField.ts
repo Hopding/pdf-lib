@@ -131,33 +131,6 @@ class PDFAcroField {
     const parent = this.getParent();
     if (parent) parent.ascend(visitor);
   }
-
-  //
-  // TODO: Make sure to properly unit test this and maybe clean it up so we
-  // don't require an `instanceof` check in this method... (maybe put on
-  // `PDFAcroTerminal` and `PDFAcroNonTerminal` separately?)
-  //
-  // --------------------------------------------------------------------------
-  // TODO: If this field is itself a widget (because it was only rendered
-  // once in the document so the field and widget properties were merged)
-  // should we add itself to the `Kids` array? Should we try to split apart
-  // the widget properties and create a separate object for it?
-  // --------------------------------------------------------------------------
-  //
-  // normalizedEntries() {
-  //   let Kids = this.Kids();
-
-  //   if (!Kids) {
-  //     if (this instanceof PDFAcroTerminal) {
-  //       Kids = this.dict.context.obj([this.ref]);
-  //     } else {
-  //       Kids = this.dict.context.obj([]);
-  //     }
-  //     this.dict.set(PDFName.of('Kids'), Kids);
-  //   }
-
-  //   return { Kids };
-  // }
 }
 
 export default PDFAcroField;

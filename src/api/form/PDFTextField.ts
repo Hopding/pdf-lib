@@ -173,8 +173,10 @@ export default class PDFTextField extends PDFField {
   setIsEvenlySpaced(isEvenlySpaced: boolean) {
     assertIs(isEvenlySpaced, 'isEvenlySpaced', ['boolean']);
 
-    // TODO: `console.warn` if `this.getMaxLength() === undefined` since
-    //       otherwise the field will not take on a combed appearance.
+    if (this.getMaxLength() === undefined) {
+      const msg = `PDFTextFields must have a max length in order to be evenly spaced`;
+      console.warn(msg);
+    }
 
     this.markAsDirty();
 

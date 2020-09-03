@@ -51,9 +51,15 @@ class PDFAcroTerminal extends PDFAcroField {
     }
   }
 
+  // TODO: Unit test this
   normalizedEntries() {
     let Kids = this.Kids();
 
+    // If this field is itself a widget (because it was only rendered once in
+    // the document, so the field and widget properties were merged) then we
+    // add itself to the `Kids` array. The alternative would be to try
+    // splitting apart the widget properties and creating a separate object
+    // for them.
     if (!Kids) {
       Kids = this.dict.context.obj([this.ref]);
       this.dict.set(PDFName.of('Kids'), Kids);

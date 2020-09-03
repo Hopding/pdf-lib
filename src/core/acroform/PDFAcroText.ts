@@ -71,39 +71,6 @@ class PDFAcroText extends PDFAcroTerminal {
     if (v instanceof PDFString || v instanceof PDFHexString) return v;
     return undefined;
   }
-
-  // TODO: Remove this
-  /*
-  0. Replace newline chars with space if multiline flag is not set
-  1. Noop if width or height is 0?
-  2. Only update the normal appearance for now
-  3. prepareNormalAppearanceStream, initializeAppearanceContent, setAppearanceContent
-  4. Set the formxobject bbox
-  5. Rotate the formxobject
-  6. Set background color (per appearance characteristics)
-  7. Set the border width and color (per appearance characteristics and border style)
-  8. Wrap formxobject contents with:
-      /Tx BMC
-        q
-          BT
-            ${content}
-          ET
-        Q
-      EMC
-  9. Compute clipping and content rects with padding (max(1, borderWidth))
-  10. Calculate the font size*
-    - Could use regex to try and parse the /DA font size
-  11. Insert the /DA (default appearance) string
-    - Could be either at field level _or_ widget level
-  12. Override the font and size of the /DA string with custom/calculated values
-  13. Compute the y coord of the baseline*
-  14. Render the text*
-    - Could be singleline
-    - Could be multiline
-    - Could be comb-mode (table cells)
-    - Account for /Q (quadding) alignment of text
-  */
-  // updateAppearances(font: PDFFont) {}
 }
 
 export default PDFAcroText;
