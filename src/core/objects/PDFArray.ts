@@ -10,7 +10,7 @@ import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { PDFArrayIsNotRectangleError } from '../errors';
+import { PDFArrayIsNotRectangleError } from 'src/core/errors';
 
 class PDFArray extends PDFObject {
   static withContext = (context: PDFContext) => new PDFArray(context);

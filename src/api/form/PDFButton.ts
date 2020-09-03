@@ -1,6 +1,7 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
+import PDFImage from 'src/api/PDFImage';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
@@ -16,6 +17,7 @@ import {
   adjustDimsForRotation,
   reduceRotation,
 } from 'src/api/rotations';
+import { drawImage, rotateInPlace } from 'src/api/operations';
 
 import {
   PDFRef,
@@ -24,8 +26,6 @@ import {
   PDFWidgetAnnotation,
 } from 'src/core';
 import { assertIs, assertOrUndefined, addRandomSuffix } from 'src/utils';
-import { PDFImage } from '..';
-import { drawImage, rotateInPlace } from '../operations';
 
 /**
  * Represents a button field of a [[PDFForm]].
