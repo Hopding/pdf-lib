@@ -215,6 +215,15 @@ export default class PDFDocument {
    *
    * > You do **not** need to call this method to embed standard fonts.
    *
+   * For example:
+   * ```js
+   * import { PDFDocument } from 'pdf-lib'
+   * import fontkit from '@pdf-lib/fontkit'
+   *
+   * const pdfDoc = await PDFDocument.create()
+   * pdfDoc.registerFontkit(fontkit)
+   * ```
+   *
    * @param fontkit The fontkit instance to be registered.
    */
   registerFontkit(fontkit: Fontkit): void {
