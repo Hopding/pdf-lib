@@ -127,7 +127,7 @@ describe(`PDFForm`, () => {
     const originalAps = flatten(widgets.map(getApRefs));
 
     // (1) Run appearance update
-    form.updateDirtyFieldAppearances();
+    form.updateFieldAppearances();
 
     // (1) Make sure no new appearance streams were created
     expect(flatten(widgets.map(getApRefs))).toEqual(originalAps);
@@ -139,7 +139,7 @@ describe(`PDFForm`, () => {
     cb4.check();
 
     // (2) un appearance update
-    form.updateDirtyFieldAppearances();
+    form.updateFieldAppearances();
 
     // (2) Make sure no new appearance streams were created
     expect(flatten(widgets.map(getApRefs))).toEqual(originalAps);
@@ -148,7 +148,7 @@ describe(`PDFForm`, () => {
     rg1.select('Alexander Hamilton 🇺🇸');
 
     // (3) Run appearance update
-    form.updateDirtyFieldAppearances();
+    form.updateFieldAppearances();
 
     // (3) Make sure a new appearance stream was created
     expect(flatten(widgets.map(getApRefs))).not.toEqual(originalAps);
@@ -200,7 +200,7 @@ describe(`PDFForm`, () => {
 
     expect(aps()).toBe(0);
 
-    form.updateDirtyFieldAppearances();
+    form.updateFieldAppearances();
 
     expect(aps()).toBe(5);
   });

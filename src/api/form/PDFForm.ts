@@ -498,9 +498,30 @@ export default class PDFForm {
    * does not have any existing appearance streams, or the field's value has
    * changed (e.g. by calling [[PDFTextField.setText]] or
    * [[PDFDropdown.select]]).
+   *
+   * For example:
+   * ```js
+   * const courier = await pdfDoc.embedFont(StandardFonts.Courier)
+   * const form = pdfDoc.getForm()
+   * form.updateFieldAppearances(courier)
+   * ```
+   *
+   * The default value for the `font` parameter is [[StandardFonts.Helvetica]].
+   * Note that this is a WinAnsi font. This means that encoding errors will be
+   * thrown if any fields contain text with characters outside the WinAnsi
+   * character set.
+   *
+   * Embedding a custom font and passing that as the `font`
+   * parameter allows you to generate appearance streams with non WinAnsi
+   * characters (assuming your custom font supports them).
+   *
+   * > **NOTE:** The [[PDFDocument.save]] method will call this method to
+   * > update appearances automatically if a form was accessed via the
+   * > [[PDFDocument.getForm]] method prior to saving.
+   *
    * @param font Optionally, the font to use when creating new appearances.
    */
-  updateDirtyFieldAppearances(font?: PDFFont) {
+  updateFieldAppearances(font?: PDFFont) {
     assertOrUndefined(font, 'font', [[PDFFont, 'PDFFont']]);
 
     font = font ?? this.defaultFontCache.access();
@@ -515,16 +536,30 @@ export default class PDFForm {
     }
   }
 
+  /**
+   * Mark a field as dirty. This will cause its appearance streams to be
+   * updated by [[PDFForm.updateFieldAppearances]].
+   * @param fieldRef The reference to the field that should be marked.
+   */
   markFieldAsDirty(fieldRef: PDFRef) {
     assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
     this.dirtyFields.add(fieldRef);
   }
 
+  /**
+   * Mark a field as dirty. This will cause its appearance streams to not be
+   * updated by [[PDFForm.updateFieldAppearances]].
+   * @param fieldRef The reference to the field that should be marked.
+   */
   markFieldAsClean(fieldRef: PDFRef) {
     assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
     this.dirtyFields.delete(fieldRef);
   }
 
+  /**
+   * Returns `true` is the specified field has been marked as dirty.
+   * @param fieldRef The reference to the field that should be checked.
+   */
   fieldIsDirty(fieldRef: PDFRef): boolean {
     assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
     return this.dirtyFields.has(fieldRef);
