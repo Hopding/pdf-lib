@@ -539,6 +539,11 @@ export default class PDFForm {
   /**
    * Mark a field as dirty. This will cause its appearance streams to be
    * updated by [[PDFForm.updateFieldAppearances]].
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const field = form.getField('foo.bar')
+   * form.markFieldAsDirty(field.ref)
+   * ```
    * @param fieldRef The reference to the field that should be marked.
    */
   markFieldAsDirty(fieldRef: PDFRef) {
@@ -549,6 +554,11 @@ export default class PDFForm {
   /**
    * Mark a field as dirty. This will cause its appearance streams to not be
    * updated by [[PDFForm.updateFieldAppearances]].
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const field = form.getField('foo.bar')
+   * form.markFieldAsClean(field.ref)
+   * ```
    * @param fieldRef The reference to the field that should be marked.
    */
   markFieldAsClean(fieldRef: PDFRef) {
@@ -558,6 +568,11 @@ export default class PDFForm {
 
   /**
    * Returns `true` is the specified field has been marked as dirty.
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const field = form.getField('foo.bar')
+   * if (form.fieldIsDirty(field.ref)) console.log('Field is dirty')
+   * ```
    * @param fieldRef The reference to the field that should be checked.
    */
   fieldIsDirty(fieldRef: PDFRef): boolean {

@@ -31,6 +31,17 @@ import { assertIs, assertOrUndefined, addRandomSuffix } from 'src/utils';
  * Represents a button field of a [[PDFForm]].
  */
 export default class PDFButton extends PDFField {
+  /**
+   * > **NOTE:** You probably don't want to call this method directly. Instead,
+   * > consider using the [[PDFForm.getButton]] method, which will create an
+   * > instance of [[PDFButton]] for you.
+   *
+   * Create an instance of [[PDFButton]] from an existing acroPushButton and ref
+   *
+   * @param acroPushButton The underlying `PDFAcroPushButton` for this button.
+   * @param ref The unique reference for this button.
+   * @param doc The document to which this button will belong.
+   */
   static of = (
     acroPushButton: PDFAcroPushButton,
     ref: PDFRef,
@@ -54,6 +65,16 @@ export default class PDFButton extends PDFField {
     this.acroField = acroPushButton;
   }
 
+  /**
+   * Display an image inside the bounds of this button's widgets. For example:
+   * ```js
+   * const pngImage = await pdfDoc.embedPng(...)
+   * const button = form.getButton('some.button.field')
+   * button.setImage(pngImage)
+   * ```
+   * This will update the appearances streams for each of this button's widgets.
+   * @param image The image that should be displayed.
+   */
   setImage(image: PDFImage) {
     // Create appearance stream with image, ignoring caption property
     const { context } = this.acroField.dict;
@@ -112,6 +133,33 @@ export default class PDFButton extends PDFField {
     this.markAsClean();
   }
 
+  /**
+   * Show this button on the specified page with the given text.
+   * ```js
+   * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
+   * const page = pdfDoc.addPage()
+   *
+   * const form = pdfDoc.getForm()
+   * const button = form.createButton('some.button.field')
+   *
+   * button.addToPage('Do Stuff', helvetica, page, {
+   *   x: 50,
+   *   y: 75,
+   *   width: 200,
+   *   height: 100,
+   *   textColor: rgb(1, 0, 0),
+   *   backgroundColor: rgb(0, 1, 0),
+   *   borderColor: rgb(0, 0, 1),
+   *   borderWidth: 2,
+   *   rotate: degrees(90),
+   * })
+   * ```
+   * This will create a new widget for this button field.
+   * @param text The text to be displayed for this button widget.
+   * @param font The font in which the label should be displayed.
+   * @param page The page to which this button widget should be added.
+   * @param options The options to be used when adding this button widget.
+   */
   addToPage(
     // TODO: This needs to be optional, e.g. for image buttons
     text: string,
@@ -149,6 +197,14 @@ export default class PDFButton extends PDFField {
     page.node.addAnnot(widgetRef);
   }
 
+  /**
+   * Returns `true` if any of this button's widgets do not have an
+   * appearance stream. For example:
+   * ```js
+   * const button = form.getButton('some.button.field')
+   * if (button.needsAppearancesUpdate()) console.log('Needs update')
+   * ```
+   */
   needsAppearancesUpdate(): boolean {
     if (this.isDirty()) return true;
 
@@ -163,11 +219,40 @@ export default class PDFButton extends PDFField {
     return false;
   }
 
+  /**
+   * Update the appearance streams for each of this button's widgets using
+   * the default appearance provider for buttons. For example:
+   * ```js
+   * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
+   * const button = form.getButton('some.button.field')
+   * button.defaultUpdateAppearances(helvetica)
+   * ```
+   * @param font The font to be used for creating the appearance streams.
+   */
   defaultUpdateAppearances(font: PDFFont) {
     assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.updateAppearances(font);
   }
 
+  /**
+   * Update the appearance streams for each of this button's widgets using
+   * the given appearance provider. If no `provider` is passed, the default
+   * appearance provider for buttons will be used. For example:
+   * ```js
+   * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
+   * const button = form.getButton('some.button.field')
+   * button.updateAppearances(helvetica, (field, widget, font) => {
+   *   ...
+   *   return {
+   *     normal: drawButton(...),
+   *     down: drawButton(...),
+   *   }
+   * })
+   * ```
+   * @param font The font to be used for creating the appearance streams.
+   * @param provider Optionally, the appearance provider to be used for
+   *                 generating the contents of the appearance streams.
+   */
   updateAppearances(
     font: PDFFont,
     provider?: AppearanceProviderFor<PDFButton>,
