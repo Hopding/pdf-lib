@@ -198,8 +198,8 @@ export default class PDFButton extends PDFField {
   }
 
   /**
-   * Returns `true` if any of this button's widgets do not have an
-   * appearance stream. For example:
+   * Returns `true` if this button has been marked as dirty, or if any of this
+   * button's widgets do not have an appearance stream. For example:
    * ```js
    * const button = form.getButton('some.button.field')
    * if (button.needsAppearancesUpdate()) console.log('Needs update')

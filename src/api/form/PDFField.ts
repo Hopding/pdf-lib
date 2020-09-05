@@ -58,7 +58,7 @@ export default class PDFField {
   /** The low-level PDFAcroField wrapped by this field. */
   readonly acroField: PDFAcroField;
 
-  /** The unique reference assigned to this radio group within the document. */
+  /** The unique reference assigned to this field within the document. */
   readonly ref: PDFRef;
 
   /** The document to which this field belongs. */
