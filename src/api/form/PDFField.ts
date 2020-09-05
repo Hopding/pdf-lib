@@ -19,6 +19,9 @@ import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 // TODO: Note in documentation that a single field can actually be rendered
 //       in multiple locations and pages of a single document.
 
+// TODO: Give brief description of each field type's appearance, behavior, and
+//       purpose in their respective class doc comments.
+
 export interface FieldAppearanceOptions {
   x?: number;
   y?: number;

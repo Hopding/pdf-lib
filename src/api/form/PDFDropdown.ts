@@ -80,6 +80,7 @@ export default class PDFDropdown extends PDFField {
 
     return options;
   }
+
   /**
    * Get the selected options for this dropdown. These are the values that were
    * selected by a human user via a PDF reader, or programatically via
@@ -90,11 +91,11 @@ export default class PDFDropdown extends PDFField {
    * const selections = dropdown.getSelected()
    * console.log('Dropdown selections:', selections)
    * ```
-   * Note that PDF readers only display one selected option when rendering
-   * dropdowns. However, the PDF specification does allow for multiple
-   * values to be selected in a dropdown. As such, the `pdf-lib` API
-   * supports this. However, in most cases the array returned by this method
-   * will contain only a single element (or no elements).
+   * > **NOTE:** Note that PDF readers only display one selected option when
+   * > rendering dropdowns. However, the PDF specification does allow for
+   * > multiple values to be selected in a dropdown. As such, the `pdf-lib`
+   * > API supports this. However, in most cases the array returned by this
+   * > method will contain only a single element (or no elements).
    */
   getSelected(): string[] {
     const values = this.acroField.getValues();
@@ -176,7 +177,7 @@ export default class PDFDropdown extends PDFField {
    * dropdowns. However, the PDF specification does allow for multiple values
    * to be selected in a dropdown. As such, the `pdf-lib` API supports this.
    * However, it is not recommended to select more than one value with this
-   * method, as only one will be visible. [[OptionList]] fields are better
+   * method, as only one will be visible. [[PDFOptionList]] fields are better
    * suited for displaying multiple selected values.
    * @param options The options to be selected.
    * @param merge Whether or not existing selections should be preserved.
@@ -311,7 +312,8 @@ export default class PDFDropdown extends PDFField {
 
   /**
    * Returns `true` if multiple options can be selected from this dropdown's
-   * option list. For example:
+   * option list. See [[PDFDropdown.enableMultiselect]] and
+   * [[PDFDropdown.disableMultiselect]]. For example:
    * ```js
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.isMultiselect()) console.log('Multiselect is enabled')
@@ -348,7 +350,9 @@ export default class PDFDropdown extends PDFField {
   /**
    * Returns `true` if the selected option should be spell checked by PDF
    * readers. Spell checking will only be performed if this dropdown allows
-   * editing (see [[PDFDropdown.isEditable]]). For example:
+   * editing (see [[PDFDropdown.isEditable]]). See
+   * [[PDFDropdown.enableSpellChecking]] and
+   * [[PDFDropdown.disableSpellChecking]]. For example:
    * ```js
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.isSpellChecked()) console.log('Spell checking is enabled')
@@ -386,7 +390,9 @@ export default class PDFDropdown extends PDFField {
    * Returns `true` if the option selected by a user is stored, or "committed",
    * when the user clicks the option. The alternative is that the user's
    * selection is stored when the user leaves this dropdown field (by clicking
-   * outside of it - on another field, for example). For example:
+   * outside of it - on another field, for example). See
+   * [[PDFDropdown.enableSelectOnClick]] and
+   * [[PDFDropdown.disableSelectOnClick]]. For example:
    * ```js
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.isSelectOnClick()) console.log('Select on click is enabled')
