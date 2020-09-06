@@ -457,7 +457,7 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
   let textLines: TextPosition[];
   let fontSize: number;
 
-  const padding = textField.isEvenlySpaced() ? 0 : 1;
+  const padding = textField.isCombed() ? 0 : 1;
   const bounds = {
     x: borderWidth + padding,
     y: borderWidth + padding,
@@ -473,7 +473,7 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
     });
     textLines = layout.lines;
     fontSize = layout.fontSize;
-  } else if (textField.isEvenlySpaced()) {
+  } else if (textField.isCombed()) {
     const layout = layoutCombedText(text, {
       fontSize: widgetFontSize ?? fieldFontSize,
       font,

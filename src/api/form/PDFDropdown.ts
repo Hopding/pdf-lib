@@ -174,11 +174,11 @@ export default class PDFDropdown extends PDFField {
    * dropdown.select('One Punch Man')
    * ```
    * > **NOTE:** PDF readers only display one selected option when rendering
-   * dropdowns. However, the PDF specification does allow for multiple values
-   * to be selected in a dropdown. As such, the `pdf-lib` API supports this.
-   * However, it is not recommended to select more than one value with this
-   * method, as only one will be visible. [[PDFOptionList]] fields are better
-   * suited for displaying multiple selected values.
+   * > dropdowns. However, the PDF specification does allow for multiple values
+   * > to be selected in a dropdown. As such, the `pdf-lib` API supports this.
+   * > However, it is not recommended to select more than one value with this
+   * > method, as only one will be visible. [[PDFOptionList]] fields are better
+   * > suited for displaying multiple selected values.
    * @param options The options to be selected.
    * @param merge Whether or not existing selections should be preserved.
    */
