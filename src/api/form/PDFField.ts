@@ -20,7 +20,8 @@ import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 //       in multiple locations and pages of a single document.
 
 // TODO: Give brief description of each field type's appearance, behavior, and
-//       purpose in their respective class doc comments.
+//       purpose in their respective class doc comments. Can also pull verbiage
+//       from the PDF spec.
 
 export interface FieldAppearanceOptions {
   x?: number;

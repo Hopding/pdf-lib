@@ -134,7 +134,7 @@ export default class PDFButton extends PDFField {
   }
 
   /**
-   * Show this button on the specified page with the given text.
+   * Show this button on the specified page with the given text. For example:
    * ```js
    * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
    * const page = pdfDoc.addPage()

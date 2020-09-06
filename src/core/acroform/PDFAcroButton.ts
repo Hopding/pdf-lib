@@ -75,12 +75,44 @@ class PDFAcroButton extends PDFAcroTerminal {
     this.setOpt(Opt);
   }
 
-  addWidgetWithOpt(widget: PDFRef, opt: PDFHexString | PDFString) {
+  // TODO: Unit test this
+  /**
+   * Reuses existing opt if one exists with the same value (assuming
+   * `useExistingIdx` is `true`). Returns index of existing (or new) opt.
+   */
+  addOpt(opt: PDFHexString | PDFString, useExistingOptIdx: boolean): number {
     this.normalizeExportValues();
+
+    const optText = opt.decodeText();
+
+    let existingIdx: number | undefined;
+    if (useExistingOptIdx) {
+      const exportValues = this.getExportValues() ?? [];
+      for (let idx = 0, len = exportValues.length; idx < len; idx++) {
+        const exportVal = exportValues[idx];
+        if (exportVal.decodeText() === optText) existingIdx = idx;
+      }
+    }
+
     const Opt = this.Opt() as PDFArray;
-    this.addWidget(widget);
     Opt.push(opt);
-    const apStateValue = PDFName.of(String(Opt.size() - 1));
+
+    return existingIdx ?? Opt.size() - 1;
+  }
+
+  // TODO: Should this Opt related stuff be in `PDFAcroRadioButton`?
+  //
+  // TODO: Unit test this to ensure we don't wind up with silly stuff like:
+  //   /Opt [ <feff> <feff0065007800690061> <feff006b007900720069006f0073> <feff> ]
+  addWidgetWithOpt(
+    widget: PDFRef,
+    opt: PDFHexString | PDFString,
+    useExistingOptIdx: boolean,
+  ) {
+    // this.addWidget(widget);
+    const optIdx = this.addOpt(opt, useExistingOptIdx);
+    const apStateValue = PDFName.of(String(optIdx));
+    this.addWidget(widget);
     return apStateValue;
   }
 }

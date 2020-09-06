@@ -119,7 +119,7 @@ export default class PDFCheckBox extends PDFField {
   }
 
   /**
-   * Show this check box on the specified page.
+   * Show this check box on the specified page. For example:
    * ```js
    * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
    * const page = pdfDoc.addPage()
@@ -130,8 +130,8 @@ export default class PDFCheckBox extends PDFField {
    * checkBox.addToPage(page, {
    *   x: 50,
    *   y: 75,
-   *   width: 200,
-   *   height: 100,
+   *   width: 25,
+   *   height: 25,
    *   textColor: rgb(1, 0, 0),
    *   backgroundColor: rgb(0, 1, 0),
    *   borderColor: rgb(0, 0, 1),

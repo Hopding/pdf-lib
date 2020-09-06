@@ -429,13 +429,13 @@ export default class PDFDropdown extends PDFField {
   }
 
   /**
-   * Show this dropdown on the specified page.
+   * Show this dropdown on the specified page. For example:
    * ```js
    * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
    * const page = pdfDoc.addPage()
    *
    * const form = pdfDoc.getForm()
-   * const dropdown = form.createDropdown('some.dropdown.field')
+   * const dropdown = form.createDropdown('best.gundam')
    * dropdown.setOptions(['Exia', 'Dynames'])
    * dropdown.select('Exia')
    *

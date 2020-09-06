@@ -185,7 +185,7 @@ export default class PDFOptionList extends PDFField {
     this.markAsDirty();
 
     if (optionsArr.length > 1 || (optionsArr.length === 1 && merge)) {
-      this.setAllowMultiSelect(true);
+      this.enableMultiselect();
     }
 
     const values = new Array<PDFHexString>(optionsArr.length);
@@ -338,13 +338,13 @@ export default class PDFOptionList extends PDFField {
   }
 
   /**
-   * Show this option list on the specified page.
+   * Show this option list on the specified page. For example:
    * ```js
    * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
    * const page = pdfDoc.addPage()
    *
    * const form = pdfDoc.getForm()
-   * const optionList = form.createOptionList('some.optionList.field')
+   * const optionList = form.createOptionList('best.gundams')
    * optionList.setOptions(['Exia', 'Dynames', 'Kyrios', 'Virtue'])
    * optionList.select(['Exia', 'Virtue'])
    *
