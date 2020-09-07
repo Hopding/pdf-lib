@@ -16,9 +16,6 @@ import {
 } from 'src/core';
 import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 
-// TODO: Note in documentation that a single field can actually be rendered
-//       in multiple locations and pages of a single document.
-
 // TODO: Give brief description of each field type's appearance, behavior, and
 //       purpose in their respective class doc comments. Can also pull verbiage
 //       from the PDF spec.
@@ -57,6 +54,23 @@ export const assertFieldAppearanceOptions = (
 
 /**
  * Represents a field of a [[PDFForm]].
+ *
+ * This class is effectively abstract. All fields in a [[PDFForm]] will
+ * actually be an instance of a subclass of this class.
+ *
+ * Note that each field in a PDF is represented by a single field object.
+ * However, a given field object may be rendered at multiple locations within
+ * the document (across one or more pages). The rendering of a field is
+ * controlled by its widgets. Each widget causes its field to be displayed at a
+ * particular location in the document.
+ *
+ * Most of the time each field in a PDF has only a single widget, and thus is
+ * only rendered once. However, if a field is rendered multiple times, it will
+ * have one widget for each location it is rendered.
+ *
+ * This abstraction of field objects and widgets is defined in the PDF
+ * specification and dictates how PDF files store fields and where they are
+ * to be rendered.
  */
 export default class PDFField {
   /** The low-level PDFAcroField wrapped by this field. */

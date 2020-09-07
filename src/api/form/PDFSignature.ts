@@ -8,6 +8,18 @@ import { assertIs } from 'src/utils';
  * Represents a signature field of a [[PDFForm]].
  */
 export default class PDFSignature extends PDFField {
+  /**
+   * > **NOTE:** You probably don't want to call this method directly. Instead,
+   * > consider using the [[PDFForm.getSignature]] method, which will create an
+   * > instance of [[PDFSignature]] for you.
+   *
+   * Create an instance of [[PDFSignature]] from an existing acroSignature and
+   * ref
+   *
+   * @param acroSignature The underlying `PDFAcroSignature` for this signature.
+   * @param ref The unique reference for this signature.
+   * @param doc The document to which this signature will belong.
+   */
   static of = (
     acroSignature: PDFAcroSignature,
     ref: PDFRef,
