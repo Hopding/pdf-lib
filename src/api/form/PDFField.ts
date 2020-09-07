@@ -83,39 +83,149 @@ export default class PDFField {
   }
 
   /**
-   * Returns the fully qualified name of this field as a string.
+   * Get the fully qualified name of this field. For example:
+   * ```js
+   * const fields = form.getFields()
+   * fields.forEach(field => {
+   *   const name = field.getName()
+   *   console.log('Field name:', name)
+   * })
+   * ```
+   * Note that PDF fields are structured as a tree. Each field is the
+   * descendent of a series of ancestor nodes all the way up to the form node,
+   * which is always the root of the tree. Each node in the tree (except for
+   * the form node) has a partial name. Partial names can be composed of any
+   * unicode characters except a period (`.`). The fully qualified name of a
+   * field is composed of the partial names of all its ancestors joined
+   * with periods. This means that splitting the fully qualified name on
+   * periods and taking the last element of the resulting array will give you
+   * the partial name of a specific field.
+   * @returns The fully qualified name of this field.
    */
   getName(): string {
     return this.acroField.getFullyQualifiedName() ?? '';
   }
 
+  /**
+   * Returns `true` if this field is read only. This means that PDF readers
+   * will not allow users to interact with the field or change its value. See
+   * [[PDFField.enableReadOnly]] and [[PDFField.disableReadOnly]].
+   * For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * if (field.isReadOnly()) console.log('Read only is enabled')
+   * ```
+   * @returns Whether or not this is a read only field.
+   */
   isReadOnly(): boolean {
     return this.acroField.hasFlag(AcroFieldFlags.ReadOnly);
   }
 
-  setReadOnly(readOnly: boolean) {
-    assertIs(readOnly, 'readOnly', ['boolean']);
-    this.acroField.setFlagTo(AcroFieldFlags.ReadOnly, readOnly);
+  /**
+   * Prevent PDF readers from allowing users to interact with this field or
+   * change its value. The field will not respond to mouse or keyboard input.
+   * For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * field.enableReadOnly()
+   * ```
+   * Useful for fields whose values are computed, imported from a database, or
+   * prefilled by software before being displayed to the user.
+   */
+  enableReadOnly() {
+    this.acroField.setFlagTo(AcroFieldFlags.ReadOnly, true);
   }
 
+  /**
+   * Allow users to interact with this field and change its value in PDF
+   * readers via mouse and keyboard input. For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * field.disableReadOnly()
+   * ```
+   */
+  disableReadOnly() {
+    this.acroField.setFlagTo(AcroFieldFlags.ReadOnly, false);
+  }
+
+  /**
+   * Returns `true` if this field must have a value when the form is submitted.
+   * See [[PDFField.enableRequired]] and [[PDFField.disableRequired]].
+   * For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * if (field.isRequired()) console.log('Field is required')
+   * ```
+   * @returns Whether or not this field is required.
+   */
   isRequired(): boolean {
     return this.acroField.hasFlag(AcroFieldFlags.Required);
   }
 
-  setRequired(required: boolean) {
-    assertIs(required, 'required', ['boolean']);
-    this.acroField.setFlagTo(AcroFieldFlags.Required, required);
+  /**
+   * Require this field to have a value when the form is submitted.
+   * For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * field.enableRequired()
+   * ```
+   */
+  enableRequired() {
+    this.acroField.setFlagTo(AcroFieldFlags.Required, true);
   }
 
+  /**
+   * Do not require this field to have a value when the form is submitted.
+   * For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * field.disableRequired()
+   * ```
+   */
+  disableRequired() {
+    this.acroField.setFlagTo(AcroFieldFlags.Required, false);
+  }
+
+  /**
+   * Returns `true` if this field's value should be exported when the form is
+   * submitted. See [[PDFField.enableExporting]] and
+   * [[PDFField.disableExporting]].
+   * For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * if (field.isExported()) console.log('Exporting is enabled')
+   * ```
+   * @returns Whether or not this field's value should be exported.
+   */
   isExported(): boolean {
     return !this.acroField.hasFlag(AcroFieldFlags.NoExport);
   }
 
-  setExported(exported: boolean) {
-    assertIs(exported, 'exported', ['boolean']);
-    this.acroField.setFlagTo(AcroFieldFlags.NoExport, !exported);
+  /**
+   * Indicate that this field's value should be exported when the form is
+   * submitted in a PDF reader. For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * field.enableExporting()
+   * ```
+   */
+  enableExporting() {
+    this.acroField.setFlagTo(AcroFieldFlags.NoExport, false);
   }
 
+  /**
+   * Indicate that this field's value should **not** be exported when the form
+   * is submitted in a PDF reader. For example:
+   * ```js
+   * const field = form.getField('some.field')
+   * field.disableExporting()
+   * ```
+   */
+  disableExporting() {
+    this.acroField.setFlagTo(AcroFieldFlags.NoExport, true);
+  }
+
+  /** @ignore */
   needsAppearancesUpdate(): boolean {
     throw new MethodNotImplementedError(
       this.constructor.name,
@@ -123,6 +233,7 @@ export default class PDFField {
     );
   }
 
+  /** @ignore */
   defaultUpdateAppearances(_font: PDFFont) {
     throw new MethodNotImplementedError(
       this.constructor.name,
