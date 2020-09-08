@@ -30,7 +30,7 @@ import { assertIs, assertOrUndefined, addRandomSuffix } from 'src/utils';
 /**
  * Represents a button field of a [[PDFForm]].
  *
- * [[PDFButton]]s are interactive controls that users can click with their
+ * [[PDFButton]] fields are interactive controls that users can click with their
  * mouse. This type of [[PDFField]] is not stateful. The purpose of a button
  * is to perform an action when the user clicks on it, such as opening a print
  * modal or resetting the form. Buttons are typically rectangular in shape and

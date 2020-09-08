@@ -25,6 +25,20 @@ import { assertIs, assertOrUndefined, assertIsOneOf } from 'src/utils';
 
 /**
  * Represents a radio group field of a [[PDFForm]].
+ *
+ * [[PDFRadioGroup]] fields are collections of radio buttons. The purpose of a
+ * radio group is to enable users to select one option from a set of mutually
+ * exclusive choices. Each choice in a radio group is represented by a radio
+ * button. Radio buttons each have two states: `on` and `off`. At most one
+ * radio button in a group may be in the `on` state at any time. Users can
+ * click on a radio button to select it (and thereby automatically deselect any
+ * other radio button that might have already been selected). Some radio
+ * groups allow users to toggle a selected radio button `off` by clicking on
+ * it (see [[PDFRadioGroup.isOffToggleable]]).
+ *
+ * Note that some radio groups allow multiple radio buttons to be in the `on`
+ * state at the same type **if** they represent the same underlying value (see
+ * [[PDFRadioGroup.isMutuallyExclusive]]).
  */
 export default class PDFRadioGroup extends PDFField {
   /**

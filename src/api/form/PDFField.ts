@@ -16,10 +16,6 @@ import {
 } from 'src/core';
 import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 
-// TODO: Give brief description of each field type's appearance, behavior, and
-//       purpose in their respective class doc comments. Can also pull verbiage
-//       from the PDF spec.
-
 export interface FieldAppearanceOptions {
   x?: number;
   y?: number;
@@ -66,7 +62,7 @@ export const assertFieldAppearanceOptions = (
  *
  * Most of the time each field in a PDF has only a single widget, and thus is
  * only rendered once. However, if a field is rendered multiple times, it will
- * have one widget for each location it is rendered.
+ * have multiple widgets - one for each location it is rendered.
  *
  * This abstraction of field objects and widgets is defined in the PDF
  * specification and dictates how PDF files store fields and where they are

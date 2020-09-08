@@ -6,6 +6,10 @@ import { assertIs } from 'src/utils';
 
 /**
  * Represents a signature field of a [[PDFForm]].
+ *
+ * [[PDFSignature]] fields are digital signatures. `pdf-lib` does not
+ * currently provide any specialized APIs for creating digital signatures or
+ * reading the contents of existing digital signatures.
  */
 export default class PDFSignature extends PDFField {
   /**

@@ -23,6 +23,12 @@ import { assertIs, assertOrUndefined } from 'src/utils';
 
 /**
  * Represents a check box field of a [[PDFForm]].
+ *
+ * [[PDFCheckBox]] fields are interactive boxes that users can click with their
+ * mouse. This type of [[PDFField]] has two states: `on` and `off`. The purpose
+ * of a check box is to enable users to select from one or more options, where
+ * each option is represented by a single check box. Check boxes are typically
+ * square in shape and display a check mark when they are in the `on` state.
  */
 export default class PDFCheckBox extends PDFField {
   /**

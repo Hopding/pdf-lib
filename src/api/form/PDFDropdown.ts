@@ -26,6 +26,15 @@ import { assertIs, assertOrUndefined, assertIsSubset } from 'src/utils';
 
 /**
  * Represents a dropdown field of a [[PDFForm]].
+ *
+ * [[PDFDropdown]] fields are interactive text boxes that display a single
+ * element (the currently selected value). The purpose of a dropdown is to
+ * enable users to select a single option from a set of possible options. Users
+ * can click on a dropdown to view the full list of options it provides.
+ * Clicking on an option in the list will cause it to be selected and displayed
+ * in the dropdown's text box. Some dropdowns allow users to enter text
+ * directly into the box from their keyboard, rather than only being allowed to
+ * choose an option from the list (see [[PDFDropdown.isEditable]]).
  */
 export default class PDFDropdown extends PDFField {
   /**

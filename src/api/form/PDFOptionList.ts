@@ -26,6 +26,14 @@ import { assertIs, assertOrUndefined, assertIsSubset } from 'src/utils';
 
 /**
  * Represents an option list field of a [[PDFForm]].
+ *
+ * [[PDFOptionList]] fields are interactive lists of options. The purpose of an
+ * option list is to enable users to select one or more options from a set of
+ * possible options. Users are able to see the full set of options without
+ * first having to click on the field (though scrolling may be necessary).
+ * Clicking an option in the list will cause it to be selected and displayed
+ * with a highlighted background. Some option lists allow users to select
+ * more than one option (see [[PDFOptionList.isMultiselect]]).
  */
 export default class PDFOptionList extends PDFField {
   /**

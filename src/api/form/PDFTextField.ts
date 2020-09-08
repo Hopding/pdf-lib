@@ -32,6 +32,12 @@ import {
 
 /**
  * Represents a text field of a [[PDFForm]].
+ *
+ * [[PDFTextField]] fields are boxes that display text entered by the user. The
+ * purpose of a text field is to enable users to enter text or view text values
+ * in the document prefilled by software. Users can click on a text field and
+ * input text via their keyboard. Some text fields allow multiple lines of text
+ * to be entered (see [[PDFTextField.isMultiline]]).
  */
 export default class PDFTextField extends PDFField {
   /**
