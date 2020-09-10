@@ -38,9 +38,9 @@ import { assertIs, Cache, assertOrUndefined } from 'src/utils';
  *
  * Interactive forms (sometimes called _AcroForms_) are collections of fields
  * designed to gather information from a user. A PDF document may contains any
- * number of fields that appear on various pages, but all of which make up a
- * single, global interactive form spanning the entire document. This means
- * that instances of [[PDFDocument]] shall contain at most one [[PDFForm]].
+ * number of fields that appear on various pages, all of which make up a single,
+ * global interactive form spanning the entire document. This means that
+ * instances of [[PDFDocument]] shall contain at most one [[PDFForm]].
  *
  * The fields of an interactive form are represented by [[PDFField]] instances.
  */

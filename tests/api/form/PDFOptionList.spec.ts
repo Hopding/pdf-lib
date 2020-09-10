@@ -42,6 +42,13 @@ describe(`PDFOptionList`, () => {
     expect(planets.getSelected()).toEqual(['Pluto', 'Neptune']);
   });
 
+  it(`can't select a value not in the options list`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+    const form = pdfDoc.getForm();
+    const planets = form.getOptionList('Which Are Planets? 🌎');
+    expect(() => planets.select('One Punch Man')).toThrow();
+  });
+
   it(`can merge options when selecting`, async () => {
     const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
     const form = pdfDoc.getForm();

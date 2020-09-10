@@ -615,6 +615,8 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
   const options = optionList.getOptions();
   const selected = optionList.getSelected();
 
+  if (optionList.isSorted()) options.sort();
+
   let text = '';
   for (let idx = 0, len = options.length; idx < len; idx++) {
     text += options[idx];

@@ -22,7 +22,7 @@ import {
   PDFAcroComboBox,
   AcroChoiceFlags,
 } from 'src/core';
-import { assertIs, assertOrUndefined, assertIsSubset } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
 /**
  * Represents a dropdown field of a [[PDFForm]].
@@ -197,9 +197,13 @@ export default class PDFDropdown extends PDFField {
    * contains characters outside the WinAnsi character set (the latin alphabet).
    *
    * Embedding a custom font and passing it to
-   * [[PDFDocument.updateFieldAppearances]] or [[PDFDropdown.updateAppearances]]
+   * [[PDFForm.updateFieldAppearances]] or [[PDFDropdown.updateAppearances]]
    * allows you to generate appearance streams with characters outside the
    * latin alphabet (assuming the custom font supports them).
+   *
+   * Selecting an option that does not exist in this dropdown's option list
+   * (see [[PDFDropdown.getOptions]]) will enable editing on this dropdown
+   * (see [[PDFDropdown.enableEditing]]).
    *
    * > **NOTE:** PDF readers only display one selected option when rendering
    * > dropdowns. However, the PDF specification does allow for multiple values
@@ -218,7 +222,10 @@ export default class PDFDropdown extends PDFField {
     const optionsArr = Array.isArray(options) ? options : [options];
 
     const validOptions = this.getOptions();
-    assertIsSubset(optionsArr, 'option', validOptions);
+    const hasCustomOption = optionsArr.find(
+      (option) => !validOptions.includes(option),
+    );
+    if (hasCustomOption) this.enableEditing();
 
     this.markAsDirty();
 

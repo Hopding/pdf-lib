@@ -137,10 +137,9 @@ export default class PDFOptionList extends PDFField {
    * with characters outside the WinAnsi character set (the latin alphabet).
    *
    * Embedding a custom font and passing it to
-   * [[PDFDocument.updateFieldAppearances]] or
-   * [[PDFOptionList.updateAppearances]] allows you to generate appearance
-   * streams with characters outside the latin alphabet (assuming the custom
-   * font supports them).
+   * [[PDFForm.updateFieldAppearances]] or [[PDFOptionList.updateAppearances]]
+   * allows you to generate appearance streams with characters outside the
+   * latin alphabet (assuming the custom font supports them).
    *
    * @param options The options that should be available in this option list.
    */

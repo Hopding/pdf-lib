@@ -72,6 +72,7 @@ export default async (assets: Assets) => {
 
   // Dropdown
   const gundams = form.getDropdown('Choose A Gundam 🤖');
+  gundams.select('One Punch Man');
   gundams.updateAppearances(ubuntuFont);
 
   // ===================== Custom Appearance Providers ========================

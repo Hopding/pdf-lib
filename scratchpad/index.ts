@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument, rgb, drawCheckBox } from 'src/index';
+import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
 
 // import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 // import {
@@ -540,41 +540,23 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
 
   const pdfDoc = await PDFDocument.create();
 
+  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
   const page = pdfDoc.addPage();
   const { height } = page.getSize();
 
   const form = pdfDoc.getForm();
 
-  const radioGroup = form.createRadioGroup('foo.bar');
-  radioGroup.enableOffToggling();
-  radioGroup.enableMutualExclusion();
+  const dropdown = form.createDropdown('foo.bar');
 
-  radioGroup.addOptionToPage('exia', page, {
+  dropdown.addOptions(['Virtue', 'Exia', 'Dynames', 'Kyrios']);
+  dropdown.select('Foo Bar');
+  dropdown.enableSorting();
+
+  dropdown.addToPage(helvetica, page, {
     x: 50,
     y: height - 50,
-    width: 50,
-    height: 50,
-  });
-
-  radioGroup.addOptionToPage('kyrios', page, {
-    x: 50,
-    y: height - 100,
-    width: 50,
-    height: 50,
-  });
-
-  radioGroup.addOptionToPage('exia', page, {
-    x: 50,
-    y: height - 150,
-    width: 50,
-    height: 50,
-  });
-
-  radioGroup.addOptionToPage('kyrios', page, {
-    x: 50,
-    y: height - 200,
-    width: 50,
-    height: 50,
+    borderWidth: 1,
   });
 
   fs.writeFileSync(
@@ -584,5 +566,5 @@ import { PDFDocument, rgb, drawCheckBox } from 'src/index';
       // updateFieldAppearances: false,
     }),
   );
-  openPdf('out.pdf', Reader.Preview);
+  openPdf('out.pdf', Reader.Acrobat);
 })();

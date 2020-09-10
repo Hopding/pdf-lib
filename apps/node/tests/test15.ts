@@ -83,7 +83,7 @@ export default async (assets: Assets) => {
 
   // Multiline, centered
   const multilineCenteredTf = form.createTextField('multiline.centered.tf');
-  multilineCenteredTf.setIsMultiline(true);
+  multilineCenteredTf.enableMultiline();
   multilineCenteredTf.setAlignment(TextAlignment.Center);
   multilineCenteredTf.setText('Sum\ncentered\rtext\nyo');
   multilineCenteredTf.addToPage(helveticaFont, page2, {
@@ -109,7 +109,7 @@ export default async (assets: Assets) => {
 
   // Multiline, right justified
   const multilineRightTf = form.createTextField('multiline.right.tf');
-  multilineRightTf.setIsMultiline(true);
+  multilineRightTf.enableMultiline();
   multilineRightTf.setAlignment(TextAlignment.Right);
   multilineRightTf.setText('Sum\nright justified\rtext\nyo');
   multilineRightTf.addToPage(helveticaFont, page2, {
@@ -138,7 +138,7 @@ export default async (assets: Assets) => {
     'Curiosity',
     'Perseverance',
   ]);
-  optionList.setAllowMultiSelect(true);
+  optionList.enableMultiselect();
   optionList.select(['Sojourner', 'Curiosity', 'Perseverance']);
 
   const pdfBytes = await pdfDoc.save();

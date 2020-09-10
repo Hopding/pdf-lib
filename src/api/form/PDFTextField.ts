@@ -127,10 +127,9 @@ export default class PDFTextField extends PDFField {
    * the WinAnsi character set (the latin alphabet).
    *
    * Embedding a custom font and passing it to
-   * [[PDFDocument.updateFieldAppearances]] or
-   * [[PDFTextField.updateAppearances]] allows you to generate appearance
-   * streams with characters outside the latin alphabet (assuming the custom
-   * font supports them).
+   * [[PDFForm.updateFieldAppearances]] or [[PDFTextField.updateAppearances]]
+   * allows you to generate appearance streams with characters outside the
+   * latin alphabet (assuming the custom font supports them).
    *
    * If this is a rich text field, it will be converted to a standard text
    * field in order to set the text. `pdf-lib` does not support writing rich

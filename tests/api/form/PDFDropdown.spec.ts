@@ -47,6 +47,20 @@ describe(`PDFDropdown`, () => {
     expect(gundams.getSelected()).toEqual(['Exia', 'Virtue']);
   });
 
+  it(`can select a value not in the options list`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+    const form = pdfDoc.getForm();
+    const gundams = form.getDropdown('Choose A Gundam 🤖');
+
+    expect(gundams.isEditable()).toBe(false);
+    expect(gundams.getOptions()).not.toContain('One Punch Man');
+
+    gundams.select('One Punch Man');
+
+    expect(gundams.isEditable()).toBe(true);
+    expect(gundams.getSelected()).toEqual(['One Punch Man']);
+  });
+
   it(`can merge options when selecting`, async () => {
     const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
     const form = pdfDoc.getForm();

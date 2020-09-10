@@ -12,7 +12,13 @@ import {
 class PDFAcroChoice extends PDFAcroTerminal {
   // TODO: Should we remove duplicates here?
   setValues(values: (PDFString | PDFHexString)[]) {
-    if (!this.valuesAreValid(values)) throw new InvalidAcroFieldValueError();
+    if (
+      this.hasFlag(AcroChoiceFlags.Combo) &&
+      !this.hasFlag(AcroChoiceFlags.Edit) &&
+      !this.valuesAreValid(values)
+    ) {
+      throw new InvalidAcroFieldValueError();
+    }
 
     if (values.length === 0) {
       this.dict.delete(PDFName.of('V'));

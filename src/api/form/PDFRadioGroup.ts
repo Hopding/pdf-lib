@@ -220,6 +220,7 @@ export default class PDFRadioGroup extends PDFField {
    * [[PDFRadioGroup.select]] for more details about what this means.
    */
   clear() {
+    this.markAsDirty();
     this.acroField.setValue(PDFName.of('Off'));
   }
 
