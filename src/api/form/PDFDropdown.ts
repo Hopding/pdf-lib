@@ -77,6 +77,7 @@ export default class PDFDropdown extends PDFField {
    * const options = dropdown.getOptions()
    * console.log('Dropdown options:', options)
    * ```
+   * @returns The options for this dropdown.
    */
   getOptions(): string[] {
     const rawOptions = this.acroField.getOptions();
@@ -105,6 +106,7 @@ export default class PDFDropdown extends PDFField {
    * > multiple values to be selected in a dropdown. As such, the `pdf-lib`
    * > API supports this. However, in most cases the array returned by this
    * > method will contain only a single element (or no elements).
+   * @returns The selected options in this dropdown.
    */
   getSelected(): string[] {
     const values = this.acroField.getValues();
@@ -177,17 +179,35 @@ export default class PDFDropdown extends PDFField {
    * dropdown to indicate which values have been selected. PDF libraries and
    * readers will be able to extract these values from the saved document and
    * determine which values were selected.
+   *
    * For example:
    * ```js
    * const dropdown = form.getDropdown('best.superhero.dropdown')
    * dropdown.select('One Punch Man')
    * ```
+   *
+   * This method will mark this dropdown as dirty, causing its appearance
+   * streams to be updated when either [[PDFDocument.save]] or
+   * [[PDFForm.updateFieldAppearances]] is called. The updated streams will
+   * display the selected option inside the widgets of this dropdown.
+   *
+   * **IMPORTANT:** The default font used to update appearance streams is
+   * [[StandardFonts.Helvetica]]. Note that this is a WinAnsi font. This means
+   * that encoding errors will be thrown if the selected option for this field
+   * contains characters outside the WinAnsi character set (the latin alphabet).
+   *
+   * Embedding a custom font and passing it to
+   * [[PDFDocument.updateFieldAppearances]] or [[PDFDropdown.updateAppearances]]
+   * allows you to generate appearance streams with characters outside the
+   * latin alphabet (assuming the custom font supports them).
+   *
    * > **NOTE:** PDF readers only display one selected option when rendering
    * > dropdowns. However, the PDF specification does allow for multiple values
    * > to be selected in a dropdown. As such, the `pdf-lib` API supports this.
    * > However, it is not recommended to select more than one value with this
    * > method, as only one will be visible. [[PDFOptionList]] fields are better
    * > suited for displaying multiple selected values.
+   *
    * @param options The options to be selected.
    * @param merge Whether or not existing selections should be preserved.
    */
@@ -228,6 +248,8 @@ export default class PDFDropdown extends PDFField {
    * const dropdown = form.getDropdown('some.dropdown.field')
    * dropdown.clear()
    * ```
+   * This method will mark this text field as dirty. See [[PDFDropdown.select]]
+   * for more details about what this means.
    */
   clear() {
     this.markAsDirty();
@@ -243,6 +265,7 @@ export default class PDFDropdown extends PDFField {
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.isEditable()) console.log('Editing is enabled')
    * ```
+   * @returns Whether or not this dropdown is editable.
    */
   isEditable(): boolean {
     return this.acroField.hasFlag(AcroChoiceFlags.Edit);
@@ -288,6 +311,7 @@ export default class PDFDropdown extends PDFField {
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.isSorted()) console.log('Sorting is enabled')
    * ```
+   * @returns Whether or not this dropdown's options are sorted.
    */
   isSorted(): boolean {
     return this.acroField.hasFlag(AcroChoiceFlags.Sort);
@@ -327,6 +351,7 @@ export default class PDFDropdown extends PDFField {
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.isMultiselect()) console.log('Multiselect is enabled')
    * ```
+   * @returns Whether or not multiple options can be selected.
    */
   isMultiselect(): boolean {
     return this.acroField.hasFlag(AcroChoiceFlags.MultiSelect);
@@ -366,6 +391,7 @@ export default class PDFDropdown extends PDFField {
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.isSpellChecked()) console.log('Spell checking is enabled')
    * ```
+   * @returns Whether or not this dropdown can be spell checked.
    */
   isSpellChecked(): boolean {
     return !this.acroField.hasFlag(AcroChoiceFlags.DoNotSpellCheck);
@@ -406,6 +432,8 @@ export default class PDFDropdown extends PDFField {
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.isSelectOnClick()) console.log('Select on click is enabled')
    * ```
+   * @returns Whether or not options are selected immediately after they are
+   *          clicked.
    */
   isSelectOnClick(): boolean {
     return this.acroField.hasFlag(AcroChoiceFlags.CommitOnSelChange);
@@ -501,6 +529,7 @@ export default class PDFDropdown extends PDFField {
    * const dropdown = form.getDropdown('some.dropdown.field')
    * if (dropdown.needsAppearancesUpdate()) console.log('Needs update')
    * ```
+   * @returns Whether or not this dropdown needs an appearance update.
    */
   needsAppearancesUpdate(): boolean {
     if (this.isDirty()) return true;

@@ -90,6 +90,7 @@ export default class PDFForm {
    * const form = pdfDoc.getForm()
    * if (form.hasXFA()) console.log('PDF has XFA data')
    * ```
+   * @returns Whether or not this form has XFA data.
    */
   hasXFA(): boolean {
     return this.acroForm.dict.has(PDFName.of('XFA'));
@@ -512,10 +513,10 @@ export default class PDFForm {
    * form.updateFieldAppearances(courier)
    * ```
    *
-   * The default value for the `font` parameter is [[StandardFonts.Helvetica]].
-   * Note that this is a WinAnsi font. This means that encoding errors will be
-   * thrown if any fields contain text with characters outside the WinAnsi
-   * character set.
+   * **IMPORTANT:** The default value for the `font` parameter is
+   * [[StandardFonts.Helvetica]]. Note that this is a WinAnsi font. This means
+   * that encoding errors will be thrown if any fields contain text with
+   * characters outside the WinAnsi character set (the latin alphabet).
    *
    * Embedding a custom font and passing that as the `font`
    * parameter allows you to generate appearance streams with non WinAnsi
@@ -580,6 +581,7 @@ export default class PDFForm {
    * if (form.fieldIsDirty(field.ref)) console.log('Field is dirty')
    * ```
    * @param fieldRef The reference to the field that should be checked.
+   * @returns Whether or not the specified field is dirty.
    */
   fieldIsDirty(fieldRef: PDFRef): boolean {
     assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);

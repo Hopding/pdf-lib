@@ -100,11 +100,8 @@ export default class PDFCheckBox extends PDFField {
    * checkBox.uncheck()
    * ```
    *
-   * This method will mark this check box as dirty, causing its appearance
-   * streams to be updated when either [[PDFDocument.save]] or
-   * [[PDFForm.updateFieldAppearances]] is called. The updated appearance
-   * streams will not display a check mark inside any of the widgets of this
-   * check box field.
+   * This method will mark this check box as dirty. See [[PDFCheckBox.check]]
+   * for more details about what this means.
    */
   uncheck() {
     this.markAsDirty();
@@ -118,6 +115,7 @@ export default class PDFCheckBox extends PDFField {
    * const checkBox = form.getCheckBox('some.checkBox.field')
    * if (checkBox.isChecked()) console.log('check box is selected')
    * ```
+   * @returns Whether or not this check box is selected.
    */
   isChecked(): boolean {
     const onValue = this.acroField.getOnValue();
@@ -185,6 +183,7 @@ export default class PDFCheckBox extends PDFField {
    * const checkBox = form.getCheckBox('some.checkBox.field')
    * if (checkBox.needsAppearancesUpdate()) console.log('Needs update')
    * ```
+   * @returns Whether or not this check box needs an appearance update.
    */
   needsAppearancesUpdate(): boolean {
     const widgets = this.acroField.getWidgets();

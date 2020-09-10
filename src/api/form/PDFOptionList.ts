@@ -75,6 +75,7 @@ export default class PDFOptionList extends PDFField {
    * const options = optionList.getOptions()
    * console.log('Option List options:', options)
    * ```
+   * @returns The options for this option list.
    */
   getOptions(): string[] {
     const rawOptions = this.acroField.getOptions();
@@ -98,6 +99,7 @@ export default class PDFOptionList extends PDFField {
    * const selections = optionList.getSelected()
    * console.log('Option List selections:', selections)
    * ```
+   * @returns The selected options for this option list.
    */
   getSelected(): string[] {
     const values = this.acroField.getValues();
@@ -116,11 +118,30 @@ export default class PDFOptionList extends PDFField {
    * option list in a PDF reader. Note that preexisting options for this
    * option list will be removed. Only the values passed as `options` will be
    * available to select.
+   *
    * For example:
    * ```js
    * const optionList = form.getOptionList('planets.optionList')
    * optionList.setOptions(['Earth', 'Mars', 'Pluto', 'Venus'])
    * ```
+   *
+   * This method will mark this option list as dirty, causing its appearance
+   * streams to be updated when either [[PDFDocument.save]] or
+   * [[PDFForm.updateFieldAppearances]] is called. The updated streams will
+   * display the options this field contains inside the widgets of this text
+   * field (with selected options highlighted).
+   *
+   * **IMPORTANT:** The default font used to update appearance streams is
+   * [[StandardFonts.Helvetica]]. Note that this is a WinAnsi font. This means
+   * that encoding errors will be thrown if this field contains any options
+   * with characters outside the WinAnsi character set (the latin alphabet).
+   *
+   * Embedding a custom font and passing it to
+   * [[PDFDocument.updateFieldAppearances]] or
+   * [[PDFOptionList.updateAppearances]] allows you to generate appearance
+   * streams with characters outside the latin alphabet (assuming the custom
+   * font supports them).
+   *
    * @param options The options that should be available in this option list.
    */
   setOptions(options: string[]) {
@@ -144,6 +165,8 @@ export default class PDFOptionList extends PDFField {
    * const optionList = form.getOptionList('rockets.optionList')
    * optionList.addOptions(['Saturn IV', 'Falcon Heavy'])
    * ```
+   * This method will mark this option list as dirty. See
+   * [[PDFOptionList.setOptions]] for more details about what this means.
    * @param options New options that should be available in this option list.
    */
   addOptions(options: string | string[]) {
@@ -178,6 +201,8 @@ export default class PDFOptionList extends PDFField {
    * const optionList = form.getOptionList('best.superheroes.optionList')
    * optionList.select(['One Punch Man', 'Iron Man'])
    * ```
+   * This method will mark this option list as dirty. See
+   * [[PDFOptionList.setOptions]] for more details about what this means.
    * @param options The options to be selected.
    * @param merge Whether or not existing selections should be preserved.
    */
@@ -219,6 +244,8 @@ export default class PDFOptionList extends PDFField {
    * const optionList = form.getOptionList('some.optionList.field')
    * optionList.clear()
    * ```
+   * This method will mark this option list as dirty. See
+   * [[PDFOptionList.setOptions]] for more details about what this means.
    */
   clear() {
     this.markAsDirty();
@@ -234,6 +261,7 @@ export default class PDFOptionList extends PDFField {
    * const optionList = form.getOptionList('some.optionList.field')
    * if (optionList.isSorted()) console.log('Sorting is enabled')
    * ```
+   * @returns Whether or not this option list is sorted.
    */
   isSorted(): boolean {
     return this.acroField.hasFlag(AcroChoiceFlags.Sort);
@@ -274,6 +302,7 @@ export default class PDFOptionList extends PDFField {
    * const optionList = form.getOptionList('some.optionList.field')
    * if (optionList.isMultiselect()) console.log('Multiselect is enabled')
    * ```
+   * @returns Whether or not multiple options can be selected.
    */
   isMultiselect(): boolean {
     return this.acroField.hasFlag(AcroChoiceFlags.MultiSelect);
@@ -314,6 +343,8 @@ export default class PDFOptionList extends PDFField {
    * const optionList = form.getOptionList('some.optionList.field')
    * if (optionList.isSelectOnClick()) console.log('Select on click is enabled')
    * ```
+   * @returns Whether or not options are selected immediately after they are
+   *          clicked.
    */
   isSelectOnClick(): boolean {
     return this.acroField.hasFlag(AcroChoiceFlags.CommitOnSelChange);
@@ -409,6 +440,7 @@ export default class PDFOptionList extends PDFField {
    * const optionList = form.getOptionList('some.optionList.field')
    * if (optionList.needsAppearancesUpdate()) console.log('Needs update')
    * ```
+   * @returns Whether or not this option list needs an appearance update.
    */
   needsAppearancesUpdate(): boolean {
     if (this.isDirty()) return true;

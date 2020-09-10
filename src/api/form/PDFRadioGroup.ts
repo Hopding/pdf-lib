@@ -88,6 +88,7 @@ export default class PDFRadioGroup extends PDFField {
    * const options = radioGroup.getOptions()
    * console.log('Radio Group options:', options)
    * ```
+   * @returns The options for this radio group.
    */
   getOptions(): string[] {
     const exportValues = this.acroField.getExportValues();
@@ -118,6 +119,7 @@ export default class PDFRadioGroup extends PDFField {
    * const selected = radioGroup.getSelected()
    * console.log('Selected radio button:', selected)
    * ```
+   * @returns The selected option for this radio group.
    */
   getSelected(): string | undefined {
     const value = this.acroField.getValue();
@@ -165,11 +167,19 @@ export default class PDFRadioGroup extends PDFField {
    * the radio group to indicate which option has been selected. PDF libraries
    * and readers will be able to extract this value from the saved document and
    * determine which option was selected.
+   *
    * For example:
    * ```js
    * const radioGroup = form.getRadioGroup('best.superhero.radioGroup')
    * radioGroup.select('One Punch Man')
    * ```
+   *
+   * This method will mark this radio group as dirty, causing its appearance
+   * streams to be updated when either [[PDFDocument.save]] or
+   * [[PDFForm.updateFieldAppearances]] is called. The updated appearance
+   * streams will display a dot inside the widget of this check box field
+   * that represents the selected option.
+   *
    * @param option The option to be selected.
    */
   select(option: string) {
@@ -177,6 +187,8 @@ export default class PDFRadioGroup extends PDFField {
 
     const validOptions = this.getOptions();
     assertIsOneOf(option, 'option', validOptions);
+
+    this.markAsDirty();
 
     const onValues = this.acroField.getOnValues();
     const exportValues = this.acroField.getExportValues();
@@ -204,6 +216,8 @@ export default class PDFRadioGroup extends PDFField {
    * const radioGroup = form.getRadioGroup('some.radioGroup.field')
    * radioGroup.clear()
    * ```
+   * This method will mark this radio group as dirty. See
+   * [[PDFRadioGroup.select]] for more details about what this means.
    */
   clear() {
     this.acroField.setValue(PDFName.of('Off'));
@@ -380,6 +394,7 @@ export default class PDFRadioGroup extends PDFField {
    * const radioGroup = form.getRadioGroup('some.radioGroup.field')
    * if (radioGroup.needsAppearancesUpdate()) console.log('Needs update')
    * ```
+   * @returns Whether or not this radio group needs an appearance update.
    */
   needsAppearancesUpdate(): boolean {
     const widgets = this.acroField.getWidgets();

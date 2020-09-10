@@ -230,6 +230,20 @@ export default class PDFDocument {
     this.fontkit = fontkit;
   }
 
+  /**
+   * Get the [[PDFForm]] containing all interactive fields for this document.
+   * For example:
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const fields = form.getFields()
+   * fields.forEach(field => {
+   *   const type = field.constructor.name
+   *   const name = field.getName()
+   *   console.log(`${type}: ${name}`)
+   * })
+   * ```
+   * @returns The form for this document.
+   */
   getForm(): PDFForm {
     const form = this.formCache.access();
     if (form.hasXFA()) {

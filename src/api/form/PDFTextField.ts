@@ -90,6 +90,8 @@ export default class PDFTextField extends PDFField {
    * standard. XFA has been deprecated in PDF 2.0:
    * * https://en.wikipedia.org/wiki/XFA
    * * http://blog.pdfshareforms.com/pdf-2-0-release-bid-farewell-xfa-forms/
+   *
+   * @returns The text contained in this text field.
    */
   getText(): string | undefined {
     const value = this.acroField.getValue();
@@ -106,16 +108,36 @@ export default class PDFTextField extends PDFField {
    * to indicate what text has been set. PDF libraries and readers will be able
    * to extract these values from the saved document and determine what text
    * was set.
+   *
    * For example:
    * ```js
    * const textField = form.getTextField('best.superhero.text.field')
    * textField.setText('One Punch Man')
    * ```
+   *
+   * This method will mark this text field as dirty, causing its appearance
+   * streams to be updated when either [[PDFDocument.save]] or
+   * [[PDFForm.updateFieldAppearances]] is called. The updated streams will
+   * display the text this field contains inside the widgets of this text
+   * field.
+   *
+   * **IMPORTANT:** The default font used to update appearance streams is
+   * [[StandardFonts.Helvetica]]. Note that this is a WinAnsi font. This means
+   * that encoding errors will be thrown if this field contains text outside
+   * the WinAnsi character set (the latin alphabet).
+   *
+   * Embedding a custom font and passing it to
+   * [[PDFDocument.updateFieldAppearances]] or
+   * [[PDFTextField.updateAppearances]] allows you to generate appearance
+   * streams with characters outside the latin alphabet (assuming the custom
+   * font supports them).
+   *
    * If this is a rich text field, it will be converted to a standard text
    * field in order to set the text. `pdf-lib` does not support writing rich
    * text strings. Nor do most PDF readers and writers. See
    * [[PDFTextField.getText]] for more information about rich text fields and
    * their deprecation in PDF 2.0.
+   *
    * @param text The text this field should contain.
    */
   setText(text: string | undefined) {
@@ -147,6 +169,7 @@ export default class PDFTextField extends PDFField {
    * if (alignment === TextAlignment.Center) console.log('Text is centered')
    * if (alignment === TextAlignment.Right) console.log('Text is right justified')
    * ```
+   * @returns The alignment of this text field.
    */
   getAlignment(): TextAlignment {
     const quadding = this.acroField.getQuadding();
@@ -176,6 +199,8 @@ export default class PDFTextField extends PDFField {
    * // Text will be right justified when displayed
    * textField.setAlignment(TextAlignment.Right)
    * ```
+   * This method will mark this text field as dirty. See
+   * [[PDFTextField.setText]] for more details about what this means.
    * @param alignment The alignment for this text field.
    */
   setAlignment(alignment: TextAlignment) {
@@ -216,6 +241,8 @@ export default class PDFTextField extends PDFField {
    * // Allow any number of characters to be entered
    * textField.setMaxLength(undefined)
    * ```
+   * This method will mark this text field as dirty. See
+   * [[PDFTextField.setText]] for more details about what this means.
    * @param maxLength The maximum number of characters allowed in this field, or
    *                  `undefined` to remove the limit.
    */
@@ -275,6 +302,8 @@ export default class PDFTextField extends PDFField {
    * const textField = form.getTextField('some.text.field')
    * textField.enableMultiline()
    * ```
+   * This method will mark this text field as dirty. See
+   * [[PDFTextField.setText]] for more details about what this means.
    */
   enableMultiline() {
     this.markAsDirty();
@@ -288,6 +317,8 @@ export default class PDFTextField extends PDFField {
    * const textField = form.getTextField('some.text.field')
    * textField.disableMultiline()
    * ```
+   * This method will mark this text field as dirty. See
+   * [[PDFTextField.setText]] for more details about what this means.
    */
   disableMultiline() {
     this.markAsDirty();
@@ -506,6 +537,9 @@ export default class PDFTextField extends PDFField {
    * * [[PDFTextField.disableMultiline]]
    * * [[PDFTextField.disablePassword]]
    * * [[PDFTextField.disableFileSelection]]
+   *
+   * This method will mark this text field as dirty. See
+   * [[PDFTextField.setText]] for more details about what this means.
    */
   enableCombing() {
     if (this.getMaxLength() === undefined) {
@@ -530,6 +564,9 @@ export default class PDFTextField extends PDFField {
    * ```
    * See [[PDFTextField.isCombed]] and [[PDFTextField.enableCombing]] for more
    * information about what combing is.
+   *
+   * This method will mark this text field as dirty. See
+   * [[PDFTextField.setText]] for more details about what this means.
    */
   disableCombing() {
     this.markAsDirty();
@@ -643,6 +680,7 @@ export default class PDFTextField extends PDFField {
    * const textField = form.getTextField('some.text.field')
    * if (textField.needsAppearancesUpdate()) console.log('Needs update')
    * ```
+   * @returns Whether or not this text field needs an appearance update.
    */
   needsAppearancesUpdate(): boolean {
     if (this.isDirty()) return true;

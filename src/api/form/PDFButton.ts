@@ -210,6 +210,7 @@ export default class PDFButton extends PDFField {
    * const button = form.getButton('some.button.field')
    * if (button.needsAppearancesUpdate()) console.log('Needs update')
    * ```
+   * @returns Whether or not this button needs an appearance update.
    */
   needsAppearancesUpdate(): boolean {
     if (this.isDirty()) return true;
