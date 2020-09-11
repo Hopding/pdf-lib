@@ -71,6 +71,10 @@ export default class PDFButton extends PDFField {
     this.acroField = acroPushButton;
   }
 
+  // NOTE: This doesn't handle image borders.
+  // NOTE: Acrobat seems to resize the image (maybe even skewing its aspect
+  //       ratio) to fit perfectly within the widget's rectangle. This method
+  //       does not currently do that. Should there be an option for that?
   /**
    * Display an image inside the bounds of this button's widgets. For example:
    * ```js
@@ -96,17 +100,20 @@ export default class PDFButton extends PDFField {
 
       const borderWidth = bs?.getWidth() ?? 1;
       const rotation = reduceRotation(ap?.getRotation());
-      const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
       const rotate = rotateInPlace({ ...rectangle, rotation });
 
-      const imageDims = image.scaleToFit(width, height);
+      const adj = adjustDimsForRotation(rectangle, rotation);
+      const imageDims = image.scaleToFit(
+        adj.width - borderWidth * 2,
+        adj.height - borderWidth * 2,
+      );
 
       const drawingArea = {
-        x: 0 + borderWidth / 2,
-        y: 0 + borderWidth / 2,
-        width: width - borderWidth,
-        height: height - borderWidth,
+        x: 0 + borderWidth,
+        y: 0 + borderWidth,
+        width: adj.width - borderWidth * 2,
+        height: adj.height - borderWidth * 2,
       };
 
       // Support borders on images and maybe other properties
@@ -128,7 +135,7 @@ export default class PDFButton extends PDFField {
       const Resources = { XObject: { [imageName]: image.ref } };
       const stream = context.formXObject(appearance, {
         Resources,
-        BBox: context.obj([0, 0, width, height]),
+        BBox: context.obj([0, 0, rectangle.width, rectangle.height]),
         Matrix: context.obj([1, 0, 0, 1, 0, 0]),
       });
       const streamRef = context.register(stream);

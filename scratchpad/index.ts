@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
+import { PDFDocument, rgb, drawCheckBox } from 'src/index';
 
 // import { PDFDocument, PDFName, StandardFonts, PDFHexString } from 'src/index';
 // import {
@@ -538,25 +538,40 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
   // //   }
   // // });
 
-  const pdfDoc = await PDFDocument.create();
+  const pdfDoc = await PDFDocument.load(
+    fs.readFileSync('/Users/user/Desktop/imgbtntst.pdf'),
+  );
 
-  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-  const page = pdfDoc.addPage();
-  const { height } = page.getSize();
+  const img = await pdfDoc.embedJpg(
+    fs.readFileSync('assets/images/cat_riding_unicorn.jpg'),
+  );
 
   const form = pdfDoc.getForm();
 
-  const dropdown = form.createDropdown('foo.bar');
+  const fields = form.getFields();
+  fields.forEach((field) => {
+    const type = field.constructor.name;
+    const name = field.getName();
+    console.log(`${type}: ${name}`);
+  });
 
-  dropdown.addOptions(['Virtue', 'Exia', 'Dynames', 'Kyrios']);
-  dropdown.select('Foo Bar');
-  dropdown.enableSorting();
+  const btn = form.getButton('QR');
+  btn.setImage(img);
 
-  dropdown.addToPage(helvetica, page, {
-    x: 50,
-    y: height - 50,
-    borderWidth: 1,
+  [
+    'STARTDATE',
+    'STARTTIME',
+    'ADDRESS',
+    'FULLNAME',
+    'SERIALNO',
+    'PRICE',
+  ].forEach((fn) => {
+    const f = form.getTextField(fn);
+    f.setText('Stuff and Things');
+    f.acroField.getWidgets().forEach((w) => {
+      const ap = w.getAppearanceCharacteristics();
+      console.log('ap.rotation:', ap?.getRotation());
+    });
   });
 
   fs.writeFileSync(
@@ -566,5 +581,5 @@ import { PDFDocument, rgb, drawCheckBox, StandardFonts } from 'src/index';
       // updateFieldAppearances: false,
     }),
   );
-  openPdf('out.pdf', Reader.Acrobat);
+  openPdf('out.pdf', Reader.Preview);
 })();
