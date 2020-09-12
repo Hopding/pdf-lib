@@ -69,6 +69,8 @@
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
 - [Documentation](#documentation)
+- [Fonts and Unicode](#fonts-and-unicode)
+- [Creating and Filling Forms](#creating-and-filling-forms)
 - [Help and Discussion](#help-and-discussion)
 - [Encryption Handling](#encryption-handling)
 - [Migrating to v1.0.0](#migrating-to-v1)
@@ -1037,6 +1039,46 @@ API documentation is available on the project site at https://pdf-lib.js.org/doc
 
 The repo for the project site (and generated documentation files) is
 located here: https://github.com/Hopding/pdf-lib-docs.
+
+## Fonts and Unicode
+
+When working with PDFs, you will frequently come across the terms "character encoding" and "font". If you have experience in web development, you may wonder why these are so prevalent. Aren't they just annoying details that you shouldn't need to worry about? Shouldn't PDF libraries and readers be able to handle all of this for you like web browsers can? Unfortunately, this is not the case. The nature of the PDF file format makes it very difficult to avoid thinking about character encodings and fonts when working with PDFs.
+
+```
+Error: WinAnsi cannot encode "˙" at EncodingClass.encodeUnicodeCodePoint
+```
+
+`pdf-lib` does its best to simplify things for you. But it can't perform magic. This means you should be aware of the following:
+
+- **There are 14 standard fonts** defined in the PDF specification. They are as follows: _Times Roman_ (normal, bold, and italic), _Helvetica_ (normal, bold, and italic), _Courier_ (normal, bold, and italic), _ZapfDingbats_ (normal), and _Symbol_ (normal). These 14 fonts are guaranteed to be available in PDF readers. As such, you do not need to embed any font data if you wish to use one of these fonts. You can use a standard font like so:
+  <!-- prettier-ignore -->
+  ```js
+  import { PDFDocument, StandardFonts } from 'pdf-lib'
+  const pdfDoc = await PDFDocument.create()
+  const courierFont = await pdfDoc.embedFont(StandardFonts.Courier)
+  const page = pdfDoc.addPage()
+  page.drawText('Some text in the Courier font', { font: courierFont })
+  ```
+- **The standard fonts do not support all characters** available in Unicode. The Times Roman, Helvetica, and Courier fonts use WinAnsi encoding (aka [Windows-1252](https://en.wikipedia.org/wiki/Windows-1252)). The WinAnsi character set only supports 218 characters in the Latin alphabet. For this reason, many users will find the standard fonts insufficient for their use case. This is unfortunate, but there's nothing that PDF libraries can do to change this. This is a result of the PDF specification and its age. Note that the [ZapfDingbats](https://en.wikipedia.org/wiki/Zapf_Dingbats) and [Symbol](<https://en.wikipedia.org/wiki/Symbol_(typeface)>) fonts use their own specialized encodings that support 203 and 194 characters, respectively. However, the characters they support are not useful for most use cases. See [here](assets/pdfs/standard_fonts_demo.pdf) for an example of all 14 standard fonts.
+- **You can use characters outside the Latin alphabet** by embedding your own fonts. Embedding your own font requires to you load the font data (from a file or via a network request, for example) and pass it to the `embedFont` method. When you embed your own font, you can use any Unicode characters that it supports. This capability frees you from the limitations imposed by the standard fonts. Most PDF files use embedded fonts. You can embed and use a custom font like so ([see also](#embed-font-and-measure-text)):
+  <!-- prettier-ignore -->
+  ```js
+  import { PDFDocument } from 'pdf-lib'
+  import fontkit from '@pdf-lib/fontkit'
+
+  const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf'
+  const fontBytes = await fetch(url).then((res) => res.arrayBuffer())
+
+  const pdfDoc = await PDFDocument.create()
+
+  pdfDoc.registerFontkit(fontkit)
+  const ubuntuFont = await pdfDoc.embedFont(fontBytes)
+
+  const page = pdfDoc.addPage()
+  page.drawText('Some text in the Ubuntu font', { font: ubuntuFont })
+  ```
+
+## Creating and Filling Forms
 
 ## Help and Discussion
 
