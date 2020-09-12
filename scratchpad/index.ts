@@ -15,6 +15,7 @@ import { PDFDocument, StandardFonts } from 'src/index';
   // Get the form so we can add fields to it
   const form = pdfDoc.getForm();
 
+  (() => [helvetica, form])();
   // Add the superhero text field and description
   page.drawText('Enter your favorite superhero:', { x: 50, y: 700, size: 20 });
 
@@ -74,15 +75,15 @@ import { PDFDocument, StandardFonts } from 'src/index';
     'Julius Caesar',
     'Ada Lovelace',
     'Cleopatra',
-    'Alexander Hamilton',
+    'Aaron Burr',
     'Mark Antony',
   ]);
-  peopleField.select(['Ada Lovelace', 'Alexander Hamilton']);
+  peopleField.select('Ada Lovelace');
   peopleField.addToPage(helvetica, page, { x: 55, y: 70 });
 
   // Just saying...
   page.drawText(`* Pluto should be a planet too!`, { x: 15, y: 15, size: 15 });
 
   fs.writeFileSync('out.pdf', await pdfDoc.save());
-  openPdf('out.pdf', Reader.Preview);
+  openPdf('out.pdf', Reader.Acrobat);
 })();

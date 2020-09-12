@@ -55,8 +55,8 @@
 - [Usage Examples](#usage-examples)
   - [Create Document](#create-document)
   - [Modify Document](#modify-document)
-  - [Create Form](#create-form) **new!**
-  - [Fill Form](#fill-form) **new!**
+  - [Create Form](#create-form) - _**new!**_
+  - [Fill Form](#fill-form) - _**new!**_
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
@@ -81,8 +81,8 @@
 
 - Create new PDFs
 - Modify existing PDFs
-- Create forms **new!**
-- Fill forms **new!**
+- Create forms - _**new!**_
+- Fill forms - _**new!**_
 - Add Pages
 - Insert Pages
 - Remove Pages
@@ -282,10 +282,10 @@ peopleField.addOptions([
   'Julius Caesar',
   'Ada Lovelace',
   'Cleopatra',
-  'Alexander Hamilton',
+  'Aaron Burr',
   'Mark Antony',
 ])
-peopleField.select(['Ada Lovelace', 'Alexander Hamilton'])
+peopleField.select('Ada Lovelace')
 peopleField.addToPage(helvetica, page, { x: 55, y: 70 })
 
 // Just saying...
