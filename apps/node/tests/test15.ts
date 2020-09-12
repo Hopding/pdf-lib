@@ -1,8 +1,6 @@
 import { Assets } from '..';
 import { PDFDocument, StandardFonts, rgb, TextAlignment } from '../../..';
 
-// TODO: Test rotated image field (sample PDF/URL should be in one of the GitHub issues...)
-
 export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.load(assets.pdfs.dod_character);
 

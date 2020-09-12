@@ -6,8 +6,6 @@ import {
   TextAlignment,
 } from '../../../dist/pdf-lib.esm.js';
 
-// TODO: Test rotated image field (sample PDF/URL should be in one of the GitHub issues...)
-
 export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.load(assets.pdfs.dod_character);
 
