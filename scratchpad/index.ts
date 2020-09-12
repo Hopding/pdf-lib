@@ -1,97 +1,87 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument } from 'src/index';
+import { PDFDocument, StandardFonts } from 'src/index';
 
 (async () => {
-  // These should be Uint8Arrays or ArrayBuffers
-  // This data can be obtained in a number of different ways
-  // If your running in a Node environment, you could use fs.readFile()
-  // In the browser, you could make a fetch() call and use res.arrayBuffer()
-  const existingPdfBytes = fs.readFileSync('assets/pdfs/dod_character.pdf');
-  const marioImageBytes = fs.readFileSync('assets/images/small_mario.png');
-  const emblemImageBytes = fs.readFileSync('assets/images/mario_emblem.png');
+  // Create a new PDFDocument
+  const pdfDoc = await PDFDocument.create();
 
-  // Load a PDF with form fields
-  const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  // Embed the Helvetica font
+  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  // Embed the Mario and emblem images
-  const marioImage = await pdfDoc.embedPng(marioImageBytes);
-  const emblemImage = await pdfDoc.embedPng(emblemImageBytes);
+  // Add a blank page to the document
+  const page = pdfDoc.addPage([550, 750]);
 
-  // Get the form containing all the fields
+  // Get the form so we can add fields to it
   const form = pdfDoc.getForm();
 
-  // Get all fields in the PDF by their names
-  const nameField = form.getTextField('CharacterName 2');
-  const ageField = form.getTextField('Age');
-  const heightField = form.getTextField('Height');
-  const weightField = form.getTextField('Weight');
-  const eyesField = form.getTextField('Eyes');
-  const skinField = form.getTextField('Skin');
-  const hairField = form.getTextField('Hair');
+  // Add the superhero text field and description
+  page.drawText('Enter your favorite superhero:', { x: 50, y: 700, size: 20 });
 
-  const alliesField = form.getTextField('Allies');
-  const factionField = form.getTextField('FactionName');
-  const backstoryField = form.getTextField('Backstory');
-  const traitsField = form.getTextField('Feat+Traits');
-  const treasureField = form.getTextField('Treasure');
+  const superheroField = form.createTextField('favorite.superhero');
+  superheroField.setText('One Punch Man');
+  superheroField.addToPage(helvetica, page, { x: 55, y: 640 });
 
-  const characterImageField = form.getButton('CHARACTER IMAGE');
-  const factionImageField = form.getButton('Faction Symbol Image');
+  // Add the rocket radio group, labels, and description
+  page.drawText('Select your favorite rocket:', { x: 50, y: 600, size: 20 });
 
-  // Fill in the basic info fields
-  nameField.setText('Mario');
-  ageField.setText('24 years');
-  heightField.setText(`5' 1"`);
-  weightField.setText('196 lbs');
-  eyesField.setText('blue');
-  skinField.setText('white');
-  hairField.setText('brown');
+  page.drawText('Falcon Heavy', { x: 120, y: 560, size: 18 });
+  page.drawText('Saturn IV', { x: 120, y: 500, size: 18 });
+  page.drawText('Delta IV Heavy', { x: 340, y: 560, size: 18 });
+  page.drawText('Space Launch System', { x: 340, y: 500, size: 18 });
 
-  // Fill the character image field with our Mario image
-  characterImageField.setImage(marioImage);
+  const rocketField = form.createRadioGroup('favorite.rocket');
+  rocketField.addOptionToPage('Falcon Heavy', page, { x: 55, y: 540 });
+  rocketField.addOptionToPage('Saturn IV', page, { x: 55, y: 480 });
+  rocketField.addOptionToPage('Delta IV Heavy', page, { x: 275, y: 540 });
+  rocketField.addOptionToPage('Space Launch System', page, { x: 275, y: 480 });
+  rocketField.select('Saturn IV');
 
-  // Fill in the allies field
-  alliesField.setText(
-    [
-      `Allies:`,
-      `  • Princess Daisy`,
-      `  • Princess Peach`,
-      `  • Rosalina`,
-      `  • Geno`,
-      `  • Luigi`,
-      `  • Donkey Kong`,
-      `  • Yoshi`,
-      `  • Diddy Kong`,
-      ``,
-      `Organizations:`,
-      `  • Italian Plumbers Association`,
-    ].join('\n'),
-  );
+  // Add the gundam check boxes, labels, and description
+  page.drawText('Select your favorite gundams:', { x: 50, y: 440, size: 20 });
 
-  // Fill in the faction name field
-  factionField.setText(`Mario's Emblem`);
+  page.drawText('Exia', { x: 120, y: 400, size: 18 });
+  page.drawText('Kyrios', { x: 120, y: 340, size: 18 });
+  page.drawText('Virtue', { x: 340, y: 400, size: 18 });
+  page.drawText('Dynames', { x: 340, y: 340, size: 18 });
 
-  // Fill the faction image field with our emblem image
-  factionImageField.setImage(emblemImage);
+  const exiaField = form.createCheckBox('gundam.exia');
+  const kyriosField = form.createCheckBox('gundam.kyrios');
+  const virtueField = form.createCheckBox('gundam.virtue');
+  const dynamesField = form.createCheckBox('gundam.dynames');
 
-  // Fill in the backstory field
-  backstoryField.setText(
-    `Mario is a fictional character in the Mario video game franchise, owned by Nintendo and created by Japanese video game designer Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist of the series, Mario has appeared in over 200 video games since his creation. Depicted as a short, pudgy, Italian plumber who resides in the Mushroom Kingdom, his adventures generally center upon rescuing Princess Peach from the Koopa villain Bowser. His younger brother and sidekick is Luigi.`,
-  );
+  exiaField.addToPage(page, { x: 55, y: 380 });
+  kyriosField.addToPage(page, { x: 55, y: 320 });
+  virtueField.addToPage(page, { x: 275, y: 380 });
+  dynamesField.addToPage(page, { x: 275, y: 320 });
 
-  // Fill in the traits field
-  traitsField.setText(
-    [
-      `Mario can use three basic three power-ups:`,
-      `  • the Super Mushroom, which causes Mario to grow larger`,
-      `  • the Fire Flower, which allows Mario to throw fireballs`,
-      `  • the Starman, which gives Mario temporary invincibility`,
-    ].join('\n'),
-  );
+  exiaField.check();
+  dynamesField.check();
 
-  // Fill in the treasure field
-  treasureField.setText(['• Gold coins', '• Treasure chests'].join('\n'));
+  // Add the planet dropdown and description
+  page.drawText('Select your favorite planet*:', { x: 50, y: 280, size: 20 });
+
+  const planetsField = form.createDropdown('favorite.planet');
+  planetsField.addOptions(['Venus', 'Earth', 'Mars', 'Pluto']);
+  planetsField.select('Pluto');
+  planetsField.addToPage(helvetica, page, { x: 55, y: 220 });
+
+  // Add the people option list and description
+  page.drawText('Select your favorite people:', { x: 50, y: 180, size: 18 });
+
+  const peopleField = form.createOptionList('favorite.people');
+  peopleField.addOptions([
+    'Julius Caesar',
+    'Ada Lovelace',
+    'Cleopatra',
+    'Alexander Hamilton',
+    'Mark Antony',
+  ]);
+  peopleField.select(['Ada Lovelace', 'Alexander Hamilton']);
+  peopleField.addToPage(helvetica, page, { x: 55, y: 70 });
+
+  // Just saying...
+  page.drawText(`* Pluto should be a planet too!`, { x: 15, y: 15, size: 15 });
 
   fs.writeFileSync('out.pdf', await pdfDoc.save());
   openPdf('out.pdf', Reader.Preview);

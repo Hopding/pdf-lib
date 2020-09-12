@@ -648,17 +648,24 @@ export default class PDFTextField extends PDFField {
     assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
     assertFieldAppearanceOptions(options);
 
+    if (!options) options = {};
+
+    if (!('textColor' in options)) options.textColor = rgb(0, 0, 0);
+    if (!('backgroundColor' in options)) options.backgroundColor = rgb(1, 1, 1);
+    if (!('borderColor' in options)) options.borderColor = rgb(0, 0, 0);
+    if (!('borderWidth' in options)) options.borderWidth = 1;
+
     // Create a widget for this text field
     const widget = this.createWidget({
-      x: options?.x ?? 0,
-      y: options?.y ?? 0,
-      width: options?.width ?? 100,
-      height: options?.height ?? 50,
-      textColor: options?.textColor ?? rgb(0, 0, 0),
-      backgroundColor: options?.backgroundColor ?? rgb(1, 1, 1),
-      borderColor: options?.borderColor ?? rgb(0, 0, 0),
-      borderWidth: options?.borderWidth ?? 0,
-      rotate: options?.rotate ?? degrees(0),
+      x: options.x ?? 0,
+      y: options.y ?? 0,
+      width: options.width ?? 200,
+      height: options.height ?? 50,
+      textColor: options.textColor,
+      backgroundColor: options.backgroundColor,
+      borderColor: options.borderColor,
+      borderWidth: options.borderWidth ?? 0,
+      rotate: options.rotate ?? degrees(0),
     });
     const widgetRef = this.doc.context.register(widget.dict);
 

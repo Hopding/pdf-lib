@@ -269,7 +269,7 @@ export default class PDFField {
     width: number;
     height: number;
     textColor?: Color;
-    backgroundColor: Color;
+    backgroundColor?: Color;
     borderColor?: Color;
     borderWidth: number;
     rotate: Rotation;
@@ -300,7 +300,9 @@ export default class PDFField {
     widget.setRectangle(rect);
 
     const ac = widget.getOrCreateAppearanceCharacteristics();
-    ac.setBackgroundColor(colorToComponents(backgroundColor));
+    if (backgroundColor) {
+      ac.setBackgroundColor(colorToComponents(backgroundColor));
+    }
     ac.setRotation(degreesAngle);
     if (caption) ac.setCaptions({ normal: caption });
     if (borderColor) ac.setBorderColor(colorToComponents(borderColor));
