@@ -67,19 +67,19 @@ import { PDFDocument, StandardFonts } from 'src/index';
   planetsField.select('Pluto');
   planetsField.addToPage(helvetica, page, { x: 55, y: 220 });
 
-  // Add the people option list and description
-  page.drawText('Select your favorite people:', { x: 50, y: 180, size: 18 });
+  // Add the person option list and description
+  page.drawText('Select your favorite person:', { x: 50, y: 180, size: 18 });
 
-  const peopleField = form.createOptionList('favorite.people');
-  peopleField.addOptions([
+  const personField = form.createOptionList('favorite.person');
+  personField.addOptions([
     'Julius Caesar',
     'Ada Lovelace',
     'Cleopatra',
     'Aaron Burr',
     'Mark Antony',
   ]);
-  peopleField.select('Ada Lovelace');
-  peopleField.addToPage(helvetica, page, { x: 55, y: 70 });
+  personField.select('Ada Lovelace');
+  personField.addToPage(helvetica, page, { x: 55, y: 70 });
 
   // Just saying...
   page.drawText(`* Pluto should be a planet too!`, { x: 15, y: 15, size: 15 });
