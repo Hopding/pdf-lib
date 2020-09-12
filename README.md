@@ -1044,10 +1044,6 @@ located here: https://github.com/Hopding/pdf-lib-docs.
 
 When working with PDFs, you will frequently come across the terms "character encoding" and "font". If you have experience in web development, you may wonder why these are so prevalent. Aren't they just annoying details that you shouldn't need to worry about? Shouldn't PDF libraries and readers be able to handle all of this for you like web browsers can? Unfortunately, this is not the case. The nature of the PDF file format makes it very difficult to avoid thinking about character encodings and fonts when working with PDFs.
 
-```
-Error: WinAnsi cannot encode "˙" at EncodingClass.encodeUnicodeCodePoint
-```
-
 `pdf-lib` does its best to simplify things for you. But it can't perform magic. This means you should be aware of the following:
 
 - **There are 14 standard fonts** defined in the PDF specification. They are as follows: _Times Roman_ (normal, bold, and italic), _Helvetica_ (normal, bold, and italic), _Courier_ (normal, bold, and italic), _ZapfDingbats_ (normal), and _Symbol_ (normal). These 14 fonts are guaranteed to be available in PDF readers. As such, you do not need to embed any font data if you wish to use one of these fonts. You can use a standard font like so:
@@ -1057,7 +1053,9 @@ Error: WinAnsi cannot encode "˙" at EncodingClass.encodeUnicodeCodePoint
   const pdfDoc = await PDFDocument.create()
   const courierFont = await pdfDoc.embedFont(StandardFonts.Courier)
   const page = pdfDoc.addPage()
-  page.drawText('Some text in the Courier font', { font: courierFont })
+  page.drawText('Some boring latin text in the Courier font', { 
+    font: courierFont,
+  })
   ```
 - **The standard fonts do not support all characters** available in Unicode. The Times Roman, Helvetica, and Courier fonts use WinAnsi encoding (aka [Windows-1252](https://en.wikipedia.org/wiki/Windows-1252)). The WinAnsi character set only supports 218 characters in the Latin alphabet. For this reason, many users will find the standard fonts insufficient for their use case. This is unfortunate, but there's nothing that PDF libraries can do to change this. This is a result of the PDF specification and its age. Note that the [ZapfDingbats](https://en.wikipedia.org/wiki/Zapf_Dingbats) and [Symbol](<https://en.wikipedia.org/wiki/Symbol_(typeface)>) fonts use their own specialized encodings that support 203 and 194 characters, respectively. However, the characters they support are not useful for most use cases. See [here](assets/pdfs/standard_fonts_demo.pdf) for an example of all 14 standard fonts.
 - **You can use characters outside the Latin alphabet** by embedding your own fonts. Embedding your own font requires to you load the font data (from a file or via a network request, for example) and pass it to the `embedFont` method. When you embed your own font, you can use any Unicode characters that it supports. This capability frees you from the limitations imposed by the standard fonts. Most PDF files use embedded fonts. You can embed and use a custom font like so ([see also](#embed-font-and-measure-text)):
@@ -1075,10 +1073,127 @@ Error: WinAnsi cannot encode "˙" at EncodingClass.encodeUnicodeCodePoint
   const ubuntuFont = await pdfDoc.embedFont(fontBytes)
 
   const page = pdfDoc.addPage()
-  page.drawText('Some text in the Ubuntu font', { font: ubuntuFont })
+  page.drawText('Some fancy Unicode text in the ŪЬȕǹƚü font', { 
+    font: ubuntuFont,
+  })
   ```
 
+Note that encoding errors will be thrown if you try to use a character with a font that does not support it. For example, `Ω` is not in the WinAnsi character set. So trying to draw it on a page with the standard Helvetica font will throw the following error:
+
+```
+Error: WinAnsi cannot encode "Ω" at EncodingClass.encodeUnicodeCodePoint
+```
+
 ## Creating and Filling Forms
+
+`pdf-lib` can create, fill, and read PDF form fields. The following field types are supported:
+
+- [Buttons](https://pdf-lib.js.org/docs/api/classes/pdfbutton)
+- [Check Boxes](https://pdf-lib.js.org/docs/api/classes/pdfcheckbox)
+- [Dropdowns](https://pdf-lib.js.org/docs/api/classes/pdfdropdown)
+- [Option Lists](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist)
+- [Radio Groups](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup)
+- [Text Fields](https://pdf-lib.js.org/docs/api/classes/pdftextfield)
+
+See the [form creation](#create-form) and [form filling](#fill-form) usage examples for code samples. Tests 1, 14, 15, 16, and 17 in the [complete examples](#complete-examples) contain working example code for form creation and filling in a variety of different JS environments.
+
+**IMPORTANT:** The default font used to display text in buttons, dropdowns, option lists, and text fields is the standard Helvetica font. This font only supports characters in the latin alphabet (see [Fonts and Unicode](#fonts-and-unicode) for details). This means that if any of these field types are created or modified to contain text that outside the latin alphabet (as is often the case), you will need to embed and use a custom font to update the field appearances. Otherwise an error will be thrown (likely when you save the `PDFDocument`).
+
+You can use an embedded font when filling form fields as follows:
+
+```js
+import { PDFDocument } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
+
+// Fetch the PDF with form fields
+const formUrl = 'https://pdf-lib.js.org/assets/dod_character.pdf';
+const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer());
+
+// Fetch the Ubuntu font
+const fontUrl = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
+const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer());
+
+// Load the PDF with form fields
+const pdfDoc = await PDFDocument.load(formBytes);
+
+// Embed the Ubuntu font
+pdfDoc.registerFontkit(fontkit);
+const ubuntuFont = await pdfDoc.embedFont(fontBytes);
+
+// Get two text fields from the form
+const form = pdfDoc.getForm();
+const nameField = form.getTextField('CharacterName 2');
+const ageField = form.getTextField('Age');
+
+// Fill the text fields with some fancy Unicode characters (outside
+// the WinAnsi latin character set)
+nameField.setText('Ӎӑȑїõ');
+ageField.setText('24 ŷȇȁŗš');
+
+// **Key Step:** Update the field appearances with the Ubuntu font
+form.updateFieldAppearances(ubuntuFont);
+
+// Save the PDF with filled form fields
+const pdfBytes = await pdfDoc.save();
+```
+
+### Handy Methods for Filling, Creating, and Reading Form Fields
+
+Existing form fields can be accessed with the following methods of [`PDFForm`](https://pdf-lib.js.org/docs/api/classes/pdfform):
+
+- [`PDFForm.getButton`](https://pdf-lib.js.org/docs/api/classes/pdfform#getbutton)
+- [`PDFForm.getCheckBox`](https://pdf-lib.js.org/docs/api/classes/pdfform#getcheckbox)
+- [`PDFForm.getDropdown`](https://pdf-lib.js.org/docs/api/classes/pdfform#getdropdown)
+- [`PDFForm.getOptionList`](https://pdf-lib.js.org/docs/api/classes/pdfform#getoptionlist)
+- [`PDFForm.getRadioGroup`](https://pdf-lib.js.org/docs/api/classes/pdfform#getradiogroup)
+- [`PDFForm.getTextField`](https://pdf-lib.js.org/docs/api/classes/pdfform#gettextfield)
+
+New form fields can be created with the following methods of [`PDFForm`](https://pdf-lib.js.org/docs/api/classes/pdfform):
+
+- [`PDFForm.createButton`](https://pdf-lib.js.org/docs/api/classes/pdfform#createbutton)
+- [`PDFForm.createCheckBox`](https://pdf-lib.js.org/docs/api/classes/pdfform#createcheckbox)
+- [`PDFForm.createDropdown`](https://pdf-lib.js.org/docs/api/classes/pdfform#createdropdown)
+- [`PDFForm.createOptionList`](https://pdf-lib.js.org/docs/api/classes/pdfform#createoptionlist)
+- [`PDFForm.createRadioGroup`](https://pdf-lib.js.org/docs/api/classes/pdfform#createradiogroup)
+- [`PDFForm.createTextField`](https://pdf-lib.js.org/docs/api/classes/pdfform#createtextfield)
+
+Below are some of the most commonly used methods for reading and filling the aforementioned subclasses of [`PDFField`](https://pdf-lib.js.org/docs/api/classes/pdffield):
+
+- [`PDFCheckBox.check`](https://pdf-lib.js.org/docs/api/classes/pdfcheckbox#check)
+- [`PDFCheckBox.uncheck`](https://pdf-lib.js.org/docs/api/classes/pdfcheckbox#uncheck)
+- [`PDFCheckBox.isChecked`](https://pdf-lib.js.org/docs/api/classes/pdfcheckbox#ischecked)
+
+---
+
+- [`PDFDropdown.select`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#select)
+- [`PDFDropdown.clear`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#clear)
+- [`PDFDropdown.getSelected`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#getselected)
+- [`PDFDropdown.getOptions`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#getoptions)
+- [`PDFDropdown.addOptions`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#addoptions)
+
+---
+
+- [`PDFOptionList.select`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#select)
+- [`PDFOptionList.clear`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#clear)
+- [`PDFOptionList.getSelected`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#getselected)
+- [`PDFOptionList.getOptions`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#getoptions)
+- [`PDFOptionList.addOptions`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#addoptions)
+
+---
+
+- [`PDFRadioGroup.select`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#select)
+- [`PDFRadioGroup.clear`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#clear)
+- [`PDFRadioGroup.getSelected`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#getselected)
+- [`PDFRadioGroup.getOptions`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#getoptions)
+- [`PDFRadioGroup.addOptionToPage`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#addoptiontopage)
+
+---
+
+- [`PDFTextField.setText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#settext)
+- [`PDFTextField.getText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#gettext)
+- [`PDFTextField.setMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#setmaxlength)
+- [`PDFTextField.getMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#getmaxlength)
+- [`PDFTextField.removeMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#removemaxlength)
 
 ## Help and Discussion
 
@@ -1086,7 +1201,7 @@ Error: WinAnsi cannot encode "˙" at EncodingClass.encodeUnicodeCodePoint
 
 ## Encryption Handling
 
-`pdf-lib` does not currently support modification of encrypted documents. In general, it is not advised to use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
+**`pdf-lib` does not currently support encrypted documents.** You should not use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
 
 When an encrypted document is passed to `PDFDocument.load(...)`, an error will be thrown:
 
@@ -1112,6 +1227,8 @@ const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
 ```
 
 Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
+
+**You should not use this option.** It only exists for backwards compatibility reasons.
 
 <h2 id="migrating-to-v1">Migrating to v1.0.0</h2>
 
