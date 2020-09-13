@@ -38,4 +38,16 @@ describe(`PDFRadioGroup`, () => {
     historicalFigures.select('Marie Curie ☢️');
     expect(historicalFigures.getSelected()).toBe('Marie Curie ☢️');
   });
+
+  it(`can read its flag states`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+    const form = pdfDoc.getForm();
+    const historicalFigures = form.getRadioGroup('Historical Figures 🐺');
+
+    expect(historicalFigures.isExported()).toBe(true);
+    expect(historicalFigures.isReadOnly()).toBe(false);
+    expect(historicalFigures.isRequired()).toBe(false);
+    expect(historicalFigures.isMutuallyExclusive()).toBe(true);
+    expect(historicalFigures.isOffToggleable()).toBe(false);
+  });
 });

@@ -56,4 +56,21 @@ describe(`PDFTextField`, () => {
     expect(middleInitial.getText()).toEqual('Pineapplez 🍍');
     expect(lastName.getText()).toEqual('And christmas trees! 🎄');
   });
+
+  it(`can read its flag states`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+    const form = pdfDoc.getForm();
+    const prefix = form.getTextField('Prefix ⚽️');
+
+    expect(prefix.isExported()).toBe(true);
+    expect(prefix.isReadOnly()).toBe(false);
+    expect(prefix.isRequired()).toBe(false);
+    expect(prefix.isFileSelector()).toBe(false);
+    expect(prefix.isMultiline()).toBe(false);
+    expect(prefix.isPassword()).toBe(false);
+    expect(prefix.isRichFormatted()).toBe(false);
+    expect(prefix.isScrollable()).toBe(true);
+    expect(prefix.isSpellChecked()).toBe(true);
+    expect(prefix.isCombed()).toBe(false);
+  });
 });

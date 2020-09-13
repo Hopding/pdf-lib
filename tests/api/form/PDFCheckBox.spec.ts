@@ -24,4 +24,16 @@ describe(`PDFCheckBox`, () => {
     expect(onePunch.isChecked()).toBe(true);
     expect(everLetMeDown.isChecked()).toBe(false);
   });
+
+  it(`can read its flag states`, async () => {
+    const pdfDoc = await pdfDocPromise;
+
+    const form = pdfDoc.getForm();
+
+    const isAFairy = form.getCheckBox('Are You A Fairy? 🌿');
+
+    expect(isAFairy.isExported()).toBe(true);
+    expect(isAFairy.isReadOnly()).toBe(false);
+    expect(isAFairy.isRequired()).toBe(false);
+  });
 });

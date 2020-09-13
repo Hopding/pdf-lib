@@ -68,4 +68,19 @@ describe(`PDFDropdown`, () => {
     gundams.select(['Exia'], true);
     expect(gundams.getSelected()).toEqual(['Dynames', 'Exia']);
   });
+
+  it(`can read its flag states`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+    const form = pdfDoc.getForm();
+    const gundams = form.getDropdown('Choose A Gundam 🤖');
+
+    expect(gundams.isExported()).toBe(true);
+    expect(gundams.isReadOnly()).toBe(false);
+    expect(gundams.isRequired()).toBe(false);
+    expect(gundams.isEditable()).toBe(false);
+    expect(gundams.isMultiselect()).toBe(false);
+    expect(gundams.isSelectOnClick()).toBe(false);
+    expect(gundams.isSorted()).toBe(false);
+    expect(gundams.isSpellChecked()).toBe(true);
+  });
 });

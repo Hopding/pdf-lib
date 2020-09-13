@@ -14,6 +14,18 @@ import {
   PDFAcroForm,
 } from 'src/index';
 
+const getWidgets = (pdfDoc: PDFDocument) =>
+  pdfDoc.context
+    .enumerateIndirectObjects()
+    .map(([, obj]) => obj)
+    .filter(
+      (obj) =>
+        obj instanceof PDFDict &&
+        obj.get(PDFName.of('Type')) === PDFName.of('Annot') &&
+        obj.get(PDFName.of('Subtype')) === PDFName.of('Widget'),
+    )
+    .map((obj) => obj as PDFDict);
+
 const getApRefs = (widget: PDFWidgetAnnotation) => {
   const onValue = widget.getOnValue() ?? PDFName.of('Yes');
   const aps = widget.getAppearances();
@@ -177,20 +189,11 @@ describe(`PDFForm`, () => {
     tf.addToPage(page);
     // rg.addOptionToPage('bar', page);
 
-    const widgets = pdfDoc.context
-      .enumerateIndirectObjects()
-      .map(([, obj]) => obj)
-      .filter(
-        (obj) =>
-          obj instanceof PDFDict &&
-          obj.get(PDFName.of('Type')) === PDFName.of('Annot') &&
-          obj.get(PDFName.of('Subtype')) === PDFName.of('Widget'),
-      )
-      .map((obj) => obj as PDFDict);
+    const widgets = getWidgets(pdfDoc);
 
     expect(widgets.length).toBe(5);
 
-    const aps = () => widgets.filter((d) => d.has(PDFName.of('AP'))).length;
+    const aps = () => widgets.filter((w) => w.has(PDFName.of('AP'))).length;
 
     expect(aps()).toBe(5);
 
@@ -218,7 +221,60 @@ describe(`PDFForm`, () => {
     expect(pdfDoc.catalog.getAcroForm()).toBeInstanceOf(PDFAcroForm);
   });
 
-  // TODO: Add method to remove APs and use `NeedsAppearances`?
-  // TODO: How would this work with RadioGroups? Just set the APs to `null` but
-  //       keep the keys?
+  it(`does not update appearance streams if "updateFieldAppearances" is true, but no fields are dirty`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+
+    const widgets = getWidgets(pdfDoc);
+    expect(widgets.length).toBe(24);
+
+    const aps = () => widgets.filter((w) => w.has(PDFName.of('AP'))).length;
+    expect(aps()).toBe(24);
+
+    widgets.forEach((w) => w.delete(PDFName.of('AP')));
+    expect(aps()).toBe(0);
+
+    await pdfDoc.save({ updateFieldAppearances: true });
+    expect(aps()).toBe(0);
+  });
+
+  it(`does not update appearance streams if "updateFieldAppearances" is false, even if fields are dirty`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+
+    const widgets = getWidgets(pdfDoc);
+    expect(widgets.length).toBe(24);
+
+    const aps = () => widgets.filter((w) => w.has(PDFName.of('AP'))).length;
+    expect(aps()).toBe(24);
+
+    widgets.forEach((w) => w.delete(PDFName.of('AP')));
+    expect(aps()).toBe(0);
+
+    const form = pdfDoc.getForm();
+    form.getFields().forEach((f) => form.markFieldAsDirty(f.ref));
+
+    await pdfDoc.save({ updateFieldAppearances: false });
+    expect(aps()).toBe(0);
+  });
+
+  it(`does update appearance streams if "updateFieldAppearances" is true, and fields are dirty`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+
+    const widgets = getWidgets(pdfDoc);
+    expect(widgets.length).toBe(24);
+
+    const aps = () => widgets.filter((w) => w.has(PDFName.of('AP'))).length;
+    expect(aps()).toBe(24);
+
+    widgets.forEach((w) => w.delete(PDFName.of('AP')));
+    expect(aps()).toBe(0);
+
+    const form = pdfDoc.getForm();
+    form.getFields().forEach((f) => form.markFieldAsDirty(f.ref));
+
+    await pdfDoc.save({ updateFieldAppearances: true });
+    expect(aps()).toBe(20);
+  });
+
+  // TODO: Add method to remove APs and use `NeedsAppearances`? How would this
+  //       work with RadioGroups? Just set the APs to `null`but keep the keys?
 });

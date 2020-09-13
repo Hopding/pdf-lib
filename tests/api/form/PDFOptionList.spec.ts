@@ -56,4 +56,17 @@ describe(`PDFOptionList`, () => {
     planets.select(['Pluto'], true);
     expect(planets.getSelected()).toEqual(['Mars', 'Pluto']);
   });
+
+  it(`can read its flag states`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+    const form = pdfDoc.getForm();
+    const planets = form.getOptionList('Which Are Planets? 🌎');
+
+    expect(planets.isExported()).toBe(true);
+    expect(planets.isReadOnly()).toBe(false);
+    expect(planets.isRequired()).toBe(false);
+    expect(planets.isMultiselect()).toBe(false);
+    expect(planets.isSelectOnClick()).toBe(false);
+    expect(planets.isSorted()).toBe(false);
+  });
 });
