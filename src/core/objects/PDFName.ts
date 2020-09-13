@@ -77,6 +77,58 @@ class PDFName extends PDFObject {
     this.encodedName = encodedName;
   }
 
+  asBytes(): Uint8Array {
+    const bytes: number[] = [];
+
+    let hex = '';
+    let escaped = false;
+
+    const pushByte = (byte?: number) => {
+      if (byte !== undefined) bytes.push(byte);
+      escaped = false;
+    };
+
+    for (let idx = 1, len = this.encodedName.length; idx < len; idx++) {
+      const char = this.encodedName[idx];
+      const byte = toCharCode(char);
+      const nextChar = this.encodedName[idx + 1];
+      if (!escaped) {
+        if (byte === CharCodes.Hash) escaped = true;
+        else pushByte(byte);
+      } else {
+        if (
+          (byte >= CharCodes.Zero && byte <= CharCodes.Nine) ||
+          (byte >= CharCodes.a && byte <= CharCodes.f) ||
+          (byte >= CharCodes.A && byte <= CharCodes.F)
+        ) {
+          hex += char;
+          if (
+            hex.length === 2 ||
+            !(
+              (nextChar >= '0' && nextChar <= '9') ||
+              (nextChar >= 'a' && nextChar <= 'f') ||
+              (nextChar >= 'A' && nextChar <= 'F')
+            )
+          ) {
+            pushByte(parseInt(hex, 16));
+            hex = '';
+          }
+        } else {
+          pushByte(byte);
+        }
+      }
+    }
+
+    return new Uint8Array(bytes);
+  }
+
+  // TODO: This should probably use `utf8Decode()`
+  // TODO: Polyfill Array.from?
+  decodeText(): string {
+    const bytes = this.asBytes();
+    return String.fromCharCode(...Array.from(bytes));
+  }
+
   asString(): string {
     return this.encodedName;
   }

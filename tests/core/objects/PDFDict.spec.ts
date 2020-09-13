@@ -47,6 +47,19 @@ describe(`PDFDict`, () => {
 
   pdfDict.set(PDFName.of('Dictionary'), pdfSubDict);
 
+  it(`can detect if a value is present`, () => {
+    expect(pdfDict.has(PDFName.of('Boolean'))).toBe(true);
+    expect(pdfDict.has(PDFName.of('HexString'))).toBe(true);
+    expect(pdfDict.has(PDFName.of('Name'))).toBe(true);
+    expect(pdfDict.has(PDFName.of('Null'))).toBe(false);
+    expect(pdfDict.has(PDFName.of('Number'))).toBe(true);
+    expect(pdfDict.has(PDFName.of('String'))).toBe(true);
+    expect(pdfDict.has(PDFName.of('Ref'))).toBe(true);
+    expect(pdfDict.has(PDFName.of('Dictionary'))).toBe(true);
+    expect(pdfSubDict.has(PDFName.of('Array'))).toBe(true);
+    expect(pdfDict.has(PDFName.of('foo'))).toBe(false);
+  });
+
   it(`retains entered objects`, () => {
     expect(pdfDict.entries().length).toBe(8);
 

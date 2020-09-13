@@ -29,6 +29,14 @@ class PDFDict extends PDFObject {
     this.context = context;
   }
 
+  keys(): PDFName[] {
+    return Array.from(this.dict.keys());
+  }
+
+  values(): PDFObject[] {
+    return Array.from(this.dict.values());
+  }
+
   entries(): [PDFName, PDFObject][] {
     return Array.from(this.dict.entries());
   }
@@ -42,7 +50,11 @@ class PDFDict extends PDFObject {
   }
 
   has(key: PDFName): boolean {
-    return this.dict.has(key);
+    // NOTE: This might be a bit inconsistent with `PDFDict.get()` - should
+    //       calls to `PDFDict.get()` return `undefined` if the underlying
+    //       value is `PDFNull`? This would be a breaking change.
+    const value = this.dict.get(key);
+    return value !== undefined && value !== PDFNull;
   }
 
   lookupMaybe(key: PDFName, type: typeof PDFArray): PDFArray | undefined;
@@ -58,9 +70,29 @@ class PDFDict extends PDFObject {
   lookupMaybe(key: PDFName, type: typeof PDFStream): PDFStream | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFRef): PDFRef | undefined;
   lookupMaybe(key: PDFName, type: typeof PDFString): PDFString | undefined;
+  lookupMaybe(
+    ref: PDFName,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+  ): PDFString | PDFHexString | undefined;
+  lookupMaybe(
+    ref: PDFName,
+    type1: typeof PDFDict,
+    type2: typeof PDFStream,
+  ): PDFDict | PDFStream | undefined;
+  lookupMaybe(
+    ref: PDFName,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+    type3: typeof PDFArray,
+  ): PDFString | PDFHexString | PDFArray | undefined;
 
-  lookupMaybe(key: PDFName, type: any) {
-    return this.context.lookupMaybe(this.get(key), type) as any;
+  lookupMaybe(key: PDFName, ...types: any[]) {
+    return this.context.lookupMaybe(
+      this.get(key),
+      // @ts-ignore
+      ...types,
+    ) as any;
   }
 
   lookup(key: PDFName): PDFObject | undefined;
@@ -74,9 +106,29 @@ class PDFDict extends PDFObject {
   lookup(key: PDFName, type: typeof PDFStream): PDFStream;
   lookup(key: PDFName, type: typeof PDFRef): PDFRef;
   lookup(key: PDFName, type: typeof PDFString): PDFString;
+  lookup(
+    ref: PDFName,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+  ): PDFString | PDFHexString;
+  lookup(
+    ref: PDFName,
+    type1: typeof PDFDict,
+    type2: typeof PDFStream,
+  ): PDFDict | PDFStream;
+  lookup(
+    ref: PDFName,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+    type3: typeof PDFArray,
+  ): PDFString | PDFHexString | PDFArray;
 
-  lookup(key: PDFName, type?: any) {
-    return this.context.lookup(this.get(key), type) as any;
+  lookup(key: PDFName, ...types: any[]) {
+    return this.context.lookup(
+      this.get(key),
+      // @ts-ignore
+      ...types,
+    ) as any;
   }
 
   delete(key: PDFName): boolean {

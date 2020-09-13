@@ -447,6 +447,207 @@ export default async () => {
     yScale: 0.5,
   });
 
+  /********************** Page 5 **********************/
+
+  // This page tests creating new AcroForm fields.
+
+  const pastels = {
+    greyishGreen: rgb(85 / 255, 117 / 255, 113 / 255),
+    brownish: rgb(212 / 255, 154 / 255, 137 / 255),
+    tan: rgb(247 / 255, 209 / 255, 186 / 255),
+    whiteish: rgb(244 / 255, 244 / 255, 244 / 255),
+    lightBlue: rgb(221 / 255, 243 / 255, 245 / 255),
+    blue: rgb(166 / 255, 220 / 255, 239 / 255),
+    pinkish: rgb(242 / 255, 170 / 255, 170 / 255),
+    hotPink: rgb(227 / 255, 99 / 255, 135 / 255),
+    yellow: rgb(250 / 255, 240 / 255, 175 / 255),
+    darkBlue: rgb(7 / 255, 104 / 255, 159 / 255),
+  };
+
+  const page5 = pdfDoc.addPage([size, size]);
+
+  const form = pdfDoc.getForm();
+
+  const fWidth = 100;
+  const fHeight = 50;
+  const fPadding = 25;
+  const fMax = Math.max(fWidth, fHeight);
+
+  // Text Fields
+  [
+    { name: 'moi.text.field[0]', text: 'Foo', font: ubuntuFont },
+    { name: 'moi.text.field[1]', text: 'Bar' },
+    { name: 'moi.text.field[2]', text: 'Qux', font: ubuntuFont },
+    { name: 'moi.text.field[3]', text: 'Baz' },
+  ].forEach(({ name, text, font }, idx) => {
+    const textField = form.createTextField(name);
+    textField.setText(text);
+    textField.addToPage(page5, {
+      x: fPadding + fWidth,
+      y: size - fMax - fPadding,
+      width: fWidth,
+      height: fHeight,
+      rotate: degrees(90 * idx),
+      borderWidth: 4,
+      backgroundColor: pastels.pinkish,
+      borderColor: pastels.blue,
+      textColor: pastels.whiteish,
+      font: ubuntuFont,
+    });
+    if (font) textField.updateAppearances(font);
+  });
+
+  // Buttons
+  [
+    { name: 'moi.button.field[0]', text: 'Earth', font: ubuntuFont },
+    { name: 'moi.button.field[1]', text: 'Mars', font: timesRomanFont },
+    { name: 'moi.button.field[2]', text: 'Venus', font: ubuntuFont },
+    { name: 'moi.button.field[3]', text: 'Saturn', font: timesRomanFont },
+  ].forEach(({ name, text, font }, idx) => {
+    const button = form.createButton(name);
+    button.addToPage(text, page5, {
+      x: fPadding * 2 + fWidth * 3,
+      y: size - fMax - fPadding,
+      width: fWidth,
+      height: fHeight,
+      rotate: degrees(90 * idx),
+      borderWidth: 4,
+      backgroundColor: pastels.brownish,
+      borderColor: pastels.tan,
+      textColor: pastels.greyishGreen,
+      font,
+    });
+  });
+
+  // Dropdowns
+  [
+    { name: 'moi.dropdown.field[0]', choice: 'Exia', font: ubuntuFont },
+    { name: 'moi.dropdown.field[1]', choice: 'Kyrios', font: timesRomanFont },
+    { name: 'moi.dropdown.field[2]', choice: 'Dynames', font: ubuntuFont },
+    { name: 'moi.dropdown.field[3]', choice: 'Virtue', font: timesRomanFont },
+  ].forEach(({ name, choice, font }, idx) => {
+    const dropdown = form.createDropdown(name);
+    dropdown.addOptions(['Exia', 'Dynames', 'Kyrios', 'Virtue']);
+    dropdown.select(choice);
+    dropdown.addToPage(page5, {
+      x: fPadding * 3 + fWidth * 5,
+      y: size - fMax - fPadding,
+      width: fWidth,
+      height: fHeight,
+      rotate: degrees(90 * idx),
+      borderWidth: 4,
+      backgroundColor: pastels.greyishGreen,
+      borderColor: pastels.hotPink,
+      textColor: pastels.brownish,
+      font,
+    });
+  });
+
+  // Check Boxes
+  [
+    { name: 'moi.checkBox.field[0]' },
+    { name: 'moi.checkBox.field[1]' },
+    { name: 'moi.checkBox.field[2]' },
+    { name: 'moi.checkBox.field[3]' },
+  ].forEach(({ name }, idx) => {
+    const checkBox = form.createCheckBox(name);
+    checkBox.check();
+    checkBox.addToPage(page5, {
+      x: fPadding + fWidth,
+      y: size - fMax * 3 - fPadding * 2,
+      width: fHeight,
+      height: fHeight,
+      rotate: degrees(90 * idx),
+      borderWidth: 4,
+      backgroundColor: pastels.whiteish,
+      borderColor: pastels.greyishGreen,
+      textColor: pastels.hotPink,
+    });
+  });
+
+  // Option Lists
+  [
+    { name: 'moi.optionList.field[0]', choice: 'TypeScript', font: ubuntuFont },
+    { name: 'moi.optionList.field[1]', choice: 'Kotlin', font: timesRomanFont },
+    { name: 'moi.optionList.field[2]', choice: 'Python', font: ubuntuFont },
+    { name: 'moi.optionList.field[3]', choice: 'Swift', font: timesRomanFont },
+  ].forEach(({ name, choice, font }, idx) => {
+    const optionList = form.createOptionList(name);
+    optionList.addOptions(['TypeScript', 'Kotlin', 'Python', 'Swift']);
+    optionList.select(choice);
+    optionList.addToPage(page5, {
+      x: fPadding * 2 + fWidth * 3,
+      y: size - fMax * 3 - fPadding * 2,
+      width: fWidth,
+      height: fHeight,
+      rotate: degrees(90 * idx),
+      borderWidth: 4,
+      backgroundColor: pastels.tan,
+      borderColor: pastels.yellow,
+      textColor: pastels.hotPink,
+      font,
+    });
+  });
+
+  // Radio Group
+  const radioGroup = form.createRadioGroup('moi.radioGroup.field[0]');
+
+  [
+    { option: 'Bing' },
+    { option: 'Boing' },
+    { option: 'Bang' },
+    { option: 'Bloop' },
+  ].forEach(({ option }, idx) => {
+    radioGroup.addOptionToPage(option, page5, {
+      x: fPadding * 3 + fWidth * 5,
+      y: size - fMax * 3 - fPadding * 2,
+      width: fHeight,
+      height: fHeight,
+      rotate: degrees(90 * idx),
+      borderWidth: 4,
+      backgroundColor: pastels.blue,
+      borderColor: pastels.pinkish,
+      textColor: pastels.yellow,
+    });
+  });
+
+  radioGroup.select('Bing');
+
+  // Combed Text Field
+  const combedTf = form.createTextField('moi.combed.text.field');
+  combedTf.setMaxLength(7);
+  combedTf.enableCombing();
+  combedTf.setText('ABC-123');
+  combedTf.addToPage(page5, {
+    x: fPadding + fWidth / 2,
+    y: size - fMax * 5 - fPadding * 3,
+    width: fWidth * 2.5,
+    height: fHeight,
+    borderWidth: 4,
+    backgroundColor: pastels.yellow,
+    borderColor: pastels.brownish,
+    textColor: pastels.darkBlue,
+    font: ubuntuFont,
+  });
+
+  // Multiline Text Field
+  const multilineTf = form.createTextField('moi.multiline.text.field');
+  multilineTf.enableMultiline();
+  multilineTf.setText(
+    `In the morning, when you can't get out of bed, tell yourself: "I'm getting up to do the work only a man can do. How can I possibly hesitate or complain when I'm about to accomplish the task for which I was born? Was I made for lying warm in bed under a pile of blankets?"\n\n"But I enjoy it here."\n\nWas it for enjoyment you were born? Are you designed to act or to be acted upon?\n\n\t\t\t\t\t\t\t\t\t\t - Marcus Aurelius`,
+  );
+  multilineTf.addToPage(page5, {
+    x: fPadding * 3 + fWidth / 2 + fWidth * 2.5,
+    y: size - fMax * 5 - fPadding * 3 - fHeight * 3,
+    width: fWidth * 2.5,
+    height: fHeight * 5,
+    borderWidth: 4,
+    backgroundColor: pastels.whiteish,
+    borderColor: pastels.brownish,
+    textColor: pastels.greyishGreen,
+    font: ubuntuFont,
+  });
+
   /********************** Print Metadata **********************/
 
   console.log('Title:', pdfDoc.getTitle());

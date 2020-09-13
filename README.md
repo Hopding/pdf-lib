@@ -55,6 +55,8 @@
 - [Usage Examples](#usage-examples)
   - [Create Document](#create-document)
   - [Modify Document](#modify-document)
+  - [Create Form](#create-form) - _**new!**_
+  - [Fill Form](#fill-form) - _**new!**_
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
@@ -67,9 +69,12 @@
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
 - [Documentation](#documentation)
+- [Fonts and Unicode](#fonts-and-unicode)
+- [Creating and Filling Forms](#creating-and-filling-forms)
+- [Limitations](#limitations)
 - [Help and Discussion](#help-and-discussion)
 - [Encryption Handling](#encryption-handling)
-- [Migrating to v1.0.0](#migrating-to-v1)
+- [Migrating to v1.0.0](/MIGRATION.md)
 - [Contributing](#contributing)
 - [Tutorials and Cool Stuff](#tutorials-and-cool-stuff)
 - [Prior Art](#prior-art)
@@ -79,6 +84,8 @@
 
 - Create new PDFs
 - Modify existing PDFs
+- Create forms - _**new!**_
+- Fill forms - _**new!**_
 - Add Pages
 - Insert Pages
 - Remove Pages
@@ -187,6 +194,215 @@ firstPage.drawText('This text was added with JavaScript!', {
   rotate: degrees(-45),
 })
 
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Create Form
+
+_This example produces [this PDF](assets/pdfs/examples/create_form.pdf)._
+
+<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/1/) -->
+
+> See also [Creating and Filling Forms](#creating-and-filling-forms)
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Add a blank page to the document
+const page = pdfDoc.addPage([550, 750])
+
+// Get the form so we can add fields to it
+const form = pdfDoc.getForm()
+
+// Add the superhero text field and description
+page.drawText('Enter your favorite superhero:', { x: 50, y: 700, size: 20 })
+
+const superheroField = form.createTextField('favorite.superhero')
+superheroField.setText('One Punch Man')
+superheroField.addToPage(page, { x: 55, y: 640 })
+
+// Add the rocket radio group, labels, and description
+page.drawText('Select your favorite rocket:', { x: 50, y: 600, size: 20 })
+
+page.drawText('Falcon Heavy', { x: 120, y: 560, size: 18 })
+page.drawText('Saturn IV', { x: 120, y: 500, size: 18 })
+page.drawText('Delta IV Heavy', { x: 340, y: 560, size: 18 })
+page.drawText('Space Launch System', { x: 340, y: 500, size: 18 })
+
+const rocketField = form.createRadioGroup('favorite.rocket')
+rocketField.addOptionToPage('Falcon Heavy', page, { x: 55, y: 540 })
+rocketField.addOptionToPage('Saturn IV', page, { x: 55, y: 480 })
+rocketField.addOptionToPage('Delta IV Heavy', page, { x: 275, y: 540 })
+rocketField.addOptionToPage('Space Launch System', page, { x: 275, y: 480 })
+rocketField.select('Saturn IV')
+
+// Add the gundam check boxes, labels, and description
+page.drawText('Select your favorite gundams:', { x: 50, y: 440, size: 20 })
+
+page.drawText('Exia', { x: 120, y: 400, size: 18 })
+page.drawText('Kyrios', { x: 120, y: 340, size: 18 })
+page.drawText('Virtue', { x: 340, y: 400, size: 18 })
+page.drawText('Dynames', { x: 340, y: 340, size: 18 })
+
+const exiaField = form.createCheckBox('gundam.exia')
+const kyriosField = form.createCheckBox('gundam.kyrios')
+const virtueField = form.createCheckBox('gundam.virtue')
+const dynamesField = form.createCheckBox('gundam.dynames')
+
+exiaField.addToPage(page, { x: 55, y: 380 })
+kyriosField.addToPage(page, { x: 55, y: 320 })
+virtueField.addToPage(page, { x: 275, y: 380 })
+dynamesField.addToPage(page, { x: 275, y: 320 })
+
+exiaField.check()
+dynamesField.check()
+
+// Add the planet dropdown and description
+page.drawText('Select your favorite planet*:', { x: 50, y: 280, size: 20 })
+
+const planetsField = form.createDropdown('favorite.planet')
+planetsField.addOptions(['Venus', 'Earth', 'Mars', 'Pluto'])
+planetsField.select('Pluto')
+planetsField.addToPage(page, { x: 55, y: 220 })
+
+// Add the person option list and description
+page.drawText('Select your favorite person:', { x: 50, y: 180, size: 18 })
+
+const personField = form.createOptionList('favorite.person')
+personField.addOptions([
+  'Julius Caesar',
+  'Ada Lovelace',
+  'Cleopatra',
+  'Aaron Burr',
+  'Mark Antony',
+])
+personField.select('Ada Lovelace')
+personField.addToPage(page, { x: 55, y: 70 })
+
+// Just saying...
+page.drawText(`* Pluto should be a planet too!`, { x: 15, y: 15, size: 15 })
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Fill Form
+
+_This example produces [this PDF](assets/pdfs/examples/fill_form.pdf)_ (when [this PDF](assets/pdfs/dod_character.pdf) is used for the `formPdfBytes` variable, [this image](assets/images/small_mario.png) is used for the `marioImageBytes` variable, and [this image](assets/images/mario_emblem.png) is used for the `emblemImageBytes` variable).
+
+<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/1/) -->
+
+> See also [Creating and Filling Forms](#creating-and-filling-forms)
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// These should be Uint8Arrays or ArrayBuffers
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const formPdfBytes = ...
+const marioImageBytes = ...
+const emblemImageBytes = ...
+
+// Load a PDF with form fields
+const pdfDoc = await PDFDocument.load(formPdfBytes)
+
+// Embed the Mario and emblem images
+const marioImage = await pdfDoc.embedPng(marioImageBytes)
+const emblemImage = await pdfDoc.embedPng(emblemImageBytes)
+
+// Get the form containing all the fields
+const form = pdfDoc.getForm()
+
+// Get all fields in the PDF by their names
+const nameField = form.getTextField('CharacterName 2')
+const ageField = form.getTextField('Age')
+const heightField = form.getTextField('Height')
+const weightField = form.getTextField('Weight')
+const eyesField = form.getTextField('Eyes')
+const skinField = form.getTextField('Skin')
+const hairField = form.getTextField('Hair')
+
+const alliesField = form.getTextField('Allies')
+const factionField = form.getTextField('FactionName')
+const backstoryField = form.getTextField('Backstory')
+const traitsField = form.getTextField('Feat+Traits')
+const treasureField = form.getTextField('Treasure')
+
+const characterImageField = form.getButton('CHARACTER IMAGE')
+const factionImageField = form.getButton('Faction Symbol Image')
+
+// Fill in the basic info fields
+nameField.setText('Mario')
+ageField.setText('24 years')
+heightField.setText(`5' 1"`)
+weightField.setText('196 lbs')
+eyesField.setText('blue')
+skinField.setText('white')
+hairField.setText('brown')
+
+// Fill the character image field with our Mario image
+characterImageField.setImage(marioImage)
+
+// Fill in the allies field
+alliesField.setText(
+  [
+    `Allies:`,
+    `  • Princess Daisy`,
+    `  • Princess Peach`,
+    `  • Rosalina`,
+    `  • Geno`,
+    `  • Luigi`,
+    `  • Donkey Kong`,
+    `  • Yoshi`,
+    `  • Diddy Kong`,
+    ``,
+    `Organizations:`,
+    `  • Italian Plumbers Association`,
+  ].join('\n'),
+)
+
+// Fill in the faction name field
+factionField.setText(`Mario's Emblem`)
+
+// Fill the faction image field with our emblem image
+factionImageField.setImage(emblemImage)
+
+// Fill in the backstory field
+backstoryField.setText(
+  `Mario is a fictional character in the Mario video game franchise, owned by Nintendo and created by Japanese video game designer Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist of the series, Mario has appeared in over 200 video games since his creation. Depicted as a short, pudgy, Italian plumber who resides in the Mushroom Kingdom, his adventures generally center upon rescuing Princess Peach from the Koopa villain Bowser. His younger brother and sidekick is Luigi.`,
+)
+
+// Fill in the traits field
+traitsField.setText(
+  [
+    `Mario can use three basic three power-ups:`,
+    `  • the Super Mushroom, which causes Mario to grow larger`,
+    `  • the Fire Flower, which allows Mario to throw fireballs`,
+    `  • the Starman, which gives Mario temporary invincibility`,
+  ].join('\n'),
+)
+
+// Fill in the treasure field
+treasureField.setText(['• Gold coins', '• Treasure chests'].join('\n'))
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
@@ -826,13 +1042,184 @@ API documentation is available on the project site at https://pdf-lib.js.org/doc
 The repo for the project site (and generated documentation files) is
 located here: https://github.com/Hopding/pdf-lib-docs.
 
+## Fonts and Unicode
+
+When working with PDFs, you will frequently come across the terms "character encoding" and "font". If you have experience in web development, you may wonder why these are so prevalent. Aren't they just annoying details that you shouldn't need to worry about? Shouldn't PDF libraries and readers be able to handle all of this for you like web browsers can? Unfortunately, this is not the case. The nature of the PDF file format makes it very difficult to avoid thinking about character encodings and fonts when working with PDFs.
+
+`pdf-lib` does its best to simplify things for you. But it can't perform magic. This means you should be aware of the following:
+
+- **There are 14 standard fonts** defined in the PDF specification. They are as follows: _Times Roman_ (normal, bold, and italic), _Helvetica_ (normal, bold, and italic), _Courier_ (normal, bold, and italic), _ZapfDingbats_ (normal), and _Symbol_ (normal). These 14 fonts are guaranteed to be available in PDF readers. As such, you do not need to embed any font data if you wish to use one of these fonts. You can use a standard font like so:
+  <!-- prettier-ignore -->
+  ```js
+  import { PDFDocument, StandardFonts } from 'pdf-lib'
+  const pdfDoc = await PDFDocument.create()
+  const courierFont = await pdfDoc.embedFont(StandardFonts.Courier)
+  const page = pdfDoc.addPage()
+  page.drawText('Some boring latin text in the Courier font', { 
+    font: courierFont,
+  })
+  ```
+- **The standard fonts do not support all characters** available in Unicode. The Times Roman, Helvetica, and Courier fonts use WinAnsi encoding (aka [Windows-1252](https://en.wikipedia.org/wiki/Windows-1252)). The WinAnsi character set only supports 218 characters in the Latin alphabet. For this reason, many users will find the standard fonts insufficient for their use case. This is unfortunate, but there's nothing that PDF libraries can do to change this. This is a result of the PDF specification and its age. Note that the [ZapfDingbats](https://en.wikipedia.org/wiki/Zapf_Dingbats) and [Symbol](<https://en.wikipedia.org/wiki/Symbol_(typeface)>) fonts use their own specialized encodings that support 203 and 194 characters, respectively. However, the characters they support are not useful for most use cases. See [here](assets/pdfs/standard_fonts_demo.pdf) for an example of all 14 standard fonts.
+- **You can use characters outside the Latin alphabet** by embedding your own fonts. Embedding your own font requires to you load the font data (from a file or via a network request, for example) and pass it to the `embedFont` method. When you embed your own font, you can use any Unicode characters that it supports. This capability frees you from the limitations imposed by the standard fonts. Most PDF files use embedded fonts. You can embed and use a custom font like so ([see also](#embed-font-and-measure-text)):
+  <!-- prettier-ignore -->
+  ```js
+  import { PDFDocument } from 'pdf-lib'
+  import fontkit from '@pdf-lib/fontkit'
+
+  const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf'
+  const fontBytes = await fetch(url).then((res) => res.arrayBuffer())
+
+  const pdfDoc = await PDFDocument.create()
+
+  pdfDoc.registerFontkit(fontkit)
+  const ubuntuFont = await pdfDoc.embedFont(fontBytes)
+
+  const page = pdfDoc.addPage()
+  page.drawText('Some fancy Unicode text in the ŪЬȕǹƚü font', { 
+    font: ubuntuFont,
+  })
+  ```
+
+Note that encoding errors will be thrown if you try to use a character with a font that does not support it. For example, `Ω` is not in the WinAnsi character set. So trying to draw it on a page with the standard Helvetica font will throw the following error:
+
+```
+Error: WinAnsi cannot encode "Ω" at EncodingClass.encodeUnicodeCodePoint
+```
+
+## Creating and Filling Forms
+
+`pdf-lib` can create, fill, and read PDF form fields. The following field types are supported:
+
+- [Buttons](https://pdf-lib.js.org/docs/api/classes/pdfbutton)
+- [Check Boxes](https://pdf-lib.js.org/docs/api/classes/pdfcheckbox)
+- [Dropdowns](https://pdf-lib.js.org/docs/api/classes/pdfdropdown)
+- [Option Lists](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist)
+- [Radio Groups](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup)
+- [Text Fields](https://pdf-lib.js.org/docs/api/classes/pdftextfield)
+
+See the [form creation](#create-form) and [form filling](#fill-form) usage examples for code samples. Tests 1, 14, 15, 16, and 17 in the [complete examples](#complete-examples) contain working example code for form creation and filling in a variety of different JS environments.
+
+**IMPORTANT:** The default font used to display text in buttons, dropdowns, option lists, and text fields is the standard Helvetica font. This font only supports characters in the latin alphabet (see [Fonts and Unicode](#fonts-and-unicode) for details). This means that if any of these field types are created or modified to contain text outside the latin alphabet (as is often the case), you will need to embed and use a custom font to update the field appearances. Otherwise an error will be thrown (likely when you save the `PDFDocument`).
+
+You can use an embedded font when filling form fields as follows:
+
+```js
+import { PDFDocument } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
+
+// Fetch the PDF with form fields
+const formUrl = 'https://pdf-lib.js.org/assets/dod_character.pdf';
+const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer());
+
+// Fetch the Ubuntu font
+const fontUrl = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
+const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer());
+
+// Load the PDF with form fields
+const pdfDoc = await PDFDocument.load(formBytes);
+
+// Embed the Ubuntu font
+pdfDoc.registerFontkit(fontkit);
+const ubuntuFont = await pdfDoc.embedFont(fontBytes);
+
+// Get two text fields from the form
+const form = pdfDoc.getForm();
+const nameField = form.getTextField('CharacterName 2');
+const ageField = form.getTextField('Age');
+
+// Fill the text fields with some fancy Unicode characters (outside
+// the WinAnsi latin character set)
+nameField.setText('Ӎӑȑїõ');
+ageField.setText('24 ŷȇȁŗš');
+
+// **Key Step:** Update the field appearances with the Ubuntu font
+form.updateFieldAppearances(ubuntuFont);
+
+// Save the PDF with filled form fields
+const pdfBytes = await pdfDoc.save();
+```
+
+### Handy Methods for Filling, Creating, and Reading Form Fields
+
+Existing form fields can be accessed with the following methods of [`PDFForm`](https://pdf-lib.js.org/docs/api/classes/pdfform):
+
+- [`PDFForm.getButton`](https://pdf-lib.js.org/docs/api/classes/pdfform#getbutton)
+- [`PDFForm.getCheckBox`](https://pdf-lib.js.org/docs/api/classes/pdfform#getcheckbox)
+- [`PDFForm.getDropdown`](https://pdf-lib.js.org/docs/api/classes/pdfform#getdropdown)
+- [`PDFForm.getOptionList`](https://pdf-lib.js.org/docs/api/classes/pdfform#getoptionlist)
+- [`PDFForm.getRadioGroup`](https://pdf-lib.js.org/docs/api/classes/pdfform#getradiogroup)
+- [`PDFForm.getTextField`](https://pdf-lib.js.org/docs/api/classes/pdfform#gettextfield)
+
+New form fields can be created with the following methods of [`PDFForm`](https://pdf-lib.js.org/docs/api/classes/pdfform):
+
+- [`PDFForm.createButton`](https://pdf-lib.js.org/docs/api/classes/pdfform#createbutton)
+- [`PDFForm.createCheckBox`](https://pdf-lib.js.org/docs/api/classes/pdfform#createcheckbox)
+- [`PDFForm.createDropdown`](https://pdf-lib.js.org/docs/api/classes/pdfform#createdropdown)
+- [`PDFForm.createOptionList`](https://pdf-lib.js.org/docs/api/classes/pdfform#createoptionlist)
+- [`PDFForm.createRadioGroup`](https://pdf-lib.js.org/docs/api/classes/pdfform#createradiogroup)
+- [`PDFForm.createTextField`](https://pdf-lib.js.org/docs/api/classes/pdfform#createtextfield)
+
+Below are some of the most commonly used methods for reading and filling the aforementioned subclasses of [`PDFField`](https://pdf-lib.js.org/docs/api/classes/pdffield):
+
+- [`PDFCheckBox.check`](https://pdf-lib.js.org/docs/api/classes/pdfcheckbox#check)
+- [`PDFCheckBox.uncheck`](https://pdf-lib.js.org/docs/api/classes/pdfcheckbox#uncheck)
+- [`PDFCheckBox.isChecked`](https://pdf-lib.js.org/docs/api/classes/pdfcheckbox#ischecked)
+
+---
+
+- [`PDFDropdown.select`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#select)
+- [`PDFDropdown.clear`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#clear)
+- [`PDFDropdown.getSelected`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#getselected)
+- [`PDFDropdown.getOptions`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#getoptions)
+- [`PDFDropdown.addOptions`](https://pdf-lib.js.org/docs/api/classes/pdfdropdown#addoptions)
+
+---
+
+- [`PDFOptionList.select`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#select)
+- [`PDFOptionList.clear`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#clear)
+- [`PDFOptionList.getSelected`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#getselected)
+- [`PDFOptionList.getOptions`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#getoptions)
+- [`PDFOptionList.addOptions`](https://pdf-lib.js.org/docs/api/classes/pdfoptionlist#addoptions)
+
+---
+
+- [`PDFRadioGroup.select`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#select)
+- [`PDFRadioGroup.clear`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#clear)
+- [`PDFRadioGroup.getSelected`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#getselected)
+- [`PDFRadioGroup.getOptions`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#getoptions)
+- [`PDFRadioGroup.addOptionToPage`](https://pdf-lib.js.org/docs/api/classes/pdfradiogroup#addoptiontopage)
+
+---
+
+- [`PDFTextField.setText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#settext)
+- [`PDFTextField.getText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#gettext)
+- [`PDFTextField.setMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#setmaxlength)
+- [`PDFTextField.getMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#getmaxlength)
+- [`PDFTextField.removeMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#removemaxlength)
+
+## Limitations
+
+- `pdf-lib` **can** extract the content of text fields (see [`PDFTextField.getText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#gettext)), but it **cannot** extract plain text on a page outside of a form field. This is a difficult feature to implement, but it is within the scope of this library and may be added to `pdf-lib` in the future. See
+  [#93](https://github.com/Hopding/pdf-lib/issues/93),
+  [#137](https://github.com/Hopding/pdf-lib/issues/137),
+  [#177](https://github.com/Hopding/pdf-lib/issues/177),
+  [#329](https://github.com/Hopding/pdf-lib/issues/329), and
+  [#380](https://github.com/Hopding/pdf-lib/issues/380).
+- `pdf-lib` **can** remove and edit the content of text fields (see [`PDFTextField.setText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#settext)), but it does **not** provide APIs for removing or editing text on a page outside of a form field. This is also a difficult feature to implement, but is within the scope of `pdf-lib` and may be added in the future. See
+  [#93](https://github.com/Hopding/pdf-lib/issues/93),
+  [#137](https://github.com/Hopding/pdf-lib/issues/137),
+  [#177](https://github.com/Hopding/pdf-lib/issues/177),
+  [#329](https://github.com/Hopding/pdf-lib/issues/329), and
+  [#380](https://github.com/Hopding/pdf-lib/issues/380).
+- `pdf-lib` does **not** support the use of HTML or CSS when adding content to a PDF. Similarly, `pdf-lib` **cannot** embed HTML/CSS content into PDFs. As convenient as such a feature might be, it would be extremely difficult to implement and is far beyond the scope of this library. If this capability is something you need, consider using [Puppeteer](https://github.com/puppeteer/puppeteer).
+
 ## Help and Discussion
 
 [Our Discord server](https://discord.gg/Y7uuVMc) is a great place to chat with us, ask questions, and learn more about pdf-lib. Come join us!
 
 ## Encryption Handling
 
-`pdf-lib` does not currently support modification of encrypted documents. In general, it is not advised to use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
+**`pdf-lib` does not currently support encrypted documents.** You should not use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
 
 When an encrypted document is passed to `PDFDocument.load(...)`, an error will be thrown:
 
@@ -859,165 +1246,7 @@ const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
 
 Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
 
-<h2 id="migrating-to-v1">Migrating to v1.0.0</h2>
-
-The latest release of `pdf-lib` (`v1.0.0`) includes several breaking API changes. If you have code written for older versions of `pdf-lib` (`v0.x.x`), you can use the following instructions to help migrate your code to v1.0.0.
-
-Note that many of the API methods are now asynchronous and return promises, so you'll need to `await` on them (or use promise chaining: `.then(res => ...)`).
-
-- Rename _`PDFDocumentFactory`_ to **`PDFDocument`**. `PDFDocument.create` and `PDFDocument.load` are now async (they return promises), so you'll need to `await` on them.
-
-* To create a new PDF document:
-
-  ```js
-  const pdfDoc = await PDFDocument.create();
-  ```
-
-* To retrieve and load a PDF where `pdfUrl` points to the PDF to be loaded:
-  ```js
-  const pdfBuffer = await fetch(pdfUrl).then((res) => res.arrayBuffer());
-  const pdfDoc = await PDFDocument.load(pdfBuffer);
-  ```
-
-- The purpose of making these methods asynchronous is to avoid blocking the event loop (especially for browser-based usage). If you aren't running this code client-side and are not concerned about blocking the event loop, you can speed up parsing times with:
-
-  ```js
-  PDFDocument.load(..., { parseSpeed: ParseSpeeds.Fastest })
-  ```
-
-  You can do a similar thing for save:
-
-  ```js
-  PDFDocument.save({ objectsPerTick: Infinity });
-  ```
-
-- To draw content on a page in old versions of `pdf-lib`, you needed to create a content stream, invoke some operators, register the content stream, and add it to the document. Something like the following:
-
-  ```js
-  const contentStream = pdfDoc.createContentStream(
-    drawText(
-      timesRomanFont.encodeText('Creating PDFs in JavaScript is awesome!'),
-      {
-        x: 50,
-        y: 450,
-        size: 15,
-        font: 'TimesRoman',
-        colorRgb: [0, 0.53, 0.71],
-      },
-    ),
-  );
-  page.addContentStreams(pdfDoc.register(contentStream));
-  ```
-
-  However, in new versions of `pdf-lib`, this is much simpler. You simply invoke drawing methods on the page, such as [`PDFPage.drawText`](https://pdf-lib.js.org/docs/api/classes/pdfpage#drawtext), [`PDFPage.drawImage`](https://pdf-lib.js.org/docs/api/classes/pdfpage#drawimage), [`PDFPage.drawRectangle`](https://pdf-lib.js.org/docs/api/classes/pdfpage#drawrectangle), or [`PDFPage.drawSvgPath`](https://pdf-lib.js.org/docs/api/classes/pdfpage#drawsvgpath). So the above example becomes:
-
-  ```js
-  page.drawText('Creating PDFs in JavaScript is awesome!', {
-    x: 50,
-    y: 450,
-    size: 15,
-    font: timesRomanFont,
-    color: rgb(0, 0.53, 0.71),
-  });
-  ```
-
-  Please see the [Usage Examples](#usage-examples) for more in depth examples of drawing content on a page in the new versions of `pdf-lib`. You may also find the [Complete Examples](#complete-examples) to be a useful reference.
-
-- Change _`getMaybe`_ function calls to **`get`** calls. If a property doesn't exist, then `undefined` will be returned. Note, however, that PDF name strings with need to be wrapped in `PDFName.of(...)`. For example, to look up the AcroForm object you'll need to change _`pdfDoc.catalog.getMaybe('AcroForm')`_ to **`pdfDoc.catalog.get(PDFName.of('AcroForm'))`**.
-
-  ```js
-  const acroForm = await pdfDoc.context.lookup(
-    pdfDoc.catalog.get(PDFName.of('AcroForm')),
-  );
-  ```
-
-  > v0.x.x converted the strings passed to `get` and `getMaybe` to `PDFName` objects, but v1.0.0 does not do this conversion for you. So you must always pass actual `PDFName` objects instead of strings.
-
-- To find the AcroForm field references now becomes:
-  ```js
-  const acroFieldRefs = await pdfDoc.context.lookup(
-    acroForm.get(PDFName.of('Fields')),
-  );
-  ```
-- To add a new page replace _`pdfDoc.createPage([width, height])`_ with **`pdfDoc.addPage([width, height])`**
-  ```js
-  const page = pdfDoc.addPage([500, 750]);
-  ```
-  or simply:
-  ```js
-  const page = pdfDoc.addPage();
-  ```
-
-* To get the size of the page:
-
-  ```js
-  const { width, height } = page.getSize();
-  page.getWidth();
-  page.getHeight();
-  ```
-
-* To add images replace _`pdfDoc.embedPNG`_ with **`pdfDoc.embedPng`** and _`pdfDoc.embedJPG`_ with **`pdfDoc.embedJpg`**
-
-* The `pdfDoc.embedPng` and `pdfDoc.embedJpg` methods now return `PDFImage` objects which have the width and height of the image as properties. You can also scale down the width and height by a constant factor using the `PDFImage.scale` method:
-  ```js
-  const aBigImage = await pdfDoc.embedPng(aBigImageBytes);
-  const { width, height } = aBigImage.scale(0.25);
-  ```
-  So, `const [image, dims] = pdfDoc.embedJPG(mediaBuffer)` becomes:
-  ```js
-  const image = await pdfDoc.embedJpg(mediaBuffer);
-  // image.width, image.height can be used instead of the dims object.
-  ```
-* To save the PDF replace _`PDFDocumentWriter.saveToBytes(pdfDoc)`_ with **`pdfDoc.save()`**
-
-  ```js
-  const pdfDocBytes = await pdfDoc.save();
-  ```
-
-* To display the saved PDF now becomes:
-
-  ```js
-  const pdfUrl = URL.createObjectURL(
-    new Blob([await pdfDoc.save()], { type: 'application/pdf' }),
-  );
-  window.open(pdfUrl, '_blank');
-  ```
-
-  (note: `URL.revokeObjectURL` should be called later to free up memory)
-
-* To get the PDF page count:
-
-  ```js
-  pdfDoc.getPages().length;
-  ```
-
-* To copy pages from one document to another you must now call **`destPdf.copyPages(srcPdf, srcPageIndexesArray)`** to copy pages. You can see an example of this in the [Copy Pages](#copy-pages) usage example. Admittedly, this API is slightly less ergonomic than what exists in v0.x.x, but it has two key benefits:
-
-  1. It avoids making PDFDocument.addPage and PDFDocument.insertPage async.
-     When copying multiple pages from the source document, the resulting merged document should have a smaller file size. This is because the page copying API that exists in v0.x.x was intended for copying just one or two pages.
-
-  2. When copying large numbers of pages, it could result in redundant objects being created. This new page copying API should eliminate that.
-
-  ```js
-  async function mergePdfs(pdfsToMerge: string[]) {
-    const mergedPdf = await PDFDocument.create();
-    for (const pdfCopyDoc of pdfsToMerge) {
-      const pdfBytes = fs.readFileSync(pdfCopyDoc);
-      const pdf = await PDFDocument.load(pdfBytes);
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => {
-        mergedPdf.addPage(page);
-      });
-    }
-    const mergedPdfFile = await mergedPdf.save();
-    return mergedPdfFile;
-  }
-  ```
-
-* If required, you can retrieve the CropBox or MediaBox of a page like so:
-  ```js
-  const cropBox = page.node.CropBox() || page.node.MediaBox();
-  ```
+**You should not use this option.** It only exists for backwards compatibility reasons.
 
 ## Contributing
 
@@ -1035,6 +1264,7 @@ We welcome contributions from the open source community! If you are interested i
 
 - [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](src/core/embedders/CustomFontEmbedder.ts#L17-L21), [PNG embedding](src/core/embedders/PngEmbedder.ts#L7-L11), and [JPG embedding](src/core/embedders/JpegEmbedder.ts#L25-L29) was especially useful.
 - [`pdf.js`](https://github.com/mozilla/pdf.js) is a PDF rendering library for the Browser. This library was helpful as a reference when writing `pdf-lib`'s parser. Some of the code for stream decoding was [ported directly to TypeScript](src/core/streams) for use in `pdf-lib`.
+- [`pdfbox`](https://pdfbox.apache.org/) is a PDF generation and modification library written in Java. This library was an invaluable reference when implementing form creation and filling APIs for `pdf-lib`.
 - [`jspdf`](https://github.com/MrRio/jsPDF) is a PDF generation library for the browser.
 - [`pdfmake`](https://github.com/bpampuch/pdfmake) is a PDF generation library for the browser.
 - [`hummus`](https://github.com/galkahana/HummusJS) is a PDF generation and modification library for Node environments. `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer), so it doesn't work in many JavaScript environments - like the Browser or React Native.
