@@ -73,4 +73,26 @@ describe(`PDFTextField`, () => {
     expect(prefix.isSpellChecked()).toBe(true);
     expect(prefix.isCombed()).toBe(false);
   });
+
+  it(`throws an error when setting text that exceeds the max length`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const form = pdfDoc.getForm();
+    const textField = form.createTextField('foo.bar');
+
+    textField.setMaxLength(5);
+    expect(() => textField.setText('abcde')).not.toThrow();
+    expect(() => textField.setText('abcdef')).toThrow();
+  });
+
+  it(`throws an error when setting a max length less than the text length`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const form = pdfDoc.getForm();
+    const textField = form.createTextField('foo.bar');
+
+    textField.setText('abcdef');
+    expect(() => textField.setMaxLength(undefined)).not.toThrow();
+    expect(() => textField.setMaxLength(6)).not.toThrow();
+    expect(() => textField.setMaxLength(7)).not.toThrow();
+    expect(() => textField.setMaxLength(5)).toThrow();
+  });
 });

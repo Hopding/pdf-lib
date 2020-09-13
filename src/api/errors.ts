@@ -102,3 +102,10 @@ export class ExceededMaxLengthError extends Error {
     super(msg);
   }
 }
+
+export class InvalidMaxLengthError extends Error {
+  constructor(textLength: number, maxLength: number, name: string) {
+    const msg = `Attempted to set maxLength=${maxLength}, which is less than ${textLength}, the length of this field's current value (name=${name})`;
+    super(msg);
+  }
+}

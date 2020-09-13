@@ -290,7 +290,6 @@ export default class PDFRadioGroup extends PDFField {
     return !this.acroField.hasFlag(AcroButtonFlags.RadiosInUnison);
   }
 
-  // TODO: Unit test this
   /**
    * When the user clicks a radio button in this group it will be selected. In
    * addition, any other radio buttons in this group that share the same

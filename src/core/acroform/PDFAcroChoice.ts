@@ -10,7 +10,6 @@ import {
 } from 'src/core/errors';
 
 class PDFAcroChoice extends PDFAcroTerminal {
-  // TODO: Should we remove duplicates here?
   setValues(values: (PDFString | PDFHexString)[]) {
     if (
       this.hasFlag(AcroChoiceFlags.Combo) &&

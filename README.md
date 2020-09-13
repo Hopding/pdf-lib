@@ -1199,18 +1199,18 @@ Below are some of the most commonly used methods for reading and filling the afo
 
 ## Limitations
 
-- `pdf-lib` **can** extract the content of text fields (see [`PDFTextField.getText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#gettext)), but it **cannot** extract plain text on a page outside of a form field. This is a difficult feature to implement, but it is within the scope of this library and may be added to `pdf-lib` in the future. See 
-[#93](https://github.com/Hopding/pdf-lib/issues/93), 
-[#137](https://github.com/Hopding/pdf-lib/issues/137), 
-[#177](https://github.com/Hopding/pdf-lib/issues/177),
-[#329](https://github.com/Hopding/pdf-lib/issues/329), and 
-[#380](https://github.com/Hopding/pdf-lib/issues/380).
-- `pdf-lib` **can** remove and edit the content of text fields (see [`PDFTextField.setText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#settext)), but it does **not** provide APIs for removing or editing text on a page outside of a form field. This is also a difficult feature to implement, but is within the scope of `pdf-lib` and may be added in the future. See 
-[#93](https://github.com/Hopding/pdf-lib/issues/93), 
-[#137](https://github.com/Hopding/pdf-lib/issues/137), 
-[#177](https://github.com/Hopding/pdf-lib/issues/177),
-[#329](https://github.com/Hopding/pdf-lib/issues/329), and 
-[#380](https://github.com/Hopding/pdf-lib/issues/380).
+- `pdf-lib` **can** extract the content of text fields (see [`PDFTextField.getText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#gettext)), but it **cannot** extract plain text on a page outside of a form field. This is a difficult feature to implement, but it is within the scope of this library and may be added to `pdf-lib` in the future. See
+  [#93](https://github.com/Hopding/pdf-lib/issues/93),
+  [#137](https://github.com/Hopding/pdf-lib/issues/137),
+  [#177](https://github.com/Hopding/pdf-lib/issues/177),
+  [#329](https://github.com/Hopding/pdf-lib/issues/329), and
+  [#380](https://github.com/Hopding/pdf-lib/issues/380).
+- `pdf-lib` **can** remove and edit the content of text fields (see [`PDFTextField.setText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#settext)), but it does **not** provide APIs for removing or editing text on a page outside of a form field. This is also a difficult feature to implement, but is within the scope of `pdf-lib` and may be added in the future. See
+  [#93](https://github.com/Hopding/pdf-lib/issues/93),
+  [#137](https://github.com/Hopding/pdf-lib/issues/137),
+  [#177](https://github.com/Hopding/pdf-lib/issues/177),
+  [#329](https://github.com/Hopding/pdf-lib/issues/329), and
+  [#380](https://github.com/Hopding/pdf-lib/issues/380).
 - `pdf-lib` does **not** support the use of HTML or CSS when adding content to a PDF. Similarly, `pdf-lib` **cannot** embed HTML/CSS content into PDFs. As convenient as such a feature might be, it would be extremely difficult to implement and is far beyond the scope of this library. If this capability is something you need, consider using [Puppeteer](https://github.com/puppeteer/puppeteer).
 
 ## Help and Discussion
@@ -1264,6 +1264,7 @@ We welcome contributions from the open source community! If you are interested i
 
 - [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](src/core/embedders/CustomFontEmbedder.ts#L17-L21), [PNG embedding](src/core/embedders/PngEmbedder.ts#L7-L11), and [JPG embedding](src/core/embedders/JpegEmbedder.ts#L25-L29) was especially useful.
 - [`pdf.js`](https://github.com/mozilla/pdf.js) is a PDF rendering library for the Browser. This library was helpful as a reference when writing `pdf-lib`'s parser. Some of the code for stream decoding was [ported directly to TypeScript](src/core/streams) for use in `pdf-lib`.
+- [`pdfbox`](https://pdfbox.apache.org/) is a PDF generation and modification library written in Java. This library was an invaluable reference when implementing form creation and filling APIs for `pdf-lib`.
 - [`jspdf`](https://github.com/MrRio/jsPDF) is a PDF generation library for the browser.
 - [`pdfmake`](https://github.com/bpampuch/pdfmake) is a PDF generation library for the browser.
 - [`hummus`](https://github.com/galkahana/HummusJS) is a PDF generation and modification library for Node environments. `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer), so it doesn't work in many JavaScript environments - like the Browser or React Native.

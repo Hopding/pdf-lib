@@ -75,7 +75,6 @@ class PDFAcroButton extends PDFAcroTerminal {
     this.setOpt(Opt);
   }
 
-  // TODO: Unit test this
   /**
    * Reuses existing opt if one exists with the same value (assuming
    * `useExistingIdx` is `true`). Returns index of existing (or new) opt.
@@ -100,16 +99,11 @@ class PDFAcroButton extends PDFAcroTerminal {
     return existingIdx ?? Opt.size() - 1;
   }
 
-  // TODO: Should this Opt related stuff be in `PDFAcroRadioButton`?
-  //
-  // TODO: Unit test this to ensure we don't wind up with silly stuff like:
-  //   /Opt [ <feff> <feff0065007800690061> <feff006b007900720069006f0073> <feff> ]
   addWidgetWithOpt(
     widget: PDFRef,
     opt: PDFHexString | PDFString,
     useExistingOptIdx: boolean,
   ) {
-    // this.addWidget(widget);
     const optIdx = this.addOpt(opt, useExistingOptIdx);
     const apStateValue = PDFName.of(String(optIdx));
     this.addWidget(widget);

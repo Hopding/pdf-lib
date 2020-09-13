@@ -51,7 +51,6 @@ class PDFAcroTerminal extends PDFAcroField {
     }
   }
 
-  // TODO: Unit test this
   normalizedEntries() {
     let Kids = this.Kids();
 

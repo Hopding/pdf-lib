@@ -12,7 +12,11 @@ import {
 } from 'src/api/form/appearances';
 import { rgb } from 'src/api/colors';
 import { degrees } from 'src/api/rotations';
-import { RichTextFieldReadError, ExceededMaxLengthError } from 'src/api/errors';
+import {
+  RichTextFieldReadError,
+  ExceededMaxLengthError,
+  InvalidMaxLengthError,
+} from 'src/api/errors';
 import { TextAlignment } from 'src/api/text/alignment';
 
 import {
@@ -254,10 +258,8 @@ export default class PDFTextField extends PDFField {
       this.acroField.removeMaxLength();
     } else {
       const text = this.getText();
-      // TODO: Should we throw an error here instead?
       if (text && text.length > maxLength) {
-        const msg = `maxLength of ${maxLength} is less than ${text.length}, the length of this field's current value`;
-        console.warn(msg);
+        throw new InvalidMaxLengthError(text.length, maxLength, this.getName());
       }
       this.acroField.setMaxLength(maxLength);
     }
