@@ -71,6 +71,7 @@
 - [Documentation](#documentation)
 - [Fonts and Unicode](#fonts-and-unicode)
 - [Creating and Filling Forms](#creating-and-filling-forms)
+- [Limitations](#limitations)
 - [Help and Discussion](#help-and-discussion)
 - [Encryption Handling](#encryption-handling)
 - [Migrating to v1.0.0](/MIGRATION.md)
@@ -209,6 +210,8 @@ _This example produces [this PDF](assets/pdfs/examples/create_form.pdf)._
 
 <!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/1/) -->
 
+> See also [Creating and Filling Forms](#creating-and-filling-forms)
+
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument } from 'pdf-lib'
@@ -304,6 +307,8 @@ const pdfBytes = await pdfDoc.save()
 _This example produces [this PDF](assets/pdfs/examples/fill_form.pdf)_ (when [this PDF](assets/pdfs/dod_character.pdf) is used for the `formPdfBytes` variable, [this image](assets/images/small_mario.png) is used for the `marioImageBytes` variable, and [this image](assets/images/mario_emblem.png) is used for the `emblemImageBytes` variable).
 
 <!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/1/) -->
+
+> See also [Creating and Filling Forms](#creating-and-filling-forms)
 
 <!-- prettier-ignore -->
 ```js
@@ -1191,6 +1196,12 @@ Below are some of the most commonly used methods for reading and filling the afo
 - [`PDFTextField.setMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#setmaxlength)
 - [`PDFTextField.getMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#getmaxlength)
 - [`PDFTextField.removeMaxLength`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#removemaxlength)
+
+## Limitations
+
+- `pdf-lib` **can** extract the content of text fields (see [`PDFTextField.getText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#gettext)), but it **cannot** extract plain text on a page outside of a form field. This is a difficult feature to implement, but it is within the scope of this library and may be added to `pdf-lib` in the future. See https://github.com/Hopding/pdf-lib/issues/93, https://github.com/Hopding/pdf-lib/issues/177 https://github.com/Hopding/pdf-lib/issues/137, https://github.com/Hopding/pdf-lib/issues/329, and https://github.com/Hopding/pdf-lib/issues/380.
+- `pdf-lib` **can** remove and edit the content of text fields (see [`PDFTextField.setText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#settext)), but it does **not** provide APIs for removing or editing text on a page outside of a form field. This is also a difficult feature to implement, but is within the scope of `pdf-lib` and may be added in the future. See https://github.com/Hopding/pdf-lib/issues/93, https://github.com/Hopding/pdf-lib/issues/177 https://github.com/Hopding/pdf-lib/issues/137, https://github.com/Hopding/pdf-lib/issues/329, and https://github.com/Hopding/pdf-lib/issues/380.
+- `pdf-lib` does **not** support the use of HTML or CSS when adding content to a PDF. Similarly, `pdf-lib` **cannot** embed HTML/CSS content into PDFs. As convenient as such a feature might be, it would be extremely difficult to implement and is far beyond the scope of this library. If this capability is something you need, consider using [Puppeteer](https://github.com/puppeteer/puppeteer).
 
 ## Help and Discussion
 
