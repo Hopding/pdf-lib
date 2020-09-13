@@ -10,7 +10,6 @@ import {
   PDFWidgetAnnotation,
   PDFDict,
   PDFName,
-  StandardFonts,
   PDFForm,
   PDFAcroForm,
 } from 'src/index';
@@ -156,7 +155,6 @@ describe(`PDFForm`, () => {
 
   it(`creates appearance streams for widgets that do not have any`, async () => {
     const pdfDoc = await PDFDocument.create();
-    const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     const page = pdfDoc.addPage();
 
@@ -172,11 +170,11 @@ describe(`PDFForm`, () => {
     // value represented by each radio button is undefined.
     //   const rg = form.createRadioGroup('a.radiogroup.field');
 
-    btn.addToPage('foo', helvetica, page);
+    btn.addToPage('foo', page);
     cb.addToPage(page);
-    dd.addToPage(helvetica, page);
-    ol.addToPage(helvetica, page);
-    tf.addToPage(helvetica, page);
+    dd.addToPage(page);
+    ol.addToPage(page);
+    tf.addToPage(page);
     // rg.addOptionToPage('bar', page);
 
     const widgets = pdfDoc.context
