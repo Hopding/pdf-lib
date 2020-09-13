@@ -9,6 +9,7 @@ import {
   drawEllipse,
   PDFWidgetAnnotation,
 } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 
 import { fetchAsset, writePdf } from './assets';
 
@@ -138,7 +139,7 @@ export default async () => {
   const text = symbol.encodeText('ℑ');
   const textW = symbol.widthOfTextAtSize('ℑ', 35);
   const textH = symbol.heightAtSize(35);
-  const symbolText = (font: PDFFont) =>
+  const symbolText = (font) =>
     drawText(text, {
       x: width / 2 - textW / 2,
       y: height / 2 - textH / 2 + 10,
@@ -150,7 +151,7 @@ export default async () => {
       ySkew: degrees(0),
     });
 
-  const assert = (condition: boolean, msg = '') => {
+  const assert = (condition, msg = '') => {
     if (!condition) throw new Error(msg || 'Assertion failed');
   };
 

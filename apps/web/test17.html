@@ -188,7 +188,7 @@
       const text = symbol.encodeText('ℑ');
       const textW = symbol.widthOfTextAtSize('ℑ', 35);
       const textH = symbol.heightAtSize(35);
-      const symbolText = (font: PDFFont) =>
+      const symbolText = (font) =>
         drawText(text, {
           x: width / 2 - textW / 2,
           y: height / 2 - textH / 2 + 10,
@@ -200,7 +200,7 @@
           ySkew: degrees(0),
         });
 
-      const assert = (condition: boolean, msg = '') => {
+      const assert = (condition, msg = '') => {
         if (!condition) throw new Error(msg || 'Assertion failed');
       };
 
