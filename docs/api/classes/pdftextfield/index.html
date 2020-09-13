@@ -1,0 +1,859 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>PDFTextField · PDF-LIB</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;&lt;a href=&quot;/docs/api/&quot;&gt;pdf-lib&lt;/a&gt; › &lt;a href=&quot;/docs/api/classes/pdftextfield&quot;&gt;PDFTextField&lt;/a&gt;&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="PDFTextField · PDF-LIB"/><meta property="og:type" content="website"/><meta property="og:url" content="https://Hopding.github.io/"/><meta property="og:description" content="&lt;p&gt;&lt;a href=&quot;/docs/api/&quot;&gt;pdf-lib&lt;/a&gt; › &lt;a href=&quot;/docs/api/classes/pdftextfield&quot;&gt;PDFTextField&lt;/a&gt;&lt;/p&gt;
+"/><meta property="og:image" content="https://Hopding.github.io/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://Hopding.github.io/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/logo3.png"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css"/><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><h2 class="headerTitle">PDF-LIB</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/api/" target="_self">API</a></li><li class=""><a href="/docs/help" target="_self">Help</a></li><li class=""><a href="https://github.com/Hopding/pdf-lib" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Classes</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/">Globals</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Classes</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfbutton">PDFButton</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfcheckbox">PDFCheckBox</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfdocument">PDFDocument</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfdropdown">PDFDropdown</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfembeddedpage">PDFEmbeddedPage</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdffield">PDFField</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdffont">PDFFont</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfform">PDFForm</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfimage">PDFImage</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfoptionlist">PDFOptionList</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfpage">PDFPage</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfsignature">PDFSignature</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/api/classes/pdftextfield">PDFTextField</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Enums</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/enums/blendmode">BlendMode</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/colortypes">ColorTypes</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/linecapstyle">LineCapStyle</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/linejoinstyle">LineJoinStyle</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/parsespeeds">ParseSpeeds</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/rotationtypes">RotationTypes</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/standardfonts">StandardFonts</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/textalignment">TextAlignment</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/textrenderingmode">TextRenderingMode</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Interfaces</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/attachmentoptions">AttachmentOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/base64saveoptions">Base64SaveOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/cmyk">CMYK</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/combedtextlayout">CombedTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/createoptions">CreateOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/degrees">Degrees</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawlinesoftextoptions">DrawLinesOfTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawtextlinesoptions">DrawTextLinesOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawtextoptions">DrawTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/embedfontoptions">EmbedFontOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/embeddable">Embeddable</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/fieldappearanceoptions">FieldAppearanceOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/grayscale">Grayscale</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutbounds">LayoutBounds</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutcombedtextoptions">LayoutCombedTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutsinglelinetextoptions">LayoutSinglelineTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layouttextoptions">LayoutTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/loadoptions">LoadOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/multilinetextlayout">MultilineTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawcircleoptions">PDFPageDrawCircleOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawellipseoptions">PDFPageDrawEllipseOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawimageoptions">PDFPageDrawImageOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawlineoptions">PDFPageDrawLineOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawpageoptions">PDFPageDrawPageOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawrectangleoptions">PDFPageDrawRectangleOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawsvgoptions">PDFPageDrawSVGOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawsquareoptions">PDFPageDrawSquareOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawtextoptions">PDFPageDrawTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/rgb">RGB</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/radians">Radians</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/saveoptions">SaveOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/singlelinetextlayout">SinglelineTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/textposition">TextPosition</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">PDFTextField</h1></header><article><div><span><p><a href="/docs/api/">pdf-lib</a> › <a href="/docs/api/classes/pdftextfield">PDFTextField</a></p>
+<p>Represents a text field of a <a href="/docs/api/classes/pdfform">PDFForm</a>.</p>
+<p><a href="/docs/api/classes/pdftextfield">PDFTextField</a> fields are boxes that display text entered by the user. The
+purpose of a text field is to enable users to enter text or view text values
+in the document prefilled by software. Users can click on a text field and
+input text via their keyboard. Some text fields allow multiple lines of text
+to be entered (see <a href="/docs/api/classes/pdftextfield#ismultiline">PDFTextField.isMultiline</a>).</p>
+<h2><a class="anchor" aria-hidden="true" id="hierarchy"></a><a href="#hierarchy" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Hierarchy</h2>
+<ul>
+<li><p><a href="/docs/api/classes/pdffield">PDFField</a></p>
+<p>↳ <strong>PDFTextField</strong></p></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="index"></a><a href="#index" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Index</h2>
+<h3><a class="anchor" aria-hidden="true" id="properties"></a><a href="#properties" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Properties</h3>
+<ul>
+<li><a href="/docs/api/classes/pdftextfield#acrofield">acroField</a></li>
+<li><a href="/docs/api/classes/pdftextfield#doc">doc</a></li>
+<li><a href="/docs/api/classes/pdftextfield#ref">ref</a></li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="methods"></a><a href="#methods" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Methods</h3>
+<ul>
+<li><a href="/docs/api/classes/pdftextfield#addtopage">addToPage</a></li>
+<li><a href="/docs/api/classes/pdftextfield#defaultupdateappearances">defaultUpdateAppearances</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablecombing">disableCombing</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disableexporting">disableExporting</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablefileselection">disableFileSelection</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablemultiline">disableMultiline</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablepassword">disablePassword</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablereadonly">disableReadOnly</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablerequired">disableRequired</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablerichformatting">disableRichFormatting</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablescrolling">disableScrolling</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablespellchecking">disableSpellChecking</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablecombing">enableCombing</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enableexporting">enableExporting</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablefileselection">enableFileSelection</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablemultiline">enableMultiline</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablepassword">enablePassword</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablereadonly">enableReadOnly</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablerequired">enableRequired</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablerichformatting">enableRichFormatting</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablescrolling">enableScrolling</a></li>
+<li><a href="/docs/api/classes/pdftextfield#enablespellchecking">enableSpellChecking</a></li>
+<li><a href="/docs/api/classes/pdftextfield#getalignment">getAlignment</a></li>
+<li><a href="/docs/api/classes/pdftextfield#getmaxlength">getMaxLength</a></li>
+<li><a href="/docs/api/classes/pdftextfield#getname">getName</a></li>
+<li><a href="/docs/api/classes/pdftextfield#gettext">getText</a></li>
+<li><a href="/docs/api/classes/pdftextfield#iscombed">isCombed</a></li>
+<li><a href="/docs/api/classes/pdftextfield#isexported">isExported</a></li>
+<li><a href="/docs/api/classes/pdftextfield#isfileselector">isFileSelector</a></li>
+<li><a href="/docs/api/classes/pdftextfield#ismultiline">isMultiline</a></li>
+<li><a href="/docs/api/classes/pdftextfield#ispassword">isPassword</a></li>
+<li><a href="/docs/api/classes/pdftextfield#isreadonly">isReadOnly</a></li>
+<li><a href="/docs/api/classes/pdftextfield#isrequired">isRequired</a></li>
+<li><a href="/docs/api/classes/pdftextfield#isrichformatted">isRichFormatted</a></li>
+<li><a href="/docs/api/classes/pdftextfield#isscrollable">isScrollable</a></li>
+<li><a href="/docs/api/classes/pdftextfield#isspellchecked">isSpellChecked</a></li>
+<li><a href="/docs/api/classes/pdftextfield#needsappearancesupdate">needsAppearancesUpdate</a></li>
+<li><a href="/docs/api/classes/pdftextfield#removemaxlength">removeMaxLength</a></li>
+<li><a href="/docs/api/classes/pdftextfield#setalignment">setAlignment</a></li>
+<li><a href="/docs/api/classes/pdftextfield#setmaxlength">setMaxLength</a></li>
+<li><a href="/docs/api/classes/pdftextfield#settext">setText</a></li>
+<li><a href="/docs/api/classes/pdftextfield#updateappearances">updateAppearances</a></li>
+<li><a href="/docs/api/classes/pdftextfield#static-of">of</a></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="properties-1"></a><a href="#properties-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Properties</h2>
+<h3><a class="anchor" aria-hidden="true" id="acrofield"></a><a href="#acrofield" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>acroField</h3>
+<p>• <strong>acroField</strong>: <em>PDFAcroText</em></p>
+<p><em>Overrides <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#acrofield">acroField</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L62">api/form/PDFTextField.ts:62</a></em></p>
+<p>The low-level PDFAcroText wrapped by this text field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="doc"></a><a href="#doc" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>doc</h3>
+<p>• <strong>doc</strong>: <em><a href="/docs/api/classes/pdfdocument">PDFDocument</a></em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#doc">doc</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L80">api/form/PDFField.ts:80</a></em></p>
+<p>The document to which this field belongs.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="ref"></a><a href="#ref" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ref</h3>
+<p>• <strong>ref</strong>: <em>PDFRef</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#ref">ref</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L77">api/form/PDFField.ts:77</a></em></p>
+<p>The unique reference assigned to this field within the document.</p>
+<h2><a class="anchor" aria-hidden="true" id="methods-1"></a><a href="#methods-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Methods</h2>
+<h3><a class="anchor" aria-hidden="true" id="addtopage"></a><a href="#addtopage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>addToPage</h3>
+<p>▸ <strong>addToPage</strong>(<code>page</code>: <a href="/docs/api/classes/pdfpage">PDFPage</a>, <code>options?</code>: <a href="/docs/api/interfaces/fieldappearanceoptions">FieldAppearanceOptions</a>): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L648">api/form/PDFTextField.ts:648</a></em></p>
+<p>Show this text field on the specified page. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> ubuntuFont = <span class="hljs-keyword">await</span> pdfDoc.embedFont(ubuntuFontBytes)
+<span class="hljs-keyword">const</span> page = pdfDoc.addPage()
+
+<span class="hljs-keyword">const</span> form = pdfDoc.getForm()
+<span class="hljs-keyword">const</span> textField = form.createTextField(<span class="hljs-string">'best.gundam'</span>)
+textField.setText(<span class="hljs-string">'Exia'</span>)
+
+textField.addToPage(page, {
+  <span class="hljs-attr">x</span>: <span class="hljs-number">50</span>,
+  <span class="hljs-attr">y</span>: <span class="hljs-number">75</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">200</span>,
+  <span class="hljs-attr">height</span>: <span class="hljs-number">100</span>,
+  <span class="hljs-attr">textColor</span>: rgb(<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>),
+  <span class="hljs-attr">backgroundColor</span>: rgb(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>),
+  <span class="hljs-attr">borderColor</span>: rgb(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>),
+  <span class="hljs-attr">borderWidth</span>: <span class="hljs-number">2</span>,
+  <span class="hljs-attr">rotate</span>: degrees(<span class="hljs-number">90</span>),
+  <span class="hljs-attr">font</span>: ubuntuFont,
+})
+</code></pre>
+<p>This will create a new widget for this text field.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>page</code></td><td><a href="/docs/api/classes/pdfpage">PDFPage</a></td><td>The page to which this text field widget should be added.</td></tr>
+<tr><td><code>options?</code></td><td><a href="/docs/api/interfaces/fieldappearanceoptions">FieldAppearanceOptions</a></td><td>The options to be used when adding this text field widget.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="defaultupdateappearances"></a><a href="#defaultupdateappearances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>defaultUpdateAppearances</h3>
+<p>▸ <strong>defaultUpdateAppearances</strong>(<code>font</code>: <a href="/docs/api/classes/pdffont">PDFFont</a>): <em>void</em></p>
+<p><em>Overrides void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L717">api/form/PDFTextField.ts:717</a></em></p>
+<p>Update the appearance streams for each of this text field's widgets using
+the default appearance provider for text fields. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> helvetica = <span class="hljs-keyword">await</span> pdfDoc.embedFont(StandardFonts.Helvetica)
+<span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.defaultUpdateAppearances(helvetica)
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>font</code></td><td><a href="/docs/api/classes/pdffont">PDFFont</a></td><td>The font to be used for creating the appearance streams.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablecombing"></a><a href="#disablecombing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableCombing</h3>
+<p>▸ <strong>disableCombing</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L572">api/form/PDFTextField.ts:572</a></em></p>
+<p>Turn off combing for this text field. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.disableCombing()
+</code></pre>
+<p>See <a href="/docs/api/classes/pdftextfield#iscombed">PDFTextField.isCombed</a> and <a href="/docs/api/classes/pdftextfield#enablecombing">PDFTextField.enableCombing</a> for more
+information about what combing is.</p>
+<p>This method will mark this text field as dirty. See
+<a href="/docs/api/classes/pdftextfield#settext">PDFTextField.setText</a> for more details about what this means.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disableexporting"></a><a href="#disableexporting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableExporting</h3>
+<p>▸ <strong>disableExporting</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#disableexporting">disableExporting</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L235">api/form/PDFField.ts:235</a></em></p>
+<p>Indicate that this field's value should <strong>not</strong> be exported when the form
+is submitted in a PDF reader. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.disableExporting()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablefileselection"></a><a href="#disablefileselection" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableFileSelection</h3>
+<p>▸ <strong>disableFileSelection</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L412">api/form/PDFTextField.ts:412</a></em></p>
+<p>Indicate that this text field is <strong>not</strong> intended to store a file path.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.disableFileSelection()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablemultiline"></a><a href="#disablemultiline" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableMultiline</h3>
+<p>▸ <strong>disableMultiline</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L324">api/form/PDFTextField.ts:324</a></em></p>
+<p>Display each line of text on the same line when this field is displayed
+in a PDF reader. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.disableMultiline()
+</code></pre>
+<p>This method will mark this text field as dirty. See
+<a href="/docs/api/classes/pdftextfield#settext">PDFTextField.setText</a> for more details about what this means.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablepassword"></a><a href="#disablepassword" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disablePassword</h3>
+<p>▸ <strong>disablePassword</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L373">api/form/PDFTextField.ts:373</a></em></p>
+<p>Indicate that this text field is <strong>not</strong> intended for storing a secure
+password. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.disablePassword()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablereadonly"></a><a href="#disablereadonly" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableReadOnly</h3>
+<p>▸ <strong>disableReadOnly</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#disablereadonly">disableReadOnly</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L158">api/form/PDFField.ts:158</a></em></p>
+<p>Allow users to interact with this field and change its value in PDF
+readers via mouse and keyboard input. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.disableReadOnly()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablerequired"></a><a href="#disablerequired" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableRequired</h3>
+<p>▸ <strong>disableRequired</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#disablerequired">disableRequired</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L196">api/form/PDFField.ts:196</a></em></p>
+<p>Do not require this field to have a value when the form is submitted.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.disableRequired()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablerichformatting"></a><a href="#disablerichformatting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableRichFormatting</h3>
+<p>▸ <strong>disableRichFormatting</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L617">api/form/PDFTextField.ts:617</a></em></p>
+<p>Indicate that this is a standard text field that does not XFA data (rich
+text). For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.disableRichFormatting()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablescrolling"></a><a href="#disablescrolling" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableScrolling</h3>
+<p>▸ <strong>disableScrolling</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L491">api/form/PDFTextField.ts:491</a></em></p>
+<p>Do not allow PDF readers to present a scroll bar to the user when the
+contents of this text field do not fit within its view bounds. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.disableScrolling()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablespellchecking"></a><a href="#disablespellchecking" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableSpellChecking</h3>
+<p>▸ <strong>disableSpellChecking</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L450">api/form/PDFTextField.ts:450</a></em></p>
+<p>Do not allow PDF readers to spell check the text entered in this field.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.disableSpellChecking()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablecombing"></a><a href="#enablecombing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableCombing</h3>
+<p>▸ <strong>enableCombing</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L545">api/form/PDFTextField.ts:545</a></em></p>
+<p>Split this field into <code>n</code> equal size cells with one character in each
+(where <code>n</code> is equal to the max length of the text field). This will cause
+all characters in the field to be displayed an equal distance apart from
+one another. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.enableCombing()
+</code></pre>
+<p>In addition to calling this method, text fields must have a max length
+defined in order to be combed (see <a href="/docs/api/classes/pdftextfield#setmaxlength">PDFTextField.setMaxLength</a>).</p>
+<p>This method will also call the following three methods internally:</p>
+<ul>
+<li><a href="/docs/api/classes/pdftextfield#disablemultiline">PDFTextField.disableMultiline</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablepassword">PDFTextField.disablePassword</a></li>
+<li><a href="/docs/api/classes/pdftextfield#disablefileselection">PDFTextField.disableFileSelection</a></li>
+</ul>
+<p>This method will mark this text field as dirty. See
+<a href="/docs/api/classes/pdftextfield#settext">PDFTextField.setText</a> for more details about what this means.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enableexporting"></a><a href="#enableexporting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableExporting</h3>
+<p>▸ <strong>enableExporting</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#enableexporting">enableExporting</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L223">api/form/PDFField.ts:223</a></em></p>
+<p>Indicate that this field's value should be exported when the form is
+submitted in a PDF reader. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.enableExporting()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablefileselection"></a><a href="#enablefileselection" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableFileSelection</h3>
+<p>▸ <strong>enableFileSelection</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L400">api/form/PDFTextField.ts:400</a></em></p>
+<p>Indicate that this text field is intended to store a file path. The
+contents of the file stored at that path should be submitted as the value
+of the field. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.enableFileSelection()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablemultiline"></a><a href="#enablemultiline" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableMultiline</h3>
+<p>▸ <strong>enableMultiline</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L309">api/form/PDFTextField.ts:309</a></em></p>
+<p>Display each line of text on a new line when this field is displayed in a
+PDF reader. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.enableMultiline()
+</code></pre>
+<p>This method will mark this text field as dirty. See
+<a href="/docs/api/classes/pdftextfield#settext">PDFTextField.setText</a> for more details about what this means.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablepassword"></a><a href="#enablepassword" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enablePassword</h3>
+<p>▸ <strong>enablePassword</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L361">api/form/PDFTextField.ts:361</a></em></p>
+<p>Indicate that this text field is intended for storing a secure password.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.enablePassword()
+</code></pre>
+<p>Values entered into password text fields should not be displayed on the
+screen by PDF readers. Most PDF readers will display the value as
+asterisks or bullets. PDF readers should never store values entered by the
+user into password text fields. Similarly, applications should not
+write data to a password text field.</p>
+<p><strong>Please note that this method does not cause entered values to be
+encrypted or secured in any way! It simply sets a flag that PDF software
+and readers can access to determine the <em>purpose</em> of this field.</strong></p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablereadonly"></a><a href="#enablereadonly" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableReadOnly</h3>
+<p>▸ <strong>enableReadOnly</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#enablereadonly">enableReadOnly</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L146">api/form/PDFField.ts:146</a></em></p>
+<p>Prevent PDF readers from allowing users to interact with this field or
+change its value. The field will not respond to mouse or keyboard input.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.enableReadOnly()
+</code></pre>
+<p>Useful for fields whose values are computed, imported from a database, or
+prefilled by software before being displayed to the user.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablerequired"></a><a href="#enablerequired" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableRequired</h3>
+<p>▸ <strong>enableRequired</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#enablerequired">enableRequired</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L184">api/form/PDFField.ts:184</a></em></p>
+<p>Require this field to have a value when the form is submitted.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.enableRequired()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablerichformatting"></a><a href="#enablerichformatting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableRichFormatting</h3>
+<p>▸ <strong>enableRichFormatting</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L605">api/form/PDFTextField.ts:605</a></em></p>
+<p>Indicate that this field contains XFA data - or rich text. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.enableRichFormatting()
+</code></pre>
+<p>Note that <code>pdf-lib</code> does not support reading or writing rich text fields.
+Nor do most PDF readers and writers. Rich text fields are based on XFA
+(XML Forms Architecture). Relatively few PDFs use rich text fields or XFA.
+Unlike PDF itself, XFA is not an ISO standard. XFA has been deprecated in
+PDF 2.0:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/XFA">https://en.wikipedia.org/wiki/XFA</a></li>
+<li><a href="http://blog.pdfshareforms.com/pdf-2-0-release-bid-farewell-xfa-forms/">http://blog.pdfshareforms.com/pdf-2-0-release-bid-farewell-xfa-forms/</a></li>
+</ul>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablescrolling"></a><a href="#enablescrolling" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableScrolling</h3>
+<p>▸ <strong>enableScrolling</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L479">api/form/PDFTextField.ts:479</a></em></p>
+<p>Allow PDF readers to present a scroll bar to the user when the contents
+of this text field do not fit within its view bounds. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.enableScrolling()
+</code></pre>
+<p>A horizontal scroll bar should be shown for singleline fields. A vertical
+scroll bar should be shown for multiline fields.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablespellchecking"></a><a href="#enablespellchecking" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableSpellChecking</h3>
+<p>▸ <strong>enableSpellChecking</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L438">api/form/PDFTextField.ts:438</a></em></p>
+<p>Allow PDF readers to spell check the text entered in this field.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.enableSpellChecking()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getalignment"></a><a href="#getalignment" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getAlignment</h3>
+<p>▸ <strong>getAlignment</strong>(): <em><a href="/docs/api/enums/textalignment">TextAlignment</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L177">api/form/PDFTextField.ts:177</a></em></p>
+<p>Get the alignment for this text field. This value represents the
+justification of the text when it is displayed to the user in PDF readers.
+There are three possible alignments: left, center, and right. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">const</span> alignment = textField.getAlignment()
+<span class="hljs-keyword">if</span> (alignment === TextAlignment.Left) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Text is left justified'</span>)
+<span class="hljs-keyword">if</span> (alignment === TextAlignment.Center) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Text is centered'</span>)
+<span class="hljs-keyword">if</span> (alignment === TextAlignment.Right) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Text is right justified'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em><a href="/docs/api/enums/textalignment">TextAlignment</a></em></p>
+<p>The alignment of this text field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getmaxlength"></a><a href="#getmaxlength" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getMaxLength</h3>
+<p>▸ <strong>getMaxLength</strong>(): <em>number | undefined</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L229">api/form/PDFTextField.ts:229</a></em></p>
+<p>Get the maximum length of this field. This value represents the maximum
+number of characters that can be typed into this field by the user. If
+this field does not have a maximum length, <code>undefined</code> is returned.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">const</span> maxLength = textField.getMaxLength()
+<span class="hljs-keyword">if</span> (maxLength === <span class="hljs-literal">undefined</span>) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'No max length'</span>)
+<span class="hljs-keyword">else</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Max length is <span class="hljs-subst">${maxLength}</span>`</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>number | undefined</em></p>
+<p>The maximum number of characters allowed in this field, or
+<code>undefined</code> if no limit exists.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getname"></a><a href="#getname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getName</h3>
+<p>▸ <strong>getName</strong>(): <em>string</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#getname">getName</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L116">api/form/PDFField.ts:116</a></em></p>
+<p>Get the fully qualified name of this field. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> fields = form.getFields()
+fields.forEach(<span class="hljs-function"><span class="hljs-params">field</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> name = field.getName()
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Field name:'</span>, name)
+})
+</code></pre>
+<p>Note that PDF fields are structured as a tree. Each field is the
+descendent of a series of ancestor nodes all the way up to the form node,
+which is always the root of the tree. Each node in the tree (except for
+the form node) has a partial name. Partial names can be composed of any
+unicode characters except a period (<code>.</code>). The fully qualified name of a
+field is composed of the partial names of all its ancestors joined
+with periods. This means that splitting the fully qualified name on
+periods and taking the last element of the resulting array will give you
+the partial name of a specific field.</p>
+<p><strong>Returns:</strong> <em>string</em></p>
+<p>The fully qualified name of this field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="gettext"></a><a href="#gettext" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getText</h3>
+<p>▸ <strong>getText</strong>(): <em>string | undefined</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L100">api/form/PDFTextField.ts:100</a></em></p>
+<p>Get the text that this field contains. This text is visible to users who
+view this field in a PDF reader.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">const</span> text = textField.getText()
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Text field contents:'</span>, text)
+</code></pre>
+<p>Note that if this text field contains no underlying value, <code>undefined</code>
+will be returned. Text fields may also contain an underlying value that
+is simply an empty string (<code>''</code>). This detail is largely irrelevant for
+most applications. In general, you'll want to treat both cases the same
+way and simply consider the text field to be empty. In either case, the
+text field will appear empty to users when viewed in a PDF reader.</p>
+<p>An error will be thrown if this is a rich text field. <code>pdf-lib</code> does not
+support reading rich text fields. Nor do most PDF readers and writers.
+Rich text fields are based on XFA (XML Forms Architecture). Relatively few
+PDFs use rich text fields or XFA. Unlike PDF itself, XFA is not an ISO
+standard. XFA has been deprecated in PDF 2.0:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/XFA">https://en.wikipedia.org/wiki/XFA</a></li>
+<li><a href="http://blog.pdfshareforms.com/pdf-2-0-release-bid-farewell-xfa-forms/">http://blog.pdfshareforms.com/pdf-2-0-release-bid-farewell-xfa-forms/</a></li>
+</ul>
+<p><strong>Returns:</strong> <em>string | undefined</em></p>
+<p>The text contained in this text field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="iscombed"></a><a href="#iscombed" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isCombed</h3>
+<p>▸ <strong>isCombed</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L514">api/form/PDFTextField.ts:514</a></em></p>
+<p>Returns <code>true</code> if this is a combed text field. This means that the field
+is split into <code>n</code> equal size cells with one character in each (where <code>n</code>
+is equal to the max length of the text field). The result is that all
+characters in this field are displayed an equal distance apart from one
+another. See <a href="/docs/api/classes/pdftextfield#enablecombing">PDFTextField.enableCombing</a> and
+<a href="/docs/api/classes/pdftextfield#disablecombing">PDFTextField.disableCombing</a>. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">if</span> (textField.isCombed()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Combing is enabled'</span>)
+</code></pre>
+<p>Note that in order for a text field to be combed, the following must be
+true (in addition to enabling combing):</p>
+<ul>
+<li>It must not be a multiline field (see <a href="/docs/api/classes/pdftextfield#ismultiline">PDFTextField.isMultiline</a>)</li>
+<li>It must not be a password field (see <a href="/docs/api/classes/pdftextfield#ispassword">PDFTextField.isPassword</a>)</li>
+<li>It must not be a file selector field (see <a href="/docs/api/classes/pdftextfield#isfileselector">PDFTextField.isFileSelector</a>)</li>
+<li>It must have a max length defined (see <a href="/docs/api/classes/pdftextfield#setmaxlength">PDFTextField.setMaxLength</a>)</li>
+</ul>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this field is combed.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isexported"></a><a href="#isexported" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isExported</h3>
+<p>▸ <strong>isExported</strong>(): <em>boolean</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#isexported">isExported</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L211">api/form/PDFField.ts:211</a></em></p>
+<p>Returns <code>true</code> if this field's value should be exported when the form is
+submitted. See <a href="/docs/api/classes/pdffield#enableexporting">PDFField.enableExporting</a> and
+<a href="/docs/api/classes/pdffield#disableexporting">PDFField.disableExporting</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+<span class="hljs-keyword">if</span> (field.isExported()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Exporting is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this field's value should be exported.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isfileselector"></a><a href="#isfileselector" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isFileSelector</h3>
+<p>▸ <strong>isFileSelector</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L387">api/form/PDFTextField.ts:387</a></em></p>
+<p>Returns <code>true</code> if the contents of this text field represent a file path.
+See <a href="/docs/api/classes/pdftextfield#enablefileselection">PDFTextField.enableFileSelection</a> and
+<a href="/docs/api/classes/pdftextfield#disablefileselection">PDFTextField.disableFileSelection</a>. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">if</span> (textField.isFileSelector()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Is a file selector'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this field should contain file paths.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="ismultiline"></a><a href="#ismultiline" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isMultiline</h3>
+<p>▸ <strong>isMultiline</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L295">api/form/PDFTextField.ts:295</a></em></p>
+<p>Returns <code>true</code> if each line of text is shown on a new line when this
+field is displayed in a PDF reader. The alternative is that all lines of
+text are merged onto a single line when displayed. See
+<a href="/docs/api/classes/pdftextfield#enablemultiline">PDFTextField.enableMultiline</a> and <a href="/docs/api/classes/pdftextfield#disablemultiline">PDFTextField.disableMultiline</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">if</span> (textField.isMultiline()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Multiline is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this is a multiline text field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="ispassword"></a><a href="#ispassword" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isPassword</h3>
+<p>▸ <strong>isPassword</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L340">api/form/PDFTextField.ts:340</a></em></p>
+<p>Returns <code>true</code> if this is a password text field. This means that the field
+is intended for storing a secure password. See
+<a href="/docs/api/classes/pdftextfield#enablepassword">PDFTextField.enablePassword</a> and <a href="/docs/api/classes/pdftextfield#disablepassword">PDFTextField.disablePassword</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">if</span> (textField.isPassword()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Password is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this is a password text field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isreadonly"></a><a href="#isreadonly" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isReadOnly</h3>
+<p>▸ <strong>isReadOnly</strong>(): <em>boolean</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#isreadonly">isReadOnly</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L131">api/form/PDFField.ts:131</a></em></p>
+<p>Returns <code>true</code> if this field is read only. This means that PDF readers
+will not allow users to interact with the field or change its value. See
+<a href="/docs/api/classes/pdffield#enablereadonly">PDFField.enableReadOnly</a> and <a href="/docs/api/classes/pdffield#disablereadonly">PDFField.disableReadOnly</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+<span class="hljs-keyword">if</span> (field.isReadOnly()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Read only is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this is a read only field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isrequired"></a><a href="#isrequired" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isRequired</h3>
+<p>▸ <strong>isRequired</strong>(): <em>boolean</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#isrequired">isRequired</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L172">api/form/PDFField.ts:172</a></em></p>
+<p>Returns <code>true</code> if this field must have a value when the form is submitted.
+See <a href="/docs/api/classes/pdffield#enablerequired">PDFField.enableRequired</a> and <a href="/docs/api/classes/pdffield#disablerequired">PDFField.disableRequired</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+<span class="hljs-keyword">if</span> (field.isRequired()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Field is required'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this field is required.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isrichformatted"></a><a href="#isrichformatted" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isRichFormatted</h3>
+<p>▸ <strong>isRichFormatted</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L587">api/form/PDFTextField.ts:587</a></em></p>
+<p>Returns <code>true</code> if this text field contains rich text. See
+<a href="/docs/api/classes/pdftextfield#enablerichformatting">PDFTextField.enableRichFormatting</a> and
+<a href="/docs/api/classes/pdftextfield#disablerichformatting">PDFTextField.disableRichFormatting</a>. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">if</span> (textField.isRichFormatted()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Rich formatting enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this field contains rich text.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isscrollable"></a><a href="#isscrollable" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isScrollable</h3>
+<p>▸ <strong>isScrollable</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L465">api/form/PDFTextField.ts:465</a></em></p>
+<p>Returns <code>true</code> if PDF readers should allow the user to scroll the text
+field when its contents do not fit within the field's view bounds. See
+<a href="/docs/api/classes/pdftextfield#enablescrolling">PDFTextField.enableScrolling</a> and <a href="/docs/api/classes/pdftextfield#disablescrolling">PDFTextField.disableScrolling</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">if</span> (textField.isScrollable()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Scrolling is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not the field is scrollable in PDF readers.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isspellchecked"></a><a href="#isspellchecked" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isSpellChecked</h3>
+<p>▸ <strong>isSpellChecked</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L426">api/form/PDFTextField.ts:426</a></em></p>
+<p>Returns <code>true</code> if the text entered in this field should be spell checked
+by PDF readers. See <a href="/docs/api/classes/pdftextfield#enablespellchecking">PDFTextField.enableSpellChecking</a> and
+<a href="/docs/api/classes/pdftextfield#disablespellchecking">PDFTextField.disableSpellChecking</a>. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">if</span> (textField.isSpellChecked()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Spell checking is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this field should be spell checked.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="needsappearancesupdate"></a><a href="#needsappearancesupdate" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>needsAppearancesUpdate</h3>
+<p>▸ <strong>needsAppearancesUpdate</strong>(): <em>boolean</em></p>
+<p><em>Overrides void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L693">api/form/PDFTextField.ts:693</a></em></p>
+<p>Returns <code>true</code> if this text field has been marked as dirty, or if any of
+this text field's widgets do not have an appearance stream. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+<span class="hljs-keyword">if</span> (textField.needsAppearancesUpdate()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Needs update'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this text field needs an appearance update.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="removemaxlength"></a><a href="#removemaxlength" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>removeMaxLength</h3>
+<p>▸ <strong>removeMaxLength</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L278">api/form/PDFTextField.ts:278</a></em></p>
+<p>Remove the maximum length for this text field. This allows any number of
+characters to be typed into this field by the user. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.removeMaxLength()
+</code></pre>
+<p>Calling this method is equivalent to passing <code>undefined</code> to
+<a href="/docs/api/classes/pdftextfield#setmaxlength">PDFTextField.setMaxLength</a>.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setalignment"></a><a href="#setalignment" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setAlignment</h3>
+<p>▸ <strong>setAlignment</strong>(<code>alignment</code>: <a href="/docs/api/enums/textalignment">TextAlignment</a>): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L209">api/form/PDFTextField.ts:209</a></em></p>
+<p>Set the alignment for this text field. This will determine the
+justification of the text when it is displayed to the user in PDF readers.
+There are three possible alignments: left, center, and right. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+
+<span class="hljs-comment">// Text will be left justified when displayed</span>
+textField.setAlignment(TextAlignment.Left)
+
+<span class="hljs-comment">// Text will be centered when displayed</span>
+textField.setAlignment(TextAlignment.Center)
+
+<span class="hljs-comment">// Text will be right justified when displayed</span>
+textField.setAlignment(TextAlignment.Right)
+</code></pre>
+<p>This method will mark this text field as dirty. See
+<a href="/docs/api/classes/pdftextfield#settext">PDFTextField.setText</a> for more details about what this means.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>alignment</code></td><td><a href="/docs/api/enums/textalignment">TextAlignment</a></td><td>The alignment for this text field.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setmaxlength"></a><a href="#setmaxlength" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setMaxLength</h3>
+<p>▸ <strong>setMaxLength</strong>(<code>maxLength?</code>: undefined | number): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L252">api/form/PDFTextField.ts:252</a></em></p>
+<p>Set the maximum length of this field. This limits the number of characters
+that can be typed into this field by the user. This also limits the length
+of the string that can be passed to <a href="/docs/api/classes/pdftextfield#settext">PDFTextField.setText</a>. This limit
+can be removed by passing <code>undefined</code> as <code>maxLength</code>. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+
+<span class="hljs-comment">// Allow between 0 and 5 characters to be entered</span>
+textField.setMaxLength(<span class="hljs-number">5</span>)
+
+<span class="hljs-comment">// Allow any number of characters to be entered</span>
+textField.setMaxLength(<span class="hljs-literal">undefined</span>)
+</code></pre>
+<p>This method will mark this text field as dirty. See
+<a href="/docs/api/classes/pdftextfield#settext">PDFTextField.setText</a> for more details about what this means.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>maxLength?</code></td><td>undefined | number</td><td>The maximum number of characters allowed in this field, or                  <code>undefined</code> to remove the limit.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="settext"></a><a href="#settext" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setText</h3>
+<p>▸ <strong>setText</strong>(<code>text</code>: string | undefined): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L146">api/form/PDFTextField.ts:146</a></em></p>
+<p>Set the text for this field. This operation is analogous to a human user
+clicking on the text field in a PDF reader and typing in text via their
+keyboard. This method will update the underlying state of the text field
+to indicate what text has been set. PDF libraries and readers will be able
+to extract these values from the saved document and determine what text
+was set.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'best.superhero.text.field'</span>)
+textField.setText(<span class="hljs-string">'One Punch Man'</span>)
+</code></pre>
+<p>This method will mark this text field as dirty, causing its appearance
+streams to be updated when either <a href="/docs/api/classes/pdfdocument#save">PDFDocument.save</a> or
+<a href="/docs/api/classes/pdfform#updatefieldappearances">PDFForm.updateFieldAppearances</a> is called. The updated streams will
+display the text this field contains inside the widgets of this text
+field.</p>
+<p><strong>IMPORTANT:</strong> The default font used to update appearance streams is
+<a href="/docs/api/enums/standardfonts#helvetica">StandardFonts.Helvetica</a>. Note that this is a WinAnsi font. This means
+that encoding errors will be thrown if this field contains text outside
+the WinAnsi character set (the latin alphabet).</p>
+<p>Embedding a custom font and passing it to
+<a href="/docs/api/classes/pdfform#updatefieldappearances">PDFForm.updateFieldAppearances</a> or <a href="/docs/api/classes/pdftextfield#updateappearances">PDFTextField.updateAppearances</a>
+allows you to generate appearance streams with characters outside the
+latin alphabet (assuming the custom font supports them).</p>
+<p>If this is a rich text field, it will be converted to a standard text
+field in order to set the text. <code>pdf-lib</code> does not support writing rich
+text strings. Nor do most PDF readers and writers. See
+<a href="/docs/api/classes/pdftextfield#gettext">PDFTextField.getText</a> for more information about rich text fields and
+their deprecation in PDF 2.0.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>text</code></td><td>string | undefined</td><td>The text this field should contain.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="updateappearances"></a><a href="#updateappearances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>updateAppearances</h3>
+<p>▸ <strong>updateAppearances</strong>(<code>font</code>: <a href="/docs/api/classes/pdffont">PDFFont</a>, <code>provider?</code>: <a href="/docs/api/#appearanceproviderfor">AppearanceProviderFor</a>‹<a href="/docs/api/classes/pdftextfield">PDFTextField</a>›): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L738">api/form/PDFTextField.ts:738</a></em></p>
+<p>Update the appearance streams for each of this text field's widgets using
+the given appearance provider. If no <code>provider</code> is passed, the default
+appearance provider for text fields will be used. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> helvetica = <span class="hljs-keyword">await</span> pdfDoc.embedFont(StandardFonts.Helvetica)
+<span class="hljs-keyword">const</span> textField = form.getTextField(<span class="hljs-string">'some.text.field'</span>)
+textField.updateAppearances(helvetica, (field, widget, font) =&gt; {
+  ...
+  return drawTextField(...)
+})
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>font</code></td><td><a href="/docs/api/classes/pdffont">PDFFont</a></td><td>The font to be used for creating the appearance streams.</td></tr>
+<tr><td><code>provider?</code></td><td><a href="/docs/api/#appearanceproviderfor">AppearanceProviderFor</a>‹<a href="/docs/api/classes/pdftextfield">PDFTextField</a>›</td><td>Optionally, the appearance provider to be used for                 generating the contents of the appearance streams.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="static-of"></a><a href="#static-of" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>Static</code> of</h3>
+<p>▸ <strong>of</strong>(<code>acroText</code>: PDFAcroText, <code>ref</code>: PDFRef, <code>doc</code>: <a href="/docs/api/classes/pdfdocument">PDFDocument</a>): <em><a href="/docs/api/classes/pdftextfield">PDFTextField</a>‹›</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFTextField.ts#L58">api/form/PDFTextField.ts:58</a></em></p>
+<blockquote>
+<p><strong>NOTE:</strong> You probably don't want to call this method directly. Instead,
+consider using the <a href="/docs/api/classes/pdfform#gettextfield">PDFForm.getTextField</a> method, which will create an
+instance of <a href="/docs/api/classes/pdftextfield">PDFTextField</a> for you.</p>
+</blockquote>
+<p>Create an instance of <a href="/docs/api/classes/pdftextfield">PDFTextField</a> from an existing acroText and ref</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>acroText</code></td><td>PDFAcroText</td><td>The underlying <code>PDFAcroText</code> for this text field.</td></tr>
+<tr><td><code>ref</code></td><td>PDFRef</td><td>The unique reference for this text field.</td></tr>
+<tr><td><code>doc</code></td><td><a href="/docs/api/classes/pdfdocument">PDFDocument</a></td><td>The document to which this text field will belong.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em><a href="/docs/api/classes/pdftextfield">PDFTextField</a>‹›</em></p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/api/classes/pdfsignature"><span class="arrow-prev">← </span><span>PDFSignature</span></a><a class="docs-next button" href="/docs/api/enums/blendmode"><span class="function-name-prevnext">BlendMode</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#hierarchy">Hierarchy</a></li><li><a href="#index">Index</a><ul class="toc-headings"><li><a href="#properties">Properties</a></li><li><a href="#methods">Methods</a></li></ul></li><li><a href="#properties-1">Properties</a><ul class="toc-headings"><li><a href="#acrofield">acroField</a></li><li><a href="#doc">doc</a></li><li><a href="#ref">ref</a></li></ul></li><li><a href="#methods-1">Methods</a><ul class="toc-headings"><li><a href="#addtopage">addToPage</a></li><li><a href="#defaultupdateappearances">defaultUpdateAppearances</a></li><li><a href="#disablecombing">disableCombing</a></li><li><a href="#disableexporting">disableExporting</a></li><li><a href="#disablefileselection">disableFileSelection</a></li><li><a href="#disablemultiline">disableMultiline</a></li><li><a href="#disablepassword">disablePassword</a></li><li><a href="#disablereadonly">disableReadOnly</a></li><li><a href="#disablerequired">disableRequired</a></li><li><a href="#disablerichformatting">disableRichFormatting</a></li><li><a href="#disablescrolling">disableScrolling</a></li><li><a href="#disablespellchecking">disableSpellChecking</a></li><li><a href="#enablecombing">enableCombing</a></li><li><a href="#enableexporting">enableExporting</a></li><li><a href="#enablefileselection">enableFileSelection</a></li><li><a href="#enablemultiline">enableMultiline</a></li><li><a href="#enablepassword">enablePassword</a></li><li><a href="#enablereadonly">enableReadOnly</a></li><li><a href="#enablerequired">enableRequired</a></li><li><a href="#enablerichformatting">enableRichFormatting</a></li><li><a href="#enablescrolling">enableScrolling</a></li><li><a href="#enablespellchecking">enableSpellChecking</a></li><li><a href="#getalignment">getAlignment</a></li><li><a href="#getmaxlength">getMaxLength</a></li><li><a href="#getname">getName</a></li><li><a href="#gettext">getText</a></li><li><a href="#iscombed">isCombed</a></li><li><a href="#isexported">isExported</a></li><li><a href="#isfileselector">isFileSelector</a></li><li><a href="#ismultiline">isMultiline</a></li><li><a href="#ispassword">isPassword</a></li><li><a href="#isreadonly">isReadOnly</a></li><li><a href="#isrequired">isRequired</a></li><li><a href="#isrichformatted">isRichFormatted</a></li><li><a href="#isscrollable">isScrollable</a></li><li><a href="#isspellchecked">isSpellChecked</a></li><li><a href="#needsappearancesupdate">needsAppearancesUpdate</a></li><li><a href="#removemaxlength">removeMaxLength</a></li><li><a href="#setalignment">setAlignment</a></li><li><a href="#setmaxlength">setMaxLength</a></li><li><a href="#settext">setText</a></li><li><a href="#updateappearances">updateAppearances</a></li><li><a href="#static-of"><code>Static</code> of</a></li></ul></li></ul></nav></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '9cd7747a43c6b7e9c2554939d34db33f',
+                indexName: 'pdf-lib',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {}
+              });
+            </script></body></html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>PDFRadioGroup · PDF-LIB</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;&lt;a href=&quot;/docs/api/&quot;&gt;pdf-lib&lt;/a&gt; › &lt;a href=&quot;/docs/api/classes/pdfradiogroup&quot;&gt;PDFRadioGroup&lt;/a&gt;&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="PDFRadioGroup · PDF-LIB"/><meta property="og:type" content="website"/><meta property="og:url" content="https://Hopding.github.io/"/><meta property="og:description" content="&lt;p&gt;&lt;a href=&quot;/docs/api/&quot;&gt;pdf-lib&lt;/a&gt; › &lt;a href=&quot;/docs/api/classes/pdfradiogroup&quot;&gt;PDFRadioGroup&lt;/a&gt;&lt;/p&gt;
+"/><meta property="og:image" content="https://Hopding.github.io/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://Hopding.github.io/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/logo3.png"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css"/><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><h2 class="headerTitle">PDF-LIB</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/api/" target="_self">API</a></li><li class=""><a href="/docs/help" target="_self">Help</a></li><li class=""><a href="https://github.com/Hopding/pdf-lib" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Classes</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/">Globals</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Classes</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfbutton">PDFButton</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfcheckbox">PDFCheckBox</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfdocument">PDFDocument</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfdropdown">PDFDropdown</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfembeddedpage">PDFEmbeddedPage</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdffield">PDFField</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdffont">PDFFont</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfform">PDFForm</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfimage">PDFImage</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfoptionlist">PDFOptionList</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfpage">PDFPage</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfsignature">PDFSignature</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdftextfield">PDFTextField</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Enums</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/enums/blendmode">BlendMode</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/colortypes">ColorTypes</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/linecapstyle">LineCapStyle</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/linejoinstyle">LineJoinStyle</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/parsespeeds">ParseSpeeds</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/rotationtypes">RotationTypes</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/standardfonts">StandardFonts</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/textalignment">TextAlignment</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/textrenderingmode">TextRenderingMode</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Interfaces</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/attachmentoptions">AttachmentOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/base64saveoptions">Base64SaveOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/cmyk">CMYK</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/combedtextlayout">CombedTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/createoptions">CreateOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/degrees">Degrees</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawlinesoftextoptions">DrawLinesOfTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawtextlinesoptions">DrawTextLinesOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawtextoptions">DrawTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/embedfontoptions">EmbedFontOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/embeddable">Embeddable</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/fieldappearanceoptions">FieldAppearanceOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/grayscale">Grayscale</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutbounds">LayoutBounds</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutcombedtextoptions">LayoutCombedTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutsinglelinetextoptions">LayoutSinglelineTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layouttextoptions">LayoutTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/loadoptions">LoadOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/multilinetextlayout">MultilineTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawcircleoptions">PDFPageDrawCircleOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawellipseoptions">PDFPageDrawEllipseOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawimageoptions">PDFPageDrawImageOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawlineoptions">PDFPageDrawLineOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawpageoptions">PDFPageDrawPageOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawrectangleoptions">PDFPageDrawRectangleOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawsvgoptions">PDFPageDrawSVGOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawsquareoptions">PDFPageDrawSquareOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawtextoptions">PDFPageDrawTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/rgb">RGB</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/radians">Radians</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/saveoptions">SaveOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/singlelinetextlayout">SinglelineTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/textposition">TextPosition</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">PDFRadioGroup</h1></header><article><div><span><p><a href="/docs/api/">pdf-lib</a> › <a href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a></p>
+<p>Represents a radio group field of a <a href="/docs/api/classes/pdfform">PDFForm</a>.</p>
+<p><a href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a> fields are collections of radio buttons. The purpose of a
+radio group is to enable users to select one option from a set of mutually
+exclusive choices. Each choice in a radio group is represented by a radio
+button. Radio buttons each have two states: <code>on</code> and <code>off</code>. At most one
+radio button in a group may be in the <code>on</code> state at any time. Users can
+click on a radio button to select it (and thereby automatically deselect any
+other radio button that might have already been selected). Some radio
+groups allow users to toggle a selected radio button <code>off</code> by clicking on
+it (see <a href="/docs/api/classes/pdfradiogroup#isofftoggleable">PDFRadioGroup.isOffToggleable</a>).</p>
+<p>Note that some radio groups allow multiple radio buttons to be in the <code>on</code>
+state at the same type <strong>if</strong> they represent the same underlying value (see
+<a href="/docs/api/classes/pdfradiogroup#ismutuallyexclusive">PDFRadioGroup.isMutuallyExclusive</a>).</p>
+<h2><a class="anchor" aria-hidden="true" id="hierarchy"></a><a href="#hierarchy" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Hierarchy</h2>
+<ul>
+<li><p><a href="/docs/api/classes/pdffield">PDFField</a></p>
+<p>↳ <strong>PDFRadioGroup</strong></p></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="index"></a><a href="#index" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Index</h2>
+<h3><a class="anchor" aria-hidden="true" id="properties"></a><a href="#properties" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Properties</h3>
+<ul>
+<li><a href="/docs/api/classes/pdfradiogroup#acrofield">acroField</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#doc">doc</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#ref">ref</a></li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="methods"></a><a href="#methods" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Methods</h3>
+<ul>
+<li><a href="/docs/api/classes/pdfradiogroup#addoptiontopage">addOptionToPage</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#clear">clear</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#defaultupdateappearances">defaultUpdateAppearances</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#disableexporting">disableExporting</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#disablemutualexclusion">disableMutualExclusion</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#disableofftoggling">disableOffToggling</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#disablereadonly">disableReadOnly</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#disablerequired">disableRequired</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#enableexporting">enableExporting</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#enablemutualexclusion">enableMutualExclusion</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#enableofftoggling">enableOffToggling</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#enablereadonly">enableReadOnly</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#enablerequired">enableRequired</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#getname">getName</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#getoptions">getOptions</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#getselected">getSelected</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#isexported">isExported</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#ismutuallyexclusive">isMutuallyExclusive</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#isofftoggleable">isOffToggleable</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#isreadonly">isReadOnly</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#isrequired">isRequired</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#needsappearancesupdate">needsAppearancesUpdate</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#select">select</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#updateappearances">updateAppearances</a></li>
+<li><a href="/docs/api/classes/pdfradiogroup#static-of">of</a></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="properties-1"></a><a href="#properties-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Properties</h2>
+<h3><a class="anchor" aria-hidden="true" id="acrofield"></a><a href="#acrofield" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>acroField</h3>
+<p>• <strong>acroField</strong>: <em>PDFAcroRadioButton</em></p>
+<p><em>Overrides <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#acrofield">acroField</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L64">api/form/PDFRadioGroup.ts:64</a></em></p>
+<p>The low-level PDFAcroRadioButton wrapped by this radio group.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="doc"></a><a href="#doc" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>doc</h3>
+<p>• <strong>doc</strong>: <em><a href="/docs/api/classes/pdfdocument">PDFDocument</a></em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#doc">doc</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L80">api/form/PDFField.ts:80</a></em></p>
+<p>The document to which this field belongs.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="ref"></a><a href="#ref" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ref</h3>
+<p>• <strong>ref</strong>: <em>PDFRef</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#ref">ref</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L77">api/form/PDFField.ts:77</a></em></p>
+<p>The unique reference assigned to this field within the document.</p>
+<h2><a class="anchor" aria-hidden="true" id="methods-1"></a><a href="#methods-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Methods</h2>
+<h3><a class="anchor" aria-hidden="true" id="addoptiontopage"></a><a href="#addoptiontopage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>addOptionToPage</h3>
+<p>▸ <strong>addOptionToPage</strong>(<code>option</code>: string, <code>page</code>: <a href="/docs/api/classes/pdfpage">PDFPage</a>, <code>options?</code>: <a href="/docs/api/interfaces/fieldappearanceoptions">FieldAppearanceOptions</a>): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L352">api/form/PDFRadioGroup.ts:352</a></em></p>
+<p>Add a new radio button to this group on the specified page. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> page = pdfDoc.addPage()
+
+<span class="hljs-keyword">const</span> form = pdfDoc.getForm()
+<span class="hljs-keyword">const</span> radioGroup = form.createRadioGroup(<span class="hljs-string">'best.gundam'</span>)
+
+<span class="hljs-keyword">const</span> options = {
+  <span class="hljs-attr">x</span>: <span class="hljs-number">50</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">25</span>,
+  <span class="hljs-attr">height</span>: <span class="hljs-number">25</span>,
+  <span class="hljs-attr">textColor</span>: rgb(<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>),
+  <span class="hljs-attr">backgroundColor</span>: rgb(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>),
+  <span class="hljs-attr">borderColor</span>: rgb(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>),
+  <span class="hljs-attr">borderWidth</span>: <span class="hljs-number">2</span>,
+  <span class="hljs-attr">rotate</span>: degrees(<span class="hljs-number">90</span>),
+}
+
+radioGroup.addOptionToPage(<span class="hljs-string">'Exia'</span>, page, { ...options, <span class="hljs-attr">y</span>: <span class="hljs-number">50</span> })
+radioGroup.addOptionToPage(<span class="hljs-string">'Dynames'</span>, page, { ...options, <span class="hljs-attr">y</span>: <span class="hljs-number">110</span> })
+</code></pre>
+<p>This will create a new radio button widget for this radio group field.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>option</code></td><td>string</td><td>The option that the radio button widget represents.</td></tr>
+<tr><td><code>page</code></td><td><a href="/docs/api/classes/pdfpage">PDFPage</a></td><td>The page to which the radio button widget should be added.</td></tr>
+<tr><td><code>options?</code></td><td><a href="/docs/api/interfaces/fieldappearanceoptions">FieldAppearanceOptions</a></td><td>The options to be used when adding the radio button widget.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="clear"></a><a href="#clear" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>clear</h3>
+<p>▸ <strong>clear</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L222">api/form/PDFRadioGroup.ts:222</a></em></p>
+<p>Clear any selected option for this dropdown. This will result in all
+radio buttons in this group being toggled off. This method will update
+the underlying state of the dropdown to indicate that no radio buttons
+have been selected.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+radioGroup.clear()
+</code></pre>
+<p>This method will mark this radio group as dirty. See
+<a href="/docs/api/classes/pdfradiogroup#select">PDFRadioGroup.select</a> for more details about what this means.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="defaultupdateappearances"></a><a href="#defaultupdateappearances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>defaultUpdateAppearances</h3>
+<p>▸ <strong>defaultUpdateAppearances</strong>(): <em>void</em></p>
+<p><em>Overrides void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L419">api/form/PDFRadioGroup.ts:419</a></em></p>
+<p>Update the appearance streams for each of this group's radio button widgets
+using the default appearance provider for radio groups. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+radioGroup.defaultUpdateAppearances()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disableexporting"></a><a href="#disableexporting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableExporting</h3>
+<p>▸ <strong>disableExporting</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#disableexporting">disableExporting</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L235">api/form/PDFField.ts:235</a></em></p>
+<p>Indicate that this field's value should <strong>not</strong> be exported when the form
+is submitted in a PDF reader. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.disableExporting()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablemutualexclusion"></a><a href="#disablemutualexclusion" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableMutualExclusion</h3>
+<p>▸ <strong>disableMutualExclusion</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L321">api/form/PDFRadioGroup.ts:321</a></em></p>
+<p>When the user clicks a radio button in this group only it will be selected.
+No other radio buttons in the group will be selected, even if they share
+the same underlying value. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+radioGroup.disableMutualExclusion()
+</code></pre>
+<p>Note that this option must be disabled prior to adding options to the
+radio group. It does not currently apply retroactively to existing
+radio buttons in the group.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disableofftoggling"></a><a href="#disableofftoggling" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableOffToggling</h3>
+<p>▸ <strong>disableOffToggling</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L270">api/form/PDFRadioGroup.ts:270</a></em></p>
+<p>Prevent users from clicking on selected radio buttons in this group to
+toggle them off. Clicking on a selected radio button will have no effect.
+The only way to deselect a selected radio button is to click on a
+different radio button in the group. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+radioGroup.disableOffToggling()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablereadonly"></a><a href="#disablereadonly" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableReadOnly</h3>
+<p>▸ <strong>disableReadOnly</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#disablereadonly">disableReadOnly</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L158">api/form/PDFField.ts:158</a></em></p>
+<p>Allow users to interact with this field and change its value in PDF
+readers via mouse and keyboard input. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.disableReadOnly()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="disablerequired"></a><a href="#disablerequired" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>disableRequired</h3>
+<p>▸ <strong>disableRequired</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#disablerequired">disableRequired</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L196">api/form/PDFField.ts:196</a></em></p>
+<p>Do not require this field to have a value when the form is submitted.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.disableRequired()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enableexporting"></a><a href="#enableexporting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableExporting</h3>
+<p>▸ <strong>enableExporting</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#enableexporting">enableExporting</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L223">api/form/PDFField.ts:223</a></em></p>
+<p>Indicate that this field's value should be exported when the form is
+submitted in a PDF reader. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.enableExporting()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablemutualexclusion"></a><a href="#enablemutualexclusion" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableMutualExclusion</h3>
+<p>▸ <strong>enableMutualExclusion</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L305">api/form/PDFRadioGroup.ts:305</a></em></p>
+<p>When the user clicks a radio button in this group it will be selected. In
+addition, any other radio buttons in this group that share the same
+underlying value will also be selected. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+radioGroup.enableMutualExclusion()
+</code></pre>
+<p>Note that this option must be enabled prior to adding options to the
+radio group. It does not currently apply retroactively to existing
+radio buttons in the group.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enableofftoggling"></a><a href="#enableofftoggling" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableOffToggling</h3>
+<p>▸ <strong>enableOffToggling</strong>(): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L256">api/form/PDFRadioGroup.ts:256</a></em></p>
+<p>Allow users to click on selected radio buttons in this group to toggle
+them off. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+radioGroup.enableOffToggling()
+</code></pre>
+<blockquote>
+<p><strong>NOTE:</strong> This feature is documented in the PDF specification
+(Table 226). However, most PDF readers do not respect this option and
+prevent users from toggling radio buttons off even when it is enabled.
+At the time of this writing (9/6/2020) Mac's Preview software did
+respect the option. Adobe Acrobat, Foxit Reader, and Google Chrome did
+not.</p>
+</blockquote>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablereadonly"></a><a href="#enablereadonly" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableReadOnly</h3>
+<p>▸ <strong>enableReadOnly</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#enablereadonly">enableReadOnly</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L146">api/form/PDFField.ts:146</a></em></p>
+<p>Prevent PDF readers from allowing users to interact with this field or
+change its value. The field will not respond to mouse or keyboard input.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.enableReadOnly()
+</code></pre>
+<p>Useful for fields whose values are computed, imported from a database, or
+prefilled by software before being displayed to the user.</p>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="enablerequired"></a><a href="#enablerequired" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>enableRequired</h3>
+<p>▸ <strong>enableRequired</strong>(): <em>void</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#enablerequired">enableRequired</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L184">api/form/PDFField.ts:184</a></em></p>
+<p>Require this field to have a value when the form is submitted.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+field.enableRequired()
+</code></pre>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getname"></a><a href="#getname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getName</h3>
+<p>▸ <strong>getName</strong>(): <em>string</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#getname">getName</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L116">api/form/PDFField.ts:116</a></em></p>
+<p>Get the fully qualified name of this field. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> fields = form.getFields()
+fields.forEach(<span class="hljs-function"><span class="hljs-params">field</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> name = field.getName()
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Field name:'</span>, name)
+})
+</code></pre>
+<p>Note that PDF fields are structured as a tree. Each field is the
+descendent of a series of ancestor nodes all the way up to the form node,
+which is always the root of the tree. Each node in the tree (except for
+the form node) has a partial name. Partial names can be composed of any
+unicode characters except a period (<code>.</code>). The fully qualified name of a
+field is composed of the partial names of all its ancestors joined
+with periods. This means that splitting the fully qualified name on
+periods and taking the last element of the resulting array will give you
+the partial name of a specific field.</p>
+<p><strong>Returns:</strong> <em>string</em></p>
+<p>The fully qualified name of this field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getoptions"></a><a href="#getoptions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getOptions</h3>
+<p>▸ <strong>getOptions</strong>(): <em>string[]</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L93">api/form/PDFRadioGroup.ts:93</a></em></p>
+<p>Get the list of available options for this radio group. Each option is
+represented by a radio button. These radio buttons are displayed at
+various locations in the document, potentially on different pages (though
+typically they are stacked horizontally or vertically on the same page).
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+<span class="hljs-keyword">const</span> options = radioGroup.getOptions()
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Radio Group options:'</span>, options)
+</code></pre>
+<p><strong>Returns:</strong> <em>string[]</em></p>
+<p>The options for this radio group.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getselected"></a><a href="#getselected" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getSelected</h3>
+<p>▸ <strong>getSelected</strong>(): <em>string | undefined</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L124">api/form/PDFRadioGroup.ts:124</a></em></p>
+<p>Get the selected option for this radio group. The selected option is
+represented by the radio button in this group that is turned on. At most
+one radio button in a group can be selected. If no buttons in this group
+are selected, <code>undefined</code> is returned.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+<span class="hljs-keyword">const</span> selected = radioGroup.getSelected()
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Selected radio button:'</span>, selected)
+</code></pre>
+<p><strong>Returns:</strong> <em>string | undefined</em></p>
+<p>The selected option for this radio group.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isexported"></a><a href="#isexported" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isExported</h3>
+<p>▸ <strong>isExported</strong>(): <em>boolean</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#isexported">isExported</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L211">api/form/PDFField.ts:211</a></em></p>
+<p>Returns <code>true</code> if this field's value should be exported when the form is
+submitted. See <a href="/docs/api/classes/pdffield#enableexporting">PDFField.enableExporting</a> and
+<a href="/docs/api/classes/pdffield#disableexporting">PDFField.disableExporting</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+<span class="hljs-keyword">if</span> (field.isExported()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Exporting is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this field's value should be exported.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="ismutuallyexclusive"></a><a href="#ismutuallyexclusive" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isMutuallyExclusive</h3>
+<p>▸ <strong>isMutuallyExclusive</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L289">api/form/PDFRadioGroup.ts:289</a></em></p>
+<p>Returns <code>true</code> if the radio buttons in this group are mutually exclusive.
+This means that when the user selects a radio button, only that specific
+button will be turned on. Even if other radio buttons in the group
+represent the same value, they will not be enabled. The alternative to
+this is that clicking a radio button will select that button along with
+any other radio buttons in the group that share the same value. See
+<a href="/docs/api/classes/pdfradiogroup#enablemutualexclusion">PDFRadioGroup.enableMutualExclusion</a> and
+<a href="/docs/api/classes/pdfradiogroup#disablemutualexclusion">PDFRadioGroup.disableMutualExclusion</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+<span class="hljs-keyword">if</span> (radioGroup.isMutuallyExclusive()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Mutual exclusion is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isofftoggleable"></a><a href="#isofftoggleable" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isOffToggleable</h3>
+<p>▸ <strong>isOffToggleable</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L238">api/form/PDFRadioGroup.ts:238</a></em></p>
+<p>Returns <code>true</code> if users can click on radio buttons in this group to toggle
+them off. The alternative is that once a user clicks on a radio button
+to select it, the only way to deselect it is by selecting on another radio
+button in the group. See <a href="/docs/api/classes/pdfradiogroup#enableofftoggling">PDFRadioGroup.enableOffToggling</a> and
+<a href="/docs/api/classes/pdfradiogroup#disableofftoggling">PDFRadioGroup.disableOffToggling</a>. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+<span class="hljs-keyword">if</span> (radioGroup.isOffToggleable()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Off toggling is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isreadonly"></a><a href="#isreadonly" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isReadOnly</h3>
+<p>▸ <strong>isReadOnly</strong>(): <em>boolean</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#isreadonly">isReadOnly</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L131">api/form/PDFField.ts:131</a></em></p>
+<p>Returns <code>true</code> if this field is read only. This means that PDF readers
+will not allow users to interact with the field or change its value. See
+<a href="/docs/api/classes/pdffield#enablereadonly">PDFField.enableReadOnly</a> and <a href="/docs/api/classes/pdffield#disablereadonly">PDFField.disableReadOnly</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+<span class="hljs-keyword">if</span> (field.isReadOnly()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Read only is enabled'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this is a read only field.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="isrequired"></a><a href="#isrequired" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>isRequired</h3>
+<p>▸ <strong>isRequired</strong>(): <em>boolean</em></p>
+<p><em>Inherited from <a href="/docs/api/classes/pdffield">PDFField</a>.<a href="/docs/api/classes/pdffield#isrequired">isRequired</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFField.ts#L172">api/form/PDFField.ts:172</a></em></p>
+<p>Returns <code>true</code> if this field must have a value when the form is submitted.
+See <a href="/docs/api/classes/pdffield#enablerequired">PDFField.enableRequired</a> and <a href="/docs/api/classes/pdffield#disablerequired">PDFField.disableRequired</a>.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> field = form.getField(<span class="hljs-string">'some.field'</span>)
+<span class="hljs-keyword">if</span> (field.isRequired()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Field is required'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this field is required.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="needsappearancesupdate"></a><a href="#needsappearancesupdate" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>needsAppearancesUpdate</h3>
+<p>▸ <strong>needsAppearancesUpdate</strong>(): <em>boolean</em></p>
+<p><em>Overrides void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L399">api/form/PDFRadioGroup.ts:399</a></em></p>
+<p>Returns <code>true</code> if any of this group's radio button widgets do not have an
+appearance stream for their current state. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+<span class="hljs-keyword">if</span> (radioGroup.needsAppearancesUpdate()) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Needs update'</span>)
+</code></pre>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not this radio group needs an appearance update.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="select"></a><a href="#select" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>select</h3>
+<p>▸ <strong>select</strong>(<code>option</code>: string): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L185">api/form/PDFRadioGroup.ts:185</a></em></p>
+<p>Select an option for this radio group. This operation is analogous to a
+human user clicking one of the radio buttons in this group via a PDF
+reader to toggle it on. This method will update the underlying state of
+the radio group to indicate which option has been selected. PDF libraries
+and readers will be able to extract this value from the saved document and
+determine which option was selected.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'best.superhero.radioGroup'</span>)
+radioGroup.select(<span class="hljs-string">'One Punch Man'</span>)
+</code></pre>
+<p>This method will mark this radio group as dirty, causing its appearance
+streams to be updated when either <a href="/docs/api/classes/pdfdocument#save">PDFDocument.save</a> or
+<a href="/docs/api/classes/pdfform#updatefieldappearances">PDFForm.updateFieldAppearances</a> is called. The updated appearance
+streams will display a dot inside the widget of this check box field
+that represents the selected option.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>option</code></td><td>string</td><td>The option to be selected.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="updateappearances"></a><a href="#updateappearances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>updateAppearances</h3>
+<p>▸ <strong>updateAppearances</strong>(<code>provider?</code>: <a href="/docs/api/#appearanceproviderfor">AppearanceProviderFor</a>‹<a href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a>›): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L446">api/form/PDFRadioGroup.ts:446</a></em></p>
+<p>Update the appearance streams for each of this group's radio button widgets
+using the given appearance provider. If no <code>provider</code> is passed, the
+default appearance provider for radio groups will be used. For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> radioGroup = form.getRadioGroup(<span class="hljs-string">'some.radioGroup.field'</span>)
+radioGroup.updateAppearances(<span class="hljs-function">(<span class="hljs-params">field, widget</span>) =&gt;</span> {
+  ...
+  return {
+    <span class="hljs-attr">normal</span>: { <span class="hljs-attr">on</span>: drawRadioButton(...), <span class="hljs-attr">off</span>: drawRadioButton(...) },
+    <span class="hljs-attr">down</span>: { <span class="hljs-attr">on</span>: drawRadioButton(...), <span class="hljs-attr">off</span>: drawRadioButton(...) },
+  }
+})
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>provider?</code></td><td><a href="/docs/api/#appearanceproviderfor">AppearanceProviderFor</a>‹<a href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a>›</td><td>Optionally, the appearance provider to be used for                 generating the contents of the appearance streams.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="static-of"></a><a href="#static-of" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>Static</code> of</h3>
+<p>▸ <strong>of</strong>(<code>acroRadioButton</code>: PDFAcroRadioButton, <code>ref</code>: PDFRef, <code>doc</code>: <a href="/docs/api/classes/pdfdocument">PDFDocument</a>): <em><a href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a>‹›</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/aa457ba/src/api/form/PDFRadioGroup.ts#L57">api/form/PDFRadioGroup.ts:57</a></em></p>
+<blockquote>
+<p><strong>NOTE:</strong> You probably don't want to call this method directly. Instead,
+consider using the <a href="/docs/api/classes/pdfform#getoptionlist">PDFForm.getOptionList</a> method, which will create an
+instance of <a href="/docs/api/classes/pdfoptionlist">PDFOptionList</a> for you.</p>
+</blockquote>
+<p>Create an instance of <a href="/docs/api/classes/pdfoptionlist">PDFOptionList</a> from an existing acroRadioButton
+and ref</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>acroRadioButton</code></td><td>PDFAcroRadioButton</td><td>The underlying <code>PDFAcroRadioButton</code> for this                        radio group.</td></tr>
+<tr><td><code>ref</code></td><td>PDFRef</td><td>The unique reference for this radio group.</td></tr>
+<tr><td><code>doc</code></td><td><a href="/docs/api/classes/pdfdocument">PDFDocument</a></td><td>The document to which this radio group will belong.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em><a href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a>‹›</em></p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/api/classes/pdfpage"><span class="arrow-prev">← </span><span>PDFPage</span></a><a class="docs-next button" href="/docs/api/classes/pdfsignature"><span>PDFSignature</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#hierarchy">Hierarchy</a></li><li><a href="#index">Index</a><ul class="toc-headings"><li><a href="#properties">Properties</a></li><li><a href="#methods">Methods</a></li></ul></li><li><a href="#properties-1">Properties</a><ul class="toc-headings"><li><a href="#acrofield">acroField</a></li><li><a href="#doc">doc</a></li><li><a href="#ref">ref</a></li></ul></li><li><a href="#methods-1">Methods</a><ul class="toc-headings"><li><a href="#addoptiontopage">addOptionToPage</a></li><li><a href="#clear">clear</a></li><li><a href="#defaultupdateappearances">defaultUpdateAppearances</a></li><li><a href="#disableexporting">disableExporting</a></li><li><a href="#disablemutualexclusion">disableMutualExclusion</a></li><li><a href="#disableofftoggling">disableOffToggling</a></li><li><a href="#disablereadonly">disableReadOnly</a></li><li><a href="#disablerequired">disableRequired</a></li><li><a href="#enableexporting">enableExporting</a></li><li><a href="#enablemutualexclusion">enableMutualExclusion</a></li><li><a href="#enableofftoggling">enableOffToggling</a></li><li><a href="#enablereadonly">enableReadOnly</a></li><li><a href="#enablerequired">enableRequired</a></li><li><a href="#getname">getName</a></li><li><a href="#getoptions">getOptions</a></li><li><a href="#getselected">getSelected</a></li><li><a href="#isexported">isExported</a></li><li><a href="#ismutuallyexclusive">isMutuallyExclusive</a></li><li><a href="#isofftoggleable">isOffToggleable</a></li><li><a href="#isreadonly">isReadOnly</a></li><li><a href="#isrequired">isRequired</a></li><li><a href="#needsappearancesupdate">needsAppearancesUpdate</a></li><li><a href="#select">select</a></li><li><a href="#updateappearances">updateAppearances</a></li><li><a href="#static-of"><code>Static</code> of</a></li></ul></li></ul></nav></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '9cd7747a43c6b7e9c2554939d34db33f',
+                indexName: 'pdf-lib',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {}
+              });
+            </script></body></html>
