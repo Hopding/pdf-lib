@@ -1,34 +1,7 @@
 import fontkit from '@pdf-lib/fontkit';
-import { PDFDocument, StandardFonts, last } from 'pdf-lib';
+import { PDFDocument, StandardFonts, last, charAtIndex } from 'pdf-lib';
 
 import { fetchAsset, writePdf } from './assets';
-
-// JavaScript's String.charAt() method doesn work on strings containing UTF-16
-// characters (with high and low surrogate pairs), such as 💩 (poo emoji). This
-// `glyphAtIndex()` function does.
-//
-// Credit: https://github.com/mathiasbynens/String.prototype.at/blob/master/at.js#L14-L48
-const glyphAtIndex = (text, index) => {
-  // Get the first code unit and code unit value
-  const cuFirst = text.charCodeAt(index);
-  let cuSecond;
-  const nextIndex = index + 1;
-  let len = 1;
-  if (
-    // Check if it’s the start of a surrogate pair.
-    cuFirst >= 0xd800 &&
-    cuFirst <= 0xdbff && // high surrogate
-    text.length > nextIndex // there is a next code unit
-  ) {
-    cuSecond = text.charCodeAt(nextIndex);
-    if (cuSecond >= 0xdc00 && cuSecond <= 0xdfff) {
-      // low surrogate
-      len = 2;
-    }
-  }
-  return text.slice(index, index + len);
-};
-
 const breakTextIntoLines = (text, size, font, maxWidth) => {
   const lines = [];
   let textIdx = 0;
@@ -41,7 +14,7 @@ const breakTextIntoLines = (text, size, font, maxWidth) => {
         line = '';
         continue;
       }
-      const glyph = glyphAtIndex(text, textIdx);
+      const [glyph] = charAtIndex(text, textIdx);
       const newLine = line + glyph;
       if (font.widthOfTextAtSize(newLine, size) > maxWidth) break;
       line = newLine;

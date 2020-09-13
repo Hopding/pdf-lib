@@ -10,7 +10,7 @@ import PDFStream from 'src/core/objects/PDFStream';
 import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { PDFArrayIsNotRectangleError } from '../errors';
+import { PDFArrayIsNotRectangleError } from 'src/core/errors';
 
 class PDFArray extends PDFObject {
   static withContext = (context: PDFContext) => new PDFArray(context);
@@ -61,9 +61,18 @@ class PDFArray extends PDFObject {
   lookupMaybe(index: number, type: typeof PDFStream): PDFStream | undefined;
   lookupMaybe(index: number, type: typeof PDFRef): PDFRef | undefined;
   lookupMaybe(index: number, type: typeof PDFString): PDFString | undefined;
+  lookupMaybe(
+    index: number,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+  ): PDFString | PDFHexString | undefined;
 
-  lookupMaybe(index: number, type: any) {
-    return this.context.lookupMaybe(this.get(index), type) as any;
+  lookupMaybe(index: number, ...types: any[]) {
+    return this.context.lookupMaybe(
+      this.get(index),
+      // @ts-ignore
+      ...types,
+    ) as any;
   }
 
   lookup(index: number): PDFObject | undefined;
@@ -77,9 +86,18 @@ class PDFArray extends PDFObject {
   lookup(index: number, type: typeof PDFStream): PDFStream;
   lookup(index: number, type: typeof PDFRef): PDFRef;
   lookup(index: number, type: typeof PDFString): PDFString;
+  lookup(
+    index: number,
+    type1: typeof PDFString,
+    type2: typeof PDFHexString,
+  ): PDFString | PDFHexString;
 
-  lookup(index: number, type?: any) {
-    return this.context.lookup(this.get(index), type) as any;
+  lookup(index: number, ...types: any[]) {
+    return this.context.lookup(
+      this.get(index),
+      // @ts-ignore
+      ...types,
+    ) as any;
   }
 
   asRectangle(): { x: number; y: number; width: number; height: number } {

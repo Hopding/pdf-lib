@@ -6,7 +6,7 @@ import {
   PDFRef,
   StandardFontEmbedder,
 } from 'src/core';
-import { assertIs } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
 export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
 
@@ -94,12 +94,20 @@ export default class PDFFont implements Embeddable {
    * ```js
    * const height = font.heightAtSize(24)
    * ```
+   *
+   * The `options.descender` value controls whether or not the font's
+   * descender is included in the height calculation.
+   *
    * @param size The font size to be used for this measurement.
+   * @param options The options to be used when computing this measurement.
    * @returns The height of this font at the given size.
    */
-  heightAtSize(size: number): number {
+  heightAtSize(size: number, options?: { descender?: boolean }): number {
     assertIs(size, 'size', ['number']);
-    return this.embedder.heightOfFontAtSize(size);
+    assertOrUndefined(options?.descender, 'options.descender', ['boolean']);
+    return this.embedder.heightOfFontAtSize(size, {
+      descender: options?.descender ?? true,
+    });
   }
 
   /**
@@ -121,10 +129,7 @@ export default class PDFFont implements Embeddable {
    */
   getCharacterSet(): number[] {
     if (this.embedder instanceof StandardFontEmbedder) {
-      // TODO: Update @pdf-lib/standard fonts to export encoding.characterSet
-      return Object.keys((this.embedder.encoding as any).unicodeMappings)
-        .map(Number)
-        .sort((a, b) => a - b);
+      return this.embedder.encoding.supportedCodePoints;
     } else {
       return this.embedder.font.characterSet;
     }

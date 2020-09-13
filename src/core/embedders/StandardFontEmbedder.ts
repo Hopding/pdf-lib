@@ -2,7 +2,7 @@ import {
   Encodings,
   Font,
   FontNames,
-  IEncoding as Encoding,
+  EncodingType,
 } from '@pdf-lib/standard-fonts';
 
 import PDFHexString from 'src/core/objects/PDFHexString';
@@ -25,7 +25,7 @@ class StandardFontEmbedder {
     new StandardFontEmbedder(fontName, customName);
 
   readonly font: Font;
-  readonly encoding: Encoding;
+  readonly encoding: EncodingType;
   readonly fontName: string;
   readonly customName: string | undefined;
 
@@ -70,11 +70,20 @@ class StandardFontEmbedder {
     return totalWidth * scale;
   }
 
-  heightOfFontAtSize(size: number): number {
+  heightOfFontAtSize(
+    size: number,
+    options: { descender?: boolean } = {},
+  ): number {
+    const { descender = true } = options;
+
     const { Ascender, Descender, FontBBox } = this.font;
     const yTop = Ascender || FontBBox[3];
     const yBottom = Descender || FontBBox[1];
-    return ((yTop - yBottom) / 1000) * size;
+
+    let height = yTop - yBottom;
+    if (!descender) height += Descender || 0;
+
+    return (height / 1000) * size;
   }
 
   sizeOfFontAtHeight(height: number): number {

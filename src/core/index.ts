@@ -53,3 +53,6 @@ export { default as PDFParser } from 'src/core/parser/PDFParser';
 export { default as PDFXRefStreamParser } from 'src/core/parser/PDFXRefStreamParser';
 
 export { decodePDFRawStream } from 'src/core/streams/decode';
+
+export * from 'src/core/annotation';
+export * from 'src/core/acroform';

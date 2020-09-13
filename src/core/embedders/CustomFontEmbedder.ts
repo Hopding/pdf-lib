@@ -74,11 +74,20 @@ class CustomFontEmbedder {
     return totalWidth * scale;
   }
 
-  heightOfFontAtSize(size: number): number {
+  heightOfFontAtSize(
+    size: number,
+    options: { descender?: boolean } = {},
+  ): number {
+    const { descender = true } = options;
+
     const { ascent, descent, bbox } = this.font;
     const yTop = (ascent || bbox.maxY) * this.scale;
     const yBottom = (descent || bbox.minY) * this.scale;
-    return ((yTop - yBottom) / 1000) * size;
+
+    let height = yTop - yBottom;
+    if (!descender) height -= Math.abs(descent) || 0;
+
+    return (height / 1000) * size;
   }
 
   sizeOfFontAtHeight(height: number): number {

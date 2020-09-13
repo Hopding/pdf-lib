@@ -54,6 +54,8 @@ export default class App extends Component {
         this.setState({ state: App.States.Error, error });
       });
 
+    this.setState({ testNumber });
+
     // Only show the loading spinner screen for slow-running tests
     setTimeout(() => {
       const { state } = this.state;
@@ -71,7 +73,12 @@ export default class App extends Component {
     const { state, error, testNumber, base64Pdf, runtimeSecs } = this.state;
 
     if (state === App.States.TestLauncher) {
-      return <TestLauncher onLaunchTest={this.handleLaunchTest} />;
+      return (
+        <TestLauncher
+          lastRunTest={testNumber}
+          onLaunchTest={this.handleLaunchTest}
+        />
+      );
     }
     if (state === App.States.TestRunning) {
       return <TestRunningSpinner testNumber={testNumber} />;

@@ -23,8 +23,13 @@ import {
   translate,
   LineCapStyle,
   setLineCap,
+  rotateDegrees,
   setGraphicsState,
   setDashPattern,
+  beginMarkedContent,
+  endMarkedContent,
+  clip,
+  endPath,
   appendBezierCurve,
 } from 'src/api/operators';
 import { Rotation, toRadians, degrees } from 'src/api/rotations';
@@ -372,3 +377,424 @@ export const drawSvgPath = (
 
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
+
+export const drawCheckMark = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  size: number | PDFNumber;
+  thickness: number | PDFNumber;
+  color: Color | undefined;
+}) => {
+  const size = asNumber(options.size);
+
+  /*********************** Define Check Mark Points ***************************/
+  // A check mark is defined by three points in some coordinate space. Here, we
+  // define these points in a unit coordinate system, where the range of the x
+  // and y axis are both [-1, 1].
+  //
+  // Note that we do not hard code `p1y` in case we wish to change the
+  // size/shape of the check mark in the future. We want the check mark to
+  // always form a right angle. This means that the dot product between (p1-p2)
+  // and (p3-p2) should be zero:
+  //
+  //   (p1x-p2x) * (p3x-p2x) + (p1y-p2y) * (p3y-p2y) = 0
+  //
+  // We can now rejigger this equation to solve for `p1y`:
+  //
+  //   (p1y-p2y) * (p3y-p2y) = -((p1x-p2x) * (p3x-p2x))
+  //   (p1y-p2y) = -((p1x-p2x) * (p3x-p2x)) / (p3y-p2y)
+  //   p1y = -((p1x-p2x) * (p3x-p2x)) / (p3y-p2y) + p2y
+  //
+  // Thanks to my friend Joel Walker (https://github.com/JWalker1995) for
+  // devising the above equation and unit coordinate system approach!
+
+  // (x, y) coords of the check mark's bottommost point
+  const p2x = -1 + 0.75;
+  const p2y = -1 + 0.51;
+
+  // (x, y) coords of the check mark's topmost point
+  const p3y = 1 - 0.525;
+  const p3x = 1 - 0.31;
+
+  // (x, y) coords of the check mark's center (vertically) point
+  const p1x = -1 + 0.325;
+  const p1y = -((p1x - p2x) * (p3x - p2x)) / (p3y - p2y) + p2y;
+  /****************************************************************************/
+
+  return [
+    pushGraphicsState(),
+    options.color && setStrokingColor(options.color),
+    setLineWidth(options.thickness),
+
+    translate(options.x, options.y),
+    moveTo(p1x * size, p1y * size),
+    lineTo(p2x * size, p2y * size),
+    lineTo(p3x * size, p3y * size),
+
+    stroke(),
+    popGraphicsState(),
+  ].filter(Boolean) as PDFOperator[];
+};
+
+// prettier-ignore
+export const rotateInPlace = (options: {
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  rotation: 0 | 90 | 180 | 270;
+}) =>
+    options.rotation === 0 ? [
+      translate(0, 0), 
+      rotateDegrees(0) 
+    ]
+  : options.rotation === 90 ? [
+      translate(options.width, 0), 
+      rotateDegrees(90)
+    ]
+  : options.rotation === 180 ? [
+      translate(options.width, options.height), 
+      rotateDegrees(180)
+    ]
+  : options.rotation === 270 ? [
+      translate(0, options.height), 
+      rotateDegrees(270)
+    ]
+  : []; // Invalid rotation - noop
+
+export const drawCheckBox = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  thickness: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  markColor: Color | undefined;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  filled: boolean;
+}) => {
+  const outline = drawRectangle({
+    x: options.x,
+    y: options.y,
+    width: options.width,
+    height: options.height,
+    borderWidth: options.borderWidth,
+    color: options.color,
+    borderColor: options.borderColor,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  if (!options.filled) return outline;
+
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+
+  const checkMarkSize = Math.min(width, height) / 2;
+
+  const checkMark = drawCheckMark({
+    x: width / 2,
+    y: height / 2,
+    size: checkMarkSize,
+    thickness: options.thickness,
+    color: options.markColor,
+  });
+
+  return [pushGraphicsState(), ...outline, ...checkMark, popGraphicsState()];
+};
+
+export const drawRadioButton = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  dotColor: Color | undefined;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  filled: boolean;
+}) => {
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+
+  const outlineScale = Math.min(width, height) / 2;
+
+  const outline = drawEllipse({
+    x: options.x,
+    y: options.y,
+    xScale: outlineScale,
+    yScale: outlineScale,
+    color: options.color,
+    borderColor: options.borderColor,
+    borderWidth: options.borderWidth,
+  });
+
+  if (!options.filled) return outline;
+
+  const dot = drawEllipse({
+    x: options.x,
+    y: options.y,
+    xScale: outlineScale * 0.45,
+    yScale: outlineScale * 0.45,
+    color: options.dotColor,
+    borderColor: undefined,
+    borderWidth: 0,
+  });
+
+  return [pushGraphicsState(), ...outline, ...dot, popGraphicsState()];
+};
+
+export const drawButton = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  textLines: { encoded: PDFHexString; x: number; y: number }[];
+  textColor: Color;
+  font: string | PDFName;
+  fontSize: number | PDFNumber;
+}) => {
+  const x = asNumber(options.x);
+  const y = asNumber(options.y);
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+
+  const background = drawRectangle({
+    x,
+    y,
+    width,
+    height,
+    borderWidth: options.borderWidth,
+    color: options.color,
+    borderColor: options.borderColor,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  const lines = drawTextLines(options.textLines, {
+    color: options.textColor,
+    font: options.font,
+    size: options.fontSize,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  return [pushGraphicsState(), ...background, ...lines, popGraphicsState()];
+};
+
+export interface DrawTextLinesOptions {
+  color: Color;
+  font: string | PDFName;
+  size: number | PDFNumber;
+  rotate: Rotation;
+  xSkew: Rotation;
+  ySkew: Rotation;
+}
+
+export const drawTextLines = (
+  lines: { encoded: PDFHexString; x: number; y: number }[],
+  options: DrawTextLinesOptions,
+): PDFOperator[] => {
+  const operators = [
+    beginText(),
+    setFillingColor(options.color),
+    setFontAndSize(options.font, options.size),
+  ];
+
+  for (let idx = 0, len = lines.length; idx < len; idx++) {
+    const { encoded, x, y } = lines[idx];
+    operators.push(
+      rotateAndSkewTextRadiansAndTranslate(
+        toRadians(options.rotate),
+        toRadians(options.xSkew),
+        toRadians(options.ySkew),
+        x,
+        y,
+      ),
+      showText(encoded),
+    );
+  }
+
+  operators.push(endText());
+
+  return operators;
+};
+
+export const drawTextField = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  textLines: { encoded: PDFHexString; x: number; y: number }[];
+  textColor: Color;
+  font: string | PDFName;
+  fontSize: number | PDFNumber;
+  padding: number | PDFNumber;
+}) => {
+  const x = asNumber(options.x);
+  const y = asNumber(options.y);
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+  const borderWidth = asNumber(options.borderWidth);
+  const padding = asNumber(options.padding);
+
+  const clipX = x + borderWidth / 2 + padding;
+  const clipY = y + borderWidth / 2 + padding;
+  const clipWidth = width - (borderWidth / 2 + padding) * 2;
+  const clipHeight = height - (borderWidth / 2 + padding) * 2;
+
+  const clippingArea = [
+    moveTo(clipX, clipY),
+    lineTo(clipX, clipY + clipHeight),
+    lineTo(clipX + clipWidth, clipY + clipHeight),
+    lineTo(clipX + clipWidth, clipY),
+    closePath(),
+    clip(),
+    endPath(),
+  ];
+
+  const background = drawRectangle({
+    x,
+    y,
+    width,
+    height,
+    borderWidth: options.borderWidth,
+    color: options.color,
+    borderColor: options.borderColor,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  const lines = drawTextLines(options.textLines, {
+    color: options.textColor,
+    font: options.font,
+    size: options.fontSize,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  const markedContent = [
+    beginMarkedContent('Tx'),
+    pushGraphicsState(),
+    ...lines,
+    popGraphicsState(),
+    endMarkedContent(),
+  ];
+
+  return [
+    pushGraphicsState(),
+    ...background,
+    ...clippingArea,
+    ...markedContent,
+    popGraphicsState(),
+  ];
+};
+
+export const drawOptionList = (options: {
+  x: number | PDFNumber;
+  y: number | PDFNumber;
+  width: number | PDFNumber;
+  height: number | PDFNumber;
+  borderWidth: number | PDFNumber;
+  color: Color | undefined;
+  borderColor: Color | undefined;
+  textLines: { encoded: PDFHexString; x: number; y: number; height: number }[];
+  textColor: Color;
+  font: string | PDFName;
+  fontSize: number | PDFNumber;
+  lineHeight: number | PDFNumber;
+  selectedLines: number[];
+  selectedColor: Color;
+  padding: number | PDFNumber;
+}) => {
+  const x = asNumber(options.x);
+  const y = asNumber(options.y);
+  const width = asNumber(options.width);
+  const height = asNumber(options.height);
+  const lineHeight = asNumber(options.lineHeight);
+  const borderWidth = asNumber(options.borderWidth);
+  const padding = asNumber(options.padding);
+
+  const clipX = x + borderWidth / 2 + padding;
+  const clipY = y + borderWidth / 2 + padding;
+  const clipWidth = width - (borderWidth / 2 + padding) * 2;
+  const clipHeight = height - (borderWidth / 2 + padding) * 2;
+
+  const clippingArea = [
+    moveTo(clipX, clipY),
+    lineTo(clipX, clipY + clipHeight),
+    lineTo(clipX + clipWidth, clipY + clipHeight),
+    lineTo(clipX + clipWidth, clipY),
+    closePath(),
+    clip(),
+    endPath(),
+  ];
+
+  const background = drawRectangle({
+    x,
+    y,
+    width,
+    height,
+    borderWidth: options.borderWidth,
+    color: options.color,
+    borderColor: options.borderColor,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  const highlights: PDFOperator[] = [];
+  for (let idx = 0, len = options.selectedLines.length; idx < len; idx++) {
+    const line = options.textLines[options.selectedLines[idx]];
+    highlights.push(
+      ...drawRectangle({
+        x: line.x - padding,
+        y: line.y - (lineHeight - line.height) / 2,
+        width: width - borderWidth,
+        height: line.height + (lineHeight - line.height) / 2,
+        borderWidth: 0,
+        color: options.selectedColor,
+        borderColor: undefined,
+        rotate: degrees(0),
+        xSkew: degrees(0),
+        ySkew: degrees(0),
+      }),
+    );
+  }
+
+  const lines = drawTextLines(options.textLines, {
+    color: options.textColor,
+    font: options.font,
+    size: options.fontSize,
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  });
+
+  const markedContent = [
+    beginMarkedContent('Tx'),
+    pushGraphicsState(),
+    ...lines,
+    popGraphicsState(),
+    endMarkedContent(),
+  ];
+
+  return [
+    pushGraphicsState(),
+    ...background,
+    ...highlights,
+    ...clippingArea,
+    ...markedContent,
+    popGraphicsState(),
+  ];
+};

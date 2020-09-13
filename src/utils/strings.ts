@@ -38,19 +38,68 @@ export const escapeRegExp = (str: string) =>
   str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export const cleanText = (text: string) =>
-  text.replace(/\t/g, '    ').replace(/[\b\v]/g, '');
+  text.replace(/\t|\u0085|\u2028|\u2029/g, '    ').replace(/[\b\v]/g, '');
+
+export const escapedNewlineChars = ['\\n', '\\f', '\\r', '\\u000B'];
+
+export const newlineChars = ['\n', '\f', '\r', '\u000B'];
+
+export const isNewlineChar = (text: string) => /^[\n\f\r\u000B]$/.test(text);
+
+export const lineSplit = (text: string) => text.split(/[\n\f\r\u000B]/);
+
+export const mergeLines = (text: string) =>
+  text.replace(/[\n\f\r\u000B]/g, ' ');
+
+// JavaScript's String.charAt() method doesn work on strings containing UTF-16
+// characters (with high and low surrogate pairs), such as 💩 (poo emoji). This
+// `charAtIndex()` function does.
+//
+// Credit: https://github.com/mathiasbynens/String.prototype.at/blob/master/at.js#L14-L48
+export const charAtIndex = (text: string, index: number): [string, number] => {
+  // Get the first code unit and code unit value
+  const cuFirst = text.charCodeAt(index);
+  let cuSecond: number;
+  const nextIndex = index + 1;
+  let length = 1;
+  if (
+    // Check if it's the start of a surrogate pair.
+    cuFirst >= 0xd800 &&
+    cuFirst <= 0xdbff && // high surrogate
+    text.length > nextIndex // there is a next code unit
+  ) {
+    cuSecond = text.charCodeAt(nextIndex);
+    if (cuSecond >= 0xdc00 && cuSecond <= 0xdfff) length = 2; // low surrogate
+  }
+  return [text.slice(index, index + length), length];
+};
+
+export const charSplit = (text: string) => {
+  const chars: string[] = [];
+
+  for (let idx = 0, len = text.length; idx < len; ) {
+    const [c, cLen] = charAtIndex(text, idx);
+    chars.push(c);
+    idx += cLen;
+  }
+
+  return chars;
+};
 
 const buildWordBreakRegex = (wordBreaks: string[]) => {
+  const newlineCharUnion = escapedNewlineChars.join('|');
+
   const escapedRules: string[] = ['$'];
   for (let idx = 0, len = wordBreaks.length; idx < len; idx++) {
     const wordBreak = wordBreaks[idx];
-    if (wordBreak.includes('\n') || wordBreak.includes('\r')) {
-      throw new TypeError('`wordBreak` must not include \\n or \\r');
+    if (isNewlineChar(wordBreak)) {
+      throw new TypeError(`\`wordBreak\` must not include ${newlineCharUnion}`);
     }
     escapedRules.push(wordBreak === '' ? '.' : escapeRegExp(wordBreak));
   }
+
   const breakRules = escapedRules.join('|');
-  return new RegExp(`(\\n|\\r)|((.*?)(${breakRules}))`, 'gm');
+  return new RegExp(`(${newlineCharUnion})|((.*?)(${breakRules}))`, 'gm');
 };
 
 export const breakTextIntoLines = (
@@ -75,7 +124,7 @@ export const breakTextIntoLines = (
 
   for (let idx = 0, len = words.length; idx < len; idx++) {
     const word = words[idx];
-    if (word === '\n' || word === '\r') {
+    if (isNewlineChar(word)) {
       pushCurrLine();
     } else {
       const width = computeWidthOfText(word);

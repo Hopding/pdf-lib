@@ -23,13 +23,13 @@ describe(`PDFDocument`, () => {
     const origConsoleWarn = console.warn;
 
     beforeAll(() => {
+      const ignoredWarnings = [
+        'Trying to parse invalid object:',
+        'Invalid object ref:',
+      ];
       console.warn = jest.fn((...args) => {
-        if (
-          !args[0].includes('Trying to parse invalid object:') &&
-          !args[0].includes('Invalid object ref:')
-        ) {
-          origConsoleWarn(...args);
-        }
+        const isIgnored = ignoredWarnings.find((iw) => args[0].includes(iw));
+        if (!isIgnored) origConsoleWarn(...args);
       });
     });
 

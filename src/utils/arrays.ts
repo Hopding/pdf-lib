@@ -3,6 +3,9 @@ import { charFromCode } from 'src/utils/strings';
 
 export const last = <T>(array: T[]): T => array[array.length - 1];
 
+// export const dropLast = <T>(array: T[]): T[] =>
+// array.slice(0, array.length - 1);
+
 export const typedArrayFor = (value: string | Uint8Array): Uint8Array => {
   if (value instanceof Uint8Array) return value;
   const length = value.length;

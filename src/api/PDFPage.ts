@@ -49,6 +49,7 @@ import {
   breakTextIntoLines,
   cleanText,
   rectanglesAreEqual,
+  lineSplit,
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
@@ -902,7 +903,7 @@ export default class PDFPage {
     const textWidth = (t: string) => font.widthOfTextAtSize(t, fontSize);
     const lines =
       options.maxWidth === undefined
-        ? cleanText(text).split(/[\r\n\f]/)
+        ? lineSplit(cleanText(text))
         : breakTextIntoLines(text, wordBreaks, options.maxWidth, textWidth);
 
     const encodedLines = new Array(lines.length) as PDFHexString[];

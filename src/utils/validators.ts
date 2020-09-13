@@ -7,6 +7,14 @@ export const singleQuote = (val: any) => `'${val}'`;
 
 type Primitive = string | number | boolean | undefined | null;
 
+// prettier-ignore
+const formatValue = (value: any) => {
+  const type = typeof value;
+  if (type ==='string')return singleQuote(value);
+  else if (type ==='undefined')return backtick(value);
+  else return value;
+};
+
 export const createValueErrorMsg = (
   value: any,
   valueName: string,
@@ -16,38 +24,51 @@ export const createValueErrorMsg = (
 
   for (let idx = 0, len = values.length; idx < len; idx++) {
     const v = values[idx];
-    const type = typeof v;
-
-    if (type === 'string') allowedValues[idx] = singleQuote(v);
-    else if (type === 'undefined') allowedValues[idx] = backtick('undefined');
-    else allowedValues[idx] = v;
+    allowedValues[idx] = formatValue(v);
   }
 
   const joinedValues = allowedValues.join(' or ');
 
   // prettier-ignore
-  return `${backtick(valueName)} must be one of ${joinedValues}, but was actually ${value}`;
+  return `${backtick(valueName)} must be one of ${joinedValues}, but was actually ${formatValue(value)}`;
 };
 
 export const assertIsOneOf = (
   value: any,
   valueName: string,
-  values: Primitive[] | { [key: string]: Primitive },
+  allowedValues: Primitive[] | { [key: string]: Primitive },
 ) => {
-  if (!Array.isArray(values)) values = objectValues(values);
-  for (let idx = 0, len = values.length; idx < len; idx++) {
-    if (value === values[idx]) return;
+  if (!Array.isArray(allowedValues)) {
+    allowedValues = objectValues(allowedValues);
   }
-  throw new TypeError(createValueErrorMsg(value, valueName, values));
+  for (let idx = 0, len = allowedValues.length; idx < len; idx++) {
+    if (value === allowedValues[idx]) return;
+  }
+  throw new TypeError(createValueErrorMsg(value, valueName, allowedValues));
 };
 
 export const assertIsOneOfOrUndefined = (
   value: any,
   valueName: string,
-  values: Primitive[] | { [key: string]: Primitive },
+  allowedValues: Primitive[] | { [key: string]: Primitive },
 ) => {
-  if (!Array.isArray(values)) values = objectValues(values);
-  assertIsOneOf(value, valueName, values.concat(undefined));
+  if (!Array.isArray(allowedValues)) {
+    allowedValues = objectValues(allowedValues);
+  }
+  assertIsOneOf(value, valueName, allowedValues.concat(undefined));
+};
+
+export const assertIsSubset = (
+  values: any[],
+  valueName: string,
+  allowedValues: Primitive[] | { [key: string]: Primitive },
+) => {
+  if (!Array.isArray(allowedValues)) {
+    allowedValues = objectValues(allowedValues);
+  }
+  for (let idx = 0, len = values.length; idx < len; idx++) {
+    assertIsOneOf(values[idx], valueName, allowedValues);
+  }
 };
 
 export const getType = (val: any) => {
@@ -77,6 +98,7 @@ export type TypeDescriptor =
   | ArrayConstructor
   | Uint8ArrayConstructor
   | ArrayBufferConstructor
+  | FunctionConstructor
   | [Function, string];
 
 export const isType = (value: any, type: TypeDescriptor) => {
@@ -91,6 +113,7 @@ export const isType = (value: any, type: TypeDescriptor) => {
   if (type === Array) return value instanceof Array;
   if (type === Uint8Array) return value instanceof Uint8Array;
   if (type === ArrayBuffer) return value instanceof ArrayBuffer;
+  if (type === Function) return value instanceof Function;
   return value instanceof (type as [Function, string])[0];
 };
 

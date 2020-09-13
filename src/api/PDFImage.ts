@@ -76,6 +76,35 @@ export default class PDFImage implements Embeddable {
   }
 
   /**
+   * Get the width and height of this image after scaling it as large as
+   * possible while maintaining its aspect ratio and not exceeding the
+   * specified `width` and `height`. For example:
+   * ```
+   * image.width  // => 500
+   * image.height // => 250
+   *
+   * const scaled = image.scaleToFit(750, 1000)
+   * scaled.width  // => 750
+   * scaled.height // => 375
+   * ```
+   * The `width` and `height` parameters can also be thought of as the width
+   * and height of a box that the scaled image must fit within.
+   * @param width The bounding box's width.
+   * @param height The bounding box's height.
+   * @returns The width and height of the image after being scaled.
+   */
+  scaleToFit(width: number, height: number) {
+    assertIs(width, 'width', ['number']);
+    assertIs(height, 'height', ['number']);
+
+    const imgWidthScale = width / this.width;
+    const imgHeightScale = height / this.height;
+    const scale = Math.min(imgWidthScale, imgHeightScale);
+
+    return this.scale(scale);
+  }
+
+  /**
    * Get the width and height of this image. For example:
    * ```js
    * const { width, height } = image.size()

@@ -351,3 +351,10 @@ export const setStrokingCmykColor = (
     asPDFNumber(yellow),
     asPDFNumber(key),
   ]);
+
+/* ==================== Marked Content Operators ==================== */
+
+export const beginMarkedContent = (tag: string | PDFName) =>
+  PDFOperator.of(Ops.BeginMarkedContent, [asPDFName(tag)]);
+
+export const endMarkedContent = () => PDFOperator.of(Ops.EndMarkedContent);
