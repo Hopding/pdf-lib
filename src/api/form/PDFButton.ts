@@ -149,13 +149,13 @@ export default class PDFButton extends PDFField {
   /**
    * Show this button on the specified page with the given text. For example:
    * ```js
-   * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
+   * const ubuntuFont = await pdfDoc.embedFont(ubuntuFontBytes)
    * const page = pdfDoc.addPage()
    *
    * const form = pdfDoc.getForm()
    * const button = form.createButton('some.button.field')
    *
-   * button.addToPage('Do Stuff', helvetica, page, {
+   * button.addToPage('Do Stuff', page, {
    *   x: 50,
    *   y: 75,
    *   width: 200,
@@ -165,23 +165,21 @@ export default class PDFButton extends PDFField {
    *   borderColor: rgb(0, 0, 1),
    *   borderWidth: 2,
    *   rotate: degrees(90),
+   *   font: ubuntuFont,
    * })
    * ```
    * This will create a new widget for this button field.
    * @param text The text to be displayed for this button widget.
-   * @param font The font in which the label should be displayed.
    * @param page The page to which this button widget should be added.
    * @param options The options to be used when adding this button widget.
    */
   addToPage(
     // TODO: This needs to be optional, e.g. for image buttons
     text: string,
-    font: PDFFont,
     page: PDFPage,
     options?: FieldAppearanceOptions,
   ) {
     assertOrUndefined(text, 'text', ['string']);
-    assertOrUndefined(font, 'font', [[PDFFont, 'PDFFont']]);
     assertOrUndefined(page, 'page', [[PDFPage, 'PDFPage']]);
     assertFieldAppearanceOptions(options);
 
@@ -204,6 +202,7 @@ export default class PDFButton extends PDFField {
     this.acroField.addWidget(widgetRef);
 
     // Set appearance streams for widget
+    const font = options?.font ?? this.doc.getForm().getDefaultFont();
     this.updateWidgetAppearance(widget, font);
 
     // Add widget to the given page

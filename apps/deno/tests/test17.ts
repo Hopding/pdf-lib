@@ -95,17 +95,17 @@ export default async (assets: Assets) => {
   let y = page.getHeight();
 
   y -= height + 25;
-  btn.addToPage('∑', symbol, page, { x, y, width, height });
+  btn.addToPage('∑', page, { x, y, width, height, font: symbol });
   y -= height + 25;
   cb.addToPage(page, { x, y, width, height });
   y -= height + 25;
-  dd.addToPage(symbol, page, { x, y, width, height });
+  dd.addToPage(page, { x, y, width, height, font: symbol });
   y -= height + 25;
-  ol.addToPage(symbol, page, { x, y, width, height });
+  ol.addToPage(page, { x, y, width, height, font: symbol });
   y -= height + 25;
   rg.addOptionToPage('bar', page, { x, y, width, height });
   y -= height + 25;
-  tf.addToPage(symbol, page, { x, y, width, height });
+  tf.addToPage(page, { x, y, width, height, font: symbol });
 
   const rectangle = drawRectangle({
     x: 0,

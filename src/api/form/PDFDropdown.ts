@@ -475,7 +475,7 @@ export default class PDFDropdown extends PDFField {
   /**
    * Show this dropdown on the specified page. For example:
    * ```js
-   * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
+   * const ubuntuFont = await pdfDoc.embedFont(ubuntuFontBytes)
    * const page = pdfDoc.addPage()
    *
    * const form = pdfDoc.getForm()
@@ -483,7 +483,7 @@ export default class PDFDropdown extends PDFField {
    * dropdown.setOptions(['Exia', 'Dynames'])
    * dropdown.select('Exia')
    *
-   * dropdown.addToPage(helvetica, page, {
+   * dropdown.addToPage(page, {
    *   x: 50,
    *   y: 75,
    *   width: 200,
@@ -493,15 +493,14 @@ export default class PDFDropdown extends PDFField {
    *   borderColor: rgb(0, 0, 1),
    *   borderWidth: 2,
    *   rotate: degrees(90),
+   *   font: ubuntuFont,
    * })
    * ```
    * This will create a new widget for this dropdown field.
-   * @param font The font in which the options should be displayed.
    * @param page The page to which this dropdown widget should be added.
    * @param options The options to be used when adding this dropdown widget.
    */
-  addToPage(font: PDFFont, page: PDFPage, options?: FieldAppearanceOptions) {
-    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+  addToPage(page: PDFPage, options?: FieldAppearanceOptions) {
     assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
     assertFieldAppearanceOptions(options);
 
@@ -530,6 +529,7 @@ export default class PDFDropdown extends PDFField {
     this.acroField.addWidget(widgetRef);
 
     // Set appearance streams for widget
+    const font = options.font ?? this.doc.getForm().getDefaultFont();
     this.updateWidgetAppearance(widget, font);
 
     // Add widget to the given page

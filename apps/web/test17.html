@@ -129,7 +129,7 @@
       gundams.select('One Punch Man');
       gundams.updateAppearances(ubuntuFont);
 
-      // ================== Custom Appearance Providers ======================
+      // ===================== Custom Appearance Providers ========================
       const page = pdfDoc.addPage();
       const symbol = await pdfDoc.embedFont(StandardFonts.Symbol);
 
@@ -149,17 +149,17 @@
       let y = page.getHeight();
 
       y -= height + 25;
-      btn.addToPage('∑', symbol, page, { x, y, width, height });
+      btn.addToPage('∑', page, { x, y, width, height, font: symbol });
       y -= height + 25;
       cb.addToPage(page, { x, y, width, height });
       y -= height + 25;
-      dd.addToPage(symbol, page, { x, y, width, height });
+      dd.addToPage(page, { x, y, width, height, font: symbol });
       y -= height + 25;
-      ol.addToPage(symbol, page, { x, y, width, height });
+      ol.addToPage(page, { x, y, width, height, font: symbol });
       y -= height + 25;
       rg.addOptionToPage('bar', page, { x, y, width, height });
       y -= height + 25;
-      tf.addToPage(symbol, page, { x, y, width, height });
+      tf.addToPage(page, { x, y, width, height, font: symbol });
 
       const rectangle = drawRectangle({
         x: 0,
@@ -188,7 +188,7 @@
       const text = symbol.encodeText('ℑ');
       const textW = symbol.widthOfTextAtSize('ℑ', 35);
       const textH = symbol.heightAtSize(35);
-      const symbolText = (font) =>
+      const symbolText = (font: PDFFont) =>
         drawText(text, {
           x: width / 2 - textW / 2,
           y: height / 2 - textH / 2 + 10,
@@ -200,7 +200,7 @@
           ySkew: degrees(0),
         });
 
-      const assert = (condition, msg = '') => {
+      const assert = (condition: boolean, msg = '') => {
         if (!condition) throw new Error(msg || 'Assertion failed');
       };
 

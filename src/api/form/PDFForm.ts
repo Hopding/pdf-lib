@@ -531,7 +531,7 @@ export default class PDFForm {
   updateFieldAppearances(font?: PDFFont) {
     assertOrUndefined(font, 'font', [[PDFFont, 'PDFFont']]);
 
-    font = font ?? this.defaultFontCache.access();
+    font = font ?? this.getDefaultFont();
 
     const fields = this.getFields();
 
@@ -586,6 +586,10 @@ export default class PDFForm {
   fieldIsDirty(fieldRef: PDFRef): boolean {
     assertOrUndefined(fieldRef, 'fieldRef', [[PDFRef, 'PDFRef']]);
     return this.dirtyFields.has(fieldRef);
+  }
+
+  getDefaultFont() {
+    return this.defaultFontCache.access();
   }
 
   private findOrCreateNonTerminals(partialNames: string[]) {

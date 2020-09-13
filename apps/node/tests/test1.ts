@@ -447,7 +447,7 @@ export default async (assets: Assets) => {
   ].forEach(({ name, text, font }, idx) => {
     const textField = form.createTextField(name);
     textField.setText(text);
-    textField.addToPage(ubuntuFont, page5, {
+    textField.addToPage(page5, {
       x: fPadding + fWidth,
       y: size - fMax - fPadding,
       width: fWidth,
@@ -457,6 +457,7 @@ export default async (assets: Assets) => {
       backgroundColor: pastels.pinkish,
       borderColor: pastels.blue,
       textColor: pastels.whiteish,
+      font: ubuntuFont,
     });
     if (font) textField.updateAppearances(font);
   });
@@ -469,7 +470,7 @@ export default async (assets: Assets) => {
     { name: 'moi.button.field[3]', text: 'Saturn', font: timesRomanFont },
   ].forEach(({ name, text, font }, idx) => {
     const button = form.createButton(name);
-    button.addToPage(text, font, page5, {
+    button.addToPage(text, page5, {
       x: fPadding * 2 + fWidth * 3,
       y: size - fMax - fPadding,
       width: fWidth,
@@ -479,6 +480,7 @@ export default async (assets: Assets) => {
       backgroundColor: pastels.brownish,
       borderColor: pastels.tan,
       textColor: pastels.greyishGreen,
+      font,
     });
   });
 
@@ -492,7 +494,7 @@ export default async (assets: Assets) => {
     const dropdown = form.createDropdown(name);
     dropdown.addOptions(['Exia', 'Dynames', 'Kyrios', 'Virtue']);
     dropdown.select(choice);
-    dropdown.addToPage(font, page5, {
+    dropdown.addToPage(page5, {
       x: fPadding * 3 + fWidth * 5,
       y: size - fMax - fPadding,
       width: fWidth,
@@ -502,6 +504,7 @@ export default async (assets: Assets) => {
       backgroundColor: pastels.greyishGreen,
       borderColor: pastels.hotPink,
       textColor: pastels.brownish,
+      font,
     });
   });
 
@@ -537,7 +540,7 @@ export default async (assets: Assets) => {
     const optionList = form.createOptionList(name);
     optionList.addOptions(['TypeScript', 'Kotlin', 'Python', 'Swift']);
     optionList.select(choice);
-    optionList.addToPage(font, page5, {
+    optionList.addToPage(page5, {
       x: fPadding * 2 + fWidth * 3,
       y: size - fMax * 3 - fPadding * 2,
       width: fWidth,
@@ -547,6 +550,7 @@ export default async (assets: Assets) => {
       backgroundColor: pastels.tan,
       borderColor: pastels.yellow,
       textColor: pastels.hotPink,
+      font,
     });
   });
 
@@ -576,10 +580,10 @@ export default async (assets: Assets) => {
 
   // Combed Text Field
   const combedTf = form.createTextField('moi.combed.text.field');
-  combedTf.enableCombing();
   combedTf.setMaxLength(7);
+  combedTf.enableCombing();
   combedTf.setText('ABC-123');
-  combedTf.addToPage(ubuntuFont, page5, {
+  combedTf.addToPage(page5, {
     x: fPadding + fWidth / 2,
     y: size - fMax * 5 - fPadding * 3,
     width: fWidth * 2.5,
@@ -588,6 +592,7 @@ export default async (assets: Assets) => {
     backgroundColor: pastels.yellow,
     borderColor: pastels.brownish,
     textColor: pastels.darkBlue,
+    font: ubuntuFont,
   });
 
   // Multiline Text Field
@@ -596,7 +601,7 @@ export default async (assets: Assets) => {
   multilineTf.setText(
     `In the morning, when you can't get out of bed, tell yourself: "I'm getting up to do the work only a man can do. How can I possibly hesitate or complain when I'm about to accomplish the task for which I was born? Was I made for lying warm in bed under a pile of blankets?"\n\n"But I enjoy it here."\n\nWas it for enjoyment you were born? Are you designed to act or to be acted upon?\n\n\t\t\t\t\t\t\t\t\t\t - Marcus Aurelius`,
   );
-  multilineTf.addToPage(ubuntuFont, page5, {
+  multilineTf.addToPage(page5, {
     x: fPadding * 3 + fWidth / 2 + fWidth * 2.5,
     y: size - fMax * 5 - fPadding * 3 - fHeight * 3,
     width: fWidth * 2.5,
@@ -605,6 +610,7 @@ export default async (assets: Assets) => {
     backgroundColor: pastels.whiteish,
     borderColor: pastels.brownish,
     textColor: pastels.greyishGreen,
+    font: ubuntuFont,
   });
 
   /********************** Print Metadata **********************/

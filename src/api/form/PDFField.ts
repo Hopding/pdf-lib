@@ -26,6 +26,7 @@ export interface FieldAppearanceOptions {
   borderColor?: Color;
   borderWidth?: number;
   rotate?: Rotation;
+  font?: PDFFont;
 }
 
 export const assertFieldAppearanceOptions = (

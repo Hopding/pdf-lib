@@ -211,13 +211,10 @@ _This example produces [this PDF](assets/pdfs/examples/create_form.pdf)._
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument, StandardFonts } from 'pdf-lib'
+import { PDFDocument } from 'pdf-lib'
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
-
-// Embed the Helvetica font
-const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
 // Add a blank page to the document
 const page = pdfDoc.addPage([550, 750])
@@ -230,7 +227,7 @@ page.drawText('Enter your favorite superhero:', { x: 50, y: 700, size: 20 })
 
 const superheroField = form.createTextField('favorite.superhero')
 superheroField.setText('One Punch Man')
-superheroField.addToPage(helvetica, page, { x: 55, y: 640 })
+superheroField.addToPage(page, { x: 55, y: 640 })
 
 // Add the rocket radio group, labels, and description
 page.drawText('Select your favorite rocket:', { x: 50, y: 600, size: 20 })
@@ -242,7 +239,7 @@ page.drawText('Space Launch System', { x: 340, y: 500, size: 18 })
 
 const rocketField = form.createRadioGroup('favorite.rocket')
 rocketField.addOptionToPage('Falcon Heavy', page, { x: 55, y: 540 })
-rocketField.addOptionToPage('Saturn IV', page, { x: 55, y: 480 }
+rocketField.addOptionToPage('Saturn IV', page, { x: 55, y: 480 })
 rocketField.addOptionToPage('Delta IV Heavy', page, { x: 275, y: 540 })
 rocketField.addOptionToPage('Space Launch System', page, { x: 275, y: 480 })
 rocketField.select('Saturn IV')
@@ -273,22 +270,22 @@ page.drawText('Select your favorite planet*:', { x: 50, y: 280, size: 20 })
 
 const planetsField = form.createDropdown('favorite.planet')
 planetsField.addOptions(['Venus', 'Earth', 'Mars', 'Pluto'])
-planetsField.select('Pluto');
-planetsField.addToPage(helvetica, page, { x: 55, y: 220 })
+planetsField.select('Pluto')
+planetsField.addToPage(page, { x: 55, y: 220 })
 
 // Add the person option list and description
-page.drawText('Select your favorite person:', { x: 50, y: 180, size: 18 });
+page.drawText('Select your favorite person:', { x: 50, y: 180, size: 18 })
 
-const personField = form.createOptionList('favorite.person');
+const personField = form.createOptionList('favorite.person')
 personField.addOptions([
   'Julius Caesar',
   'Ada Lovelace',
   'Cleopatra',
   'Aaron Burr',
   'Mark Antony',
-]);
-personField.select('Ada Lovelace');
-personField.addToPage(helvetica, page, { x: 55, y: 70 });
+])
+personField.select('Ada Lovelace')
+personField.addToPage(page, { x: 55, y: 70 })
 
 // Just saying...
 page.drawText(`* Pluto should be a planet too!`, { x: 15, y: 15, size: 15 })

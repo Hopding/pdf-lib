@@ -378,7 +378,7 @@ export default class PDFOptionList extends PDFField {
   /**
    * Show this option list on the specified page. For example:
    * ```js
-   * const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica)
+   * const ubuntuFont = await pdfDoc.embedFont(ubuntuFontBytes)
    * const page = pdfDoc.addPage()
    *
    * const form = pdfDoc.getForm()
@@ -386,7 +386,7 @@ export default class PDFOptionList extends PDFField {
    * optionList.setOptions(['Exia', 'Dynames', 'Kyrios', 'Virtue'])
    * optionList.select(['Exia', 'Virtue'])
    *
-   * optionList.addToPage(helvetica, page, {
+   * optionList.addToPage(page, {
    *   x: 50,
    *   y: 75,
    *   width: 200,
@@ -396,15 +396,14 @@ export default class PDFOptionList extends PDFField {
    *   borderColor: rgb(0, 0, 1),
    *   borderWidth: 2,
    *   rotate: degrees(90),
+   *   font: ubuntuFont,
    * })
    * ```
    * This will create a new widget for this option list field.
-   * @param font The font in which the options should be displayed.
    * @param page The page to which this option list widget should be added.
    * @param options The options to be used when adding this option list widget.
    */
-  addToPage(font: PDFFont, page: PDFPage, options?: FieldAppearanceOptions) {
-    assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
+  addToPage(page: PDFPage, options?: FieldAppearanceOptions) {
     assertIs(page, 'page', [[PDFPage, 'PDFPage']]);
     assertFieldAppearanceOptions(options);
 
@@ -433,6 +432,7 @@ export default class PDFOptionList extends PDFField {
     this.acroField.addWidget(widgetRef);
 
     // Set appearance streams for widget
+    const font = options.font ?? this.doc.getForm().getDefaultFont();
     this.updateWidgetAppearance(widget, font);
 
     // Add widget to the given page

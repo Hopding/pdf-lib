@@ -70,7 +70,6 @@ export default async () => {
     .setText(['• Gold coins', '• Treasure chests'].join('\n'));
 
   // Add new page with custom form fields to exercise options not used in test1
-  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const { width, height } = pdfDoc.getPage(0).getSize();
   const page2 = pdfDoc.addPage([width, height]);
 
@@ -78,7 +77,7 @@ export default async () => {
   const singlelineCenteredTf = form.createTextField('singleline.centered.tf');
   singlelineCenteredTf.setAlignment(TextAlignment.Center);
   singlelineCenteredTf.setText('Sum centered text yo');
-  singlelineCenteredTf.addToPage(helveticaFont, page2, {
+  singlelineCenteredTf.addToPage(page2, {
     y: height - 50,
     width: 250,
     height: 25,
@@ -91,7 +90,7 @@ export default async () => {
   multilineCenteredTf.enableMultiline();
   multilineCenteredTf.setAlignment(TextAlignment.Center);
   multilineCenteredTf.setText('Sum\ncentered\rtext\nyo');
-  multilineCenteredTf.addToPage(helveticaFont, page2, {
+  multilineCenteredTf.addToPage(page2, {
     y: height - 50 - 150,
     width: 250,
     height: 100,
@@ -103,7 +102,7 @@ export default async () => {
   const singlelineRightTf = form.createTextField('singleline.right.tf');
   singlelineRightTf.setAlignment(TextAlignment.Right);
   singlelineRightTf.setText('Sum right justified text yo');
-  singlelineRightTf.addToPage(helveticaFont, page2, {
+  singlelineRightTf.addToPage(page2, {
     y: height - 50,
     x: 300,
     width: 250,
@@ -117,7 +116,7 @@ export default async () => {
   multilineRightTf.enableMultiline();
   multilineRightTf.setAlignment(TextAlignment.Right);
   multilineRightTf.setText('Sum\nright justified\rtext\nyo');
-  multilineRightTf.addToPage(helveticaFont, page2, {
+  multilineRightTf.addToPage(page2, {
     y: height - 50 - 150,
     x: 300,
     width: 250,
@@ -128,7 +127,7 @@ export default async () => {
 
   // Multiselect Option List
   const optionList = form.createOptionList('option.list');
-  optionList.addToPage(helveticaFont, page2, {
+  optionList.addToPage(page2, {
     y: height - 50 - 150 - 250,
     width: 250,
     height: 200,
