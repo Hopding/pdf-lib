@@ -1199,8 +1199,18 @@ Below are some of the most commonly used methods for reading and filling the afo
 
 ## Limitations
 
-- `pdf-lib` **can** extract the content of text fields (see [`PDFTextField.getText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#gettext)), but it **cannot** extract plain text on a page outside of a form field. This is a difficult feature to implement, but it is within the scope of this library and may be added to `pdf-lib` in the future. See https://github.com/Hopding/pdf-lib/issues/93, https://github.com/Hopding/pdf-lib/issues/177 https://github.com/Hopding/pdf-lib/issues/137, https://github.com/Hopding/pdf-lib/issues/329, and https://github.com/Hopding/pdf-lib/issues/380.
-- `pdf-lib` **can** remove and edit the content of text fields (see [`PDFTextField.setText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#settext)), but it does **not** provide APIs for removing or editing text on a page outside of a form field. This is also a difficult feature to implement, but is within the scope of `pdf-lib` and may be added in the future. See https://github.com/Hopding/pdf-lib/issues/93, https://github.com/Hopding/pdf-lib/issues/177 https://github.com/Hopding/pdf-lib/issues/137, https://github.com/Hopding/pdf-lib/issues/329, and https://github.com/Hopding/pdf-lib/issues/380.
+- `pdf-lib` **can** extract the content of text fields (see [`PDFTextField.getText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#gettext)), but it **cannot** extract plain text on a page outside of a form field. This is a difficult feature to implement, but it is within the scope of this library and may be added to `pdf-lib` in the future. See 
+[#93](https://github.com/Hopding/pdf-lib/issues/93), 
+[#137](https://github.com/Hopding/pdf-lib/issues/137), 
+[#177](https://github.com/Hopding/pdf-lib/issues/177),
+[#329](https://github.com/Hopding/pdf-lib/issues/329), and 
+[#380](https://github.com/Hopding/pdf-lib/issues/380).
+- `pdf-lib` **can** remove and edit the content of text fields (see [`PDFTextField.setText`](https://pdf-lib.js.org/docs/api/classes/pdftextfield#settext)), but it does **not** provide APIs for removing or editing text on a page outside of a form field. This is also a difficult feature to implement, but is within the scope of `pdf-lib` and may be added in the future. See 
+[#93](https://github.com/Hopding/pdf-lib/issues/93), 
+[#137](https://github.com/Hopding/pdf-lib/issues/137), 
+[#177](https://github.com/Hopding/pdf-lib/issues/177),
+[#329](https://github.com/Hopding/pdf-lib/issues/329), and 
+[#380](https://github.com/Hopding/pdf-lib/issues/380).
 - `pdf-lib` does **not** support the use of HTML or CSS when adding content to a PDF. Similarly, `pdf-lib` **cannot** embed HTML/CSS content into PDFs. As convenient as such a feature might be, it would be extremely difficult to implement and is far beyond the scope of this library. If this capability is something you need, consider using [Puppeteer](https://github.com/puppeteer/puppeteer).
 
 ## Help and Discussion
