@@ -1,4 +1,9 @@
-import { Encodings, Font, FontNames, Encoding } from '@pdf-lib/standard-fonts';
+import {
+  Encodings,
+  Font,
+  FontNames,
+  EncodingType,
+} from '@pdf-lib/standard-fonts';
 
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFRef from 'src/core/objects/PDFRef';
@@ -20,7 +25,7 @@ class StandardFontEmbedder {
     new StandardFontEmbedder(fontName, customName);
 
   readonly font: Font;
-  readonly encoding: Encoding;
+  readonly encoding: EncodingType;
   readonly fontName: string;
   readonly customName: string | undefined;
 
