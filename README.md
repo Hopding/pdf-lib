@@ -208,7 +208,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/create_form.pdf)._
 
-<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/1/) -->
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/bct7vngL/4/)
 
 > See also [Creating and Filling Forms](#creating-and-filling-forms)
 
@@ -306,7 +306,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/fill_form.pdf)_ (when [this PDF](assets/pdfs/dod_character.pdf) is used for the `formPdfBytes` variable, [this image](assets/images/small_mario.png) is used for the `marioImageBytes` variable, and [this image](assets/images/mario_emblem.png) is used for the `emblemImageBytes` variable).
 
-<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/64zajhge/1/) -->
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/0mwfqkv6/3/)
 
 > See also [Creating and Filling Forms](#creating-and-filling-forms)
 
@@ -1083,7 +1083,8 @@ When working with PDFs, you will frequently come across the terms "character enc
 Note that encoding errors will be thrown if you try to use a character with a font that does not support it. For example, `Ω` is not in the WinAnsi character set. So trying to draw it on a page with the standard Helvetica font will throw the following error:
 
 ```
-Error: WinAnsi cannot encode "Ω" at EncodingClass.encodeUnicodeCodePoint
+Error: WinAnsi cannot encode "Ω" (0x03a9)
+    at Encoding.encodeUnicodeCodePoint
 ```
 
 ## Creating and Filling Forms
