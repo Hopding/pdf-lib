@@ -1,5 +1,11 @@
 import fs from 'fs';
-import { PDFDocument, PDFName, PDFArray, PDFHexString } from 'src/index';
+import {
+  PDFDocument,
+  PDFName,
+  PDFArray,
+  PDFHexString,
+  AnnotationFlags,
+} from 'src/index';
 
 const fancyFieldsPdfBytes = fs.readFileSync('assets/pdfs/fancy_fields.pdf');
 
@@ -141,5 +147,21 @@ describe(`PDFRadioGroup`, () => {
     expect((opt.get(1) as PDFHexString).decodeText()).toBe('bar');
     expect((opt.get(2) as PDFHexString).decodeText()).toBe('foo');
     expect((opt.get(3) as PDFHexString).decodeText()).toBe('qux');
+  });
+
+  it(`produces printable widgets when added to a page`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+
+    const form = pdfDoc.getForm();
+
+    const radioGroup = form.createRadioGroup('a.new.radio.group');
+
+    const widgets = () => radioGroup.acroField.getWidgets();
+    expect(widgets().length).toBe(0);
+
+    radioGroup.addOptionToPage('foo', page);
+    expect(widgets().length).toBe(1);
+    expect(widgets()[0].hasFlag(AnnotationFlags.Print)).toBe(true);
   });
 });
