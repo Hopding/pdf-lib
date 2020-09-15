@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PDFDocument } from 'src/index';
+import { PDFDocument, AnnotationFlags } from 'src/index';
 
 const fancyFieldsPdfBytes = fs.readFileSync('assets/pdfs/fancy_fields.pdf');
 
@@ -68,5 +68,21 @@ describe(`PDFOptionList`, () => {
     expect(planets.isMultiselect()).toBe(false);
     expect(planets.isSelectOnClick()).toBe(false);
     expect(planets.isSorted()).toBe(false);
+  });
+
+  it(`produces printable widgets when added to a page`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+
+    const form = pdfDoc.getForm();
+
+    const optionList = form.createOptionList('a.new.option.list');
+
+    const widgets = () => optionList.acroField.getWidgets();
+    expect(widgets().length).toBe(0);
+
+    optionList.addToPage(page);
+    expect(widgets().length).toBe(1);
+    expect(widgets()[0].hasFlag(AnnotationFlags.Print)).toBe(true);
   });
 });

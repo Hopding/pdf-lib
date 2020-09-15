@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PDFDocument, TextAlignment } from 'src/index';
+import { PDFDocument, TextAlignment, AnnotationFlags } from 'src/index';
 
 const fancyFieldsPdfBytes = fs.readFileSync('assets/pdfs/fancy_fields.pdf');
 
@@ -94,5 +94,21 @@ describe(`PDFTextField`, () => {
     expect(() => textField.setMaxLength(6)).not.toThrow();
     expect(() => textField.setMaxLength(7)).not.toThrow();
     expect(() => textField.setMaxLength(5)).toThrow();
+  });
+
+  it(`produces printable widgets when added to a page`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+
+    const form = pdfDoc.getForm();
+
+    const textField = form.createTextField('a.new.text.field');
+
+    const widgets = () => textField.acroField.getWidgets();
+    expect(widgets().length).toBe(0);
+
+    textField.addToPage(page);
+    expect(widgets().length).toBe(1);
+    expect(widgets()[0].hasFlag(AnnotationFlags.Print)).toBe(true);
   });
 });

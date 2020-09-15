@@ -3,6 +3,7 @@ import PDFName from 'src/core/objects/PDFName';
 import PDFStream from 'src/core/objects/PDFStream';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFRef from 'src/core/objects/PDFRef';
+import PDFNumber from 'src/core/objects/PDFNumber';
 
 class PDFAnnotation {
   readonly dict: PDFDict;
@@ -20,6 +21,11 @@ class PDFAnnotation {
 
   AP(): PDFDict | undefined {
     return this.dict.lookupMaybe(PDFName.of('AP'), PDFDict);
+  }
+
+  F(): PDFNumber | undefined {
+    const numberOrRef = this.dict.lookup(PDFName.of('F'));
+    return this.dict.context.lookupMaybe(numberOrRef, PDFNumber);
   }
 
   getRectangle(): { x: number; y: number; width: number; height: number } {
@@ -94,6 +100,34 @@ class PDFAnnotation {
     const D = AP.lookupMaybe(PDFName.of('D'), PDFDict, PDFStream);
 
     return { normal: N, rollover: R, down: D };
+  }
+
+  getFlags(): number {
+    return this.F()?.asNumber() ?? 0;
+  }
+
+  setFlags(flags: number) {
+    this.dict.set(PDFName.of('F'), PDFNumber.of(flags));
+  }
+
+  hasFlag(flag: number): boolean {
+    const flags = this.getFlags();
+    return (flags & flag) !== 0;
+  }
+
+  setFlag(flag: number) {
+    const flags = this.getFlags();
+    this.setFlags(flags | flag);
+  }
+
+  clearFlag(flag: number) {
+    const flags = this.getFlags();
+    this.setFlags(flags & ~flag);
+  }
+
+  setFlagTo(flag: number, enable: boolean) {
+    if (enable) this.setFlag(flag);
+    else this.clearFlag(flag);
   }
 }
 

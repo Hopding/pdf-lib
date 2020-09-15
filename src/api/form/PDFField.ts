@@ -11,8 +11,9 @@ import {
   PDFName,
   PDFDict,
   MethodNotImplementedError,
-  PDFAcroField,
   AcroFieldFlags,
+  PDFAcroTerminal,
+  AnnotationFlags,
 } from 'src/core';
 import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 
@@ -70,8 +71,8 @@ export const assertFieldAppearanceOptions = (
  * to be rendered.
  */
 export default class PDFField {
-  /** The low-level PDFAcroField wrapped by this field. */
-  readonly acroField: PDFAcroField;
+  /** The low-level PDFAcroTerminal wrapped by this field. */
+  readonly acroField: PDFAcroTerminal;
 
   /** The unique reference assigned to this field within the document. */
   readonly ref: PDFRef;
@@ -80,11 +81,11 @@ export default class PDFField {
   readonly doc: PDFDocument;
 
   protected constructor(
-    acroField: PDFAcroField,
+    acroField: PDFAcroTerminal,
     ref: PDFRef,
     doc: PDFDocument,
   ) {
-    assertIs(acroField, 'acroField', [[PDFAcroField, 'PDFAcroField']]);
+    assertIs(acroField, 'acroField', [[PDFAcroTerminal, 'PDFAcroTerminal']]);
     assertIs(ref, 'ref', [[PDFRef, 'PDFRef']]);
     assertIs(doc, 'doc', [[PDFDocument, 'PDFDocument']]);
 
@@ -310,6 +311,10 @@ export default class PDFField {
 
     const bs = widget.getOrCreateBorderStyle();
     if (borderWidth !== undefined) bs.setWidth(borderWidth);
+
+    widget.setFlagTo(AnnotationFlags.Print, true);
+    widget.setFlagTo(AnnotationFlags.Hidden, false);
+    widget.setFlagTo(AnnotationFlags.Invisible, false);
 
     // Set acrofield properties
     if (textColor) {
