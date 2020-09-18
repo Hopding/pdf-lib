@@ -518,7 +518,7 @@ describe(`PDFObjectParser`, () => {
       expect(dict.get(PDFName.of('PDFNumber'))).toBeInstanceOf(PDFNumber);
       expect(dict.get(PDFName.of('PDFHexString'))).toBeInstanceOf(PDFHexString);
       expect(dict.get(PDFName.of('PDFBool'))).toBe(PDFBool.True);
-      expect(dict.get(PDFName.of('PDFNull'))).toBe(PDFNull);
+      expect(dict.get(PDFName.of('PDFNull'))).toBe(undefined);
     });
 
     it(`handles dictionaries with no whitespace or comments`, () => {

@@ -18,12 +18,16 @@ export class PrivateConstructorError extends Error {
 
 export class UnexpectedObjectTypeError extends Error {
   constructor(expected: any | any[], actual: any) {
+    const name = (t: any) => t?.name ?? t?.constructor?.name;
+
     const expectedTypes = Array.isArray(expected)
-      ? expected.map(({ name }) => name)
-      : [expected.name];
+      ? expected.map(name)
+      : [name(expected)];
+
     const msg =
       `Expected instance of ${expectedTypes.join(' or ')}, ` +
-      `but got instance of ${actual ? actual.constructor.name : actual}`;
+      `but got instance of ${actual ? name(actual) : actual}`;
+
     super(msg);
   }
 }
