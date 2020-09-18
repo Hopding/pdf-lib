@@ -45,14 +45,18 @@ class PDFDict extends PDFObject {
     this.dict.set(key, value);
   }
 
-  get(key: PDFName): PDFObject | undefined {
-    return this.dict.get(key);
+  get(
+    key: PDFName,
+    // TODO: `preservePDFNull` is for backwards compatibility. Should be
+    // removed in next breaking API change.
+    preservePDFNull = false,
+  ): PDFObject | undefined {
+    const value = this.dict.get(key);
+    if (value === PDFNull && !preservePDFNull) return undefined;
+    return value;
   }
 
   has(key: PDFName): boolean {
-    // NOTE: This might be a bit inconsistent with `PDFDict.get()` - should
-    //       calls to `PDFDict.get()` return `undefined` if the underlying
-    //       value is `PDFNull`? This would be a breaking change.
     const value = this.dict.get(key);
     return value !== undefined && value !== PDFNull;
   }
@@ -88,11 +92,19 @@ class PDFDict extends PDFObject {
   ): PDFString | PDFHexString | PDFArray | undefined;
 
   lookupMaybe(key: PDFName, ...types: any[]) {
-    return this.context.lookupMaybe(
-      this.get(key),
+    // TODO: `preservePDFNull` is for backwards compatibility. Should be
+    // removed in next breaking API change.
+    const preservePDFNull = types.includes(PDFNull);
+
+    const value = this.context.lookupMaybe(
+      this.get(key, preservePDFNull),
       // @ts-ignore
       ...types,
     ) as any;
+
+    if (value === PDFNull && !preservePDFNull) return undefined;
+
+    return value;
   }
 
   lookup(key: PDFName): PDFObject | undefined;
@@ -124,11 +136,19 @@ class PDFDict extends PDFObject {
   ): PDFString | PDFHexString | PDFArray;
 
   lookup(key: PDFName, ...types: any[]) {
-    return this.context.lookup(
-      this.get(key),
+    // TODO: `preservePDFNull` is for backwards compatibility. Should be
+    // removed in next breaking API change.
+    const preservePDFNull = types.includes(PDFNull);
+
+    const value = this.context.lookup(
+      this.get(key, preservePDFNull),
       // @ts-ignore
       ...types,
     ) as any;
+
+    if (value === PDFNull && !preservePDFNull) return undefined;
+
+    return value;
   }
 
   delete(key: PDFName): boolean {

@@ -66,7 +66,7 @@ describe(`PDFDict`, () => {
     expect(pdfDict.get(PDFName.of('Boolean'))).toBe(pdfBool);
     expect(pdfDict.get(PDFName.of('HexString'))).toBe(pdfHexString);
     expect(pdfDict.get(PDFName.of('Name'))).toBe(pdfName);
-    expect(pdfDict.get(PDFName.of('Null'))).toBe(pdfNull);
+    expect(pdfDict.get(PDFName.of('Null'))).toBe(undefined);
     expect(pdfDict.get(PDFName.of('Number'))).toBe(pdfNumber);
     expect(pdfDict.get(PDFName.of('String'))).toBe(pdfString);
     expect(pdfDict.get(PDFName.of('Ref'))).toBe(pdfRef);
@@ -136,5 +136,32 @@ describe(`PDFDict`, () => {
 >> `,
       ),
     );
+  });
+
+  it(`return "undefined" if the underlying value is "PDFNull"`, () => {
+    const dict = context.obj({ foo: null });
+    dict.set(PDFName.of('Bar'), PDFNull);
+    context.assign(PDFRef.of(21), PDFNull);
+    dict.set(PDFName.of('qux'), PDFRef.of(21));
+
+    expect(dict.get(PDFName.of('foo'))).toBe(undefined);
+    expect(dict.get(PDFName.of('Bar'))).toBe(undefined);
+    expect(dict.get(PDFName.of('qux'))).toBe(PDFRef.of(21));
+
+    expect(dict.lookup(PDFName.of('foo'))).toBe(undefined);
+    expect(dict.lookup(PDFName.of('Bar'))).toBe(undefined);
+    expect(dict.lookup(PDFName.of('qux'))).toBe(undefined);
+
+    expect(dict.lookup(PDFName.of('foo'), PDFNull)).toBe(PDFNull);
+    expect(dict.lookup(PDFName.of('Bar'), PDFNull)).toBe(PDFNull);
+    expect(dict.lookup(PDFName.of('qux'), PDFNull)).toBe(PDFNull);
+
+    expect(dict.lookupMaybe(PDFName.of('foo'), PDFNull)).toBe(PDFNull);
+    expect(dict.lookupMaybe(PDFName.of('Bar'), PDFNull)).toBe(PDFNull);
+    expect(dict.lookupMaybe(PDFName.of('qux'), PDFNull)).toBe(PDFNull);
+
+    expect(dict.lookupMaybe(PDFName.of('foo'), PDFDict)).toBe(undefined);
+    expect(dict.lookupMaybe(PDFName.of('Bar'), PDFDict)).toBe(undefined);
+    expect(dict.lookupMaybe(PDFName.of('qux'), PDFDict)).toBe(undefined);
   });
 });
