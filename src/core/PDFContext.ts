@@ -110,15 +110,22 @@ class PDFContext {
   ): PDFString | PDFHexString | undefined;
 
   lookupMaybe(ref: LookupKey, ...types: any[]) {
+    // TODO: `preservePDFNull` is for backwards compatibility. Should be
+    // removed in next breaking API change.
+    const preservePDFNull = types.includes(PDFNull);
+
     const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
 
-    if (!result) return undefined;
+    if (!result || (result === PDFNull && !preservePDFNull)) return undefined;
 
     for (let idx = 0, len = types.length; idx < len; idx++) {
       const type = types[idx];
-      if (result instanceof type) return result;
+      if (type === PDFNull) {
+        if (result === PDFNull) return result;
+      } else {
+        if (result instanceof type) return result;
+      }
     }
-
     throw new UnexpectedObjectTypeError(types, result);
   }
 
@@ -146,7 +153,11 @@ class PDFContext {
 
     for (let idx = 0, len = types.length; idx < len; idx++) {
       const type = types[idx];
-      if (result instanceof type) return result;
+      if (type === PDFNull) {
+        if (result === PDFNull) return result;
+      } else {
+        if (result instanceof type) return result;
+      }
     }
 
     throw new UnexpectedObjectTypeError(types, result);

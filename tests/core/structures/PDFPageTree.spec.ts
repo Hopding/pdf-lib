@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { TreeNode } from 'src/core/structures/PDFPageTree';
 import {
   PDFArray,
@@ -7,7 +8,12 @@ import {
   PDFPageLeaf,
   PDFPageTree,
   PDFRef,
+  PDFDocument,
 } from 'src/index';
+
+const withNullEntryPdfBytes = fs.readFileSync(
+  'assets/pdfs/with_null_parent_entry.pdf',
+);
 
 const pageUtils = () => {
   const context = PDFContext.create();
@@ -568,5 +574,19 @@ describe(`PDFPageTree`, () => {
       expect(tree1.Kids().get(0)).toBe(tree2Ref);
       expect(tree1.Kids().get(1)).toBe(tree4Ref);
     });
+  });
+
+  it(`can be ascended when a "/Parent null" entry exists on a node`, async () => {
+    const pdfDoc = await PDFDocument.load(withNullEntryPdfBytes);
+    const pages = pdfDoc.getPages();
+    const parent = pages[0].node.Parent();
+    expect(parent).toBeInstanceOf(PDFPageTree);
+
+    let ascentions = 0;
+    const handleAscend = () => {
+      ascentions += 1;
+    };
+    expect(() => parent?.ascend(handleAscend)).not.toThrow();
+    expect(ascentions).toBe(1);
   });
 });
