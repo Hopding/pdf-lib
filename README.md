@@ -1255,6 +1255,7 @@ We welcome contributions from the open source community! If you are interested i
 
 ## Tutorials and Cool Stuff
 
+- [labelmake](https://github.com/hand-dot/labelmake) - a library for declarative PDF generation created by @hand-dot
 - [Möbius Printing helper](https://shreevatsa.net/mobius-print/) - a tool created by @shreevatsa
 - [Extract PDF pages](https://shreevatsa.net/pdf-pages/) - a tool created by @shreevatsa
 - [Travel certificate generator](https://github.com/LAB-MI/deplacement-covid-19) - a tool that creates travel certificates for French citizens under quarantine due to COVID-19
