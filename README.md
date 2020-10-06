@@ -846,7 +846,7 @@ import {
   PDFDocument,
   StandardFonts,
   rgb,
-} from 'https://cdn.skypack.dev/pdf-lib@^1.6.0';
+} from 'https://cdn.skypack.dev/pdf-lib@^1.11.1';
 
 const pdfDoc = await PDFDocument.create();
 const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
@@ -885,7 +885,7 @@ import {
   PDFDocument,
   rgb,
   StandardFonts,
-} from 'https://cdn.skypack.dev/pdf-lib@^1.6.0';
+} from 'https://cdn.skypack.dev/pdf-lib@^1.11.1';
 import fontkit from 'https://cdn.skypack.dev/@pdf-lib/fontkit@^1.0.0';
 
 const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
