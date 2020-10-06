@@ -833,7 +833,7 @@ const pdfBytes = await pdfDoc.save()
 
 ## Deno Usage
 
-`pdf-lib` fully supports the exciting new [Deno](https://deno.land/) runtime! All of the [usage examples](#usage-examples) work in Deno. The only thing you need to do is change the imports for `pdf-lib` and `@pdf-lib/fontkit` to use the [Pika](https://www.pika.dev/) CDN, because Deno requires all modules to be referenced via URLs.
+`pdf-lib` fully supports the exciting new [Deno](https://deno.land/) runtime! All of the [usage examples](#usage-examples) work in Deno. The only thing you need to do is change the imports for `pdf-lib` and `@pdf-lib/fontkit` to use the [Skypack](https://www.skypack.dev/) CDN, because Deno requires all modules to be referenced via URLs.
 
 > **See also [How to Create and Modify PDF Files in Deno With pdf-lib](https://medium.com/swlh/how-to-create-and-modify-pdf-files-in-deno-ffaad7099b0?source=friends_link&sk=3da183bb776d059df428eaea52102f19)**
 
@@ -846,7 +846,7 @@ import {
   PDFDocument,
   StandardFonts,
   rgb,
-} from 'https://cdn.pika.dev/pdf-lib@^1.6.0';
+} from 'https://cdn.skypack.dev/pdf-lib@^1.6.0';
 
 const pdfDoc = await PDFDocument.create();
 const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
@@ -885,8 +885,8 @@ import {
   PDFDocument,
   rgb,
   StandardFonts,
-} from 'https://cdn.pika.dev/pdf-lib@^1.6.0';
-import fontkit from 'https://cdn.pika.dev/@pdf-lib/fontkit@^1.0.0';
+} from 'https://cdn.skypack.dev/pdf-lib@^1.6.0';
+import fontkit from 'https://cdn.skypack.dev/@pdf-lib/fontkit@^1.0.0';
 
 const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
 const fontBytes = await fetch(url).then((res) => res.arrayBuffer());
