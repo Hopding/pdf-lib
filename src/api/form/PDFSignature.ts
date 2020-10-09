@@ -46,4 +46,8 @@ export default class PDFSignature extends PDFField {
 
     this.acroField = acroSignature;
   }
+
+  needsAppearancesUpdate() {
+    return false;
+  }
 }
