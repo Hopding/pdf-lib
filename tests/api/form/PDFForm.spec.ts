@@ -47,6 +47,7 @@ const fancyFieldsPdfBytes = fs.readFileSync('assets/pdfs/fancy_fields.pdf');
 // const combedPdfBytes = fs.readFileSync('assets/pdfs/with_combed_fields.pdf');
 // const dodPdfBytes = fs.readFileSync('assets/pdfs/dod_character.pdf');
 const xfaPdfBytes = fs.readFileSync('assets/pdfs/with_xfa_fields.pdf');
+const signaturePdfBytes = fs.readFileSync('assets/pdfs/with_signature.pdf');
 
 describe(`PDFForm`, () => {
   const origConsoleWarn = console.warn;
@@ -273,6 +274,21 @@ describe(`PDFForm`, () => {
 
     await pdfDoc.save({ updateFieldAppearances: true });
     expect(aps()).toBe(20);
+  });
+
+  it.only(`does not throw errors for PDFSignature fields`, async () => {
+    const pdfDoc = await PDFDocument.load(signaturePdfBytes);
+
+    const widgets = getWidgets(pdfDoc);
+    expect(widgets.length).toBe(1);
+
+    const form = pdfDoc.getForm();
+
+    expect(() => form.updateFieldAppearances()).not.toThrow();
+
+    expect(
+      pdfDoc.save({ updateFieldAppearances: true }),
+    ).resolves.toBeInstanceOf(Uint8Array);
   });
 
   // TODO: Add method to remove APs and use `NeedsAppearances`? How would this
