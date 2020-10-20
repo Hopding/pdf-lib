@@ -14,9 +14,10 @@ class CustomFontSubsetEmbedder extends CustomFontEmbedder {
     fontkit: Fontkit,
     fontData: Uint8Array,
     customFontName?: string,
+    fontFeatures?: any[],
   ) {
     const font = await fontkit.create(fontData);
-    return new CustomFontSubsetEmbedder(font, fontData, customFontName);
+    return new CustomFontSubsetEmbedder(font, fontData, customFontName, fontFeatures);
   }
 
   private readonly subset: Subset;
@@ -27,8 +28,9 @@ class CustomFontSubsetEmbedder extends CustomFontEmbedder {
     font: Font,
     fontData: Uint8Array,
     customFontName?: string,
+    fontFeatures?: any[],
   ) {
-    super(font, fontData, customFontName);
+    super(font, fontData, customFontName, fontFeatures);
 
     this.subset = this.font.createSubset();
     this.glyphs = [];
@@ -37,7 +39,7 @@ class CustomFontSubsetEmbedder extends CustomFontEmbedder {
   }
 
   encodeText(text: string): PDFHexString {
-    const { glyphs } = this.font.layout(text);
+    const { glyphs } = this.font.layout(text, this.fontFeatures);
     const hexCodes = new Array(glyphs.length);
 
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {

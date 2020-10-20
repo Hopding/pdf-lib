@@ -829,7 +829,7 @@ export default class PDFDocument {
     font: StandardFonts | string | Uint8Array | ArrayBuffer,
     options: EmbedFontOptions = {},
   ): Promise<PDFFont> {
-    const { subset = false, customName } = options;
+    const { subset = false, customName, features } = options;
 
     assertIs(font, 'font', ['string', Uint8Array, ArrayBuffer]);
     assertIs(subset, 'subset', ['boolean']);
@@ -841,8 +841,8 @@ export default class PDFDocument {
       const bytes = toUint8Array(font);
       const fontkit = this.assertFontkit();
       embedder = subset
-        ? await CustomFontSubsetEmbedder.for(fontkit, bytes, customName)
-        : await CustomFontEmbedder.for(fontkit, bytes, customName);
+        ? await CustomFontSubsetEmbedder.for(fontkit, bytes, customName, features)
+        : await CustomFontEmbedder.for(fontkit, bytes, customName, features);
     } else {
       throw new TypeError(
         '`font` must be one of `StandardFonts | string | Uint8Array | ArrayBuffer`',

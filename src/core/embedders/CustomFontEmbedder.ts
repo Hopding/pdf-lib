@@ -24,9 +24,10 @@ class CustomFontEmbedder {
     fontkit: Fontkit,
     fontData: Uint8Array,
     customName?: string,
+    fontFeatures?: any[],
   ) {
     const font = await fontkit.create(fontData);
-    return new CustomFontEmbedder(font, fontData, customName);
+    return new CustomFontEmbedder(font, fontData, customName, fontFeatures);
   }
 
   readonly font: Font;
@@ -34,16 +35,18 @@ class CustomFontEmbedder {
   readonly fontData: Uint8Array;
   readonly fontName: string;
   readonly customName: string | undefined;
+  readonly fontFeatures: any[] | undefined;
 
   protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
-  protected constructor(font: Font, fontData: Uint8Array, customName?: string) {
+  protected constructor(font: Font, fontData: Uint8Array, customName?: string, fontFeatures?: any[]) {
     this.font = font;
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;
     this.fontName = this.font.postscriptName || 'Font';
     this.customName = customName;
+    this.fontFeatures = fontFeatures;
 
     this.baseFontName = '';
     this.glyphCache = Cache.populatedBy(this.allGlyphsInFontSortedById);
@@ -54,7 +57,7 @@ class CustomFontEmbedder {
    * Unicode, but embedded fonts use their own custom encodings)
    */
   encodeText(text: string): PDFHexString {
-    const { glyphs } = this.font.layout(text);
+    const { glyphs } = this.font.layout(text, this.fontFeatures);
     const hexCodes = new Array(glyphs.length);
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {
       hexCodes[idx] = toHexStringOfMinLength(glyphs[idx].id, 4);
@@ -65,7 +68,7 @@ class CustomFontEmbedder {
   // The advanceWidth takes into account kerning automatically, so we don't
   // have to do that manually like we do for the standard fonts.
   widthOfTextAtSize(text: string, size: number): number {
-    const { glyphs } = this.font.layout(text);
+    const { glyphs } = this.font.layout(text, this.fontFeatures);
     let totalWidth = 0;
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {
       totalWidth += glyphs[idx].advanceWidth * this.scale;
