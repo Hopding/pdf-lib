@@ -714,6 +714,29 @@ export default class PDFDocument {
   }
 
   /**
+   * Add document JavaScript. The script is executed when the document is opened.
+   * See the [JavaScript™ for Acrobat® API Reference](https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/js_api_reference.pdf)
+   * for details.
+   * @param script The JavaScript to execute.
+   * @param name The name of the script. Must be unique per document.
+   */
+  addJavascript(script: string, name: string) {
+    const jsActionDict = this.context.obj({
+      Type: 'Action',
+      S: 'JavaScript',
+      JS: PDFHexString.fromText(script),
+    });
+    const jsActionRef = this.context.register(jsActionDict);
+    const jsNameTree = this.context.obj({
+      Names: this.context.obj([name, jsActionRef]),
+    });
+    this.catalog.set(
+      PDFName.of('Names'),
+      this.context.obj({ JavaScript: jsNameTree }),
+    );
+  }
+
+  /**
    * Add an attachment to this document. Attachments are visible in the
    * "Attachments" panel of Adobe Acrobat and some other PDF readers. Any
    * type of file can be added as an attachment. This includes, but is not
