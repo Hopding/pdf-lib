@@ -61,6 +61,7 @@ import {
 } from 'src/utils';
 import FileEmbedder from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
+import PDFArray from 'src/core/objects/PDFArray';
 
 /**
  * Represents a PDF document.
@@ -730,14 +731,25 @@ export default class PDFDocument {
       S: 'JavaScript',
       JS: PDFHexString.fromText(script),
     });
+
     const jsActionRef = this.context.register(jsActionDict);
-    const jsNameTree = this.context.obj({
-      Names: this.context.obj([name, jsActionRef]),
-    });
-    this.catalog.set(
-      PDFName.of('Names'),
-      this.context.obj({ JavaScript: jsNameTree }),
-    );
+    if (!this.catalog.has(PDFName.of('Names'))) {
+      this.catalog.set(PDFName.of('Names'), PDFDict.withContext(this.context));
+    }
+
+    const Names = this.catalog.lookup(PDFName.of('Names'), PDFDict);
+    if (!Names.has(PDFName.of('JavaScript'))) {
+      Names.set(PDFName.of('JavaScript'), this.context.obj({}));
+    }
+
+    const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
+    if (!Javascript.has(PDFName.of('Names'))) {
+      Javascript.set(PDFName.of('Names'), this.context.obj([]));
+    }
+
+    const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
+    JSNames.push(PDFName.of(name));
+    JSNames.push(jsActionRef);
   }
 
   /**
