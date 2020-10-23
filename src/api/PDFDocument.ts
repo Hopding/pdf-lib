@@ -716,11 +716,15 @@ export default class PDFDocument {
   /**
    * Add document JavaScript. The script is executed when the document is opened.
    * See the [JavaScript™ for Acrobat® API Reference](https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/js_api_reference.pdf)
-   * for details.
-   * @param script The JavaScript to execute.
+   * for details. For example:
+   *
+   * ```js
+   * pdfDoc.addJavascript('main', 'console.show(); console.println("Hello World")');
+   * ```
    * @param name The name of the script. Must be unique per document.
+   * @param script The JavaScript to execute.
    */
-  addJavascript(script: string, name: string) {
+  addJavascript(name: string, script: string) {
     const jsActionDict = this.context.obj({
       Type: 'Action',
       S: 'JavaScript',
