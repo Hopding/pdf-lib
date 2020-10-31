@@ -61,7 +61,8 @@ import {
 } from 'src/utils';
 import FileEmbedder from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
-import PDFArray from 'src/core/objects/PDFArray';
+import PDFJavaScript from 'src/api/PDFJavaScript';
+import JavaScriptEmbedder from 'src/core/embedders/JavaScriptEmbedder';
 
 /**
  * Represents a PDF document.
@@ -183,6 +184,7 @@ export default class PDFDocument {
   private readonly images: PDFImage[];
   private readonly embeddedPages: PDFEmbeddedPage[];
   private readonly embeddedFiles: PDFEmbeddedFile[];
+  private readonly javaScripts: PDFJavaScript[];
 
   private constructor(
     context: PDFContext,
@@ -203,6 +205,7 @@ export default class PDFDocument {
     this.images = [];
     this.embeddedPages = [];
     this.embeddedFiles = [];
+    this.javaScripts = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
@@ -715,41 +718,38 @@ export default class PDFDocument {
   }
 
   /**
-   * Add document JavaScript. The script is executed when the document is opened.
-   * See the [JavaScript™ for Acrobat® API Reference](https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/js_api_reference.pdf)
-   * for details. For example:
-   *
+   * Add JavaScript to this document. The supplied `script` is executed when the
+   * document is opened. The `script` can be used to perform some operation
+   * when the document is opened (e.g. logging to the console), or it can be
+   * used to define a function that can be referenced later in a JavaScript
+   * action. For example:
    * ```js
-   * pdfDoc.addJavascript('main', 'console.show(); console.println("Hello World")');
+   * // Show "Hello World!" in the console when the PDF is opened
+   * pdfDoc.addJavaScript(
+   *   'main',
+   *   'console.show(); console.println("Hello World!");'
+   * );
+   *
+   * // Define a function named "foo" that can be called in JavaScript Actions
+   * pdfDoc.addJavaScript(
+   *   'foo',
+   *   'function foo() { return "foo"; }'
+   * );
    * ```
+   * See the [JavaScript for Acrobat API Reference](https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/js_api_reference.pdf)
+   * for details.
    * @param name The name of the script. Must be unique per document.
    * @param script The JavaScript to execute.
    */
-  addJavascript(name: string, script: string) {
-    const jsActionDict = this.context.obj({
-      Type: 'Action',
-      S: 'JavaScript',
-      JS: PDFHexString.fromText(script),
-    });
+  addJavaScript(name: string, script: string) {
+    assertIs(name, 'name', ['string']);
+    assertIs(script, 'script', ['string']);
 
-    const jsActionRef = this.context.register(jsActionDict);
-    if (!this.catalog.has(PDFName.of('Names'))) {
-      this.catalog.set(PDFName.of('Names'), PDFDict.withContext(this.context));
-    }
+    const embedder = JavaScriptEmbedder.for(script, name);
 
-    const Names = this.catalog.lookup(PDFName.of('Names'), PDFDict);
-    if (!Names.has(PDFName.of('JavaScript'))) {
-      Names.set(PDFName.of('JavaScript'), this.context.obj({}));
-    }
-
-    const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
-    if (!Javascript.has(PDFName.of('Names'))) {
-      Javascript.set(PDFName.of('Names'), this.context.obj([]));
-    }
-
-    const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
-    JSNames.push(PDFName.of(name));
-    JSNames.push(jsActionRef);
+    const ref = this.context.nextRef();
+    const javaScript = PDFJavaScript.of(ref, this, embedder);
+    this.javaScripts.push(javaScript);
   }
 
   /**
@@ -1169,6 +1169,7 @@ export default class PDFDocument {
     await this.embedAll(this.images);
     await this.embedAll(this.embeddedPages);
     await this.embedAll(this.embeddedFiles);
+    await this.embedAll(this.javaScripts);
   }
 
   /**

@@ -6,6 +6,7 @@ import {
   PDFArray,
   PDFDict,
   PDFDocument,
+  PDFHexString,
   PDFName,
   PDFPage,
 } from 'src/index';
@@ -301,34 +302,42 @@ describe(`PDFDocument`, () => {
       );
     });
   });
-  describe(`addJavascript method`, () => {
+
+  describe(`addJavaScript method`, () => {
     it(`adds the script to the catalog`, async () => {
       const pdfDoc = await PDFDocument.create();
-      pdfDoc.addJavascript(
+      pdfDoc.addJavaScript(
         'main',
-        'console.show(); console.println("Hello World"',
+        'console.show(); console.println("Hello World");',
       );
+      await pdfDoc.flush();
+
       expect(pdfDoc.catalog.has(PDFName.of('Names')));
       const Names = pdfDoc.catalog.lookup(PDFName.of('Names'), PDFDict);
       expect(Names.has(PDFName.of('JavaScript')));
       const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
       expect(Javascript.has(PDFName.of('Names')));
       const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
-      expect(JSNames.get(0)).toBe(PDFName.of('main'));
+      expect(JSNames.lookup(0, PDFHexString).decodeText()).toEqual('main');
     });
 
     it(`does not overwrite scripts`, async () => {
       const pdfDoc = await PDFDocument.create();
-      pdfDoc.addJavascript('first', 'console.show(); console.println("First"');
-      pdfDoc.addJavascript(
-        'second',
-        'console.show(); console.println("Second"',
+      pdfDoc.addJavaScript(
+        'first',
+        'console.show(); console.println("First");',
       );
+      pdfDoc.addJavaScript(
+        'second',
+        'console.show(); console.println("Second");',
+      );
+      await pdfDoc.flush();
+
       const Names = pdfDoc.catalog.lookup(PDFName.of('Names'), PDFDict);
       const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
       const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
-      expect(JSNames.get(0)).toBe(PDFName.of('first'));
-      expect(JSNames.get(2)).toBe(PDFName.of('second'));
+      expect(JSNames.lookup(0, PDFHexString).decodeText()).toEqual('first');
+      expect(JSNames.lookup(2, PDFHexString).decodeText()).toEqual('second');
     });
   });
 });

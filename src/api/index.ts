@@ -15,4 +15,5 @@ export { default as PDFFont } from 'src/api/PDFFont';
 export { default as PDFImage } from 'src/api/PDFImage';
 export { default as PDFPage } from 'src/api/PDFPage';
 export { default as PDFEmbeddedPage } from 'src/api/PDFEmbeddedPage';
+export { default as PDFJavaScript } from 'src/api/PDFJavaScript';
 export { default as Embeddable } from 'src/api/Embeddable';

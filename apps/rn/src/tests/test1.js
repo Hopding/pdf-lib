@@ -72,7 +72,7 @@ export default async () => {
 
   const size = 750;
 
-  pdfDoc.addJavascript(
+  pdfDoc.addJavaScript(
     'main',
     'console.show(); console.println("Hello World!")',
   );

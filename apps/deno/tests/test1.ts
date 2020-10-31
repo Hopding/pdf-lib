@@ -67,7 +67,7 @@ export default async (assets: Assets) => {
 
   const size = 750;
 
-  pdfDoc.addJavascript(
+  pdfDoc.addJavaScript(
     'main',
     'console.show(); console.println("Hello World!")',
   );
