@@ -3,7 +3,10 @@ import fs from 'fs';
 import {
   EncryptedPDFError,
   ParseSpeeds,
+  PDFArray,
+  PDFDict,
   PDFDocument,
+  PDFHexString,
   PDFName,
   PDFPage,
 } from 'src/index';
@@ -297,6 +300,44 @@ describe(`PDFDocument`, () => {
       expect(pdfDoc.getModificationDate()).toEqual(
         new Date('2018-01-04T01:05:06.000Z'),
       );
+    });
+  });
+
+  describe(`addJavaScript method`, () => {
+    it(`adds the script to the catalog`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      pdfDoc.addJavaScript(
+        'main',
+        'console.show(); console.println("Hello World");',
+      );
+      await pdfDoc.flush();
+
+      expect(pdfDoc.catalog.has(PDFName.of('Names')));
+      const Names = pdfDoc.catalog.lookup(PDFName.of('Names'), PDFDict);
+      expect(Names.has(PDFName.of('JavaScript')));
+      const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
+      expect(Javascript.has(PDFName.of('Names')));
+      const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
+      expect(JSNames.lookup(0, PDFHexString).decodeText()).toEqual('main');
+    });
+
+    it(`does not overwrite scripts`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      pdfDoc.addJavaScript(
+        'first',
+        'console.show(); console.println("First");',
+      );
+      pdfDoc.addJavaScript(
+        'second',
+        'console.show(); console.println("Second");',
+      );
+      await pdfDoc.flush();
+
+      const Names = pdfDoc.catalog.lookup(PDFName.of('Names'), PDFDict);
+      const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
+      const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
+      expect(JSNames.lookup(0, PDFHexString).decodeText()).toEqual('first');
+      expect(JSNames.lookup(2, PDFHexString).decodeText()).toEqual('second');
     });
   });
 });

@@ -61,6 +61,8 @@ import {
 } from 'src/utils';
 import FileEmbedder from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
+import PDFJavaScript from 'src/api/PDFJavaScript';
+import JavaScriptEmbedder from 'src/core/embedders/JavaScriptEmbedder';
 
 /**
  * Represents a PDF document.
@@ -182,6 +184,7 @@ export default class PDFDocument {
   private readonly images: PDFImage[];
   private readonly embeddedPages: PDFEmbeddedPage[];
   private readonly embeddedFiles: PDFEmbeddedFile[];
+  private readonly javaScripts: PDFJavaScript[];
 
   private constructor(
     context: PDFContext,
@@ -202,6 +205,7 @@ export default class PDFDocument {
     this.images = [];
     this.embeddedPages = [];
     this.embeddedFiles = [];
+    this.javaScripts = [];
 
     if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
 
@@ -714,6 +718,41 @@ export default class PDFDocument {
   }
 
   /**
+   * Add JavaScript to this document. The supplied `script` is executed when the
+   * document is opened. The `script` can be used to perform some operation
+   * when the document is opened (e.g. logging to the console), or it can be
+   * used to define a function that can be referenced later in a JavaScript
+   * action. For example:
+   * ```js
+   * // Show "Hello World!" in the console when the PDF is opened
+   * pdfDoc.addJavaScript(
+   *   'main',
+   *   'console.show(); console.println("Hello World!");'
+   * );
+   *
+   * // Define a function named "foo" that can be called in JavaScript Actions
+   * pdfDoc.addJavaScript(
+   *   'foo',
+   *   'function foo() { return "foo"; }'
+   * );
+   * ```
+   * See the [JavaScript for Acrobat API Reference](https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/js_api_reference.pdf)
+   * for details.
+   * @param name The name of the script. Must be unique per document.
+   * @param script The JavaScript to execute.
+   */
+  addJavaScript(name: string, script: string) {
+    assertIs(name, 'name', ['string']);
+    assertIs(script, 'script', ['string']);
+
+    const embedder = JavaScriptEmbedder.for(script, name);
+
+    const ref = this.context.nextRef();
+    const javaScript = PDFJavaScript.of(ref, this, embedder);
+    this.javaScripts.push(javaScript);
+  }
+
+  /**
    * Add an attachment to this document. Attachments are visible in the
    * "Attachments" panel of Adobe Acrobat and some other PDF readers. Any
    * type of file can be added as an attachment. This includes, but is not
@@ -1130,6 +1169,7 @@ export default class PDFDocument {
     await this.embedAll(this.images);
     await this.embedAll(this.embeddedPages);
     await this.embedAll(this.embeddedFiles);
+    await this.embedAll(this.javaScripts);
   }
 
   /**
