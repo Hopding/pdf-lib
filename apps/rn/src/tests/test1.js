@@ -72,6 +72,11 @@ export default async () => {
 
   const size = 750;
 
+  pdfDoc.addJavaScript(
+    'main',
+    'console.show(); console.println("Hello World!")',
+  );
+
   /********************** Page 1 **********************/
 
   // This page tests different drawing operations as well as adding custom
