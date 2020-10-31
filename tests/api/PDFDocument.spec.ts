@@ -3,6 +3,8 @@ import fs from 'fs';
 import {
   EncryptedPDFError,
   ParseSpeeds,
+  PDFArray,
+  PDFDict,
   PDFDocument,
   PDFName,
   PDFPage,
@@ -297,6 +299,36 @@ describe(`PDFDocument`, () => {
       expect(pdfDoc.getModificationDate()).toEqual(
         new Date('2018-01-04T01:05:06.000Z'),
       );
+    });
+  });
+  describe(`addJavascript method`, () => {
+    it(`adds the script to the catalog`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      pdfDoc.addJavascript(
+        'main',
+        'console.show(); console.println("Hello World"',
+      );
+      expect(pdfDoc.catalog.has(PDFName.of('Names')));
+      const Names = pdfDoc.catalog.lookup(PDFName.of('Names'), PDFDict);
+      expect(Names.has(PDFName.of('JavaScript')));
+      const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
+      expect(Javascript.has(PDFName.of('Names')));
+      const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
+      expect(JSNames.get(0)).toBe(PDFName.of('main'));
+    });
+
+    it(`does not overwrite scripts`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      pdfDoc.addJavascript('first', 'console.show(); console.println("First"');
+      pdfDoc.addJavascript(
+        'second',
+        'console.show(); console.println("Second"',
+      );
+      const Names = pdfDoc.catalog.lookup(PDFName.of('Names'), PDFDict);
+      const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
+      const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
+      expect(JSNames.get(0)).toBe(PDFName.of('first'));
+      expect(JSNames.get(2)).toBe(PDFName.of('second'));
     });
   });
 });

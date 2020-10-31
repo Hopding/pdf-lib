@@ -61,6 +61,7 @@ import {
 } from 'src/utils';
 import FileEmbedder from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
+import PDFArray from 'src/core/objects/PDFArray';
 
 /**
  * Represents a PDF document.
@@ -711,6 +712,44 @@ export default class PDFDocument {
       copiedPages[idx] = PDFPage.of(copiedPage, ref, this);
     }
     return copiedPages;
+  }
+
+  /**
+   * Add document JavaScript. The script is executed when the document is opened.
+   * See the [JavaScript™ for Acrobat® API Reference](https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/js_api_reference.pdf)
+   * for details. For example:
+   *
+   * ```js
+   * pdfDoc.addJavascript('main', 'console.show(); console.println("Hello World")');
+   * ```
+   * @param name The name of the script. Must be unique per document.
+   * @param script The JavaScript to execute.
+   */
+  addJavascript(name: string, script: string) {
+    const jsActionDict = this.context.obj({
+      Type: 'Action',
+      S: 'JavaScript',
+      JS: PDFHexString.fromText(script),
+    });
+
+    const jsActionRef = this.context.register(jsActionDict);
+    if (!this.catalog.has(PDFName.of('Names'))) {
+      this.catalog.set(PDFName.of('Names'), PDFDict.withContext(this.context));
+    }
+
+    const Names = this.catalog.lookup(PDFName.of('Names'), PDFDict);
+    if (!Names.has(PDFName.of('JavaScript'))) {
+      Names.set(PDFName.of('JavaScript'), this.context.obj({}));
+    }
+
+    const Javascript = Names.lookup(PDFName.of('JavaScript'), PDFDict);
+    if (!Javascript.has(PDFName.of('Names'))) {
+      Javascript.set(PDFName.of('Names'), this.context.obj([]));
+    }
+
+    const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
+    JSNames.push(PDFName.of(name));
+    JSNames.push(jsActionRef);
   }
 
   /**
