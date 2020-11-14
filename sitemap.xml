@@ -58,4 +58,5 @@
 <url> <loc>https://Hopding.github.io/docs/api/interfaces/saveoptions</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://Hopding.github.io/docs/api/interfaces/saveoptions" /> </url>
 <url> <loc>https://Hopding.github.io/docs/api/interfaces/singlelinetextlayout</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://Hopding.github.io/docs/api/interfaces/singlelinetextlayout" /> </url>
 <url> <loc>https://Hopding.github.io/docs/api/interfaces/textposition</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://Hopding.github.io/docs/api/interfaces/textposition" /> </url>
+<url> <loc>https://Hopding.github.io/docs/help</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://Hopding.github.io/docs/help" /> </url>
 </urlset>
