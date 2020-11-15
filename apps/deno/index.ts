@@ -1,24 +1,23 @@
-import { dirname } from 'https://deno.land/std@0.50.0/path/mod.ts';
-import { readLines } from 'https://deno.land/std@v0.50.0/io/bufio.ts';
-import { sep } from 'https://deno.land/std@v0.50.0/path/mod.ts';
+import { readLines } from 'https://deno.land/std@0.67.0/io/bufio.ts';
+import { SEP, dirname } from 'https://deno.land/std@0.67.0/path/mod.ts';
 
-import test1 from './tests/test1.ts';
-import test2 from './tests/test2.ts';
-import test3 from './tests/test3.ts';
-import test4 from './tests/test4.ts';
-import test5 from './tests/test5.ts';
-import test6 from './tests/test6.ts';
-import test7 from './tests/test7.ts';
-import test8 from './tests/test8.ts';
-import test9 from './tests/test9.ts';
-import test10 from './tests/test10.ts';
-import test11 from './tests/test11.ts';
-import test12 from './tests/test12.ts';
-import test13 from './tests/test13.ts';
-import test14 from './tests/test14.ts';
-import test15 from './tests/test15.ts';
-import test16 from './tests/test16.ts';
-import test17 from './tests/test17.ts';
+import { default as test1 } from './tests/test1.ts';
+import { default as test2 } from './tests/test2.ts';
+import { default as test3 } from './tests/test3.ts';
+import { default as test4 } from './tests/test4.ts';
+import { default as test5 } from './tests/test5.ts';
+import { default as test6 } from './tests/test6.ts';
+import { default as test7 } from './tests/test7.ts';
+import { default as test8 } from './tests/test8.ts';
+import { default as test9 } from './tests/test9.ts';
+import { default as test10 } from './tests/test10.ts';
+import { default as test11 } from './tests/test11.ts';
+import { default as test12 } from './tests/test12.ts';
+import { default as test13 } from './tests/test13.ts';
+import { default as test14 } from './tests/test14.ts';
+import { default as test15 } from './tests/test15.ts';
+import { default as test16 } from './tests/test16.ts';
+import { default as test17 } from './tests/test17.ts';
 
 const promptToContinue = () => {
   const prompt = 'Press <enter> to run the next test...';
@@ -49,7 +48,7 @@ const openPdf = (path: string, reader: string = '') => {
 const tempDir = () => dirname(Deno.makeTempDirSync());
 
 const writePdfToTmp = (pdf: Uint8Array) => {
-  const path = `${tempDir()}${sep}${Date.now()}.pdf`;
+  const path = `${tempDir()}${SEP}${Date.now()}.pdf`;
   Deno.writeFileSync(path, pdf);
   return path;
 };
@@ -136,6 +135,7 @@ const assets = {
 };
 
 export type Assets = typeof assets;
+// export type Assets = any;
 
 // This script can be executed with 0, 1, or 2 CLI arguments:
 //   $ deno index.ts
