@@ -1,5 +1,7 @@
 import fontkit from 'https://cdn.skypack.dev/@pdf-lib/fontkit@^1.0.0?dts';
 import { Assets } from '../index.ts';
+
+// @deno-types="../dummy.d.ts"
 import {
   clip,
   clipEvenOdd,

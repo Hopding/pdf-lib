@@ -1,4 +1,6 @@
 import { Assets } from '../index.ts';
+
+// @deno-types="../dummy.d.ts"
 import {
   ParseSpeeds,
   PDFPage,
