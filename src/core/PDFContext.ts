@@ -25,7 +25,7 @@ interface LiteralObject {
   [name: string]: Literal | PDFObject;
 }
 
-export interface LiteralArray {
+interface LiteralArray {
   [index: number]: Literal | PDFObject;
 }
 
