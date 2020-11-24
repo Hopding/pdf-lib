@@ -2,14 +2,29 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFContext from 'src/core/PDFContext';
 import PDFRef from 'src/core/objects/PDFRef';
-import {LiteralObject} from 'src/core/PDFContext'
+
+/** 
+ * From the PDF-A3 specification, section **3.1. Requirements - General**.
+ * See:
+ * * https://www.pdfa.org/wp-content/uploads/2018/10/PDF20_AN002-AF.pdf
+ */
+export enum AFRelationship {
+  Source = 'Source',
+  Data = 'Data',
+  Alternative = 'Alternative',
+  Supplement = 'Supplement',
+  EncryptedPayload = 'EncryptedPayload',
+  FormData = 'EncryptedPayload',
+  Schema = 'Schema',
+  Unspecified = 'Unspecified'
+}
 
 export interface EmbeddedFileOptions {
   mimeType?: string;
   description?: string;
   creationDate?: Date;
   modificationDate?: Date;
-  additionalParams?: LiteralObject;
+  afRelationship?: AFRelationship;
 }
 
 class FileEmbedder {
@@ -41,7 +56,7 @@ class FileEmbedder {
       description,
       creationDate,
       modificationDate,
-      additionalParams
+      afRelationship
     } = this.options;
 
 
@@ -66,7 +81,7 @@ class FileEmbedder {
       UF: PDFHexString.fromText(this.fileName),
       EF: { F: embeddedFileStreamRef },
       Desc: description ? PDFHexString.fromText(description) : undefined,
-      ...additionalParams
+      AFRelationship: afRelationship ?? undefined
     });
 
     if (ref) {
