@@ -1,4 +1,4 @@
-import { Font, Fontkit, Glyph } from 'src/types/fontkit';
+import { Font, Fontkit, Glyph, TypeFeatures } from 'src/types/fontkit';
 
 import { createCmap } from 'src/core/embedders/CMap';
 import { deriveFontFlags } from 'src/core/embedders/FontFlags';
@@ -24,7 +24,7 @@ class CustomFontEmbedder {
     fontkit: Fontkit,
     fontData: Uint8Array,
     customName?: string,
-    fontFeatures?: any[],
+    fontFeatures?: TypeFeatures[],
   ) {
     const font = await fontkit.create(fontData);
     return new CustomFontEmbedder(font, fontData, customName, fontFeatures);
@@ -35,12 +35,12 @@ class CustomFontEmbedder {
   readonly fontData: Uint8Array;
   readonly fontName: string;
   readonly customName: string | undefined;
-  readonly fontFeatures: any[] | undefined;
+  readonly fontFeatures: TypeFeatures[] | undefined;
 
   protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
-  protected constructor(font: Font, fontData: Uint8Array, customName?: string, fontFeatures?: any[]) {
+  protected constructor(font: Font, fontData: Uint8Array, customName?: string, fontFeatures?: TypeFeatures[]) {
     this.font = font;
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;

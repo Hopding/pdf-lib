@@ -35,5 +35,5 @@ export interface CreateOptions {
 export interface EmbedFontOptions {
   subset?: boolean;
   customName?: string;
-  features?: any[];
+  features?: string[];
 }
