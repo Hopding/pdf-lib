@@ -136,6 +136,7 @@ class CustomFontEmbedder {
     const cidFontDict = context.obj({
       Type: 'Font',
       Subtype: this.isCFF() ? 'CIDFontType0' : 'CIDFontType2',
+      CIDToGIDMap: 'Identity',
       BaseFont: this.baseFontName,
       CIDSystemInfo: {
         Registry: PDFString.of('Adobe'),
