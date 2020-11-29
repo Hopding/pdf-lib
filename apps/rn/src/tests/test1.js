@@ -19,6 +19,7 @@ import {
   rgb,
   setLineJoin,
   StandardFonts,
+  AFRelationship,
 } from 'pdf-lib';
 
 import { fetchAsset } from './assets';
@@ -53,6 +54,7 @@ export default async () => {
       description: 'A bird in greyscale 🐦',
       creationDate: new Date('2006/06/06'),
       modificationDate: new Date('2007/07/07'),
+      afRelationship: AFRelationship.Data,
     },
   );
 
@@ -66,6 +68,7 @@ export default async () => {
     description: 'Some car info 🚗',
     creationDate: new Date('2000/01/13'),
     modificationDate: new Date('2012/12/12'),
+    afRelationship: AFRelationship.Unspecified,
   });
 
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);

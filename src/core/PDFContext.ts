@@ -29,7 +29,7 @@ interface LiteralArray {
   [index: number]: Literal | PDFObject;
 }
 
-export type Literal =
+type Literal =
   | LiteralObject
   | LiteralArray
   | string
