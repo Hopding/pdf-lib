@@ -49,6 +49,7 @@ import { Fontkit } from 'src/types/fontkit';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
   assertIs,
+  assertIsOneOfOrUndefined,
   assertOrUndefined,
   assertRange,
   Cache,
@@ -59,7 +60,7 @@ import {
   range,
   toUint8Array,
 } from 'src/utils';
-import FileEmbedder from 'src/core/embedders/FileEmbedder';
+import FileEmbedder, { AFRelationship } from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 import PDFJavaScript from 'src/api/PDFJavaScript';
 import JavaScriptEmbedder from 'src/core/embedders/JavaScriptEmbedder';
@@ -820,6 +821,7 @@ export default class PDFDocument {
     assertOrUndefined(options.modificationDate, 'options.modificationDate', [
       Date,
     ]);
+    assertIsOneOfOrUndefined(options.afRelationship, 'options.afRelationship', AFRelationship);
 
     const bytes = toUint8Array(attachment);
     const embedder = FileEmbedder.for(bytes, name, options);
