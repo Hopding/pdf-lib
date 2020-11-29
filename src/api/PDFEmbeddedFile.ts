@@ -70,6 +70,20 @@ export default class PDFEmbeddedFile implements Embeddable {
       EFNames.push(PDFHexString.fromText(this.embedder.fileName));
       EFNames.push(ref);
 
+      /**
+       * The AF-Tag is needed to achieve PDF-A3 compliance for embedded files
+       * 
+       * The following document outlines the uses cases of the associated files (AF) tag.
+       * See:
+       * https://www.pdfa.org/wp-content/uploads/2018/10/PDF20_AN002-AF.pdf
+       */
+
+      if (!this.doc.catalog.has(PDFName.of('AF'))) {
+        this.doc.catalog.set(PDFName.of('AF'), this.doc.context.obj([]));
+      }
+      const AF = this.doc.catalog.lookup(PDFName.of('AF'), PDFArray);
+      AF.push(ref)
+
       this.alreadyEmbedded = true;
     }
   }
