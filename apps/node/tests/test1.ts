@@ -20,6 +20,7 @@ import {
   setLineJoin,
   StandardFonts,
   typedArrayFor,
+  AFRelationship,
 } from '../../..';
 
 const ipsumLines = [
@@ -49,6 +50,7 @@ export default async (assets: Assets) => {
     description: 'A bird in greyscale 🐦',
     creationDate: new Date('2006/06/06'),
     modificationDate: new Date('2007/07/07'),
+    afRelationship: AFRelationship.Data,
   });
 
   const csvString = [
@@ -61,6 +63,7 @@ export default async (assets: Assets) => {
     description: 'Some car info 🚗',
     creationDate: new Date('2000/01/13'),
     modificationDate: new Date('2012/12/12'),
+    afRelationship: AFRelationship.Unspecified,
   });
 
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
