@@ -47,7 +47,7 @@ const computeFontSize = (
     const height = font.heightAtSize(fontSize);
     const lineHeight = height + height * 0.2;
     const totalHeight = lines.length * lineHeight;
-    if (totalHeight > bounds.height) return fontSize - 1;
+    if (totalHeight > Math.abs(bounds.height)) return fontSize - 1;
 
     fontSize += 1;
   }
