@@ -88,6 +88,7 @@ class PDFAcroField {
 
   getDefaultAppearance(): string | undefined {
     const DA = this.DA();
+
     if (DA instanceof PDFHexString) {
       return DA.decodeText();
     }
