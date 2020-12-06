@@ -45,7 +45,13 @@ class PDFWidgetAnnotation extends PDFAnnotation {
   }
 
   getDefaultAppearance(): string | undefined {
-    return this.DA()?.asString() ?? '';
+    const DA = this.DA();
+
+    if (DA instanceof PDFHexString) {
+      return DA.decodeText();
+    }
+
+    return DA?.asString();
   }
 
   getAppearanceCharacteristics(): AppearanceCharacteristics | undefined {
