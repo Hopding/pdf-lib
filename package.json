@@ -22,7 +22,11 @@
     "Richard Bateman (https://github.com/taxilian)",
     "Sebastian Martinez (https://github.com/sebastinez)",
     "soadzoor (https://github.com/soadzoor)",
-    "Slobodan Babic (https://github.com/bockoblur)"
+    "Slobodan Babic (https://github.com/bockoblur)",
+    "Zach Toben (https://github.com/ztoben)",
+    "Zack Sheppard (https://github.com/zackdotcomputer)",
+    "DkDavid (https://github.com/DkDavid)",
+    "Bj Tecu (https://github.com/btecu)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
