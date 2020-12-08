@@ -1517,13 +1517,13 @@ domexception@^2.0.1:
   dependencies:
     webidl-conversions "^5.0.0"
 
-downlevel-dts@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/downlevel-dts/-/downlevel-dts-0.6.0.tgz"
-  integrity sha512-Jy3ZZcXWPzTn5jJRW5WpdEtIq8+UowWWi5TEBgHHvzw320kouV//2KgVhfcuOpP93KS3UAokTxnZKU4L75kRSQ==
+downlevel-dts@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/downlevel-dts/-/downlevel-dts-0.5.0.tgz#7db798f303f124d0d2dace838fd3ee5cf4bf53b4"
+  integrity sha512-hGikqjcnlkDXqga55u/jQx0ZdQz9Q3LtSqyceHSYavWOmSUoVUGjWZ/zwfiVMFL8rl+LKvJn9L5uaAq7P7xMNA==
   dependencies:
     shelljs "^0.8.3"
-    typescript "^4.1.0-dev.20200804"
+    typescript "^3.8.0-dev.20200111"
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -4137,15 +4137,15 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
+typescript@^3.8.0-dev.20200111:
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
+  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
+
 typescript@^3.9.5:
   version "3.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz"
   integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
-
-typescript@^4.1.0-dev.20200804:
-  version "4.1.0-dev.20201020"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.1.0-dev.20201020.tgz"
-  integrity sha512-0rFdYxOuLpa1oqvhYjVIMHLz4rmozSa7ODQElhVrkjO5CiWL/5e9uaIoOnb5zE6TStZXjhWM2Tzo/CQOeyJfyQ==
 
 union-value@^1.0.0:
   version "1.0.1"
