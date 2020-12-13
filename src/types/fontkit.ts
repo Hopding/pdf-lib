@@ -243,6 +243,305 @@ export interface Subset {
 }
 
 /**
+ * A map of OpenType features as described in OpenType's spec:
+ * https://docs.microsoft.com/en-gb/typography/opentype/spec/featurelist.
+ */
+export interface OpenTypeFeatures {
+  aalt?: boolean;
+  abvf?: boolean;
+  abvm?: boolean;
+  abvs?: boolean;
+  afrc?: boolean;
+  akhn?: boolean;
+  blwf?: boolean;
+  blwm?: boolean;
+  blws?: boolean;
+  calt?: boolean;
+  case?: boolean;
+  ccmp?: boolean;
+  cfar?: boolean;
+  cjct?: boolean;
+  clig?: boolean;
+  cpct?: boolean;
+  cpsp?: boolean;
+  cswh?: boolean;
+  curs?: boolean;
+  cv01?: boolean;
+  cv02?: boolean;
+  cv03?: boolean;
+  cv04?: boolean;
+  cv05?: boolean;
+  cv06?: boolean;
+  cv07?: boolean;
+  cv08?: boolean;
+  cv09?: boolean;
+  cv10?: boolean;
+  cv11?: boolean;
+  cv22?: boolean;
+  cv23?: boolean;
+  cv24?: boolean;
+  cv25?: boolean;
+  cv26?: boolean;
+  cv27?: boolean;
+  cv28?: boolean;
+  cv29?: boolean;
+  cv30?: boolean;
+  cv31?: boolean;
+  cv32?: boolean;
+  cv33?: boolean;
+  cv34?: boolean;
+  cv35?: boolean;
+  cv36?: boolean;
+  cv37?: boolean;
+  cv38?: boolean;
+  cv39?: boolean;
+  cv40?: boolean;
+  cv41?: boolean;
+  cv42?: boolean;
+  cv43?: boolean;
+  cv44?: boolean;
+  cv45?: boolean;
+  cv46?: boolean;
+  cv47?: boolean;
+  cv48?: boolean;
+  cv49?: boolean;
+  cv50?: boolean;
+  cv51?: boolean;
+  cv52?: boolean;
+  cv53?: boolean;
+  cv54?: boolean;
+  cv55?: boolean;
+  cv56?: boolean;
+  cv57?: boolean;
+  cv58?: boolean;
+  cv59?: boolean;
+  cv60?: boolean;
+  cv61?: boolean;
+  cv62?: boolean;
+  cv63?: boolean;
+  cv64?: boolean;
+  cv65?: boolean;
+  cv66?: boolean;
+  cv67?: boolean;
+  cv68?: boolean;
+  cv69?: boolean;
+  cv70?: boolean;
+  cv71?: boolean;
+  cv72?: boolean;
+  cv73?: boolean;
+  cv74?: boolean;
+  cv75?: boolean;
+  cv76?: boolean;
+  cv77?: boolean;
+  cv78?: boolean;
+  cv79?: boolean;
+  cv80?: boolean;
+  cv81?: boolean;
+  cv82?: boolean;
+  cv83?: boolean;
+  cv84?: boolean;
+  cv85?: boolean;
+  cv86?: boolean;
+  cv87?: boolean;
+  cv88?: boolean;
+  cv89?: boolean;
+  cv90?: boolean;
+  cv91?: boolean;
+  cv92?: boolean;
+  cv93?: boolean;
+  cv94?: boolean;
+  cv95?: boolean;
+  cv96?: boolean;
+  cv97?: boolean;
+  cv98?: boolean;
+  cv99?: boolean;
+  c2pc?: boolean;
+  c2sc?: boolean;
+  dist?: boolean;
+  dlig?: boolean;
+  dnom?: boolean;
+  dtls?: boolean;
+  expt?: boolean;
+  falt?: boolean;
+  fin2?: boolean;
+  fin3?: boolean;
+  fina?: boolean;
+  flac?: boolean;
+  frac?: boolean;
+  fwid?: boolean;
+  half?: boolean;
+  haln?: boolean;
+  halt?: boolean;
+  hist?: boolean;
+  hkna?: boolean;
+  hlig?: boolean;
+  hngl?: boolean;
+  hojo?: boolean;
+  hwid?: boolean;
+  init?: boolean;
+  isol?: boolean;
+  ital?: boolean;
+  jalt?: boolean;
+  jp78?: boolean;
+  jp83?: boolean;
+  jp90?: boolean;
+  jp04?: boolean;
+  kern?: boolean;
+  lfbd?: boolean;
+  liga?: boolean;
+  ljmo?: boolean;
+  lnum?: boolean;
+  locl?: boolean;
+  ltra?: boolean;
+  ltrm?: boolean;
+  mark?: boolean;
+  med2?: boolean;
+  medi?: boolean;
+  mgrk?: boolean;
+  mkmk?: boolean;
+  mset?: boolean;
+  nalt?: boolean;
+  nlck?: boolean;
+  nukt?: boolean;
+  numr?: boolean;
+  onum?: boolean;
+  opbd?: boolean;
+  ordn?: boolean;
+  ornm?: boolean;
+  palt?: boolean;
+  pcap?: boolean;
+  pkna?: boolean;
+  pnum?: boolean;
+  pref?: boolean;
+  pres?: boolean;
+  pstf?: boolean;
+  psts?: boolean;
+  pwid?: boolean;
+  qwid?: boolean;
+  rand?: boolean;
+  rclt?: boolean;
+  rkrf?: boolean;
+  rlig?: boolean;
+  rphf?: boolean;
+  rtbd?: boolean;
+  rtla?: boolean;
+  rtlm?: boolean;
+  ruby?: boolean;
+  rvrn?: boolean;
+  salt?: boolean;
+  sinf?: boolean;
+  size?: boolean;
+  smcp?: boolean;
+  smpl?: boolean;
+  ss01?: boolean;
+  ss02?: boolean;
+  ss03?: boolean;
+  ss04?: boolean;
+  ss05?: boolean;
+  ss06?: boolean;
+  ss07?: boolean;
+  ss08?: boolean;
+  ss09?: boolean;
+  ss10?: boolean;
+  ss11?: boolean;
+  ss12?: boolean;
+  ss13?: boolean;
+  ss14?: boolean;
+  ss15?: boolean;
+  ss16?: boolean;
+  ss17?: boolean;
+  ss18?: boolean;
+  ss19?: boolean;
+  ss20?: boolean;
+  ssty?: boolean;
+  stch?: boolean;
+  subs?: boolean;
+  sups?: boolean;
+  swsh?: boolean;
+  titl?: boolean;
+  tjmo?: boolean;
+  tnam?: boolean;
+  tnum?: boolean;
+  trad?: boolean;
+  twid?: boolean;
+  unic?: boolean;
+  valt?: boolean;
+  vatu?: boolean;
+  vert?: boolean;
+  vhal?: boolean;
+  vjmo?: boolean;
+  vkna?: boolean;
+  vkrn?: boolean;
+  vpal?: boolean;
+  vrt2?: boolean;
+  vrtr?: boolean;
+  zero?: boolean;
+}
+/**
+ * A map of Apple Advanced Typography (AAT) as decribed by Apple’s TrueType
+ * Reference manual:
+ * https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6AATIntro.html
+ */
+export interface AATFeatures {
+  acnt?: boolean;
+  ankr?: boolean;
+  avar?: boolean;
+  bdat?: boolean;
+  bhed?: boolean;
+  bloc?: boolean;
+  bsln?: boolean;
+  cmap?: boolean;
+  cvar?: boolean;
+  cvt?: boolean;
+  EBSC?: boolean;
+  fdsc?: boolean;
+  feat?: boolean;
+  fmtx?: boolean;
+  fond?: boolean;
+  fpgm?: boolean;
+  fvar?: boolean;
+  gasp?: boolean;
+  gcid?: boolean;
+  glyf?: boolean;
+  gvar?: boolean;
+  hdmx?: boolean;
+  head?: boolean;
+  hhea?: boolean;
+  hmtx?: boolean;
+  just?: boolean;
+  kern?: boolean;
+  kerx?: boolean;
+  lcar?: boolean;
+  loca?: boolean;
+  ltag?: boolean;
+  maxp?: boolean;
+  meta?: boolean;
+  mort?: boolean;
+  morx?: boolean;
+  name?: boolean;
+  opbd?: boolean;
+  'OS/2'?: boolean;
+  post?: boolean;
+  prep?: boolean;
+  prop?: boolean;
+  sbix?: boolean;
+  trak?: boolean;
+  vhea?: boolean;
+  vmtx?: boolean;
+  xref?: boolean;
+  Zapf?: boolean;
+}
+
+/**
+ * The features is an object mapping OpenType features to a boolean
+ * enabling or disabling each. If this is an AAT font,
+ * the OpenType feature tags are mapped to AAT features.
+ */
+export interface TypeFeatures extends OpenTypeFeatures, AATFeatures {
+  [key: string]: boolean | undefined;
+}
+
+/**
  * There are several different types of font objects that are returned by
  * fontkit depending on the font format. They all inherit from the TTFFont class
  * and have the same public API.
@@ -271,7 +570,7 @@ export interface Font {
   // Other properties
   numGlyphs: number /** Number of glyphs in the font */;
   characterSet: number[] /** Array of all of the unicode code points supported by the font */;
-  availableFeatures: any[] /** Array of all OpenType feature tags (or mapped AAT tags) supported by the font */;
+  availableFeatures: (keyof TypeFeatures)[] /** Array of all OpenType feature tags (or mapped AAT tags) supported by the font */;
   cff: any;
   'OS/2': { sFamilyClass: number };
   head: { macStyle: { italic: boolean } };
@@ -316,7 +615,10 @@ export interface Font {
    * in addition to the default set. If this is an AAT font, the OpenType
    * feature tags are mapped to AAT features.
    */
-  layout(str: string, features?: any[]): GlyphRun;
+  layout(
+    str: string,
+    features?: TypeFeatures | (keyof TypeFeatures)[],
+  ): GlyphRun;
 
   // Other Methods
 
