@@ -355,7 +355,7 @@ export const defaultButtonAppearanceProvider: AppearanceProviderFor<PDFButton> =
   const normalText = captions?.normal ?? '';
   const downText = captions?.down ?? normalText ?? '';
 
-  const borderWidth = bs?.getWidth() ?? 1;
+  const borderWidth = bs?.getWidth() ?? 0;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -443,7 +443,7 @@ export const defaultTextFieldAppearanceProvider: AppearanceProviderFor<PDFTextFi
   const bs = widget.getBorderStyle();
   const text = textField.getText() ?? '';
 
-  const borderWidth = bs?.getWidth() ?? 1;
+  const borderWidth = bs?.getWidth() ?? 0;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -535,7 +535,7 @@ export const defaultDropdownAppearanceProvider: AppearanceProviderFor<PDFDropdow
   const bs = widget.getBorderStyle();
   const text = dropdown.getSelected()[0] ?? '';
 
-  const borderWidth = bs?.getWidth() ?? 1;
+  const borderWidth = bs?.getWidth() ?? 0;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
@@ -601,7 +601,7 @@ export const defaultOptionListAppearanceProvider: AppearanceProviderFor<PDFOptio
   const ap = widget.getAppearanceCharacteristics();
   const bs = widget.getBorderStyle();
 
-  const borderWidth = bs?.getWidth() ?? 1;
+  const borderWidth = bs?.getWidth() ?? 0;
   const rotation = reduceRotation(ap?.getRotation());
   const { width, height } = adjustDimsForRotation(rectangle, rotation);
 
