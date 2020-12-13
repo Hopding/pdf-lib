@@ -243,7 +243,7 @@ export interface Subset {
 }
 
 /**
- * A map of OpenType features as described in OpenType's spec: 
+ * A map of OpenType features as described in OpenType's spec:
  * https://docs.microsoft.com/en-gb/typography/opentype/spec/featurelist.
  */
 export interface OpenTypeFeatures {
@@ -478,8 +478,8 @@ export interface OpenTypeFeatures {
   zero?: boolean;
 }
 /**
- * A map of Apple Advanced Typography (AAT) as decribed by Apple’s TrueType 
- * Reference manual: 
+ * A map of Apple Advanced Typography (AAT) as decribed by Apple’s TrueType
+ * Reference manual:
  * https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6AATIntro.html
  */
 export interface AATFeatures {
@@ -534,7 +534,7 @@ export interface AATFeatures {
 
 /**
  * The features is an object mapping OpenType features to a boolean
- * enabling or disabling each. If this is an AAT font, 
+ * enabling or disabling each. If this is an AAT font,
  * the OpenType feature tags are mapped to AAT features.
  */
 export interface TypeFeatures extends OpenTypeFeatures, AATFeatures {
@@ -570,7 +570,7 @@ export interface Font {
   // Other properties
   numGlyphs: number /** Number of glyphs in the font */;
   characterSet: number[] /** Array of all of the unicode code points supported by the font */;
-  availableFeatures: any[] /** Array of all OpenType feature tags (or mapped AAT tags) supported by the font */;
+  availableFeatures: (keyof TypeFeatures)[] /** Array of all OpenType feature tags (or mapped AAT tags) supported by the font */;
   cff: any;
   'OS/2': { sFamilyClass: number };
   head: { macStyle: { italic: boolean } };
@@ -615,7 +615,10 @@ export interface Font {
    * in addition to the default set. If this is an AAT font, the OpenType
    * feature tags are mapped to AAT features.
    */
-  layout(str: string, features?: any[]): GlyphRun;
+  layout(
+    string: string,
+    features?: TypeFeatures | (keyof TypeFeatures)[],
+  ): GlyphRun;
 
   // Other Methods
 

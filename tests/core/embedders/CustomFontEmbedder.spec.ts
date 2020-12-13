@@ -93,9 +93,4 @@ describe(`CustomFontEmbedder`, () => {
     expect(embedder.sizeOfFontAtHeight(12)).toBeCloseTo(10.705);
     expect(embedder.sizeOfFontAtHeight(24)).toBeCloseTo(21.409);
   });
-
-  it(`enables/disables specific embedded typeface features, such as ligatures`, async () => {
-    const embedder = await CustomFontEmbedder.for(fontkit, ubuntuFont, undefined, [{liga: false}]);
-    expect(embedder.fontFeatures).toEqual(expect.arrayContaining([expect.objectContaining({liga: false})]));
-  });
 });

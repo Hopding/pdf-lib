@@ -14,10 +14,15 @@ class CustomFontSubsetEmbedder extends CustomFontEmbedder {
     fontkit: Fontkit,
     fontData: Uint8Array,
     customFontName?: string,
-    fontFeatures?: TypeFeatures[],
+    fontFeatures?: TypeFeatures,
   ) {
     const font = await fontkit.create(fontData);
-    return new CustomFontSubsetEmbedder(font, fontData, customFontName, fontFeatures);
+    return new CustomFontSubsetEmbedder(
+      font,
+      fontData,
+      customFontName,
+      fontFeatures,
+    );
   }
 
   private readonly subset: Subset;
@@ -28,7 +33,7 @@ class CustomFontSubsetEmbedder extends CustomFontEmbedder {
     font: Font,
     fontData: Uint8Array,
     customFontName?: string,
-    fontFeatures?: TypeFeatures[],
+    fontFeatures?: TypeFeatures,
   ) {
     super(font, fontData, customFontName, fontFeatures);
 

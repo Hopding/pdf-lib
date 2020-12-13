@@ -30,8 +30,13 @@ export default async (assets: Assets) => {
     },
   );
 
-  const ubuntuFont = await pdfDoc.embedFont(fonts.ttf.ubuntu_r, {
+  const nunitoLigaFont = await pdfDoc.embedFont(fonts.ttf.nunito, {
     subset: true,
+    features: { liga: true },
+  });
+  const nunitoNoLigaFont = await pdfDoc.embedFont(fonts.ttf.nunito, {
+    subset: true,
+    features: { liga: false },
   });
   const smallMarioImage = await pdfDoc.embedPng(images.png.small_mario);
   const smallMarioDims = smallMarioImage.scale(0.15);
@@ -74,7 +79,7 @@ export default async (assets: Assets) => {
     rotate: degrees(10),
     ySkew: degrees(15),
   });
-  page1.setFont(ubuntuFont);
+  page1.setFont(nunitoLigaFont);
   page1.setFontColor(solarizedGray);
   page1.drawText(text, {
     x: centerX - boxWidth / 2 + 5,
@@ -87,12 +92,14 @@ export default async (assets: Assets) => {
   page1.setSize(page1.getWidth() + 100, page1.getHeight() + 100);
   page1.translateContent(100, 100);
 
-  page1.drawText('This text is shifted', {
+  page1.setFont(nunitoLigaFont);
+  page1.drawText('This text is shifted - fi', {
     color: rgb(1, 0, 0),
     size: 50,
   });
   page1.resetPosition();
-  page1.drawText('This text is not shifted', {
+  page1.setFont(nunitoNoLigaFont);
+  page1.drawText('This text is not shifted - fi', {
     color: rgb(0, 0, 1),
     size: 50,
   });

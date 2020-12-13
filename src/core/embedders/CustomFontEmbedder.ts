@@ -24,7 +24,7 @@ class CustomFontEmbedder {
     fontkit: Fontkit,
     fontData: Uint8Array,
     customName?: string,
-    fontFeatures?: TypeFeatures[],
+    fontFeatures?: TypeFeatures,
   ) {
     const font = await fontkit.create(fontData);
     return new CustomFontEmbedder(font, fontData, customName, fontFeatures);
@@ -35,12 +35,17 @@ class CustomFontEmbedder {
   readonly fontData: Uint8Array;
   readonly fontName: string;
   readonly customName: string | undefined;
-  readonly fontFeatures: TypeFeatures[] | undefined;
+  readonly fontFeatures: TypeFeatures | undefined;
 
   protected baseFontName: string;
   protected glyphCache: Cache<Glyph[]>;
 
-  protected constructor(font: Font, fontData: Uint8Array, customName?: string, fontFeatures?: TypeFeatures[]) {
+  protected constructor(
+    font: Font,
+    fontData: Uint8Array,
+    customName?: string,
+    fontFeatures?: TypeFeatures,
+  ) {
     this.font = font;
     this.scale = 1000 / this.font.unitsPerEm;
     this.fontData = fontData;
