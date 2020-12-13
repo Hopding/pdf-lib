@@ -616,7 +616,7 @@ export interface Font {
    * feature tags are mapped to AAT features.
    */
   layout(
-    string: string,
+    str: string,
     features?: TypeFeatures | (keyof TypeFeatures)[],
   ): GlyphRun;
 

@@ -886,7 +886,12 @@ export default class PDFDocument {
       const bytes = toUint8Array(font);
       const fontkit = this.assertFontkit();
       embedder = subset
-        ? await CustomFontSubsetEmbedder.for(fontkit, bytes, customName, features)
+        ? await CustomFontSubsetEmbedder.for(
+            fontkit,
+            bytes,
+            customName,
+            features,
+          )
         : await CustomFontEmbedder.for(fontkit, bytes, customName, features);
     } else {
       throw new TypeError(
