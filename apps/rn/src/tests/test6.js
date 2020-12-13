@@ -6,14 +6,14 @@ import { fetchAsset, writePdf } from './assets';
 export default async () => {
   const [
     inputPdfBytes,
-    ubuntuBytes,
+    nunitoBytes,
     smallMarioBytes,
     withCropBoxPdfBytes,
     usConstitutionPdfBytes,
     catRidingUnicornJpgBytes,
   ] = await Promise.all([
     fetchAsset('pdfs/with_missing_endstream_eol_and_polluted_ctm.pdf'),
-    fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
+    fetchAsset('fonts/nunito/Nunito-Regular.ttf'),
     fetchAsset('images/small_mario_resized.png'),
     fetchAsset('pdfs/with_cropbox.pdf'),
     fetchAsset('pdfs/us_constitution.pdf'),
@@ -38,7 +38,14 @@ export default async () => {
     modificationDate: new Date('2020/04/19'),
   });
 
-  const ubuntuFont = await pdfDoc.embedFont(ubuntuBytes, { subset: true });
+  const nunitoLigaFont = await pdfDoc.embedFont(nunitoBytes, {
+    subset: true,
+    features: { liga: true },
+  });
+  const nunitoNoLigaFont = await pdfDoc.embedFont(nunitoBytes, {
+    subset: true,
+    features: { liga: false },
+  });
   const smallMarioImage = await pdfDoc.embedPng(smallMarioBytes);
   const smallMarioDims = smallMarioImage.scale(0.7);
 
@@ -80,7 +87,7 @@ export default async () => {
     rotate: degrees(10),
     ySkew: degrees(15),
   });
-  page1.setFont(ubuntuFont);
+  page1.setFont(nunitoLigaFont);
   page1.setFontColor(solarizedGray);
   page1.drawText(text, {
     x: centerX - boxWidth / 2 + 5,
@@ -93,12 +100,14 @@ export default async () => {
   page1.setSize(page1.getWidth() + 100, page1.getHeight() + 100);
   page1.translateContent(100, 100);
 
-  page1.drawText('This text is shifted', {
+  page1.setFont(nunitoLigaFont);
+  page1.drawText('This text is shifted - fi', {
     color: rgb(1, 0, 0),
     size: 50,
   });
   page1.resetPosition();
-  page1.drawText('This text is not shifted', {
+  page1.setFont(nunitoNoLigaFont);
+  page1.drawText('This text is not shifted - fi', {
     color: rgb(0, 0, 1),
     size: 50,
   });
