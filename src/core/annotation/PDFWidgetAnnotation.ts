@@ -40,6 +40,12 @@ class PDFWidgetAnnotation extends PDFAnnotation {
     return undefined;
   }
 
+  P(): PDFRef | undefined {
+    const P = this.dict.lookup(PDFName.of('P'));
+    if (P instanceof PDFRef) return P;
+    return undefined;
+  }
+
   setDefaultAppearance(appearance: string) {
     this.dict.set(PDFName.of('DA'), PDFString.of(appearance));
   }
