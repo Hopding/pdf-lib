@@ -2,7 +2,7 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
-import { TextAlignment } from 'src/api/text/alignment';
+import { ImageAlignment } from 'src/api/image/alignment';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
@@ -79,11 +79,11 @@ export default class PDFButton extends PDFField {
    * @param image The image that should be displayed.
    * @param alignment The alignment of the image.
    */
-  setImage(image: PDFImage, alignment?: TextAlignment) {
+  setImage(image: PDFImage, alignment?: ImageAlignment) {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const streamRef = createWidgetImageStream(widget, alignment ?? TextAlignment.Center, image);
+      const streamRef = createWidgetImageStream(widget, alignment ?? ImageAlignment.Center, image);
 
       this.updateWidgetAppearances(widget, { normal: streamRef });
     }

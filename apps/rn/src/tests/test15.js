@@ -46,7 +46,7 @@ export default async () => {
     );
 
   form.getTextField('FactionName').setText(`Mario's Emblem`);
-  form.getButton('Faction Symbol Image').setImage(emblemImage);
+  form.getTextField('Faction Symbol Image').setImage(emblemImage);
 
   form
     .getTextField('Backstory')

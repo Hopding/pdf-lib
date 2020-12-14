@@ -1,5 +1,6 @@
 import PDFImage from 'src/api/PDFImage';
 import { Color, setFillingColor, setStrokingColor } from 'src/api/colors';
+import { ImageAlignment } from 'src/api/image/alignment';
 import {
   beginText,
   closePath,
@@ -41,7 +42,6 @@ import {
   toRadians
 } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
-import { TextAlignment } from 'src/api/text/alignment';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator, PDFRef, PDFWidgetAnnotation } from 'src/core';
 import { asNumber } from 'src/api/objects';
 import { addRandomSuffix } from 'src/utils';
@@ -822,7 +822,7 @@ export const drawOptionList = (options: {
  */
 export const createWidgetImageStream = (
   widget: PDFWidgetAnnotation,
-  alignment: TextAlignment,
+  alignment: ImageAlignment,
   image: PDFImage
 ): PDFRef => {
   const { context } = widget.dict;
@@ -854,10 +854,10 @@ export const createWidgetImageStream = (
     ySkew: degrees(0),
   };
 
-  if (alignment === TextAlignment.Center) {
+  if (alignment === ImageAlignment.Center) {
     options.x += (adj.width - borderWidth * 2) / 2 - imageDims.width / 2;
     options.y += (adj.height - borderWidth * 2) / 2 - imageDims.height / 2;
-  } else if (alignment === TextAlignment.Right) {
+  } else if (alignment === ImageAlignment.Right) {
     options.x = adj.width - borderWidth - imageDims.width;
     options.y = adj.height - borderWidth - imageDims.height;
   }

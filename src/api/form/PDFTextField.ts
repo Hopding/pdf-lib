@@ -19,6 +19,7 @@ import {
   ExceededMaxLengthError,
   InvalidMaxLengthError,
 } from 'src/api/errors';
+import { ImageAlignment } from 'src/api/image/alignment';
 import { TextAlignment } from 'src/api/text/alignment';
 
 import {
@@ -694,7 +695,13 @@ export default class PDFTextField extends PDFField {
    * @param image The image that should be displayed.
    */
   setImage(image: PDFImage) {
-    const alignment = this.getAlignment();
+    const fieldAlignment = this.getAlignment();
+    const alignment = fieldAlignment === TextAlignment.Center
+      ? ImageAlignment.Center
+      : fieldAlignment === TextAlignment.Right
+        ? ImageAlignment.Right
+        : ImageAlignment.Left;
+
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];

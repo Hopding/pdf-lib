@@ -348,7 +348,7 @@ const traitsField = form.getTextField('Feat+Traits')
 const treasureField = form.getTextField('Treasure')
 
 const characterImageField = form.getButton('CHARACTER IMAGE')
-const factionImageField = form.getButton('Faction Symbol Image')
+const factionImageField = form.getTextField('Faction Symbol Image')
 
 // Fill in the basic info fields
 nameField.setText('Mario')
