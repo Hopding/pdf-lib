@@ -44,7 +44,7 @@ import {
   LoadOptions,
   CreateOptions,
   EmbedFontOptions,
-  SetTitleOptions
+  SetTitleOptions,
 } from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
@@ -407,7 +407,9 @@ export default class PDFDocument {
     if (options?.documentDisplayTitle) {
       // Indicate that a reader should display
       // the title as set rather than the filename.
-      this.catalog.ViewerPreferences().set(PDFName.of('DisplayDocTitle'), PDFBool.True)
+      this.catalog
+        .ViewerPreferences()
+        .set(PDFName.of('DisplayDocTitle'), PDFBool.True);
     }
   }
 

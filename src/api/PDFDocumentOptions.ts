@@ -40,5 +40,5 @@ export interface EmbedFontOptions {
 }
 
 export interface SetTitleOptions {
-  documentDisplayTitle: boolean
+  documentDisplayTitle: boolean;
 }

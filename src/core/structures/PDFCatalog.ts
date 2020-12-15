@@ -47,14 +47,17 @@ class PDFCatalog extends PDFDict {
    * See PDF 32000-1:2008 Section 12.2 for full ViewerPreferences specification.
    */
   ViewerPreferences(): PDFDict {
-    const viewerPrefs = this.lookupMaybe(PDFName.of('ViewerPreferences'), PDFDict);
+    const viewerPrefs = this.lookupMaybe(
+      PDFName.of('ViewerPreferences'),
+      PDFDict,
+    );
 
     if (viewerPrefs) {
-      return viewerPrefs
+      return viewerPrefs;
     } else {
-      const newPrefs = PDFDict.withContext(this.context)
-      this.set(PDFName.of('ViewerPreferences'), newPrefs)
-      return newPrefs
+      const newPrefs = PDFDict.withContext(this.context);
+      this.set(PDFName.of('ViewerPreferences'), newPrefs);
+      return newPrefs;
     }
   }
 
