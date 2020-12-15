@@ -44,6 +44,21 @@ class PDFCatalog extends PDFDict {
   }
 
   /**
+   * See PDF 32000-1:2008 Section 12.2 for full ViewerPreferences specification.
+   */
+  ViewerPreferences(): PDFDict {
+    const viewerPrefs = this.lookupMaybe(PDFName.of('ViewerPreferences'), PDFDict);
+
+    if (viewerPrefs) {
+      return viewerPrefs
+    } else {
+      const newPrefs = PDFDict.withContext(this.context)
+      this.set(PDFName.of('ViewerPreferences'), newPrefs)
+      return newPrefs
+    }
+  }
+
+  /**
    * Inserts the given ref as a leaf node of this catalog's page tree at the
    * specified index (zero-based). Also increments the `Count` of each node in
    * the page tree hierarchy to accomodate the new page.

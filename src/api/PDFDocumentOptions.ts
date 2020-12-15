@@ -38,3 +38,7 @@ export interface EmbedFontOptions {
   customName?: string;
   features?: TypeFeatures;
 }
+
+export interface SetTitleOptions {
+  documentDisplayTitle: boolean
+}

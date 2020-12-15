@@ -303,6 +303,36 @@ describe(`PDFDocument`, () => {
     });
   });
 
+  describe(`setTitle() method with options`, () => {
+    it(`defaults to an undefined ViewerPreferences dict`, async () => {
+      const pdfDoc = await PDFDocument.create();
+
+      expect(
+        pdfDoc.catalog.lookupMaybe(PDFName.of('ViewerPreferences'), PDFDict)
+      ).toBeUndefined();
+    });
+
+    it(`does not set the ViewerPreferences dict if the option is not set`, async () => {
+      const pdfDoc = await PDFDocument.create();
+
+      pdfDoc.setTitle('Testing setTitle Title')
+
+      expect(
+        pdfDoc.catalog.lookupMaybe(PDFName.of('ViewerPreferences'), PDFDict)
+      ).toBeUndefined();
+
+      expect(pdfDoc.getTitle()).toBe('Testing setTitle Title')
+    })
+
+    it(`creates the ViewerPreferences dict when the option is set`, async () => {
+      const pdfDoc = await PDFDocument.create();
+
+      pdfDoc.setTitle('ViewerPrefs Test Creation', { documentDisplayTitle: true })
+
+      expect(pdfDoc.catalog.lookupMaybe(PDFName.of('ViewerPreferences'), PDFDict));
+    })
+  });
+
   describe(`addJavaScript method`, () => {
     it(`adds the script to the catalog`, async () => {
       const pdfDoc = await PDFDocument.create();
