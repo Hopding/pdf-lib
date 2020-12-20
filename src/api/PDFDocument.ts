@@ -43,6 +43,7 @@ import {
   LoadOptions,
   CreateOptions,
   EmbedFontOptions,
+  SetTitleOptions,
 } from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
@@ -389,12 +390,27 @@ export default class PDFDocument {
    * ```js
    * pdfDoc.setTitle('🥚 The Life of an Egg 🍳')
    * ```
+   *
+   * To display the title in the window's title bar, set the
+   * `showInWindowTitleBar` option to `true` (works for _most_ PDF readers).
+   * For example:
+   * ```js
+   * pdfDoc.setTitle('🥚 The Life of an Egg 🍳', { showInWindowTitleBar: true })
+   * ```
+   *
    * @param title The title of this document.
+   * @param options The options to be used when setting the title.
    */
-  setTitle(title: string): void {
+  setTitle(title: string, options?: SetTitleOptions): void {
     assertIs(title, 'title', ['string']);
     const key = PDFName.of('Title');
     this.getInfoDict().set(key, PDFHexString.fromText(title));
+
+    // Indicate that readers should display the title rather than the filename
+    if (options?.showInWindowTitleBar) {
+      const prefs = this.catalog.getOrCreateViewerPreferences();
+      prefs.setDisplayDocTitle(true);
+    }
   }
 
   /**

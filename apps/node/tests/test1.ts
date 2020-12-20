@@ -34,7 +34,7 @@ const ipsumLines = [
 export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.create();
 
-  pdfDoc.setTitle('🥚 The Life of an Egg 🍳');
+  pdfDoc.setTitle('🥚 The Life of an Egg 🍳', { showInWindowTitleBar: true });
   pdfDoc.setAuthor('Humpty Dumpty');
   pdfDoc.setSubject('📘 An Epic Tale of Woe 📖');
   pdfDoc.setKeywords(['eggs', 'wall', 'fall', 'king', 'horses', 'men']);
