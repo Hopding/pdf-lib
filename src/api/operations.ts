@@ -1,4 +1,6 @@
+import PDFImage from 'src/api/PDFImage';
 import { Color, setFillingColor, setStrokingColor } from 'src/api/colors';
+import { ImageAlignment } from 'src/api/image/alignment';
 import {
   beginText,
   closePath,
@@ -32,10 +34,17 @@ import {
   endPath,
   appendBezierCurve,
 } from 'src/api/operators';
-import { Rotation, toRadians, degrees } from 'src/api/rotations';
+import {
+  Rotation,
+  adjustDimsForRotation,
+  degrees,
+  reduceRotation,
+  toRadians
+} from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
-import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
+import { PDFHexString, PDFName, PDFNumber, PDFOperator, PDFRef, PDFWidgetAnnotation } from 'src/core';
 import { asNumber } from 'src/api/objects';
+import { addRandomSuffix } from 'src/utils';
 
 export interface DrawTextOptions {
   color: Color;
@@ -798,3 +807,71 @@ export const drawOptionList = (options: {
     popGraphicsState(),
   ];
 };
+
+// NOTE: This doesn't handle image borders.
+// NOTE: Acrobat seems to resize the image (maybe even skewing its aspect
+//       ratio) to fit perfectly within the widget's rectangle. This method
+//       does not currently do that. Should there be an option for that?
+/**
+ * Calculate the image size based on the widget, including the alignment and add it to context.
+ *
+ * @param widget The widget that should display the image. 
+ * @param alignment The alignment of the image.
+ * @param image The image that should be displayed.
+ * @returns The PDFRef for the widget image stream that was added to the context.
+ */
+export const createWidgetImageStream = (
+  widget: PDFWidgetAnnotation,
+  alignment: ImageAlignment,
+  image: PDFImage
+): PDFRef => {
+  const { context } = widget.dict;
+
+  const rectangle = widget.getRectangle();
+  const ap = widget.getAppearanceCharacteristics();
+  const bs = widget.getBorderStyle();
+
+  const borderWidth = bs?.getWidth() ?? 0;
+  const rotation = reduceRotation(ap?.getRotation());
+
+  const rotate = rotateInPlace({ ...rectangle, rotation });
+
+  const adj = adjustDimsForRotation(rectangle, rotation);
+  const imageDims = image.scaleToFit(
+    adj.width - borderWidth * 2,
+    adj.height - borderWidth * 2,
+  );
+
+  // Support borders on images and maybe other properties
+  const options = {
+    x: borderWidth,
+    y: borderWidth,
+    width: imageDims.width,
+    height: imageDims.height,
+    //
+    rotate: degrees(0),
+    xSkew: degrees(0),
+    ySkew: degrees(0),
+  };
+
+  if (alignment === ImageAlignment.Center) {
+    options.x += (adj.width - borderWidth * 2) / 2 - imageDims.width / 2;
+    options.y += (adj.height - borderWidth * 2) / 2 - imageDims.height / 2;
+  } else if (alignment === ImageAlignment.Right) {
+    options.x = adj.width - borderWidth - imageDims.width;
+    options.y = adj.height - borderWidth - imageDims.height;
+  }
+
+  const imageName = addRandomSuffix('Image', 10);
+  const appearance = [...rotate, ...drawImage(imageName, options)];
+  ////////////
+
+  const Resources = { XObject: { [imageName]: image.ref } };
+  const stream = context.formXObject(appearance, {
+    Resources,
+    BBox: context.obj([0, 0, rectangle.width, rectangle.height]),
+    Matrix: context.obj([1, 0, 0, 1, 0, 0]),
+  });
+
+  return context.register(stream);
+}

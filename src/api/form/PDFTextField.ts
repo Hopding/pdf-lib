@@ -1,6 +1,7 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
+import PDFImage from 'src/api/PDFImage';
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
@@ -11,12 +12,14 @@ import {
   defaultTextFieldAppearanceProvider,
 } from 'src/api/form/appearances';
 import { rgb } from 'src/api/colors';
+import { createWidgetImageStream } from 'src/api/operations';
 import { degrees } from 'src/api/rotations';
 import {
   RichTextFieldReadError,
   ExceededMaxLengthError,
   InvalidMaxLengthError,
 } from 'src/api/errors';
+import { ImageAlignment } from 'src/api/image/alignment';
 import { TextAlignment } from 'src/api/text/alignment';
 
 import {
@@ -679,6 +682,35 @@ export default class PDFTextField extends PDFField {
 
     // Add widget to the given page
     page.node.addAnnot(widgetRef);
+  }
+
+  /**
+   * Display an image inside the bounds of this text field's widgets. For example:
+   * ```js
+   * const pngImage = await pdfDoc.embedPng(...)
+   * const textField = form.getTextField('some.text.field')
+   * textField.setImage(pngImage)
+   * ```
+   * This will update the appearances streams for each of this text field's widgets.
+   * @param image The image that should be displayed.
+   */
+  setImage(image: PDFImage) {
+    const fieldAlignment = this.getAlignment();
+    const alignment = fieldAlignment === TextAlignment.Center
+      ? ImageAlignment.Center
+      : fieldAlignment === TextAlignment.Right
+        ? ImageAlignment.Right
+        : ImageAlignment.Left;
+
+    const widgets = this.acroField.getWidgets();
+    for (let idx = 0, len = widgets.length; idx < len; idx++) {
+      const widget = widgets[idx];
+      const streamRef = createWidgetImageStream(widget, alignment, image);
+
+      this.updateWidgetAppearances(widget, { normal: streamRef });
+    }
+
+    this.markAsClean();
   }
 
   /**
