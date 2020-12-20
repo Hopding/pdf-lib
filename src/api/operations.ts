@@ -32,7 +32,7 @@ import {
   endPath,
   appendBezierCurve,
 } from 'src/api/operators';
-import { Rotation, toRadians, degrees } from 'src/api/rotations';
+import { Rotation, degrees, toRadians } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
 import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
 import { asNumber } from 'src/api/objects';
