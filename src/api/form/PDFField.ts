@@ -2,7 +2,14 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
 import { AppearanceMapping } from 'src/api/form/appearances';
 import { Color, colorToComponents, setFillingColor } from 'src/api/colors';
-import { Rotation, toDegrees, rotateRectangle } from 'src/api/rotations';
+import {
+  Rotation,
+  toDegrees,
+  rotateRectangle,
+  reduceRotation,
+  adjustDimsForRotation,
+  degrees,
+} from 'src/api/rotations';
 
 import {
   PDFRef,
@@ -15,7 +22,15 @@ import {
   PDFAcroTerminal,
   AnnotationFlags,
 } from 'src/core';
-import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
+import {
+  addRandomSuffix,
+  assertIs,
+  assertMultiple,
+  assertOrUndefined,
+} from 'src/utils';
+import { ImageAlignment } from '../image';
+import PDFImage from '../PDFImage';
+import { drawImage, rotateInPlace } from '../operations';
 
 export interface FieldAppearanceOptions {
   x?: number;
@@ -413,6 +428,76 @@ export default class PDFField {
     const streamRef = context.register(stream);
 
     return streamRef;
+  }
+
+  /**
+   * Create a FormXObject of the supplied image and add it to context.
+   * The FormXObject size is calculated based on the widget (including
+   * the alignment).
+   * @param widget The widget that should display the image.
+   * @param alignment The alignment of the image.
+   * @param image The image that should be displayed.
+   * @returns The ref for the FormXObject that was added to the context.
+   */
+  protected createImageAppearanceStream(
+    widget: PDFWidgetAnnotation,
+    image: PDFImage,
+    alignment: ImageAlignment,
+  ): PDFRef {
+    // NOTE: This implementation doesn't handle image borders.
+    // NOTE: Acrobat seems to resize the image (maybe even skewing its aspect
+    //       ratio) to fit perfectly within the widget's rectangle. This method
+    //       does not currently do that. Should there be an option for that?
+
+    const { context } = this.acroField.dict;
+
+    const rectangle = widget.getRectangle();
+    const ap = widget.getAppearanceCharacteristics();
+    const bs = widget.getBorderStyle();
+
+    const borderWidth = bs?.getWidth() ?? 0;
+    const rotation = reduceRotation(ap?.getRotation());
+
+    const rotate = rotateInPlace({ ...rectangle, rotation });
+
+    const adj = adjustDimsForRotation(rectangle, rotation);
+    const imageDims = image.scaleToFit(
+      adj.width - borderWidth * 2,
+      adj.height - borderWidth * 2,
+    );
+
+    // Support borders on images and maybe other properties
+    const options = {
+      x: borderWidth,
+      y: borderWidth,
+      width: imageDims.width,
+      height: imageDims.height,
+      //
+      rotate: degrees(0),
+      xSkew: degrees(0),
+      ySkew: degrees(0),
+    };
+
+    if (alignment === ImageAlignment.Center) {
+      options.x += (adj.width - borderWidth * 2) / 2 - imageDims.width / 2;
+      options.y += (adj.height - borderWidth * 2) / 2 - imageDims.height / 2;
+    } else if (alignment === ImageAlignment.Right) {
+      options.x = adj.width - borderWidth - imageDims.width;
+      options.y = adj.height - borderWidth - imageDims.height;
+    }
+
+    const imageName = addRandomSuffix('Image', 10);
+    const appearance = [...rotate, ...drawImage(imageName, options)];
+    ////////////
+
+    const Resources = { XObject: { [imageName]: image.ref } };
+    const stream = context.formXObject(appearance, {
+      Resources,
+      BBox: context.obj([0, 0, rectangle.width, rectangle.height]),
+      Matrix: context.obj([1, 0, 0, 1, 0, 0]),
+    });
+
+    return context.register(stream);
   }
 
   private createAppearanceDict(
