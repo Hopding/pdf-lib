@@ -7,13 +7,16 @@ import { PDFDocument } from 'src/index';
   const pdfDoc = await PDFDocument.create();
 
   // Set the title and include the new option.
-  pdfDoc.setTitle('Scratchpad Test Doc', { documentDisplayTitle: true })
+  pdfDoc.setTitle('Scratchpad Test Doc', { showInWindowTitleBar: true });
 
   // Add a blank page to the document
   const page = pdfDoc.addPage([550, 750]);
 
   // Manual test...
-  page.drawText(`The window's title should match what we set in the metadata.`, { x: 15, y: 400, size: 15 });
+  page.drawText(
+    `The window's title should match what we set in the metadata.`,
+    { x: 15, y: 400, size: 15 },
+  );
 
   // Save the PDF
   const pdfBytes = await pdfDoc.save();

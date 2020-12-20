@@ -4,6 +4,7 @@ import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
 import { PDFAcroForm } from 'src/core/acroform';
+import ViewerPreferences from '../interactive/ViewerPreferences';
 
 class PDFCatalog extends PDFDict {
   static withContextAndPages = (
@@ -43,22 +44,24 @@ class PDFCatalog extends PDFDict {
     return acroForm;
   }
 
-  /**
-   * See PDF 32000-1:2008 Section 12.2 for full ViewerPreferences specification.
-   */
-  ViewerPreferences(): PDFDict {
-    const viewerPrefs = this.lookupMaybe(
-      PDFName.of('ViewerPreferences'),
-      PDFDict,
-    );
+  ViewerPreferences(): PDFDict | undefined {
+    return this.lookupMaybe(PDFName.of('ViewerPreferences'), PDFDict);
+  }
 
-    if (viewerPrefs) {
-      return viewerPrefs;
-    } else {
-      const newPrefs = PDFDict.withContext(this.context);
-      this.set(PDFName.of('ViewerPreferences'), newPrefs);
-      return newPrefs;
+  getViewerPreferences(): ViewerPreferences | undefined {
+    const dict = this.ViewerPreferences();
+    if (!dict) return undefined;
+    return ViewerPreferences.fromDict(dict);
+  }
+
+  getOrCreateViewerPreferences(): ViewerPreferences {
+    let viewerPrefs = this.getViewerPreferences();
+    if (!viewerPrefs) {
+      viewerPrefs = ViewerPreferences.create(this.context);
+      const viewerPrefsRef = this.context.register(viewerPrefs.dict);
+      this.set(PDFName.of('ViewerPreferences'), viewerPrefsRef);
     }
+    return viewerPrefs;
   }
 
   /**

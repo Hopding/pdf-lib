@@ -18,7 +18,6 @@ import {
   JpegEmbedder,
   PageBoundingBox,
   PageEmbeddingMismatchedContextError,
-  PDFBool,
   PDFCatalog,
   PDFContext,
   PDFDict,
@@ -391,11 +390,14 @@ export default class PDFDocument {
    * ```js
    * pdfDoc.setTitle('🥚 The Life of an Egg 🍳')
    * ```
-   * To display the title in the window title of most PDF readers,
-   * set the `displayDocumentTitle` option to true. For example:
+   *
+   * To display the title in the window's title bar, set the
+   * `showInWindowTitleBar` option to `true` (works for _most_ PDF readers).
+   * For example:
    * ```js
-   * pdfDoc.setTitle('🥚 The Life of an Egg 🍳', { displayDocumentTitle: true })
+   * pdfDoc.setTitle('🥚 The Life of an Egg 🍳', { showInWindowTitleBar: true })
    * ```
+   *
    * @param title The title of this document.
    * @param options The options to be used when setting the title.
    */
@@ -404,12 +406,10 @@ export default class PDFDocument {
     const key = PDFName.of('Title');
     this.getInfoDict().set(key, PDFHexString.fromText(title));
 
-    if (options?.documentDisplayTitle) {
-      // Indicate that a reader should display
-      // the title as set rather than the filename.
-      this.catalog
-        .ViewerPreferences()
-        .set(PDFName.of('DisplayDocTitle'), PDFBool.True);
+    // Indicate that readers should display the title rather than the filename
+    if (options?.showInWindowTitleBar) {
+      const prefs = this.catalog.getOrCreateViewerPreferences();
+      prefs.setDisplayDocTitle(true);
     }
   }
 
