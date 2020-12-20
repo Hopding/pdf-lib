@@ -4,6 +4,7 @@ import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
 import { PDFAcroForm } from 'src/core/acroform';
+import ViewerPreferences from '../interactive/ViewerPreferences';
 
 class PDFCatalog extends PDFDict {
   static withContextAndPages = (
@@ -41,6 +42,26 @@ class PDFCatalog extends PDFDict {
       this.set(PDFName.of('AcroForm'), acroFormRef);
     }
     return acroForm;
+  }
+
+  ViewerPreferences(): PDFDict | undefined {
+    return this.lookupMaybe(PDFName.of('ViewerPreferences'), PDFDict);
+  }
+
+  getViewerPreferences(): ViewerPreferences | undefined {
+    const dict = this.ViewerPreferences();
+    if (!dict) return undefined;
+    return ViewerPreferences.fromDict(dict);
+  }
+
+  getOrCreateViewerPreferences(): ViewerPreferences {
+    let viewerPrefs = this.getViewerPreferences();
+    if (!viewerPrefs) {
+      viewerPrefs = ViewerPreferences.create(this.context);
+      const viewerPrefsRef = this.context.register(viewerPrefs.dict);
+      this.set(PDFName.of('ViewerPreferences'), viewerPrefsRef);
+    }
+    return viewerPrefs;
   }
 
   /**
