@@ -328,7 +328,7 @@ describe(`PDFDocument`, () => {
       const pdfDoc = await PDFDocument.create();
 
       pdfDoc.setTitle('ViewerPrefs Test Creation', {
-        documentDisplayTitle: true,
+        showInWindowTitleBar: true,
       });
 
       expect(
