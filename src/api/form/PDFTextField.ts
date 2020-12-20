@@ -12,7 +12,6 @@ import {
   defaultTextFieldAppearanceProvider,
 } from 'src/api/form/appearances';
 import { rgb } from 'src/api/colors';
-import { createWidgetImageStream } from 'src/api/operations';
 import { degrees } from 'src/api/rotations';
 import {
   RichTextFieldReadError,
@@ -696,17 +695,21 @@ export default class PDFTextField extends PDFField {
    */
   setImage(image: PDFImage) {
     const fieldAlignment = this.getAlignment();
-    const alignment = fieldAlignment === TextAlignment.Center
-      ? ImageAlignment.Center
-      : fieldAlignment === TextAlignment.Right
-        ? ImageAlignment.Right
-        : ImageAlignment.Left;
+
+    // prettier-ignore
+    const alignment = 
+        fieldAlignment === TextAlignment.Center ? ImageAlignment.Center
+      : fieldAlignment === TextAlignment.Right ? ImageAlignment.Right
+      : ImageAlignment.Left;
 
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const streamRef = createWidgetImageStream(widget, alignment, image);
-
+      const streamRef = this.createImageAppearanceStream(
+        widget,
+        image,
+        alignment,
+      );
       this.updateWidgetAppearances(widget, { normal: streamRef });
     }
 

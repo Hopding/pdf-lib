@@ -14,7 +14,6 @@ import PDFField, {
 } from 'src/api/form/PDFField';
 import { rgb } from 'src/api/colors';
 import { degrees } from 'src/api/rotations';
-import { createWidgetImageStream } from 'src/api/operations';
 
 import {
   PDFRef,
@@ -73,18 +72,21 @@ export default class PDFButton extends PDFField {
    * ```js
    * const pngImage = await pdfDoc.embedPng(...)
    * const button = form.getButton('some.button.field')
-   * button.setImage(pngImage, TextAlignment.Center)
+   * button.setImage(pngImage, ImageAlignment.Center)
    * ```
    * This will update the appearances streams for each of this button's widgets.
    * @param image The image that should be displayed.
    * @param alignment The alignment of the image.
    */
-  setImage(image: PDFImage, alignment?: ImageAlignment) {
+  setImage(image: PDFImage, alignment = ImageAlignment.Center) {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const streamRef = createWidgetImageStream(widget, alignment ?? ImageAlignment.Center, image);
-
+      const streamRef = this.createImageAppearanceStream(
+        widget,
+        image,
+        alignment,
+      );
       this.updateWidgetAppearances(widget, { normal: streamRef });
     }
 
