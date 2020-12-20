@@ -15,7 +15,14 @@ import {
 } from 'src/api/errors';
 import PDFFont from 'src/api/PDFFont';
 import { StandardFonts } from 'src/api/StandardFonts';
-
+import {
+  drawObject,
+  popGraphicsState,
+  pushGraphicsState,
+  rotateRadians,
+  translate,
+} from 'src/api/operators';
+import { degrees, toRadians } from 'src/api/rotations';
 import {
   PDFAcroForm,
   PDFAcroField,
@@ -27,11 +34,13 @@ import {
   PDFAcroText,
   PDFAcroPushButton,
   PDFAcroNonTerminal,
+  PDFDict,
+  PDFOperator,
   PDFRef,
   createPDFAcroFields,
   PDFName,
 } from 'src/core';
-import { assertIs, Cache, assertOrUndefined } from 'src/utils';
+import { addRandomSuffix, assertIs, Cache, assertOrUndefined } from 'src/utils';
 
 /**
  * Represents the interactive form of a [[PDFDocument]].
@@ -497,6 +506,68 @@ export default class PDFForm {
     addFieldToParent(parent, [text, text.ref], nameParts.terminal);
 
     return PDFTextField.of(text, text.ref, this.doc);
+  }
+
+  /**
+   * Flatten all form fields.
+   * 
+   * Flattening a form field will take the current appearance and make that part
+   * of the pages content stream. All form fields and annotations associated are removed.
+   * 
+   * For example:
+   * ```js
+   * const form = pdfDoc.getForm();
+   * form.flatten();
+   * ```
+   */
+  flatten() {
+    this.updateFieldAppearances();
+
+    const fields = this.getFields();
+    const pages = this.doc.getPages();
+
+    for (const field of fields) {
+      const widgets = field.acroField.getWidgets();
+
+      for (const widget of widgets) {
+        const pageRef = widget.P();
+        const page = pages.find(x => x.ref === pageRef);
+        let ref = widget.getNormalAppearance();
+
+        if (ref instanceof PDFDict) {
+          if (field instanceof PDFCheckBox) {
+            const value = field.acroField.getValue();
+            ref = ref.get(value) as PDFRef;
+          } else if (field instanceof PDFRadioGroup) {
+            const value = field.acroField.getValue();
+
+            ref = ref.has(value)
+              ? ref.get(value) as PDFRef
+              : ref.get(PDFName.of('Off')) as PDFRef;
+          }
+        }
+
+        const xObjectKey = addRandomSuffix('FlatWidget', 10);
+        page!.node.setXObject(PDFName.of(xObjectKey), ref as PDFRef);
+    
+        const ap = widget.getAppearanceCharacteristics();      
+        const rectangle = widget.getRectangle();
+        const rotation = degrees(ap?.getRotation() ?? 0);
+
+        const operators = [
+          pushGraphicsState(),
+          translate(rectangle.x, rectangle.y),
+          rotateRadians(toRadians(rotation)),
+          drawObject(xObjectKey),
+          popGraphicsState(),
+        ].filter(Boolean) as PDFOperator[];
+    
+        page!.pushOperators(...operators);
+      }
+
+      this.acroForm.removeField(field.ref);
+      this.doc.context.delete(field.ref);
+    }
   }
 
   /**

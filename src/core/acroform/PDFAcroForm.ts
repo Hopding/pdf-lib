@@ -68,6 +68,14 @@ class PDFAcroForm {
     Fields?.push(field);
   }
 
+  removeField(field: PDFRef) {
+    const { Fields } = this.normalizedEntries();
+    const index = Fields?.indexOf(field);
+    if (index >= 0) {
+      Fields.remove(index);
+    }
+  }
+
   normalizedEntries() {
     let Fields = this.Fields();
 

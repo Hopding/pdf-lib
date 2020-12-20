@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource:;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 18</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test17.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button disabled onclick="window.location.href = '/apps/web/test19.html'">
+        Next
+      </button>
+    </div>
+    <div id="animation-target"></div>
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    startFpsTracker('animation-target');
+
+    const fetchBinaryAsset = (asset) =>
+      fetch(`/assets/${asset}`).then((res) => res.arrayBuffer());
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const { PDFDocument } = PDFLib;
+
+      const formToFlattenPdf = await fetchBinaryAsset('pdfs/form_to_flatten.pdf');
+
+      const pdfDoc = await PDFDocument.load(formToFlattenPdf);
+
+      const form = pdfDoc.getForm();
+
+      form.getTextField('Text1').setText('Some Text');
+
+      form.getRadioGroup('Group2').select('Choice1');
+      form.getRadioGroup('Group3').select('Choice3');
+      form.getRadioGroup('Group4').select('Choice1');
+
+      form.getCheckBox('Check Box3').check();
+      form.getCheckBox('Check Box4').uncheck();
+
+      form.flatten();
+
+      const pdfBytes = await pdfDoc.save();
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

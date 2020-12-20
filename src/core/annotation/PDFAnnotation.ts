@@ -56,6 +56,11 @@ class PDFAnnotation {
     return AP;
   }
 
+  getNormalAppearance() : PDFRef | PDFDict {
+    const AP = this.ensureAP();
+    return AP.get(PDFName.of('N')) as PDFRef | PDFDict;
+  }
+
   /** @param appearance A PDFDict or PDFStream (direct or ref) */
   setNormalAppearance(appearance: PDFRef | PDFDict) {
     const AP = this.ensureAP();
