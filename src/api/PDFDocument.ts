@@ -18,6 +18,7 @@ import {
   JpegEmbedder,
   PageBoundingBox,
   PageEmbeddingMismatchedContextError,
+  PDFBool,
   PDFCatalog,
   PDFContext,
   PDFDict,
@@ -43,6 +44,7 @@ import {
   LoadOptions,
   CreateOptions,
   EmbedFontOptions,
+  SetTitleOptions,
 } from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
 import { Fontkit } from 'src/types/fontkit';
@@ -389,12 +391,26 @@ export default class PDFDocument {
    * ```js
    * pdfDoc.setTitle('🥚 The Life of an Egg 🍳')
    * ```
+   * To display the title in the window title of most PDF readers,
+   * set the `displayDocumentTitle` option to true. For example:
+   * ```js
+   * pdfDoc.setTitle('🥚 The Life of an Egg 🍳', { displayDocumentTitle: true })
+   * ```
    * @param title The title of this document.
+   * @param options The options to be used when setting the title.
    */
-  setTitle(title: string): void {
+  setTitle(title: string, options?: SetTitleOptions): void {
     assertIs(title, 'title', ['string']);
     const key = PDFName.of('Title');
     this.getInfoDict().set(key, PDFHexString.fromText(title));
+
+    if (options?.documentDisplayTitle) {
+      // Indicate that a reader should display
+      // the title as set rather than the filename.
+      this.catalog
+        .ViewerPreferences()
+        .set(PDFName.of('DisplayDocTitle'), PDFBool.True);
+    }
   }
 
   /**
