@@ -47,7 +47,9 @@
     async function test() {
       const { PDFDocument } = PDFLib;
 
-      const formToFlattenPdf = await fetchBinaryAsset('pdfs/form_to_flatten.pdf');
+      const formToFlattenPdf = await fetchBinaryAsset(
+        'pdfs/form_to_flatten.pdf',
+      );
 
       const pdfDoc = await PDFDocument.load(formToFlattenPdf);
 
@@ -61,6 +63,10 @@
 
       form.getCheckBox('Check Box3').check();
       form.getCheckBox('Check Box4').uncheck();
+
+      form.getDropdown('Dropdown7').select('Infinity');
+
+      form.getOptionList('List Box6').select('Honda');
 
       form.flatten();
 

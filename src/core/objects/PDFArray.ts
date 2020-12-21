@@ -37,8 +37,9 @@ class PDFArray extends PDFObject {
     this.array.splice(index, 0, object);
   }
 
-  indexOf(object: PDFObject): number {
-    return this.array.indexOf(object);
+  indexOf(object: PDFObject): number | undefined {
+    const index = this.array.indexOf(object);
+    return index === -1 ? undefined : index;
   }
 
   remove(index: number): void {

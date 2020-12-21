@@ -71,7 +71,7 @@ class PDFAcroForm {
   removeField(field: PDFRef) {
     const { Fields } = this.normalizedEntries();
     const index = Fields?.indexOf(field);
-    if (index >= 0) {
+    if (index !== undefined) {
       Fields.remove(index);
     }
   }

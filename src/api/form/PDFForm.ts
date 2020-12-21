@@ -42,6 +42,10 @@ import {
 } from 'src/core';
 import { addRandomSuffix, assertIs, Cache, assertOrUndefined } from 'src/utils';
 
+export interface FlattenOptions {
+  updateFieldAppearances: boolean;
+}
+
 /**
  * Represents the interactive form of a [[PDFDocument]].
  *
@@ -510,47 +514,60 @@ export default class PDFForm {
 
   /**
    * Flatten all form fields.
-   * 
+   *
    * Flattening a form field will take the current appearance and make that part
    * of the pages content stream. All form fields and annotations associated are removed.
-   * 
+   *
    * For example:
    * ```js
    * const form = pdfDoc.getForm();
    * form.flatten();
    * ```
    */
-  flatten() {
-    this.updateFieldAppearances();
+  flatten(options: FlattenOptions = { updateFieldAppearances: true }) {
+    if (options.updateFieldAppearances) {
+      this.updateFieldAppearances();
+    }
 
     const fields = this.getFields();
     const pages = this.doc.getPages();
 
-    for (const field of fields) {
+    for (let i = 0, lenFields = fields.length; i < lenFields; i++) {
+      const field = fields[i];
       const widgets = field.acroField.getWidgets();
 
-      for (const widget of widgets) {
+      for (let j = 0, lenWidgets = widgets.length; j < lenWidgets; j++) {
+        const widget = widgets[j];
         const pageRef = widget.P();
-        const page = pages.find(x => x.ref === pageRef);
-        let ref = widget.getNormalAppearance();
+        const page = pages.find((x) => x.ref === pageRef);
+        if (page === undefined) {
+          throw new Error(
+            `Failed to find page ${pageRef} for element ${field.getName()}`,
+          );
+        }
 
-        if (ref instanceof PDFDict) {
-          if (field instanceof PDFCheckBox) {
-            const value = field.acroField.getValue();
-            ref = ref.get(value) as PDFRef;
-          } else if (field instanceof PDFRadioGroup) {
-            const value = field.acroField.getValue();
+        let refOrDict = widget.getNormalAppearance();
 
-            ref = ref.has(value)
-              ? ref.get(value) as PDFRef
-              : ref.get(PDFName.of('Off')) as PDFRef;
+        if (
+          refOrDict instanceof PDFDict &&
+          (field instanceof PDFCheckBox || field instanceof PDFRadioGroup)
+        ) {
+          const value = field.acroField.getValue();
+          const ref = refOrDict.get(value) ?? refOrDict.get(PDFName.of('Off'));
+
+          if (ref instanceof PDFRef) {
+            refOrDict = ref;
           }
         }
 
+        if (!(refOrDict instanceof PDFRef)) {
+          throw new Error(`Failed to extract appearance ref`);
+        }
+
         const xObjectKey = addRandomSuffix('FlatWidget', 10);
-        page!.node.setXObject(PDFName.of(xObjectKey), ref as PDFRef);
-    
-        const ap = widget.getAppearanceCharacteristics();      
+        page.node.setXObject(PDFName.of(xObjectKey), refOrDict);
+
+        const ap = widget.getAppearanceCharacteristics();
         const rectangle = widget.getRectangle();
         const rotation = degrees(ap?.getRotation() ?? 0);
 
@@ -561,8 +578,8 @@ export default class PDFForm {
           drawObject(xObjectKey),
           popGraphicsState(),
         ].filter(Boolean) as PDFOperator[];
-    
-        page!.pushOperators(...operators);
+
+        page.pushOperators(...operators);
       }
 
       this.acroForm.removeField(field.ref);
