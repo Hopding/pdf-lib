@@ -419,7 +419,7 @@ const pdfBytes = await pdfDoc.save()
 
 _This example produces [this PDF](assets/pdfs/examples/flatten_form.pdf)_ (when [this PDF](assets/pdfs/form_to_flatten.pdf) is used for the `formPdfBytes` variable).
 
-<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/0mwfqkv6/3/) -->
+[Try the JSFiddle demo](https://jsfiddle.net/Hopding/skevywdz/2/)
 
 <!-- prettier-ignore -->
 ```js
