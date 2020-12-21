@@ -56,6 +56,14 @@ class PDFAnnotation {
     return AP;
   }
 
+  getNormalAppearance(): PDFRef | PDFDict {
+    const AP = this.ensureAP();
+    const N = AP.get(PDFName.of('N'));
+    if (N instanceof PDFRef || N instanceof PDFDict) return N;
+
+    throw new Error(`Unexpected N type: ${N?.constructor.name}`);
+  }
+
   /** @param appearance A PDFDict or PDFStream (direct or ref) */
   setNormalAppearance(appearance: PDFRef | PDFDict) {
     const AP = this.ensureAP();
