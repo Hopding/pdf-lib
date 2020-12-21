@@ -513,10 +513,19 @@ export default class PDFForm {
   }
 
   /**
-   * Flatten all form fields.
+   * Flatten all fields in this [[PDFForm]].
    *
-   * Flattening a form field will take the current appearance and make that part
-   * of the pages content stream. All form fields and annotations associated are removed.
+   * Flattening a form field will take the current appearance for each of that
+   * field's widgets and make them part of their page's content stream. All form
+   * fields and annotations associated are then removed. Note that once a form
+   * has been flattened its fields can no longer be accessed or edited.
+   *
+   * This operation is often used after filling form fields to ensure a
+   * consistent appearance across different PDF readers and/or printers.
+   * Another common use case is to copy a template document with form fields
+   * into another document. In this scenario you would load the template
+   * document, fill its fields, flatten it, and then copy its pages into the
+   * recipient document - the filled fields will be copied over.
    *
    * For example:
    * ```js

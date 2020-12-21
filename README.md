@@ -55,8 +55,9 @@
 - [Usage Examples](#usage-examples)
   - [Create Document](#create-document)
   - [Modify Document](#modify-document)
-  - [Create Form](#create-form) - _**new!**_
-  - [Fill Form](#fill-form) - _**new!**_
+  - [Create Form](#create-form)
+  - [Fill Form](#fill-form)
+  - [Flatten Form](#flatten-form) - _**new!**_
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
@@ -84,8 +85,9 @@
 
 - Create new PDFs
 - Modify existing PDFs
-- Create forms - _**new!**_
-- Fill forms - _**new!**_
+- Create forms
+- Fill forms
+- Flatten forms - _**new!**_
 - Add Pages
 - Insert Pages
 - Remove Pages
@@ -403,6 +405,54 @@ traitsField.setText(
 
 // Fill in the treasure field
 treasureField.setText(['• Gold coins', '• Treasure chests'].join('\n'))
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Flatten Form
+
+_This example produces [this PDF](assets/pdfs/examples/flatten_form.pdf)_ (when [this PDF](assets/pdfs/form_to_flatten.pdf) is used for the `formPdfBytes` variable).
+
+<!-- [Try the JSFiddle demo](https://jsfiddle.net/Hopding/0mwfqkv6/3/) -->
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const formPdfBytes = ...
+
+// Load a PDF with form fields
+const pdfDoc = await PDFDocument.load(formPdfBytes)
+
+// Get the form containing all the fields
+const form = pdfDoc.getForm()
+
+// Fill the form's fields
+form.getTextField('Text1').setText('Some Text');
+
+form.getRadioGroup('Group2').select('Choice1');
+form.getRadioGroup('Group3').select('Choice3');
+form.getRadioGroup('Group4').select('Choice1');
+
+form.getCheckBox('Check Box3').check();
+form.getCheckBox('Check Box4').uncheck();
+
+form.getDropdown('Dropdown7').select('Infinity');
+
+form.getOptionList('List Box6').select('Honda');
+
+// Flatten the form's fields
+form.flatten();
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
