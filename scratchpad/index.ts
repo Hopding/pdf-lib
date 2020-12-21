@@ -3,24 +3,43 @@ import { openPdf, Reader } from './open';
 import { PDFDocument } from 'src/index';
 
 (async () => {
-  // Create a new PDFDocument
-  const pdfDoc = await PDFDocument.create();
+  // This should be a Uint8Array or ArrayBuffer
+  // This data can be obtained in a number of different ways
+  // If your running in a Node environment, you could use fs.readFile()
+  // In the browser, you could make a fetch() call and use res.arrayBuffer()
+  const formPdfBytes = fs.readFileSync('assets/pdfs/form_to_flatten.pdf');
 
-  // Set the title and include the new option.
-  pdfDoc.setTitle('Scratchpad Test Doc', { showInWindowTitleBar: true });
+  // Load a PDF with form fields
+  const pdfDoc = await PDFDocument.load(formPdfBytes);
 
-  // Add a blank page to the document
-  const page = pdfDoc.addPage([550, 750]);
+  // Get the form containing all the fields
+  const form = pdfDoc.getForm();
 
-  // Manual test...
-  page.drawText(
-    `The window's title should match what we set in the metadata.`,
-    { x: 15, y: 400, size: 15 },
-  );
+  // Fill the form's fields
+  form.getTextField('Text1').setText('Some Text');
 
-  // Save the PDF
+  form.getRadioGroup('Group2').select('Choice1');
+  form.getRadioGroup('Group3').select('Choice3');
+  form.getRadioGroup('Group4').select('Choice1');
+
+  form.getCheckBox('Check Box3').check();
+  form.getCheckBox('Check Box4').uncheck();
+
+  form.getDropdown('Dropdown7').select('Infinity');
+
+  form.getOptionList('List Box6').select('Honda');
+
+  // Flatten the form's fields
+  form.flatten();
+
+  // Serialize the PDFDocument to bytes (a Uint8Array)
   const pdfBytes = await pdfDoc.save();
 
+  // For example, `pdfBytes` can be:
+  //   • Written to a file in Node
+  //   • Downloaded from the browser
+  //   • Rendered in an <iframe>
+
   fs.writeFileSync('out.pdf', pdfBytes);
-  openPdf('out.pdf', Reader.Acrobat);
+  openPdf('out.pdf', Reader.Preview);
 })();
