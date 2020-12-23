@@ -402,10 +402,13 @@ export default class PDFRadioGroup extends PDFField {
       const widget = widgets[idx];
       const value = this.acroField.getValue();
       const normal = widget.getAppearances()?.normal;
-      return !(normal instanceof PDFDict && normal.has(value));
+
+      if (normal instanceof PDFDict && normal.has(value)) {
+        return false;
+      }
     }
 
-    return false;
+    return true;
   }
 
   /**
