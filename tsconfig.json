@@ -15,7 +15,7 @@
     "tsBuildInfoFile": "./tsBuildInfo.json",
     "removeComments": false,
     "importHelpers": true,
-    "downlevelIteration": false,
+    "downlevelIteration": true,
     "isolatedModules": false,
     "newLine": "LF",
 

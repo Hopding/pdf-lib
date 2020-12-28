@@ -548,11 +548,10 @@ export default class PDFForm {
       for (let j = 0, lenWidgets = widgets.length; j < lenWidgets; j++) {
         const widget = widgets[j];
         const pageRef = widget.P();
-        const page = pages.find((x) => x.ref === pageRef);
+        let page = pages.find((x) => x.ref === pageRef);
         if (page === undefined) {
-          throw new Error(
-            `Failed to find page ${pageRef} for element ${field.getName()}`,
-          );
+          const widgetRef = this.doc.context.getObjectRef(widget.dict);
+          page = this.doc.findPageForRef(widgetRef);
         }
 
         let refOrDict = widget.getNormalAppearance();

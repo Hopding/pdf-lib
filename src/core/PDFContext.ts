@@ -163,6 +163,16 @@ class PDFContext {
     throw new UnexpectedObjectTypeError(types, result);
   }
 
+  getObjectRef(pdfObject: PDFObject): PDFRef {
+    for (const [ref, object] of this.indirectObjects.entries()) {
+      if (object === pdfObject) {
+        return ref;
+      }
+    }
+
+    throw new Error('Could not find PDFRef for PDFObject');
+  }
+
   enumerateIndirectObjects(): [PDFRef, PDFObject][] {
     return Array.from(this.indirectObjects.entries()).sort(
       byAscendingObjectNumber,
