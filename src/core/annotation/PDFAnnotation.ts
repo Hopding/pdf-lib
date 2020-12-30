@@ -39,6 +39,10 @@ class PDFAnnotation {
     this.dict.set(PDFName.of('Rect'), Rect);
   }
 
+  getAppearanceState() {
+    return this.dict.get(PDFName.of('AS'));
+  }
+
   setAppearanceState(state: PDFName) {
     this.dict.set(PDFName.of('AS'), state);
   }

@@ -577,7 +577,7 @@ export default class PDFForm {
         }
 
         if (!(refOrDict instanceof PDFRef)) {
-          throw new Error(`Failed to extract appearance ref`);
+          continue;
         }
 
         const xObjectKey = addRandomSuffix('FlatWidget', 10);

@@ -16,7 +16,6 @@ import {
   PDFName,
   PDFRef,
   PDFHexString,
-  PDFDict,
   PDFWidgetAnnotation,
   PDFAcroRadioButton,
   AcroButtonFlags,
@@ -397,13 +396,13 @@ export default class PDFRadioGroup extends PDFField {
    * @returns Whether or not this radio group needs an appearance update.
    */
   needsAppearancesUpdate(): boolean {
+    const value = this.acroField.getValue();
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const value = this.acroField.getValue();
-      const normal = widget.getAppearances()?.normal;
+      const state = widget.getAppearanceState();
 
-      if (normal instanceof PDFDict && normal.has(value)) {
+      if (value === state) {
         return false;
       }
     }
