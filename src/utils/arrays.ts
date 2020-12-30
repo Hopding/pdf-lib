@@ -72,17 +72,10 @@ export const byAscendingId = <T extends { id: any }>(a: T, b: T) => a.id - b.id;
 
 export const sortedUniq = <T>(array: T[], indexer: (elem: T) => any): T[] => {
   const uniq: T[] = [];
-  const gname = array.map((n: any) => n.name)
-  gname.concat
 
   for (let idx = 0, len = array.length; idx < len; idx++) {
-    const curr: any = array[idx];
-    const prev: any = array[idx - 1];
-      if (curr.name === "uni0E4A" || curr.name === "uni0E4A.small") {
-
-        console.log(curr.name)
-
-      }
+    const curr = array[idx];
+    const prev = array[idx - 1];
     if (idx === 0 || indexer(curr) !== indexer(prev)) {
       uniq.push(curr);
     }

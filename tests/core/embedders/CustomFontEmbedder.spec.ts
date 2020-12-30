@@ -1,16 +1,15 @@
 import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
+
 import {
   CustomFontEmbedder,
   PDFContext,
   PDFDict,
   PDFHexString,
-  PDFRef
+  PDFRef,
 } from 'src/index';
 
-
 const ubuntuFont = fs.readFileSync('./assets/fonts/ubuntu/Ubuntu-R.ttf');
-const thaiFont = fs.readFileSync('./assets/fonts/prompt/prompt-regular.ttf');
 
 describe(`CustomFontEmbedder`, () => {
   it(`can be constructed with CustomFontEmbedder.for(...)`, async () => {
@@ -82,15 +81,6 @@ describe(`CustomFontEmbedder`, () => {
     expect(embedder.widthOfTextAtSize(text, 12)).toBe(90.672);
     expect(embedder.widthOfTextAtSize(text, 24)).toBe(181.344);
   });
-
-  it(`can measure the width of non-unicode glyph from ligature layout table mapping`, async () => {
-    // const text = 'ปีนี้ไม่ได้แต่งต้นคริสต์มาส อยากลองดูน้ำทะเล'
-    const text = "กิ๊บ"
-    const embedder = await CustomFontEmbedder.for(fontkit, thaiFont);
-    expect(embedder.widthOfTextAtSize(text, 12)).toBe(15.396);
-    expect(embedder.widthOfTextAtSize(text, 24)).toBe(30.792);
-  })
-
 
   it(`can measure the height of the font at the given size`, async () => {
     const embedder = await CustomFontEmbedder.for(fontkit, ubuntuFont);
