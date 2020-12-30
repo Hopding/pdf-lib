@@ -1,18 +1,18 @@
-import { Font, Fontkit, Glyph, TypeFeatures } from 'src/types/fontkit';
-
 import { createCmap } from 'src/core/embedders/CMap';
 import { deriveFontFlags } from 'src/core/embedders/FontFlags';
 import PDFHexString from 'src/core/objects/PDFHexString';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
+import { Font, Fontkit, Glyph, TypeFeatures } from 'src/types/fontkit';
 import {
   addRandomSuffix,
   byAscendingId,
   Cache,
   sortedUniq,
-  toHexStringOfMinLength,
+  toHexStringOfMinLength
 } from 'src/utils';
+
 
 /**
  * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as
@@ -214,8 +214,14 @@ class CustomFontEmbedder {
     let currSection: number[] = [];
 
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {
-      const currGlyph = glyphs[idx];
+      const currGlyph: any = glyphs[idx];
       const prevGlyph = glyphs[idx - 1];
+
+      if (currGlyph.name === "uni0E4A" || currGlyph.name === "uni0E4A.small") {
+
+        console.log(currGlyph.name)
+
+      }
 
       const currGlyphId = this.glyphId(currGlyph);
       const prevGlyphId = this.glyphId(prevGlyph);
@@ -237,11 +243,16 @@ class CustomFontEmbedder {
   }
 
   private allGlyphsInFontSortedById = (): Glyph[] => {
-    const glyphs: Glyph[] = new Array(this.font.characterSet.length);
+    let glyphs: Glyph[] = new Array(this.font.characterSet.length);
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {
       const codePoint = this.font.characterSet[idx];
       glyphs[idx] = this.font.glyphForCodePoint(codePoint);
     }
+    const f: any = this.font;
+    const gggg = f._glyphs;
+    glyphs = Object.keys(gggg).map(g => gggg[g])
+
+
     return sortedUniq(glyphs.sort(byAscendingId), (g) => g.id);
   };
 }

@@ -32,10 +32,20 @@ import { openPdf, Reader } from './open';
   // Flatten the form's fields
   form.flatten();
 
+  const cordiaFontBytes = fs.readFileSync('assets/fonts/prompt/CordiaUPC.ttf');
+  const cordiaFont = await pdfDoc.embedFont(cordiaFontBytes)
   const promptFontBytes = fs.readFileSync('assets/fonts/prompt/prompt-regular.ttf');
   const promptFont = await pdfDoc.embedFont(promptFontBytes)
   const page = pdfDoc.getPage(0)
-  page.drawText('กิ๊บ', {
+
+  page.drawText('น้ำ', {
+    x: 5,
+    y: 2 + 400,
+    size: 18,
+    font: cordiaFont,
+    color: rgb(0.95, 0.1, 0.1),
+  })
+  page.drawText('น้ำ', {
     x: 5,
     y: 2 + 200,
     size: 18,
