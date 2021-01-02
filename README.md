@@ -1311,6 +1311,7 @@ We welcome contributions from the open source community! If you are interested i
 - [Travel certificate generator](https://github.com/LAB-MI/deplacement-covid-19) - a tool that creates travel certificates for French citizens under quarantine due to COVID-19
 - [How to use pdf-lib in AWS Lambdas](https://medium.com/swlh/create-pdf-using-pdf-lib-on-serverless-aws-lambda-e9506246dc88) - a tutorial written by Crespo Wang
 - [Working With PDFs in Node.js Using pdf-lib](http://thecodebarbarian.com/working-with-pdfs-in-node-js.html) - a tutorial by Valeri Karpov
+- [Electron app for resizing PDFs](https://github.com/vegarringdal/simple-pdf-resizer) - a tool created by @vegarringdal
 
 ## Prior Art
 
