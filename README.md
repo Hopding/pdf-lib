@@ -1137,7 +1137,7 @@ Error: WinAnsi cannot encode "Ω" (0x03a9)
     at Encoding.encodeUnicodeCodePoint
 ```
 
-Embedding a font into the pdf file will increase its size, in order to avoid this you could just subset the needed characters by the following call:
+Embedding a font into the pdf file might increase its size of the file, in order to avoid this you could just subset the needed characters. You can achive exactly this by embedding your custom font in the following way:
 
 ```js
   await pdfDoc.embedFont(fontBytes, { subset: true});
