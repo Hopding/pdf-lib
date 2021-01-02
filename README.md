@@ -1137,6 +1137,13 @@ Error: WinAnsi cannot encode "Ω" (0x03a9)
     at Encoding.encodeUnicodeCodePoint
 ```
 
+Embedding a font into the pdf file will increase its size, in order to avoid this you could just subset the needed characters by the following call:
+
+```js
+  await pdfDoc.embedFont(fontBytes, { subset: true});
+```
+
+
 ## Creating and Filling Forms
 
 `pdf-lib` can create, fill, and read PDF form fields. The following field types are supported:
