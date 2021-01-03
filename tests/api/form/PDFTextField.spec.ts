@@ -111,4 +111,18 @@ describe(`PDFTextField`, () => {
     expect(widgets().length).toBe(1);
     expect(widgets()[0].hasFlag(AnnotationFlags.Print)).toBe(true);
   });
+
+  it(`sets the 'hidden' flag when passed options.hidden`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+    const form = pdfDoc.getForm();
+
+    const textField = form.createTextField('a.hidden.text.field');
+    const widgets = () => textField.acroField.getWidgets();
+
+    textField.addToPage(page, { hidden: true });
+
+    expect(widgets().length).toBe(1);
+    expect(widgets()[0].hasFlag(AnnotationFlags.Hidden)).toBe(true);
+  });
 });
