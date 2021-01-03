@@ -586,6 +586,9 @@ export default class PDFForm {
         const ap = widget.getAppearanceCharacteristics();
         const rectangle = widget.getRectangle();
         const rotation = degrees(ap?.getRotation() ?? 0);
+        if (rectangle.height < 0 && field instanceof PDFCheckBox) {
+          rectangle.y += rectangle.height;
+        }
 
         const operators = [
           pushGraphicsState(),
