@@ -551,7 +551,15 @@ export default class PDFForm {
         let page = pages.find((x) => x.ref === pageRef);
         if (page === undefined) {
           const widgetRef = this.doc.context.getObjectRef(widget.dict);
-          page = this.doc.findPageForRef(widgetRef);
+          if (widgetRef === undefined) {
+            throw new Error('Could not find PDFRef for PDFObject');
+          }
+
+          page = this.doc.findPageForAnnotationRef(widgetRef);
+
+          if (page === undefined) {
+            throw new Error(`Could not find page for PDFRef ${widgetRef}`);
+          }
         }
 
         let refOrDict = widget.getNormalAppearance();
@@ -588,11 +596,26 @@ export default class PDFForm {
         ].filter(Boolean) as PDFOperator[];
 
         page.pushOperators(...operators);
+        page.node.removeAnnot(refOrDict);
       }
 
-      this.acroForm.removeField(field.ref);
-      this.doc.context.delete(field.ref);
+      this.removeField(field);
     }
+  }
+
+  /**
+   * Remove a field from this [[PDFForm]].
+   *
+   * For example:
+   * ```js
+   * const form = pdfDoc.getForm();
+   * const ageField = form.getFields().find(x => x.getName() === 'Age');
+   * form.removeField(ageField);
+   * ```
+   */
+  removeField(field: PDFField) {
+    this.acroForm.removeField(field.acroField);
+    this.doc.context.delete(field.ref);
   }
 
   /**

@@ -1265,18 +1265,18 @@ export default class PDFDocument {
     return dataUri ? `data:application/pdf;base64,${base64}` : base64;
   }
 
-  findPageForRef(ref: PDFRef): PDFPage {
-    let pages = this.getPages();
+  findPageForAnnotationRef(ref: PDFRef): PDFPage | undefined {
+    const pages = this.getPages();
     for (let idx = 0, len = pages.length; idx < len; idx++) {
       const page = pages[idx];
       const annotations = page.node.Annots();
-  
+
       if (annotations?.indexOf(ref) !== undefined) {
         return page;
       }
     }
 
-    throw new Error(`Could not find page for PDFRef ${ref}`);
+    return undefined;
   }
 
   private async embedAll(embeddables: Embeddable[]): Promise<void> {
