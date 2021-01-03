@@ -142,7 +142,7 @@ export default class PDFButton extends PDFField {
       borderWidth: options?.borderWidth ?? 0,
       rotate: options?.rotate ?? degrees(0),
       caption: text,
-      hidden: options.hidden,
+      hidden: options?.hidden,
     });
     const widgetRef = this.doc.context.register(widget.dict);
 
