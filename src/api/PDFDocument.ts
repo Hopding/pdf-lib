@@ -46,6 +46,7 @@ import {
   SetTitleOptions,
 } from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
+import PDFRef from 'src/core/objects/PDFRef';
 import { Fontkit } from 'src/types/fontkit';
 import { TransformationMatrix } from 'src/types/matrix';
 import {
@@ -1262,6 +1263,20 @@ export default class PDFDocument {
     const bytes = await this.save(otherOptions);
     const base64 = encodeToBase64(bytes);
     return dataUri ? `data:application/pdf;base64,${base64}` : base64;
+  }
+
+  findPageForAnnotationRef(ref: PDFRef): PDFPage | undefined {
+    const pages = this.getPages();
+    for (let idx = 0, len = pages.length; idx < len; idx++) {
+      const page = pages[idx];
+      const annotations = page.node.Annots();
+
+      if (annotations?.indexOf(ref) !== undefined) {
+        return page;
+      }
+    }
+
+    return undefined;
   }
 
   private async embedAll(embeddables: Embeddable[]): Promise<void> {

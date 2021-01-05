@@ -68,11 +68,22 @@ class PDFAcroForm {
     Fields?.push(field);
   }
 
-  removeField(field: PDFRef) {
-    const { Fields } = this.normalizedEntries();
-    const index = Fields?.indexOf(field);
-    if (index !== undefined) {
-      Fields.remove(index);
+  removeField(field: PDFAcroField): void {
+    const parent = field.getParent();
+    const fields =
+      parent === undefined ? this.normalizedEntries().Fields : parent.Kids();
+
+    const index = fields?.indexOf(field.ref);
+    if (fields === undefined || index === undefined) {
+      throw new Error(
+        `Tried to remove inexistent field ${field.getFullyQualifiedName()}`,
+      );
+    }
+
+    fields.remove(index);
+
+    if (parent !== undefined && fields.size() === 0) {
+      this.removeField(parent);
     }
   }
 
