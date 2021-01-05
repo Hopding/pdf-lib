@@ -163,6 +163,18 @@ class PDFContext {
     throw new UnexpectedObjectTypeError(types, result);
   }
 
+  getObjectRef(pdfObject: PDFObject): PDFRef | undefined {
+    const entries = Array.from(this.indirectObjects.entries());
+    for (let idx = 0, len = entries.length; idx < len; idx++) {
+      const [ref, object] = entries[idx];
+      if (object === pdfObject) {
+        return ref;
+      }
+    }
+
+    return undefined;
+  }
+
   enumerateIndirectObjects(): [PDFRef, PDFObject][] {
     return Array.from(this.indirectObjects.entries()).sort(
       byAscendingObjectNumber,

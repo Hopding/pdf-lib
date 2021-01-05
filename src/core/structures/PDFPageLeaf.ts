@@ -137,6 +137,14 @@ class PDFPageLeaf extends PDFDict {
     Annots.push(annotRef);
   }
 
+  removeAnnot(annotRef: PDFRef) {
+    const { Annots } = this.normalizedEntries();
+    const index = Annots.indexOf(annotRef);
+    if (index !== undefined) {
+      Annots.remove(index);
+    }
+  }
+
   setFontDictionary(name: PDFName, fontDictRef: PDFRef): void {
     const { Font } = this.normalizedEntries();
     Font.set(name, fontDictRef);

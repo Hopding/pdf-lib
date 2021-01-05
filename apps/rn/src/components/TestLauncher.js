@@ -92,7 +92,7 @@ export default class TestLauncher extends Component {
           <TestButton test={[15, test15]} longRunning />
           <TestButton test={[16, test16]} />
           <TestButton test={[17, test17]} />
-          <TestButton test={[18, test18]} />
+          <TestButton test={[18, test18]} longRunning />
         </ScrollView>
       </SafeAreaView>
     );
