@@ -15,7 +15,6 @@ import PDFField, {
 import {
   PDFName,
   PDFRef,
-  PDFDict,
   PDFAcroCheckBox,
   PDFWidgetAnnotation,
 } from 'src/core';
@@ -193,12 +192,15 @@ export default class PDFCheckBox extends PDFField {
    * @returns Whether or not this check box needs an appearance update.
    */
   needsAppearancesUpdate(): boolean {
+    const value = this.acroField.getValue();
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const value = this.acroField.getValue();
-      const normal = widget.getAppearances()?.normal;
-      return !(normal instanceof PDFDict && normal.has(value));
+      const state = widget.getAppearanceState();
+
+      if (value !== state) {
+        return true;
+      }
     }
 
     return false;
