@@ -2,6 +2,7 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFPage from 'src/api/PDFPage';
 import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
+import { ImageAlignment } from 'src/api/image/alignment';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
@@ -12,12 +13,7 @@ import PDFField, {
   assertFieldAppearanceOptions,
 } from 'src/api/form/PDFField';
 import { rgb } from 'src/api/colors';
-import {
-  degrees,
-  adjustDimsForRotation,
-  reduceRotation,
-} from 'src/api/rotations';
-import { drawImage, rotateInPlace } from 'src/api/operations';
+import { degrees } from 'src/api/rotations';
 
 import {
   PDFRef,
@@ -25,7 +21,7 @@ import {
   PDFAcroPushButton,
   PDFWidgetAnnotation,
 } from 'src/core';
-import { assertIs, assertOrUndefined, addRandomSuffix } from 'src/utils';
+import { assertIs, assertOrUndefined } from 'src/utils';
 
 /**
  * Represents a button field of a [[PDFForm]].
@@ -71,75 +67,26 @@ export default class PDFButton extends PDFField {
     this.acroField = acroPushButton;
   }
 
-  // NOTE: This doesn't handle image borders.
-  // NOTE: Acrobat seems to resize the image (maybe even skewing its aspect
-  //       ratio) to fit perfectly within the widget's rectangle. This method
-  //       does not currently do that. Should there be an option for that?
   /**
    * Display an image inside the bounds of this button's widgets. For example:
    * ```js
    * const pngImage = await pdfDoc.embedPng(...)
    * const button = form.getButton('some.button.field')
-   * button.setImage(pngImage)
+   * button.setImage(pngImage, ImageAlignment.Center)
    * ```
    * This will update the appearances streams for each of this button's widgets.
    * @param image The image that should be displayed.
+   * @param alignment The alignment of the image.
    */
-  setImage(image: PDFImage) {
-    // Create appearance stream with image, ignoring caption property
-    const { context } = this.acroField.dict;
-
+  setImage(image: PDFImage, alignment = ImageAlignment.Center) {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-
-      ////////////
-      const rectangle = widget.getRectangle();
-      const ap = widget.getAppearanceCharacteristics();
-      const bs = widget.getBorderStyle();
-
-      const borderWidth = bs?.getWidth() ?? 1;
-      const rotation = reduceRotation(ap?.getRotation());
-
-      const rotate = rotateInPlace({ ...rectangle, rotation });
-
-      const adj = adjustDimsForRotation(rectangle, rotation);
-      const imageDims = image.scaleToFit(
-        adj.width - borderWidth * 2,
-        adj.height - borderWidth * 2,
+      const streamRef = this.createImageAppearanceStream(
+        widget,
+        image,
+        alignment,
       );
-
-      const drawingArea = {
-        x: 0 + borderWidth,
-        y: 0 + borderWidth,
-        width: adj.width - borderWidth * 2,
-        height: adj.height - borderWidth * 2,
-      };
-
-      // Support borders on images and maybe other properties
-      const options = {
-        x: drawingArea.x + (drawingArea.width / 2 - imageDims.width / 2),
-        y: drawingArea.y + (drawingArea.height / 2 - imageDims.height / 2),
-        width: imageDims.width,
-        height: imageDims.height,
-        //
-        rotate: degrees(0),
-        xSkew: degrees(0),
-        ySkew: degrees(0),
-      };
-
-      const imageName = addRandomSuffix('Image', 10);
-      const appearance = [...rotate, ...drawImage(imageName, options)];
-      ////////////
-
-      const Resources = { XObject: { [imageName]: image.ref } };
-      const stream = context.formXObject(appearance, {
-        Resources,
-        BBox: context.obj([0, 0, rectangle.width, rectangle.height]),
-        Matrix: context.obj([1, 0, 0, 1, 0, 0]),
-      });
-      const streamRef = context.register(stream);
-
       this.updateWidgetAppearances(widget, { normal: streamRef });
     }
 
