@@ -1137,11 +1137,15 @@ Error: WinAnsi cannot encode "Ω" (0x03a9)
     at Encoding.encodeUnicodeCodePoint
 ```
 
-Embedding a font into the pdf file might increase its size of the file, in order to avoid this you could just subset the needed characters. You can achive exactly this by embedding your custom font in the following way:  
+### Font Subsetting
+
+Embedding a font in a PDF document will typically increase the file's size. You can reduce the amount a file's size is increased by subsetting the font so that only the necessary characters are embedded. You can subset a font by setting the [`subset` option](https://pdf-lib.js.org/docs/api/interfaces/embedfontoptions#optional-subset) to `true`. For example:
 
 ```js
-  await pdfDoc.embedFont(fontBytes, { subset: true});
+const font = await pdfDoc.embedFont(fontBytes, { subset: true });
 ```
+
+Note that subsetting does not work for all fonts. See https://github.com/Hopding/pdf-lib/issues/207#issuecomment-537210471 for additional details.
 
 ## Creating and Filling Forms
 
