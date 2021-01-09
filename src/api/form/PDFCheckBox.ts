@@ -197,9 +197,11 @@ export default class PDFCheckBox extends PDFField {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const value = this.acroField.getValue();
+      const state = widget.getAppearanceState();
       const normal = widget.getAppearances()?.normal;
-      return !(normal instanceof PDFDict && normal.has(value));
+
+      if (!(normal instanceof PDFDict)) return true;
+      if (state && !normal.has(state)) return true;
     }
 
     return false;
