@@ -15,14 +15,13 @@ import {
 } from 'src/api/errors';
 import PDFFont from 'src/api/PDFFont';
 import { StandardFonts } from 'src/api/StandardFonts';
+import { rotateInPlace } from 'src/api/operations';
 import {
   drawObject,
   popGraphicsState,
   pushGraphicsState,
-  rotateRadians,
   translate,
 } from 'src/api/operators';
-import { degrees, toRadians } from 'src/api/rotations';
 import {
   PDFAcroForm,
   PDFAcroField,
@@ -583,14 +582,12 @@ export default class PDFForm {
         const xObjectKey = addRandomSuffix('FlatWidget', 10);
         page.node.setXObject(PDFName.of(xObjectKey), refOrDict);
 
-        const ap = widget.getAppearanceCharacteristics();
         const rectangle = widget.getRectangle();
-        const rotation = degrees(ap?.getRotation() ?? 0);
 
         const operators = [
           pushGraphicsState(),
           translate(rectangle.x, rectangle.y),
-          rotateRadians(toRadians(rotation)),
+          ...rotateInPlace({ ...rectangle, rotation: 0 }),
           drawObject(xObjectKey),
           popGraphicsState(),
         ].filter(Boolean) as PDFOperator[];
