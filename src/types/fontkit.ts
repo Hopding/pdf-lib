@@ -576,6 +576,8 @@ export interface Font {
   head: { macStyle: { italic: boolean } };
   post: { isFixedPitch: boolean };
 
+  _glyphs?: {[key: string]: Glyph}; // all buffered glyphs
+
   // Character to Glyph Mapping Methods
 
   /**
