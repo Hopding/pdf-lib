@@ -113,7 +113,7 @@ class ViewerPreferences {
   */
   Direction(): PDFString | PDFHexString | undefined {
     const Direction = this.dict.lookup(PDFName.of('Direction'));
-    if (Direction instanceof PDFString || NonFullScreDirectionenPageMode instanceof PDFHexString) return Direction;
+    if (Direction instanceof PDFString || Direction instanceof PDFHexString) return Direction;
     return undefined;
   }
 
