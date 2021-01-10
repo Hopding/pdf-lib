@@ -6,6 +6,7 @@ import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
 import { assertEachIs, assertIsOneOf, assertRange } from 'src/utils';
+import PDFHexString from '../objects/PDFHexString';
 
 type NonFullScreenPageModeValue = 'UseNone' | 'UseOutlines' | 'UseThumbs' | 'UseOC';
 type DirectionValue = 'L2R' | 'R2L';
@@ -96,9 +97,9 @@ class ViewerPreferences {
   * This entry is meaningful only if the value of the PageMode entry in the Catalog dictionary is FullScreen; it shall be ignored otherwise.
   * Default value: UseNone. 
   */
-  NonFullScreenPageMode(): PDFString | undefined {
+  NonFullScreenPageMode(): PDFString | PDFHexString | undefined {
     const NonFullScreenPageMode = this.dict.lookup(PDFName.of('NonFullScreenPageMode'));
-    if (NonFullScreenPageMode instanceof PDFString) return NonFullScreenPageMode;
+    if (NonFullScreenPageMode instanceof PDFString || NonFullScreenPageMode instanceof PDFHexString) return NonFullScreenPageMode;
     return undefined;
   }
 
@@ -110,9 +111,9 @@ class ViewerPreferences {
   * This entry has no direct effect on the document’s contents or page numbering but may be used to determine the relative positioning of pages when displayed side by side or printed n-up.
   * Default value: L2R. 
   */
-  Direction(): PDFString | undefined {
+  Direction(): PDFString | PDFHexString | undefined {
     const Direction = this.dict.lookup(PDFName.of('Direction'));
-    if (Direction instanceof PDFString) return Direction;
+    if (Direction instanceof PDFString || NonFullScreDirectionenPageMode instanceof PDFHexString) return Direction;
     return undefined;
   }
 
@@ -126,9 +127,9 @@ class ViewerPreferences {
   * Default value: AppDefault.
   * If the print dialog is suppressed and its parameters are provided from some other source, this entry nevertheless shall be honored.
   */
-  PrintScaling() : PDFString | undefined {
+  PrintScaling() : PDFString | PDFHexString | undefined {
     const PrintScaling = this.dict.lookup(PDFName.of('PrintScaling'));
-    if (PrintScaling instanceof PDFString) return PrintScaling;
+    if (PrintScaling instanceof PDFString || PrintScaling instanceof PDFHexString) return PrintScaling;
     return undefined;
   }
   
@@ -141,9 +142,9 @@ class ViewerPreferences {
   * 
   * Default value: none
   */
-  Duplex() : PDFString | undefined {
+  Duplex() : PDFString | PDFHexString | undefined {
     const Duplex = this.dict.lookup(PDFName.of('Duplex'));
-    if (Duplex instanceof PDFString) return Duplex;
+    if (Duplex instanceof PDFString || Duplex instanceof PDFHexString) return Duplex;
     return undefined;
   }
   
@@ -270,25 +271,25 @@ class ViewerPreferences {
 
   setNonFullScreenPageMode(nonFullScreenPageMode: NonFullScreenPageModeValue) {
     assertIsOneOf(nonFullScreenPageMode, 'nonFullScreenPageMode', ['UseNone', 'UseOutlines', 'UseThumbs', 'UseOC']);
-    const NonFullScreenPageMode = this.dict.context.obj(nonFullScreenPageMode);
+    const NonFullScreenPageMode = PDFHexString.fromText(nonFullScreenPageMode);
     this.dict.set(PDFName.of('NonFullScreenPageMode'), NonFullScreenPageMode);
   }
 
   setDirection(direction: DirectionValue) {
     assertIsOneOf(direction, 'direction', ['L2R', 'R2L']);
-    const Direction = this.dict.context.obj(direction);
+    const Direction = PDFHexString.fromText(direction);
     this.dict.set(PDFName.of('Direction'), Direction);
   }
 
   setPrintScaling(printScaling: PrintScalingValue) {
     assertIsOneOf(printScaling, 'printScaling', ['None', 'AppDefault']);
-    const PrintScaling = this.dict.context.obj(printScaling);
+    const PrintScaling = PDFHexString.fromText(printScaling);
     this.dict.set(PDFName.of('PrintScaling'), PrintScaling);
   }
 
   setDuplex(duplex: DuplexValue) {
     assertIsOneOf(duplex, 'duplex', ['Simplex', 'DuplexFlipShortEdge', 'DuplexFlipLongEdge']);
-    const Duplex = this.dict.context.obj(duplex);
+    const Duplex = PDFHexString.fromText(duplex);
     this.dict.set(PDFName.of('Duplex'), Duplex);
   }
 
