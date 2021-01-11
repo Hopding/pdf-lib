@@ -3,15 +3,18 @@ import PDFBool from 'src/core/objects/PDFBool';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
 import { assertEachIs, assertIsOneOf, assertRange } from 'src/utils';
-import PDFHexString from '../objects/PDFHexString';
 
 type NonFullScreenPageModeValue = 'UseNone' | 'UseOutlines' | 'UseThumbs' | 'UseOC';
 type DirectionValue = 'L2R' | 'R2L';
 type PrintScalingValue = 'None' | 'AppDefault';
 type DuplexValue = 'Simplex' | 'DuplexFlipShortEdge' | 'DuplexFlipLongEdge';
+type BoolViewerPrefKey = 'HideToolbar' | 'HideMenubar' | 'HideWindowUI'| 'FitWindow' |
+                        'CenterWindow' | 'DisplayDocTitle'| 'PickTrayByPDFSize';
+type NameViewerPrefKey = 'NonFullScreenPageMode' | 'Direction' | 'PrintScaling' | 'Duplex';
+type ArrayViewerPrefKey = 'PrintPageRange';
+type NumberViewerPrefKey = 'NumCopies';
 
 class ViewerPreferences {
   readonly dict: PDFDict;
@@ -28,52 +31,68 @@ class ViewerPreferences {
     this.dict = dict;
   }
 
-  /*
-  * A flag specifying whether to hide the conforming reader’s tool bars when the document is active. Default value: false.
-  */
-  HideToolbar(): PDFBool | undefined {
-    const HideToolbar = this.dict.lookup(PDFName.of('HideToolbar'));
-    if (HideToolbar instanceof PDFBool) return HideToolbar;
+  protected FindBool(key: BoolViewerPrefKey): PDFBool | undefined {
+    const returnObj = this.dict.lookup(PDFName.of(key));
+    if (returnObj instanceof PDFBool) return returnObj;
+    return undefined;
+  }
+
+  protected FindNameVal(key: NameViewerPrefKey): PDFName | undefined {
+    const returnObj = this.dict.lookup(PDFName.of(key));
+    if (returnObj instanceof PDFName) return returnObj;
+    return undefined;
+  }
+
+  protected FindArray(key: ArrayViewerPrefKey): PDFArray | undefined {
+    const returnObj = this.dict.lookup(PDFName.of(key));
+    if (returnObj instanceof PDFArray) return returnObj;
+    return undefined;
+  }
+
+  protected FindNumber(key: NumberViewerPrefKey): PDFNumber | undefined {
+    const returnObj = this.dict.lookup(PDFName.of(key));
+    if (returnObj instanceof PDFNumber) return returnObj;
     return undefined;
   }
 
   /*
-  * A flag specifying whether to hide the conforming reader’s menu bar when the document is active. Default value: false.
+  * A flag specifying whether to hide the conforming reader’s tool bars when the document is active.
+  * Default value: false.
   */
-  HideMenubar(): PDFBool | undefined {
-    const HideMenubar = this.dict.lookup(PDFName.of('HideMenubar'));
-    if (HideMenubar instanceof PDFBool) return HideMenubar;
-    return undefined;
+  getHideToolbar(): boolean {
+    return this.FindBool('HideToolbar')?.asBoolean() ?? false;
+  }
+
+  /*
+  * A flag specifying whether to hide the conforming reader’s menu bar when the document is active.
+  * Default value: false.
+  */
+  getHideMenubar(): boolean {
+    return this.FindBool('HideMenubar')?.asBoolean() ?? false;
   }
 
   /*
   * A flag specifying whether to hide user interface elements in the document’s window (such as scroll bars and navigation controls), leaving only the document’s contents displayed.
   * Default value: false.
   */
-  HideWindowUI(): PDFBool | undefined {
-    const HideWindowUI = this.dict.lookup(PDFName.of('HideWindowUI'));
-    if (HideWindowUI instanceof PDFBool) return HideWindowUI;
-    return undefined;
+  getHideWindowUI(): boolean {
+    return this.FindBool('HideWindowUI')?.asBoolean() ?? false;
   }
 
   /*
   * A flag specifying whether to resize the document’s window to fit the size of the first displayed page.
   * Default value: false
   */
-  FitWindow(): PDFBool | undefined {
-    const FitWindow = this.dict.lookup(PDFName.of('FitWindow'));
-    if (FitWindow instanceof PDFBool) return FitWindow;
-    return undefined;
+  getFitWindow(): boolean {
+    return this.FindBool('FitWindow')?.asBoolean() ?? false;
   }
 
   /*
   * A flag specifying whether to position the document’s window in the center of the screen.
   * Default value: false. 
   */
-  CenterWindow(): PDFBool | undefined {
-    const CenterWindow = this.dict.lookup(PDFName.of('CenterWindow'));
-    if (CenterWindow instanceof PDFBool) return CenterWindow;
-    return undefined;
+  getCenterWindow(): boolean {
+    return this.FindBool('CenterWindow')?.asBoolean() ?? false;
   }
 
   /*
@@ -81,10 +100,8 @@ class ViewerPreferences {
   * If false, the title bar should instead display the name of the PDF file containing the document.
   * Default value: false.
   */
-  DisplayDocTitle(): PDFBool | undefined {
-    const DisplayDocTitle = this.dict.lookup(PDFName.of('DisplayDocTitle'));
-    if (DisplayDocTitle instanceof PDFBool) return DisplayDocTitle;
-    return undefined;
+  getDisplayDocTitle(): boolean {
+    return this.FindBool('DisplayDocTitle')?.asBoolean() ?? false;
   }
 
   /*
@@ -97,10 +114,8 @@ class ViewerPreferences {
   * This entry is meaningful only if the value of the PageMode entry in the Catalog dictionary is FullScreen; it shall be ignored otherwise.
   * Default value: UseNone. 
   */
-  NonFullScreenPageMode(): PDFString | PDFHexString | undefined {
-    const NonFullScreenPageMode = this.dict.lookup(PDFName.of('NonFullScreenPageMode'));
-    if (NonFullScreenPageMode instanceof PDFString || NonFullScreenPageMode instanceof PDFHexString) return NonFullScreenPageMode;
-    return undefined;
+  getNonFullScreenPageMode(): NonFullScreenPageModeValue {
+    return this.FindNameVal('NonFullScreenPageMode')?.asString() as NonFullScreenPageModeValue ?? 'UseNone';
   }
 
   /*
@@ -111,10 +126,8 @@ class ViewerPreferences {
   * This entry has no direct effect on the document’s contents or page numbering but may be used to determine the relative positioning of pages when displayed side by side or printed n-up.
   * Default value: L2R. 
   */
-  Direction(): PDFString | PDFHexString | undefined {
-    const Direction = this.dict.lookup(PDFName.of('Direction'));
-    if (Direction instanceof PDFString || Direction instanceof PDFHexString) return Direction;
-    return undefined;
+  getDirection(): DirectionValue {
+    return this.FindNameVal('Direction')?.asString() as DirectionValue ?? 'L2R';
   }
 
   /*
@@ -127,12 +140,10 @@ class ViewerPreferences {
   * Default value: AppDefault.
   * If the print dialog is suppressed and its parameters are provided from some other source, this entry nevertheless shall be honored.
   */
-  PrintScaling() : PDFString | PDFHexString | undefined {
-    const PrintScaling = this.dict.lookup(PDFName.of('PrintScaling'));
-    if (PrintScaling instanceof PDFString || PrintScaling instanceof PDFHexString) return PrintScaling;
-    return undefined;
+  getPrintScaling() : PrintScalingValue {
+    return this.FindNameVal('PrintScaling')?.asString() as PrintScalingValue ?? 'AppDefault';
   }
-  
+
   /*
   * The paper handling option that shall be used when printing the file from the print dialog. 
   * The following values are valid:
@@ -142,12 +153,10 @@ class ViewerPreferences {
   * 
   * Default value: none
   */
-  Duplex() : PDFString | PDFHexString | undefined {
-    const Duplex = this.dict.lookup(PDFName.of('Duplex'));
-    if (Duplex instanceof PDFString || Duplex instanceof PDFHexString) return Duplex;
-    return undefined;
+  getDuplex() : DuplexValue | undefined {
+    return this.FindNameVal('Duplex')?.asString() as DuplexValue;
   }
-  
+
   /*
   * A flag specifying whether the PDF page size shall be used to select the input paper tray.
   * This setting influences only the preset values used to populate the print dialog presented by a conforming reader.
@@ -156,12 +165,10 @@ class ViewerPreferences {
   * 
   * Default value: as defined by the conforming reader
   */
-  PickTrayByPDFSize(): PDFBool | undefined {
-    const PickTrayByPDFSize = this.dict.lookup(PDFName.of('PickTrayByPDFSize'));
-    if (PickTrayByPDFSize instanceof PDFBool) return PickTrayByPDFSize;
-    return undefined;
+  getPickTrayByPDFSize(): boolean | undefined {
+    return this.FindBool('PickTrayByPDFSize')?.asBoolean();
   }
-  
+
   /*
   * The page numbers used to initialize the print dialog box when the file is printed.
   * The array shall contain an even number of integers to be interpreted in pairs, with each pair specifying the first and last pages in a sub-range of pages to be printed.
@@ -169,74 +176,18 @@ class ViewerPreferences {
   * 
   * Default value: as defined by the conforming reader
   */
-  PrintPageRange(): PDFArray | undefined {
-    const PrintPageRange = this.dict.lookup(PDFName.of('PrintPageRange'));
-    if (PrintPageRange instanceof PDFArray) return PrintPageRange;
-    return undefined;
+  getPrintPageRange(): number[] {
+    return this.FindArray('PrintPageRange')?.asArray()?.map(o => (o as PDFNumber).asNumber()) ?? [];
   }
-  
+
   /*
   * The number of copies that shall be printed when the print dialog is opened for this file.
   * Values outside this range shall be ignored.
   * 
   * Default value: as defined by the conforming reader, but typically 1
   */
-  NumCopies(): PDFNumber | undefined {
-    const NumCopies = this.dict.lookup(PDFName.of('NumCopies'));
-    if (NumCopies instanceof PDFNumber) return NumCopies;
-    return undefined;
-  }
-
-  getHideToolbar(): boolean {
-    return this.HideToolbar()?.asBoolean() ?? false;
-  }
-
-  getHideMenubar(): boolean {
-    return this.HideMenubar()?.asBoolean() ?? false;
-  }
-
-  getHideWindowUI(): boolean {
-    return this.HideWindowUI()?.asBoolean() ?? false;
-  }
-
-  getFitWindow(): boolean {
-    return this.FitWindow()?.asBoolean() ?? false;
-  }
-
-  getCenterWindow(): boolean {
-    return this.CenterWindow()?.asBoolean() ?? false;
-  }
-
-  getDisplayDocTitle(): boolean {
-    return this.DisplayDocTitle()?.asBoolean() ?? false;
-  }
-
-  getNonFullScreenPageMode(): NonFullScreenPageModeValue {
-    return this.NonFullScreenPageMode()?.asString() as NonFullScreenPageModeValue ?? 'UseNone';
-  }
-
-  getDirection(): DirectionValue {
-    return this.Direction()?.asString() as DirectionValue ?? 'L2R';
-  }
-
-  getPrintScaling() : PrintScalingValue {
-    return this.PrintScaling()?.asString() as PrintScalingValue ?? 'AppDefault';
-  }
-
-  getDuplex() : DuplexValue | undefined {
-    return this.Duplex()?.asString() as DuplexValue;
-  }
-
-  getPickTrayByPDFSize(): boolean | undefined {
-    return this.PickTrayByPDFSize()?.asBoolean();
-  }
-
-  getPrintPageRange(): number[] {
-    return this.PrintPageRange()?.asArray()?.map(o => (o as PDFNumber).asNumber()) ?? [];
-  }
-
   getNumCopies(): number {
-    return this.NumCopies()?.asNumber() ?? 1;
+    return this.FindNumber('NumCopies')?.asNumber() ?? 1;
   }
 
   setHideToolbar(hideToolbar: boolean) {
@@ -271,25 +222,25 @@ class ViewerPreferences {
 
   setNonFullScreenPageMode(nonFullScreenPageMode: NonFullScreenPageModeValue) {
     assertIsOneOf(nonFullScreenPageMode, 'nonFullScreenPageMode', ['UseNone', 'UseOutlines', 'UseThumbs', 'UseOC']);
-    const NonFullScreenPageMode = PDFHexString.fromText(nonFullScreenPageMode);
+    const NonFullScreenPageMode = PDFName.of(nonFullScreenPageMode);
     this.dict.set(PDFName.of('NonFullScreenPageMode'), NonFullScreenPageMode);
   }
 
   setDirection(direction: DirectionValue) {
     assertIsOneOf(direction, 'direction', ['L2R', 'R2L']);
-    const Direction = PDFHexString.fromText(direction);
+    const Direction = PDFName.of(direction);
     this.dict.set(PDFName.of('Direction'), Direction);
   }
 
   setPrintScaling(printScaling: PrintScalingValue) {
     assertIsOneOf(printScaling, 'printScaling', ['None', 'AppDefault']);
-    const PrintScaling = PDFHexString.fromText(printScaling);
+    const PrintScaling = PDFName.of(printScaling);
     this.dict.set(PDFName.of('PrintScaling'), PrintScaling);
   }
 
   setDuplex(duplex: DuplexValue) {
     assertIsOneOf(duplex, 'duplex', ['Simplex', 'DuplexFlipShortEdge', 'DuplexFlipLongEdge']);
-    const Duplex = PDFHexString.fromText(duplex);
+    const Duplex = PDFName.of(duplex);
     this.dict.set(PDFName.of('Duplex'), Duplex);
   }
 
@@ -300,7 +251,7 @@ class ViewerPreferences {
 
   setPrintPageRange(printPageRange: number[]) {
     assertEachIs(printPageRange, 'printPageRange', ['number']);
-    if (printPageRange.length % 2 !== 0) throw new Error('printPageRange must be in pairs - that is length must be even')
+    if (printPageRange.length % 2 !== 0) throw new Error('printPageRange must be in pairs - therefore array length must be even')
     const PrintPageRange = this.dict.context.obj(printPageRange.map(pr => this.dict.context.obj(pr)));
     this.dict.set(PDFName.of('PrintPageRange'), PrintPageRange);
   }
