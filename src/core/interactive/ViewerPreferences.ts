@@ -115,7 +115,7 @@ class ViewerPreferences {
   * Default value if not specified: UseNone. 
   */
   getNonFullScreenPageMode(): NonFullScreenPageModeValue {
-    return this.FindNameVal('NonFullScreenPageMode')?.asString() as NonFullScreenPageModeValue ?? 'UseNone';
+    return this.FindNameVal('NonFullScreenPageMode')?.decodeText() as NonFullScreenPageModeValue ?? 'UseNone';
   }
 
   /*
@@ -127,7 +127,7 @@ class ViewerPreferences {
   * Default value if not specified: L2R. 
   */
   getDirection(): DirectionValue {
-    return this.FindNameVal('Direction')?.asString() as DirectionValue ?? 'L2R';
+    return this.FindNameVal('Direction')?.decodeText() as DirectionValue ?? 'L2R';
   }
 
   /*
@@ -141,7 +141,7 @@ class ViewerPreferences {
   * If the print dialog is suppressed and its parameters are provided from some other source, this entry nevertheless shall be honored.
   */
   getPrintScaling() : PrintScalingValue {
-    return this.FindNameVal('PrintScaling')?.asString() as PrintScalingValue ?? 'AppDefault';
+    return this.FindNameVal('PrintScaling')?.decodeText() as PrintScalingValue ?? 'AppDefault';
   }
 
   /*
@@ -154,7 +154,7 @@ class ViewerPreferences {
   * Default value if not specified: none
   */
   getDuplex() : DuplexValue | undefined {
-    return this.FindNameVal('Duplex')?.asString() as DuplexValue;
+    return this.FindNameVal('Duplex')?.decodeText() as DuplexValue;
   }
 
   /*

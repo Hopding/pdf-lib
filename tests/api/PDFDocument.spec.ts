@@ -303,7 +303,7 @@ describe(`PDFDocument`, () => {
     });
   });
 
-  describe(`setTitle() method with options`, () => {
+  describe(`viewerPreferences`, () => {
     it(`defaults to an undefined ViewerPreferences dict`, async () => {
       const pdfDoc = await PDFDocument.create();
 
@@ -311,7 +311,57 @@ describe(`PDFDocument`, () => {
         pdfDoc.catalog.lookupMaybe(PDFName.of('ViewerPreferences'), PDFDict),
       ).toBeUndefined();
     });
+    it(`can get/set HideToolbar, HideMenubar, HideWindowUI, FitWindow, CenterWindow, DisplayDocTitle, NonFullScreenPageMode, Direction, PrintScaling, Duplex, PickTrayByPDFSize, PrintPageRange, NumCopies from a new document`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+      // Everything is empty or has its initial value.
+      expect(viewerPrefs.getHideToolbar()).toBe(false);
+      expect(viewerPrefs.getHideMenubar()).toBe(false);
+      expect(viewerPrefs.getHideWindowUI()).toBe(false); 
+      expect(viewerPrefs.getFitWindow()).toBe(false); 
+      expect(viewerPrefs.getCenterWindow()).toBe(false); 
+      expect(viewerPrefs.getDisplayDocTitle()).toBe(false); 
+      expect(viewerPrefs.getNonFullScreenPageMode()).toBe('UseNone');
+      expect(viewerPrefs.getDirection()).toBe('L2R');
+      expect(viewerPrefs.getPrintScaling()).toBe('AppDefault');
+      expect(viewerPrefs.getDuplex()).toBeUndefined();
+      expect(viewerPrefs.getPickTrayByPDFSize()).toBeUndefined();
+      expect(viewerPrefs.getPrintPageRange()).toEqual([]);
+      expect(viewerPrefs.getNumCopies()).toBe(1);
 
+      const pageRanges = [1, 1, 3, 3, 5, 7];
+
+      viewerPrefs.setHideToolbar(true) 
+      viewerPrefs.setHideMenubar(true) 
+      viewerPrefs.setHideWindowUI(true) 
+      viewerPrefs.setFitWindow(true) 
+      viewerPrefs.setCenterWindow(true) 
+      viewerPrefs.setDisplayDocTitle(true) 
+      viewerPrefs.setNonFullScreenPageMode('UseOutlines') 
+      viewerPrefs.setDirection('R2L') 
+      viewerPrefs.setPrintScaling('None') 
+      viewerPrefs.setDuplex('DuplexFlipLongEdge') 
+      viewerPrefs.setPickTrayByPDFSize(true) 
+      viewerPrefs.setPrintPageRange(pageRanges) 
+      viewerPrefs.setNumCopies(2) 
+
+      expect(viewerPrefs.getHideToolbar()).toBe(true);
+      expect(viewerPrefs.getHideMenubar()).toBe(true);
+      expect(viewerPrefs.getHideWindowUI()).toBe(true); 
+      expect(viewerPrefs.getFitWindow()).toBe(true); 
+      expect(viewerPrefs.getCenterWindow()).toBe(true); 
+      expect(viewerPrefs.getDisplayDocTitle()).toBe(true); 
+      expect(viewerPrefs.getNonFullScreenPageMode()).toBe('UseOutlines');
+      expect(viewerPrefs.getDirection()).toBe('R2L');
+      expect(viewerPrefs.getPrintScaling()).toBe('None');
+      expect(viewerPrefs.getDuplex()).toBe('DuplexFlipLongEdge');
+      expect(viewerPrefs.getPickTrayByPDFSize()).toBe(true);
+      expect(viewerPrefs.getPrintPageRange()).toEqual(pageRanges);
+      expect(viewerPrefs.getNumCopies()).toBe(2);
+    });
+  })
+
+  describe(`setTitle() method with options`, () => {
     it(`does not set the ViewerPreferences dict if the option is not set`, async () => {
       const pdfDoc = await PDFDocument.create();
 

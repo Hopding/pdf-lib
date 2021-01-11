@@ -857,20 +857,20 @@ page.drawText('The Life of an Egg', { x: 60, y: 500, size: 50 })
 page.drawText('An Epic Tale of Woe', { x: 125, y: 460, size: 25 })
 
 // Set all available viewer preferences on the PDFDocument.
-const catalog = pdfDoc.catalog.getOrCreateViewerPreferences();
-catalog.setHideToolbar(true) 
-catalog.setHideMenubar(true) 
-catalog.setHideWindowUI(true) 
-catalog.setFitWindow(true) 
-catalog.setCenterWindow(true) 
-catalog.setDisplayDocTitle(true) 
-catalog.setNonFullScreenPageMode('UseOutlines') 
-catalog.setDirection('L2R') 
-catalog.setPrintScaling('None') 
-catalog.setDuplex('DuplexFlipLongEdge') 
-catalog.setPickTrayByPDFSize(true) 
-catalog.setPrintPageRange([1, 1]) 
-catalog.setNumCopies(2) 
+const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+viewerPrefs.setHideToolbar(true) 
+viewerPrefs.setHideMenubar(true) 
+viewerPrefs.setHideWindowUI(true) 
+viewerPrefs.setFitWindow(true) 
+viewerPrefs.setCenterWindow(true) 
+viewerPrefs.setDisplayDocTitle(true) 
+viewerPrefs.setNonFullScreenPageMode('UseOutlines') 
+viewerPrefs.setDirection('L2R') 
+viewerPrefs.setPrintScaling('None') 
+viewerPrefs.setDuplex('DuplexFlipLongEdge') 
+viewerPrefs.setPickTrayByPDFSize(true) 
+viewerPrefs.setPrintPageRange([1, 1]) 
+viewerPrefs.setNumCopies(2) 
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
@@ -896,22 +896,22 @@ const existingPdfBytes = ...
 const pdfDoc = await PDFDocument.load(existingPdfBytes, { 
   updateMetadata: false 
 })
-const catalog = pdfDoc.catalog.getOrCreateViewerPreferences();
+const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
 
 // Print all available viewer preference fields
-console.log('HideToolbar:', catalog.getHideToolbar())
-console.log('HideMenubar:', catalog.getHideMenubar())
-console.log('HideWindowUI:', catalog.getHideWindowUI())
-console.log('FitWindow:', catalog.getFitWindow())
-console.log('CenterWindow:', catalog.getCenterWindow())
-console.log('DisplayDocTitle:', catalog.getDisplayDocTitle())
-console.log('NonFullScreenPageMode:', catalog.getNonFullScreenPageMode())
-console.log('Direction:', catalog.getDirection())
-console.log('PrintScaling:', catalog.getPrintScaling())
-console.log('Duplex:', catalog.getDuplex())
-console.log('PickTrayByPDFSize:', catalog.getPickTrayByPDFSize())
-console.log('PrintPageRange:', catalog.getPrintPageRange())
-console.log('NumCopies:', catalog.getNumCopies())
+console.log('HideToolbar:', viewerPrefs.getHideToolbar())
+console.log('HideMenubar:', viewerPrefs.getHideMenubar())
+console.log('HideWindowUI:', viewerPrefs.getHideWindowUI())
+console.log('FitWindow:', viewerPrefs.getFitWindow())
+console.log('CenterWindow:', viewerPrefs.getCenterWindow())
+console.log('DisplayDocTitle:', viewerPrefs.getDisplayDocTitle())
+console.log('NonFullScreenPageMode:', viewerPrefs.getNonFullScreenPageMode())
+console.log('Direction:', viewerPrefs.getDirection())
+console.log('PrintScaling:', viewerPrefs.getPrintScaling())
+console.log('Duplex:', viewerPrefs.getDuplex())
+console.log('PickTrayByPDFSize:', viewerPrefs.getPickTrayByPDFSize())
+console.log('PrintPageRange:', viewerPrefs.getPrintPageRange())
+console.log('NumCopies:', viewerPrefs.getNumCopies())
 ```
 
 ### Draw SVG Paths
