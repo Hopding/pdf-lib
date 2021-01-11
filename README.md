@@ -65,6 +65,8 @@
   - [Add Attachments](#add-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
+  - [Set viewer Preferences](#set-viewer-preferences)
+  - [Read Viewer Preferences](#read-viewer-preferences)
   - [Draw SVG Paths](#draw-svg-paths)
 - [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
@@ -101,6 +103,8 @@
 - Embed Fonts (supports UTF-8 and UTF-16 character sets)
 - Set document metadata
 - Read document metadata
+- Set viewer preferences
+- Read viewer preferences
 - Add attachments
 
 ## Motivation
@@ -833,6 +837,81 @@ Keywords: undefined
 Producer: Acrobat Distiller 8.1.0 (Windows)
 Creation Date: 2010-07-29T14:26:00.000Z
 Modification Date: 2010-07-29T14:26:00.000Z
+```
+
+### Set Viewer Preferences
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts } from 'pdf-lib'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Embed the Times Roman font
+const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+
+// Add a page and draw some text on it
+const page = pdfDoc.addPage([500, 600])
+page.setFont(timesRomanFont)
+page.drawText('The Life of an Egg', { x: 60, y: 500, size: 50 })
+page.drawText('An Epic Tale of Woe', { x: 125, y: 460, size: 25 })
+
+// Set all available viewer preferences on the PDFDocument.
+const catalog = pdfDoc.catalog.getOrCreateViewerPreferences();
+catalog.setHideToolbar(true) 
+catalog.setHideMenubar(true) 
+catalog.setHideWindowUI(true) 
+catalog.setFitWindow(true) 
+catalog.setCenterWindow(true) 
+catalog.setDisplayDocTitle(true) 
+catalog.setNonFullScreenPageMode('UseOutlines') 
+catalog.setDirection('L2R') 
+catalog.setPrintScaling('None') 
+catalog.setDuplex('DuplexFlipLongEdge') 
+catalog.setPickTrayByPDFSize(true) 
+catalog.setPrintPageRange([1, 1]) 
+catalog.setNumCopies(2) 
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Read Viewer Preferences
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const existingPdfBytes = ...
+
+// Load a PDFDocument without updating its existing metadata
+const pdfDoc = await PDFDocument.load(existingPdfBytes, { 
+  updateMetadata: false 
+})
+const catalog = pdfDoc.catalog.getOrCreateViewerPreferences();
+
+// Print all available viewer preference fields
+console.log('HideToolbar:', catalog.getHideToolbar())
+console.log('HideMenubar:', catalog.getHideMenubar())
+console.log('HideWindowUI:', catalog.getHideWindowUI())
+console.log('FitWindow:', catalog.getFitWindow())
+console.log('CenterWindow:', catalog.getCenterWindow())
+console.log('DisplayDocTitle:', catalog.getDisplayDocTitle())
+console.log('NonFullScreenPageMode:', catalog.getNonFullScreenPageMode())
+console.log('Direction:', catalog.getDirection())
+console.log('PrintScaling:', catalog.getPrintScaling())
+console.log('Duplex:', catalog.getDuplex())
+console.log('PickTrayByPDFSize:', catalog.getPickTrayByPDFSize())
+console.log('PrintPageRange:', catalog.getPrintPageRange())
+console.log('NumCopies:', catalog.getNumCopies())
 ```
 
 ### Draw SVG Paths
