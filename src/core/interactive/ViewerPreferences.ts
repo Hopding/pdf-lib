@@ -221,25 +221,25 @@ class ViewerPreferences {
   }
 
   setNonFullScreenPageMode(nonFullScreenPageMode: NonFullScreenPageModeValue) {
-    assertIsOneOf(nonFullScreenPageMode, 'nonFullScreenPageMode', ['UseNone', 'UseOutlines', 'UseThumbs', 'UseOC']);
+    assertIsOneOf(nonFullScreenPageMode, 'nonFullScreenPageMode', ['UseNone', 'UseOutlines', 'UseThumbs', 'UseOC'] as NonFullScreenPageModeValue[]);
     const NonFullScreenPageMode = PDFName.of(nonFullScreenPageMode);
     this.dict.set(PDFName.of('NonFullScreenPageMode'), NonFullScreenPageMode);
   }
 
   setDirection(direction: DirectionValue) {
-    assertIsOneOf(direction, 'direction', ['L2R', 'R2L']);
+    assertIsOneOf(direction, 'direction', ['L2R', 'R2L'] as DirectionValue[]);
     const Direction = PDFName.of(direction);
     this.dict.set(PDFName.of('Direction'), Direction);
   }
 
   setPrintScaling(printScaling: PrintScalingValue) {
-    assertIsOneOf(printScaling, 'printScaling', ['None', 'AppDefault']);
+    assertIsOneOf(printScaling, 'printScaling', ['None', 'AppDefault'] as PrintScalingValue[]);
     const PrintScaling = PDFName.of(printScaling);
     this.dict.set(PDFName.of('PrintScaling'), PrintScaling);
   }
 
   setDuplex(duplex: DuplexValue) {
-    assertIsOneOf(duplex, 'duplex', ['Simplex', 'DuplexFlipShortEdge', 'DuplexFlipLongEdge']);
+    assertIsOneOf(duplex, 'duplex', ['Simplex', 'DuplexFlipShortEdge', 'DuplexFlipLongEdge'] as DuplexValue[]);
     const Duplex = PDFName.of(duplex);
     this.dict.set(PDFName.of('Duplex'), Duplex);
   }
