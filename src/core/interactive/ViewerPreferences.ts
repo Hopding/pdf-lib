@@ -341,8 +341,7 @@ class ViewerPreferences {
   */
   setNumCopies(numCopies: number) {
     assertRange(numCopies, 'numCopies', 1, Number.MAX_VALUE);
-    // if (!Number.isInteger(numCopies)) but lib must target es2015
-    if (numCopies % 1 !== 0) throw new Error('numCopies must be an integer')
+    if (!Number.isInteger(numCopies)) throw new Error('numCopies must be an integer')
     const NumCopies = this.dict.context.obj(numCopies);
     this.dict.set(PDFName.of('NumCopies'), NumCopies);
   }
