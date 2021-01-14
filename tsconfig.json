@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "ES5",
+    "target": "es5",
     "module": "commonjs",
     "allowJs": false,
     "checkJs": false,
