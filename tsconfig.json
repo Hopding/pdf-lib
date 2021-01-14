@@ -18,6 +18,7 @@
     "downlevelIteration": false,
     "isolatedModules": false,
     "newLine": "LF",
+    "lib": ["ES2016"],
 
     /* Strict Type-Checking Options */
     "strict": true,
