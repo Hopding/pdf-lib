@@ -7,6 +7,20 @@ import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFRef from 'src/core/objects/PDFRef';
 
+const findLastMatch = (value: string, regex: RegExp) => {
+  let position = 0;
+  let lastMatch: RegExpMatchArray | undefined;
+  while (position < value.length) {
+    const match = value.substring(position).match(regex);
+    if (!match) return { match: lastMatch, pos: position };
+    lastMatch = match;
+    position += (match.index ?? 0) + match[0].length;
+  }
+  return { match: lastMatch, pos: position };
+};
+
+const tfRegex = /\/([^\0\t\n\f\r\ ]+)[\0\t\n\f\r\ ]*(\d*\.\d+|\d+)?[\0\t\n\f\r\ ]+Tf/;
+
 class PDFAcroField {
   readonly dict: PDFDict;
   readonly ref: PDFRef;
@@ -94,6 +108,24 @@ class PDFAcroField {
     }
 
     return DA?.asString();
+  }
+
+  setFontSize(fontSize: number) {
+    if (this.DA()) {
+      const da = this.getDefaultAppearance()!;
+      const daMatch = findLastMatch(da, tfRegex);
+      if (daMatch.match && Number(daMatch.match[2]) !== fontSize) {
+        let daEnd = '';
+        if (daMatch.pos <= da.length) {
+          daEnd = da.slice(daMatch.pos);
+        }
+        this.setDefaultAppearance(
+          `${da.slice(0, daMatch.pos - daMatch.match[0].length)}/${
+            daMatch.match[1]
+          } ${fontSize} Tf${daEnd}`,
+        );
+      }
+    }
   }
 
   getFlags(): number {
