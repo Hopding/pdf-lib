@@ -350,7 +350,7 @@ class ViewerPreferences {
 
   /**
    * Choose whether the window’s title bar should display the document `Title` 
-   * taken from the document  metadata (see [[PDFDocument.setTitle]]). If 
+   * taken from the document metadata (see [[PDFDocument.setTitle]]). If 
    * `false`, the title bar should instead display the PDF filename.
    * @param displayTitle `true` if the document title should be displayed.
    */

@@ -864,6 +864,9 @@ viewerPrefs.setHideWindowUI(true)
 viewerPrefs.setFitWindow(true) 
 viewerPrefs.setCenterWindow(true) 
 viewerPrefs.setDisplayDocTitle(true) 
+// set the PageMode
+pdfDoc.catalog.set(PDFName.of('PageMode'),PDFName.of('FullScreen'))
+// set what happens when fullScreen is closed
 viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines) 
 viewerPrefs.setDirection(Direction.L2R) 
 viewerPrefs.setPrintScaling(PrintScaling.None) 
