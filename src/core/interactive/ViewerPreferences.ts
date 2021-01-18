@@ -186,9 +186,10 @@ class ViewerPreferences {
   }
 
   /**
-   * Returns `true` if the window's title bar should display the document Title,
-   * taken from the document metadata. Returns `false` if the title bar should
-   * instead display the filename of the PDF file.
+   * Returns `true` if the window's title bar should display the document
+   * `Title`, taken from the document metadata (see [[PDFDocument.getTitle]]).
+   * Returns `false` if the title bar should instead display the filename of the
+   * PDF file.
    * @returns Whether to display the document title.
    */
   getDisplayDocTitle(): boolean {
@@ -348,9 +349,9 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose whether the window’s title bar should display the document title
-   * taken from the `Title` in the document metadata. If `false`, the title bar
-   * should instead display the PDF filename.
+   * Choose whether the window’s title bar should display the document `Title` 
+   * taken from the document  metadata (see [[PDFDocument.setTitle]]). If 
+   * `false`, the title bar should instead display the PDF filename.
    * @param displayTitle `true` if the document title should be displayed.
    */
   setDisplayDocTitle(displayTitle: boolean) {
@@ -371,11 +372,14 @@ class ViewerPreferences {
    * ```js
    * import { PDFDocument, NonFullScreenPageMode } from 'pdf-lib'
    * const pdfDoc = await PDFDocument.create()
+   * // *note the next method is not yet instituted*, but will be required if
+   * // setNonFullScreenPageMode is to have any meaning
+   * pdfDoc.catalog.setPageMode(PageMode.FullScreen)
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
    * viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines)
    * ```
    * @param nonFullScreenPageMode How the document should be displayed on
-   *                              exiting full screen mode/
+   *                              exiting full screen mode
    */
   setNonFullScreenPageMode(nonFullScreenPageMode: NonFullScreenPageMode) {
     assertIsOneOf(
@@ -472,6 +476,21 @@ class ViewerPreferences {
   /**
    * Choose the page numbers used to initialize the print dialog box when the
    * file is printed. The first page of the PDF file is denoted by 1.
+   * For example:
+   * ```js
+   * import { PDFDocument, PrintScaling } from 'pdf-lib'
+   * const pdfDoc = await PDFDocument.create()
+   * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+   * // to set the default to print only the first page
+   * viewerPrefs.setPrintPageRange({ start: 1, end: 1 })
+   * // or alternatively if discontinuous ranges of pages should be the default,
+   * // for example page 1, page 3 and pages 5-7, provide an array:
+   * viewerPrefs.setPrintPageRange([
+   *   { start: 1, end: 1 },
+   *   { start: 3, end: 3 },
+   *   { start: 5, end: 7 },
+   * ])
+   * ```
    * @param printPageRange An object or array of objects, each with the
    *                       properties `start` and `end`, denoting a range of
    *                       page numbers
