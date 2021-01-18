@@ -65,7 +65,7 @@
   - [Add Attachments](#add-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
-  - [Set viewer Preferences](#set-viewer-preferences)
+  - [Set Viewer Preferences](#set-viewer-preferences)
   - [Read Viewer Preferences](#read-viewer-preferences)
   - [Draw SVG Paths](#draw-svg-paths)
 - [Deno Usage](#deno-usage)
@@ -842,7 +842,7 @@ Modification Date: 2010-07-29T14:26:00.000Z
 ### Set Viewer Preferences
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument, StandardFonts } from 'pdf-lib'
+import { PDFDocument, StandardFonts, NonFullScreenPageMode, Direction, PrintScaling, Duplex } from 'pdf-lib'
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
@@ -864,12 +864,20 @@ viewerPrefs.setHideWindowUI(true)
 viewerPrefs.setFitWindow(true) 
 viewerPrefs.setCenterWindow(true) 
 viewerPrefs.setDisplayDocTitle(true) 
-viewerPrefs.setNonFullScreenPageMode('UseOutlines') 
-viewerPrefs.setDirection('L2R') 
-viewerPrefs.setPrintScaling('None') 
-viewerPrefs.setDuplex('DuplexFlipLongEdge') 
-viewerPrefs.setPickTrayByPDFSize(true) 
-viewerPrefs.setPrintPageRange([1, 1]) 
+viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines) 
+viewerPrefs.setDirection(Direction.L2R) 
+viewerPrefs.setPrintScaling(PrintScaling.None) 
+viewerPrefs.setDuplex(Duplex.DuplexFlipLongEdge) 
+viewerPrefs.setPickTrayByPDFSize(true)
+// to set the default to print only the first page
+viewerPrefs.setPrintPageRange({ start: 1, end: 1 })
+// or alternatively if discontinuous ranges of pages should be the default
+// for example page 1, page 3 and pages 5-7, provide an array
+viewerPrefs.setPrintPageRange([
+  { start: 1, end: 1 },
+  { start: 3, end: 3 },
+  { start: 5, end: 7 },
+])
 viewerPrefs.setNumCopies(2) 
 
 // Serialize the PDFDocument to bytes (a Uint8Array)

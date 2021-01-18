@@ -1,6 +1,12 @@
 import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import {
+  Direction,
+  Duplex,
+  NonFullScreenPageMode,
+  PrintScaling,
+} from 'src/core/interactive/ViewerPreferences';
+import {
   EncryptedPDFError,
   ParseSpeeds,
   PDFArray,
@@ -321,15 +327,21 @@ describe(`PDFDocument`, () => {
       expect(viewerPrefs.getFitWindow()).toBe(false);
       expect(viewerPrefs.getCenterWindow()).toBe(false);
       expect(viewerPrefs.getDisplayDocTitle()).toBe(false);
-      expect(viewerPrefs.getNonFullScreenPageMode()).toBe('UseNone');
-      expect(viewerPrefs.getDirection()).toBe('L2R');
-      expect(viewerPrefs.getPrintScaling()).toBe('AppDefault');
+      expect(viewerPrefs.getNonFullScreenPageMode()).toBe(
+        NonFullScreenPageMode.UseNone,
+      );
+      expect(viewerPrefs.getDirection()).toBe(Direction.L2R);
+      expect(viewerPrefs.getPrintScaling()).toBe(PrintScaling.AppDefault);
       expect(viewerPrefs.getDuplex()).toBeUndefined();
       expect(viewerPrefs.getPickTrayByPDFSize()).toBeUndefined();
       expect(viewerPrefs.getPrintPageRange()).toEqual([]);
       expect(viewerPrefs.getNumCopies()).toBe(1);
 
-      const pageRanges = [1, 1, 3, 3, 5, 7];
+      const pageRanges = [
+        { start: 1, end: 1 },
+        { start: 3, end: 3 },
+        { start: 5, end: 7 },
+      ];
 
       viewerPrefs.setHideToolbar(true);
       viewerPrefs.setHideMenubar(true);
@@ -337,10 +349,10 @@ describe(`PDFDocument`, () => {
       viewerPrefs.setFitWindow(true);
       viewerPrefs.setCenterWindow(true);
       viewerPrefs.setDisplayDocTitle(true);
-      viewerPrefs.setNonFullScreenPageMode('UseOutlines');
-      viewerPrefs.setDirection('R2L');
-      viewerPrefs.setPrintScaling('None');
-      viewerPrefs.setDuplex('DuplexFlipLongEdge');
+      viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines);
+      viewerPrefs.setDirection(Direction.R2L);
+      viewerPrefs.setPrintScaling(PrintScaling.None);
+      viewerPrefs.setDuplex(Duplex.DuplexFlipLongEdge);
       viewerPrefs.setPickTrayByPDFSize(true);
       viewerPrefs.setPrintPageRange(pageRanges);
       viewerPrefs.setNumCopies(2);
@@ -358,6 +370,11 @@ describe(`PDFDocument`, () => {
       expect(viewerPrefs.getPickTrayByPDFSize()).toBe(true);
       expect(viewerPrefs.getPrintPageRange()).toEqual(pageRanges);
       expect(viewerPrefs.getNumCopies()).toBe(2);
+
+      // test setting single page range
+      const pageRange = { start: 3, end: 5 };
+      viewerPrefs.setPrintPageRange(pageRange);
+      expect(viewerPrefs.getPrintPageRange()).toEqual([pageRange]);
     });
   });
 
