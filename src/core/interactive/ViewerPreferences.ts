@@ -372,9 +372,9 @@ class ViewerPreferences {
    * ```js
    * import { PDFDocument, NonFullScreenPageMode } from 'pdf-lib'
    * const pdfDoc = await PDFDocument.create()
-   * // *note the next method is not yet instituted*, but will be required if
-   * // setNonFullScreenPageMode is to have any meaning
-   * pdfDoc.catalog.setPageMode(PageMode.FullScreen)
+   * // set the PageMode
+   * pdfDoc.catalog.set(PDFName.of('PageMode'),PDFName.of('FullScreen'))
+   * // set what happens when fullScreen is closed
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
    * viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines)
    * ```
