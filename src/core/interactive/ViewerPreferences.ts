@@ -16,7 +16,7 @@ const asEnum = <T extends string | number, U extends { [key: string]: T }>(
 
 export enum NonFullScreenPageMode {
   /** After exiting FullScreen mode, neither the document outline nor thumbnail
-   * images should be visible. 
+   * images should be visible.
    */
   UseNone = 'UseNone',
   /** After exiting FullScreen mode, the document outline should be visible. */
