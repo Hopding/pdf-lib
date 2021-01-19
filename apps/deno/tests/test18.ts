@@ -226,6 +226,12 @@ export default async (assets: Assets) => {
 
   form.getOptionList('List Box6').select('Honda');
 
+  const fieldToRemove = form.getRadioGroup('Group4');
+  form.removeField(fieldToRemove);
+  if (form.getFieldMaybe('Group4') !== undefined) {
+    throw new Error('Failed to remove field');
+  }
+
   form.flatten();
 
   // Copy pages from documents with flattened forms
@@ -236,6 +242,7 @@ export default async (assets: Assets) => {
     await loadD(assets),
     await loadE(assets),
   ];
+
   for (const formDoc of formDocs) {
     const [page1] = await pdfDoc.copyPages(formDoc, [0]);
     pdfDoc.addPage(page1);

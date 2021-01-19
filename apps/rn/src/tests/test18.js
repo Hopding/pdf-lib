@@ -262,6 +262,12 @@ export default async () => {
 
   form.getOptionList('List Box6').select('Honda');
 
+  const fieldToRemove = form.getRadioGroup('Group4');
+  form.removeField(fieldToRemove);
+  if (form.getFieldMaybe('Group4') !== undefined) {
+    throw new Error('Failed to remove field');
+  }
+
   form.flatten();
 
   const assets = {
@@ -281,6 +287,7 @@ export default async () => {
     await loadD(assets),
     await loadE(assets),
   ];
+
   for (const formDoc of formDocs) {
     const [page1] = await pdfDoc.copyPages(formDoc, [0]);
     pdfDoc.addPage(page1);

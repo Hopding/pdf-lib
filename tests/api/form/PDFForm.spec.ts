@@ -12,6 +12,7 @@ import {
   PDFName,
   PDFForm,
   PDFAcroForm,
+  PDFRef,
 } from 'src/index';
 
 const getWidgets = (pdfDoc: PDFDocument) =>
@@ -25,6 +26,9 @@ const getWidgets = (pdfDoc: PDFDocument) =>
         obj.get(PDFName.of('Subtype')) === PDFName.of('Widget'),
     )
     .map((obj) => obj as PDFDict);
+
+const getRefs = (pdfDoc: PDFDocument) =>
+  pdfDoc.context.enumerateIndirectObjects().map(([ref]) => ref as PDFRef);
 
 const getApRefs = (widget: PDFWidgetAnnotation) => {
   const onValue = widget.getOnValue() ?? PDFName.of('Yes');
@@ -289,6 +293,26 @@ describe(`PDFForm`, () => {
     expect(
       pdfDoc.save({ updateFieldAppearances: true }),
     ).resolves.toBeInstanceOf(Uint8Array);
+  });
+
+  it.only(`it cleans references of removed fields`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+    const form = pdfDoc.getForm();
+    let refs = getRefs(pdfDoc);
+
+    const cb = form.getCheckBox('Will You Ever Let Me Down? ☕️');
+    const rg = form.getRadioGroup('Historical Figures 🐺');
+
+    expect(refs.includes(cb.ref)).toBe(true);
+    expect(refs.includes(rg.ref)).toBe(true);
+
+    form.removeField(cb);
+    form.removeField(rg);
+
+    refs = getRefs(pdfDoc);
+    
+    expect(refs.includes(cb.ref)).toBe(false);
+    expect(refs.includes(rg.ref)).toBe(false);
   });
 
   // TODO: Add method to remove APs and use `NeedsAppearances`? How would this
