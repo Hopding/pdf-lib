@@ -1,6 +1,6 @@
 import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
-import {
+import ViewerPreferences, {
   Direction,
   Duplex,
   NonFullScreenPageMode,
@@ -26,6 +26,9 @@ const invalidObjectsPdfBytes = fs.readFileSync(
 );
 const justMetadataPdfbytes = fs.readFileSync('assets/pdfs/just_metadata.pdf');
 const normalPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
+const justViewerPrefPdfBytes = fs.readFileSync(
+  'assets/pdfs/just_viewer_prefs.pdf',
+);
 
 describe(`PDFDocument`, () => {
   describe(`load() method`, () => {
@@ -375,6 +378,38 @@ describe(`PDFDocument`, () => {
       const pageRange = { start: 3, end: 5 };
       viewerPrefs.setPrintPageRange(pageRange);
       expect(viewerPrefs.getPrintPageRange()).toEqual([pageRange]);
+    });
+
+    it(`they can retrieve the  from an existing document`, async () => {
+      const pdfDoc = await PDFDocument.load(justViewerPrefPdfBytes);
+      const viewerPrefs = pdfDoc.catalog.getViewerPreferences()!;
+      expect(viewerPrefs).toBeInstanceOf(ViewerPreferences);
+      expect(viewerPrefs.getPrintScaling()).toBe(PrintScaling.None);
+      expect(viewerPrefs.getDuplex()).toBe(Duplex.DuplexFlipLongEdge);
+      expect(viewerPrefs.getPickTrayByPDFSize()).toBe(true);
+      expect(viewerPrefs.getPrintPageRange()).toEqual([
+        { start: 1, end: 1 },
+        { start: 3, end: 4 },
+      ]);
+      expect(viewerPrefs.getNumCopies()).toBe(2);
+
+      expect(viewerPrefs.getFitWindow()).toBe(true);
+      expect(viewerPrefs.getCenterWindow()).toBe(true);
+      expect(viewerPrefs.getDisplayDocTitle()).toBe(true);
+      expect(viewerPrefs.getHideMenubar()).toBe(true);
+      expect(viewerPrefs.getHideToolbar()).toBe(true);
+
+      /* other presets not tested, but defined in this PDF doc (Acrobat XI v11):
+       * Binding: RightEdge
+       * Language: EN-NZ
+       *
+       * NavigationTab: BookmarksPanelAndPage
+       * PageLayout: TwoUpContinuous (facing)
+       * Magnification: FitPage
+       * OpenToPage: 2
+       *
+       * PageMode: FullScreen
+       */
     });
   });
 

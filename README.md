@@ -858,13 +858,13 @@ page.drawText('An Epic Tale of Woe', { x: 125, y: 460, size: 25 })
 
 // Set all available viewer preferences on the PDFDocument.
 const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
-viewerPrefs.setHideToolbar(true) 
-viewerPrefs.setHideMenubar(true) 
-viewerPrefs.setHideWindowUI(true) 
-viewerPrefs.setFitWindow(true) 
-viewerPrefs.setCenterWindow(true) 
-viewerPrefs.setDisplayDocTitle(true) 
-// set the PageMode
+viewerPrefs.setHideToolbar(true)
+viewerPrefs.setHideMenubar(true)
+viewerPrefs.setHideWindowUI(true)
+viewerPrefs.setFitWindow(true)
+viewerPrefs.setCenterWindow(true)
+viewerPrefs.setDisplayDocTitle(true)
+// set the PageMode, otherwise the subsequent NonFullScreenPageMode has no meaning
 pdfDoc.catalog.set(PDFName.of('PageMode'),PDFName.of('FullScreen'))
 // set what happens when fullScreen is closed
 viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines) 

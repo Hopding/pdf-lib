@@ -280,8 +280,8 @@ class ViewerPreferences {
     if (rng) {
       for (let i = 0; i < rng.size(); i += 2) {
         pageRanges.push({
-          start: (rng.get(i) as PDFNumber).asNumber(),
-          end: (rng.get(i + 1) as PDFNumber).asNumber(),
+          start: (rng.get(i) as PDFNumber).asNumber() + 1,
+          end: (rng.get(i + 1) as PDFNumber).asNumber() + 1,
         });
       }
     }
@@ -349,8 +349,8 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose whether the window’s title bar should display the document `Title` 
-   * taken from the document metadata (see [[PDFDocument.setTitle]]). If 
+   * Choose whether the window’s title bar should display the document `Title`
+   * taken from the document metadata (see [[PDFDocument.setTitle]]). If
    * `false`, the title bar should instead display the PDF filename.
    * @param displayTitle `true` if the document title should be displayed.
    */
@@ -497,11 +497,12 @@ class ViewerPreferences {
    */
   setPrintPageRange(printPageRange: PageRange[] | PageRange) {
     if (!Array.isArray(printPageRange)) printPageRange = [printPageRange];
-    const flatRange = printPageRange.reduce(
+    let flatRange = printPageRange.reduce(
       (accum, pgRng) => accum.concat(pgRng.start, pgRng.end),
       [] as number[],
     );
     assertEachIs(flatRange, 'printPageRange', ['number']);
+    flatRange = flatRange.map((r) => r - 1);
     const pageRanges = this.dict.context.obj(flatRange);
     this.dict.set(PDFName.of('PrintPageRange'), pageRanges);
   }
