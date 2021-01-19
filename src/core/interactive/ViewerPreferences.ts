@@ -15,25 +15,44 @@ const asEnum = <T extends string | number, U extends { [key: string]: T }>(
 };
 
 export enum NonFullScreenPageMode {
+  /** After exiting FullScreen mode, neither the document outline nor thumbnail
+   * images should be visible. 
+   */
   UseNone = 'UseNone',
+  /** After exiting FullScreen mode, the document outline should be visible. */
   UseOutlines = 'UseOutlines',
+  /** After exiting FullScreen mode, thumbnail images should be visible. */
   UseThumbs = 'UseThumbs',
+  /** After exiting FullScreen mode, the optional content group panel should be
+   * visible. */
   UseOC = 'UseOC',
 }
 
 export enum Direction {
+  /** The predominant reading order is Left to Right. */
   L2R = 'L2R',
+  /** The predominant reading order is Right to left (including vertical writing
+   * systems, such as Chinese, Japanese and Korean). */
   R2L = 'R2L',
 }
 
 export enum PrintScaling {
+  /** No page scaling. */
   None = 'None',
+  /* Use the PDF reader’s default print scaling. */
   AppDefault = 'AppDefault',
 }
 
 export enum Duplex {
+  /** The PDF reader should print single-sided. */
   Simplex = 'Simplex',
+  /** The PDF reader should print double sided and flip on the short edge of the
+   * sheet.
+   */
   DuplexFlipShortEdge = 'DuplexFlipShortEdge',
+  /** The PDF reader should print double sided and flip on the long edge of the
+   * sheet.
+   */
   DuplexFlipLongEdge = 'DuplexFlipLongEdge',
 }
 
@@ -199,11 +218,8 @@ class ViewerPreferences {
   /**
    * Returns the page mode, which tells the PDF reader how to display the
    * document after exiting full-screen mode.
-   * @returns The page mode after exiting full-screen mode, being one of:
-   *          `UseNone` - Neither document outline nor thumbnail images visible.
-   *          `UseOutlines` - Document outline visible.
-   *          `UseThumbs` - Thumbnail images visible.
-   *          `UseOC` - Optional content group panel visible.
+   * @returns The page mode after exiting full-screen mode. One of
+   *          [[Enums.NonFullScreenPageMode]].
    */
   getNonFullScreenPageMode(): NonFullScreenPageMode {
     const mode = this.NonFullScreenPageMode()?.decodeText();
@@ -212,10 +228,7 @@ class ViewerPreferences {
 
   /**
    * Returns the predominant reading order for text.
-   * @returns The text reading order, being one of:
-   *          `L2R` - Left to right.
-   *          `R2L` - Right to left (including vertical writing systems, such as
-   *                  Chinese, Japanese and Korean).
+   * @returns The text reading order. One of [[Enums.Direction]]
    */
   getDirection(): Direction {
     const direction = this.Direction()?.decodeText();
@@ -225,9 +238,7 @@ class ViewerPreferences {
   /**
    * Returns the page scaling option that the PDF reader should select when the
    * print dialog is displayed.
-   * @returns The page scaling option, being one of:
-   *          `None` - no page scaling.
-   *          `AppDefault` - Use the PDF reader’s default print scaling.
+   * @returns The page scaling option. One of [[Enums.PrintScaling]]
    */
   getPrintScaling(): PrintScaling {
     const scaling = this.PrintScaling()?.decodeText();
@@ -237,12 +248,7 @@ class ViewerPreferences {
   /**
    * Returns the paper handling option that should be used when printing the
    * file from the print dialog.
-   * @returns The paper handling option, being one of:
-   *          `Simplex` - The PDF reader should print single-sided.
-   *          `DuplexFlipShortEdge` - The PDF reader should print double sided
-   *                                  and flip on the short edge of the sheet.
-   *          `DuplexFlipLongEdge` - The PDF reader should print double sided
-   *                                 and flip on the long edge of the sheet.
+   * @returns The paper handling option. One of [[Enums.Duplex]]
    */
   getDuplex(): Duplex | undefined {
     const duplex = this.Duplex()?.decodeText();
@@ -363,11 +369,6 @@ class ViewerPreferences {
    * Choose how the PDF reader should display the document on exiting
    * full-screen mode. This entry is meaningful only if the value of the
    * PageMode entry in the document's Catalog dictionary is FullScreen.
-   * The `NonFullScreenPageMode` option has the possible values:
-   * - `UseNone` - Neither document outline nor thumbnail images visible.
-   * - `UseOutlines` - Document outline visible.
-   * - `UseThumbs` - Thumbnail images visible.
-   * - `UseOC` - Optional content group panel visible.
    * For example:
    * ```js
    * import { PDFDocument, NonFullScreenPageMode } from 'pdf-lib'
@@ -379,7 +380,8 @@ class ViewerPreferences {
    * viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines)
    * ```
    * @param nonFullScreenPageMode How the document should be displayed on
-   *                              exiting full screen mode
+   *                              exiting full screen mode. One of
+   *                              [[Enums. NonFullScreenPageMode]].
    */
   setNonFullScreenPageMode(nonFullScreenPageMode: NonFullScreenPageMode) {
     assertIsOneOf(
@@ -396,10 +398,6 @@ class ViewerPreferences {
    * This entry has no direct effect on the document’s contents or page
    * numbering, but may be used to determine the relative positioning of pages
    * when displayed side by side or printed n-up.
-   * The `Direction` option has the possible values:
-   * - `L2R` - Left to right.
-   * - `R2L` - Right to left (including vertical writing systems, such as
-   * Chinese, Japanese, and Korean).
    * For example:
    * ```js
    * import { PDFDocument, Direction } from 'pdf-lib'
@@ -407,7 +405,7 @@ class ViewerPreferences {
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
    * viewerPrefs.setDirection(Direction.R2L)
    * ```
-   * @param direction The reading order for text
+   * @param direction The reading order for text. One of [[Enums.Direction]]
    */
   setDirection(direction: Direction) {
     assertIsOneOf(direction, 'direction', Direction);
@@ -418,9 +416,6 @@ class ViewerPreferences {
   /**
    * Choose the page scaling option that should be selected when a print dialog
    * is displayed for this document.
-   * The `PrintScaling` option has the possible values:
-   * - `None` - No page scaling
-   * - `AppDefault` - The PDF reader’s default print scaling.
    * * For example:
    * ```js
    * import { PDFDocument, PrintScaling } from 'pdf-lib'
@@ -428,7 +423,7 @@ class ViewerPreferences {
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
    * viewerPrefs.setPrintScaling(PrintScaling.None)
    * ```
-   * @param printScaling The print scaling option.
+   * @param printScaling The print scaling option. One of [[Enums.PrintScaling]]
    */
   setPrintScaling(printScaling: PrintScaling) {
     assertIsOneOf(printScaling, 'printScaling', PrintScaling);
@@ -439,17 +434,14 @@ class ViewerPreferences {
   /**
    * Choose the paper handling option which should be the default displayed in
    * the print dialog.
-   * The `Duplex` option has the possible values:
-   * - `Simplex` - Print single-sided
-   * - `DuplexFlipShortEdge` - Duplex and flip on the short edge of the sheet
-   * - `DuplexFlipLongEdge` - Duplex and flip on the long edge of the sheet
    * For example:
    * ```js
    * import { PDFDocument, Duplex } from 'pdf-lib'
    * const pdfDoc = await PDFDocument.create()
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
    * viewerPrefs.setDuplex(Duplex.DuplexFlipShortEdge)
-   * @param duplex The double or single sided printing option.
+   * @param duplex The double or single sided printing option. One of
+   *               [[Enums.Duplex]]
    */
   setDuplex(duplex: Duplex) {
     assertIsOneOf(duplex, 'duplex', Duplex);
