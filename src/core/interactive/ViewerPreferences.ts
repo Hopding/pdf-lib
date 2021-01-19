@@ -24,7 +24,8 @@ export enum NonFullScreenPageMode {
   /** After exiting FullScreen mode, thumbnail images should be visible. */
   UseThumbs = 'UseThumbs',
   /** After exiting FullScreen mode, the optional content group panel should be
-   * visible. */
+   * visible.
+   */
   UseOC = 'UseOC',
 }
 
@@ -32,7 +33,8 @@ export enum Direction {
   /** The predominant reading order is Left to Right. */
   L2R = 'L2R',
   /** The predominant reading order is Right to left (including vertical writing
-   * systems, such as Chinese, Japanese and Korean). */
+   * systems, such as Chinese, Japanese and Korean).
+   */
   R2L = 'R2L',
 }
 
