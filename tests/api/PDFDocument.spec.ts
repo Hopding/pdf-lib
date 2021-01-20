@@ -388,8 +388,8 @@ describe(`PDFDocument`, () => {
       expect(viewerPrefs.getDuplex()).toBe(Duplex.DuplexFlipLongEdge);
       expect(viewerPrefs.getPickTrayByPDFSize()).toBe(true);
       expect(viewerPrefs.getPrintPageRange()).toEqual([
-        { start: 1, end: 1 },
-        { start: 3, end: 4 },
+        { start: 2, end: 2 },
+        { start: 4, end: 5 },
       ]);
       expect(viewerPrefs.getNumCopies()).toBe(2);
 
@@ -403,9 +403,9 @@ describe(`PDFDocument`, () => {
        * Binding: RightEdge
        * Language: EN-NZ
        *
-       * NavigationTab: BookmarksPanelAndPage
-       * PageLayout: TwoUpContinuous (facing)
-       * Magnification: FitPage
+       * NavigationTab: PageOnly
+       * PageLayout: TwoUp (facing)
+       * Magnification: 50%
        * OpenToPage: 2
        *
        * PageMode: FullScreen

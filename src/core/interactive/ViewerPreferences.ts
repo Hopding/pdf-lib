@@ -287,6 +287,10 @@ class ViewerPreferences {
     const pageRanges: PageRange[] = [];
     if (rng) {
       for (let i = 0; i < rng.size(); i += 2) {
+        // Adding 1 does not make sense where the spec cleraly states "The first
+        // page of the PDF file shall be donoted by 1". However several test
+        // PDFs (spec 1.7) created in Acrobat XI 11.0 and also read with reader
+        // DC 2020.013 would indicate this is a 0 based index
         pageRanges.push({
           start: (rng.get(i) as PDFNumber).asNumber() + 1,
           end: (rng.get(i + 1) as PDFNumber).asNumber() + 1,
