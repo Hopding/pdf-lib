@@ -41,4 +41,30 @@ describe(`PDFAcroField`, () => {
 
     expect(field.getDefaultAppearance()).toBe('/ZaDb 10 Tf 0 g');
   });
+
+  it(`returns new font size direct appearance strings (DAs) (1)`, () => {
+    const context = PDFContext.create();
+
+    const dict = context.obj({
+      DA: PDFString.of('/ZaDb 10 Tf 0 g'),
+    });
+    const dictRef = context.register(dict);
+    const field = PDFAcroTerminal.fromDict(dict, dictRef);
+    field.setFontSize(8);
+
+    expect(field.getDefaultAppearance()).toBe('/ZaDb 8 Tf 0 g');
+  });
+
+  it(`returns new font size direct appearance strings (DAs) (2)`, () => {
+    const context = PDFContext.create();
+
+    const dict = context.obj({
+      DA: PDFString.of('/ZaDb Tf 0 g'),
+    });
+    const dictRef = context.register(dict);
+    const field = PDFAcroTerminal.fromDict(dict, dictRef);
+    field.setFontSize(8);
+
+    expect(field.getDefaultAppearance()).toBe('/ZaDb 8 Tf 0 g');
+  });
 });

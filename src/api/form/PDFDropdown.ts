@@ -22,7 +22,11 @@ import {
   PDFAcroComboBox,
   AcroChoiceFlags,
 } from 'src/core';
-import { assertIs, assertOrUndefined } from 'src/utils';
+import {
+  assertIs,
+  assertOrUndefined,
+  assertPositiveNum,
+} from 'src/utils';
 
 /**
  * Represents a dropdown field of a [[PDFForm]].
@@ -621,5 +625,20 @@ export default class PDFDropdown extends PDFField {
     const apProvider = provider ?? defaultDropdownAppearanceProvider;
     const appearances = normalizeAppearance(apProvider(this, widget, font));
     this.updateWidgetAppearanceWithFont(widget, font, appearances);
+  }
+
+  /**
+   * Set the font size for the text in this field. There needs to be a
+   * default appearance string (DA) set with a font value specified
+   * for this to work. For example:
+   * ```js
+   * const dropdown = form.getDropdown('some.dropdown.field')
+   * dropdown.setFontSize(4);
+   * ```
+   * @param fontSize The font size to set the font to.
+   */
+  setFontSize(fontSize: number) {
+    assertPositiveNum(fontSize, 'fontSize');
+    this.acroField.setFontSize(fontSize);
   }
 }
