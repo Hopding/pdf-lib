@@ -216,7 +216,7 @@ export const assertPositiveNum = (
 	value: number,
 	valueName: string
 ) => {
-	if ([1, 0].includes(Math.sign(value))) {
+	if (![1, 0].includes(Math.sign(value))) {
 		throw new Error(`${backtick(valueName)} must be a positive number or 0, but was actually ${value}`);
 	}
 };
