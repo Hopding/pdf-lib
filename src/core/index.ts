@@ -25,6 +25,13 @@ export {
   PageBoundingBox,
 } from 'src/core/embedders/PDFPageEmbedder';
 
+export {
+  NonFullScreenPageMode,
+  Direction,
+  PrintScaling,
+  Duplex,
+} from 'src/core/interactive/ViewerPreferences';
+
 export { default as PDFObject } from 'src/core/objects/PDFObject';
 export { default as PDFBool } from 'src/core/objects/PDFBool';
 export { default as PDFNumber } from 'src/core/objects/PDFNumber';

@@ -65,6 +65,8 @@
   - [Add Attachments](#add-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
+  - [Set Viewer Preferences](#set-viewer-preferences)
+  - [Read Viewer Preferences](#read-viewer-preferences)
   - [Draw SVG Paths](#draw-svg-paths)
 - [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
@@ -101,6 +103,8 @@
 - Embed Fonts (supports UTF-8 and UTF-16 character sets)
 - Set document metadata
 - Read document metadata
+- Set viewer preferences
+- Read viewer preferences
 - Add attachments
 
 ## Motivation
@@ -833,6 +837,92 @@ Keywords: undefined
 Producer: Acrobat Distiller 8.1.0 (Windows)
 Creation Date: 2010-07-29T14:26:00.000Z
 Modification Date: 2010-07-29T14:26:00.000Z
+```
+
+### Set Viewer Preferences
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts, NonFullScreenPageMode, Direction, PrintScaling, Duplex } from 'pdf-lib'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Embed the Times Roman font
+const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+
+// Add a page and draw some text on it
+const page = pdfDoc.addPage([500, 600])
+page.setFont(timesRomanFont)
+page.drawText('The Life of an Egg', { x: 60, y: 500, size: 50 })
+page.drawText('An Epic Tale of Woe', { x: 125, y: 460, size: 25 })
+
+// Set all available viewer preferences on the PDFDocument.
+const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+viewerPrefs.setHideToolbar(true)
+viewerPrefs.setHideMenubar(true)
+viewerPrefs.setHideWindowUI(true)
+viewerPrefs.setFitWindow(true)
+viewerPrefs.setCenterWindow(true)
+viewerPrefs.setDisplayDocTitle(true)
+// set the PageMode, otherwise the subsequent NonFullScreenPageMode has no meaning
+pdfDoc.catalog.set(PDFName.of('PageMode'),PDFName.of('FullScreen'))
+// set what happens when fullScreen is closed
+viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines) 
+viewerPrefs.setDirection(Direction.L2R) 
+viewerPrefs.setPrintScaling(PrintScaling.None) 
+viewerPrefs.setDuplex(Duplex.DuplexFlipLongEdge) 
+viewerPrefs.setPickTrayByPDFSize(true)
+// to set the default to print only the first page
+viewerPrefs.setPrintPageRange({ start: 1, end: 1 })
+// or alternatively if discontinuous ranges of pages should be the default
+// for example page 1, page 3 and pages 5-7, provide an array
+viewerPrefs.setPrintPageRange([
+  { start: 1, end: 1 },
+  { start: 3, end: 3 },
+  { start: 5, end: 7 },
+])
+viewerPrefs.setNumCopies(2) 
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Read Viewer Preferences
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const existingPdfBytes = ...
+
+// Load a PDFDocument without updating its existing metadata
+const pdfDoc = await PDFDocument.load(existingPdfBytes, { 
+  updateMetadata: false 
+})
+const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+
+// Print all available viewer preference fields
+console.log('HideToolbar:', viewerPrefs.getHideToolbar())
+console.log('HideMenubar:', viewerPrefs.getHideMenubar())
+console.log('HideWindowUI:', viewerPrefs.getHideWindowUI())
+console.log('FitWindow:', viewerPrefs.getFitWindow())
+console.log('CenterWindow:', viewerPrefs.getCenterWindow())
+console.log('DisplayDocTitle:', viewerPrefs.getDisplayDocTitle())
+console.log('NonFullScreenPageMode:', viewerPrefs.getNonFullScreenPageMode())
+console.log('Direction:', viewerPrefs.getDirection())
+console.log('PrintScaling:', viewerPrefs.getPrintScaling())
+console.log('Duplex:', viewerPrefs.getDuplex())
+console.log('PickTrayByPDFSize:', viewerPrefs.getPickTrayByPDFSize())
+console.log('PrintPageRange:', viewerPrefs.getPrintPageRange())
+console.log('NumCopies:', viewerPrefs.getNumCopies())
 ```
 
 ### Draw SVG Paths
