@@ -9,6 +9,11 @@ import {
   PDFHexString,
   PDFName,
   PDFPage,
+  Duplex,
+  NonFullScreenPageMode,
+  PrintScaling,
+  ReadingDirection,
+  ViewerPreferences,
 } from 'src/index';
 
 const unencryptedPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
@@ -20,6 +25,9 @@ const invalidObjectsPdfBytes = fs.readFileSync(
 );
 const justMetadataPdfbytes = fs.readFileSync('assets/pdfs/just_metadata.pdf');
 const normalPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
+const withViewerPrefsPdfBytes = fs.readFileSync(
+  'assets/pdfs/with_viewer_prefs.pdf',
+);
 
 describe(`PDFDocument`, () => {
   describe(`load() method`, () => {
@@ -303,7 +311,7 @@ describe(`PDFDocument`, () => {
     });
   });
 
-  describe(`setTitle() method with options`, () => {
+  describe(`ViewerPreferences`, () => {
     it(`defaults to an undefined ViewerPreferences dict`, async () => {
       const pdfDoc = await PDFDocument.create();
 
@@ -312,6 +320,105 @@ describe(`PDFDocument`, () => {
       ).toBeUndefined();
     });
 
+    it(`can get/set HideToolbar, HideMenubar, HideWindowUI, FitWindow, CenterWindow, DisplayDocTitle, NonFullScreenPageMode, Direction, PrintScaling, Duplex, PickTrayByPDFSize, PrintPageRange, NumCopies from a new document`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+
+      // Everything is empty or has its initial value.
+      expect(viewerPrefs.getHideToolbar()).toBe(false);
+      expect(viewerPrefs.getHideMenubar()).toBe(false);
+      expect(viewerPrefs.getHideWindowUI()).toBe(false);
+      expect(viewerPrefs.getFitWindow()).toBe(false);
+      expect(viewerPrefs.getCenterWindow()).toBe(false);
+      expect(viewerPrefs.getDisplayDocTitle()).toBe(false);
+      expect(viewerPrefs.getNonFullScreenPageMode()).toBe(
+        NonFullScreenPageMode.UseNone,
+      );
+      expect(viewerPrefs.getReadingDirection()).toBe(ReadingDirection.L2R);
+      expect(viewerPrefs.getPrintScaling()).toBe(PrintScaling.AppDefault);
+      expect(viewerPrefs.getDuplex()).toBeUndefined();
+      expect(viewerPrefs.getPickTrayByPDFSize()).toBeUndefined();
+      expect(viewerPrefs.getPrintPageRange()).toEqual([]);
+      expect(viewerPrefs.getNumCopies()).toBe(1);
+
+      const pageRanges = [
+        { start: 0, end: 0 },
+        { start: 2, end: 2 },
+        { start: 4, end: 6 },
+      ];
+
+      viewerPrefs.setHideToolbar(true);
+      viewerPrefs.setHideMenubar(true);
+      viewerPrefs.setHideWindowUI(true);
+      viewerPrefs.setFitWindow(true);
+      viewerPrefs.setCenterWindow(true);
+      viewerPrefs.setDisplayDocTitle(true);
+      viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines);
+      viewerPrefs.setReadingDirection(ReadingDirection.R2L);
+      viewerPrefs.setPrintScaling(PrintScaling.None);
+      viewerPrefs.setDuplex(Duplex.DuplexFlipLongEdge);
+      viewerPrefs.setPickTrayByPDFSize(true);
+      viewerPrefs.setPrintPageRange(pageRanges);
+      viewerPrefs.setNumCopies(2);
+
+      expect(viewerPrefs.getHideToolbar()).toBe(true);
+      expect(viewerPrefs.getHideMenubar()).toBe(true);
+      expect(viewerPrefs.getHideWindowUI()).toBe(true);
+      expect(viewerPrefs.getFitWindow()).toBe(true);
+      expect(viewerPrefs.getCenterWindow()).toBe(true);
+      expect(viewerPrefs.getDisplayDocTitle()).toBe(true);
+      expect(viewerPrefs.getNonFullScreenPageMode()).toBe(
+        NonFullScreenPageMode.UseOutlines,
+      );
+      expect(viewerPrefs.getReadingDirection()).toBe(ReadingDirection.R2L);
+      expect(viewerPrefs.getPrintScaling()).toBe(PrintScaling.None);
+      expect(viewerPrefs.getDuplex()).toBe(Duplex.DuplexFlipLongEdge);
+      expect(viewerPrefs.getPickTrayByPDFSize()).toBe(true);
+      expect(viewerPrefs.getPrintPageRange()).toEqual(pageRanges);
+      expect(viewerPrefs.getNumCopies()).toBe(2);
+
+      // Test setting single page range
+      const pageRange = { start: 2, end: 4 };
+      viewerPrefs.setPrintPageRange(pageRange);
+      expect(viewerPrefs.getPrintPageRange()).toEqual([pageRange]);
+    });
+
+    it(`they can be retrieved from an existing document`, async () => {
+      const pdfDoc = await PDFDocument.load(withViewerPrefsPdfBytes);
+      const viewerPrefs = pdfDoc.catalog.getViewerPreferences()!;
+
+      expect(viewerPrefs).toBeInstanceOf(ViewerPreferences);
+      expect(viewerPrefs.getPrintScaling()).toBe(PrintScaling.None);
+      expect(viewerPrefs.getDuplex()).toBe(Duplex.DuplexFlipLongEdge);
+      expect(viewerPrefs.getPickTrayByPDFSize()).toBe(true);
+      expect(viewerPrefs.getPrintPageRange()).toEqual([
+        { start: 1, end: 1 },
+        { start: 3, end: 4 },
+      ]);
+      expect(viewerPrefs.getNumCopies()).toBe(2);
+
+      expect(viewerPrefs.getFitWindow()).toBe(true);
+      expect(viewerPrefs.getCenterWindow()).toBe(true);
+      expect(viewerPrefs.getDisplayDocTitle()).toBe(true);
+      expect(viewerPrefs.getHideMenubar()).toBe(true);
+      expect(viewerPrefs.getHideToolbar()).toBe(true);
+
+      /*
+       * Other presets not tested, but defined in this PDF doc (Acrobat XI v11):
+       * Binding: RightEdge
+       * Language: EN-NZ
+       *
+       * NavigationTab: PageOnly
+       * PageLayout: TwoUp (facing)
+       * Magnification: 50%
+       * OpenToPage: 2
+       *
+       * PageMode: FullScreen
+       */
+    });
+  });
+
+  describe(`setTitle() method with options`, () => {
     it(`does not set the ViewerPreferences dict if the option is not set`, async () => {
       const pdfDoc = await PDFDocument.create();
 
