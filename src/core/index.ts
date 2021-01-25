@@ -26,8 +26,9 @@ export {
 } from 'src/core/embedders/PDFPageEmbedder';
 
 export {
+  default as ViewerPreferences,
   NonFullScreenPageMode,
-  Direction,
+  ReadingDirection,
   PrintScaling,
   Duplex,
 } from 'src/core/interactive/ViewerPreferences';

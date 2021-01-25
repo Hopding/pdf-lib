@@ -10,8 +10,8 @@ type Primitive = string | number | boolean | undefined | null;
 // prettier-ignore
 const formatValue = (value: any) => {
   const type = typeof value;
-  if (type ==='string')return singleQuote(value);
-  else if (type ==='undefined')return backtick(value);
+  if (type ==='string') return singleQuote(value);
+  else if (type ==='undefined') return backtick(value);
   else return value;
 };
 
@@ -209,5 +209,13 @@ export const assertMultiple = (
   if (value % multiplier !== 0) {
     // prettier-ignore
     throw new Error(`${backtick(valueName)} must be a multiple of ${multiplier}, but was actually ${value}`);
+  }
+};
+
+export const assertInteger = (value: any, valueName: string) => {
+  if (!Number.isInteger(value)) {
+    throw new Error(
+      `${backtick(valueName)} msut be an integer, but was actually ${value}`,
+    );
   }
 };

@@ -4,7 +4,12 @@ import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFContext from 'src/core/PDFContext';
-import { assertEachIs, assertIsOneOf, assertRange } from 'src/utils';
+import {
+  assertEachIs,
+  assertInteger,
+  assertIsOneOf,
+  assertRange,
+} from 'src/utils';
 
 const asEnum = <T extends string | number, U extends { [key: string]: T }>(
   rawValue: T | undefined,
@@ -15,24 +20,31 @@ const asEnum = <T extends string | number, U extends { [key: string]: T }>(
 };
 
 export enum NonFullScreenPageMode {
-  /** After exiting FullScreen mode, neither the document outline nor thumbnail
+  /**
+   * After exiting FullScreen mode, neither the document outline nor thumbnail
    * images should be visible.
    */
   UseNone = 'UseNone',
+
   /** After exiting FullScreen mode, the document outline should be visible. */
   UseOutlines = 'UseOutlines',
+
   /** After exiting FullScreen mode, thumbnail images should be visible. */
   UseThumbs = 'UseThumbs',
-  /** After exiting FullScreen mode, the optional content group panel should be
+
+  /**
+   * After exiting FullScreen mode, the optional content group panel should be
    * visible.
    */
   UseOC = 'UseOC',
 }
 
-export enum Direction {
+export enum ReadingDirection {
   /** The predominant reading order is Left to Right. */
   L2R = 'L2R',
-  /** The predominant reading order is Right to left (including vertical writing
+
+  /**
+   * The predominant reading order is Right to left (including vertical writing
    * systems, such as Chinese, Japanese and Korean).
    */
   R2L = 'R2L',
@@ -41,18 +53,23 @@ export enum Direction {
 export enum PrintScaling {
   /** No page scaling. */
   None = 'None',
-  /* Use the PDF reader’s default print scaling. */
+
+  /* Use the PDF reader's default print scaling. */
   AppDefault = 'AppDefault',
 }
 
 export enum Duplex {
   /** The PDF reader should print single-sided. */
   Simplex = 'Simplex',
-  /** The PDF reader should print double sided and flip on the short edge of the
+
+  /**
+   * The PDF reader should print double sided and flip on the short edge of the
    * sheet.
    */
   DuplexFlipShortEdge = 'DuplexFlipShortEdge',
-  /** The PDF reader should print double sided and flip on the long edge of the
+
+  /**
+   * The PDF reader should print double sided and flip on the long edge of the
    * sheet.
    */
   DuplexFlipLongEdge = 'DuplexFlipLongEdge',
@@ -98,7 +115,7 @@ class ViewerPreferences {
     return undefined;
   }
 
-  protected lookupNameVal(key: NameViewerPrefKey): PDFName | undefined {
+  protected lookupName(key: NameViewerPrefKey): PDFName | undefined {
     const returnObj = this.dict.lookup(PDFName.of(key));
     if (returnObj instanceof PDFName) return returnObj;
     return undefined;
@@ -129,19 +146,19 @@ class ViewerPreferences {
   }
 
   NonFullScreenPageMode(): PDFName | undefined {
-    return this.lookupNameVal('NonFullScreenPageMode');
+    return this.lookupName('NonFullScreenPageMode');
   }
 
   Direction(): PDFName | undefined {
-    return this.lookupNameVal('Direction');
+    return this.lookupName('Direction');
   }
 
   PrintScaling(): PDFName | undefined {
-    return this.lookupNameVal('PrintScaling');
+    return this.lookupName('PrintScaling');
   }
 
   Duplex(): PDFName | undefined {
-    return this.lookupNameVal('Duplex');
+    return this.lookupName('Duplex');
   }
 
   PickTrayByPDFSize(): PDFBool | undefined {
@@ -180,8 +197,8 @@ class ViewerPreferences {
 
   /**
    * Returns `true` if PDF readers should hide the user interface elements in
-   * the document’s window (such as scroll bars and navigation controls),
-   * leaving only the document’s contents displayed.
+   * the document's window (such as scroll bars and navigation controls),
+   * leaving only the document's contents displayed.
    * @returns Whether or not user interface elements should be hidden.
    */
   getHideWindowUI(): boolean {
@@ -189,7 +206,7 @@ class ViewerPreferences {
   }
 
   /**
-   * Returns `true` if PDF readers should resize the document’s window to fit
+   * Returns `true` if PDF readers should resize the document's window to fit
    * the size of the first displayed page.
    * @returns Whether or not the window should be resized to fit.
    */
@@ -198,7 +215,7 @@ class ViewerPreferences {
   }
 
   /**
-   * Returns `true` if PDF readers should position the document’s window in the
+   * Returns `true` if PDF readers should position the document's window in the
    * center of the screen.
    * @returns Whether or not to center the document window.
    */
@@ -220,8 +237,7 @@ class ViewerPreferences {
   /**
    * Returns the page mode, which tells the PDF reader how to display the
    * document after exiting full-screen mode.
-   * @returns The page mode after exiting full-screen mode. One of
-   *          [[Enums.NonFullScreenPageMode]].
+   * @returns The page mode after exiting full-screen mode.
    */
   getNonFullScreenPageMode(): NonFullScreenPageMode {
     const mode = this.NonFullScreenPageMode()?.decodeText();
@@ -230,17 +246,17 @@ class ViewerPreferences {
 
   /**
    * Returns the predominant reading order for text.
-   * @returns The text reading order. One of [[Enums.Direction]]
+   * @returns The text reading order.
    */
-  getDirection(): Direction {
+  getReadingDirection(): ReadingDirection {
     const direction = this.Direction()?.decodeText();
-    return asEnum(direction, Direction) ?? Direction.L2R;
+    return asEnum(direction, ReadingDirection) ?? ReadingDirection.L2R;
   }
 
   /**
    * Returns the page scaling option that the PDF reader should select when the
    * print dialog is displayed.
-   * @returns The page scaling option. One of [[Enums.PrintScaling]]
+   * @returns The page scaling option.
    */
   getPrintScaling(): PrintScaling {
     const scaling = this.PrintScaling()?.decodeText();
@@ -250,7 +266,7 @@ class ViewerPreferences {
   /**
    * Returns the paper handling option that should be used when printing the
    * file from the print dialog.
-   * @returns The paper handling option. One of [[Enums.Duplex]]
+   * @returns The paper handling option.
    */
   getDuplex(): Duplex | undefined {
     const duplex = this.Duplex()?.decodeText();
@@ -270,33 +286,35 @@ class ViewerPreferences {
   /**
    * Returns an array of page number ranges, which are the values used to
    * initialize the print dialog box when the file is printed. Each range
-   * specifyies the first (`start`) and last (`end`) pages in a sub-range of
-   * pages to be printed. The first page of the PDF file is denoted by 1. For
-   * example:
+   * specifies the first (`start`) and last (`end`) pages in a sub-range of
+   * pages to be printed. The first page of the PDF file is denoted by 0.
+   * For example:
    * ```js
-   * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
-   * if (viewerPrefs.getPrintRanges().some(pr => pr.start =< 3 && pr.end >= 3))
-   *    console.log('printRange includes page 3')
+   * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+   * const includesPage3 = viewerPrefs
+   *   .getPrintRanges()
+   *   .some(pr => pr.start =< 2 && pr.end >= 2)
+   * if (includesPage3) console.log('printRange includes page 3')
    * ```
    * @returns An array of objects, each with the properties `start` and `end`,
-   *          denoting page numbers. If not, specified an empty array is
+   *          denoting page indices. If not, specified an empty array is
    *          returned.
    */
   getPrintPageRange(): PageRange[] {
     const rng = this.PrintPageRange();
+    if (!rng) return [];
+
     const pageRanges: PageRange[] = [];
-    if (rng) {
-      for (let i = 0; i < rng.size(); i += 2) {
-        // Adding 1 does not make sense where the spec cleraly states "The first
-        // page of the PDF file shall be donoted by 1". However several test
-        // PDFs (spec 1.7) created in Acrobat XI 11.0 and also read with reader
-        // DC 2020.013 would indicate this is a 0 based index
-        pageRanges.push({
-          start: (rng.get(i) as PDFNumber).asNumber() + 1,
-          end: (rng.get(i + 1) as PDFNumber).asNumber() + 1,
-        });
-      }
+    for (let i = 0; i < rng.size(); i += 2) {
+      // Despite the spec clearly stating that "The first page of the PDF file
+      // shall be donoted by 1", several test PDFs (spec 1.7) created in
+      // Acrobat XI 11.0 and also read with Reader DC 2020.013 indicate this is
+      // actually a 0 based index.
+      const start = rng.lookup(i, PDFNumber).asNumber();
+      const end = rng.lookup(i + 1, PDFNumber).asNumber();
+      pageRanges.push({ start, end });
     }
+
     return pageRanges;
   }
 
@@ -310,7 +328,7 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose whether the PDF reader’s toolbars should be hidden while the
+   * Choose whether the PDF reader's toolbars should be hidden while the
    * document is active.
    * @param hideToolbar `true` if the toolbar should be hidden.
    */
@@ -320,7 +338,7 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose whether the PDF reader’s menu bar should be hidden while the
+   * Choose whether the PDF reader's menu bar should be hidden while the
    * document is active.
    * @param hideMenubar `true` if the menu bar should be hidden.
    */
@@ -331,8 +349,8 @@ class ViewerPreferences {
 
   /**
    * Choose whether the PDF reader should hide user interface elements in the
-   * document’s window (such as scroll bars and navigation controls), leaving
-   * only the document’s contents displayed.
+   * document's window (such as scroll bars and navigation controls), leaving
+   * only the document's contents displayed.
    * @param hideWindowUI `true` if the user interface elements should be hidden.
    */
   setHideWindowUI(hideWindowUI: boolean) {
@@ -341,7 +359,7 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose whether the PDF reader should resize the document’s window to fit
+   * Choose whether the PDF reader should resize the document's window to fit
    * the size of the first displayed page.
    * @param fitWindow `true` if the window should be resized.
    */
@@ -351,7 +369,7 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose whether the PDF reader should position the document’s window in the
+   * Choose whether the PDF reader should position the document's window in the
    * center of the screen.
    * @param centerWindow `true` if the window should be centered.
    */
@@ -361,7 +379,7 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose whether the window’s title bar should display the document `Title`
+   * Choose whether the window's title bar should display the document `Title`
    * taken from the document metadata (see [[PDFDocument.setTitle]]). If
    * `false`, the title bar should instead display the PDF filename.
    * @param displayTitle `true` if the document title should be displayed.
@@ -372,22 +390,26 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose how the PDF reader should display the document on exiting
+   * Choose how the PDF reader should display the document upon exiting
    * full-screen mode. This entry is meaningful only if the value of the
-   * PageMode entry in the document's Catalog dictionary is FullScreen.
+   * `PageMode` entry in the document's [[PDFCatalog]] is `FullScreen`.
+   *
    * For example:
    * ```js
-   * import { PDFDocument, NonFullScreenPageMode } from 'pdf-lib'
+   * import { PDFDocument, NonFullScreenPageMode, PDFName } from 'pdf-lib'
+   *
    * const pdfDoc = await PDFDocument.create()
-   * // set the PageMode
+   *
+   * // Set the PageMode
    * pdfDoc.catalog.set(PDFName.of('PageMode'),PDFName.of('FullScreen'))
-   * // set what happens when fullScreen is closed
+   *
+   * // Set what happens when full-screen is closed
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
    * viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines)
    * ```
-   * @param nonFullScreenPageMode How the document should be displayed on
-   *                              exiting full screen mode. One of
-   *                              [[Enums. NonFullScreenPageMode]].
+   *
+   * @param nonFullScreenPageMode How the document should be displayed upon
+   *                              exiting full screen mode.
    */
   setNonFullScreenPageMode(nonFullScreenPageMode: NonFullScreenPageMode) {
     assertIsOneOf(
@@ -401,35 +423,42 @@ class ViewerPreferences {
 
   /**
    * Choose the predominant reading order for text.
-   * This entry has no direct effect on the document’s contents or page
+   *
+   * This entry has no direct effect on the document's contents or page
    * numbering, but may be used to determine the relative positioning of pages
    * when displayed side by side or printed n-up.
+   *
    * For example:
    * ```js
-   * import { PDFDocument, Direction } from 'pdf-lib'
+   * import { PDFDocument, ReadingDirection } from 'pdf-lib'
+   *
    * const pdfDoc = await PDFDocument.create()
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
-   * viewerPrefs.setDirection(Direction.R2L)
+   * viewerPrefs.setReadingDirection(ReadingDirection.R2L)
    * ```
-   * @param direction The reading order for text. One of [[Enums.Direction]]
+   *
+   * @param readingDirection The reading order for text.
    */
-  setDirection(direction: Direction) {
-    assertIsOneOf(direction, 'direction', Direction);
-    const dir = PDFName.of(direction);
-    this.dict.set(PDFName.of('Direction'), dir);
+  setReadingDirection(readingDirection: ReadingDirection) {
+    assertIsOneOf(readingDirection, 'readingDirection', ReadingDirection);
+    const direction = PDFName.of(readingDirection);
+    this.dict.set(PDFName.of('Direction'), direction);
   }
 
   /**
    * Choose the page scaling option that should be selected when a print dialog
    * is displayed for this document.
-   * * For example:
+   *
+   * For example:
    * ```js
    * import { PDFDocument, PrintScaling } from 'pdf-lib'
+   *
    * const pdfDoc = await PDFDocument.create()
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
    * viewerPrefs.setPrintScaling(PrintScaling.None)
    * ```
-   * @param printScaling The print scaling option. One of [[Enums.PrintScaling]]
+   *
+   * @param printScaling The print scaling option.
    */
   setPrintScaling(printScaling: PrintScaling) {
     assertIsOneOf(printScaling, 'printScaling', PrintScaling);
@@ -438,16 +467,19 @@ class ViewerPreferences {
   }
 
   /**
-   * Choose the paper handling option which should be the default displayed in
-   * the print dialog.
+   * Choose the paper handling option that should be selected by default in the
+   * print dialog.
+   *
    * For example:
    * ```js
    * import { PDFDocument, Duplex } from 'pdf-lib'
+   *
    * const pdfDoc = await PDFDocument.create()
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
    * viewerPrefs.setDuplex(Duplex.DuplexFlipShortEdge)
-   * @param duplex The double or single sided printing option. One of
-   *               [[Enums.Duplex]]
+   * ```
+   *
+   * @param duplex The double or single sided printing option.
    */
   setDuplex(duplex: Duplex) {
     assertIsOneOf(duplex, 'duplex', Duplex);
@@ -459,10 +491,12 @@ class ViewerPreferences {
    * Choose whether the PDF document's page size should be used to select the
    * input paper tray when printing. This setting influences only the preset
    * values used to populate the print dialog presented by a PDF reader.
+   *
    * If PickTrayByPDFSize is true, the check box in the print dialog associated
    * with input paper tray should be checked. This setting has no effect on
-   * operating systems that do not provide the ability to pick the input tray by
-   * size.
+   * operating systems that do not provide the ability to pick the input tray
+   * by size.
+   *
    * @param pickTrayByPDFSize `true` if the document's page size should be used
    *                          to select the input paper tray.
    */
@@ -473,34 +507,41 @@ class ViewerPreferences {
 
   /**
    * Choose the page numbers used to initialize the print dialog box when the
-   * file is printed. The first page of the PDF file is denoted by 1.
+   * file is printed. The first page of the PDF file is denoted by 0.
+   *
    * For example:
    * ```js
-   * import { PDFDocument, PrintScaling } from 'pdf-lib'
+   * import { PDFDocument } from 'pdf-lib'
+   *
    * const pdfDoc = await PDFDocument.create()
    * const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
-   * // to set the default to print only the first page
-   * viewerPrefs.setPrintPageRange({ start: 1, end: 1 })
-   * // or alternatively if discontinuous ranges of pages should be the default,
-   * // for example page 1, page 3 and pages 5-7, provide an array:
+   *
+   * // We can set the default print range to only the first page
+   * viewerPrefs.setPrintPageRange({ start: 0, end: 0 })
+   *
+   * // Or we can supply noncontiguous ranges (e.g. pages 1, 3, and 5-7)
    * viewerPrefs.setPrintPageRange([
-   *   { start: 1, end: 1 },
-   *   { start: 3, end: 3 },
-   *   { start: 5, end: 7 },
+   *   { start: 0, end: 0 },
+   *   { start: 2, end: 2 },
+   *   { start: 4, end: 6 },
    * ])
    * ```
+   *
    * @param printPageRange An object or array of objects, each with the
    *                       properties `start` and `end`, denoting a range of
-   *                       page numbers
+   *                       page indices.
    */
   setPrintPageRange(printPageRange: PageRange[] | PageRange) {
     if (!Array.isArray(printPageRange)) printPageRange = [printPageRange];
-    let flatRange = printPageRange.reduce(
-      (accum, pgRng) => accum.concat(pgRng.start, pgRng.end),
-      [] as number[],
-    );
+
+    const flatRange: number[] = [];
+    for (let idx = 0, len = printPageRange.length; idx < len; idx++) {
+      flatRange.push(printPageRange[idx].start);
+      flatRange.push(printPageRange[idx].end);
+    }
+
     assertEachIs(flatRange, 'printPageRange', ['number']);
-    flatRange = flatRange.map((r) => r - 1);
+
     const pageRanges = this.dict.context.obj(flatRange);
     this.dict.set(PDFName.of('PrintPageRange'), pageRanges);
   }
@@ -512,9 +553,7 @@ class ViewerPreferences {
    */
   setNumCopies(numCopies: number) {
     assertRange(numCopies, 'numCopies', 1, Number.MAX_VALUE);
-    if (!Number.isInteger(numCopies)) {
-      throw new Error('numCopies must be an integer');
-    }
+    assertInteger(numCopies, 'numCopies');
     const NumCopies = this.dict.context.obj(numCopies);
     this.dict.set(PDFName.of('NumCopies'), NumCopies);
   }
