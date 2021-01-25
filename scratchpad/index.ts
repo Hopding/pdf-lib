@@ -29,6 +29,12 @@ import { PDFDocument } from 'src/index';
 
   form.getOptionList('List Box6').select('Honda');
 
+  const fieldToRemove = form.getRadioGroup('Group4');
+  form.removeField(fieldToRemove);
+  if (form.getFieldMaybe('Group4') !== undefined) {
+    throw new Error('Failed to remove field');
+  }
+
   // Flatten the form's fields
   form.flatten();
 
