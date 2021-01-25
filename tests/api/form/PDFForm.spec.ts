@@ -12,6 +12,7 @@ import {
   PDFName,
   PDFForm,
   PDFAcroForm,
+  PDFRef,
 } from 'src/index';
 
 const getWidgets = (pdfDoc: PDFDocument) =>
@@ -25,6 +26,9 @@ const getWidgets = (pdfDoc: PDFDocument) =>
         obj.get(PDFName.of('Subtype')) === PDFName.of('Widget'),
     )
     .map((obj) => obj as PDFDict);
+
+const getRefs = (pdfDoc: PDFDocument) =>
+  pdfDoc.context.enumerateIndirectObjects().map(([ref]) => ref as PDFRef);
 
 const getApRefs = (widget: PDFWidgetAnnotation) => {
   const onValue = widget.getOnValue() ?? PDFName.of('Yes');
@@ -162,8 +166,8 @@ describe(`PDFForm`, () => {
     // (3) Run appearance update
     form.updateFieldAppearances();
 
-    // (3) Make sure a new appearance stream was created
-    expect(flatten(widgets.map(getApRefs))).not.toEqual(originalAps);
+    // (3) Make sure no new appearance streams were created
+    expect(flatten(widgets.map(getApRefs))).toEqual(originalAps);
   });
 
   it(`creates appearance streams for widgets that do not have any`, async () => {
@@ -276,7 +280,7 @@ describe(`PDFForm`, () => {
     expect(aps()).toBe(20);
   });
 
-  it.only(`does not throw errors for PDFSignature fields`, async () => {
+  it(`does not throw errors for PDFSignature fields`, async () => {
     const pdfDoc = await PDFDocument.load(signaturePdfBytes);
 
     const widgets = getWidgets(pdfDoc);
@@ -289,6 +293,39 @@ describe(`PDFForm`, () => {
     expect(
       pdfDoc.save({ updateFieldAppearances: true }),
     ).resolves.toBeInstanceOf(Uint8Array);
+  });
+
+  it(`it cleans references of removed fields and their widgets`, async () => {
+    const pdfDoc = await PDFDocument.load(fancyFieldsPdfBytes);
+    const form = pdfDoc.getForm();
+
+    const refs1 = getRefs(pdfDoc);
+
+    const cb = form.getCheckBox('Will You Ever Let Me Down? ☕️');
+    const rg = form.getRadioGroup('Historical Figures 🐺');
+
+    const cbWidgetRefs = cb.acroField.normalizedEntries().Kids.asArray();
+    const rgWidgetRefs = cb.acroField.normalizedEntries().Kids.asArray();
+
+    expect(cbWidgetRefs.length).toBeGreaterThan(0);
+    expect(rgWidgetRefs.length).toBeGreaterThan(0);
+
+    // Assert that refs are present before their fields have been removed
+    expect(refs1.includes(cb.ref)).toBe(true);
+    expect(refs1.includes(rg.ref)).toBe(true);
+    cbWidgetRefs.forEach((ref) => expect(refs1).toContain(ref));
+    rgWidgetRefs.forEach((ref) => expect(refs1).toContain(ref));
+
+    form.removeField(cb);
+    form.removeField(rg);
+
+    const refs2 = getRefs(pdfDoc);
+
+    // Assert that refs are not present after their fields have been removed
+    expect(refs2.includes(cb.ref)).toBe(false);
+    expect(refs2.includes(rg.ref)).toBe(false);
+    cbWidgetRefs.forEach((ref) => expect(refs2).not.toContain(ref));
+    rgWidgetRefs.forEach((ref) => expect(refs2).not.toContain(ref));
   });
 
   // TODO: Add method to remove APs and use `NeedsAppearances`? How would this
