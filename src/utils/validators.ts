@@ -212,6 +212,14 @@ export const assertMultiple = (
   }
 };
 
+export const assertInteger = (value: any, valueName: string) => {
+  if (!Number.isInteger(value)) {
+    throw new Error(
+      `${backtick(valueName)} must be an integer, but was actually ${value}`,
+    );
+  }
+};
+
 export const assertPositiveNum = (
 	value: number,
 	valueName: string
