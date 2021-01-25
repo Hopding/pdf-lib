@@ -57,7 +57,7 @@
   - [Modify Document](#modify-document)
   - [Create Form](#create-form)
   - [Fill Form](#fill-form)
-  - [Flatten Form](#flatten-form) - _**new!**_
+  - [Flatten Form](#flatten-form)
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
@@ -65,8 +65,8 @@
   - [Add Attachments](#add-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
-  - [Set Viewer Preferences](#set-viewer-preferences)
-  - [Read Viewer Preferences](#read-viewer-preferences)
+  - [Set Viewer Preferences](#set-viewer-preferences) - _**new!**_
+  - [Read Viewer Preferences](#read-viewer-preferences) - _**new!**_
   - [Draw SVG Paths](#draw-svg-paths)
 - [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
@@ -840,9 +840,18 @@ Modification Date: 2010-07-29T14:26:00.000Z
 ```
 
 ### Set Viewer Preferences
+
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument, StandardFonts, NonFullScreenPageMode, Direction, PrintScaling, Duplex } from 'pdf-lib'
+import {
+  PDFDocument,
+  StandardFonts,
+  NonFullScreenPageMode,
+  ReadingDirection,
+  PrintScaling,
+  Duplex,
+  PDFName,
+} from 'pdf-lib'
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
@@ -856,32 +865,37 @@ page.setFont(timesRomanFont)
 page.drawText('The Life of an Egg', { x: 60, y: 500, size: 50 })
 page.drawText('An Epic Tale of Woe', { x: 125, y: 460, size: 25 })
 
-// Set all available viewer preferences on the PDFDocument.
-const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+// Set all available viewer preferences on the PDFDocument:
+const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
 viewerPrefs.setHideToolbar(true)
 viewerPrefs.setHideMenubar(true)
 viewerPrefs.setHideWindowUI(true)
 viewerPrefs.setFitWindow(true)
 viewerPrefs.setCenterWindow(true)
 viewerPrefs.setDisplayDocTitle(true)
-// set the PageMode, otherwise the subsequent NonFullScreenPageMode has no meaning
-pdfDoc.catalog.set(PDFName.of('PageMode'),PDFName.of('FullScreen'))
-// set what happens when fullScreen is closed
-viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines) 
-viewerPrefs.setDirection(Direction.L2R) 
-viewerPrefs.setPrintScaling(PrintScaling.None) 
-viewerPrefs.setDuplex(Duplex.DuplexFlipLongEdge) 
+
+// Set the PageMode (otherwise setting NonFullScreenPageMode has no meaning)
+pdfDoc.catalog.set(PDFName.of('PageMode'), PDFName.of('FullScreen'))
+
+// Set what happens when fullScreen is closed
+viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines)
+
+viewerPrefs.setReadingDirection(ReadingDirection.L2R)
+viewerPrefs.setPrintScaling(PrintScaling.None)
+viewerPrefs.setDuplex(Duplex.DuplexFlipLongEdge)
 viewerPrefs.setPickTrayByPDFSize(true)
-// to set the default to print only the first page
-viewerPrefs.setPrintPageRange({ start: 1, end: 1 })
-// or alternatively if discontinuous ranges of pages should be the default
-// for example page 1, page 3 and pages 5-7, provide an array
+
+// We can set the default print range to only the first page
+viewerPrefs.setPrintPageRange({ start: 0, end: 0 })
+
+// Or we can supply noncontiguous ranges (e.g. pages 1, 3, and 5-7)
 viewerPrefs.setPrintPageRange([
-  { start: 1, end: 1 },
-  { start: 3, end: 3 },
-  { start: 5, end: 7 },
+  { start: 0, end: 0 },
+  { start: 2, end: 2 },
+  { start: 4, end: 6 },
 ])
-viewerPrefs.setNumCopies(2) 
+
+viewerPrefs.setNumCopies(2)
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
 const pdfBytes = await pdfDoc.save()
@@ -893,6 +907,7 @@ const pdfBytes = await pdfDoc.save()
 ```
 
 ### Read Viewer Preferences
+
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument } from 'pdf-lib'
@@ -904,10 +919,8 @@ import { PDFDocument } from 'pdf-lib'
 const existingPdfBytes = ...
 
 // Load a PDFDocument without updating its existing metadata
-const pdfDoc = await PDFDocument.load(existingPdfBytes, { 
-  updateMetadata: false 
-})
-const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+const pdfDoc = await PDFDocument.load(existingPdfBytes)
+const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
 
 // Print all available viewer preference fields
 console.log('HideToolbar:', viewerPrefs.getHideToolbar())
@@ -917,12 +930,30 @@ console.log('FitWindow:', viewerPrefs.getFitWindow())
 console.log('CenterWindow:', viewerPrefs.getCenterWindow())
 console.log('DisplayDocTitle:', viewerPrefs.getDisplayDocTitle())
 console.log('NonFullScreenPageMode:', viewerPrefs.getNonFullScreenPageMode())
-console.log('Direction:', viewerPrefs.getDirection())
+console.log('ReadingDirection:', viewerPrefs.getReadingDirection())
 console.log('PrintScaling:', viewerPrefs.getPrintScaling())
 console.log('Duplex:', viewerPrefs.getDuplex())
 console.log('PickTrayByPDFSize:', viewerPrefs.getPickTrayByPDFSize())
 console.log('PrintPageRange:', viewerPrefs.getPrintPageRange())
 console.log('NumCopies:', viewerPrefs.getNumCopies())
+```
+
+This script outputs the following (_when [this PDF](assets/pdfs/with_viewer_prefs.pdf) is used for the `existingPdfBytes` variable_):
+
+```
+HideToolbar: true
+HideMenubar: true
+HideWindowUI: false
+FitWindow: true
+CenterWindow: true
+DisplayDocTitle: true
+NonFullScreenPageMode: UseNone
+ReadingDirection: R2L
+PrintScaling: None
+Duplex: DuplexFlipLongEdge
+PickTrayByPDFSize: true
+PrintPageRange: [ { start: 1, end: 1 }, { start: 3, end: 4 } ]
+NumCopies: 2
 ```
 
 ### Draw SVG Paths
