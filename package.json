@@ -26,7 +26,8 @@
     "Zach Toben (https://github.com/ztoben)",
     "Zack Sheppard (https://github.com/zackdotcomputer)",
     "DkDavid (https://github.com/DkDavid)",
-    "Bj Tecu (https://github.com/btecu)"
+    "Bj Tecu (https://github.com/btecu)",
+    "Brent McSharry (https://github.com/mcshaz)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",

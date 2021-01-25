@@ -10,8 +10,8 @@ type Primitive = string | number | boolean | undefined | null;
 // prettier-ignore
 const formatValue = (value: any) => {
   const type = typeof value;
-  if (type ==='string')return singleQuote(value);
-  else if (type ==='undefined')return backtick(value);
+  if (type ==='string') return singleQuote(value);
+  else if (type ==='undefined') return backtick(value);
   else return value;
 };
 
