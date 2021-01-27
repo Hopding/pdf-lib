@@ -22,7 +22,12 @@ import {
   AcroChoiceFlags,
   PDFWidgetAnnotation,
 } from 'src/core';
-import { assertIs, assertOrUndefined, assertIsSubset } from 'src/utils';
+import {
+  assertIs,
+  assertIsSubset,
+  assertOrUndefined,
+  assertPositiveNum,
+} from 'src/utils';
 
 /**
  * Represents an option list field of a [[PDFForm]].
@@ -524,5 +529,20 @@ export default class PDFOptionList extends PDFField {
     const apProvider = provider ?? defaultOptionListAppearanceProvider;
     const appearances = normalizeAppearance(apProvider(this, widget, font));
     this.updateWidgetAppearanceWithFont(widget, font, appearances);
+  }
+
+  /**
+   * Set the font size for the text in this field. There needs to be a
+   * default appearance string (DA) set with a font value specified
+   * for this to work. For example:
+   * ```js
+   * const optionList = form.getOptionList('some.optionList.field')
+   * optionList.setFontSize(4);
+   * ```
+   * @param fontSize The font size to set the font to.
+   */
+  setFontSize(fontSize: number) {
+    assertPositiveNum(fontSize, 'fontSize');
+    this.acroField.setFontSize(fontSize);
   }
 }
