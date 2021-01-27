@@ -168,3 +168,15 @@ export const parseDate = (dateStr: string): Date | undefined => {
 
   return date;
 };
+
+export const findLastMatch = (value: string, regex: RegExp) => {
+  let position = 0;
+  let lastMatch: RegExpMatchArray | undefined;
+  while (position < value.length) {
+    const match = value.substring(position).match(regex);
+    if (!match) return { match: lastMatch, pos: position };
+    lastMatch = match;
+    position += (match.index ?? 0) + match[0].length;
+  }
+  return { match: lastMatch, pos: position };
+};
