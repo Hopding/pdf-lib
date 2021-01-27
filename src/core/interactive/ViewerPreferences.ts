@@ -95,16 +95,20 @@ interface PageRange {
 }
 
 class ViewerPreferences {
+  /** @ignore */
   readonly dict: PDFDict;
 
+  /** @ignore */
   static fromDict = (dict: PDFDict): ViewerPreferences =>
     new ViewerPreferences(dict);
 
+  /** @ignore */
   static create = (context: PDFContext) => {
     const dict = context.obj({});
     return new ViewerPreferences(dict);
   };
 
+  /** @ignore */
   protected constructor(dict: PDFDict) {
     this.dict = dict;
   }
@@ -121,56 +125,69 @@ class ViewerPreferences {
     return undefined;
   }
 
+  /** @ignore */
   HideToolbar(): PDFBool | undefined {
     return this.lookupBool('HideToolbar');
   }
 
+  /** @ignore */
   HideMenubar(): PDFBool | undefined {
     return this.lookupBool('HideMenubar');
   }
 
+  /** @ignore */
   HideWindowUI(): PDFBool | undefined {
     return this.lookupBool('HideWindowUI');
   }
 
+  /** @ignore */
   FitWindow(): PDFBool | undefined {
     return this.lookupBool('FitWindow');
   }
 
+  /** @ignore */
   CenterWindow(): PDFBool | undefined {
     return this.lookupBool('CenterWindow');
   }
 
+  /** @ignore */
   DisplayDocTitle(): PDFBool | undefined {
     return this.lookupBool('DisplayDocTitle');
   }
 
+  /** @ignore */
   NonFullScreenPageMode(): PDFName | undefined {
     return this.lookupName('NonFullScreenPageMode');
   }
 
+  /** @ignore */
   Direction(): PDFName | undefined {
     return this.lookupName('Direction');
   }
 
+  /** @ignore */
   PrintScaling(): PDFName | undefined {
     return this.lookupName('PrintScaling');
   }
 
+  /** @ignore */
   Duplex(): PDFName | undefined {
     return this.lookupName('Duplex');
   }
 
+  /** @ignore */
   PickTrayByPDFSize(): PDFBool | undefined {
     return this.lookupBool('PickTrayByPDFSize');
   }
 
+  /** @ignore */
   PrintPageRange(): PDFArray | undefined {
     const PrintPageRange = this.dict.lookup(PDFName.of('PrintPageRange'));
     if (PrintPageRange instanceof PDFArray) return PrintPageRange;
     return undefined;
   }
 
+  /** @ignore */
   NumCopies(): PDFNumber | undefined {
     const NumCopies = this.dict.lookup(PDFName.of('NumCopies'));
     if (NumCopies instanceof PDFNumber) return NumCopies;
