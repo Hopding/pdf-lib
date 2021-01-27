@@ -7,6 +7,7 @@ import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFRef from 'src/core/objects/PDFRef';
 import { findLastMatch } from 'src/utils';
+import { MissingDAEntryError, MissingTfOperatorError } from 'src/core/errors';
 
 // Examples:
 //   `/Helv 12 Tf` -> ['Helv', '12']
@@ -104,21 +105,20 @@ class PDFAcroField {
   }
 
   setFontSize(fontSize: number) {
+    const name = this.getFullyQualifiedName() ?? '';
+
     const da = this.getDefaultAppearance();
-    if (da) {
-      const daMatch = findLastMatch(da, tfRegex);
-      if (daMatch.match && Number(daMatch.match[2]) !== fontSize) {
-        let daEnd = '';
-        if (daMatch.pos <= da.length) {
-          daEnd = da.slice(daMatch.pos);
-        }
-        this.setDefaultAppearance(
-          `${da.slice(0, daMatch.pos - daMatch.match[0].length)}/${
-            daMatch.match[1]
-          } ${fontSize} Tf${daEnd}`,
-        );
-      }
-    }
+    if (!da) throw new MissingDAEntryError(name);
+
+    const daMatch = findLastMatch(da, tfRegex);
+    if (!daMatch.match) throw new MissingTfOperatorError(name);
+
+    const daStart = da.slice(0, daMatch.pos - daMatch.match[0].length);
+    const daEnd = daMatch.pos <= da.length ? da.slice(daMatch.pos) : '';
+    const fontName = daMatch.match[1];
+    const modifiedDa = `${daStart} /${fontName} ${fontSize} Tf ${daEnd}`;
+
+    this.setDefaultAppearance(modifiedDa);
   }
 
   getFlags(): number {

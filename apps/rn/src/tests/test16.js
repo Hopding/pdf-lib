@@ -204,7 +204,7 @@ export default async () => {
 
   const firstName = form.getTextField(fieldNames.FirstNameAndMiddleInitial);
   firstName.setText('Arthur F');
-  firstName.setFontSize(20); 
+  firstName.setFontSize(20);
 
   const lastName = form.getTextField(fieldNames.LastName);
   lastName.setText('Pendragon');
