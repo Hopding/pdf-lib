@@ -27,7 +27,8 @@
     "Zack Sheppard (https://github.com/zackdotcomputer)",
     "DkDavid (https://github.com/DkDavid)",
     "Bj Tecu (https://github.com/btecu)",
-    "Brent McSharry (https://github.com/mcshaz)"
+    "Brent McSharry (https://github.com/mcshaz)",
+    "Tim Knapp (https://github.com/duffyd)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",

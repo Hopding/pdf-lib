@@ -85,6 +85,7 @@ export default async (assets: Assets) => {
   const ol = form.createOptionList('custom.optionlist.field');
   const rg = form.createRadioGroup('custom.radiogroup.field');
   const tf = form.createTextField('custom.text.field');
+  const tfFontSize = form.createTextField('custom.text.fieldFontSize');
 
   dd.addOptions('∑');
   ol.addOptions('∑');
@@ -106,6 +107,17 @@ export default async (assets: Assets) => {
   rg.addOptionToPage('bar', page, { x, y, width, height });
   y -= height + 25;
   tf.addToPage(page, { x, y, width, height, font: symbol });
+  y -= height * 4 + 25;
+  tfFontSize.addToPage(page, {
+    x: x - width * 2,
+    y,
+    width: width * 5,
+    height: height * 4,
+    font: ubuntuFont,
+  });
+  tfFontSize.enableMultiline();
+  tfFontSize.setFontSize(71.999);
+  tfFontSize.setText('This text should be huge');
 
   const rectangle = drawRectangle({
     x: 0,
