@@ -1,0 +1,498 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>ViewerPreferences · PDF-LIB</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;&lt;a href=&quot;/docs/api/&quot;&gt;pdf-lib&lt;/a&gt; › &lt;a href=&quot;/docs/api/classes/viewerpreferences&quot;&gt;ViewerPreferences&lt;/a&gt;&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="ViewerPreferences · PDF-LIB"/><meta property="og:type" content="website"/><meta property="og:url" content="https://Hopding.github.io/"/><meta property="og:description" content="&lt;p&gt;&lt;a href=&quot;/docs/api/&quot;&gt;pdf-lib&lt;/a&gt; › &lt;a href=&quot;/docs/api/classes/viewerpreferences&quot;&gt;ViewerPreferences&lt;/a&gt;&lt;/p&gt;
+"/><meta property="og:image" content="https://Hopding.github.io/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://Hopding.github.io/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/logo3.png"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css"/><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><h2 class="headerTitle">PDF-LIB</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/api/" target="_self">API</a></li><li class=""><a href="/docs/help" target="_self">Help</a></li><li class=""><a href="https://github.com/Hopding/pdf-lib" target="_self">GitHub</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Classes</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/">Globals</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Classes</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfbutton">PDFButton</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfcheckbox">PDFCheckBox</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfdocument">PDFDocument</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfdropdown">PDFDropdown</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfembeddedpage">PDFEmbeddedPage</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdffield">PDFField</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdffont">PDFFont</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfform">PDFForm</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfimage">PDFImage</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfoptionlist">PDFOptionList</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfpage">PDFPage</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfradiogroup">PDFRadioGroup</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdfsignature">PDFSignature</a></li><li class="navListItem"><a class="navItem" href="/docs/api/classes/pdftextfield">PDFTextField</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/api/classes/viewerpreferences">ViewerPreferences</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Enums</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/enums/blendmode">BlendMode</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/colortypes">ColorTypes</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/duplex">Duplex</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/imagealignment">ImageAlignment</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/linecapstyle">LineCapStyle</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/linejoinstyle">LineJoinStyle</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/nonfullscreenpagemode">NonFullScreenPageMode</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/parsespeeds">ParseSpeeds</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/printscaling">PrintScaling</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/readingdirection">ReadingDirection</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/rotationtypes">RotationTypes</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/standardfonts">StandardFonts</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/textalignment">TextAlignment</a></li><li class="navListItem"><a class="navItem" href="/docs/api/enums/textrenderingmode">TextRenderingMode</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Interfaces</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/attachmentoptions">AttachmentOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/base64saveoptions">Base64SaveOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/cmyk">CMYK</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/combedtextlayout">CombedTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/createoptions">CreateOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/degrees">Degrees</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawlinesoftextoptions">DrawLinesOfTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawtextlinesoptions">DrawTextLinesOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/drawtextoptions">DrawTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/embedfontoptions">EmbedFontOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/embeddable">Embeddable</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/fieldappearanceoptions">FieldAppearanceOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/flattenoptions">FlattenOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/grayscale">Grayscale</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutbounds">LayoutBounds</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutcombedtextoptions">LayoutCombedTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layoutsinglelinetextoptions">LayoutSinglelineTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/layouttextoptions">LayoutTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/loadoptions">LoadOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/multilinetextlayout">MultilineTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawcircleoptions">PDFPageDrawCircleOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawellipseoptions">PDFPageDrawEllipseOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawimageoptions">PDFPageDrawImageOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawlineoptions">PDFPageDrawLineOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawpageoptions">PDFPageDrawPageOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawrectangleoptions">PDFPageDrawRectangleOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawsvgoptions">PDFPageDrawSVGOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawsquareoptions">PDFPageDrawSquareOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pdfpagedrawtextoptions">PDFPageDrawTextOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/pagerange">PageRange</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/rgb">RGB</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/radians">Radians</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/saveoptions">SaveOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/settitleoptions">SetTitleOptions</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/singlelinetextlayout">SinglelineTextLayout</a></li><li class="navListItem"><a class="navItem" href="/docs/api/interfaces/textposition">TextPosition</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">ViewerPreferences</h1></header><article><div><span><p><a href="/docs/api/">pdf-lib</a> › <a href="/docs/api/classes/viewerpreferences">ViewerPreferences</a></p>
+<h2><a class="anchor" aria-hidden="true" id="hierarchy"></a><a href="#hierarchy" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Hierarchy</h2>
+<ul>
+<li><strong>ViewerPreferences</strong></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="index"></a><a href="#index" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Index</h2>
+<h3><a class="anchor" aria-hidden="true" id="methods"></a><a href="#methods" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Methods</h3>
+<ul>
+<li><a href="/docs/api/classes/viewerpreferences#getcenterwindow">getCenterWindow</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getdisplaydoctitle">getDisplayDocTitle</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getduplex">getDuplex</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getfitwindow">getFitWindow</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#gethidemenubar">getHideMenubar</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#gethidetoolbar">getHideToolbar</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#gethidewindowui">getHideWindowUI</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getnonfullscreenpagemode">getNonFullScreenPageMode</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getnumcopies">getNumCopies</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getpicktraybypdfsize">getPickTrayByPDFSize</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getprintpagerange">getPrintPageRange</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getprintscaling">getPrintScaling</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#getreadingdirection">getReadingDirection</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setcenterwindow">setCenterWindow</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setdisplaydoctitle">setDisplayDocTitle</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setduplex">setDuplex</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setfitwindow">setFitWindow</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#sethidemenubar">setHideMenubar</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#sethidetoolbar">setHideToolbar</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#sethidewindowui">setHideWindowUI</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setnonfullscreenpagemode">setNonFullScreenPageMode</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setnumcopies">setNumCopies</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setpicktraybypdfsize">setPickTrayByPDFSize</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setprintpagerange">setPrintPageRange</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setprintscaling">setPrintScaling</a></li>
+<li><a href="/docs/api/classes/viewerpreferences#setreadingdirection">setReadingDirection</a></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="methods-1"></a><a href="#methods-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Methods</h2>
+<h3><a class="anchor" aria-hidden="true" id="getcenterwindow"></a><a href="#getcenterwindow" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getCenterWindow</h3>
+<p>▸ <strong>getCenterWindow</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L239">core/interactive/ViewerPreferences.ts:239</a></em></p>
+<p>Returns <code>true</code> if PDF readers should position the document's window in the
+center of the screen.</p>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not to center the document window.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getdisplaydoctitle"></a><a href="#getdisplaydoctitle" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getDisplayDocTitle</h3>
+<p>▸ <strong>getDisplayDocTitle</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L250">core/interactive/ViewerPreferences.ts:250</a></em></p>
+<p>Returns <code>true</code> if the window's title bar should display the document
+<code>Title</code>, taken from the document metadata (see <a href="/docs/api/classes/pdfdocument#gettitle">PDFDocument.getTitle</a>).
+Returns <code>false</code> if the title bar should instead display the filename of the
+PDF file.</p>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether to display the document title.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getduplex"></a><a href="#getduplex" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getDuplex</h3>
+<p>▸ <strong>getDuplex</strong>(): <em><a href="/docs/api/enums/duplex">Duplex</a> | undefined</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L288">core/interactive/ViewerPreferences.ts:288</a></em></p>
+<p>Returns the paper handling option that should be used when printing the
+file from the print dialog.</p>
+<p><strong>Returns:</strong> <em><a href="/docs/api/enums/duplex">Duplex</a> | undefined</em></p>
+<p>The paper handling option.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getfitwindow"></a><a href="#getfitwindow" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getFitWindow</h3>
+<p>▸ <strong>getFitWindow</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L230">core/interactive/ViewerPreferences.ts:230</a></em></p>
+<p>Returns <code>true</code> if PDF readers should resize the document's window to fit
+the size of the first displayed page.</p>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not the window should be resized to fit.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="gethidemenubar"></a><a href="#gethidemenubar" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getHideMenubar</h3>
+<p>▸ <strong>getHideMenubar</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L211">core/interactive/ViewerPreferences.ts:211</a></em></p>
+<p>Returns <code>true</code> if PDF readers should hide the menu bar when displaying this
+document.</p>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not the menu bar should be hidden.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="gethidetoolbar"></a><a href="#gethidetoolbar" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getHideToolbar</h3>
+<p>▸ <strong>getHideToolbar</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L202">core/interactive/ViewerPreferences.ts:202</a></em></p>
+<p>Returns <code>true</code> if PDF readers should hide the toolbar menus when displaying
+this document.</p>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not toolbars should be hidden.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="gethidewindowui"></a><a href="#gethidewindowui" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getHideWindowUI</h3>
+<p>▸ <strong>getHideWindowUI</strong>(): <em>boolean</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L221">core/interactive/ViewerPreferences.ts:221</a></em></p>
+<p>Returns <code>true</code> if PDF readers should hide the user interface elements in
+the document's window (such as scroll bars and navigation controls),
+leaving only the document's contents displayed.</p>
+<p><strong>Returns:</strong> <em>boolean</em></p>
+<p>Whether or not user interface elements should be hidden.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getnonfullscreenpagemode"></a><a href="#getnonfullscreenpagemode" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getNonFullScreenPageMode</h3>
+<p>▸ <strong>getNonFullScreenPageMode</strong>(): <em><a href="/docs/api/enums/nonfullscreenpagemode">NonFullScreenPageMode</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L259">core/interactive/ViewerPreferences.ts:259</a></em></p>
+<p>Returns the page mode, which tells the PDF reader how to display the
+document after exiting full-screen mode.</p>
+<p><strong>Returns:</strong> <em><a href="/docs/api/enums/nonfullscreenpagemode">NonFullScreenPageMode</a></em></p>
+<p>The page mode after exiting full-screen mode.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getnumcopies"></a><a href="#getnumcopies" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getNumCopies</h3>
+<p>▸ <strong>getNumCopies</strong>(): <em>number</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L343">core/interactive/ViewerPreferences.ts:343</a></em></p>
+<p>Returns the number of copies to be printed when the print dialog is opened
+for this document.</p>
+<p><strong>Returns:</strong> <em>number</em></p>
+<p>The default number of copies to be printed.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getpicktraybypdfsize"></a><a href="#getpicktraybypdfsize" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getPickTrayByPDFSize</h3>
+<p>▸ <strong>getPickTrayByPDFSize</strong>(): <em>boolean | undefined</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L299">core/interactive/ViewerPreferences.ts:299</a></em></p>
+<p>Returns <code>true</code> if the PDF page size should be used to select the input
+paper tray.</p>
+<p><strong>Returns:</strong> <em>boolean | undefined</em></p>
+<p>Whether or not the PDF page size should be used to select the
+input paper tray.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getprintpagerange"></a><a href="#getprintpagerange" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getPrintPageRange</h3>
+<p>▸ <strong>getPrintPageRange</strong>(): <em><a href="/docs/api/interfaces/pagerange">PageRange</a>[]</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L320">core/interactive/ViewerPreferences.ts:320</a></em></p>
+<p>Returns an array of page number ranges, which are the values used to
+initialize the print dialog box when the file is printed. Each range
+specifies the first (<code>start</code>) and last (<code>end</code>) pages in a sub-range of
+pages to be printed. The first page of the PDF file is denoted by 0.
+For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+<span class="hljs-keyword">const</span> includesPage3 = viewerPrefs
+  .getPrintRanges()
+  .some(<span class="hljs-function"><span class="hljs-params">pr</span> =&gt;</span> pr.start =<span class="xml"><span class="hljs-tag">&lt; <span class="hljs-attr">2</span> &amp;&amp; <span class="hljs-attr">pr.end</span> &gt;</span>= 2)
+if (includesPage3) console.log('printRange includes page 3')
+</span></code></pre>
+<p><strong>Returns:</strong> <em><a href="/docs/api/interfaces/pagerange">PageRange</a>[]</em></p>
+<p>An array of objects, each with the properties <code>start</code> and <code>end</code>,
+denoting page indices. If not, specified an empty array is
+returned.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getprintscaling"></a><a href="#getprintscaling" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getPrintScaling</h3>
+<p>▸ <strong>getPrintScaling</strong>(): <em><a href="/docs/api/enums/printscaling">PrintScaling</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L278">core/interactive/ViewerPreferences.ts:278</a></em></p>
+<p>Returns the page scaling option that the PDF reader should select when the
+print dialog is displayed.</p>
+<p><strong>Returns:</strong> <em><a href="/docs/api/enums/printscaling">PrintScaling</a></em></p>
+<p>The page scaling option.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="getreadingdirection"></a><a href="#getreadingdirection" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>getReadingDirection</h3>
+<p>▸ <strong>getReadingDirection</strong>(): <em><a href="/docs/api/enums/readingdirection">ReadingDirection</a></em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L268">core/interactive/ViewerPreferences.ts:268</a></em></p>
+<p>Returns the predominant reading order for text.</p>
+<p><strong>Returns:</strong> <em><a href="/docs/api/enums/readingdirection">ReadingDirection</a></em></p>
+<p>The text reading order.</p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setcenterwindow"></a><a href="#setcenterwindow" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setCenterWindow</h3>
+<p>▸ <strong>setCenterWindow</strong>(<code>centerWindow</code>: boolean): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L393">core/interactive/ViewerPreferences.ts:393</a></em></p>
+<p>Choose whether the PDF reader should position the document's window in the
+center of the screen.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>centerWindow</code></td><td>boolean</td><td><code>true</code> if the window should be centered.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setdisplaydoctitle"></a><a href="#setdisplaydoctitle" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setDisplayDocTitle</h3>
+<p>▸ <strong>setDisplayDocTitle</strong>(<code>displayTitle</code>: boolean): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L404">core/interactive/ViewerPreferences.ts:404</a></em></p>
+<p>Choose whether the window's title bar should display the document <code>Title</code>
+taken from the document metadata (see <a href="/docs/api/classes/pdfdocument#settitle">PDFDocument.setTitle</a>). If
+<code>false</code>, the title bar should instead display the PDF filename.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>displayTitle</code></td><td>boolean</td><td><code>true</code> if the document title should be displayed.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setduplex"></a><a href="#setduplex" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setDuplex</h3>
+<p>▸ <strong>setDuplex</strong>(<code>duplex</code>: <a href="/docs/api/enums/duplex">Duplex</a>): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L501">core/interactive/ViewerPreferences.ts:501</a></em></p>
+<p>Choose the paper handling option that should be selected by default in the
+print dialog.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument, Duplex } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
+
+<span class="hljs-keyword">const</span> pdfDoc = <span class="hljs-keyword">await</span> PDFDocument.create()
+<span class="hljs-keyword">const</span> viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+viewerPrefs.setDuplex(Duplex.DuplexFlipShortEdge)
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>duplex</code></td><td><a href="/docs/api/enums/duplex">Duplex</a></td><td>The double or single sided printing option.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setfitwindow"></a><a href="#setfitwindow" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setFitWindow</h3>
+<p>▸ <strong>setFitWindow</strong>(<code>fitWindow</code>: boolean): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L383">core/interactive/ViewerPreferences.ts:383</a></em></p>
+<p>Choose whether the PDF reader should resize the document's window to fit
+the size of the first displayed page.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>fitWindow</code></td><td>boolean</td><td><code>true</code> if the window should be resized.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="sethidemenubar"></a><a href="#sethidemenubar" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setHideMenubar</h3>
+<p>▸ <strong>setHideMenubar</strong>(<code>hideMenubar</code>: boolean): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L362">core/interactive/ViewerPreferences.ts:362</a></em></p>
+<p>Choose whether the PDF reader's menu bar should be hidden while the
+document is active.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>hideMenubar</code></td><td>boolean</td><td><code>true</code> if the menu bar should be hidden.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="sethidetoolbar"></a><a href="#sethidetoolbar" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setHideToolbar</h3>
+<p>▸ <strong>setHideToolbar</strong>(<code>hideToolbar</code>: boolean): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L352">core/interactive/ViewerPreferences.ts:352</a></em></p>
+<p>Choose whether the PDF reader's toolbars should be hidden while the
+document is active.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>hideToolbar</code></td><td>boolean</td><td><code>true</code> if the toolbar should be hidden.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="sethidewindowui"></a><a href="#sethidewindowui" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setHideWindowUI</h3>
+<p>▸ <strong>setHideWindowUI</strong>(<code>hideWindowUI</code>: boolean): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L373">core/interactive/ViewerPreferences.ts:373</a></em></p>
+<p>Choose whether the PDF reader should hide user interface elements in the
+document's window (such as scroll bars and navigation controls), leaving
+only the document's contents displayed.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>hideWindowUI</code></td><td>boolean</td><td><code>true</code> if the user interface elements should be hidden.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setnonfullscreenpagemode"></a><a href="#setnonfullscreenpagemode" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setNonFullScreenPageMode</h3>
+<p>▸ <strong>setNonFullScreenPageMode</strong>(<code>nonFullScreenPageMode</code>: <a href="/docs/api/enums/nonfullscreenpagemode">NonFullScreenPageMode</a>): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L431">core/interactive/ViewerPreferences.ts:431</a></em></p>
+<p>Choose how the PDF reader should display the document upon exiting
+full-screen mode. This entry is meaningful only if the value of the
+<code>PageMode</code> entry in the document's [[PDFCatalog]] is <code>FullScreen</code>.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument, NonFullScreenPageMode, PDFName } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
+
+<span class="hljs-keyword">const</span> pdfDoc = <span class="hljs-keyword">await</span> PDFDocument.create()
+
+<span class="hljs-comment">// Set the PageMode</span>
+pdfDoc.catalog.set(PDFName.of(<span class="hljs-string">'PageMode'</span>),PDFName.of(<span class="hljs-string">'FullScreen'</span>))
+
+<span class="hljs-comment">// Set what happens when full-screen is closed</span>
+<span class="hljs-keyword">const</span> viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines)
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>nonFullScreenPageMode</code></td><td><a href="/docs/api/enums/nonfullscreenpagemode">NonFullScreenPageMode</a></td><td>How the document should be displayed upon                              exiting full screen mode.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setnumcopies"></a><a href="#setnumcopies" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setNumCopies</h3>
+<p>▸ <strong>setNumCopies</strong>(<code>numCopies</code>: number): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L571">core/interactive/ViewerPreferences.ts:571</a></em></p>
+<p>Choose the default number of copies to be printed when the print dialog is
+opened for this file.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>numCopies</code></td><td>number</td><td>The default number of copies.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setpicktraybypdfsize"></a><a href="#setpicktraybypdfsize" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setPickTrayByPDFSize</h3>
+<p>▸ <strong>setPickTrayByPDFSize</strong>(<code>pickTrayByPDFSize</code>: boolean): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L520">core/interactive/ViewerPreferences.ts:520</a></em></p>
+<p>Choose whether the PDF document's page size should be used to select the
+input paper tray when printing. This setting influences only the preset
+values used to populate the print dialog presented by a PDF reader.</p>
+<p>If PickTrayByPDFSize is true, the check box in the print dialog associated
+with input paper tray should be checked. This setting has no effect on
+operating systems that do not provide the ability to pick the input tray
+by size.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>pickTrayByPDFSize</code></td><td>boolean</td><td><code>true</code> if the document's page size should be used                          to select the input paper tray.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setprintpagerange"></a><a href="#setprintpagerange" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setPrintPageRange</h3>
+<p>▸ <strong>setPrintPageRange</strong>(<code>printPageRange</code>: <a href="/docs/api/interfaces/pagerange">PageRange</a>[] | <a href="/docs/api/interfaces/pagerange">PageRange</a>): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L551">core/interactive/ViewerPreferences.ts:551</a></em></p>
+<p>Choose the page numbers used to initialize the print dialog box when the
+file is printed. The first page of the PDF file is denoted by 0.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
+
+<span class="hljs-keyword">const</span> pdfDoc = <span class="hljs-keyword">await</span> PDFDocument.create()
+<span class="hljs-keyword">const</span> viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+
+<span class="hljs-comment">// We can set the default print range to only the first page</span>
+viewerPrefs.setPrintPageRange({ <span class="hljs-attr">start</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">end</span>: <span class="hljs-number">0</span> })
+
+<span class="hljs-comment">// Or we can supply noncontiguous ranges (e.g. pages 1, 3, and 5-7)</span>
+viewerPrefs.setPrintPageRange([
+  { <span class="hljs-attr">start</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">end</span>: <span class="hljs-number">0</span> },
+  { <span class="hljs-attr">start</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">end</span>: <span class="hljs-number">2</span> },
+  { <span class="hljs-attr">start</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">end</span>: <span class="hljs-number">6</span> },
+])
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>printPageRange</code></td><td><a href="/docs/api/interfaces/pagerange">PageRange</a>[] | <a href="/docs/api/interfaces/pagerange">PageRange</a></td><td>An object or array of objects, each with the                       properties <code>start</code> and <code>end</code>, denoting a range of                       page indices.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setprintscaling"></a><a href="#setprintscaling" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setPrintScaling</h3>
+<p>▸ <strong>setPrintScaling</strong>(<code>printScaling</code>: <a href="/docs/api/enums/printscaling">PrintScaling</a>): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L480">core/interactive/ViewerPreferences.ts:480</a></em></p>
+<p>Choose the page scaling option that should be selected when a print dialog
+is displayed for this document.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument, PrintScaling } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
+
+<span class="hljs-keyword">const</span> pdfDoc = <span class="hljs-keyword">await</span> PDFDocument.create()
+<span class="hljs-keyword">const</span> viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+viewerPrefs.setPrintScaling(PrintScaling.None)
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>printScaling</code></td><td><a href="/docs/api/enums/printscaling">PrintScaling</a></td><td>The print scaling option.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="setreadingdirection"></a><a href="#setreadingdirection" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setReadingDirection</h3>
+<p>▸ <strong>setReadingDirection</strong>(<code>readingDirection</code>: <a href="/docs/api/enums/readingdirection">ReadingDirection</a>): <em>void</em></p>
+<p><em>Defined in <a href="https://github.com/Hopding/pdf-lib/blob/d213f92/src/core/interactive/ViewerPreferences.ts#L459">core/interactive/ViewerPreferences.ts:459</a></em></p>
+<p>Choose the predominant reading order for text.</p>
+<p>This entry has no direct effect on the document's contents or page
+numbering, but may be used to determine the relative positioning of pages
+when displayed side by side or printed n-up.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { PDFDocument, ReadingDirection } <span class="hljs-keyword">from</span> <span class="hljs-string">'pdf-lib'</span>
+
+<span class="hljs-keyword">const</span> pdfDoc = <span class="hljs-keyword">await</span> PDFDocument.create()
+<span class="hljs-keyword">const</span> viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+viewerPrefs.setReadingDirection(ReadingDirection.R2L)
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>readingDirection</code></td><td><a href="/docs/api/enums/readingdirection">ReadingDirection</a></td><td>The reading order for text.</td></tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <em>void</em></p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/api/classes/pdftextfield"><span class="arrow-prev">← </span><span class="function-name-prevnext">PDFTextField</span></a><a class="docs-next button" href="/docs/api/enums/blendmode"><span class="function-name-prevnext">BlendMode</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#hierarchy">Hierarchy</a></li><li><a href="#index">Index</a><ul class="toc-headings"><li><a href="#methods">Methods</a></li></ul></li><li><a href="#methods-1">Methods</a><ul class="toc-headings"><li><a href="#getcenterwindow">getCenterWindow</a></li><li><a href="#getdisplaydoctitle">getDisplayDocTitle</a></li><li><a href="#getduplex">getDuplex</a></li><li><a href="#getfitwindow">getFitWindow</a></li><li><a href="#gethidemenubar">getHideMenubar</a></li><li><a href="#gethidetoolbar">getHideToolbar</a></li><li><a href="#gethidewindowui">getHideWindowUI</a></li><li><a href="#getnonfullscreenpagemode">getNonFullScreenPageMode</a></li><li><a href="#getnumcopies">getNumCopies</a></li><li><a href="#getpicktraybypdfsize">getPickTrayByPDFSize</a></li><li><a href="#getprintpagerange">getPrintPageRange</a></li><li><a href="#getprintscaling">getPrintScaling</a></li><li><a href="#getreadingdirection">getReadingDirection</a></li><li><a href="#setcenterwindow">setCenterWindow</a></li><li><a href="#setdisplaydoctitle">setDisplayDocTitle</a></li><li><a href="#setduplex">setDuplex</a></li><li><a href="#setfitwindow">setFitWindow</a></li><li><a href="#sethidemenubar">setHideMenubar</a></li><li><a href="#sethidetoolbar">setHideToolbar</a></li><li><a href="#sethidewindowui">setHideWindowUI</a></li><li><a href="#setnonfullscreenpagemode">setNonFullScreenPageMode</a></li><li><a href="#setnumcopies">setNumCopies</a></li><li><a href="#setpicktraybypdfsize">setPickTrayByPDFSize</a></li><li><a href="#setprintpagerange">setPrintPageRange</a></li><li><a href="#setprintscaling">setPrintScaling</a></li><li><a href="#setreadingdirection">setReadingDirection</a></li></ul></li></ul></nav></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '9cd7747a43c6b7e9c2554939d34db33f',
+                indexName: 'pdf-lib',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {}
+              });
+            </script></body></html>
