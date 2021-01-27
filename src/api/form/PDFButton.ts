@@ -21,7 +21,11 @@ import {
   PDFAcroPushButton,
   PDFWidgetAnnotation,
 } from 'src/core';
-import { assertIs, assertOrUndefined } from 'src/utils';
+import {
+  assertIs,
+  assertOrUndefined,
+  assertPositiveNum,
+} from 'src/utils';
 
 /**
  * Represents a button field of a [[PDFForm]].
@@ -236,5 +240,20 @@ export default class PDFButton extends PDFField {
     const apProvider = provider ?? defaultButtonAppearanceProvider;
     const appearances = normalizeAppearance(apProvider(this, widget, font));
     this.updateWidgetAppearanceWithFont(widget, font, appearances);
+  }
+
+  /**
+   * Set the font size for the text in this field. There needs to be a
+   * default appearance string (DA) set with a font value specified
+   * for this to work. For example:
+   * ```js
+   * const button = form.getButton('some.button.field')
+   * button.setFontSize(4);
+   * ```
+   * @param fontSize The font size to set the font to.
+   */
+  setFontSize(fontSize: number) {
+    assertPositiveNum(fontSize, 'fontSize');
+    this.acroField.setFontSize(fontSize);
   }
 }

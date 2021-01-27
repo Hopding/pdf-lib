@@ -6,6 +6,13 @@ import PDFObject from 'src/core/objects/PDFObject';
 import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFRef from 'src/core/objects/PDFRef';
+import { findLastMatch } from 'src/utils';
+
+// Examples:
+//   `/Helv 12 Tf` -> ['Helv', '12']
+//   `/HeBo 8.00 Tf` -> ['HeBo', '8.00']
+//   `/HeBo Tf` -> ['HeBo', undefined]
+const tfRegex = /\/([^\0\t\n\f\r\ ]+)[\0\t\n\f\r\ ]*(\d*\.\d+|\d+)?[\0\t\n\f\r\ ]+Tf/;
 
 class PDFAcroField {
   readonly dict: PDFDict;
@@ -94,6 +101,24 @@ class PDFAcroField {
     }
 
     return DA?.asString();
+  }
+
+  setFontSize(fontSize: number) {
+    const da = this.getDefaultAppearance();
+    if (da) {
+      const daMatch = findLastMatch(da, tfRegex);
+      if (daMatch.match && Number(daMatch.match[2]) !== fontSize) {
+        let daEnd = '';
+        if (daMatch.pos <= da.length) {
+          daEnd = da.slice(daMatch.pos);
+        }
+        this.setDefaultAppearance(
+          `${da.slice(0, daMatch.pos - daMatch.match[0].length)}/${
+            daMatch.match[1]
+          } ${fontSize} Tf${daEnd}`,
+        );
+      }
+    }
   }
 
   getFlags(): number {

@@ -215,7 +215,16 @@ export const assertMultiple = (
 export const assertInteger = (value: any, valueName: string) => {
   if (!Number.isInteger(value)) {
     throw new Error(
-      `${backtick(valueName)} msut be an integer, but was actually ${value}`,
+      `${backtick(valueName)} must be an integer, but was actually ${value}`,
     );
+  }
+};
+
+export const assertPositiveNum = (
+  value: number,
+  valueName: string
+) => {
+  if (![1, 0].includes(Math.sign(value))) {
+    throw new Error(`${backtick(valueName)} must be a positive number or 0, but was actually ${value}`);
   }
 };

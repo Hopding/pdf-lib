@@ -33,6 +33,7 @@ import {
   assertIs,
   assertIsOneOf,
   assertOrUndefined,
+  assertPositiveNum,
   assertRangeOrUndefined,
 } from 'src/utils';
 
@@ -794,5 +795,20 @@ export default class PDFTextField extends PDFField {
     const apProvider = provider ?? defaultTextFieldAppearanceProvider;
     const appearances = normalizeAppearance(apProvider(this, widget, font));
     this.updateWidgetAppearanceWithFont(widget, font, appearances);
+  }
+
+  /**
+   * Set the font size for the text in this field. There needs to be a
+   * default appearance string (DA) set with a font value specified
+   * for this to work. For example:
+   * ```js
+   * const filingPartner = form.getTextField(fieldNames.FilingPartner);
+   * filingPartner.setFontSize(4);
+   * ```
+   * @param fontSize The font size to set the font to.
+   */
+  setFontSize(fontSize: number) {
+    assertPositiveNum(fontSize, 'fontSize');
+    this.acroField.setFontSize(fontSize);
   }
 }
