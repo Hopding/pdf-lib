@@ -118,12 +118,9 @@ const getDefaultFontSize = (field: {
   getDefaultAppearance(): string | undefined;
 }) => {
   const da = field.getDefaultAppearance() ?? '';
-  const daMatch = findLastMatch(da, tfRegex);
-  if (daMatch.match) {
-    return Number(daMatch.match[2]);
-  } else {
-    return undefined;
-  }
+  const daMatch = findLastMatch(da, tfRegex).match ?? [];
+  const defaultFontSize = Number(daMatch[2]);
+  return isFinite(defaultFontSize) ? defaultFontSize : undefined;
 };
 
 // Examples:
@@ -136,9 +133,9 @@ const getDefaultColor = (field: {
   getDefaultAppearance(): string | undefined;
 }) => {
   const da = field.getDefaultAppearance() ?? '';
-  const daMatch = findLastMatch(da, colorRegex);
+  const daMatch = findLastMatch(da, colorRegex).match;
 
-  const [, c1, c2, c3, c4, colorSpace] = daMatch.match ?? [];
+  const [, c1, c2, c3, c4, colorSpace] = daMatch ?? [];
 
   if (colorSpace === 'g' && c1) {
     return grayscale(Number(c1));

@@ -22,11 +22,7 @@ import {
   PDFAcroComboBox,
   AcroChoiceFlags,
 } from 'src/core';
-import {
-  assertIs,
-  assertOrUndefined,
-  assertPositiveNum,
-} from 'src/utils';
+import { assertIs, assertOrUndefined, assertPositive } from 'src/utils';
 
 /**
  * Represents a dropdown field of a [[PDFForm]].
@@ -265,6 +261,32 @@ export default class PDFDropdown extends PDFField {
   clear() {
     this.markAsDirty();
     this.acroField.setValues([]);
+  }
+
+  /**
+   * Set the font size for this field. Larger font sizes will result in larger
+   * text being displayed when PDF readers render this dropdown. Font sizes may
+   * be integer or floating point numbers. Supplying a negative font size will
+   * cause this method to throw an error.
+   *
+   * For example:
+   * ```js
+   * const dropdown = form.getDropdown('some.dropdown.field')
+   * dropdown.setFontSize(4)
+   * dropdown.setFontSize(15.7)
+   * ```
+   *
+   * > This method depends upon the existence of a default appearance
+   * > (`/DA`) string. If this field does not have a default appearance string,
+   * > or that string does not contain a font size (via the `Tf` operator),
+   * > then this method will throw an error.
+   *
+   * @param fontSize The font size to be used when rendering text in this field.
+   */
+  setFontSize(fontSize: number) {
+    assertPositive(fontSize, 'fontSize');
+    this.acroField.setFontSize(fontSize);
+    this.markAsDirty();
   }
 
   /**
@@ -625,20 +647,5 @@ export default class PDFDropdown extends PDFField {
     const apProvider = provider ?? defaultDropdownAppearanceProvider;
     const appearances = normalizeAppearance(apProvider(this, widget, font));
     this.updateWidgetAppearanceWithFont(widget, font, appearances);
-  }
-
-  /**
-   * Set the font size for the text in this field. There needs to be a
-   * default appearance string (DA) set with a font value specified
-   * for this to work. For example:
-   * ```js
-   * const dropdown = form.getDropdown('some.dropdown.field')
-   * dropdown.setFontSize(4);
-   * ```
-   * @param fontSize The font size to set the font to.
-   */
-  setFontSize(fontSize: number) {
-    assertPositiveNum(fontSize, 'fontSize');
-    this.acroField.setFontSize(fontSize);
   }
 }

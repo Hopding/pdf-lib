@@ -42,29 +42,57 @@ describe(`PDFAcroField`, () => {
     expect(field.getDefaultAppearance()).toBe('/ZaDb 10 Tf 0 g');
   });
 
-  it(`returns new font size direct appearance strings (DAs) (1)`, () => {
-    const context = PDFContext.create();
+  describe(`setFontSize()`, () => {
+    it(`throws an error if the /DA entry is missing`, () => {
+      const context = PDFContext.create();
 
-    const dict = context.obj({
-      DA: PDFString.of('/ZaDb 10 Tf 0 g'),
+      const dict = context.obj({
+        DA: null,
+      });
+      const dictRef = context.register(dict);
+      const field = PDFAcroTerminal.fromDict(dict, dictRef);
+
+      expect(() => field.setFontSize(8)).toThrow();
     });
-    const dictRef = context.register(dict);
-    const field = PDFAcroTerminal.fromDict(dict, dictRef);
-    field.setFontSize(8);
 
-    expect(field.getDefaultAppearance()).toBe('/ZaDb 8 Tf 0 g');
-  });
+    it(`throw an error if the /DA string does not contain a Tf operator`, () => {
+      const context = PDFContext.create();
 
-  it(`returns new font size direct appearance strings (DAs) (2)`, () => {
-    const context = PDFContext.create();
+      const dict = context.obj({
+        DA: PDFString.of('0 g 2 j'),
+      });
+      const dictRef = context.register(dict);
+      const field = PDFAcroTerminal.fromDict(dict, dictRef);
 
-    const dict = context.obj({
-      DA: PDFString.of('/ZaDb Tf 0 g'),
+      expect(() => field.setFontSize(8)).toThrow();
     });
-    const dictRef = context.register(dict);
-    const field = PDFAcroTerminal.fromDict(dict, dictRef);
-    field.setFontSize(8);
 
-    expect(field.getDefaultAppearance()).toBe('/ZaDb 8 Tf 0 g');
+    it(`replaces the font size of the last occurring Tf operator`, () => {
+      const context = PDFContext.create();
+
+      const dict = context.obj({
+        DA: PDFString.of('/ZaDb 10 Tf\n0 g\n/AbCd 87 Tf\n2 j'),
+      });
+      const dictRef = context.register(dict);
+      const field = PDFAcroTerminal.fromDict(dict, dictRef);
+      field.setFontSize(8);
+
+      expect(field.getDefaultAppearance()).toBe(
+        '/ZaDb 10 Tf\n0 g\n /AbCd 8 Tf \n2 j',
+      );
+    });
+
+    it(`tolerates invalid Tfs with missing font sizes`, () => {
+      const context = PDFContext.create();
+
+      const dict = context.obj({
+        DA: PDFString.of('/ZaDb Tf 0 g'),
+      });
+      const dictRef = context.register(dict);
+      const field = PDFAcroTerminal.fromDict(dict, dictRef);
+      field.setFontSize(21.7);
+
+      expect(field.getDefaultAppearance()).toBe(' /ZaDb 21.7 Tf  0 g');
+    });
   });
 });
