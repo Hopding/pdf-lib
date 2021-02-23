@@ -2,7 +2,7 @@ import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
 import { PageSizes } from 'src/api/sizes';
 import PDFPage from 'src/api/PDFPage';
-import { assertIs, assertOrUndefined } from 'src/utils';
+import { assertIs, assertOrUndefined, breakTextIntoLines } from 'src/utils';
 import { StandardFonts } from './StandardFonts';
 
 export interface PdfBuilderOptions {
@@ -12,6 +12,7 @@ export interface PdfBuilderOptions {
   rightMargin?: number /** The right margin */;
   bottomMargin?: number /** The bottom margin */;
   interLine?: number /** Space between lines */;
+  font? : PDFFont /**font */
   onAddPage?: (builder: PdfBuilder, pageNumber: number) => void /** Callback on new page event */;
 }
 
@@ -55,6 +56,7 @@ export default class PdfBuilder {
     this.bottomMargin = options.bottomMargin ? options.bottomMargin : this.bottomMargin;
     this.interLine = options.interLine ? options.interLine : this.interLine;
     this.defaultSize = options.defaultSize ? options.defaultSize : this.defaultSize;
+    this.font = options.font ? options.font : this.font;
     this.onAddPage = options.onAddPage ? options.onAddPage : this.onAddPage;
     this.doc = doc;
   }
@@ -62,11 +64,11 @@ export default class PdfBuilder {
  /**
    * load font
    */
-  async loadFont() {
-    if (!this.font) {
-      this.font = await this.doc.embedStandardFont(StandardFonts.TimesRoman);
+  getFont() {
+    if (!this.font ) {
+      this.font = this.doc.embedStandardFont(StandardFonts.TimesRoman);
     }
-    this.page!.setFont(this.font);
+    return this.font;
   }
 
   /**
@@ -75,6 +77,8 @@ export default class PdfBuilder {
   async addPage() {
     this.currentPageNumber++;
     this.page = this.doc.addPage(PageSizes.A4);
+    const font = await this.getFont();
+    this.page?.setFont(font);
     assertIs(this.page, 'page', ['undefined', [PDFPage, 'PDFPage'], Array]);
     this.page.moveTo(this.leftMargin, this.page.getHeight() - this.topMargin);
     if (this.onAddPage) {
@@ -87,19 +91,17 @@ export default class PdfBuilder {
    * @param text //input String to add
    * @param options // text options
    */
-  async drawTextLine(
+  private async drawTextLine(
     text: string,
-    options: { textSize: number; leftPos: number; font: PDFFont },
+    options: { textSize: number | null; leftPos?: number; },
   ) {
     assertIs(text, 'text', ['string']);
     assertOrUndefined(options.textSize, 'options.size', ['number']);
     assertOrUndefined(options.leftPos, 'options.size', ['number']);
-    assertOrUndefined(options.font, 'options.font', [[PDFFont, 'PDFFont']]);
 
-    if (options.font) this.font = options.font;
-    await this.loadFont();
+    let font = await this.getFont();
     const textSize = options.textSize || this.defaultSize;
-    const textHeight = this.font!.heightAtSize(textSize);
+    const textHeight = font!.heightAtSize(textSize);
     const move = textHeight + this.interLine;
     if (this.page!.getY() - move < this.bottomMargin) {
       await this.addPage();
@@ -113,6 +115,34 @@ export default class PdfBuilder {
       });
     }
     this.page!.moveDown(this.interLine);
+  }
+    /** 
+   * Donne la largeur du texte
+   */
+  getWidth() : number {
+    return this.page!.getWidth() - (this.page!.getX() + this.rightMargin);
+  }
+    /** 
+   * Découpe un texte en lignes
+   */
+  private breakTextIntoLines(text: string, textSize : number, options :{ width? : number ; breakWords? : string[];} = {}) {
+    if (!text) {
+      return [];
+    }
+    var breakWords = options.breakWords || this.doc.defaultWordBreaks;
+    var width = options.width || this.getWidth();
+    const computeTextWidth = (t: string) => this.font!.widthOfTextAtSize(t, textSize);
+    return breakTextIntoLines(text, breakWords, width, computeTextWidth);
+  }
+    /** 
+   * Add paragraph 
+   */
+  async addParagraph(text : string, textSize : number | null = null) {
+    textSize = textSize || this.defaultSize;
+    var lines = this.breakTextIntoLines(text, textSize!);
+    for (let l of lines) {
+      await this.drawTextLine(l, { textSize });
+    };
   }
 
 }

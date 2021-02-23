@@ -3,20 +3,21 @@ import { Assets } from '..';
 import {
   PDFDocument,
   PDFBuilder,
-  AFRelationship,
   StandardFonts,
 } from '../../../cjs';
 
-const ipsumLines = "Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.";
+const ipsumLines = "Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.";
 
 // This test creates a new PDF document and inserts pages to it.
 
 export default async (assets: Assets) => {
 
   const pdfDoc = await PDFDocument.create();
+  pdfDoc.registerFontkit(fontkit);
 
   // Embed the CourierOblique font
-  const CourierObliqueFont = await pdfDoc.embedFont(StandardFonts.CourierOblique);
+  const HelveticaBoldFont = pdfDoc.embedStandardFont(StandardFonts.HelveticaBold);
+  const ubuntuFont = await pdfDoc.embedFont(assets.fonts.ttf.ubuntu_r);
 
   pdfDoc.setTitle('🥚 The Life of an dev 🍳', { showInWindowTitleBar: true });
   pdfDoc.setAuthor('khaled AMARI');
@@ -26,22 +27,14 @@ export default async (assets: Assets) => {
   pdfDoc.setCreationDate(new Date('2021-02-24T01:58:37.228Z'));
   pdfDoc.setModificationDate(new Date('2021-02-24T07:00:11.000Z'));
 
-  pdfDoc.registerFontkit(fontkit);
+  const builder1 = await PDFBuilder.create(pdfDoc, { font: HelveticaBoldFont });
+  await builder1.addParagraph(ipsumLines);
+  await builder1.addParagraph(ipsumLines, 24);
+  await builder1.addParagraph(ipsumLines);
 
-  await pdfDoc.attach(assets.images.png.greyscale_bird, 'bird.png', {
-    mimeType: 'image/png',
-    description: 'A bird in greyscale 🐦',
-    creationDate: new Date('2006/06/06'),
-    modificationDate: new Date('2007/07/07'),
-    afRelationship: AFRelationship.Data,
-  });
-
-  const builder = await PDFBuilder.create(pdfDoc);
-  await builder.drawTextLine(ipsumLines, {
-    textSize: 12,
-    leftPos: 7,
-    font: CourierObliqueFont
-  });
+  const builder2 = await PDFBuilder.create(pdfDoc, { font: ubuntuFont });
+  await builder2.addParagraph(ipsumLines, 14);
+  await builder2.addParagraph(ipsumLines, 24);
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
