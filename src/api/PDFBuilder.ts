@@ -1,20 +1,12 @@
 import PDFDocument from 'src/api/PDFDocument';
 import PDFFont from 'src/api/PDFFont';
-import {
-  addRandomSuffix,
-  assertEachIs,
-  assertIs,
-  assertMultiple,
-  assertOrUndefined,
-  breakTextIntoLines,
-  cleanText,
-  rectanglesAreEqual,
-  lineSplit,
-  assertRangeOrUndefined,
-  assertIsOneOfOrUndefined,
-} from 'src/utils';
+import { PageSizes } from 'src/api/sizes';
+import PDFPage from 'src/api/PDFPage';
+import { assertIs, assertOrUndefined } from 'src/utils';
+import { StandardFonts } from './StandardFonts';
 
 export interface PdfBuilderOptions {
+  defaultSize?: number /** The default text size*/;
   topMargin?: number /** The top margin*/;
   leftMargin?: number /** The left margin */;
   rightMargin?: number /** The right margin */;
@@ -43,8 +35,11 @@ export default class PdfBuilder {
   /** The document to which this builder belongs. */
   readonly doc: PDFDocument;
 
-  private fontKey?: string;
+  // private fontKey?: string;
   private font?: PDFFont;
+  private page?: PDFPage;
+  // private PDFSize?: string;
+  private defaultSize = 10;
   private topMargin = 60;
   private leftMargin = 25;
   private rightMargin = 25;
@@ -59,8 +54,19 @@ export default class PdfBuilder {
     this.rightMargin = options.rightMargin ? options.rightMargin : this.rightMargin;
     this.bottomMargin = options.bottomMargin ? options.bottomMargin : this.bottomMargin;
     this.interLine = options.interLine ? options.interLine : this.interLine;
+    this.defaultSize = options.defaultSize ? options.defaultSize : this.defaultSize;
     this.onAddPage = options.onAddPage ? options.onAddPage : this.onAddPage;
     this.doc = doc;
+  }
+
+ /**
+   * load font
+   */
+  async loadFont() {
+    if (!this.font) {
+      this.font = await this.doc.embedStandardFont(StandardFonts.TimesRoman);
+    }
+    this.page!.setFont(this.font);
   }
 
   /**
@@ -68,12 +74,45 @@ export default class PdfBuilder {
    */
   async addPage() {
     this.currentPageNumber++;
-    this.page = this.doc.addPage(pdfLib.PageSizes.A4);
-    this.page.setFont(this.font);
+    this.page = this.doc.addPage(PageSizes.A4);
+    assertIs(this.page, 'page', ['undefined', [PDFPage, 'PDFPage'], Array]);
     this.page.moveTo(this.leftMargin, this.page.getHeight() - this.topMargin);
     if (this.onAddPage) {
       await this.onAddPage(this, this.currentPageNumber);
-    };
+    }
+  }
+
+  /**
+   * Write a line and jump to the next one
+   * @param text //input String to add
+   * @param options // text options
+   */
+  async drawTextLine(
+    text: string,
+    options: { textSize: number; leftPos: number; font: PDFFont },
+  ) {
+    assertIs(text, 'text', ['string']);
+    assertOrUndefined(options.textSize, 'options.size', ['number']);
+    assertOrUndefined(options.leftPos, 'options.size', ['number']);
+    assertOrUndefined(options.font, 'options.font', [[PDFFont, 'PDFFont']]);
+
+    if (options.font) this.font = options.font;
+    await this.loadFont();
+    const textSize = options.textSize || this.defaultSize;
+    const textHeight = this.font!.heightAtSize(textSize);
+    const move = textHeight + this.interLine;
+    if (this.page!.getY() - move < this.bottomMargin) {
+      await this.addPage();
+    }
+    this.page!.moveDown(textHeight);
+    if (text) {
+      this.page!.drawText(text, {
+        x: options.leftPos,
+        size: textSize,
+        lineHeight: textSize,
+      });
+    }
+    this.page!.moveDown(this.interLine);
   }
 
 }
