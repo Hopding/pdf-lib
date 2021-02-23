@@ -33,6 +33,7 @@ import {
 } from 'src/api/text/layout';
 import { TextAlignment } from 'src/api/text/alignment';
 import { setFontAndSize } from 'src/api/operators';
+import { findLastMatch } from 'src/utils';
 
 /*********************** Appearance Provider Types ****************************/
 
@@ -108,28 +109,16 @@ export const normalizeAppearance = <T>(
   return { normal: appearance };
 };
 
-const findLastMatch = (value: string, regex: RegExp) => {
-  let position = 0;
-  let lastMatch: RegExpMatchArray | undefined;
-  while (position < value.length) {
-    const match = value.substring(position).match(regex);
-    if (!match) return lastMatch;
-    lastMatch = match;
-    position += (match.index ?? 0) + match[0].length;
-  }
-  return lastMatch;
-};
-
 // Examples:
-//   `/Helv 12 Tf` -> ['Helv', '12']
-//   `/HeBo 8.00 Tf` -> ['HeBo', '8.00']
+//   `/Helv 12 Tf` -> ['/Helv 12 Tf', 'Helv', '12']
+//   `/HeBo 8.00 Tf` -> ['/HeBo 8 Tf', 'HeBo', '8.00']
 const tfRegex = /\/([^\0\t\n\f\r\ ]+)[\0\t\n\f\r\ ]+(\d*\.\d+|\d+)[\0\t\n\f\r\ ]+Tf/;
 
 const getDefaultFontSize = (field: {
   getDefaultAppearance(): string | undefined;
 }) => {
   const da = field.getDefaultAppearance() ?? '';
-  const daMatch = findLastMatch(da, tfRegex) ?? [];
+  const daMatch = findLastMatch(da, tfRegex).match ?? [];
   const defaultFontSize = Number(daMatch[2]);
   return isFinite(defaultFontSize) ? defaultFontSize : undefined;
 };
@@ -144,7 +133,7 @@ const getDefaultColor = (field: {
   getDefaultAppearance(): string | undefined;
 }) => {
   const da = field.getDefaultAppearance() ?? '';
-  const daMatch = findLastMatch(da, colorRegex);
+  const daMatch = findLastMatch(da, colorRegex).match;
 
   const [, c1, c2, c3, c4, colorSpace] = daMatch ?? [];
 

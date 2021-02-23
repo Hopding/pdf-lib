@@ -57,7 +57,7 @@
   - [Modify Document](#modify-document)
   - [Create Form](#create-form)
   - [Fill Form](#fill-form)
-  - [Flatten Form](#flatten-form) - _**new!**_
+  - [Flatten Form](#flatten-form)
   - [Copy Pages](#copy-pages)
   - [Embed PNG and JPEG Images](#embed-png-and-jpeg-images)
   - [Embed PDF Pages](#embed-pdf-pages)
@@ -65,6 +65,8 @@
   - [Add Attachments](#add-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
+  - [Set Viewer Preferences](#set-viewer-preferences) - _**new!**_
+  - [Read Viewer Preferences](#read-viewer-preferences) - _**new!**_
   - [Draw SVG Paths](#draw-svg-paths)
 - [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
@@ -101,6 +103,8 @@
 - Embed Fonts (supports UTF-8 and UTF-16 character sets)
 - Set document metadata
 - Read document metadata
+- Set viewer preferences
+- Read viewer preferences
 - Add attachments
 
 ## Motivation
@@ -835,6 +839,123 @@ Creation Date: 2010-07-29T14:26:00.000Z
 Modification Date: 2010-07-29T14:26:00.000Z
 ```
 
+### Set Viewer Preferences
+
+<!-- prettier-ignore -->
+```js
+import {
+  PDFDocument,
+  StandardFonts,
+  NonFullScreenPageMode,
+  ReadingDirection,
+  PrintScaling,
+  Duplex,
+  PDFName,
+} from 'pdf-lib'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Embed the Times Roman font
+const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+
+// Add a page and draw some text on it
+const page = pdfDoc.addPage([500, 600])
+page.setFont(timesRomanFont)
+page.drawText('The Life of an Egg', { x: 60, y: 500, size: 50 })
+page.drawText('An Epic Tale of Woe', { x: 125, y: 460, size: 25 })
+
+// Set all available viewer preferences on the PDFDocument:
+const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+viewerPrefs.setHideToolbar(true)
+viewerPrefs.setHideMenubar(true)
+viewerPrefs.setHideWindowUI(true)
+viewerPrefs.setFitWindow(true)
+viewerPrefs.setCenterWindow(true)
+viewerPrefs.setDisplayDocTitle(true)
+
+// Set the PageMode (otherwise setting NonFullScreenPageMode has no meaning)
+pdfDoc.catalog.set(PDFName.of('PageMode'), PDFName.of('FullScreen'))
+
+// Set what happens when fullScreen is closed
+viewerPrefs.setNonFullScreenPageMode(NonFullScreenPageMode.UseOutlines)
+
+viewerPrefs.setReadingDirection(ReadingDirection.L2R)
+viewerPrefs.setPrintScaling(PrintScaling.None)
+viewerPrefs.setDuplex(Duplex.DuplexFlipLongEdge)
+viewerPrefs.setPickTrayByPDFSize(true)
+
+// We can set the default print range to only the first page
+viewerPrefs.setPrintPageRange({ start: 0, end: 0 })
+
+// Or we can supply noncontiguous ranges (e.g. pages 1, 3, and 5-7)
+viewerPrefs.setPrintPageRange([
+  { start: 0, end: 0 },
+  { start: 2, end: 2 },
+  { start: 4, end: 6 },
+])
+
+viewerPrefs.setNumCopies(2)
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+### Read Viewer Preferences
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib'
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const existingPdfBytes = ...
+
+// Load a PDFDocument without updating its existing metadata
+const pdfDoc = await PDFDocument.load(existingPdfBytes)
+const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences()
+
+// Print all available viewer preference fields
+console.log('HideToolbar:', viewerPrefs.getHideToolbar())
+console.log('HideMenubar:', viewerPrefs.getHideMenubar())
+console.log('HideWindowUI:', viewerPrefs.getHideWindowUI())
+console.log('FitWindow:', viewerPrefs.getFitWindow())
+console.log('CenterWindow:', viewerPrefs.getCenterWindow())
+console.log('DisplayDocTitle:', viewerPrefs.getDisplayDocTitle())
+console.log('NonFullScreenPageMode:', viewerPrefs.getNonFullScreenPageMode())
+console.log('ReadingDirection:', viewerPrefs.getReadingDirection())
+console.log('PrintScaling:', viewerPrefs.getPrintScaling())
+console.log('Duplex:', viewerPrefs.getDuplex())
+console.log('PickTrayByPDFSize:', viewerPrefs.getPickTrayByPDFSize())
+console.log('PrintPageRange:', viewerPrefs.getPrintPageRange())
+console.log('NumCopies:', viewerPrefs.getNumCopies())
+```
+
+This script outputs the following (_when [this PDF](assets/pdfs/with_viewer_prefs.pdf) is used for the `existingPdfBytes` variable_):
+
+```
+HideToolbar: true
+HideMenubar: true
+HideWindowUI: false
+FitWindow: true
+CenterWindow: true
+DisplayDocTitle: true
+NonFullScreenPageMode: UseNone
+ReadingDirection: R2L
+PrintScaling: None
+Duplex: DuplexFlipLongEdge
+PickTrayByPDFSize: true
+PrintPageRange: [ { start: 1, end: 1 }, { start: 3, end: 4 } ]
+NumCopies: 2
+```
+
 ### Draw SVG Paths
 
 _This example produces [this PDF](assets/pdfs/examples/draw_svg_paths.pdf)_.
@@ -1137,6 +1258,16 @@ Error: WinAnsi cannot encode "Ω" (0x03a9)
     at Encoding.encodeUnicodeCodePoint
 ```
 
+### Font Subsetting
+
+Embedding a font in a PDF document will typically increase the file's size. You can reduce the amount a file's size is increased by subsetting the font so that only the necessary characters are embedded. You can subset a font by setting the [`subset` option](https://pdf-lib.js.org/docs/api/interfaces/embedfontoptions#optional-subset) to `true`. For example:
+
+```js
+const font = await pdfDoc.embedFont(fontBytes, { subset: true });
+```
+
+Note that subsetting does not work for all fonts. See https://github.com/Hopding/pdf-lib/issues/207#issuecomment-537210471 for additional details.
+
 ## Creating and Filling Forms
 
 `pdf-lib` can create, fill, and read PDF form fields. The following field types are supported:
@@ -1312,6 +1443,7 @@ We welcome contributions from the open source community! If you are interested i
 - [How to use pdf-lib in AWS Lambdas](https://medium.com/swlh/create-pdf-using-pdf-lib-on-serverless-aws-lambda-e9506246dc88) - a tutorial written by Crespo Wang
 - [Working With PDFs in Node.js Using pdf-lib](http://thecodebarbarian.com/working-with-pdfs-in-node-js.html) - a tutorial by Valeri Karpov
 - [Electron app for resizing PDFs](https://github.com/vegarringdal/simple-pdf-resizer) - a tool created by @vegarringdal
+- [PDF Shelter](https://pdfshelter.com) - online PDF manipulation tools by Lucas Morais
 
 ## Prior Art
 

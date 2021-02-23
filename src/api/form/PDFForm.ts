@@ -1,4 +1,5 @@
 import PDFDocument from 'src/api/PDFDocument';
+import PDFPage from 'src/api/PDFPage';
 import PDFField from 'src/api/form/PDFField';
 import PDFButton from 'src/api/form/PDFButton';
 import PDFCheckBox from 'src/api/form/PDFCheckBox';
@@ -15,14 +16,13 @@ import {
 } from 'src/api/errors';
 import PDFFont from 'src/api/PDFFont';
 import { StandardFonts } from 'src/api/StandardFonts';
+import { rotateInPlace } from 'src/api/operations';
 import {
   drawObject,
   popGraphicsState,
   pushGraphicsState,
-  rotateRadians,
   translate,
 } from 'src/api/operators';
-import { degrees, toRadians } from 'src/api/rotations';
 import {
   PDFAcroForm,
   PDFAcroField,
@@ -39,6 +39,7 @@ import {
   PDFRef,
   createPDFAcroFields,
   PDFName,
+  PDFWidgetAnnotation,
 } from 'src/core';
 import { addRandomSuffix, assertIs, Cache, assertOrUndefined } from 'src/utils';
 
@@ -539,7 +540,6 @@ export default class PDFForm {
     }
 
     const fields = this.getFields();
-    const pages = this.doc.getPages();
 
     for (let i = 0, lenFields = fields.length; i < lenFields; i++) {
       const field = fields[i];
@@ -547,56 +547,23 @@ export default class PDFForm {
 
       for (let j = 0, lenWidgets = widgets.length; j < lenWidgets; j++) {
         const widget = widgets[j];
-        const pageRef = widget.P();
-        let page = pages.find((x) => x.ref === pageRef);
-        if (page === undefined) {
-          const widgetRef = this.doc.context.getObjectRef(widget.dict);
-          if (widgetRef === undefined) {
-            throw new Error('Could not find PDFRef for PDFObject');
-          }
-
-          page = this.doc.findPageForAnnotationRef(widgetRef);
-
-          if (page === undefined) {
-            throw new Error(`Could not find page for PDFRef ${widgetRef}`);
-          }
-        }
-
-        let refOrDict = widget.getNormalAppearance();
-
-        if (
-          refOrDict instanceof PDFDict &&
-          (field instanceof PDFCheckBox || field instanceof PDFRadioGroup)
-        ) {
-          const value = field.acroField.getValue();
-          const ref = refOrDict.get(value) ?? refOrDict.get(PDFName.of('Off'));
-
-          if (ref instanceof PDFRef) {
-            refOrDict = ref;
-          }
-        }
-
-        if (!(refOrDict instanceof PDFRef)) {
-          throw new Error(`Failed to extract appearance ref`);
-        }
+        const page = this.findWidgetPage(widget);
+        const widgetRef = this.findWidgetAppearanceRef(field, widget);
 
         const xObjectKey = addRandomSuffix('FlatWidget', 10);
-        page.node.setXObject(PDFName.of(xObjectKey), refOrDict);
+        page.node.setXObject(PDFName.of(xObjectKey), widgetRef);
 
-        const ap = widget.getAppearanceCharacteristics();
         const rectangle = widget.getRectangle();
-        const rotation = degrees(ap?.getRotation() ?? 0);
 
         const operators = [
           pushGraphicsState(),
           translate(rectangle.x, rectangle.y),
-          rotateRadians(toRadians(rotation)),
+          ...rotateInPlace({ ...rectangle, rotation: 0 }),
           drawObject(xObjectKey),
           popGraphicsState(),
         ].filter(Boolean) as PDFOperator[];
 
         page.pushOperators(...operators);
-        page.node.removeAnnot(refOrDict);
       }
 
       this.removeField(field);
@@ -614,6 +581,20 @@ export default class PDFForm {
    * ```
    */
   removeField(field: PDFField) {
+    const widgets = field.acroField.getWidgets();
+    const pages: Set<PDFPage> = new Set();
+
+    for (let i = 0, len = widgets.length; i < len; i++) {
+      const widget = widgets[i];
+      const widgetRef = this.findWidgetAppearanceRef(field, widget);
+
+      const page = this.findWidgetPage(widget);
+      pages.add(page);
+
+      page.node.removeAnnot(widgetRef);
+    }
+
+    pages.forEach((page) => page.node.removeAnnot(field.ref));
     this.acroForm.removeField(field.acroField);
     this.doc.context.delete(field.ref);
   }
@@ -709,6 +690,51 @@ export default class PDFForm {
 
   getDefaultFont() {
     return this.defaultFontCache.access();
+  }
+
+  private findWidgetPage(widget: PDFWidgetAnnotation): PDFPage {
+    const pageRef = widget.P();
+    let page = this.doc.getPages().find((x) => x.ref === pageRef);
+    if (page === undefined) {
+      const widgetRef = this.doc.context.getObjectRef(widget.dict);
+      if (widgetRef === undefined) {
+        throw new Error('Could not find PDFRef for PDFObject');
+      }
+
+      page = this.doc.findPageForAnnotationRef(widgetRef);
+
+      if (page === undefined) {
+        throw new Error(`Could not find page for PDFRef ${widgetRef}`);
+      }
+    }
+
+    return page;
+  }
+
+  private findWidgetAppearanceRef(
+    field: PDFField,
+    widget: PDFWidgetAnnotation,
+  ): PDFRef {
+    let refOrDict = widget.getNormalAppearance();
+
+    if (
+      refOrDict instanceof PDFDict &&
+      (field instanceof PDFCheckBox || field instanceof PDFRadioGroup)
+    ) {
+      const value = field.acroField.getValue();
+      const ref = refOrDict.get(value) ?? refOrDict.get(PDFName.of('Off'));
+
+      if (ref instanceof PDFRef) {
+        refOrDict = ref;
+      }
+    }
+
+    if (!(refOrDict instanceof PDFRef)) {
+      const name = field.getName();
+      throw new Error(`Failed to extract appearance ref for: ${name}`);
+    }
+
+    return refOrDict;
   }
 
   private findOrCreateNonTerminals(partialNames: string[]) {

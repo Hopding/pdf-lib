@@ -22,7 +22,12 @@ import {
   AcroChoiceFlags,
   PDFWidgetAnnotation,
 } from 'src/core';
-import { assertIs, assertOrUndefined, assertIsSubset } from 'src/utils';
+import {
+  assertIs,
+  assertIsSubset,
+  assertOrUndefined,
+  assertPositive,
+} from 'src/utils';
 
 /**
  * Represents an option list field of a [[PDFForm]].
@@ -252,6 +257,43 @@ export default class PDFOptionList extends PDFField {
   }
 
   /**
+   * Set the font size for the text in this field. There needs to be a
+   * default appearance string (DA) set with a font value specified
+   * for this to work. For example:
+   * ```js
+   * const optionList = form.getOptionList('some.optionList.field')
+   * optionList.setFontSize(4);
+   * ```
+   * @param fontSize The font size to set the font to.
+   */
+
+  /**
+   * Set the font size for this field. Larger font sizes will result in larger
+   * text being displayed when PDF readers render this option list. Font sizes
+   * may be integer or floating point numbers. Supplying a negative font size
+   * will cause this method to throw an error.
+   *
+   * For example:
+   * ```js
+   * const optionList = form.getOptionList('some.optionList.field')
+   * optionList.setFontSize(4)
+   * optionList.setFontSize(15.7)
+   * ```
+   *
+   * > This method depends upon the existence of a default appearance
+   * > (`/DA`) string. If this field does not have a default appearance string,
+   * > or that string does not contain a font size (via the `Tf` operator),
+   * > then this method will throw an error.
+   *
+   * @param fontSize The font size to be used when rendering text in this field.
+   */
+  setFontSize(fontSize: number) {
+    assertPositive(fontSize, 'fontSize');
+    this.acroField.setFontSize(fontSize);
+    this.markAsDirty();
+  }
+
+  /**
    * Returns `true` if the options of this option list are always displayed
    * in alphabetical order, irrespective of the order in which the options
    * were added to the option list. See [[PDFOptionList.enableSorting]] and
@@ -425,6 +467,7 @@ export default class PDFOptionList extends PDFField {
       borderColor: options.borderColor,
       borderWidth: options.borderWidth ?? 0,
       rotate: options.rotate ?? degrees(0),
+      hidden: options.hidden,
     });
     const widgetRef = this.doc.context.register(widget.dict);
 

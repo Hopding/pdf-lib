@@ -43,6 +43,7 @@ export interface FieldAppearanceOptions {
   borderWidth?: number;
   rotate?: Rotation;
   font?: PDFFont;
+  hidden?: boolean;
 }
 
 export const assertFieldAppearanceOptions = (
@@ -291,6 +292,7 @@ export default class PDFField {
     borderWidth: number;
     rotate: Rotation;
     caption?: string;
+    hidden?: boolean;
   }): PDFWidgetAnnotation {
     const textColor = options.textColor;
     const backgroundColor = options.backgroundColor;
@@ -302,6 +304,7 @@ export default class PDFField {
     const y = options.y;
     const width = options.width + borderWidth;
     const height = options.height + borderWidth;
+    const hidden = Boolean(options.hidden);
 
     assertMultiple(degreesAngle, 'degreesAngle', 90);
 
@@ -328,7 +331,7 @@ export default class PDFField {
     if (borderWidth !== undefined) bs.setWidth(borderWidth);
 
     widget.setFlagTo(AnnotationFlags.Print, true);
-    widget.setFlagTo(AnnotationFlags.Hidden, false);
+    widget.setFlagTo(AnnotationFlags.Hidden, hidden);
     widget.setFlagTo(AnnotationFlags.Invisible, false);
 
     // Set acrofield properties
