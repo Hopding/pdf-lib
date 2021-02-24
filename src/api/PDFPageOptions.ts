@@ -156,3 +156,9 @@ export interface PDFPageDrawCircleOptions {
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
 }
+
+export interface PDFPageDrawSVGElementOptions {
+  x?: number;
+  y?: number;
+  fonts?: { [fontName: string]: PDFFont };
+}

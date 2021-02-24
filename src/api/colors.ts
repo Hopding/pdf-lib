@@ -6,7 +6,8 @@ import {
   setStrokingGrayscaleColor,
   setStrokingRgbColor,
 } from 'src/api/operators';
-import { assertRange, error } from 'src/utils';
+import { assertRange, assertIs, error } from 'src/utils';
+import ColorParser from 'color';
 
 export enum ColorTypes {
   Grayscale = 'Grayscale',
@@ -59,6 +60,12 @@ export const cmyk = (
   assertRange(yellow, 'yellow', 0, 1);
   assertRange(key, 'key', 0, 1);
   return { type: ColorTypes.CMYK, cyan, magenta, yellow, key };
+};
+
+export const colorString = (color: string): Color => {
+  assertIs(color, 'color', ['string']);
+  const colorDescription = ColorParser(color).unitObject();
+  return rgb(colorDescription.r, colorDescription.g, colorDescription.b);
 };
 
 const { Grayscale, RGB, CMYK } = ColorTypes;
