@@ -1467,11 +1467,15 @@ export default class PDFPage {
     assertIs(svg, 'svg', ['string']);
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.width, 'options.width', ['number']);
+    assertOrUndefined(options.height, 'options.height', ['number']);
 
     drawSvg(this, svg, {
       x: options.x ?? this.x,
       y: options.y ?? this.y,
       fonts: options.fonts,
+      width: options.width,
+      height: options.height,
     });
   }
 

@@ -160,5 +160,7 @@ export interface PDFPageDrawCircleOptions {
 export interface PDFPageDrawSVGElementOptions {
   x?: number;
   y?: number;
+  width?: number;
+  height?: number;
   fonts?: { [fontName: string]: PDFFont };
 }

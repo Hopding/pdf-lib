@@ -13,6 +13,11 @@ interface Position {
   y: number;
 }
 
+interface Constraints {
+  width?: number;
+  height?: number;
+}
+
 type PDFPageDrawSVGElementOptionsRequireds = PDFPageDrawSVGElementOptions &
   Position;
 
@@ -240,10 +245,10 @@ const parseStyles = (style: string): SVGStyle => {
 const parseAttributes = (
   element: HTMLElement,
   parentElement?: SVGElement,
+  constraints?: Constraints,
 ): SVGAttributes => {
   const attributes = element.attributes;
   const style = parseStyles(attributes.style);
-  console.log(element.tagName, attributes, style);
 
   const widthRaw = styleOrAttribute(attributes, style, 'width', '');
   const heightRaw = styleOrAttribute(attributes, style, 'height', '');
@@ -352,6 +357,26 @@ const parseAttributes = (
     ry = box.converter.y(ry);
   }
 
+  if (constraints?.width) {
+    const constraintsConverterX = (xReal: number) =>
+      (xReal * (width || 0)) / (constraints.width || 1);
+    x = constraintsConverterX(x);
+    x1 = constraintsConverterX(x1);
+    x2 = constraintsConverterX(x2);
+    cx = constraintsConverterX(cx);
+    r = constraintsConverterX(r);
+    rx = constraintsConverterX(rx);
+  }
+  if (constraints?.height) {
+    const constraintsConverterY = (yReal: number) =>
+      (yReal * (height || 0)) / (constraints.height || 1);
+    y = constraintsConverterY(y);
+    y1 = constraintsConverterY(y1);
+    y2 = constraintsConverterY(y2);
+    cy = constraintsConverterY(cy);
+    ry = constraintsConverterY(ry);
+  }
+
   let viewBox;
   let converter;
 
@@ -431,19 +456,26 @@ const parseAttributes = (
 const parseSvgElement = (
   element: string | HTMLElement,
   parentElement?: SVGElement,
+  constraints?: Constraints,
 ): SVGElement => {
   const htmlElement =
     typeof element === 'string'
       ? (parseHtml(element).firstChild as HTMLElement)
       : element;
   return Object.assign({}, htmlElement, {
-    svgAttributes: parseAttributes(htmlElement, parentElement),
+    svgAttributes: parseAttributes(htmlElement, parentElement, constraints),
   }) as SVGElement;
 };
 
-const parse = (svg: string | SVGElement): SVGElement[] => {
+const parse = (
+  svg: string | SVGElement,
+  constraints?: Constraints,
+): SVGElement[] => {
   const ret: SVGElement[] = [];
-  const parentElement = typeof svg === 'string' ? parseSvgElement(svg) : svg;
+  const parentElement =
+    typeof svg === 'string'
+      ? parseSvgElement(svg, undefined, constraints)
+      : svg;
   for (const childNode of parentElement.childNodes) {
     if (childNode.nodeType !== 1) continue;
     const element = parseSvgElement(childNode as HTMLElement, parentElement);
@@ -462,7 +494,7 @@ export const drawSvg = async (
   svg: string,
   options: PDFPageDrawSVGElementOptionsRequireds,
 ) => {
-  const elements = parse(svg);
+  const elements = parse(svg, options);
   const runners = runnersToPage(page, options);
   for (let i = 0; i < elements.length; i++) {
     const c = elements[i];
