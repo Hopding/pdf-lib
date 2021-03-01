@@ -79,7 +79,7 @@ const runnersToPage = (
   options: PDFPageDrawSVGElementOptionsRequireds,
 ): SVGElementToDrawMap => ({
   async text(element) {
-    page.drawText(element.text, {
+    page.drawText(element.childNodes[0].text, {
       x: options.x + element.svgAttributes.x,
       y: options.y - element.svgAttributes.y,
       font:
@@ -242,6 +242,12 @@ const parseStyles = (style: string): SVGStyle => {
   return css;
 };
 
+const parseColor = (color: string): Color | undefined => {
+  if (!color || color.length === 0) return undefined;
+  if (['none', 'transparent'].includes(color)) return undefined;
+  return colorString(color);
+}
+
 const parseAttributes = (
   element: HTMLElement,
   parentElement?: SVGElement,
@@ -252,9 +258,9 @@ const parseAttributes = (
 
   const widthRaw = styleOrAttribute(attributes, style, 'width', '');
   const heightRaw = styleOrAttribute(attributes, style, 'height', '');
-  const fillRaw = colorString(styleOrAttribute(attributes, style, 'fill'));
+  const fillRaw = parseColor(styleOrAttribute(attributes, style, 'fill'));
   const fillOpacityRaw = styleOrAttribute(attributes, style, 'fill-opacity');
-  const strokeRaw = colorString(styleOrAttribute(attributes, style, 'stroke'));
+  const strokeRaw = parseColor(styleOrAttribute(attributes, style, 'stroke'));
   const strokeOpacityRaw = styleOrAttribute(
     attributes,
     style,
