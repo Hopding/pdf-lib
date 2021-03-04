@@ -7,6 +7,7 @@ import { Color, colorString } from './colors';
 import { Degrees, degreesToRadians } from './rotations';
 import PDFPage from './PDFPage';
 import { PDFPageDrawSVGElementOptions } from './PDFPageOptions';
+import { LineCapStyle, LineJoinStyle } from './operators';
 
 interface Position {
   x: number;
@@ -45,6 +46,8 @@ interface SVGAttributes {
   stroke?: Color;
   strokeWidth?: number;
   strokeOpacity?: number;
+  strokeLineCap?: LineCapStyle;
+  strokeLineJoin?: LineJoinStyle;
   rotate?: Degrees;
   scale?: number;
   skewX?: Degrees;
@@ -73,6 +76,18 @@ export type SVGElement = HTMLElement & {
 interface SVGElementToDrawMap {
   [cmd: string]: (a: SVGElement) => Promise<void>;
 }
+
+const StrokeLineCapMap: Record<string, LineCapStyle> = {
+  'butt': LineCapStyle.Butt,
+  'round': LineCapStyle.Round,
+  'square': LineCapStyle.Projecting,
+};
+
+const StrokeLineJoinMap: Record<string, LineJoinStyle> = {
+  'bevel': LineJoinStyle.Bevel,
+  'miter': LineJoinStyle.Miter,
+  'round': LineJoinStyle.Round,
+};
 
 const runnersToPage = (
   page: PDFPage,
@@ -104,6 +119,7 @@ const runnersToPage = (
       thickness: element.svgAttributes.strokeWidth,
       color: element.svgAttributes.stroke,
       opacity: element.svgAttributes.strokeOpacity,
+      lineCap: element.svgAttributes.strokeLineCap,
     });
   },
   async path(element) {
@@ -113,6 +129,7 @@ const runnersToPage = (
       borderColor: element.svgAttributes.stroke,
       borderWidth: element.svgAttributes.strokeWidth,
       borderOpacity: element.svgAttributes.strokeOpacity,
+      borderLineCap: element.svgAttributes.strokeLineCap,
       color: element.svgAttributes.fill,
       opacity: element.svgAttributes.fillOpacity,
       scale: element.svgAttributes.scale,
@@ -141,6 +158,7 @@ const runnersToPage = (
       borderColor: element.svgAttributes.stroke,
       borderWidth: element.svgAttributes.strokeWidth,
       borderOpacity: element.svgAttributes.strokeOpacity,
+      borderLineCap: element.svgAttributes.strokeLineCap,
       color: element.svgAttributes.fill,
       opacity: element.svgAttributes.fillOpacity,
       xSkew: element.svgAttributes.skewX,
@@ -157,6 +175,7 @@ const runnersToPage = (
       borderColor: element.svgAttributes.stroke,
       borderWidth: element.svgAttributes.strokeWidth,
       borderOpacity: element.svgAttributes.strokeOpacity,
+      borderLineCap: element.svgAttributes.strokeLineCap,
       color: element.svgAttributes.fill,
       opacity: element.svgAttributes.fillOpacity,
       rotate: element.svgAttributes.rotate,
@@ -170,6 +189,7 @@ const runnersToPage = (
       borderColor: element.svgAttributes.stroke,
       borderWidth: element.svgAttributes.strokeWidth,
       borderOpacity: element.svgAttributes.strokeOpacity,
+      borderLineCap: element.svgAttributes.strokeLineCap,
       color: element.svgAttributes.fill,
       opacity: element.svgAttributes.fillOpacity,
     });
@@ -266,6 +286,8 @@ const parseAttributes = (
     style,
     'stroke-opacity',
   );
+  const strokeLineCapRaw = styleOrAttribute(attributes, style, 'stroke-linecap');
+  const strokeLineJoinRaw = styleOrAttribute(attributes, style, 'stroke-linejoin');
   const strokeWidthRaw = styleOrAttribute(attributes, style, 'stroke-width');
   const fontFamilyRaw = styleOrAttribute(attributes, style, 'font-family');
   const fontSizeRaw = styleOrAttribute(attributes, style, 'font-size');
@@ -319,6 +341,8 @@ const parseAttributes = (
     typeof strokeOpacityRaw !== 'undefined'
       ? parseFloat(strokeOpacityRaw)
       : box.strokeOpacity;
+  const strokeLineCap = StrokeLineCapMap[strokeLineCapRaw] || box.strokeLineCap;
+  const strokeLineJoin = StrokeLineJoinMap[strokeLineJoinRaw] || box.strokeLineJoin;
   const strokeWidth =
     typeof strokeWidthRaw !== 'undefined'
       ? parseFloat(strokeWidthRaw)
@@ -441,6 +465,8 @@ const parseAttributes = (
     stroke,
     strokeWidth,
     strokeOpacity,
+    strokeLineCap,
+    strokeLineJoin,
     cx,
     cy,
     r,
