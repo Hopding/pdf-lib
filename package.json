@@ -1,6 +1,6 @@
 {
-  "name": "pdf-lib",
-  "version": "1.16.0",
+  "name": "@cantoo/pdf-lib",
+  "version": "1.16.5",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -28,7 +28,8 @@
     "DkDavid (https://github.com/DkDavid)",
     "Bj Tecu (https://github.com/btecu)",
     "Brent McSharry (https://github.com/mcshaz)",
-    "Tim Knapp (https://github.com/duffyd)"
+    "Tim Knapp (https://github.com/duffyd)",
+    "François Billioud (https://github.com/Sharcoux)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
