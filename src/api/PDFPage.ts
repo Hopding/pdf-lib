@@ -893,10 +893,14 @@ export default class PDFPage {
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
-    const [originalFont] = this.getFont();
-    if (options.font) this.setFont(options.font);
-    const [font, fontKey] = this.getFont();
-
+    const originalFont = (this.font && this.fontKey) ? this.font : undefined;
+    if (options.font) {
+      this.setFont(options.font);
+    } else if (!this.font || !this.fontKey) {
+      this.setFont(this.doc.embedStandardFont(StandardFonts.Helvetica));
+    }
+    const font = this.font!;
+    const fontKey = this.fontKey!;
     const fontSize = options.size || this.fontSize;
 
     const wordBreaks = options.wordBreaks || this.doc.defaultWordBreaks;
@@ -932,7 +936,13 @@ export default class PDFPage {
       }),
     );
 
-    if (options.font) this.setFont(originalFont);
+    if (options.font) {
+      if (originalFont) {
+        this.setFont(originalFont);
+      } else {
+        this.resetFont();
+      }
+    }
   }
 
   /**
@@ -1450,12 +1460,9 @@ export default class PDFPage {
     this.drawEllipse({ ...options, xScale: size, yScale: size });
   }
 
-  private getFont(): [PDFFont, string] {
-    if (!this.font || !this.fontKey) {
-      const font = this.doc.embedStandardFont(StandardFonts.Helvetica);
-      this.setFont(font);
-    }
-    return [this.font!, this.fontKey!];
+  private resetFont(): void {
+    this.font = undefined;
+    this.fontKey = undefined;
   }
 
   private getContentStream(useExisting = true): PDFContentStream {
