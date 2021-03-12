@@ -3049,10 +3049,10 @@ node-fetch@^2.6.0:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
-node-html-better-parser@^1.1.24:
-  version "1.1.24"
-  resolved "https://registry.yarnpkg.com/node-html-better-parser/-/node-html-better-parser-1.1.24.tgz#4accc9baac2ac0dd4337e4d3531fab7ce9c51c7f"
-  integrity sha512-cnabsO2chzqKInsOfQ+ngzDzStuyKptK4eWJN2JOeVOWyk4QPP33Itr20nh0Ehl1ANqkqldaAQF91CNacPJC+Q==
+node-html-better-parser@^1.1.25:
+  version "1.1.25"
+  resolved "https://registry.yarnpkg.com/node-html-better-parser/-/node-html-better-parser-1.1.25.tgz#e96309a2c5ac0e1eba086d274576466964ec7ca5"
+  integrity sha512-mP62goawgv78Jz9jwGv6B4+O//vaBGe8qnsahKAcTPnkcz7uX4hyzwx+b7YZVn2qiZjx7P+w6XV2XKYUKs7Eag==
   dependencies:
     he "1.1.1"
 
@@ -4119,15 +4119,15 @@ tslib@^1.10.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
 
-tslib@^1.11.1:
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
-  integrity sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA==
-
 tslib@^1.8.1:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
+
+tslib@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
+  integrity sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==
 
 tslint-config-prettier@^1.18.0:
   version "1.18.0"
