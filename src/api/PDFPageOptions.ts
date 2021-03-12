@@ -162,5 +162,6 @@ export interface PDFPageDrawSVGElementOptions {
   y?: number;
   width?: number;
   height?: number;
+  fontSize?: number;
   fonts?: { [fontName: string]: PDFFont };
 }
