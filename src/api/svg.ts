@@ -353,10 +353,13 @@ const parseAttributes = (
     fontFamily: fontFamilyRaw || inherited.fontFamily,
     fontSize: parseFloatValue(fontSizeRaw) ?? inherited.fontSize,
     fill: fillRaw || inherited.fill,
-    fillOpacity: parseFloatValue(fillOpacityRaw || opacityRaw) ?? inherited.fillOpacity,
+    fillOpacity:
+      parseFloatValue(fillOpacityRaw || opacityRaw) ?? inherited.fillOpacity,
     stroke: strokeRaw || inherited.stroke,
     strokeWidth: parseFloatValue(strokeWidthRaw) ?? inherited.strokeWidth,
-    strokeOpacity: parseFloatValue(strokeOpacityRaw || opacityRaw) ?? inherited.strokeOpacity,
+    strokeOpacity:
+      parseFloatValue(strokeOpacityRaw || opacityRaw) ??
+      inherited.strokeOpacity,
     strokeLineCap:
       StrokeLineCapMap[strokeLineCapRaw] || inherited.strokeLineCap,
     strokeLineJoin:
