@@ -315,6 +315,7 @@ const parseAttributes = (
   const heightRaw = styleOrAttribute(attributes, style, 'height', '');
   const fillRaw = parseColor(styleOrAttribute(attributes, style, 'fill'));
   const fillOpacityRaw = styleOrAttribute(attributes, style, 'fill-opacity');
+  const opacityRaw = styleOrAttribute(attributes, style, 'opacity');
   const strokeRaw = parseColor(styleOrAttribute(attributes, style, 'stroke'));
   const strokeOpacityRaw = styleOrAttribute(
     attributes,
@@ -352,10 +353,10 @@ const parseAttributes = (
     fontFamily: fontFamilyRaw || inherited.fontFamily,
     fontSize: parseFloatValue(fontSizeRaw) ?? inherited.fontSize,
     fill: fillRaw || inherited.fill,
-    fillOpacity: parseFloatValue(fillOpacityRaw) ?? inherited.fillOpacity,
+    fillOpacity: parseFloatValue(fillOpacityRaw || opacityRaw) ?? inherited.fillOpacity,
     stroke: strokeRaw || inherited.stroke,
     strokeWidth: parseFloatValue(strokeWidthRaw) ?? inherited.strokeWidth,
-    strokeOpacity: parseFloatValue(strokeOpacityRaw) ?? inherited.strokeOpacity,
+    strokeOpacity: parseFloatValue(strokeOpacityRaw || opacityRaw) ?? inherited.strokeOpacity,
     strokeLineCap:
       StrokeLineCapMap[strokeLineCapRaw] || inherited.strokeLineCap,
     strokeLineJoin:
