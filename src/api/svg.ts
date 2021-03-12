@@ -290,14 +290,16 @@ const parseStyles = (style: string): SVGStyle => {
   return css;
 };
 
-const parseColor = (color: string): { rgb: Color, alpha?: string } | undefined => {
+const parseColor = (
+  color: string,
+): { rgb: Color; alpha?: string } | undefined => {
   if (!color || color.length === 0) return undefined;
   if (['none', 'transparent'].includes(color)) return undefined;
   const parsedColor = colorString(color);
   return {
     rgb: parsedColor.rgb,
-    alpha: parsedColor.alpha ? (parsedColor.alpha + '') : undefined
-  }
+    alpha: parsedColor.alpha ? parsedColor.alpha + '' : undefined,
+  };
 };
 
 type ParsedAttributes = {
@@ -358,7 +360,8 @@ const parseAttributes = (
     fontSize: parseFloatValue(fontSizeRaw) ?? inherited.fontSize,
     fill: fillRaw?.rgb || inherited.fill,
     fillOpacity:
-      parseFloatValue(fillOpacityRaw || opacityRaw || fillRaw?.alpha) ?? inherited.fillOpacity,
+      parseFloatValue(fillOpacityRaw || opacityRaw || fillRaw?.alpha) ??
+      inherited.fillOpacity,
     stroke: strokeRaw?.rgb || inherited.stroke,
     strokeWidth: parseFloatValue(strokeWidthRaw) ?? inherited.strokeWidth,
     strokeOpacity:

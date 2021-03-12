@@ -62,13 +62,13 @@ export const cmyk = (
   return { type: ColorTypes.CMYK, cyan, magenta, yellow, key };
 };
 
-export const colorString = (color: string): { rgb: Color, alpha?: number } => {
+export const colorString = (color: string): { rgb: Color; alpha?: number } => {
   assertIs(color, 'color', ['string']);
   const colorDescription = ColorParser(color).unitObject();
   return {
     rgb: rgb(colorDescription.r, colorDescription.g, colorDescription.b),
-    alpha: colorDescription.alpha
-  }
+    alpha: colorDescription.alpha,
+  };
 };
 
 const { Grayscale, RGB, CMYK } = ColorTypes;
