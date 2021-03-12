@@ -290,10 +290,14 @@ const parseStyles = (style: string): SVGStyle => {
   return css;
 };
 
-const parseColor = (color: string): Color | undefined => {
+const parseColor = (color: string): { rgb: Color, alpha?: string } | undefined => {
   if (!color || color.length === 0) return undefined;
   if (['none', 'transparent'].includes(color)) return undefined;
-  return colorString(color);
+  const parsedColor = colorString(color);
+  return {
+    rgb: parsedColor.rgb,
+    alpha: parsedColor.alpha ? (parsedColor.alpha + '') : undefined
+  }
 };
 
 type ParsedAttributes = {
@@ -352,13 +356,13 @@ const parseAttributes = (
   const newInherited: InheritedAttributes = {
     fontFamily: fontFamilyRaw || inherited.fontFamily,
     fontSize: parseFloatValue(fontSizeRaw) ?? inherited.fontSize,
-    fill: fillRaw || inherited.fill,
+    fill: fillRaw?.rgb || inherited.fill,
     fillOpacity:
-      parseFloatValue(fillOpacityRaw || opacityRaw) ?? inherited.fillOpacity,
-    stroke: strokeRaw || inherited.stroke,
+      parseFloatValue(fillOpacityRaw || opacityRaw || fillRaw?.alpha) ?? inherited.fillOpacity,
+    stroke: strokeRaw?.rgb || inherited.stroke,
     strokeWidth: parseFloatValue(strokeWidthRaw) ?? inherited.strokeWidth,
     strokeOpacity:
-      parseFloatValue(strokeOpacityRaw || opacityRaw) ??
+      parseFloatValue(strokeOpacityRaw || opacityRaw || strokeRaw?.alpha) ??
       inherited.strokeOpacity,
     strokeLineCap:
       StrokeLineCapMap[strokeLineCapRaw] || inherited.strokeLineCap,
