@@ -42,6 +42,7 @@ type InheritedAttributes = {
   strokeLineJoin?: LineJoinStyle;
   fontFamily?: string;
   fontSize?: number;
+  rotation?: Degrees;
 };
 type SVGAttributes = {
   rotate?: Degrees;
@@ -93,12 +94,13 @@ const runnersToPage = (
   options: PDFPageDrawSVGElementOptions,
 ): SVGElementToDrawMap => ({
   async text(element) {
-    const anchor = element.svgAttributes.textAnchor
-    const text = element.childNodes[0].text
-    const fontSize = element.svgAttributes.fontSize || 12
-    const textWidth = text.length * fontSize / 2 // We try to approx the width of the text
-    const offset = anchor === 'middle' ? textWidth / 2 : anchor === 'end' ? textWidth : 0
-    page.drawText(element.childNodes[0].text, {
+    const anchor = element.svgAttributes.textAnchor;
+    const text = element.childNodes[0].text;
+    const fontSize = element.svgAttributes.fontSize || 12;
+    const textWidth = (text.length * fontSize) / 2; // We try to approx the width of the text
+    const offset =
+      anchor === 'middle' ? textWidth / 2 : anchor === 'end' ? textWidth : 0;
+    page.drawText(text, {
       x: (element.svgAttributes.x || 0) - offset,
       y: element.svgAttributes.y,
       font:
@@ -108,6 +110,7 @@ const runnersToPage = (
       size: element.svgAttributes.fontSize,
       color: element.svgAttributes.fill,
       opacity: element.svgAttributes.fillOpacity,
+      rotate: element.svgAttributes.rotate,
     });
   },
   async line(element) {
@@ -127,7 +130,7 @@ const runnersToPage = (
     });
   },
   async path(element) {
-    // See https://jsbin.com/kawifomupa/edit?html,output and 
+    // See https://jsbin.com/kawifomupa/edit?html,output and
     page.drawSvgPath(element.svgAttributes.d!, {
       x: element.svgAttributes.x,
       y: element.svgAttributes.y,
@@ -204,8 +207,10 @@ const transform = (
     case 'scale':
       const [xScale, yScale = xScale] = args;
       return {
-        point: (x: number, y: number) => converter.point(x * xScale, y * yScale),
-        size: (w: number, h: number) => converter.size(Math.abs(w * xScale), Math.abs(h * yScale))
+        point: (x: number, y: number) =>
+          converter.point(x * xScale, y * yScale),
+        size: (w: number, h: number) =>
+          converter.size(Math.abs(w * xScale), Math.abs(h * yScale)),
       };
     case 'translateX':
       return transform(converter, 'translate', [args[0], 0]);
@@ -227,34 +232,32 @@ const transform = (
         const [a] = args;
         const angle = degreesToRadians(a);
         return {
-          point: (x, y) => converter.point(
-            x * Math.cos(angle) - y * Math.sin(angle),
-            y * Math.cos(angle) + x * Math.sin(angle),
-          ),
-          size: (w, h) => converter.size(
+          point: (x, y) =>
+            converter.point(
+              x * Math.cos(angle) - y * Math.sin(angle),
+              y * Math.cos(angle) + x * Math.sin(angle),
+            ),
+          size: (w, h) =>
+            converter.size(
               w * Math.cos(angle) - h * Math.sin(angle),
-              h * Math.cos(angle) + w * Math.sin(angle)
-          )
+              h * Math.cos(angle) + w * Math.sin(angle),
+            ),
         };
       }
     }
     case 'skewX': {
       const angle = degreesToRadians(args[0]);
       return {
-        point: (x: number, y: number) => converter.point(
-          (1 + x) * Math.tan(angle),
-          y,
-        ),
+        point: (x: number, y: number) =>
+          converter.point((1 + x) * Math.tan(angle), y),
         size: converter.size,
       };
     }
     case 'skewY': {
       const angle = degreesToRadians(args[0]);
       return {
-        point: (x: number, y: number) => converter.point(
-          x,
-          (1 + y) * Math.tan(angle),
-        ),
+        point: (x: number, y: number) =>
+          converter.point(x, (1 + y) * Math.tan(angle)),
         size: converter.size,
       };
     }
@@ -369,39 +372,33 @@ const parseAttributes = (
   let newConverter = converter;
 
   let transformList = attributes.transform || '';
-  if (element.tagName === 'g' || element.tagName === 'svg') {
-    // Handle transformations set as direct attributes
-    [
-      'translate',
-      'translateX',
-      'translateY',
-      'skewX',
-      'skewY',
-      'rotate',
-      'scale',
-      'scaleX',
-      'scaleY',
-    ].forEach((name) => {
-      if (attributes[name]) {
-        transformList = attributes[name] + ' ' + transformList;
-      }
-    });
-  } else {
-    // skewX, skewY, rotate and scale are handled by the pdf-lib
-    (['skewX', 'skewY', 'rotate'] as const).forEach((name) => {
-      if (attributes[name]) {
-        svgAttributes[name] = {
-          angle: parseInt(attributes[name].match(/\d+\.?\d*/)![0], 10),
-          type: RotationTypes.Degrees,
-        };
-      }
-    });
-    if (attributes.scale) {
-      svgAttributes.scale = parseInt(
-        attributes.scale.match(/\d+\.?\d*/)![0],
-        10,
-      );
+  // Handle transformations set as direct attributes
+  [
+    'translate',
+    'translateX',
+    'translateY',
+    'skewX',
+    'skewY',
+    'rotate',
+    'scale',
+    'scaleX',
+    'scaleY',
+  ].forEach((name) => {
+    if (attributes[name]) {
+      transformList = attributes[name] + ' ' + transformList;
     }
+  });
+  // skewX, skewY, rotate and scale are handled by the pdf-lib
+  (['skewX', 'skewY', 'rotate'] as const).forEach((name) => {
+    if (attributes[name]) {
+      svgAttributes[name] = {
+        angle: parseInt(attributes[name].match(/\d+\.?\d*/)![0], 10),
+        type: RotationTypes.Degrees,
+      };
+    }
+  });
+  if (attributes.scale) {
+    svgAttributes.scale = parseInt(attributes.scale.match(/\d+\.?\d*/)![0], 10);
   }
   // Convert x/y as if it was a translation
   if (x || y) {
@@ -458,16 +455,19 @@ const parseAttributes = (
   }
   // We convert all the points from the path
   if (attributes.d) {
-    svgAttributes.d = attributes.d.replace(/\d+\.?\d*(,|\s)+\d+\.?\d*/g, (elt) => {
-      const [xReal, , yReal] = elt
-        .split(/(,|\s)+/)
-        .map((d) => parseFloatValue(d));
-      const { x: updatedX, y: updatedY } = converter.point(
-        xReal || 0,
-        yReal || 0,
-      );
-      return updatedX + ',' + updatedY;
-    });
+    svgAttributes.d = attributes.d.replace(
+      /\d+\.?\d*(,|\s)+\d+\.?\d*/g,
+      (elt) => {
+        const [xReal, , yReal] = elt
+          .split(/(,|\s)+/)
+          .map((d) => parseFloatValue(d));
+        const { x: updatedX, y: updatedY } = converter.point(
+          xReal || 0,
+          yReal || 0,
+        );
+        return updatedX + ',' + updatedY;
+      },
+    );
   }
   if (attributes.viewBox) {
     const viewBox = parseViewBox(attributes.viewBox)!;
@@ -480,7 +480,7 @@ const parseAttributes = (
       viewBox,
       attributes.preserveAspectRatio,
     );
-    const oldConverter = newConverter
+    const oldConverter = newConverter;
     newConverter = {
       point: (px: number, py: number) => {
         const { x: localX, y: localY } = localConverter.point(px, py);
@@ -492,10 +492,12 @@ const parseAttributes = (
           h,
         );
         return oldConverter.size(localWidth, localHeight);
-      }
+      },
     };
   }
-  if(newInherited.fontSize) newInherited.fontSize = newConverter.size(1, newInherited.height).height
+  if (newInherited.fontSize) {
+    newInherited.fontSize = newConverter.size(1, newInherited.fontSize).height;
+  }
   return {
     inherited: newInherited,
     svgAttributes,
@@ -527,10 +529,12 @@ const getConverterWithAspectRatio = (
 ) => {
   if (preserveAspectRatio === 'none') return getConverter(size, viewBox);
 
-  const ratioPixel = size.width / size.height
-  const ratioReal = viewBox.width / viewBox.height
-  const fittingWidth = ratioPixel > ratioReal ? ratioReal * size.height : size.width;
-  const fittingHeight = ratioPixel >= ratioReal ? size.height : size.width / ratioReal;
+  const ratioPixel = size.width / size.height;
+  const ratioReal = viewBox.width / viewBox.height;
+  const fittingWidth =
+    ratioPixel > ratioReal ? ratioReal * size.height : size.width;
+  const fittingHeight =
+    ratioPixel >= ratioReal ? size.height : size.width / ratioReal;
   const dx = size.width - fittingWidth;
   const dy = size.height - fittingHeight;
   const ratioConverter = getConverter(size, {
@@ -627,14 +631,14 @@ const parse = (
   svg: string,
   { width, height, x, y, fontSize }: PDFPageDrawSVGElementOptions,
   size: Size,
-  converter: SVGSizeConverter
+  converter: SVGSizeConverter,
 ): SVGElement[] => {
   const htmlElement = parseHtml(svg).firstChild as HTMLElement;
-  if(width) htmlElement.setAttribute('width', width + '')
-  if(height) htmlElement.setAttribute('height', height + '')
-  if(x) htmlElement.setAttribute('x', x + '')
-  if(y) htmlElement.setAttribute('y', y + '')
-  if(fontSize) htmlElement.setAttribute('font-size', fontSize + '')
+  if (width) htmlElement.setAttribute('width', width + '');
+  if (height) htmlElement.setAttribute('height', height + '');
+  if (x) htmlElement.setAttribute('x', x + '');
+  if (y) htmlElement.setAttribute('y', y + '');
+  if (fontSize) htmlElement.setAttribute('font-size', fontSize + '');
 
   return parseHTMLNode(htmlElement, size, converter);
 };
@@ -644,13 +648,13 @@ export const drawSvg = async (
   svg: string,
   options: PDFPageDrawSVGElementOptions,
 ) => {
-  const size = page.getSize()
+  const size = page.getSize();
   // The y axis of the page is reverted
   const defaultConverter = {
     point: (x: number, y: number) => ({ x, y: size.height - y }),
     size: (w: number, h: number) => ({ width: w, height: h }),
-  }
+  };
   const runners = runnersToPage(page, options);
   const elements = parse(svg, options, size, defaultConverter);
-  elements.forEach(elt => runners[elt.tagName]?.(elt))
+  elements.forEach((elt) => runners[elt.tagName]?.(elt));
 };

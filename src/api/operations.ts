@@ -357,9 +357,7 @@ export const drawSvgPath = (
     translate(options.x, options.y),
     rotateRadians(toRadians(options.rotate ?? degrees(0))),
 
-    // SVG path Y axis is opposite pdf-lib's
-    options.scale ? scale(options.scale, options.scale) : scale(1, 1),
-
+    options.scale && scale(options.scale, options.scale),
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     options.borderWidth && setLineWidth(options.borderWidth),
