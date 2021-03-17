@@ -87,6 +87,17 @@ const StrokeLineJoinMap: Record<string, LineJoinStyle> = {
   round: LineJoinStyle.Round,
 };
 
+/** polyfill for Node < 12 */
+const matchAll = (str: string) => (re: RegExp) => {
+  const matches = [];
+  let groups;
+  // tslint:disable-next-line no-conditional-assignment
+  while ((groups = re.exec(str))) {
+    matches.push(groups);
+  }
+  return matches;
+};
+
 // TODO: Improve type system to require the correct props for each tagName.
 /** methods to draw SVGElements onto a PDFPage */
 const runnersToPage = (
@@ -102,12 +113,12 @@ const runnersToPage = (
       anchor === 'middle' ? textWidth / 2 : anchor === 'end' ? textWidth : 0;
     page.drawText(text, {
       x: (element.svgAttributes.x || 0) - offset,
-      y: element.svgAttributes.y,
+      y: (element.svgAttributes.y || 0) - fontSize,
       font:
         options.fonts && element.svgAttributes.fontFamily
           ? options.fonts[element.svgAttributes.fontFamily]
           : undefined,
-      size: element.svgAttributes.fontSize,
+      size: fontSize,
       color: element.svgAttributes.fill,
       opacity: element.svgAttributes.fillOpacity,
       rotate: element.svgAttributes.rotate,
@@ -132,8 +143,8 @@ const runnersToPage = (
   async path(element) {
     // See https://jsbin.com/kawifomupa/edit?html,output and
     page.drawSvgPath(element.svgAttributes.d!, {
-      x: element.svgAttributes.x,
-      y: element.svgAttributes.y,
+      x: element.svgAttributes.x || 0,
+      y: element.svgAttributes.y || 0,
       borderColor: element.svgAttributes.stroke,
       borderWidth: element.svgAttributes.strokeWidth,
       borderOpacity: element.svgAttributes.strokeOpacity,
@@ -416,9 +427,9 @@ const parseAttributes = (
     transformList = `translate(${x || 0} ${y || 0}) ` + transformList;
   }
   // Apply the transformations
-  if (attributes.transform) {
+  if (transformList) {
     const regexTransform = /(\w+)\((.+?)\)/g;
-    let parsed = regexTransform.exec(attributes.transform);
+    let parsed = regexTransform.exec(transformList);
     while (parsed !== null) {
       const [, name, rawArgs] = parsed;
       const args = (rawArgs || '')
@@ -427,12 +438,13 @@ const parseAttributes = (
         .map((value) => parseFloat(value));
 
       newConverter = transform(newConverter, name, args);
-      parsed = regexTransform.exec(attributes.transform);
+      parsed = regexTransform.exec(transformList);
     }
   }
 
   if (attributes.x || attributes.y) {
-    const { x: newX, y: newY } = newConverter.point(x || 0, y || 0);
+    // x and y were already transformed into a translation. The new reference point is now 0,0
+    const { x: newX, y: newY } = newConverter.point(0, 0);
     svgAttributes.x = newX;
     svgAttributes.y = newY;
   }
@@ -466,17 +478,42 @@ const parseAttributes = (
   }
   // We convert all the points from the path
   if (attributes.d) {
-    svgAttributes.d = attributes.d.replace(
-      /\d+\.?\d*(,|\s)+\d+\.?\d*/g,
+    // transform v/V and h/H commands
+    svgAttributes.d = attributes.d.replace(/(v|h)\s?\d+\.?\d*/gi, (elt) => {
+      const letter = elt.charAt(0);
+      const coord = parseFloatValue(elt.slice(1).trim()) || 1;
+      if (letter === letter.toLowerCase()) {
+        return letter === 'h'
+          ? 'h' + converter.size(coord, 1).width
+          : 'v' + converter.size(1, coord).height;
+      } else {
+        return letter === 'H'
+          ? 'H' + converter.point(coord, 1).x
+          : 'V' + converter.point(1, coord).y;
+      }
+    });
+    // transform other letters
+    svgAttributes.d = svgAttributes.d.replace(
+      /(l|t|m|a|q|c)(\d+\.?\d*(,|\s)+\d+\.?\d*)+/gi,
       (elt) => {
-        const [xReal, , yReal] = elt
-          .split(/(,|\s)+/)
-          .map((d) => parseFloatValue(d));
-        const { x: updatedX, y: updatedY } = converter.point(
-          xReal || 0,
-          yReal || 0,
+        const letter = elt.charAt(0);
+        const coords = elt.slice(1);
+        return (
+          letter +
+          matchAll(coords)(/(\d+\.?\d*)(,|\s)+(\d+\.?\d*)/gi)
+            .map(([, a, , b]) => {
+              const xReal = parseFloatValue(a, inherited.width) || 0;
+              const yReal = parseFloatValue(b, inherited.height) || 0;
+              if (letter === letter.toLowerCase()) {
+                const { width: dx, height: dy } = converter.size(xReal, yReal);
+                return [dx, dy].join(',');
+              } else {
+                const { x: xPixel, y: yPixel } = converter.point(xReal, yReal);
+                return [xPixel, yPixel].join(',');
+              }
+            })
+            .join(' ')
         );
-        return updatedX + ',' + updatedY;
       },
     );
   }
@@ -508,6 +545,11 @@ const parseAttributes = (
   }
   if (newInherited.fontSize) {
     newInherited.fontSize = newConverter.size(1, newInherited.fontSize).height;
+  }
+  if (newInherited.fontFamily) {
+    // Handle complex fontFamily like `"Linux Libertine O", serif`
+    const inner = newInherited.fontFamily.match(/^"(.*)"|^'(.*)'/);
+    if (inner) newInherited.fontFamily = inner[1] || inner[2];
   }
   return {
     inherited: newInherited,
@@ -648,7 +690,7 @@ const parse = (
   if (width) htmlElement.setAttribute('width', width + '');
   if (height) htmlElement.setAttribute('height', height + '');
   if (x) htmlElement.setAttribute('x', x + '');
-  if (y) htmlElement.setAttribute('y', y + '');
+  if (y) htmlElement.setAttribute('y', size.height - y + '');
   if (fontSize) htmlElement.setAttribute('font-size', fontSize + '');
 
   return parseHTMLNode(htmlElement, size, converter);
