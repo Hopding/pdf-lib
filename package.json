@@ -1,6 +1,6 @@
 {
   "name": "@cantoo/pdf-lib",
-  "version": "1.16.9",
+  "version": "1.16.10",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -122,10 +122,10 @@
   },
   "license": "MIT",
   "private": false,
-  "homepage": "https://pdf-lib.js.org",
-  "repository": "git+https://github.com/Hopding/pdf-lib.git",
+  "homepage": "https://github.com/cantoo-scribe/pdf-lib",
+  "repository": "git+https://github.com/cantoo-scribe/pdf-lib.git",
   "bugs": {
-    "url": "https://github.com/Hopding/pdf-lib/issues"
+    "url": "https://github.com/cantoo-scribe/pdf-lib/issues"
   },
   "keywords": [
     "pdf-lib",
