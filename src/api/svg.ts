@@ -590,11 +590,10 @@ const getConverterWithAspectRatio = (
     ratioPixel >= ratioReal ? size.height : size.width / ratioReal;
   const dx = size.width - fittingWidth;
   const dy = size.height - fittingHeight;
-  const ratioConverter = getConverter(size, {
-    ...viewBox,
-    width: fittingWidth,
-    height: fittingHeight,
-  });
+  const ratioConverter = getConverter(
+    { width: fittingWidth, height: fittingHeight },
+    viewBox,
+  );
   switch (preserveAspectRatio) {
     case 'xMinYMin':
       return ratioConverter;
