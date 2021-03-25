@@ -113,7 +113,7 @@ const runnersToPage = (
       anchor === 'middle' ? textWidth / 2 : anchor === 'end' ? textWidth : 0;
     page.drawText(text, {
       x: (element.svgAttributes.x || 0) - offset,
-      y: (element.svgAttributes.y || 0) - fontSize,
+      y: element.svgAttributes.y || 0,
       font:
         options.fonts && element.svgAttributes.fontFamily
           ? options.fonts[element.svgAttributes.fontFamily]
