@@ -413,14 +413,18 @@ const parseAttributes = (
   // skewX, skewY, rotate and scale are handled by the pdf-lib
   (['skewX', 'skewY', 'rotate'] as const).forEach((name) => {
     if (attributes[name]) {
-      svgAttributes[name] = {
-        angle: parseInt(attributes[name].match(/\d+\.?\d*/)![0], 10),
-        type: RotationTypes.Degrees,
-      };
+      const d = attributes[name].match(/-?(\d+\.?|\.)\d*/)?.[0];
+      if (d !== undefined) {
+        svgAttributes[name] = {
+          angle: parseInt(d, 10),
+          type: RotationTypes.Degrees,
+        };
+      }
     }
   });
   if (attributes.scale) {
-    svgAttributes.scale = parseInt(attributes.scale.match(/\d+\.?\d*/)![0], 10);
+    const d = attributes.scale.match(/-?(\d+\.?|\.)\d*/)?.[0];
+    if (d !== undefined) svgAttributes.scale = parseInt(d, 10);
   }
   // Convert x/y as if it was a translation
   if (x || y) {
@@ -479,29 +483,34 @@ const parseAttributes = (
   // We convert all the points from the path
   if (attributes.d) {
     // transform v/V and h/H commands
-    svgAttributes.d = attributes.d.replace(/(v|h)\s?\d+\.?\d*/gi, (elt) => {
-      const letter = elt.charAt(0);
-      const coord = parseFloatValue(elt.slice(1).trim()) || 1;
-      if (letter === letter.toLowerCase()) {
-        return letter === 'h'
-          ? 'h' + converter.size(coord, 1).width
-          : 'v' + converter.size(1, coord).height;
-      } else {
-        return letter === 'H'
-          ? 'H' + converter.point(coord, 1).x
-          : 'V' + converter.point(1, coord).y;
-      }
-    });
+    svgAttributes.d = attributes.d.replace(
+      /(v|h)\s?-?(\d+\.?|\.)\d*/gi,
+      (elt) => {
+        const letter = elt.charAt(0);
+        const coord = parseFloatValue(elt.slice(1).trim()) || 1;
+        if (letter === letter.toLowerCase()) {
+          return letter === 'h'
+            ? 'h' + converter.size(coord, 1).width
+            : 'v' + converter.size(1, coord).height;
+        } else {
+          return letter === 'H'
+            ? 'H' + converter.point(coord, 1).x
+            : 'V' + converter.point(1, coord).y;
+        }
+      },
+    );
     // transform other letters
     svgAttributes.d = svgAttributes.d.replace(
-      /(l|t|m|a|q|c)(\d+\.?\d*(,|\s)+\d+\.?\d*)+/gi,
+      /(l|t|m|a|q|c)(-?(\d+\.?|\.)\d*(,|\s+|(?=-))-?(\d+\.?|\.)\d*)+/gi,
       (elt) => {
         const letter = elt.charAt(0);
         const coords = elt.slice(1);
         return (
           letter +
-          matchAll(coords)(/(\d+\.?\d*)(,|\s)+(\d+\.?\d*)/gi)
-            .map(([, a, , b]) => {
+          matchAll(coords)(
+            /(-?(\d+\.?|\.)\d*)(,|\s+|(?=-))(-?(\d+\.?|\.)\d*)/gi,
+          )
+            .map(([, a, , , b]) => {
               const xReal = parseFloatValue(a, inherited.width) || 0;
               const yReal = parseFloatValue(b, inherited.height) || 0;
               if (letter === letter.toLowerCase()) {
