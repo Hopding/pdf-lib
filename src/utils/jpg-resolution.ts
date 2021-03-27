@@ -8,9 +8,22 @@ const isEXIF = (data: DataView): boolean =>
 
 const isJFIF = (data: DataView): boolean => data.getUint32(6) === JFIF_MARKER;
 
-const getRational = (dataView: DataView, start: number): number => {
-    var numerator = dataView.getUint32(start);
-    var denominator = dataView.getUint32(start + 4);
+const isLittleEndian = (value: number): boolean  => {
+  if (value === 0x4949) {
+    return true;
+  }
+
+  if (value === 0x4d4d) {
+    return false;
+  }
+
+  throw new Error('TIFF Byte Order');
+
+};
+
+const getRational = (dataView: DataView, start: number, littleEndian: boolean): number => {
+    var numerator = dataView.getUint32(start, littleEndian);
+    var denominator = dataView.getUint32(start + 4, littleEndian);
     return numerator / denominator;
 };
 
@@ -39,26 +52,28 @@ export const getJpgResolution = (dataView: DataView): number => {
       let YResolution: number | undefined;
       let ResolutionUnit: number | undefined;
 
-      let pos = dataView.getUint32(16) + 12;
+      const littleEndian = isLittleEndian(dataView.getUint16(12));
+
+      let pos = dataView.getUint32(16, littleEndian) + 12;
       let start = pos + 2;
       let i = 0;
 
-      const count = dataView.getUint16(pos);
+      const count = dataView.getUint16(pos, littleEndian);
 
       while (i < count) {
-        let tag = dataView.getUint16(start);
+        let tag = dataView.getUint16(start, littleEndian);
 
         switch (tag) {
           case 282:
-            pos = dataView.getUint32(start + 8) + 12;
-            XResolution = getRational(dataView, pos);
+            pos = dataView.getUint32(start + 8, littleEndian) + 12;
+            XResolution = getRational(dataView, pos, littleEndian);
             break;
           case 283:
-            pos = dataView.getUint32(start + 8) + 12;
-            YResolution = getRational(dataView, pos);
+            pos = dataView.getUint32(start + 8, littleEndian) + 12;
+            YResolution = getRational(dataView, pos, littleEndian);
             break;
           case 296:
-            ResolutionUnit = dataView.getUint16(start + 8);
+            ResolutionUnit = dataView.getUint16(start + 8, littleEndian);
             break;
         }
 
