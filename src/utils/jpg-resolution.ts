@@ -38,14 +38,11 @@ const normalizeResolution = (x: number | undefined, y: number | undefined, unit:
 
   let resolutionPpi: number | undefined;
 
-  // Unit of XResolution (Tag # 0x011a)/YResolution ( Tag # 0x011b).
-  // '1' means no-unit, '2' means inch, '3' means centimeter.
-  //
   switch (unit) {
-    case 2:
+    case 2: // inch
       resolutionPpi = x;
       break;
-    case 3:
+    case 3: // cm
       resolutionPpi = x! * 2.54;
       break;
   }
@@ -105,7 +102,7 @@ export const getResolution = (dataView: DataView): number => {
       return getJfifResolution(dataView);
     }
     return DEFAULT_RESOLUTION;
-  } catch (_error) {
+  } catch (e) {
     return DEFAULT_RESOLUTION;
   }
 };
