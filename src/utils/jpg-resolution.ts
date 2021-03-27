@@ -1,5 +1,6 @@
 // default resolution
 const DEFAULT_RESOLUTION = 72;
+
 const EXIF_MARKER = 0x45786966; // 'Exif'
 const JFIF_MARKER = 0x4a464946; // 'JFIF'
 
@@ -18,7 +19,6 @@ const isLittleEndian = (value: number): boolean  => {
   }
 
   throw new Error('TIFF Byte Order');
-
 };
 
 const getRational = (dataView: DataView, pos: number, littleEndian: boolean): number => {
@@ -28,23 +28,37 @@ const getRational = (dataView: DataView, pos: number, littleEndian: boolean): nu
     return numerator / denominator;
 };
 
-const getJfifResolution = (dataView: DataView): number => {
-  let resolution = DEFAULT_RESOLUTION;
-
-  const resunits = dataView.getUint8(13);
-  const xDensity = dataView.getUint16(14);
-  const yDensity = dataView.getUint16(16);
-
-  if (xDensity !== yDensity) console.warn(`Non-square pixels in JPG`);
-
-  if (resunits === 1) {
-    // density is per inch
-    resolution = xDensity;
-  } else if (resunits === 2) {
-    // density is per cm
-    resolution = Math.round(xDensity * 2.54);
+const normalizeResolution = (x: number | undefined, y: number | undefined, unit: number | undefined): number => {
+  if (x !== y) {
+    console.warn(
+      'Non-square pixels detected. Falling back to default resolution.',
+    );
+    return DEFAULT_RESOLUTION;
   }
-  return resolution;
+
+  let resolutionPpi: number | undefined;
+
+  // Unit of XResolution (Tag # 0x011a)/YResolution ( Tag # 0x011b).
+  // '1' means no-unit, '2' means inch, '3' means centimeter.
+  //
+  switch (unit) {
+    case 2:
+      resolutionPpi = x;
+      break;
+    case 3:
+      resolutionPpi = x! * 2.54;
+      break;
+  }
+
+  return resolutionPpi || DEFAULT_RESOLUTION;
+}
+
+const getJfifResolution = (dataView: DataView): number => {
+  let ResolutionUnit = dataView.getUint8(13) + 1;
+  let XResolution = dataView.getUint16(14);
+  let YResolution = dataView.getUint16(16);
+
+  return normalizeResolution(XResolution, YResolution, ResolutionUnit);
 };
 
 const getJpgResolution = (dataView: DataView): number => {
@@ -79,29 +93,7 @@ const getJpgResolution = (dataView: DataView): number => {
     start += 12;
   }
 
-  if (XResolution !== YResolution) {
-    console.warn(
-      'Non-square pixels detected. Falling back to default resolution.',
-    );
-    return DEFAULT_RESOLUTION;
-  }
-
-  let resolutionPpi: number | undefined = DEFAULT_RESOLUTION;
-
-  // Unit of XResolution (Tag # 0x011a)/YResolution ( Tag # 0x011b).
-  // '1' means no-unit, '2' means inch, '3' means centimeter.
-  //
-  switch (ResolutionUnit) {
-    case 2:
-      resolutionPpi = XResolution;
-      break;
-    case 3:
-      resolutionPpi = XResolution! * 2.54;
-      break;
-    default:
-      resolutionPpi = DEFAULT_RESOLUTION;
-  }
-  return resolutionPpi || DEFAULT_RESOLUTION;
+  return normalizeResolution(XResolution, YResolution, ResolutionUnit);
 }
 
 export const getResolution = (dataView: DataView): number => {
