@@ -1,8 +1,7 @@
-// default resolution
 const DEFAULT_RESOLUTION = 72;
 
-const EXIF_MARKER = 0x45786966; // 'Exif'
-const JFIF_MARKER = 0x4a464946; // 'JFIF'
+const EXIF_MARKER = 0x45786966;
+const JFIF_MARKER = 0x4a464946;
 
 const isEXIF = (data: DataView): boolean =>
   data.getUint16(2) === 0xffe1 && data.getUint32(6) === EXIF_MARKER;
@@ -93,7 +92,7 @@ const getJpgResolution = (dataView: DataView): number => {
   return normalizeResolution(XResolution, YResolution, ResolutionUnit);
 }
 
-export const getResolution = (dataView: DataView): number => {
+export const getImageResolution = (dataView: DataView): number => {
   try {
     if (isEXIF(dataView)) {
       return getJpgResolution(dataView);

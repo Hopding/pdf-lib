@@ -9,7 +9,6 @@ const getImageType = (ctype: number) => {
   throw new Error(`Unknown color type: ${ctype}`);
 };
 
-// returns image resolution in pixels per inch
 const getImageResolution = (img: UPNG.Image): number => {
   const { pHYs } = img.tabs;
 
@@ -20,7 +19,7 @@ const getImageResolution = (img: UPNG.Image): number => {
 
   const inchesPerMeter = 39.37007874015748;
 
-  return Math.round(pHYs[0] / inchesPerMeter); // just get x resolution and assume that y is the same
+  return Math.round(pHYs[0] / inchesPerMeter);
 };
 
 const splitAlphaChannel = (rgbaChannel: Uint8Array) => {

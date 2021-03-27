@@ -1,6 +1,6 @@
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
-import { getResolution } from 'src/utils/jpg-resolution';
+import { getImageResolution } from 'src/utils/jpg';
 
 // prettier-ignore
 const MARKERS = [
@@ -61,8 +61,7 @@ class JpegEmbedder {
     if (!channelName) throw new Error('Unknown JPEG channel.');
 
     const colorSpace = channelName;
-
-    const resolution = getResolution(dataView);
+    const resolution = getImageResolution(dataView);
 
     return new JpegEmbedder(
       imageData,
