@@ -42,7 +42,7 @@ const openPdf = (path: string, _reader?: string) => {
     // execSync(`open -a "Google Chrome" '${path}'`);
     // execSync(`open -a "Firefox" '${path}'`);
   } else if (process.platform === 'win32') {
-    // Opens with the default PDF Reader, has room for improvement
+    // Opens with the default PDF Reader, has room for improvment
     execSync(`start ${path}`);
   } else {
     const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
@@ -104,6 +104,7 @@ const assets = {
       etwe: readImage('etwe.png'),
       self_drive: readImage('self_drive.png'),
       mario_emblem: readImage('mario_emblem.png'),
+      with_physical_dimensions: readImage('with_physical_dimensions.png'),
     },
   },
   pdfs: {

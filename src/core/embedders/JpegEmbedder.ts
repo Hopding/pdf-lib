@@ -1,5 +1,6 @@
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
+import { getJpgResolution } from 'src/utils/jpg-resolution';
 
 // prettier-ignore
 const MARKERS = [
@@ -61,12 +62,15 @@ class JpegEmbedder {
 
     const colorSpace = channelName;
 
+    const resolution = getJpgResolution(dataView);
+
     return new JpegEmbedder(
       imageData,
       bitsPerComponent,
       width,
       height,
       colorSpace,
+      resolution,
     );
   }
 
@@ -74,6 +78,7 @@ class JpegEmbedder {
   readonly height: number;
   readonly width: number;
   readonly colorSpace: ColorSpace;
+  readonly resolution: number; // in pixels per inch
 
   private readonly imageData: Uint8Array;
 
@@ -83,12 +88,14 @@ class JpegEmbedder {
     width: number,
     height: number,
     colorSpace: ColorSpace,
+    resolution: number,
   ) {
     this.imageData = imageData;
     this.bitsPerComponent = bitsPerComponent;
     this.width = width;
     this.height = height;
     this.colorSpace = colorSpace;
+    this.resolution = resolution;
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
