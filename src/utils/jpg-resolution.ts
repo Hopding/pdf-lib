@@ -45,65 +45,69 @@ const getJfifResolution = (dataView: DataView): number => {
   return resolution;
 };
 
-export const getJpgResolution = (dataView: DataView): number => {
+const getJpgResolution = (dataView: DataView): number => {
+  let XResolution: number | undefined;
+  let YResolution: number | undefined;
+  let ResolutionUnit: number | undefined;
+
+  const littleEndian = isLittleEndian(dataView.getUint16(12));
+
+  let pos = dataView.getUint32(16, littleEndian) + 12;
+  let start = pos + 2;
+  let i = 0;
+
+  const count = dataView.getUint16(pos, littleEndian);
+
+  while (i < count) {
+    let tag = dataView.getUint16(start, littleEndian);
+
+    switch (tag) {
+      case 282:
+        pos = dataView.getUint32(start + 8, littleEndian) + 12;
+        XResolution = getRational(dataView, pos, littleEndian);
+        break;
+      case 283:
+        pos = dataView.getUint32(start + 8, littleEndian) + 12;
+        YResolution = getRational(dataView, pos, littleEndian);
+        break;
+      case 296:
+        ResolutionUnit = dataView.getUint16(start + 8, littleEndian);
+        break;
+    }
+
+    i += 1;
+    start += 12;
+  }
+
+  if (XResolution !== YResolution) {
+    console.warn(
+      'Non-square pixels detected. Falling back to default resolution.',
+    );
+    return DEFAULT_RESOLUTION;
+  }
+
+  let resolutionPpi: number | undefined = DEFAULT_RESOLUTION;
+
+  // Unit of XResolution (Tag # 0x011a)/YResolution ( Tag # 0x011b).
+  // '1' means no-unit, '2' means inch, '3' means centimeter.
+  //
+  switch (ResolutionUnit) {
+    case 2:
+      resolutionPpi = XResolution;
+      break;
+    case 3:
+      resolutionPpi = XResolution! * 2.54;
+      break;
+    default:
+      resolutionPpi = DEFAULT_RESOLUTION;
+  }
+  return resolutionPpi || DEFAULT_RESOLUTION;
+}
+
+export const getResolution = (dataView: DataView): number => {
   try {
     if (isEXIF(dataView)) {
-      let XResolution: number | undefined;
-      let YResolution: number | undefined;
-      let ResolutionUnit: number | undefined;
-
-      const littleEndian = isLittleEndian(dataView.getUint16(12));
-
-      let pos = dataView.getUint32(16, littleEndian) + 12;
-      let start = pos + 2;
-      let i = 0;
-
-      const count = dataView.getUint16(pos, littleEndian);
-
-      while (i < count) {
-        let tag = dataView.getUint16(start, littleEndian);
-
-        switch (tag) {
-          case 282:
-            pos = dataView.getUint32(start + 8, littleEndian) + 12;
-            XResolution = getRational(dataView, pos, littleEndian);
-            break;
-          case 283:
-            pos = dataView.getUint32(start + 8, littleEndian) + 12;
-            YResolution = getRational(dataView, pos, littleEndian);
-            break;
-          case 296:
-            ResolutionUnit = dataView.getUint16(start + 8, littleEndian);
-            break;
-        }
-
-        i += 1;
-        start += 12;
-      }
-
-      if (XResolution !== YResolution) {
-        console.warn(
-          'Non-square pixels detected. Falling back to default resolution.',
-        );
-        return DEFAULT_RESOLUTION;
-      }
-
-      let resolutionPpi: number | undefined = DEFAULT_RESOLUTION;
-
-      // Unit of XResolution (Tag # 0x011a)/YResolution ( Tag # 0x011b).
-      // '1' means no-unit, '2' means inch, '3' means centimeter.
-      //
-      switch (ResolutionUnit) {
-        case 2:
-          resolutionPpi = XResolution;
-          break;
-        case 3:
-          resolutionPpi = XResolution! * 2.54;
-          break;
-        default:
-          resolutionPpi = DEFAULT_RESOLUTION;
-      }
-      return resolutionPpi || DEFAULT_RESOLUTION;
+      return getJpgResolution(dataView);
     }
     if (isJFIF(dataView)) {
       return getJfifResolution(dataView);
