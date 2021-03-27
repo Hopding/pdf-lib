@@ -42,7 +42,7 @@ const openPdf = (path: string, _reader?: string) => {
     // execSync(`open -a "Google Chrome" '${path}'`);
     // execSync(`open -a "Firefox" '${path}'`);
   } else if (process.platform === 'win32') {
-    // Opens with the default PDF Reader, has room for improvment
+    // Opens with the default PDF Reader, has room for improvement
     execSync(`start ${path}`);
   } else {
     const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
