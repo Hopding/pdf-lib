@@ -104,6 +104,7 @@ const assets = {
       etwe: readImage('etwe.png'),
       self_drive: readImage('self_drive.png'),
       mario_emblem: readImage('mario_emblem.png'),
+      with_physical_dimensions: readImage('with_physical_dimensions.png'),
     },
   },
   pdfs: {

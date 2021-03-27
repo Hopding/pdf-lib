@@ -60,6 +60,7 @@ describe(`PngEmbedder`, () => {
     expect(embedder.height).toBe(375);
     expect(embedder.width).toBe(600);
     expect(embedder.colorSpace).toBe('DeviceRGB');
+    expect(embedder.resolution).toBe(72);
   });
 
   it(`can extract properties of RGBA PNG images`, async () => {
@@ -69,6 +70,7 @@ describe(`PngEmbedder`, () => {
     expect(embedder.height).toBe(640);
     expect(embedder.width).toBe(960);
     expect(embedder.colorSpace).toBe('DeviceRGB');
+    expect(embedder.resolution).toBe(72);
   });
 
   it(`can extract properties of RGB PNG images`, async () => {
@@ -78,5 +80,6 @@ describe(`PngEmbedder`, () => {
     expect(embedder.height).toBe(640);
     expect(embedder.width).toBe(960);
     expect(embedder.colorSpace).toBe('DeviceRGB');
+    expect(embedder.resolution).toBe(72);
   });
 });

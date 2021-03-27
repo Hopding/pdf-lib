@@ -40,6 +40,7 @@ describe(`JpegEmbedder`, () => {
     expect(embedder.height).toBe(1080);
     expect(embedder.width).toBe(1920);
     expect(embedder.colorSpace).toBe('DeviceRGB');
+    expect(embedder.resolution).toBe(72);
   });
 
   it(`can extract properties of JPEG images (2)`, async () => {
@@ -49,6 +50,7 @@ describe(`JpegEmbedder`, () => {
     expect(embedder.height).toBe(354);
     expect(embedder.width).toBe(630);
     expect(embedder.colorSpace).toBe('DeviceRGB');
+    expect(embedder.resolution).toBe(72);
   });
 
   it(`can extract properties of JPEG images (3)`, async () => {
@@ -58,5 +60,6 @@ describe(`JpegEmbedder`, () => {
     expect(embedder.height).toBe(333);
     expect(embedder.width).toBe(500);
     expect(embedder.colorSpace).toBe('DeviceCMYK');
+    expect(embedder.resolution).toBe(180);
   });
 });

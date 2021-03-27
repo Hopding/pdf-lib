@@ -9,6 +9,19 @@ const getImageType = (ctype: number) => {
   throw new Error(`Unknown color type: ${ctype}`);
 };
 
+const getImageResolution = (img: UPNG.Image): number => {
+  const { pHYs } = img.tabs;
+
+  // prettier-ignore
+  if ( pHYs === undefined // we got no information about physical size
+    || pHYs[2] !==1       // units are not pixels per meter (the only valid unit for PNG files)
+  ) return 72; // default resolution is 72ppi
+
+  const inchesPerMeter = 39.37007874015748;
+
+  return Math.round(pHYs[0] / inchesPerMeter);
+};
+
 const splitAlphaChannel = (rgbaChannel: Uint8Array) => {
   const pixelCount = Math.floor(rgbaChannel.length / 4);
 
@@ -46,6 +59,7 @@ export class PNG {
   readonly width: number;
   readonly height: number;
   readonly bitsPerComponent: number;
+  readonly resolution: number;
 
   private constructor(pngData: Uint8Array) {
     const upng = UPNG.decode(pngData);
@@ -62,6 +76,7 @@ export class PNG {
     if (hasAlphaValues) this.alphaChannel = alphaChannel;
 
     this.type = getImageType(upng.ctype);
+    this.resolution = getImageResolution(upng);
 
     this.width = upng.width;
     this.height = upng.height;

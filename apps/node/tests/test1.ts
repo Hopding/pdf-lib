@@ -21,6 +21,7 @@ import {
   StandardFonts,
   typedArrayFor,
   AFRelationship,
+  PageSizes,
 } from '../../..';
 
 const ipsumLines = [
@@ -620,6 +621,53 @@ export default async (assets: Assets) => {
     textColor: pastels.greyishGreen,
     font: ubuntuFont,
   });
+
+  /********************** Page 6 **********************/
+
+  // This page tests embedding jpg and png images using their
+  // resolution, to achieve placing at natural sizes
+  //
+
+  const page6 = pdfDoc.addPage(PageSizes.A4);
+
+  const jpegWithResolution = await pdfDoc.embedJpg(
+    assets.images.jpg.cmyk_colorspace,
+  );
+
+  let naturalSize = jpegWithResolution.scale(
+    72 / jpegWithResolution.resolution,
+  );
+
+  page6.moveTo(100, 600);
+  page6.drawImage(jpegWithResolution, {
+    width: naturalSize.width,
+    height: naturalSize.height,
+  });
+
+  page6.moveDown(20);
+  page6.drawText(
+    `Image drawn at resolution ${jpegWithResolution.resolution} dpi`,
+    { size: 12 },
+  );
+
+  page6.moveDown(naturalSize.height + 100);
+
+  const pngWithResolution = await pdfDoc.embedPng(
+    assets.images.png.with_physical_dimensions,
+  );
+
+  naturalSize = pngWithResolution.scale(72 / pngWithResolution.resolution);
+
+  page6.drawImage(pngWithResolution, {
+    width: naturalSize.width,
+    height: naturalSize.height,
+  });
+
+  page6.moveDown(20);
+  page6.drawText(
+    `Image drawn at resolution ${pngWithResolution.resolution} dpi`,
+    { size: 12 },
+  );
 
   /********************** Print Metadata **********************/
 
