@@ -8,7 +8,7 @@ const isEXIF = (data: DataView): boolean =>
 
 const isJFIF = (data: DataView): boolean => data.getUint32(6) === JFIF_MARKER;
 
-const getRational = function (dataView: DataView, start: number) {
+const getRational = (dataView: DataView, start: number): number => {
     var numerator = dataView.getUint32(start);
     var denominator = dataView.getUint32(start + 4);
     return numerator / denominator;
