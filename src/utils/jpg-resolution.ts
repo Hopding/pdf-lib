@@ -21,9 +21,10 @@ const isLittleEndian = (value: number): boolean  => {
 
 };
 
-const getRational = (dataView: DataView, start: number, littleEndian: boolean): number => {
-    var numerator = dataView.getUint32(start, littleEndian);
-    var denominator = dataView.getUint32(start + 4, littleEndian);
+const getRational = (dataView: DataView, pos: number, littleEndian: boolean): number => {
+    let start = dataView.getUint32(pos + 8, littleEndian) + 12;
+    let numerator = dataView.getUint32(start, littleEndian);
+    let denominator = dataView.getUint32(start + 4, littleEndian);
     return numerator / denominator;
 };
 
@@ -33,6 +34,7 @@ const getJfifResolution = (dataView: DataView): number => {
   const resunits = dataView.getUint8(13);
   const xDensity = dataView.getUint16(14);
   const yDensity = dataView.getUint16(16);
+
   if (xDensity !== yDensity) console.warn(`Non-square pixels in JPG`);
 
   if (resunits === 1) {
@@ -63,12 +65,10 @@ const getJpgResolution = (dataView: DataView): number => {
 
     switch (tag) {
       case 282:
-        pos = dataView.getUint32(start + 8, littleEndian) + 12;
-        XResolution = getRational(dataView, pos, littleEndian);
+        XResolution = getRational(dataView, start, littleEndian);
         break;
       case 283:
-        pos = dataView.getUint32(start + 8, littleEndian) + 12;
-        YResolution = getRational(dataView, pos, littleEndian);
+        YResolution = getRational(dataView, start, littleEndian);
         break;
       case 296:
         ResolutionUnit = dataView.getUint16(start + 8, littleEndian);
