@@ -17,6 +17,7 @@ class PngEmbedder {
   readonly height: number;
   readonly width: number;
   readonly colorSpace: 'DeviceRGB';
+  readonly resolution: number;
 
   private readonly image: PNG;
 
@@ -26,6 +27,7 @@ class PngEmbedder {
     this.width = png.width;
     this.height = png.height;
     this.colorSpace = 'DeviceRGB';
+    this.resolution = png.resolution;
   }
 
   async embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
