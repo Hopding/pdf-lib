@@ -275,7 +275,7 @@ export default class PDFForm {
    * const form = pdfDoc.getForm()
    * const radioGroup = form.getRadioGroup('Page1.Foo.RadioGroup[0]')
    * const options = radioGroup.getOptions()
-   * dropdown.select(options[0])
+   * radioGroup.select(options[0])
    * ```
    * An error will be thrown if no field exists with the provided name, or if
    * the field exists but is not a radio group.
