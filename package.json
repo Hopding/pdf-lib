@@ -89,7 +89,7 @@
   "dependencies": {
     "@pdf-lib/standard-fonts": "^1.0.0",
     "@pdf-lib/upng": "^1.0.1",
-    "pako": "^1.0.11",
+    "pako": "^2.0.3",
     "tslib": "^1.11.1"
   },
   "devDependencies": {
