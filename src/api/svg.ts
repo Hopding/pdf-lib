@@ -458,7 +458,7 @@ const parseAttributes = (
     svgAttributes.cy = newCY;
   }
   if (attributes.rx || attributes.ry) {
-    const { x: newRX, y: newRY } = newConverter.point(rx || 0, ry || 0);
+    const { width: newRX, height: newRY } = newConverter.size(rx || 0, ry || 0);
     svgAttributes.rx = newRX;
     svgAttributes.ry = newRY;
   }
