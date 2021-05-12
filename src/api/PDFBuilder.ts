@@ -95,6 +95,27 @@ export default class PdfBuilder {
   }
 
   /**
+   * get the defaultSize
+   */
+  getDefaultSize(): number {
+    return this.defaultSize;
+  }
+
+  /**
+   * get the interline
+   */
+  getInterLine(): number {
+    return this.interLine;
+  }
+
+  /**
+   * get the bottomMargin
+   */
+  getBottomMargin(): number {
+    return this.bottomMargin;
+  }
+
+  /**
    * Add a new page to the document
    */
   async addPage() {
@@ -142,14 +163,14 @@ export default class PdfBuilder {
   /**
    * @returns text Width
    */
-  private getWidth(): number {
+  getWidth(): number {
     return this.page!.getWidth() - (this.page!.getX() + this.rightMargin);
   }
   /**
    * Break text into lines
    */
-  private breakTextIntoLines(
-    text: string,
+  breakTextIntoLines(
+    text: string | null,
     textSize: number,
     options: { width?: number; breakWords?: string[] } = {},
   ) {

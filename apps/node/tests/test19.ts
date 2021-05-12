@@ -1,6 +1,6 @@
 import fontkit from '@pdf-lib/fontkit';
 import { Assets } from '..';
-import { PDFDocument, PDFBuilder, StandardFonts } from '../../../cjs';
+import { PDFDocument, PDFBuilder, PDFTable, StandardFonts } from '../../../cjs';
 
 const ipsumLines =
   'Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.Eligendi est pariatur quidem in non excepturi et Consectetur non tenetur magnam.';
@@ -28,7 +28,10 @@ export default async (assets: Assets) => {
 
   const jpgBuffer = jpg.cat_riding_unicorn;
   const jpgImage = await pdfDoc.embedJpg(jpgBuffer);
-  const jpgDims = jpgImage.scale(0.30);
+  const jpgDims = jpgImage.scale(0.3);
+
+  const data = [[null, 'A', 'B', 'C'], ['D', null, null,null], ['E',null,null,null], ['F',null,null,null]];
+  
 
   let printPageNumber = async function (
     builder: PDFBuilder,
@@ -53,6 +56,8 @@ export default async (assets: Assets) => {
   await builder1.addParagraph(ipsumLines);
   await builder1.addParagraph(ipsumLines, 24);
   await builder1.addParagraph(ipsumLines);
+  await builder1.addPage();
+  await PDFTable.create(data, builder1, {});
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
