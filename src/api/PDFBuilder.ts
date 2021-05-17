@@ -213,4 +213,30 @@ export default class PdfBuilder {
       2;
     await this.drawTextLine(text, { textSize, leftPos });
   }
+
+  /** 
+ * Add a list
+ */
+  async list(list: string[], options: any) {
+    options = Object.assign({
+      type: 'bullet',
+      bulletRadius: 1.5,
+      indent: 20
+    }, options);
+    this.page!.moveRight(options.indent);
+    for (let l of list) {
+      await this.addParagraph(l, this.defaultSize);
+      var textHeight = this.font!.heightAtSize(this.defaultSize)
+      if (options.type == 'bullet') {
+        this.page!.drawEllipse({
+          x: this.page!.getX() - options.bulletRadius * 3,
+          y: this.page!.getY() + textHeight / 2 - options.bulletRadius,
+          xScale: options.bulletRadius / 2,
+          yScale: options.bulletRadius / 2,
+          borderWidth: options.bulletRadius
+        });
+      };
+    };
+    this.page!.moveLeft(options.indent);
+  }
 }

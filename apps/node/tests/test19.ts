@@ -38,7 +38,7 @@ export default async (assets: Assets) => {
     pageNumber: number,
   ) {
     builder.addCenteredText(pageNumber.toString(), 10);
-    builder.getPage().moveDown(1);
+    await builder.drawTextLine('',{});
   };
 
   const builder1 = await PDFBuilder.create(pdfDoc, {
@@ -58,6 +58,8 @@ export default async (assets: Assets) => {
   await builder1.addParagraph(ipsumLines);
   await builder1.addPage();
   await PDFTable.create(data, builder1, {});
+  await builder1.drawTextLine('',{});
+  await builder1.list(["banana", "apple", "orange"], {});
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
