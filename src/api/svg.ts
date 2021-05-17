@@ -446,12 +446,11 @@ const parseAttributes = (
     }
   }
 
-  if (attributes.x || attributes.y) {
-    // x and y were already transformed into a translation. The new reference point is now 0,0
-    const { x: newX, y: newY } = newConverter.point(0, 0);
-    svgAttributes.x = newX;
-    svgAttributes.y = newY;
-  }
+  // x and y were already transformed into a translation. The new reference point is now 0,0
+  const { x: newX, y: newY } = newConverter.point(0, 0);
+  svgAttributes.x = newX;
+  svgAttributes.y = newY;
+
   if (attributes.cx || attributes.cy) {
     const { x: newCX, y: newCY } = newConverter.point(cx || 0, cy || 0);
     svgAttributes.cx = newCX;
@@ -697,10 +696,9 @@ const parse = (
   const htmlElement = parseHtml(svg).firstChild as HTMLElement;
   if (width) htmlElement.setAttribute('width', width + '');
   if (height) htmlElement.setAttribute('height', height + '');
-  if (x) htmlElement.setAttribute('x', x + '');
-  if (y) htmlElement.setAttribute('y', size.height - y + '');
+  if (x !== undefined) htmlElement.setAttribute('x', x + '');
+  if (y !== undefined) htmlElement.setAttribute('y', size.height - y + '');
   if (fontSize) htmlElement.setAttribute('font-size', fontSize + '');
-
   return parseHTMLNode(htmlElement, size, converter);
 };
 
