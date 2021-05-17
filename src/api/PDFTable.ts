@@ -15,18 +15,22 @@ export interface PdfTableOptions {
  * Helper class to create a new table with a [[PDFDocument]].
  */
 export default class PdfTable {
-    /**
+  /**
    * Create an instance of [[PdfBuilder]].
    *
    * @param doc The document to which the builder will belong.
    * @param options Options of the builder.
    */
-     static async create(data: (string | null)[][], builder: PDFBuilder, options: PdfTableOptions = {}) {
-      assertIs(builder, 'builder', [[PDFBuilder, 'PDFBuilder']]);
-      const newTable = new PdfTable(data, builder, options);
-      await newTable.draw();
-      return newTable;
-    }
+  static async create(
+    data: (string | null)[][],
+    builder: PDFBuilder,
+    options: PdfTableOptions = {}
+  ) {
+    assertIs(builder, 'builder', [[PDFBuilder, 'PDFBuilder']]);
+    const newTable = new PdfTable(data, builder, options);
+    await newTable.draw();
+    return newTable;
+  }
   /** The document to which this builder belongs. */
   readonly builder: PDFBuilder;
 

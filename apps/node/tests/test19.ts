@@ -30,15 +30,19 @@ export default async (assets: Assets) => {
   const jpgImage = await pdfDoc.embedJpg(jpgBuffer);
   const jpgDims = jpgImage.scale(0.3);
 
-  const data = [[null, 'A', 'B', 'C'], ['D', null, null,null], ['E',null,null,null], ['F',null,null,null]];
-  
+  const data = [
+    [null, 'A', 'B', 'C'],
+    ['D', null, null, null],
+    ['E', null, null, null],
+    ['F', null, null, null],
+  ];
 
   let printPageNumber = async function (
     builder: PDFBuilder,
     pageNumber: number,
   ) {
     builder.addCenteredText(pageNumber.toString(), 10);
-    await builder.drawTextLine('',{});
+    await builder.drawTextLine('', {});
   };
 
   const builder1 = await PDFBuilder.create(pdfDoc, {
@@ -58,8 +62,8 @@ export default async (assets: Assets) => {
   await builder1.addParagraph(ipsumLines);
   await builder1.addPage();
   await PDFTable.create(data, builder1, {});
-  await builder1.drawTextLine('',{});
-  await builder1.list(["banana", "apple", "orange"], {});
+  await builder1.drawTextLine('', {});
+  await builder1.list(['banana', 'apple', 'orange'], {});
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
