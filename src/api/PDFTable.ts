@@ -12,14 +12,14 @@ export interface PdfTableOptions {
 }
 
 /**
- * Helper class to create a new table with a [[PDFDocument]].
+ * Helper class to create a new table with a [[PDFBuilder]].
  */
 export default class PdfTable {
   /**
-   * Create an instance of [[PdfBuilder]].
+   * Create an instance of [[PdfTable]].
    *
-   * @param doc The document to which the builder will belong.
-   * @param options Options of the builder.
+   * @param doc The document to which the table will belong.
+   * @param options Options of the table.
    */
   static async create(
     data: (string | null)[][],
