@@ -602,28 +602,30 @@ const getConverterWithAspectRatio = (
     { width: fittingWidth, height: fittingHeight },
     viewBox,
   );
-  switch (preserveAspectRatio) {
-    case 'xMinYMin':
-      return ratioConverter;
-    case 'xMidYMin':
-      return transform(ratioConverter, 'translate', [dx / 2, 0]);
-    case 'xMaxYMin':
-      return transform(ratioConverter, 'translate', [dx, dy / 2]);
-    case 'xMinYMid':
-      return transform(ratioConverter, 'translate', [0, dy]);
-    case 'xMaxYMid':
-      return transform(ratioConverter, 'translate', [dx, dy / 2]);
-    case 'xMinYMax':
-      return transform(ratioConverter, 'translate', [0, dy]);
-    case 'xMidYMax':
-      return transform(ratioConverter, 'translate', [dx / 2, dy]);
-    case 'xMaxYMax':
-      return transform(ratioConverter, 'translate', [dx, dy]);
-    case 'xMidYMid':
-    default:
-      return transform(ratioConverter, 'translate', [dx / 2, dy / 2]);
+  // We translate the drawing in the page when the aspect ratio is different, according to the preserveAspectRatio instructions.
+  const [translationX, translationY] = (() => {
+    switch (preserveAspectRatio) {
+      case 'xMinYMin': return [0, 0];
+      case 'xMidYMin': return [dx / 2, 0];
+      case 'xMaxYMin': return [dx, dy / 2];
+      case 'xMinYMid': return [0, dy];
+      case 'xMaxYMid': return [dx, dy / 2];
+      case 'xMinYMax': return [0, dy];
+      case 'xMidYMax': return [dx / 2, dy];
+      case 'xMaxYMax': return [dx, dy];
+      case 'xMidYMid':
+      default: return [dx / 2, dy / 2];
+    }
+  })();
+
+  return {
+    point: (xReal: number, yReal: number) => {
+      const P = ratioConverter.point(xReal, yReal)
+      return { x: P.x + translationX, y: P.y + translationY }
+    },
+    size: ratioConverter.size
   }
-};
+}
 
 const parseHTMLNode = (
   node: Node,
