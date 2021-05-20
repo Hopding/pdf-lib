@@ -8,18 +8,18 @@ import { StandardFonts } from './StandardFonts';
 import PDFImage from './PDFImage';
 
 export interface PdfBuilderOptions {
-  defaultSize?: number /** The default text size*/;
-  topMargin?: number /** The top margin*/;
-  leftMargin?: number /** The left margin */;
-  rightMargin?: number /** The right margin */;
-  bottomMargin?: number /** The bottom margin */;
-  interLine?: number /** Space between lines */;
-  font?: PDFFont /**font */;
+  // The default text size
+  defaultSize?: number;
+  topMargin?: number;
+  leftMargin?: number;
+  rightMargin?: number;
+  bottomMargin?: number;
+  // Space between lines
+  interLine?: number;
+  font?: PDFFont;
   PDFSize?: [number, number];
-  onAddPage?: (
-    builder: PdfBuilder,
-    pageNumber: number,
-  ) => void /** Callback on new page event */;
+  // Callback on new page event
+  onAddPage?: (builder: PdfBuilder, pageNumber: number) => void;
 }
 
 /**
@@ -222,7 +222,7 @@ export default class PdfBuilder {
       {
         type: 'bullet',
         bulletRadius: 1.5,
-        indent: 20
+        indent: 20,
       },
       options,
     );
@@ -230,7 +230,7 @@ export default class PdfBuilder {
     for (const l of list) {
       await this.addParagraph(l, this.defaultSize);
       const textHeight = this.font!.heightAtSize(this.defaultSize);
-      if (options.type == 'bullet') {
+      if (options.type === 'bullet') {
         this.page!.drawEllipse({
           x: this.page!.getX() - options.bulletRadius * 3,
           y: this.page!.getY() + textHeight / 2 - options.bulletRadius,

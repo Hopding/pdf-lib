@@ -2,13 +2,16 @@ import PDFBuilder from 'src/api/PDFBuilder';
 import { assertIs } from 'src/utils';
 
 export interface PdfTableOptions {
-  textSize?: number /** The default text size*/;
-  topMargin?: number /** The top margin*/;
-  leftMargin?: number /** The left margin */;
-  rightMargin?: number /** The right margin */;
-  bottomMargin?: number /** The bottom margin */;
-  width?: number /** table width */;
-  data?: (string | null)[][] /**table headers */;
+  // The default text size
+  textSize?: number;
+  topMargin?: number;
+  leftMargin?: number;
+  rightMargin?: number;
+  bottomMargin?: number;
+  // table width
+  width?: number;
+  // table headers
+  data?: (string | null)[][];
 }
 
 /**
@@ -24,7 +27,7 @@ export default class PdfTable {
   static async create(
     data: (string | null)[][],
     builder: PDFBuilder,
-    options: PdfTableOptions = {}
+    options: PdfTableOptions = {},
   ) {
     assertIs(builder, 'builder', [[PDFBuilder, 'PDFBuilder']]);
     const newTable = new PdfTable(data, builder, options);
