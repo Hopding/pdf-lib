@@ -518,7 +518,7 @@ const parseAttributes = (
                 return [dx, dy].join(',');
               } else {
                 const { x: xPixel, y: yPixel } = converter.point(xReal, yReal);
-                return [xPixel - (xOrigin || 0), yPixel - (yOrigin || 0)].join(',');
+                return [xPixel - xOrigin, yPixel - yOrigin].join(',');
               }
             })
             .join(' ')
