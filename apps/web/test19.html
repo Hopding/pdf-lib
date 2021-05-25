@@ -33,7 +33,7 @@
   </body>
 
   <script type="text/javascript">
-   // startFpsTracker('animation-target');
+    // startFpsTracker('animation-target');
 
     const renderInIframe = (pdfBytes) => {
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -57,104 +57,1046 @@
       const fontSize = 20;
 
       // viewBox="-10 -18.00936768149883 20 36.01873536299766 -5 -5 7 5"
-      const svg = `<svg
+      const svg = `
+        <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
-      width="427" height="769"
-      viewBox="-10 -18.00936768149883 20 36.01873536299766"
+      width="584"
+      height="584"
+      viewBox="-10 -13.013698630136986 20 26.027397260273972"
+      data-plugin-name="geometry"
+      style="width: 584px; height: 584px;"
     >
       <g transform="scale(1 -1) translate(0 0)">
-      <line id="gridX:0" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:1" x1="1" x2="1" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:2" x1="2" x2="2" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:3" x1="3" x2="3" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:4" x1="4" x2="4" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:5" x1="5" x2="5" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:6" x1="6" x2="6" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:7" x1="7" x2="7" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:8" x1="8" x2="8" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridX:9" x1="9" x2="9" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-1" x1="-1" x2="-1" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-2" x1="-2" x2="-2" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-3" x1="-3" x2="-3" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-4" x1="-4" x2="-4" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-5" x1="-5" x2="-5" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-6" x1="-6" x2="-6" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-7" x1="-7" x2="-7" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-8" x1="-8" x2="-8" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridx:-9" x1="-9" x2="-9" y1="-18.00936768149883" y2="18.00936768149883" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:0" x1="-10" x2="10" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:1" x1="-10" x2="10" y1="1" y2="1" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:2" x1="-10" x2="10" y1="2" y2="2" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:3" x1="-10" x2="10" y1="3" y2="3" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:4" x1="-10" x2="10" y1="4" y2="4" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:5" x1="-10" x2="10" y1="5" y2="5" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:6" x1="-10" x2="10" y1="6" y2="6" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:7" x1="-10" x2="10" y1="7" y2="7" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:8" x1="-10" x2="10" y1="8" y2="8" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:9" x1="-10" x2="10" y1="9" y2="9" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:10" x1="-10" x2="10" y1="10" y2="10" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:11" x1="-10" x2="10" y1="11" y2="11" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:12" x1="-10" x2="10" y1="12" y2="12" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:13" x1="-10" x2="10" y1="13" y2="13" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:14" x1="-10" x2="10" y1="14" y2="14" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:15" x1="-10" x2="10" y1="15" y2="15" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:16" x1="-10" x2="10" y1="16" y2="16" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:17" x1="-10" x2="10" y1="17" y2="17" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:18" x1="-10" x2="10" y1="18" y2="18" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-1" x1="-10" x2="10" y1="-1" y2="-1" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-2" x1="-10" x2="10" y1="-2" y2="-2" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-3" x1="-10" x2="10" y1="-3" y2="-3" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-4" x1="-10" x2="10" y1="-4" y2="-4" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-5" x1="-10" x2="10" y1="-5" y2="-5" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-6" x1="-10" x2="10" y1="-6" y2="-6" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-7" x1="-10" x2="10" y1="-7" y2="-7" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-8" x1="-10" x2="10" y1="-8" y2="-8" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-9" x1="-10" x2="10" y1="-9" y2="-9" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-10" x1="-10" x2="10" y1="-10" y2="-10" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-11" x1="-10" x2="10" y1="-11" y2="-11" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-12" x1="-10" x2="10" y1="-12" y2="-12" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-13" x1="-10" x2="10" y1="-13" y2="-13" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-14" x1="-10" x2="10" y1="-14" y2="-14" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-15" x1="-10" x2="10" y1="-15" y2="-15" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-16" x1="-10" x2="10" y1="-16" y2="-16" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-17" x1="-10" x2="10" y1="-17" y2="-17" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<line id="gridy:-18" x1="-10" x2="10" y1="-18" y2="-18" stroke-width="0.0468384074941452" stroke-linecap="round" stroke="#E5E5E5" />
-<ellipse id="231dae4a-8412-40cd-ae3c-f7168a3f1990" cx="-4" cy="1" rx="0.2" ry="0.2" fill="#000000ff" />
-<ellipse id="231dae4a-8412-40cd-ae3c-f7168a3f1990" cx="-4" cy="1" rx="0.2" ry="0.2" fill="#000000ff" />
-<ellipse id="6c9d231e-0edf-4477-9f27-a79c3113b65e" cx="-4" cy="4" rx="0.2" ry="0.2" fill="#000000ff" />
-<ellipse id="e26310b2-41a0-4f7c-90b3-f9204c327c0b" cx="1" cy="4" rx="0.2" ry="0.2" fill="#000000ff" />
-<ellipse id="ae4bb452-cd32-41cb-bb0c-d5e779a5b920" cx="1" cy="1" rx="0.2" ry="0.2" fill="#000000ff" />
-<ellipse id="7aa01b8d-4c58-47c5-ba2a-7d2b2bdc9dcd" cx="-2" cy="2" rx="0.2" ry="0.2" fill="#000000ff" />
-<ellipse id="f2ee22ac-089e-4967-ba94-adfd648a0602" cx="-1" cy="2" rx="0.2" ry="0.2" fill="#000000ff" />
-<ellipse id="86ee426b-be8d-4144-b523-255a02365638" cx="-1" cy="3" rx="0.2" ry="0.2" fill="#000000ff" />
-<ellipse id="3a2318aa-9505-4daa-a631-60fdbcd98aae" cx="-2" cy="3" rx="0.2" ry="0.2" fill="#000000ff" />
+        <line
+          id="gridX:0"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:1"
+          x1="1"
+          x2="1"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:2"
+          x1="2"
+          x2="2"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:3"
+          x1="3"
+          x2="3"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:4"
+          x1="4"
+          x2="4"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:5"
+          x1="5"
+          x2="5"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:6"
+          x1="6"
+          x2="6"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:7"
+          x1="7"
+          x2="7"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:8"
+          x1="8"
+          x2="8"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridX:9"
+          x1="9"
+          x2="9"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-1"
+          x1="-1"
+          x2="-1"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-2"
+          x1="-2"
+          x2="-2"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-3"
+          x1="-3"
+          x2="-3"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-4"
+          x1="-4"
+          x2="-4"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-5"
+          x1="-5"
+          x2="-5"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-6"
+          x1="-6"
+          x2="-6"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-7"
+          x1="-7"
+          x2="-7"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-8"
+          x1="-8"
+          x2="-8"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridx:-9"
+          x1="-9"
+          x2="-9"
+          y1="-13.013698630136986"
+          y2="13.013698630136986"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:0"
+          x1="-10"
+          x2="10"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:1"
+          x1="-10"
+          x2="10"
+          y1="1"
+          y2="1"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:2"
+          x1="-10"
+          x2="10"
+          y1="2"
+          y2="2"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:3"
+          x1="-10"
+          x2="10"
+          y1="3"
+          y2="3"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:4"
+          x1="-10"
+          x2="10"
+          y1="4"
+          y2="4"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:5"
+          x1="-10"
+          x2="10"
+          y1="5"
+          y2="5"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:6"
+          x1="-10"
+          x2="10"
+          y1="6"
+          y2="6"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:7"
+          x1="-10"
+          x2="10"
+          y1="7"
+          y2="7"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:8"
+          x1="-10"
+          x2="10"
+          y1="8"
+          y2="8"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:9"
+          x1="-10"
+          x2="10"
+          y1="9"
+          y2="9"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:10"
+          x1="-10"
+          x2="10"
+          y1="10"
+          y2="10"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:11"
+          x1="-10"
+          x2="10"
+          y1="11"
+          y2="11"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:12"
+          x1="-10"
+          x2="10"
+          y1="12"
+          y2="12"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:13"
+          x1="-10"
+          x2="10"
+          y1="13"
+          y2="13"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-1"
+          x1="-10"
+          x2="10"
+          y1="-1"
+          y2="-1"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-2"
+          x1="-10"
+          x2="10"
+          y1="-2"
+          y2="-2"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-3"
+          x1="-10"
+          x2="10"
+          y1="-3"
+          y2="-3"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-4"
+          x1="-10"
+          x2="10"
+          y1="-4"
+          y2="-4"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-5"
+          x1="-10"
+          x2="10"
+          y1="-5"
+          y2="-5"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-6"
+          x1="-10"
+          x2="10"
+          y1="-6"
+          y2="-6"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-7"
+          x1="-10"
+          x2="10"
+          y1="-7"
+          y2="-7"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-8"
+          x1="-10"
+          x2="10"
+          y1="-8"
+          y2="-8"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-9"
+          x1="-10"
+          x2="10"
+          y1="-9"
+          y2="-9"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-10"
+          x1="-10"
+          x2="10"
+          y1="-10"
+          y2="-10"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-11"
+          x1="-10"
+          x2="10"
+          y1="-11"
+          y2="-11"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-12"
+          x1="-10"
+          x2="10"
+          y1="-12"
+          y2="-12"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <line
+          id="gridy:-13"
+          x1="-10"
+          x2="10"
+          y1="-13"
+          y2="-13"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="#E5E5E5"
+        ></line>
+        <ellipse
+          id="ddf6f68c-9bf0-4949-b77c-fc4bd0d2699f"
+          cx="-4"
+          cy="8"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="#000000ff"
+        ></ellipse>
+        <line
+          id="e0a66c72-fa23-4fa6-bebf-9241960cee00"
+          x1="10"
+          x2="-10"
+          y1="8"
+          y2="-8.666666666666668"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="black"
+        ></line>
+        <line
+          id="2ce5bf76-3bcc-4c16-ad16-2037a943c09a"
+          x1="-5"
+          x2="-5"
+          y1="2"
+          y2="-1"
+          stroke-width="0.10273972602739725"
+          stroke-linecap="round"
+          stroke="#000000ff"
+        ></line>
+        <line
+          id="545fe573-66ac-42cc-9919-2b015a2c3274"
+          x1="-5"
+          x2="-2"
+          y1="-1"
+          y2="-1"
+          stroke-width="0.10273972602739725"
+          stroke-linecap="round"
+          stroke="#000000ff"
+        ></line>
+        <line
+          id="02a5c809-d256-408a-a118-99a721dd9443"
+          x1="-2"
+          x2="-2"
+          y1="2"
+          y2="-1"
+          stroke-width="0.10273972602739725"
+          stroke-linecap="round"
+          stroke="#000000ff"
+        ></line>
+        <line
+          id="38a92600-ceb0-4e83-9f7f-99530500e72a"
+          x1="-2"
+          x2="-5"
+          y1="2"
+          y2="2"
+          stroke-width="0.10273972602739725"
+          stroke-linecap="round"
+          stroke="#000000ff"
+        ></line>
+        <line
+          id="74bcaf02-8b60-40c4-82c2-6484211b07b0"
+          x1="-5"
+          x2="-3"
+          y1="2"
+          y2="4"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="black"
+        ></line>
+        <line
+          id="c24cb5f4-37ea-4a0d-b4a6-0c393b81db91"
+          x2="-3"
+          y1="4"
+          y2="4"
+          stroke-width="0.10273972602739725"
+          stroke-linecap="round"
+          stroke="#000000ff"
+        ></line>
+        <line
+          id="96568199-175b-47c1-bdb5-ea38a81c7d04"
+          x2="-2"
+          y1="4"
+          y2="2"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="black"
+        ></line>
+        <line
+          id="b87f2330-72c9-4496-a30c-e58217ef989a"
+          y1="4"
+          y2="1"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="black"
+        ></line>
+        <line
+          id="85b55849-f52c-4f46-b5ea-c4a812e57983"
+          x1="-2"
+          y1="-1"
+          y2="1"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="black"
+        ></line>
+        <line
+          id="9fb5a6ca-a669-43f7-9d26-5894411637ec"
+          x1="-5"
+          x2="-3"
+          y1="-1"
+          y2="1"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="black"
+        ></line>
+        <line
+          id="c7820de9-990c-43da-a3f2-7374c9d8e9c7"
+          x1="-3"
+          x2="-3"
+          y1="1"
+          y2="4"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="black"
+        ></line>
+        <line
+          id="dfc96d8e-6eb8-4445-b8c0-8e7bd8543a7f"
+          x1="-3"
+          y1="1"
+          y2="1"
+          stroke-width="0.03424657534246575"
+          stroke-linecap="round"
+          stroke="black"
+        ></line>
+        <line
+          id="97f75e7d-4f2a-4556-aea0-97b583906aba"
+          x1="3"
+          x2="3"
+          y1="5"
+          y2="2"
+          stroke-width="0.10273972602739725"
+          stroke-linecap="round"
+          stroke="#000000ff"
+        ></line>
+        <line
+          id="5e477ce2-18be-4e8b-94b6-8a13cb258d51"
+          x1="3"
+          x2="5"
+          y1="5"
+          y2="5"
+          stroke-width="0.10273972602739725"
+          stroke-linecap="round"
+          stroke="#000000ff"
+        ></line>
+        <line
+          id="c308ffa3-0ae3-4e98-be75-76ac0c71d60a"
+          x1="5"
+          x2="5"
+          y1="5"
+          y2="4"
+          stroke-width="0.10273972602739725"
+          stroke-linecap="round"
+          stroke="#000000ff"
+        ></line>
+        <ellipse
+          id="1759f854-974e-4213-b46f-4fc71d0574fa"
+          cx="-5"
+          cy="-1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="39e5f803-755a-46ad-8b25-fbfaba71d564"
+          cx="-2"
+          cy="-1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="b6176c08-7781-4ccf-b877-3ae2fc9ab828"
+          cx="-5"
+          cy="2"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="7ae437b7-9e4a-4fb1-80f0-5a66caa3e15c"
+          cx="-2"
+          cy="2"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="422ea00c-aecc-4202-a397-d45c75d89e63"
+          cx="-5"
+          cy="2"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="1bde54cf-af14-4640-96e6-8639a7bfaf45"
+          cx="-5"
+          cy="2"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="845d5d21-0c1b-4f35-bf80-485cb8086c84"
+          cx="-3"
+          cy="4"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="7c1a5656-6825-43e1-b9bd-25fa41d52fcf"
+          cx="-2"
+          cy="2"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="94bbfcb3-0f6a-474e-8027-800e67fdf30a"
+          cx="-2"
+          cy="2"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="6874b02a-d764-4aad-bab1-e72bf6c9cee6"
+          cy="4"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="bf2193de-b33d-471d-820e-0b36742d75b8"
+          cy="4"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="e2f6fa2c-d2aa-4ae0-a5c1-bf47f1385d69"
+          cy="4"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="c0dbe19f-5122-4f48-a769-f82092e62f88"
+          cx="-2"
+          cy="-1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="8ba01713-1dd6-4398-a2f8-521884dfd080"
+          cx="-2"
+          cy="-1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="985f6397-672a-4a85-8f76-5a347aad0915"
+          cy="1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="f7fd4840-e230-4e14-b762-ef42d76c4ced"
+          cx="-5"
+          cy="-1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="e2674e6b-0bfb-42e1-b6dd-0008b9d82eda"
+          cx="-5"
+          cy="-1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="74365ad1-bea0-4d9c-b5ee-2f292a34a511"
+          cx="-3"
+          cy="2"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="f8dd62af-2b65-4d74-856f-5ececa36e336"
+          cx="-3"
+          cy="4"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="dfe6d515-7178-4775-9832-fb9d19d77742"
+          cx="-3"
+          cy="4"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="036030bc-1db2-4365-b2fc-af23a2d88c02"
+          cx="-3"
+          cy="1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="b39c5d18-0681-453a-9758-889584e27eba"
+          cx="-2"
+          cy="1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="159e9fe3-6b35-4e30-b1f1-feeddd5b7a4e"
+          cy="1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="a2d06219-cf03-4e57-8e6d-8648875f6144"
+          cy="1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="2431b8fd-e8d2-40ff-81bb-b7306a0c3621"
+          cx="-3"
+          cy="1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="3e71ab50-21c8-4bee-a549-93dfba0cb960"
+          cx="-3"
+          cy="1"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="e9201e04-97e5-4fe9-8892-0709af4e55f7"
+          cx="3"
+          cy="2.1666666666666665"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="911dbd75-ea5e-4bb2-98fb-a0036fd13dbb"
+          cx="3"
+          cy="5"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
+        <ellipse
+          id="5fcebb09-61db-4104-bbd7-10057ab74cd3"
+          cx="5"
+          cy="5"
+          rx="0.1541095890410959"
+          ry="0.1541095890410959"
+          fill="black"
+        ></ellipse>
       </g>
-    </svg>`
+    </svg>
+      `;
+      const svg1 = `<svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="177"
+      height="177"
+      viewBox="388.59375 192.796875 177 152"
+      style="width: 177px; height: 177px;"
+    >
+      <g transform="translate(399.59375 255.546875) scale(1.1 1.1)">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 10 10"
+          stroke="#2A044A"
+          width="17.5"
+          height="17.5"
+          stroke-linecap="round"
+          stroke-width="2"
+        >
+          <path d="M1,5 L9,5"></path>
+          <path d="M5,1 L5,9"></path>
+        </svg>
+      </g>
+      <text
+        x="463.0208333333333"
+        y="216.296875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >1</text>
+      <rect
+        x="389.59375"
+        y="292.796875"
+        width="175"
+        height="5"
+        fill="#2A044A"
+        rx="3.3333333333333335"
+        ry="3.3333333333333335"
+      ></rect>
+      <text
+        x="463.0208333333333"
+        y="265.796875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >1</text>
+      <text
+        x="463.0052083333333"
+        y="329.296875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >2</text>
+    </svg>`;
       // viewBox="100 50 100 50"
-      const svg2 = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100" version="1.1"><rect width="200" height="100" stroke="black" stroke-width="6" fill="green"/></svg>'
-      
+      const svg2 =
+        `<svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="177"
+      height="177"
+      viewBox="388.59375 192.796875 177 152"
+      style="width: 177px; height: 177px;"
+    >
+      <g transform="translate(399.59375 255.546875) scale(1.1 1.1)">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 10 10"
+          stroke="#2A044A"
+          width="17.5"
+          height="17.5"
+          stroke-linecap="round"
+          stroke-width="2"
+        >
+          <path d="M1,5 H9"></path>
+          <path d="M5,1 L5,9"></path>
+        </svg>
+      </g>
+      <text
+        x="463.0208333333333"
+        y="216.296875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >1</text>
+      <text
+        x="498.0208333333333"
+        y="216.296875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >0</text>
+      <text
+        x="533.0208333333334"
+        y="216.296875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >0</text>
+      <rect
+        x="389.59375"
+        y="292.796875"
+        width="175"
+        height="5"
+        fill="#2A044A"
+        rx="3.3333333333333335"
+        ry="3.3333333333333335"
+      ></rect>
+      <text
+        x="463.0208333333333"
+        y="265.796875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >1</text>
+      <text
+        x="498.0208333333333"
+        y="265.796875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >0</text>
+      <text
+        x="533.0208333333334"
+        y="265.796875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >0</text>
+      <text
+        x="533.0208333333334"
+        y="329.296875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >0</text>
+      <text
+        x="498.0208333333333"
+        y="329.296875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >0</text>
+      <text
+        x="463.0052083333333"
+        y="329.296875"
+        font-weight="bold"
+        font-size="31.5"
+        fill="#2A044A"
+        style="font-family: 'Nunito', 'Arial', sans-serif;"
+      >2</text>
+    </svg>`;
+
       const svg3 = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100" version="1.1">
  <ellipse cx="0" cy="0" rx="100" ry="50" stroke="black" stroke-width="6" fill="green"/>
-</svg>`
+</svg>`;
 
       firstPage.drawText('Select your favorite planet:', {
-        x: 0,
-        y: 900,
+        x: 100,
+        y: 500,
         size: 20,
       });
       firstPage.drawSvg(svg2, {
-          x: 500,
-          y: 500,/* 
+        x: 100,
+        y: 500 /* 
           width: 427 / 3,
-          height: 769 / 3 */
-          });
-      firstPage.drawSvg(svg3, {
+          height: 769 / 3 */,
+      });
+      /* firstPage.drawSvg(svg3, {
           x: 500,
-          y: 500,/* 
+          y: 500,
           width: 427 / 3,
-          height: 769 / 3 */
-          });
+          height: 769 / 3 
+          }); */
 
       const pdfBytes = await pdfDoc.save();
 

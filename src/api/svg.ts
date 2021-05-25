@@ -481,6 +481,7 @@ const parseAttributes = (
   }
   // We convert all the points from the path
   if (attributes.d) {
+    const { x: xOrigin, y: yOrigin } = converter.point(0, 0);
     // transform v/V and h/H commands
     svgAttributes.d = attributes.d.replace(
       /(v|h)\s?-?(\d+\.?|\.)\d*/gi,
@@ -493,8 +494,8 @@ const parseAttributes = (
             : 'v' + converter.size(1, coord).height;
         } else {
           return letter === 'H'
-            ? 'H' + converter.point(coord, 1).x
-            : 'V' + converter.point(1, coord).y;
+            ? 'H' + (converter.point(coord, 1).x - xOrigin)
+            : 'V' + (converter.point(1, coord).y - yOrigin);
         }
       },
     );
@@ -517,7 +518,7 @@ const parseAttributes = (
                 return [dx, dy].join(',');
               } else {
                 const { x: xPixel, y: yPixel } = converter.point(xReal, yReal);
-                return [xPixel, yPixel].join(',');
+                return [xPixel - (xOrigin || 0), yPixel - (yOrigin || 0)].join(',');
               }
             })
             .join(' ')
