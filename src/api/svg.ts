@@ -171,7 +171,7 @@ const runnersToPage = (
     if (!element.svgAttributes.fill && !element.svgAttributes.stroke) return;
     page.drawRectangle({
       x: element.svgAttributes.x,
-      y: element.svgAttributes.y,
+      y: element.svgAttributes.y && element.svgAttributes.y - element.svgAttributes.height,
       width: element.svgAttributes.width,
       height: element.svgAttributes.height,
       borderColor: element.svgAttributes.stroke,
@@ -501,28 +501,46 @@ const parseAttributes = (
     );
     // transform other letters
     svgAttributes.d = svgAttributes.d.replace(
-      /(l|t|m|a|q|c)(-?(\d+\.?|\.)\d*(,|\s+|(?=-))-?(\d+\.?|\.)\d*)+/gi,
+      /(l|t|m|a|q|c)(\s*-?(\d+\.?|\.)\d*(,\s*|\s+|(?=-))?-?(\d+\.?|\.)*\d*)+/gi,
       (elt) => {
         const letter = elt.charAt(0);
         const coords = elt.slice(1);
-        return (
-          letter +
-          matchAll(coords)(
-            /(-?(\d+\.?|\.)\d*)(,|\s+|(?=-))(-?(\d+\.?|\.)\d*)/gi,
-          )
-            .map(([, a, , , b]) => {
-              const xReal = parseFloatValue(a, inherited.width) || 0;
-              const yReal = parseFloatValue(b, inherited.height) || 0;
-              if (letter === letter.toLowerCase()) {
-                const { width: dx, height: dy } = converter.size(xReal, yReal);
-                return [dx, dy].join(',');
-              } else {
-                const { x: xPixel, y: yPixel } = converter.point(xReal, yReal);
-                return [xPixel - xOrigin, yPixel - yOrigin].join(',');
-              }
+        if (letter.toLowerCase() === 'a') {
+          let [rx, ry, xAxisRotation, largeArc, sweepFlag, x, y] = matchAll(coords)(
+              /(-?(\d+\.?|\.)\d*)/gi,
+            ).map(([v]) => {
+              return parseFloatValue(v) || 0
             })
-            .join(' ')
-        );
+          rx = converter.point(rx, ry).x - xOrigin
+          ry = converter.point(rx, ry).y - yOrigin
+          if (letter === letter.toLowerCase()) {
+            x = converter.size(x, y).width
+            y = converter.size(x, y).height
+          } else {
+            x = converter.point(x, y).x - xOrigin
+            y = converter.point(x, y).y - yOrigin
+          }
+          return letter + ' ' + [rx, ry, xAxisRotation, largeArc, sweepFlag, x, y].join(' ')
+        } else {
+          return (
+            letter +
+            matchAll(coords)(
+              /(-?(\d+\.?|\.)\d*)(,|\s+|(?=-))(-?(\d+\.?|\.)\d*)/gi,
+            )
+              .map(([, a, , , b]) => {
+                const xReal = parseFloatValue(a, inherited.width) || 0;
+                const yReal = parseFloatValue(b, inherited.height) || 0;
+                if (letter === letter.toLowerCase()) {
+                  const { width: dx, height: dy } = converter.size(xReal, yReal);
+                  return [dx, dy].join(',');
+                } else {
+                  const { x: xPixel, y: yPixel } = converter.point(xReal, yReal);
+                  return [xPixel - xOrigin, yPixel - yOrigin].join(',');
+                }
+              })
+              .join(' ')
+          );
+        }
       },
     );
   }
