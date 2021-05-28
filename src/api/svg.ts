@@ -65,6 +65,7 @@ type SVGAttributes = {
   d?: string;
   src?: string;
   textAnchor?: string;
+  preserveAspectRatio?: string
 };
 
 export type SVGElement = HTMLElement & {
@@ -156,11 +157,19 @@ const runnersToPage = (
     });
   },
   async image(element) {
-    page.drawImage(await page.doc.embedPng(element.svgAttributes.src!), {
-      x: element.svgAttributes.x,
-      y: element.svgAttributes.y,
-      width: element.svgAttributes.width,
-      height: element.svgAttributes.height,
+    const img = await page.doc.embedPng(element.svgAttributes.src!)
+    const { x, y, width, height } = getFittingRectangle(
+      img.width,
+      img.height,
+      element.svgAttributes.width || img.width,
+      element.svgAttributes.height || img.height,
+      element.svgAttributes.preserveAspectRatio
+    )
+    page.drawImage(img, {
+      x: (element.svgAttributes.x || 0) + x,
+      y: (element.svgAttributes.y || 0) - y - height,
+      width,
+      height,
       opacity: element.svgAttributes.fillOpacity,
       xSkew: element.svgAttributes.skewX,
       ySkew: element.svgAttributes.skewY,
@@ -171,7 +180,7 @@ const runnersToPage = (
     if (!element.svgAttributes.fill && !element.svgAttributes.stroke) return;
     page.drawRectangle({
       x: element.svgAttributes.x,
-      y: element.svgAttributes.y && element.svgAttributes.y - element.svgAttributes.height,
+      y: (element.svgAttributes.y || 0) - element.svgAttributes.height,// The origin is in the opposite side of the rectangle
       width: element.svgAttributes.width,
       height: element.svgAttributes.height,
       borderColor: element.svgAttributes.stroke,
@@ -387,8 +396,9 @@ const parseAttributes = (
   };
 
   const svgAttributes: SVGAttributes = {
-    src: attributes.src,
+    src: attributes.src || attributes['xlink:href'],
     textAnchor: attributes['text-anchor'],
+    preserveAspectRatio: attributes.preserveAspectRatio
   };
 
   let newConverter = converter;
@@ -484,7 +494,7 @@ const parseAttributes = (
     const { x: xOrigin, y: yOrigin } = converter.point(0, 0);
     // transform v/V and h/H commands
     svgAttributes.d = attributes.d.replace(
-      /(v|h)\s?-?(\d+\.?|\.)\d*/gi,
+      /(v|h)\s*-?(\d+\.?|\.)\d*/gi,
       (elt) => {
         const letter = elt.charAt(0);
         const coord = parseFloatValue(elt.slice(1).trim()) || 1;
@@ -499,49 +509,57 @@ const parseAttributes = (
         }
       },
     );
+    // transform a
+    svgAttributes.d = svgAttributes.d.replace(
+      /a\s*(((-?\d+\.?|\.)\d*)(,\s*|\s+|(?=-)|$|\D)){1,7}/gi,
+      elt => {
+        const letter = elt.charAt(0);
+        const params = elt.slice(1);
+        const [rx, ry, xAxisRotation = '0', largeArc = '0', sweepFlag = '0', x, y] = params.match(/-?(\d+\.?|\.)\d*/g) || []
+        const realRx = parseFloatValue(rx, inherited.width) || 0
+        const realRy = parseFloatValue(ry, inherited.height) || 0
+        const realX = parseFloatValue(x, inherited.width) || 0
+        const realY = parseFloatValue(y, inherited.height) || 0
+        const { width: newRx, height: newRy } = converter.size(realRx, realRy)
+        let newX, newY
+        if (letter === letter.toLowerCase()) {
+          const { width, height } = converter.size(realX, realY)
+          newX = width;
+          newY = height
+        } else {
+          const { x: pX, y: pY } = converter.point(realX, realY)
+          newX = pX
+          newY = pY
+        }
+        return [letter, newRx, newRy, xAxisRotation, largeArc, sweepFlag, newX - xOrigin, newY - yOrigin].join(' ')
+      }
+    )
+
     // transform other letters
     svgAttributes.d = svgAttributes.d.replace(
-      /(l|t|m|a|q|c)(\s*-?(\d+\.?|\.)\d*(,\s*|\s+|(?=-))?-?(\d+\.?|\.)*\d*)+/gi,
+      /(l|t|m|q|c)(\s*-?(\d+\.?|\.)\d*(,\s*|\s+|(?=-))-?(\d+\.?|\.)\d*)+/gi,
       (elt) => {
         const letter = elt.charAt(0);
         const coords = elt.slice(1);
-        if (letter.toLowerCase() === 'a') {
-          let [rx, ry, xAxisRotation, largeArc, sweepFlag, x, y] = matchAll(coords)(
-              /(-?(\d+\.?|\.)\d*)/gi,
-            ).map(([v]) => {
-              return parseFloatValue(v) || 0
+        return (
+          letter +
+          matchAll(coords)(
+            /(-?(\d+\.?|\.)\d*)(,\s*|\s+|(?=-))(-?(\d+\.?|\.)\d*)/gi,
+          )
+            .map(([, a, , , b]) => {
+              const xReal = parseFloatValue(a, inherited.width) || 0;
+              const yReal = parseFloatValue(b, inherited.height) || 0;
+              if (letter === letter.toLowerCase()) {
+                const { width: dx, height: dy } = converter.size(xReal, yReal);
+                return [dx, dy].join(',');
+              } else {
+                const { x: xPixel, y: yPixel } = converter.point(xReal, yReal);
+                return [xPixel - xOrigin, yPixel - yOrigin].join(',');
+              }
             })
-          rx = converter.point(rx, ry).x - xOrigin
-          ry = converter.point(rx, ry).y - yOrigin
-          if (letter === letter.toLowerCase()) {
-            x = converter.size(x, y).width
-            y = converter.size(x, y).height
-          } else {
-            x = converter.point(x, y).x - xOrigin
-            y = converter.point(x, y).y - yOrigin
-          }
-          return letter + ' ' + [rx, ry, xAxisRotation, largeArc, sweepFlag, x, y].join(' ')
-        } else {
-          return (
-            letter +
-            matchAll(coords)(
-              /(-?(\d+\.?|\.)\d*)(,|\s+|(?=-))(-?(\d+\.?|\.)\d*)/gi,
-            )
-              .map(([, a, , , b]) => {
-                const xReal = parseFloatValue(a, inherited.width) || 0;
-                const yReal = parseFloatValue(b, inherited.height) || 0;
-                if (letter === letter.toLowerCase()) {
-                  const { width: dx, height: dy } = converter.size(xReal, yReal);
-                  return [dx, dy].join(',');
-                } else {
-                  const { x: xPixel, y: yPixel } = converter.point(xReal, yReal);
-                  return [xPixel - xOrigin, yPixel - yOrigin].join(',');
-                }
-              })
-              .join(' ')
-          );
-        }
-      },
+            .join(' ')
+        );
+      }
     );
   }
   if (attributes.viewBox) {
@@ -607,22 +625,27 @@ const getConverterWithAspectRatio = (
   viewBox: Box,
   preserveAspectRatio?: string,
 ) => {
-  if (preserveAspectRatio === 'none') return getConverter(size, viewBox);
-
-  const ratioPixel = size.width / size.height;
-  const ratioReal = viewBox.width / viewBox.height;
-  const fittingWidth =
-    ratioPixel > ratioReal ? ratioReal * size.height : size.width;
-  const fittingHeight =
-    ratioPixel >= ratioReal ? size.height : size.width / ratioReal;
-  const dx = size.width - fittingWidth;
-  const dy = size.height - fittingHeight;
-  const ratioConverter = getConverter(
-    { width: fittingWidth, height: fittingHeight },
-    viewBox,
-  );
+  const { x, y, width, height } = getFittingRectangle(viewBox.width, viewBox.height, size.width, size.height, preserveAspectRatio)
+  const ratioConverter = getConverter({ width, height }, viewBox);
   // We translate the drawing in the page when the aspect ratio is different, according to the preserveAspectRatio instructions.
-  const [translationX, translationY] = (() => {
+  return {
+    point: (xReal: number, yReal: number) => {
+      const P = ratioConverter.point(xReal, yReal)
+      return { x: P.x + x, y: P.y + y }
+    },
+    size: ratioConverter.size
+  }
+}
+
+const getFittingRectangle = (originalWidth: number, originalHeight: number, targetWidth: number, targetHeight: number, preserveAspectRatio?: string) => {
+  if (preserveAspectRatio === 'none') return { x: 0, y: 0, width: targetWidth, height: targetHeight }
+  const originalRatio = originalWidth / originalHeight;
+  const targetRatio = targetWidth / targetHeight;
+  const width = targetRatio > originalRatio ? originalRatio * targetHeight : targetWidth;
+  const height = targetRatio >= originalRatio ? targetHeight : targetWidth / originalRatio;
+  const dx = targetWidth - width;
+  const dy = targetHeight - height;
+  const [x, y] = (() => {
     switch (preserveAspectRatio) {
       case 'xMinYMin': return [0, 0];
       case 'xMidYMin': return [dx / 2, 0];
@@ -636,14 +659,7 @@ const getConverterWithAspectRatio = (
       default: return [dx / 2, dy / 2];
     }
   })();
-
-  return {
-    point: (xReal: number, yReal: number) => {
-      const P = ratioConverter.point(xReal, yReal)
-      return { x: P.x + translationX, y: P.y + translationY }
-    },
-    size: ratioConverter.size
-  }
+  return { x, y, width, height }
 }
 
 const parseHTMLNode = (

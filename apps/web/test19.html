@@ -56,7 +56,7 @@
 
       const fontSize = 20;
 
-      const svg2 = `
+      const svg = `
       <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -848,45 +848,17 @@
       </svg>
     `;
 
-      const svg3 = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100" version="1.1">
- <ellipse cx="0" cy="0" rx="100" ry="50" stroke="black" stroke-width="6" fill="green"/>
-</svg>`;
-      const svg = `<svg
-  xmlns="http://www.w3.org/2000/svg"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
-  width="595"
-  height="841"
-  viewBox="0 0 595 841"
->
-  <rect x="0" y="0" width="595" height="841" fill="none" stroke="black"/>
-  <g transform="scale(1 -1) translate(0 -841)">
-    <g transform="translate(383 581) scale(1 -1)">
-      <text font-size="12" fill="#000000ff" x="0" y="-12" >Texte</text>
-    </g>
-  </g>
-</svg>`;
-
       firstPage.drawText('Select your favorite planet:', {
         x: 100,
         y: 0,
         size: 20,
       });
-      firstPage.drawSvg(svg2, {
+      firstPage.drawSvg(svg, {
         x: 100,
         y: 841 /* 
           width: 427 / 3,
           height: 769 / 3 */,
       });
-      /* firstPage.drawSvg(svg2, {
-        x: 100,
-        y: 200
-      }); */
-      /* firstPage.drawSvg(svg3, {
-          x: 500,
-          y: 500,
-          width: 427 / 3,
-          height: 769 / 3 
-          }); */
 
       const pdfBytes = await pdfDoc.save();
 
