@@ -593,7 +593,7 @@ const parseAttributes = (
   }
   if (newInherited.fontFamily) {
     // Handle complex fontFamily like `"Linux Libertine O", serif`
-    const inner = newInherited.fontFamily.match(/^"(.*)"|^'(.*)'/);
+    const inner = newInherited.fontFamily.match(/^"(.*?)"|^'(.*?)'/);
     if (inner) newInherited.fontFamily = inner[1] || inner[2];
   }
   return {
