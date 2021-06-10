@@ -55,6 +55,64 @@ const computeFontSize = (
   return fontSize;
 };
 
+const getFontSizeRange = (min: number, max: number): ReadonlyArray<number> =>
+  Array.from(Array(max + 1).keys()).slice(min);
+
+const computeNextFontSize = (fontSizeRange: ReadonlyArray<number>): number =>
+  Math.floor((fontSizeRange[0] + fontSizeRange[fontSizeRange.length - 1]) / 2);
+
+const computeMultilineFontSize = (
+  lines: string[],
+  font: PDFFont,
+  bounds: LayoutBounds,
+) => {
+  const boundsHeight = Math.floor(bounds.height);
+  const boundsWidth = Math.floor(bounds.width);
+  let fontSizeRange = getFontSizeRange(MIN_FONT_SIZE, MAX_FONT_SIZE);
+  let fontSize = computeNextFontSize(fontSizeRange);
+  let fontSizeFit = false;
+
+  while (!fontSizeFit && fontSizeRange.length > 2) {
+    const rowHeight = Math.floor(font.heightAtSize(fontSize));
+    const lineHeight = rowHeight + rowHeight * 0.2;
+    const possibleVisibleRows = Math.floor(boundsHeight / lineHeight);
+
+    if (possibleVisibleRows < 1) {
+      fontSizeRange = getFontSizeRange(fontSizeRange[0], fontSize);
+      fontSize = computeNextFontSize(fontSizeRange);
+      continue;
+    }
+
+    let rowsConsumed = 0;
+
+    for (const line of lines) {
+      rowsConsumed += Math.ceil(
+        font.widthOfTextAtSize(line, fontSize) / boundsWidth,
+      );
+
+      if (rowsConsumed > possibleVisibleRows) {
+        fontSizeRange = getFontSizeRange(fontSizeRange[0], fontSize);
+        fontSize = computeNextFontSize(fontSizeRange);
+        break;
+      }
+    }
+
+    if (rowsConsumed === possibleVisibleRows) {
+      fontSizeFit = true;
+    }
+
+    if (rowsConsumed < possibleVisibleRows) {
+      fontSizeRange = getFontSizeRange(
+        fontSize,
+        fontSizeRange[fontSizeRange.length - 1],
+      );
+      fontSize = computeNextFontSize(fontSizeRange);
+    }
+  }
+
+  return fontSize;
+};
+
 const computeCombedFontSize = (
   line: string,
   font: PDFFont,
@@ -139,16 +197,10 @@ export const layoutMultilineText = (
   const lines = lineSplit(cleanText(text));
 
   if (fontSize === undefined || fontSize === 0) {
-    // fontSize = computeFontSize(lines, font, bounds);
-
-    // This is hardcoded to make it easier to perform automatic line-wrapping.
-    //
-    // TODO: Update `computeFontSize` to support automatic line-wrapping and
-    //       automatic font size calculation.
-    fontSize = 12;
+    fontSize = computeMultilineFontSize(lines, font, bounds);
   }
   const height = font.heightAtSize(fontSize);
-  const lineHeight = height + height * 0.2;
+  const lineHeight = height;
 
   const textLines: TextPosition[] = [];
 
