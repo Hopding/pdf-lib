@@ -34,80 +34,37 @@ const computeFontSize = (
   lines: string[],
   font: PDFFont,
   bounds: LayoutBounds,
+  multiline: boolean = false,
 ) => {
   let fontSize = MIN_FONT_SIZE;
 
   while (fontSize < MAX_FONT_SIZE) {
+    let linesUsed = 0;
+
     for (let idx = 0, len = lines.length; idx < len; idx++) {
       const line = lines[idx];
-      const tooLong = font.widthOfTextAtSize(line, fontSize) > bounds.width;
-      if (tooLong) return fontSize - 1;
+      let spaceInLineRemaining = bounds.width;
+      linesUsed += line.split(' ').reduce((used, word, i, words) => {
+        word = i === words.length - 1 ? word : word + ' ';
+        const widthOfWord = font.widthOfTextAtSize(word, fontSize);
+        spaceInLineRemaining -= widthOfWord;
+        if (spaceInLineRemaining <= 0) {
+          used++;
+          spaceInLineRemaining = bounds.width - widthOfWord;
+        }
+        return used;
+      }, 1);
     }
+
+    if (!multiline && linesUsed > lines.length) return fontSize - 1;
 
     const height = font.heightAtSize(fontSize);
     const lineHeight = height + height * 0.2;
-    const totalHeight = lines.length * lineHeight;
+    const totalHeight = lineHeight * linesUsed;
+
     if (totalHeight > Math.abs(bounds.height)) return fontSize - 1;
 
     fontSize += 1;
-  }
-
-  return fontSize;
-};
-
-const getFontSizeRange = (min: number, max: number): ReadonlyArray<number> =>
-  Array.from(Array(max + 1).keys()).slice(min);
-
-const computeNextFontSize = (fontSizeRange: ReadonlyArray<number>): number =>
-  Math.floor((fontSizeRange[0] + fontSizeRange[fontSizeRange.length - 1]) / 2);
-
-const computeMultilineFontSize = (
-  lines: string[],
-  font: PDFFont,
-  bounds: LayoutBounds,
-) => {
-  const boundsHeight = Math.floor(bounds.height);
-  const boundsWidth = Math.floor(bounds.width);
-  let fontSizeRange = getFontSizeRange(MIN_FONT_SIZE, MAX_FONT_SIZE);
-  let fontSize = computeNextFontSize(fontSizeRange);
-  let fontSizeFit = false;
-
-  while (!fontSizeFit && fontSizeRange.length > 2) {
-    const rowHeight = Math.floor(font.heightAtSize(fontSize));
-    const lineHeight = rowHeight + rowHeight * 0.2;
-    const possibleVisibleRows = Math.floor(boundsHeight / lineHeight);
-
-    if (possibleVisibleRows < 1) {
-      fontSizeRange = getFontSizeRange(fontSizeRange[0], fontSize);
-      fontSize = computeNextFontSize(fontSizeRange);
-      continue;
-    }
-
-    let rowsConsumed = 0;
-
-    for (const line of lines) {
-      rowsConsumed += Math.ceil(
-        font.widthOfTextAtSize(line, fontSize) / boundsWidth,
-      );
-
-      if (rowsConsumed > possibleVisibleRows) {
-        fontSizeRange = getFontSizeRange(fontSizeRange[0], fontSize);
-        fontSize = computeNextFontSize(fontSizeRange);
-        break;
-      }
-    }
-
-    if (rowsConsumed === possibleVisibleRows) {
-      fontSizeFit = true;
-    }
-
-    if (rowsConsumed < possibleVisibleRows) {
-      fontSizeRange = getFontSizeRange(
-        fontSize,
-        fontSizeRange[fontSizeRange.length - 1],
-      );
-      fontSize = computeNextFontSize(fontSizeRange);
-    }
   }
 
   return fontSize;
@@ -197,10 +154,10 @@ export const layoutMultilineText = (
   const lines = lineSplit(cleanText(text));
 
   if (fontSize === undefined || fontSize === 0) {
-    fontSize = computeMultilineFontSize(lines, font, bounds);
+    fontSize = computeFontSize(lines, font, bounds, true);
   }
   const height = font.heightAtSize(fontSize);
-  const lineHeight = height;
+  const lineHeight = height + height * 0.2;
 
   const textLines: TextPosition[] = [];
 
