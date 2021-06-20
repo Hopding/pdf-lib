@@ -89,7 +89,11 @@
   "dependencies": {
     "@pdf-lib/standard-fonts": "^1.0.0",
     "@pdf-lib/upng": "^1.0.1",
+    "@types/crypto-js": "^4.0.1",
+    "@types/saslprep": "^1.0.0",
+    "crypto-js": "^4.0.0",
     "pako": "^1.0.11",
+    "saslprep": "^1.0.3",
     "tslib": "^1.11.1"
   },
   "devDependencies": {

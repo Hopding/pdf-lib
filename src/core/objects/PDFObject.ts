@@ -1,5 +1,6 @@
 import { MethodNotImplementedError } from 'src/core/errors';
 import PDFContext from 'src/core/PDFContext';
+import { EncryptFn } from '../security/PDFSecurity';
 
 class PDFObject {
   clone(_context?: PDFContext): PDFObject {
@@ -14,7 +15,11 @@ class PDFObject {
     throw new MethodNotImplementedError(this.constructor.name, 'sizeInBytes');
   }
 
-  copyBytesInto(_buffer: Uint8Array, _offset: number): number {
+  copyBytesInto(
+    _buffer: Uint8Array,
+    _offset: number,
+    _encryptFn?: EncryptFn,
+  ): number {
     throw new MethodNotImplementedError(this.constructor.name, 'copyBytesInto');
   }
 }

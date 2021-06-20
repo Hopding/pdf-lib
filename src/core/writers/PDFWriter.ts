@@ -66,7 +66,15 @@ class PDFWriter {
       buffer[offset++] = CharCodes.j;
       buffer[offset++] = CharCodes.Newline;
 
-      offset += object.copyBytesInto(buffer, offset);
+      let encryptFn;
+      if (this.context._security) {
+        encryptFn = this.context._security.getEncryptFn(
+          ref.objectNumber,
+          ref.generationNumber,
+        );
+      }
+
+      offset += object.copyBytesInto(buffer, offset, encryptFn);
 
       buffer[offset++] = CharCodes.Newline;
       buffer[offset++] = CharCodes.e;

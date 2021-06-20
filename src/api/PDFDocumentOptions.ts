@@ -1,4 +1,5 @@
 import { EmbeddedFileOptions } from 'src/core/embedders/FileEmbedder';
+import { SecurityOption } from 'src/core/security/PDFSecurity';
 import { TypeFeatures } from 'src/types/fontkit';
 
 export enum ParseSpeeds {
@@ -31,6 +32,7 @@ export interface LoadOptions {
 
 export interface CreateOptions {
   updateMetadata?: boolean;
+  encryptOption?: SecurityOption;
 }
 
 export interface EmbedFontOptions {
