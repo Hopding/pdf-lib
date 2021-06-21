@@ -183,6 +183,20 @@ export default class PDFDocument {
     return pdfDoc;
   }
 
+  async encrypt(options: CreateOptions) {
+    const { encryptOption } = options;
+
+    this._id = PDFSecurity.generateFileID(this.getInfoDict());
+    const newInfo = this.context.obj([this._id, this._id]);
+    this.context.trailerInfo.ID = newInfo;
+
+    this._security = PDFSecurity.create(this, encryptOption);
+    this.context._security = this._security;
+    //@ts-ignore
+    const newSecurity = this.context.obj(this._security.dictionary);
+    this.context.trailerInfo.Encrypt = this.context.register(newSecurity);
+  }
+
   /** The low-level context of this document. */
   readonly context: PDFContext;
 
