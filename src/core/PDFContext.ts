@@ -17,7 +17,7 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFOperator from 'src/core/operators/PDFOperator';
 import Ops from 'src/core/operators/PDFOperatorNames';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
-import { typedArrayFor } from 'src/utils';
+import { typedArrayFor, Uint8ArrToHex } from 'src/utils';
 import PDFSecurity from './security/PDFSecurity';
 
 type LookupKey = PDFRef | PDFObject | undefined;
@@ -200,9 +200,9 @@ class PDFContext {
       return PDFNumber.of(literal);
     } else if (typeof literal === 'boolean') {
       return literal ? PDFBool.True : PDFBool.False;
-    } else if (Buffer.isBuffer(literal)) {
-      // Convert ID from Buffer to Hex String
-      return PDFHexString.of(literal.toString('hex'));
+    } else if (literal instanceof Uint8Array) {
+      // Convert ID/U/O field of Security to Hex String
+      return PDFHexString.of(Uint8ArrToHex(literal));
     } else if (Array.isArray(literal)) {
       const array = PDFArray.withContext(this);
       for (let idx = 0, len = literal.length; idx < len; idx++) {

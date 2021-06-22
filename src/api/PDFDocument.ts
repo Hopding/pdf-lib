@@ -66,13 +66,13 @@ import FileEmbedder, { AFRelationship } from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 import PDFJavaScript from 'src/api/PDFJavaScript';
 import JavaScriptEmbedder from 'src/core/embedders/JavaScriptEmbedder';
-import PDFSecurity from 'src/core/security/PDFSecurity';
+import PDFSecurity, { SecurityOption } from 'src/core/security/PDFSecurity';
 
 /**
  * Represents a PDF document.
  */
 export default class PDFDocument {
-  _id!: Buffer;
+  _id!: Uint8Array;
   _security!: PDFSecurity | null;
   /**
    * Load an existing [[PDFDocument]]. The input data can be provided in
@@ -158,7 +158,7 @@ export default class PDFDocument {
    * @returns Resolves with the newly created document.
    */
   static async create(options: CreateOptions = {}) {
-    const { updateMetadata = true, encryptOption } = options;
+    const { updateMetadata = true } = options;
 
     const context = PDFContext.create();
     const pageTree = PDFPageTree.withContext(context);
@@ -168,29 +168,33 @@ export default class PDFDocument {
 
     const pdfDoc = new PDFDocument(context, false, updateMetadata);
 
-    if (encryptOption) {
-      pdfDoc._id = PDFSecurity.generateFileID(pdfDoc.getInfoDict());
-      const newInfo = pdfDoc.context.obj([pdfDoc._id, pdfDoc._id]);
-      pdfDoc.context.trailerInfo.ID = newInfo;
+    // if (encryptOption) {
+    //   pdfDoc._id = PDFSecurity.generateFileID(pdfDoc.getInfoDict());
+    //   const newInfo = pdfDoc.context.obj([pdfDoc._id, pdfDoc._id]);
+    //   pdfDoc.context.trailerInfo.ID = newInfo;
 
-      pdfDoc._security = PDFSecurity.create(pdfDoc, encryptOption);
-      pdfDoc.context._security = pdfDoc._security;
-      //@ts-ignore
-      const newSecurity = pdfDoc.context.obj(pdfDoc._security.dictionary);
-      pdfDoc.context.trailerInfo.Encrypt = pdfDoc.context.register(newSecurity);
-    }
+    //   pdfDoc._security = PDFSecurity.create(pdfDoc, encryptOption);
+    //   pdfDoc.context._security = pdfDoc._security;
+    //   //@ts-ignore
+    //   const newSecurity = pdfDoc.context.obj(pdfDoc._security.dictionary);
+    //   pdfDoc.context.trailerInfo.Encrypt = pdfDoc.context.register(newSecurity);
+    // }
 
     return pdfDoc;
   }
 
-  async encrypt(options: CreateOptions) {
-    const { encryptOption } = options;
-
+  /**
+   * Instantiate PDF-Security for encryption of file
+   * @param SecurityOption The input data containing a PDF document.
+   * @returns Void
+   */
+  async encrypt(options: SecurityOption) {
+    options.pdfVersion = this.context.header.getVersion();
     this._id = PDFSecurity.generateFileID(this.getInfoDict());
     const newInfo = this.context.obj([this._id, this._id]);
     this.context.trailerInfo.ID = newInfo;
 
-    this._security = PDFSecurity.create(this, encryptOption);
+    this._security = PDFSecurity.create(this, options);
     this.context._security = this._security;
     //@ts-ignore
     const newSecurity = this.context.obj(this._security.dictionary);

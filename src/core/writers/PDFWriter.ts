@@ -9,6 +9,8 @@ import PDFContext from 'src/core/PDFContext';
 import PDFObjectStream from 'src/core/structures/PDFObjectStream';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer, waitForTick } from 'src/utils';
+import PDFStream from '../objects/PDFStream';
+import { EncryptFn } from '../security/PDFSecurity';
 
 export interface SerializationInfo {
   size: number;
@@ -66,15 +68,7 @@ class PDFWriter {
       buffer[offset++] = CharCodes.j;
       buffer[offset++] = CharCodes.Newline;
 
-      let encryptFn;
-      if (this.context._security) {
-        encryptFn = this.context._security.getEncryptFn(
-          ref.objectNumber,
-          ref.generationNumber,
-        );
-      }
-
-      offset += object.copyBytesInto(buffer, offset, encryptFn);
+      offset += object.copyBytesInto(buffer, offset);
 
       buffer[offset++] = CharCodes.Newline;
       buffer[offset++] = CharCodes.e;
@@ -127,18 +121,35 @@ class PDFWriter {
   }
 
   protected async computeBufferSize(): Promise<SerializationInfo> {
-    const header = PDFHeader.forVersion(1, 7);
+    // const header = PDFHeader.forVersion(1, 7);
+    const header = this.context.header;
 
     let size = header.sizeInBytes() + 2;
 
     const xref = PDFCrossRefSection.create();
 
     const indirectObjects = this.context.enumerateIndirectObjects();
-
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
       const indirectObject = indirectObjects[idx];
-      const [ref] = indirectObject;
+      const [ref, object] = indirectObject;
       xref.addEntry(ref, size);
+
+      // Only encrypt item that is under PDFStream
+      // Run the content through EncryptFn and update the content
+      // before compute of object size to ensure correct buffer size
+      if (this.context._security && object instanceof PDFStream) {
+        const encryptFn: EncryptFn = this.context._security.getEncryptFn(
+          ref.objectNumber,
+          ref.generationNumber,
+        );
+
+        let toBeEncrypt = object.getContents();
+        if (encryptFn) {
+          toBeEncrypt = new Uint8Array(encryptFn(toBeEncrypt));
+          object.updateContent(toBeEncrypt);
+        }
+      }
+
       size += this.computeIndirectObjectSize(indirectObject);
       if (this.shouldWaitForTick(1)) await waitForTick();
     }

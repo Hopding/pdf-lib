@@ -14,6 +14,9 @@ yarn-error.log
 isolate*.log
 .DS_Store
 out.pdf
+out2.pdf
+target.pdf
+target-protected.pdf
 *.tgz
 
 .vscode/settings.json

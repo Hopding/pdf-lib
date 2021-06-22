@@ -16,7 +16,7 @@ interface userPermission {
   documentAssembly?: boolean;
 }
 
-export type EncryptFn = (buffer: Uint8Array) => Buffer;
+export type EncryptFn = (buffer: Uint8Array) => Uint8Array;
 
 export interface SecurityOption {
   ownerPassword?: string;
@@ -41,8 +41,8 @@ type EncKeyBits = 40 | 128 | 256;
 
 interface EncDict {
   R: EncDictR;
-  O: Buffer;
-  U: Buffer;
+  O: Uint8Array;
+  U: Uint8Array;
   P: number;
   V: EncDictV;
   Filter: 'Standard';
@@ -58,9 +58,9 @@ interface EncDictV1V2V4 extends EncDict {
 }
 
 interface EncDictV5 extends EncDict {
-  OE: Buffer;
-  UE: Buffer;
-  Perms: Buffer;
+  OE: Uint8Array;
+  UE: Uint8Array;
+  Perms: Uint8Array;
   Length?: number;
   CF: CF;
   StmF: 'StdCF';
@@ -73,23 +73,13 @@ class PDFSecurity {
   dictionary!: EncDictV5 | EncDictV1V2V4;
   keyBits!: EncKeyBits;
   encryptionKey!: WordArray;
-  id!: Buffer;
+  id!: Uint8Array;
 
   // ID file is an array of two byte-string constituing a file identifier
   // Required if Encrypt entry is present in Trailer
   // Doesn't really matter what it is as long as it is consistently used.
-  static generateFileID(info: PDFDict): Buffer {
-    console.log(info);
-    // for (let key in info) {
-    //   // eslint-disable-next-line no-prototype-builtins
-    //   if (!info.hasOwnProperty(key)) {
-    //     continue;
-    //   }
-    //   infoStr += `${key}: ${info[key].valueOf()}\n`;
-    // }
-
-    // return wordArrayToBuffer(CryptoJS.MD5(infoStr));
-    return wordArrayToBuffer(CryptoJS.MD5('something'));
+  static generateFileID(info: PDFDict): Uint8Array {
+    return wordArrayToBuffer(CryptoJS.MD5(info.toString()));
   }
 
   static generateRandomWordArray(bytes: number): WordArray {
@@ -123,6 +113,7 @@ class PDFSecurity {
   // Handle all encryption process and give back EncryptionDictionary that is required
   // to be plugged into Trailer of the PDF
   _setupEncryption(options: SecurityOption) {
+    console.log(options.pdfVersion);
     switch (options.pdfVersion) {
       case '1.4':
       case '1.5':
@@ -224,8 +215,10 @@ class PDFSecurity {
       encDict.StmF = 'StdCF';
       encDict.StrF = 'StdCF';
     }
+
     encDict.R = r;
     encDict.O = wordArrayToBuffer(ownerPasswordEntry);
+    console.log(typeof encDict.O);
     encDict.U = wordArrayToBuffer(userPasswordEntry);
     encDict.P = permissions;
     return encDict;
@@ -417,7 +410,7 @@ function getUserPasswordR2(encryptionKey: CryptoJS.lib.WordArray) {
     .ciphertext;
 }
 
-function getUserPasswordR3R4(documentId: Buffer, encryptionKey: WordArray) {
+function getUserPasswordR3R4(documentId: Uint8Array, encryptionKey: WordArray) {
   const key = encryptionKey.clone();
   let cipher = CryptoJS.MD5(
     processPasswordR2R3R4().concat(
@@ -466,7 +459,7 @@ function getOwnerPasswordR2R3R4(
 function getEncryptionKeyR2R3R4(
   r: EncDictR,
   keyBits: EncKeyBits,
-  documentId: Buffer,
+  documentId: Uint8Array,
   paddedUserPassword: WordArray,
   ownerPasswordEntry: WordArray,
   permissions: number,
@@ -610,14 +603,15 @@ function lsbFirstWord(data: number): number {
   );
 }
 
-function wordArrayToBuffer(wordArray: WordArray): Buffer {
+function wordArrayToBuffer(wordArray: WordArray): Uint8Array {
   const byteArray = [];
   for (let i = 0; i < wordArray.sigBytes; i++) {
     byteArray.push(
       (wordArray.words[Math.floor(i / 4)] >> (8 * (3 - (i % 4)))) & 0xff,
     );
   }
-  return Buffer.from(byteArray);
+
+  return Uint8Array.from(byteArray);
 }
 
 const PASSWORD_PADDING = [

@@ -5,7 +5,6 @@ import PDFNumber from 'src/core/objects/PDFNumber';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFContext from 'src/core/PDFContext';
 import CharCodes from 'src/core/syntax/CharCodes';
-import { EncryptFn } from '../security/PDFSecurity';
 
 class PDFStream extends PDFObject {
   readonly dict: PDFDict;
@@ -63,11 +62,7 @@ class PDFStream extends PDFObject {
     return streamString;
   }
 
-  copyBytesInto(
-    buffer: Uint8Array,
-    offset: number,
-    _encryptFn?: EncryptFn,
-  ): number {
+  copyBytesInto(buffer: Uint8Array, offset: number): number {
     this.updateDict();
     const initialOffset = offset;
 
@@ -81,13 +76,6 @@ class PDFStream extends PDFObject {
     buffer[offset++] = CharCodes.a;
     buffer[offset++] = CharCodes.m;
     buffer[offset++] = CharCodes.Newline;
-
-    let toBeEncrypt = this.getContents();
-    if (_encryptFn) {
-      toBeEncrypt = new Uint8Array(_encryptFn(toBeEncrypt));
-      this.updateContent(toBeEncrypt);
-      // console.log(toBeEncrypt);
-    }
 
     const contents = this.getContents();
     for (let idx = 0, len = contents.length; idx < len; idx++) {

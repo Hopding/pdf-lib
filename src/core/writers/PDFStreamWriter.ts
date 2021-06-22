@@ -11,6 +11,7 @@ import PDFCrossRefStream from 'src/core/structures/PDFCrossRefStream';
 import PDFObjectStream from 'src/core/structures/PDFObjectStream';
 import PDFWriter from 'src/core/writers/PDFWriter';
 import { last, waitForTick } from 'src/utils';
+import { EncryptFn } from '../security/PDFSecurity';
 
 class PDFStreamWriter extends PDFWriter {
   static forContext = (
@@ -67,6 +68,27 @@ class PDFStreamWriter extends PDFWriter {
         object instanceof PDFStream ||
         object instanceof PDFInvalidObject ||
         ref.generationNumber !== 0;
+
+      // console.log(shouldNotCompress, object instanceof PDFStream);
+      console.log(
+        shouldNotCompress,
+        object instanceof PDFStream,
+        ref.generationNumber,
+      );
+      if (this.context._security && object instanceof PDFStream) {
+        //@ts-ignore
+        console.log(object.dict.dict);
+        const encryptFn: EncryptFn = this.context._security.getEncryptFn(
+          ref.objectNumber,
+          ref.generationNumber,
+        );
+
+        let toBeEncrypt = object.getContents();
+        if (encryptFn) {
+          toBeEncrypt = new Uint8Array(encryptFn(toBeEncrypt));
+          object.updateContent(toBeEncrypt);
+        }
+      }
 
       if (shouldNotCompress) {
         uncompressedObjects.push(indirectObject);
