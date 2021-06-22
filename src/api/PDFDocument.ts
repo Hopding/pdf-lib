@@ -168,18 +168,6 @@ export default class PDFDocument {
 
     const pdfDoc = new PDFDocument(context, false, updateMetadata);
 
-    // if (encryptOption) {
-    //   pdfDoc._id = PDFSecurity.generateFileID(pdfDoc.getInfoDict());
-    //   const newInfo = pdfDoc.context.obj([pdfDoc._id, pdfDoc._id]);
-    //   pdfDoc.context.trailerInfo.ID = newInfo;
-
-    //   pdfDoc._security = PDFSecurity.create(pdfDoc, encryptOption);
-    //   pdfDoc.context._security = pdfDoc._security;
-    //   //@ts-ignore
-    //   const newSecurity = pdfDoc.context.obj(pdfDoc._security.dictionary);
-    //   pdfDoc.context.trailerInfo.Encrypt = pdfDoc.context.register(newSecurity);
-    // }
-
     return pdfDoc;
   }
 
@@ -196,7 +184,10 @@ export default class PDFDocument {
 
     this._security = PDFSecurity.create(this, options);
     this.context._security = this._security;
-    //@ts-ignore
+    if (!this._security) {
+      throw new Error('Security Object Missing');
+    }
+    // @ts-ignore
     const newSecurity = this.context.obj(this._security.dictionary);
     this.context.trailerInfo.Encrypt = this.context.register(newSecurity);
   }
@@ -1211,7 +1202,7 @@ export default class PDFDocument {
       const ref = this.context.nextRef();
       embeddedPages[idx] = PDFEmbeddedPage.of(ref, this, embedder);
     }
-    //@ts-ignore
+    // @ts-ignore
     this.embeddedPages.push(...embeddedPages);
 
     return embeddedPages;

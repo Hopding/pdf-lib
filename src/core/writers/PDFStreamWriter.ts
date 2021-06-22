@@ -76,7 +76,7 @@ class PDFStreamWriter extends PDFWriter {
         ref.generationNumber,
       );
       if (this.context._security && object instanceof PDFStream) {
-        //@ts-ignore
+        // @ts-ignore
         console.log(object.dict.dict);
         const encryptFn: EncryptFn = this.context._security.getEncryptFn(
           ref.objectNumber,
