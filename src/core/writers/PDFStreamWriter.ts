@@ -70,8 +70,9 @@ class PDFStreamWriter extends PDFWriter {
       if (shouldNotCompress) {
         uncompressedObjects.push(indirectObject);
 
-        if (pdfSecurity && object instanceof PDFStream)
+        if (pdfSecurity && object instanceof PDFStream) {
           this.encrypt(ref, object, pdfSecurity);
+        }
 
         xrefStream.addUncompressedEntry(ref, size);
         size += this.computeIndirectObjectSize(indirectObject);

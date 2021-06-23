@@ -23,7 +23,7 @@ import PDFSecurity from './security/PDFSecurity';
 type LookupKey = PDFRef | PDFObject | undefined;
 
 export interface LiteralObject {
-  [name: string]: Literal | PDFObject | Object;
+  [name: string]: Literal | PDFObject | object;
 }
 
 interface LiteralArray {
