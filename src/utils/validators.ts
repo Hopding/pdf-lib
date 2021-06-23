@@ -1,5 +1,6 @@
 /* tslint:disable:ban-types */
 
+import PDFSecurity from 'src/core/security/PDFSecurity';
 import { values as objectValues } from 'src/utils/objects';
 
 export const backtick = (val: any) => `\`${val}\``;
@@ -224,5 +225,13 @@ export const assertPositive = (value: number, valueName: string) => {
   if (![1, 0].includes(Math.sign(value))) {
     // prettier-ignore
     throw new Error(`${backtick(valueName)} must be a positive number or 0, but was actually ${value}`);
+  }
+};
+
+export const assertSecurity = (value: any, valueName: string) => {
+  if (!(value instanceof PDFSecurity)) {
+    throw new Error(
+      `${backtick(valueName)} must be present and is instance of PDFSecurity`,
+    );
   }
 };

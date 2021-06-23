@@ -10,7 +10,7 @@ import PDFObjectStream from 'src/core/structures/PDFObjectStream';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer, waitForTick } from 'src/utils';
 import PDFStream from '../objects/PDFStream';
-import { EncryptFn } from '../security/PDFSecurity';
+import PDFSecurity, { EncryptFn } from '../security/PDFSecurity';
 
 export interface SerializationInfo {
   size: number;
@@ -44,7 +44,6 @@ class PDFWriter {
       trailerDict,
       trailer,
     } = await this.computeBufferSize();
-
     let offset = 0;
     const buffer = new Uint8Array(size);
 
@@ -128,6 +127,7 @@ class PDFWriter {
 
     const xref = PDFCrossRefSection.create();
 
+    const pdfSecurity = this.context.getSecurity();
     const indirectObjects = this.context.enumerateIndirectObjects();
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
       const indirectObject = indirectObjects[idx];
@@ -137,17 +137,8 @@ class PDFWriter {
       // Only encrypt item that is under PDFStream
       // Run the content through EncryptFn and update the content
       // before compute of object size to ensure correct buffer size
-      if (this.context._security && object instanceof PDFStream) {
-        const encryptFn: EncryptFn = this.context._security.getEncryptFn(
-          ref.objectNumber,
-          ref.generationNumber,
-        );
-
-        let toBeEncrypt = object.getContents();
-        if (encryptFn) {
-          toBeEncrypt = new Uint8Array(encryptFn(toBeEncrypt));
-          object.updateContent(toBeEncrypt);
-        }
+      if (pdfSecurity && object instanceof PDFStream) {
+        this.encrypt(ref, object, pdfSecurity);
       }
 
       size += this.computeIndirectObjectSize(indirectObject);
@@ -170,6 +161,20 @@ class PDFWriter {
     this.parsedObjects += n;
     return this.parsedObjects % this.objectsPerTick === 0;
   };
+
+  protected encrypt(ref: PDFRef, object: PDFStream, pdfSecurity: PDFSecurity) {
+    const encryptFn: EncryptFn = pdfSecurity.getEncryptFn(
+      ref.objectNumber,
+      ref.generationNumber,
+    );
+
+    let toBeEncrypt = object.getContents();
+    if (encryptFn) {
+      toBeEncrypt = new Uint8Array(encryptFn(toBeEncrypt));
+
+      object.updateContent(toBeEncrypt);
+    }
+  }
 }
 
 export default PDFWriter;

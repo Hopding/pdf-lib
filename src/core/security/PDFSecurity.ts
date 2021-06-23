@@ -2,10 +2,15 @@ import CryptoJS from 'crypto-js';
 import saslprep from 'saslprep';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFDict from '../objects/PDFDict';
+import { LiteralObject } from '../PDFContext';
 
 type WordArray = CryptoJS.lib.WordArray;
 type generateRandomWordArrayFn = (bytes: number) => WordArray;
 
+/**
+ * Interface representing type of user permission
+ * @interface UserPermission
+ */
 interface UserPermission {
   printing?: boolean | 'lowResolution' | 'highResolution';
   modifying?: boolean;
@@ -18,6 +23,10 @@ interface UserPermission {
 
 export type EncryptFn = (buffer: Uint8Array) => Uint8Array;
 
+/**
+ * Interface option for security
+ * @interface SecurityOption
+ */
 export interface SecurityOption {
   ownerPassword?: string;
   userPassword?: string;
@@ -39,7 +48,7 @@ type EncDictV = 1 | 2 | 4 | 5;
 type EncDictR = 2 | 3 | 4 | 5;
 type EncKeyBits = 40 | 128 | 256;
 
-interface EncDict {
+interface EncDict extends LiteralObject {
   R: EncDictR;
   O: Uint8Array;
   U: Uint8Array;
@@ -86,15 +95,10 @@ class PDFSecurity {
     return CryptoJS.lib.WordArray.random(bytes);
   }
 
-  // Probably have to fix the typing of security Option, To decide after overall flow is determined
-  // Ie: to either do it at PDFDocument.encrypt({securityOption}) or PDFDocument.create({securityOption})
   static create(
     document: PDFDocument,
     options: SecurityOption = {} as SecurityOption,
   ) {
-    if (!options.ownerPassword && !options.userPassword) {
-      return null;
-    }
     return new PDFSecurity(document, options);
   }
 
@@ -113,7 +117,6 @@ class PDFSecurity {
   // Handle all encryption process and give back EncryptionDictionary that is required
   // to be plugged into Trailer of the PDF
   _setupEncryption(options: SecurityOption) {
-    console.log(options.pdfVersion);
     switch (options.pdfVersion) {
       case '1.4':
       case '1.5':
@@ -220,7 +223,6 @@ class PDFSecurity {
 
     encDict.R = r;
     encDict.O = wordArrayToBuffer(ownerPasswordEntry);
-    console.log(typeof encDict.O);
     encDict.U = wordArrayToBuffer(userPasswordEntry);
     encDict.P = permissions;
     return encDict;
@@ -361,6 +363,15 @@ class PDFSecurity {
   }
 }
 
+/**
+ * Get Permission Flag for use Encryption Dictionary (Key: P)
+ * For Security Handler revision 2
+ *
+ * Only bit position 3,4,5,6,9,10,11 and 12 is meaningful
+ * Refer Table 22 - User access permission
+ * @param  {permissionObject} {@link UserPermission}
+ * @returns number - Representing unsigned 32-bit integer
+ */
 const getPermissionsR2 = (permissionObject: UserPermission = {}) => {
   let permissions = 0xffffffc0 >> 0;
   if (permissionObject.printing) {
@@ -378,6 +389,15 @@ const getPermissionsR2 = (permissionObject: UserPermission = {}) => {
   return permissions;
 };
 
+/**
+ * Get Permission Flag for use Encryption Dictionary (Key: P)
+ * For Security Handler revision 2
+ *
+ * Only bit position 3,4,5,6,9,10,11 and 12 is meaningful
+ * Refer Table 22 - User access permission
+ * @param  {permissionObject} {@link UserPermission}
+ * @returns number - Representing unsigned 32-bit integer
+ */
 const getPermissionsR3 = (permissionObject: UserPermission = {}) => {
   let permissions = 0xfffff0c0 >> 0;
   if (permissionObject.printing === 'lowResolution') {
@@ -612,6 +632,12 @@ const wordArrayToBuffer = (wordArray: WordArray): Uint8Array => {
   return Uint8Array.from(byteArray);
 };
 
+/* 
+  7.6.3.3 Encryption Key Algorithm
+  Algorithm 2
+  Password Padding to pad or truncate
+  the password to exactly 32 bytes
+*/
 const PASSWORD_PADDING = [
   0x28,
   0xbf,

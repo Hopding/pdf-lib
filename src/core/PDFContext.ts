@@ -17,13 +17,13 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFOperator from 'src/core/operators/PDFOperator';
 import Ops from 'src/core/operators/PDFOperatorNames';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
-import { typedArrayFor, Uint8ArrToHex } from 'src/utils';
+import { assertSecurity, typedArrayFor, Uint8ArrToHex } from 'src/utils';
 import PDFSecurity from './security/PDFSecurity';
 
 type LookupKey = PDFRef | PDFObject | undefined;
 
-interface LiteralObject {
-  [name: string]: Literal | PDFObject;
+export interface LiteralObject {
+  [name: string]: Literal | PDFObject | Object;
 }
 
 interface LiteralArray {
@@ -59,7 +59,7 @@ class PDFContext {
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
   private pushGraphicsStateContentStreamRef?: PDFRef;
   private popGraphicsStateContentStreamRef?: PDFRef;
-  _security!: PDFSecurity | null;
+  private _security!: PDFSecurity | null;
 
   private constructor() {
     this.largestObjectNumber = 0;
@@ -67,6 +67,15 @@ class PDFContext {
     this.trailerInfo = {};
 
     this.indirectObjects = new Map();
+  }
+
+  getSecurity(): PDFSecurity | null {
+    return this._security;
+  }
+
+  setSecurity(pdfSecurity: PDFSecurity): void {
+    assertSecurity(pdfSecurity, 'PDFSecurity Instance');
+    this._security = pdfSecurity;
   }
 
   assign(ref: PDFRef, object: PDFObject): void {

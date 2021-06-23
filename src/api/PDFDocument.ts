@@ -173,7 +173,7 @@ export default class PDFDocument {
 
   /**
    * Instantiate PDF-Security for encryption of file
-   * @param SecurityOption The input data containing a PDF document.
+   * @param SecurityOption Security Option
    * @returns Void
    */
   async encrypt(options: SecurityOption) {
@@ -183,11 +183,8 @@ export default class PDFDocument {
     this.context.trailerInfo.ID = newInfo;
 
     this._security = PDFSecurity.create(this, options);
-    this.context._security = this._security;
-    if (!this._security) {
-      throw new Error('Security Object Missing');
-    }
-    // @ts-ignore
+    this.context.setSecurity(this._security);
+
     const newSecurity = this.context.obj(this._security.dictionary);
     this.context.trailerInfo.Encrypt = this.context.register(newSecurity);
   }

@@ -1,4 +1,3 @@
-import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
 import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
 import PDFName from 'src/core/objects/PDFName';
@@ -11,7 +10,6 @@ import PDFCrossRefStream from 'src/core/structures/PDFCrossRefStream';
 import PDFObjectStream from 'src/core/structures/PDFObjectStream';
 import PDFWriter from 'src/core/writers/PDFWriter';
 import { last, waitForTick } from 'src/utils';
-import { EncryptFn } from '../security/PDFSecurity';
 
 class PDFStreamWriter extends PDFWriter {
   static forContext = (
@@ -45,8 +43,7 @@ class PDFStreamWriter extends PDFWriter {
   protected async computeBufferSize() {
     let objectNumber = this.context.largestObjectNumber + 1;
 
-    const header = PDFHeader.forVersion(1, 7);
-
+    const header = this.context.header;
     let size = header.sizeInBytes() + 2;
 
     const xrefStream = PDFCrossRefStream.create(
@@ -58,6 +55,7 @@ class PDFStreamWriter extends PDFWriter {
     const compressedObjects: [PDFRef, PDFObject][][] = [];
     const objectStreamRefs: PDFRef[] = [];
 
+    const pdfSecurity = this.context.getSecurity();
     const indirectObjects = this.context.enumerateIndirectObjects();
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
       const indirectObject = indirectObjects[idx];
@@ -69,29 +67,12 @@ class PDFStreamWriter extends PDFWriter {
         object instanceof PDFInvalidObject ||
         ref.generationNumber !== 0;
 
-      // console.log(shouldNotCompress, object instanceof PDFStream);
-      console.log(
-        shouldNotCompress,
-        object instanceof PDFStream,
-        ref.generationNumber,
-      );
-      if (this.context._security && object instanceof PDFStream) {
-        // @ts-ignore
-        console.log(object.dict.dict);
-        const encryptFn: EncryptFn = this.context._security.getEncryptFn(
-          ref.objectNumber,
-          ref.generationNumber,
-        );
-
-        let toBeEncrypt = object.getContents();
-        if (encryptFn) {
-          toBeEncrypt = new Uint8Array(encryptFn(toBeEncrypt));
-          object.updateContent(toBeEncrypt);
-        }
-      }
-
       if (shouldNotCompress) {
         uncompressedObjects.push(indirectObject);
+
+        if (pdfSecurity && object instanceof PDFStream)
+          this.encrypt(ref, object, pdfSecurity);
+
         xrefStream.addUncompressedEntry(ref, size);
         size += this.computeIndirectObjectSize(indirectObject);
         if (this.shouldWaitForTick(1)) await waitForTick();
@@ -112,13 +93,14 @@ class PDFStreamWriter extends PDFWriter {
     for (let idx = 0, len = compressedObjects.length; idx < len; idx++) {
       const chunk = compressedObjects[idx];
       const ref = objectStreamRefs[idx];
-
       const objectStream = PDFObjectStream.withContextAndObjects(
         this.context,
         chunk,
         this.encodeStreams,
       );
 
+      // Encrypt
+      if (pdfSecurity) this.encrypt(ref, objectStream, pdfSecurity);
       xrefStream.addUncompressedEntry(ref, size);
       size += this.computeIndirectObjectSize([ref, objectStream]);
 
@@ -128,9 +110,12 @@ class PDFStreamWriter extends PDFWriter {
     }
 
     const xrefStreamRef = PDFRef.of(objectNumber++);
+
     xrefStream.dict.set(PDFName.of('Size'), PDFNumber.of(objectNumber));
+
     xrefStream.addUncompressedEntry(xrefStreamRef, size);
     const xrefOffset = size;
+
     size += this.computeIndirectObjectSize([xrefStreamRef, xrefStream]);
 
     uncompressedObjects.push([xrefStreamRef, xrefStream]);

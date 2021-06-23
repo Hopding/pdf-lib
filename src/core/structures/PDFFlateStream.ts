@@ -34,6 +34,9 @@ class PDFFlateStream extends PDFStream {
 
   updateContent(encrypt: Uint8Array): void {
     this.contentsCache = Cache.populatedBy(() => encrypt);
+    //   this.contentsCache = Cache.populatedBy(() =>
+    //   this.encode ? pako.deflate(encrypt) : encrypt,
+    // );
   }
 
   getUnencodedContents(): Uint8Array {
