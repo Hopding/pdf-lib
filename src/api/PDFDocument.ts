@@ -173,8 +173,18 @@ export default class PDFDocument {
 
   /**
    * Instantiate PDF-Security for encryption of file
-   * @param SecurityOption Security Option
-   * @returns Void
+   * @param SecurityOption {@link SecurityOption}
+   *  SecurityOption
+   * ```javascript
+   * {
+   * `ownerPassword`?: string;
+   * `userPassword`: string;
+   * `permissions`?: UserPermission;
+   * `pdfVersion`?: string;
+   * }
+   * ```
+   *
+   * @returns void
    */
   async encrypt(options: SecurityOption) {
     options.pdfVersion = this.context.header.getVersion();

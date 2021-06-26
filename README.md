@@ -50,6 +50,7 @@
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Features](#features)
 - [Motivation](#motivation)
 - [Usage Examples](#usage-examples)
@@ -65,19 +66,28 @@
   - [Add Attachments](#add-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
-  - [Set Viewer Preferences](#set-viewer-preferences) - _**new!**_
-  - [Read Viewer Preferences](#read-viewer-preferences) - _**new!**_
+  - [Set Viewer Preferences](#set-viewer-preferences)
+  - [Read Viewer Preferences](#read-viewer-preferences)
+  - [Encrypt Document](#encrypt-document)
   - [Draw SVG Paths](#draw-svg-paths)
 - [Deno Usage](#deno-usage)
+  - [Creating a Document with Deno](#creating-a-document-with-deno)
+  - [Embedding a Font with Deno](#embedding-a-font-with-deno)
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
+  - [NPM Module](#npm-module)
+  - [UMD Module](#umd-module)
+- [Fontkit Installation](#fontkit-installation)
+  - [Fontkit NPM Module](#fontkit-npm-module)
+  - [Fontkit UMD Module](#fontkit-umd-module)
 - [Documentation](#documentation)
 - [Fonts and Unicode](#fonts-and-unicode)
+  - [Font Subsetting](#font-subsetting)
 - [Creating and Filling Forms](#creating-and-filling-forms)
+  - [Handy Methods for Filling, Creating, and Reading Form Fields](#handy-methods-for-filling-creating-and-reading-form-fields)
 - [Limitations](#limitations)
 - [Help and Discussion](#help-and-discussion)
 - [Encryption Handling](#encryption-handling)
-- [Migrating to v1.0.0](/MIGRATION.md)
 - [Contributing](#contributing)
 - [Tutorials and Cool Stuff](#tutorials-and-cool-stuff)
 - [Prior Art](#prior-art)
@@ -954,6 +964,38 @@ Duplex: DuplexFlipLongEdge
 PickTrayByPDFSize: true
 PrintPageRange: [ { start: 1, end: 1 }, { start: 3, end: 4 } ]
 NumCopies: 2
+```
+
+### Encrypt Document
+_This example open and encrypt [this PDF](assets/pdfs/sample_form.pdf)_.
+
+When `userPassword` is used to open the document, the viewer should allow user to modify the document but not other operations (Such as printing). Note that this rely on the conforming reader to restrict user based on PDF Specification.
+
+When `ownerPassword` is used, the viewer will grant user unlimited access to the document, inclusive of ability to remove or change encryption on the document.
+
+
+```js
+import fs from 'fs';
+import { PDFDocument } from 'pdf-lib';
+
+const existingPdfBytes = fs.readFileSync('assets/pdfs/sample_form.pdf');
+const pdfDoc = await PDFDocument.load(existingPdfBytes);
+const page = pdfDoc.addPage();
+
+// Add some text
+page.drawText('Encrypting PDFs in JavaScript is awesome!', {
+  x: 100,  
+  y: 100,
+});
+
+// Add encryption
+pdfDoc.encrypt({
+  ownerPassword: 'owner',
+  userPassword: 'user',
+  permissions: { modifying: true },
+});
+
+const pdfBytes = await pdfDoc.save();
 ```
 
 ### Draw SVG Paths

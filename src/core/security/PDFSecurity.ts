@@ -12,12 +12,34 @@ type generateRandomWordArrayFn = (bytes: number) => WordArray;
  * @interface UserPermission
  */
 interface UserPermission {
+  /**
+   * Printing Permission
+   * For Security handlers of revision <= 2 : Boolean
+   * For Security handlers of revision >= 3 : 'lowResolution' or 'highResolution'
+   */
   printing?: boolean | 'lowResolution' | 'highResolution';
+  /**
+   * Modify Content Permission (Other than 'annotating', 'fillingForms' and 'documentAssembly')
+   */
   modifying?: boolean;
+  /** Copy or otherwise extract text and graphics from document */
   copying?: boolean;
+  /** Permission to add or modify text annotations */
   annotating?: boolean;
+  /**
+   * Security handlers of revision >= 3
+   * Fill in existing interactive form fields (including signature fields)
+   */
   fillingForms?: boolean;
+  /**
+   * Security handlers of revision >= 3
+   * Extract text and graphics (in support of accessibility to users with disabilities or for other purposes)
+   */
   contentAccessibility?: boolean;
+  /**
+   * Security handlers of revision >= 3
+   * Assemble the document (insert, rotate or delete pages and create bookmarks or thumbnail images)
+   */
   documentAssembly?: boolean;
 }
 
@@ -28,9 +50,24 @@ export type EncryptFn = (buffer: Uint8Array) => Uint8Array;
  * @interface SecurityOption
  */
 export interface SecurityOption {
+  /**
+   * Password that provide unlimited access to the encrypted document.
+   *
+   * Opening encrypted document with owner password allow full (owner) access to the document */
   ownerPassword?: string;
-  userPassword?: string;
+
+  /** Password that restrict reader according to defined permissions
+   *
+   * Opening encrypted document with user password will have limitations in accordance to the permission defined.
+   */
+  userPassword: string;
+
+  /** Object representing type of user permission enforced on the document
+   * @link {@link UserPermission}
+   */
   permissions?: UserPermission;
+
+  /** Version of PDF, string of '1.x' */
   pdfVersion?: string;
 }
 
@@ -76,6 +113,11 @@ export interface EncDictV5 extends EncDict {
   StrF: 'StdCF';
 }
 
+/* 
+Represent the entire security class for the PDF Document
+Output from `_setupEncryption` is the Encryption Dictionary
+in compliance to the PDF Specification 
+*/
 class PDFSecurity {
   document: PDFDocument;
   version!: EncDictV;
@@ -84,9 +126,14 @@ class PDFSecurity {
   encryptionKey!: WordArray;
   id!: Uint8Array;
 
-  // ID file is an array of two byte-string constituing a file identifier
-  // Required if Encrypt entry is present in Trailer
-  // Doesn't really matter what it is as long as it is consistently used.
+  /*   
+  ID file is an array of two byte-string constituing 
+  a file identifier
+
+  Required if Encrypt entry is present in Trailer
+  Doesn't really matter what it is as long as it is 
+  consistently used. 
+  */
   static generateFileID(info: PDFDict): Uint8Array {
     return wordArrayToBuffer(CryptoJS.MD5(info.toString()));
   }
@@ -114,8 +161,11 @@ class PDFSecurity {
     this._setupEncryption(options);
   }
 
-  // Handle all encryption process and give back EncryptionDictionary that is required
-  // to be plugged into Trailer of the PDF
+  /* 
+  Handle all encryption process and give back 
+  EncryptionDictionary that is required
+  to be plugged into Trailer of the PDF 
+  */
   _setupEncryption(options: SecurityOption) {
     switch (options.pdfVersion) {
       case '1.4':
