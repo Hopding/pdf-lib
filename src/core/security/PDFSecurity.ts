@@ -53,7 +53,8 @@ export interface SecurityOption {
   /**
    * Password that provide unlimited access to the encrypted document.
    *
-   * Opening encrypted document with owner password allow full (owner) access to the document */
+   * Opening encrypted document with owner password allow full (owner) access to the document
+   */
   ownerPassword?: string;
 
   /** Password that restrict reader according to defined permissions

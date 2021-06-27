@@ -30,12 +30,12 @@ import { PDFDocument } from 'src/index';
     y: 100,
   });
 
-  await pdfDoc.encrypt({
+  pdfDoc.encrypt({
     userPassword: 'abcd',
     permissions: { modifying: true },
   });
 
-  const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
-  fs.writeFileSync('outWriter.pdf', pdfBytes);
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  fs.writeFileSync('out.pdf', pdfBytes);
   openPdf('out.pdf', Reader.Preview);
 })();
