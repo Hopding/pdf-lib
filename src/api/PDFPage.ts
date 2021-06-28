@@ -972,8 +972,11 @@ export default class PDFPage {
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
+    assertOrUndefined(options.imageKey, 'options.imageKey', ['string']);
 
-    const xObjectKey = addRandomSuffix('Image', 10);
+    const xObjectKey = options.imageKey
+      ? `Image-${options.imageKey}`
+      : addRandomSuffix('Image', 10);
     this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({

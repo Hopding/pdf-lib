@@ -44,6 +44,7 @@ export interface PDFPageDrawImageOptions {
   ySkew?: Rotation;
   opacity?: number;
   blendMode?: BlendMode;
+  imageKey?: string;
 }
 
 export interface PDFPageDrawPageOptions {
