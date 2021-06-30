@@ -451,7 +451,10 @@ const getPermissionsR2 = (permissionObject: UserPermission = {}) => {
  */
 const getPermissionsR3 = (permissionObject: UserPermission = {}) => {
   let permissions = 0xfffff0c0 >> 0;
-  if (permissionObject.printing === 'lowResolution') {
+  if (
+    permissionObject.printing === 'lowResolution' ||
+    permissionObject.printing
+  ) {
     permissions |= 0b000000000100;
   }
   if (permissionObject.printing === 'highResolution') {
