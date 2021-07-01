@@ -101,7 +101,6 @@ class PDFCrossRefStream extends PDFFlateStream {
     const entryTuples = this.entryTuplesCache.access();
     const byteWidths = this.maxByteWidthsCache.access();
     let value = '';
-
     for (
       let entryIdx = 0, entriesLen = entryTuples.length;
       entryIdx < entriesLen;

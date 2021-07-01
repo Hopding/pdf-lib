@@ -1,4 +1,3 @@
-import PDFHeader from 'src/core/document/PDFHeader';
 import PDFTrailer from 'src/core/document/PDFTrailer';
 import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
 import PDFName from 'src/core/objects/PDFName';
@@ -44,8 +43,7 @@ class PDFStreamWriter extends PDFWriter {
   protected async computeBufferSize() {
     let objectNumber = this.context.largestObjectNumber + 1;
 
-    const header = PDFHeader.forVersion(1, 7);
-
+    const header = this.context.header;
     let size = header.sizeInBytes() + 2;
 
     const xrefStream = PDFCrossRefStream.create(
@@ -57,6 +55,7 @@ class PDFStreamWriter extends PDFWriter {
     const compressedObjects: [PDFRef, PDFObject][][] = [];
     const objectStreamRefs: PDFRef[] = [];
 
+    const pdfSecurity = this.context.getSecurity();
     const indirectObjects = this.context.enumerateIndirectObjects();
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
       const indirectObject = indirectObjects[idx];
@@ -70,6 +69,11 @@ class PDFStreamWriter extends PDFWriter {
 
       if (shouldNotCompress) {
         uncompressedObjects.push(indirectObject);
+
+        if (pdfSecurity && object instanceof PDFStream) {
+          this.encrypt(ref, object, pdfSecurity);
+        }
+
         xrefStream.addUncompressedEntry(ref, size);
         size += this.computeIndirectObjectSize(indirectObject);
         if (this.shouldWaitForTick(1)) await waitForTick();
@@ -90,13 +94,14 @@ class PDFStreamWriter extends PDFWriter {
     for (let idx = 0, len = compressedObjects.length; idx < len; idx++) {
       const chunk = compressedObjects[idx];
       const ref = objectStreamRefs[idx];
-
       const objectStream = PDFObjectStream.withContextAndObjects(
         this.context,
         chunk,
         this.encodeStreams,
       );
 
+      // Encrypt
+      if (pdfSecurity) this.encrypt(ref, objectStream, pdfSecurity);
       xrefStream.addUncompressedEntry(ref, size);
       size += this.computeIndirectObjectSize([ref, objectStream]);
 
@@ -106,9 +111,12 @@ class PDFStreamWriter extends PDFWriter {
     }
 
     const xrefStreamRef = PDFRef.of(objectNumber++);
+
     xrefStream.dict.set(PDFName.of('Size'), PDFNumber.of(objectNumber));
+
     xrefStream.addUncompressedEntry(xrefStreamRef, size);
     const xrefOffset = size;
+
     size += this.computeIndirectObjectSize([xrefStreamRef, xrefStream]);
 
     uncompressedObjects.push([xrefStreamRef, xrefStream]);

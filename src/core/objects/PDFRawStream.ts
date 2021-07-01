@@ -7,7 +7,7 @@ class PDFRawStream extends PDFStream {
   static of = (dict: PDFDict, contents: Uint8Array) =>
     new PDFRawStream(dict, contents);
 
-  readonly contents: Uint8Array;
+  contents: Uint8Array;
 
   private constructor(dict: PDFDict, contents: Uint8Array) {
     super(dict);
@@ -24,6 +24,10 @@ class PDFRawStream extends PDFStream {
 
   getContentsString(): string {
     return arrayAsString(this.contents);
+  }
+
+  updateContent(encrypt: Uint8Array): void {
+    this.contents = encrypt;
   }
 
   getContents(): Uint8Array {

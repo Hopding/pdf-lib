@@ -36,6 +36,13 @@ class PDFStream extends PDFObject {
     );
   }
 
+  updateContent(encrypt: Uint8Array): void {
+    throw new MethodNotImplementedError(
+      this.constructor.name,
+      encrypt.toString(),
+    );
+  }
+
   updateDict(): void {
     const contentsSize = this.getContentsSize();
     this.dict.set(PDFName.Length, PDFNumber.of(contentsSize));
@@ -71,6 +78,8 @@ class PDFStream extends PDFObject {
     buffer[offset++] = CharCodes.Newline;
 
     const contents = this.getContents();
+    // console.log(contents.length);
+    // console.log(this);
     for (let idx = 0, len = contents.length; idx < len; idx++) {
       buffer[offset++] = contents[idx];
     }
