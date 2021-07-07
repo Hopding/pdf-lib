@@ -34,7 +34,6 @@ import { degrees, Rotation, toDegrees } from 'src/api/rotations';
 import { StandardFonts } from 'src/api/StandardFonts';
 import {
   PDFContentStream,
-  PDFHexString,
   PDFName,
   PDFOperator,
   PDFPageLeaf,
@@ -46,14 +45,12 @@ import {
   assertIs,
   assertMultiple,
   assertOrUndefined,
-  breakTextIntoLines,
-  cleanText,
   rectanglesAreEqual,
-  lineSplit,
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
 
+import { TextAlignment, layoutMultilineText, LayoutBounds} from 'src/api/text';
 /**
  * Represents a single page of a [[PDFDocument]].
  */
@@ -892,6 +889,7 @@ export default class PDFPage {
     assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
+    assertIsOneOfOrUndefined(options.textAlignment, 'options.allign', TextAlignment);
 
     const [originalFont] = this.getFont();
     if (options.font) this.setFont(options.font);
@@ -899,17 +897,20 @@ export default class PDFPage {
 
     const fontSize = options.size || this.fontSize;
 
-    const wordBreaks = options.wordBreaks || this.doc.defaultWordBreaks;
+    // const wordBreaks = options.wordBreaks || this.doc.defaultWordBreaks;
     const textWidth = (t: string) => font.widthOfTextAtSize(t, fontSize);
-    const lines =
-      options.maxWidth === undefined
-        ? lineSplit(cleanText(text))
-        : breakTextIntoLines(text, wordBreaks, options.maxWidth, textWidth);
 
-    const encodedLines = new Array(lines.length) as PDFHexString[];
-    for (let idx = 0, len = lines.length; idx < len; idx++) {
-      encodedLines[idx] = font.encodeText(lines[idx]);
-    }
+    const layout = layoutMultilineText(text, {
+      alignment: options.textAlignment ?? TextAlignment.Left,
+      font: font,
+      fontSize: fontSize,
+      bounds: {
+        x: options.x ?? this.x,
+        y: options.y ?? this.y,
+        width: options.maxWidth ?? textWidth,
+        height: 0
+      } as LayoutBounds
+    });
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -917,20 +918,23 @@ export default class PDFPage {
     });
 
     const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawLinesOfText(encodedLines, {
-        color: options.color ?? this.fontColor,
-        font: fontKey,
-        size: fontSize,
-        rotate: options.rotate ?? degrees(0),
-        xSkew: options.xSkew ?? degrees(0),
-        ySkew: options.ySkew ?? degrees(0),
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        lineHeight: options.lineHeight ?? this.lineHeight,
-        graphicsState: graphicsStateKey,
-      }),
-    );
+
+    for (const line of layout.lines) {
+      contentStream.push(
+        ...drawLinesOfText([line.encoded], {
+          color: options.color ?? this.fontColor,
+          font: fontKey,
+          size: fontSize,
+          rotate: options.rotate ?? degrees(0),
+          xSkew: options.xSkew ?? degrees(0),
+          ySkew: options.ySkew ?? degrees(0),
+          x: line.x,
+          y: line.y,
+          lineHeight: options.lineHeight ?? this.lineHeight,
+          graphicsState: graphicsStateKey,
+        }),
+      );
+    }
 
     if (options.font) this.setFont(originalFont);
   }
