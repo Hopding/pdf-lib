@@ -11,7 +11,7 @@
     "@pdf-lib/fontkit": "^0.0.4",
     "pdf-lib": "./../..",
     "react": "16.8.3",
-    "react-native": "0.59.10",
+    "react-native": "0.62.3",
     "react-native-pdf": "^6.1.1",
     "rn-fetch-blob": "0.10.15"
   },
