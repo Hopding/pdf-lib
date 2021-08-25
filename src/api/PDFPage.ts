@@ -889,7 +889,7 @@ export default class PDFPage {
     assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
-    assertIsOneOfOrUndefined(options.textAlignment, 'options.allign', TextAlignment);
+    assertIsOneOfOrUndefined(options.textAlignment, 'options.textAlignment', TextAlignment);
 
     const [originalFont] = this.getFont();
     if (options.font) this.setFont(options.font);
