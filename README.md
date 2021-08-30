@@ -48,6 +48,8 @@
 
 > **Learn more at [pdf-lib.js.org](https://pdf-lib.js.org)**
 
+_⚠️ Part of this repo's git history was recently rewritten to remove a specific file. This impacts you if you've forked the repo or have an open PR. Click [here](#git-history-rewrite) for more information._
+
 ## Table of Contents
 
 - [Features](#features)
@@ -65,8 +67,8 @@
   - [Add Attachments](#add-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
-  - [Set Viewer Preferences](#set-viewer-preferences) - _**new!**_
-  - [Read Viewer Preferences](#read-viewer-preferences) - _**new!**_
+  - [Set Viewer Preferences](#set-viewer-preferences)
+  - [Read Viewer Preferences](#read-viewer-preferences)
   - [Draw SVG Paths](#draw-svg-paths)
 - [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
@@ -81,6 +83,7 @@
 - [Contributing](#contributing)
 - [Tutorials and Cool Stuff](#tutorials-and-cool-stuff)
 - [Prior Art](#prior-art)
+- [Git History Rewrite](#git-history-rewrite)
 - [License](#license)
 
 ## Features
@@ -89,7 +92,7 @@
 - Modify existing PDFs
 - Create forms
 - Fill forms
-- Flatten forms - _**new!**_
+- Flatten forms
 - Add Pages
 - Insert Pages
 - Remove Pages
@@ -1455,6 +1458,41 @@ We welcome contributions from the open source community! If you are interested i
 - [`hummus`](https://github.com/galkahana/HummusJS) is a PDF generation and modification library for Node environments. `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer), so it doesn't work in many JavaScript environments - like the Browser or React Native.
 - [`react-native-pdf-lib`](https://github.com/Hopding/react-native-pdf-lib) is a PDF generation and modification library for React Native environments. `react-native-pdf-lib` is a wrapper around [C++](https://github.com/galkahana/PDF-Writer) and [Java](https://github.com/TomRoush/PdfBox-Android) libraries.
 - [`pdfassembler`](https://github.com/DevelopingMagic/pdfassembler) is a PDF generation and modification library for Node and the browser. It requires some knowledge about the logical structure of PDF documents to use.
+
+## Git History Rewrite
+
+This repo used to contain a file called `pdf_specification.pdf` in the root directory. This was a copy of the [PDF 1.7 specification](https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/PDF32000_2008.pdf), which is made freely available by Adobe. On 8/30/2021, we received a DMCA complaint requiring us to remove the file from this repo. Simply removing the file via a new commit to `master` was insufficient to satisfy the complaint. The file needed to be completely removed from the repo's git history. Unfortunately, the file was added over two years ago, this meant we had to rewrite the repo's git history and force push to `master` 😔.
+
+### Steps We Took
+
+We removed the file and rewrote the repo's history using [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/) as outlined [here](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository). For full transparency, here are the exact commands we ran:
+
+```
+$ git clone git@github.com:Hopding/pdf-lib.git
+$ cd pdf-lib
+$ rm pdf_specification.pdf
+$ git commit -am 'Remove pdf_specification.pdf'
+$ bfg --delete-files pdf_specification.pdf
+$ git reflog expire --expire=now --all && git gc --prune=now --aggressive
+$ git push --force
+```
+
+### Why Should I Care?
+
+If you're a user of `pdf-lib`, you shouldn't care! Just keep on using `pdf-lib` like normal 😃 ✨
+
+If you are a `pdf-lib` developer (meaning you've forked `pdf-lib` and/or have an open PR) then this does impact you. If you forked or cloned the repo prior to 8/30/2021 then your fork's git history is out of sync with this repo's `master` branch. Unfortunately, this will likely be a headache for you to deal with. Sorry! We didn't want to rewrite the history, but there really was no alternative.
+
+It's important to note that pdf-lib's _source code_ has not changed at all. It's exactly the same as it was before the git history rewrite. The repo still has the exact same number of commits (and even the same commit contents, except for the commit that added `pdf_specification.pdf`). What has changed are the SHAs of those commits.
+
+The simplest way to deal with this fact is to:
+
+1. Reclone pdf-lib
+2. Manually copy any changes you've made from your old clone to the new one
+3. Use your new clone going forward
+4. Reopen your unmerged PRs using your new clone
+
+See [this stackoverflow answer](https://stackoverflow.com/a/48268766) for a great, in depth explanation of what a git history rewrite entails.
 
 ## License
 
