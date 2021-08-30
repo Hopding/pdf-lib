@@ -1492,7 +1492,7 @@ The simplest way to deal with this fact is to:
 3. Use your new clone going forward
 4. Reopen your unmerged PRs using your new clone
 
-See [this stackoverflow answer](https://stackoverflow.com/a/48268766) for a great, in depth explanation of what a git history rewrite entails.
+See this [StackOverflow answer](https://stackoverflow.com/a/48268766) for a great, in depth explanation of what a git history rewrite entails.
 
 ## License
 
