@@ -4,6 +4,8 @@
 
 `pdf-lib` is a JavaScript library designed to create and modify PDF files in any JavaScript environment. We welcome contributions from the open source community! Please read through this document to learn how to setup and run the project on your machine. If you have any questions or run into trouble, please [create an issue](https://github.com/Hopding/pdf-lib/issues/new).
 
+Many contributions will require you to understand the structure of PDF files. You might be able to find some articles online explaining this, but they're generally pretty sparse. PDFs are a rather niche area in open source programming 🙂. The [PDF specification](https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/PDF32000_2008.pdf) is a useful reference and a great way to get started. Note that it can be a bit dense sometimes, and you certainly don't need to read all of it. But the first few sections related to PDF syntax and object structure will be useful to most contributors.
+
 ### Table Of Contents
 
 - [Local Setup and Prerequisites](#local-setup-and-prerequisites)

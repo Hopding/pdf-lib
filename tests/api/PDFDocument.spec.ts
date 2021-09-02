@@ -18,7 +18,13 @@ import {
 
 const unencryptedPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 const oldEncryptedPdfBytes1 = fs.readFileSync('assets/pdfs/encrypted_old.pdf');
-const oldEncryptedPdfBytes2 = fs.readFileSync('pdf_specification.pdf');
+
+// Had to remove this file due to DMCA complaint, so commented this line out
+// along with the 2 tests that depend on it. Would be nice to find a new file
+// that we could drop in here, but the tests are for non-critical functionality,
+// so this solution is okay for now.
+// const oldEncryptedPdfBytes2 = fs.readFileSync('pdf_specification.pdf');
+
 const newEncryptedPdfBytes = fs.readFileSync('assets/pdfs/encrypted_new.pdf');
 const invalidObjectsPdfBytes = fs.readFileSync(
   'assets/pdfs/with_invalid_objects.pdf',
@@ -68,13 +74,13 @@ describe(`PDFDocument`, () => {
       ).rejects.toThrow(new EncryptedPDFError());
     });
 
-    it(`throws an error for old encrypted PDFs (2)`, async () => {
-      await expect(
-        PDFDocument.load(oldEncryptedPdfBytes2, {
-          parseSpeed: ParseSpeeds.Fastest,
-        }),
-      ).rejects.toThrow(new EncryptedPDFError());
-    });
+    // it(`throws an error for old encrypted PDFs (2)`, async () => {
+    //   await expect(
+    //     PDFDocument.load(oldEncryptedPdfBytes2, {
+    //       parseSpeed: ParseSpeeds.Fastest,
+    //     }),
+    //   ).rejects.toThrow(new EncryptedPDFError());
+    // });
 
     it(`throws an error for new encrypted PDFs`, async () => {
       await expect(
@@ -93,14 +99,14 @@ describe(`PDFDocument`, () => {
       expect(pdfDoc.isEncrypted).toBe(true);
     });
 
-    it(`does not throw an error for old encrypted PDFs when ignoreEncryption=true (2)`, async () => {
-      const pdfDoc = await PDFDocument.load(oldEncryptedPdfBytes2, {
-        ignoreEncryption: true,
-        parseSpeed: ParseSpeeds.Fastest,
-      });
-      expect(pdfDoc).toBeInstanceOf(PDFDocument);
-      expect(pdfDoc.isEncrypted).toBe(true);
-    });
+    // it(`does not throw an error for old encrypted PDFs when ignoreEncryption=true (2)`, async () => {
+    //   const pdfDoc = await PDFDocument.load(oldEncryptedPdfBytes2, {
+    //     ignoreEncryption: true,
+    //     parseSpeed: ParseSpeeds.Fastest,
+    //   });
+    //   expect(pdfDoc).toBeInstanceOf(PDFDocument);
+    //   expect(pdfDoc.isEncrypted).toBe(true);
+    // });
 
     it(`does not throw an error for new encrypted PDFs when ignoreEncryption=true`, async () => {
       const pdfDoc = await PDFDocument.load(newEncryptedPdfBytes, {
