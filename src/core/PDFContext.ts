@@ -54,6 +54,8 @@ class PDFContext {
     Info?: PDFObject;
     ID?: PDFObject;
   };
+  seed: number;
+  rng: () => number;
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
 
@@ -66,6 +68,15 @@ class PDFContext {
     this.trailerInfo = {};
 
     this.indirectObjects = new Map();
+
+    // The following pseudo random algorithm is from https://stackoverflow.com/a/19303725/10254049
+    // Although it is not cryptographically secure and uniformly distributed, it is
+    // not a concern for the intended use-case, which is to generate distinct numbers.
+    this.seed = 1;
+    this.rng = () => {
+      const x = Math.sin(this.seed++) * 10000;
+      return x - Math.floor(x);
+	}
   }
 
   assign(ref: PDFRef, object: PDFObject): void {

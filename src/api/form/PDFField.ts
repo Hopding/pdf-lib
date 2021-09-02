@@ -489,7 +489,7 @@ export default class PDFField {
       options.y = adj.height - borderWidth - imageDims.height;
     }
 
-    const imageName = addRandomSuffix('Image', 10);
+    const imageName = addRandomSuffix(this.doc.context.rng, 'Image', 10);
     const appearance = [...rotate, ...drawImage(imageName, options)];
     ////////////
 

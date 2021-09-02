@@ -550,7 +550,7 @@ export default class PDFForm {
         const page = this.findWidgetPage(widget);
         const widgetRef = this.findWidgetAppearanceRef(field, widget);
 
-        const xObjectKey = addRandomSuffix('FlatWidget', 10);
+        const xObjectKey = addRandomSuffix(this.doc.context.rng, 'FlatWidget', 10);
         page.node.setXObject(PDFName.of(xObjectKey), widgetRef);
 
         const rectangle = widget.getRectangle();

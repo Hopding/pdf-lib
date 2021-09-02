@@ -144,26 +144,8 @@ describe(`PDFDocument`, () => {
   describe(`embedFont() method`, () => {
     it(`serializes the same value on every save when using a custom font name`, async () => {
       const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
-      const customName = 'Custom-Font-Name';
       const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
       const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
-
-      pdfDoc1.registerFontkit(fontkit);
-      pdfDoc2.registerFontkit(fontkit);
-
-      await pdfDoc1.embedFont(customFont, { customName });
-      await pdfDoc2.embedFont(customFont, { customName });
-
-      const savedDoc1 = await pdfDoc1.save();
-      const savedDoc2 = await pdfDoc2.save();
-
-      expect(savedDoc1).toEqual(savedDoc2);
-    });
-
-    it(`does not serialize the same on save when not using a custom font name`, async () => {
-      const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
-      const pdfDoc1 = await PDFDocument.create();
-      const pdfDoc2 = await PDFDocument.create();
 
       pdfDoc1.registerFontkit(fontkit);
       pdfDoc2.registerFontkit(fontkit);
@@ -174,7 +156,29 @@ describe(`PDFDocument`, () => {
       const savedDoc1 = await pdfDoc1.save();
       const savedDoc2 = await pdfDoc2.save();
 
-      expect(savedDoc1).not.toEqual(savedDoc2);
+      expect(savedDoc1).toEqual(savedDoc2);
+    });
+  });
+
+  describe(`drawImage() method`, () => {
+    it(`serializes the same value on every save`, async () => {
+      const imageBuffer = fs.readFileSync('assets/images/mario_emblem.png');
+      const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
+      const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
+
+      const imageEmbed1 = await pdfDoc1.embedPng(imageBuffer);
+      const imageEmbed2 = await pdfDoc2.embedPng(imageBuffer);
+
+      const page1 = pdfDoc1.addPage([imageEmbed1.width, imageEmbed1.height]);
+      const page2 = pdfDoc2.addPage([imageEmbed2.width, imageEmbed2.height]);
+
+      page1.drawImage(imageEmbed1);
+      page2.drawImage(imageEmbed2);
+
+      const savedDoc1 = await pdfDoc1.save();
+      const savedDoc2 = await pdfDoc2.save();
+
+      expect(savedDoc1).toEqual(savedDoc2);
     });
   });
 
