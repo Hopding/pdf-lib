@@ -34,19 +34,34 @@ const computeFontSize = (
   lines: string[],
   font: PDFFont,
   bounds: LayoutBounds,
+  multiline: boolean = false,
 ) => {
   let fontSize = MIN_FONT_SIZE;
 
   while (fontSize < MAX_FONT_SIZE) {
+    let linesUsed = 0;
+
     for (let idx = 0, len = lines.length; idx < len; idx++) {
       const line = lines[idx];
-      const tooLong = font.widthOfTextAtSize(line, fontSize) > bounds.width;
-      if (tooLong) return fontSize - 1;
+      let spaceInLineRemaining = bounds.width;
+      linesUsed += line.split(' ').reduce((used, word, i, words) => {
+        word = i === words.length - 1 ? word : word + ' ';
+        const widthOfWord = font.widthOfTextAtSize(word, fontSize);
+        spaceInLineRemaining -= widthOfWord;
+        if (spaceInLineRemaining <= 0) {
+          used++;
+          spaceInLineRemaining = bounds.width - widthOfWord;
+        }
+        return used;
+      }, 1);
     }
+
+    if (!multiline && linesUsed > lines.length) return fontSize - 1;
 
     const height = font.heightAtSize(fontSize);
     const lineHeight = height + height * 0.2;
-    const totalHeight = lines.length * lineHeight;
+    const totalHeight = lineHeight * linesUsed;
+
     if (totalHeight > Math.abs(bounds.height)) return fontSize - 1;
 
     fontSize += 1;
@@ -139,13 +154,7 @@ export const layoutMultilineText = (
   const lines = lineSplit(cleanText(text));
 
   if (fontSize === undefined || fontSize === 0) {
-    // fontSize = computeFontSize(lines, font, bounds);
-
-    // This is hardcoded to make it easier to perform automatic line-wrapping.
-    //
-    // TODO: Update `computeFontSize` to support automatic line-wrapping and
-    //       automatic font size calculation.
-    fontSize = 12;
+    fontSize = computeFontSize(lines, font, bounds, true);
   }
   const height = font.heightAtSize(fontSize);
   const lineHeight = height + height * 0.2;
