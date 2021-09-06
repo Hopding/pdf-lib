@@ -133,12 +133,14 @@ export default class PDFDocument {
       throwOnInvalidObject = false,
       updateMetadata = true,
       capNumbers = false,
+      returnCopy = false,
     } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
     assertIs(parseSpeed, 'parseSpeed', ['number']);
     assertIs(throwOnInvalidObject, 'throwOnInvalidObject', ['boolean']);
+    assertIs(returnCopy, 'returnCopy', ['boolean']);
 
     const bytes = toUint8Array(pdf);
     const context = await PDFParser.forBytesWithOptions(
@@ -147,6 +149,42 @@ export default class PDFDocument {
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
+
+    if (returnCopy) {
+      const pdfDoc = new PDFDocument(context, ignoreEncryption, updateMetadata);
+      const pdfCopy = await PDFDocument.create();
+      const contentPages = await pdfCopy.copyPages(
+        pdfDoc,
+        pdfDoc.getPageIndices(),
+      );
+
+      for (const page of contentPages) {
+        pdfCopy.addPage(page);
+      }
+      if (pdfDoc.getAuthor() !== undefined) {
+        pdfCopy.setAuthor(pdfDoc.getAuthor()!);
+      }
+      if (pdfDoc.getCreationDate() !== undefined) {
+        pdfCopy.setCreationDate(pdfDoc.getCreationDate()!);
+      }
+      if (pdfDoc.getCreator() !== undefined) {
+        pdfCopy.setCreator(pdfDoc.getCreator()!);
+      }
+      if (pdfDoc.getModificationDate() !== undefined) {
+        pdfCopy.setModificationDate(pdfDoc.getModificationDate()!);
+      }
+      if (pdfDoc.getProducer() !== undefined) {
+        pdfCopy.setProducer(pdfDoc.getProducer()!);
+      }
+      if (pdfDoc.getSubject() !== undefined) {
+        pdfCopy.setSubject(pdfDoc.getSubject()!);
+      }
+      if (pdfDoc.getTitle() !== undefined) pdfCopy.setTitle(pdfDoc.getTitle()!);
+      pdfCopy.defaultWordBreaks = pdfDoc.defaultWordBreaks;
+
+      return pdfCopy;
+    }
+
     return new PDFDocument(context, ignoreEncryption, updateMetadata);
   }
 
