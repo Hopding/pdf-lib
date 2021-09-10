@@ -13,6 +13,7 @@ import {
   pushGraphicsState,
   translate,
   LineCapStyle,
+  scale,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
@@ -558,6 +559,27 @@ export default class PDFPage {
       pushGraphicsState(),
       translate(x, y),
     );
+    const startRef = this.doc.context.register(start);
+
+    const end = this.createContentStream(popGraphicsState());
+    const endRef = this.doc.context.register(end);
+
+    this.node.wrapContentStreams(startRef, endRef);
+  }
+
+  /**
+   * 
+   * @param x The factor by wich the x-axis for the content should be scaled (e.g. 0.5 is 50%)
+   * @param y The factor by wich the y-axis for the content should be scaled (e.g. 0.5 is 50%)
+   */
+  scaleContent(x: number, y: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+
+    this.node.normalize();
+    this.getContentStream();
+
+    const start = this.createContentStream(pushGraphicsState(), scale(x, y));
     const startRef = this.doc.context.register(start);
 
     const end = this.createContentStream(popGraphicsState());
