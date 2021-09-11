@@ -79,7 +79,7 @@ _⚠️ Part of this repo's git history was recently rewritten to remove a speci
 - [Limitations](#limitations)
 - [Help and Discussion](#help-and-discussion)
 - [Encryption Handling](#encryption-handling)
-- [Migrating to v1.0.0](/MIGRATION.md)
+- [Migrating to v1.0.0](docs/MIGRATION.md)
 - [Contributing](#contributing)
 - [Tutorials and Cool Stuff](#tutorials-and-cool-stuff)
 - [Prior Art](#prior-art)
@@ -1435,7 +1435,7 @@ Note that **using this option does not decrypt the document**. This means that a
 
 ## Contributing
 
-We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine. (We try to make this as simple and fast as possible! :rocket:)
+We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](docs/CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine. (We try to make this as simple and fast as possible! :rocket:)
 
 ## Tutorials and Cool Stuff
 
