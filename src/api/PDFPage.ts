@@ -577,7 +577,7 @@ export default class PDFPage {
    * ```js
    * // bisect the size of the page
    * p.setSize(p.getWidth() / 2, p.getHeight() / 2);
-   * 
+   *
    * // scale the content of the page down by 50% in x and y
    * page.scaleContent(0.5, 0.5);
    * ```
@@ -605,7 +605,7 @@ export default class PDFPage {
    * ```JS
    * // scale the content of the page down by 50% in x and y
    * page.scaleContent(0.5, 0.5);
-   * 
+   *
    * // scale the content of the page down by 50% in x and y
    * page.scaleAnnots(0.5, 0.5);
    * ```
@@ -618,7 +618,6 @@ export default class PDFPage {
 
     // loop annotations
     annots?.asArray().forEach((ref: PDFObject) => {
-
       const i = annots.indexOf(ref);
 
       if (i === undefined) return;
@@ -633,7 +632,9 @@ export default class PDFPage {
       });
 
       const pdfNameInkList = annot.get(PDFName.of('InkList')) as PDFArray;
-      pdfNameInkList?.asArray().forEach((arr) => this.scalePDFNumbers(arr as PDFArray, x, y));
+      pdfNameInkList
+        ?.asArray()
+        .forEach((arr) => this.scalePDFNumbers(arr as PDFArray, x, y));
     });
   }
 
