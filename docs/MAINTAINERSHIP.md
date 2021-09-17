@@ -32,7 +32,7 @@ If you want to message me privately, please read the [email](#email) and [discor
 
 ## Issues
 
-Issues are used for three purposes:
+[Issues](https://github.com/Hopding/pdf-lib/issues) are used for three purposes:
 
 1. Reporting bugs
 2. Tracking work
@@ -59,7 +59,7 @@ See also [Communicating on GitHub](https://docs.github.com/en/get-started/quicks
 
 ## Pull Requests
 
-Contributions to `pdf-lib` are made via pull requests and are an important part of the project! Lots of valuable features have been added to the library through contributions from the community 💖.
+Contributions to `pdf-lib` are made via [pull requests](https://github.com/Hopding/pdf-lib/pulls) and are an important part of the project! Lots of valuable features have been added to the library through contributions from the community 💖.
 
 Please note that each PR should be focused, targeting a specific feature, bug fix, or improvement. A PR should not contain multiple orthogonal changes grouped together.
 
@@ -94,21 +94,25 @@ As you can see, reviewing a PR is quite a bit of work and can take a fair amount
 
 PRs can become stale. Just like issues, PRs will be closed after 3 weeks of inactivity once they've been triaged. If you'd like to finish up a PR that was closed after becoming stale, feel free to leave a comment. Like issues, closed PRs can be reopened.
 
-If you're thinking about submitting a PR, I tip my hat to you 🎩 ✨. Contribution's like yours are what open source such a force in the world!
+If you're thinking about submitting a PR, I tip my hat to you 🎩 ✨. Contributions like yours are what open source such a force in the world!
 
 ## Discussions
 
 StackOverflow is also a good place for some of this stuff...
 
-Response times...
+[Discussions](https://github.com/Hopding/pdf-lib/discussions) are the place for anything that doesn't meet the criteria for [issues](#issues) or [PRs](#pull-requests). If you have a question or need help with something you should create a [new discussion](https://github.com/Hopding/nodemoney/discussions/new). [StackOverflow](https://stackoverflow.com/questions/ask) is also a great place to ask questions that strictly fit the Q/A format.
+
+I review and respond to discussions when I the have time and energy to do so, but triaging issues and reviewing PRs always takes priority. I cannot personally respond to or participate in all discussions. Sometimes other `pdf-lib` users can help out though!
+
+I do not have an estimated response time for discussions. See [Communication](#communication) for details.
 
 ## Cutting Releases
 
-Is expensive due to amount of manual testing in different readers and environments.
+In general I try to release features within 1-2 after they've been merged.
 
-Response times...
+I do not cut releases for each individual PR, feature, or change. Instead, I batch them together to reduce the number of releases I have to cut. I do this because cutting a release can easily take 30-60 minutes. This is due largely to the amount of manual testing involved that I've not yet figured out how to automate.
 
-See also the release process...
+See [RELEASING.md](RELEASING.md) for details on the release process itself.
 
 ## Email
 
@@ -133,6 +137,8 @@ A few things about Discord:
 - Discord is not a good way to contact me. I rarely login to Discord.
 
 ## Donations and Compensation
+
+https://github.com/sponsors/Hopding/dashboard
 
 ## Becoming a Maintainer
 
