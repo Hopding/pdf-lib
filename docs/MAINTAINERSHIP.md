@@ -1,6 +1,6 @@
 # Maintainership
 
-Hello friend! I'm @hopding, the principal maintainer of `pdf-lib` 👋. I [started the project](https://github.com/Hopding/pdf-lib/commit/fd7459e5ecee898c4f6bbccae021af2d837d64be) in September, 2017 and have been building and maintaining it ever since 🙂. If you'd like to help me maintain `pdf-lib`, see [here](#becoming-a-maintainer).
+Hello friend! I'm [@hopding](https://github.com/Hopding/), the principal maintainer of `pdf-lib` 👋. I [started the project](https://github.com/Hopding/pdf-lib/commit/fd7459e5ecee898c4f6bbccae021af2d837d64be) in September 2017 and have been building and maintaining it ever since 🙂.
 
 I value the time and effort contributors put into improving the project. I also appreciate `pdf-lib`'s users and understand that they have questions about the project and suggestions for how to improve it.
 
@@ -43,7 +43,7 @@ Each category has a corresponding template outlining what information must be pr
 I do my best to triage issues within 1-2 weeks after they're created. Triaging an issue means applying a label or closing it. I typically follow this process:
 
 - If it doesn't fit the above criteria then close it.
-- If it's a proposal the apply a label.
+- If it's a proposal then apply a label.
 - If it's tracking active work then apply a label.
 - If it's a bug then apply a label denoting its severity.
 
@@ -98,8 +98,6 @@ If you're thinking about submitting a PR, I tip my hat to you 🎩 ✨. Contribu
 
 ## Discussions
 
-StackOverflow is also a good place for some of this stuff...
-
 [Discussions](https://github.com/Hopding/pdf-lib/discussions) are the place for anything that doesn't meet the criteria for [issues](#issues) or [PRs](#pull-requests). If you have a question or need help with something you should create a [new discussion](https://github.com/Hopding/nodemoney/discussions/new). [StackOverflow](https://stackoverflow.com/questions/ask) is also a great place to ask questions that strictly fit the Q/A format.
 
 I review and respond to discussions when I the have time and energy to do so, but triaging issues and reviewing PRs always takes priority. I cannot personally respond to or participate in all discussions. Sometimes other `pdf-lib` users can help out though!
@@ -117,6 +115,8 @@ See [RELEASING.md](RELEASING.md) for details on the release process itself.
 ## Email
 
 You can communicate privately with me via email (`andrew.dillon.j@gmail.com`), but that doesn't mean you should. Most `pdf-lib` related communication should happen in [issues](#issues), [pull requests](#pull-requests), and [discussions](#discussions). If you send me an email asking a question about `pdf-lib` or proposing a new feature/enhancement, I will probably reply back asking you to create an issue or start a discussion.
+
+I understand that some people prefer private communication and don't like the idea of creating a public discussion or issue. However, public communication is an important part of maintaining an open source project. It allows others to benefit from the time and effort I put into writing responses. It also means that other people can contribute ideas and discussions!
 
 However, email still makes sense in certain cases. Some things don't need to (or shouldn't) be public. If you want to talk about something like this, feel free to email me. Here are some examples of situations where email makes sense:
 
@@ -138,9 +138,11 @@ A few things about Discord:
 
 ## Donations and Compensation
 
-https://github.com/sponsors/Hopding/dashboard
+You can sponsor my work via GitHub Sponsors. My profile is [here](https://github.com/sponsors/Hopding/dashboard). Open source maintainership takes a lot of time and effort. Many thanks to my sponsors who help me to keep up my open source work! 💖
 
-## Becoming a Maintainer
+If you are interested in paying me to build a feature for `pdf-lib` or do work for you or your company, please send me an email at `andrew.dillon.j@gmail.com` and I'd be happy to discuss it.
+
+I'm still working out the details of my philosophy around donations and compensation. I plan add more information later.
 
 ## Footnotes
 
