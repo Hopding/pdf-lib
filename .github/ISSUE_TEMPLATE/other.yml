@@ -1,0 +1,17 @@
+name: Other
+description: Use this for everything else
+labels: ["other", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Issues are used for three purposes:
+          1. Reporting bugs
+          2. Tracking work
+          3. Sharing proposals
+        If you aren't trying to do one of these three things, please create a new [discussion](https://github.com/Hopding/nodemoney/discussions/new) instead.
+
+        **If you have a question, do not create an issue.** Please open a new discussion instead.
+  - type: textarea
+    attributes:
+      label: Issue Body
