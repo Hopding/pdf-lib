@@ -1,4 +1,4 @@
-name: Reproducible Bug Report
+name: Bug Report
 description: File a bug report - make sure it's reproducible and not just your machine.
 labels: ["bug", "needs-triage"]
 body:
