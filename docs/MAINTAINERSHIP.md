@@ -138,11 +138,11 @@ A few things about Discord:
 
 ## Donations and Compensation
 
-You can sponsor my work via GitHub Sponsors. My profile is [here](https://github.com/sponsors/Hopding). Open source maintainership takes a lot of time and effort. Many thanks to my sponsors who help me to keep up my open source work! 💖
+You can sponsor my work via GitHub Sponsors. My profile is [here](https://github.com/sponsors/Hopding). Open source maintainership takes a lot of time and effort. Many thanks to my sponsors who help me keep up my open source work! 💖
 
 If you are interested in paying me to build a feature for `pdf-lib` or do work for you or your company, please send me an email at `andrew.dillon.j@gmail.com` and I'd be happy to discuss it.
 
-I'm still working out the details of my philosophy around donations and compensation. I plan add more information later.
+I'm still working out the details of my philosophy around donations and compensation. I plan to add more information later.
 
 ## Footnotes
 
