@@ -1401,7 +1401,9 @@ Below are some of the most commonly used methods for reading and filling the afo
 
 ## Help and Discussion
 
-[Discussions](https://github.com/Hopding/pdf-lib/discussions) is the best place to chat with us, ask questions, and learn more about pdf-lib! See also [docs/MAINTAINERSHIP.md/communication](docs/MAINTAINERSHIP.md/communication) and [docs/MAINTAINERSHIP.md/discord](docs/MAINTAINERSHIP.md/discord).
+[Discussions](https://github.com/Hopding/pdf-lib/discussions) is the best place to chat with us, ask questions, and learn more about pdf-lib!
+
+See also [MAINTAINERSHIP.md#communication](docs/MAINTAINERSHIP.md#communication) and [MAINTAINERSHIP.md#discord](docs/MAINTAINERSHIP.md#discord).
 
 ## Encryption Handling
 
