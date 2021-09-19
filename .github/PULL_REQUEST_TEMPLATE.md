@@ -18,7 +18,7 @@
 
 ## Checklist
 - [ ] I have read [CONTRIBUTING.md](https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md).
-- [ ] I have read [MAINTAINERSHIP.md](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md).
+- [ ] I have read [MAINTAINERSHIP.md#pull-requests](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md#pull-requests).
 - [ ] I have added/updated unit tests for my changes.
 - [ ] I have added/updated integration tests for my changes.
 - [ ] I [ran the integration tests]().
