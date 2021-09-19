@@ -244,3 +244,9 @@ For example, to view the first 100 bytes following the offset 560477 (aka the by
 ```bash
 cat foo.pdf | tail -c +560477 | head -c 100
 ```
+
+You can also pipe to `hexdump` to view the raw bytes:
+
+```bash
+cat foo.pdf | tail -c +OFFSET | head -c NUM_BYTES | hexdump -e '6/1 " %02X" "\n"'
+```
