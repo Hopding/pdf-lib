@@ -1,6 +1,6 @@
 # Release Process
 
-This document describes the process used to release a new version of pdf-lib. It serves as a useful reference for maintainers when they release a new version. Users may also find it useful to understand the process.
+This document describes the process used to release a new version of pdf-lib. It serves as a useful reference for maintainers when they release a new version. Users and contributors may also find it useful to understand the process.
 
 ## Checklist
 
