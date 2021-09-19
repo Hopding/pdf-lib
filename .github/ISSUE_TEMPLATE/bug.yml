@@ -98,6 +98,5 @@ body:
       label: Additional Notes
       description: |
         Please provide any additional information or observations here.
-      placeholder: Tell us what you see!
     validations:
       required: false
