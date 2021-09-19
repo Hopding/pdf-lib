@@ -9,6 +9,7 @@ Be sure to read through [MAINTAINERSHIP.md](MAINTAINERSHIP.md) so that you under
 ### Table Of Contents
 
 - [PR Requirements](#pull-request-requirements)
+- [Adding Dependencies](#adding-dependencies)
 - [Understanding PDFs](#understanding-pdfs)
 - [Local Setup and Prerequisites](#local-setup-and-prerequisites)
 - [Running the Unit Tests](#running-the-unit-tests)
@@ -36,6 +37,18 @@ All PRs must:
 See also [MAINTAINERSHIP.md#pull-requests](MAINTAINERSHIP.md#pull-requests).
 
 It is recommended to read the PR template before you get underway with your changes.
+
+## Adding Dependencies
+
+We try to avoid adding new dependencies to `pdf-lib` as they tend to have a high maintenance cost. However, new dependencies are sometimes necessary. If you're thinking about creating a PR that adds a new dependency, you should write a [proposal](https://github.com/Hopding/pdf-lib/issues/new?assignees=&labels=proposal%2Cneeds-triage&template=proposal.yml) first.
+
+If it's possible to build your PR without introducing new dependencies, then that's what you should do. But if you _really, truly_ think you need to introduce a new dependency, it will need to meet the following requirements:
+
+- It must be well tested.
+- It must be well documented.
+- It must be actively supported.
+- It must have a small bundle size.
+- It must work in all JS environments (Node, Deno, Browser, and React Native).
 
 ## Understanding PDFs
 
