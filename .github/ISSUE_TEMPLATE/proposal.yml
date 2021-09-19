@@ -56,8 +56,8 @@ body:
       label: Are you interested in implementing your proposal?
       multiple: false
       options:
-        - Yes
-        - No
+        - 'Yes'
+        - 'No'
     validations:
       required: true
   - type: textarea
