@@ -19,12 +19,13 @@ body:
         Keep the following in mind when filling out this form:
         * Be sure to answer **all** of the questions below.
         * Provide lots of detail. Too much info is better than not enough.
-        * If we can't reproduce the issue, we can't fix it.
 
-        Please help us help you by reading the following posts before submitting your report! 😃
+        Please help us help you by reading the following posts before submitting your report! 😃 
         * [www.sscce.org](http://www.sscce.org/)
         * [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html)
         * [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts)
+
+        (These posts are focused more on issues/questions, but can still help you write a good proposal).
 
         You can read [MAINTAINERSHIP.md](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md) to learn more about how this repo is maintained.
   - type: textarea
