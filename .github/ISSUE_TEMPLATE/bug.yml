@@ -1,5 +1,5 @@
 name: Bug Report
-description: File a bug report - make sure it's reproducible and not just your machine.
+description: Something not working? Let us know! Just be sure it's something we can reproduce.
 labels: ["bug", "needs-triage"]
 body:
   - type: markdown
