@@ -81,14 +81,6 @@ body:
         - Other
     validations:
       required: true
-  - type: textarea
-    attributes:
-      label: Additional Notes
-      description: |
-        Please provide any additional information or observations here.
-      placeholder: Tell us what you see!
-    validations:
-      required: false
   - type: checkboxes
     attributes:
       label: Required Reading
@@ -101,3 +93,11 @@ body:
           required: true
         - label: I have read [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts).
           required: true
+  - type: textarea
+    attributes:
+      label: Additional Notes
+      description: |
+        Please provide any additional information or observations here.
+      placeholder: Tell us what you see!
+    validations:
+      required: false
