@@ -47,7 +47,7 @@ I do my best to triage issues within 1-2 weeks after they're created. Triaging a
 - If it's tracking active work then apply a label.
 - If it's a bug then apply a label denoting its severity.
 
-All open issues must have an assignee who is actively working them. Issues are closed after 3 weeks of inactivity once they've been triaged. High impact bugs are the only exception to this rule, they remain open until a fix has been shipped.
+All open issues must have an assignee who is actively working them. Issues are closed after 2 weeks of inactivity once they've been triaged. High impact bugs are the only exception to this rule, they remain open until a fix has been shipped.
 
 A few other important things to note:
 
