@@ -17,6 +17,19 @@ Do not remove or skip any sections. ⛔️
 ## Testing?
 <!-- Describe how you tested your PR. Why are you confident it is correct? -->
 
+
+## New Dependencies?
+<!-- 
+If you added a new dependency then please read https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md#adding-dependencies and then:
+  * Clearly explain why it is necessary.
+  * Explain how you know it is well tested.
+  * Explain how you know it is well documented.
+  * Explain how you know it is actively supported.
+  * State how much it will increase pdf-lib's bundle size.
+  * State how you know it will work in all JS environments.
+If you did not add a new dependency, simply state "No".
+-->
+
 ## Screenshots
 <!-- If your changes can affect the visual appearance of a PDF, then provide screenshots demonstrating this. Otherwise state "N/A".  -->
 
