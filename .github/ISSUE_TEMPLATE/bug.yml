@@ -9,6 +9,13 @@ body:
         * Be sure to answer **all** of the questions below.
         * Provide lots of detail. Too much info is better than not enough.
         * If we can't reproduce the issue, we can't fix it.
+
+        Please help us help you by reading the following posts before submitting your report! 😃
+        * [www.sscce.org](http://www.sscce.org/)
+        * [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html)
+        * [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts)
+
+        You can read [MAINTAINERSHIP.md](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md) to learn more about how this repo is maintained.
   - type: textarea
     attributes:
       label: What were you trying to do?
@@ -44,11 +51,14 @@ body:
       label: How can we reproduce the issue?
       description: |
         Type out a list of specific steps we can take to reproduce the bug you've found. Your response must include both prose and code snippets. You must attach (or provides links to) any PDFs, images, or other files necessary to complete the steps.
-        > If you are unable to share certain files (e.g. confidential PDFs), then state this in your response.
-        > Be prepared to share the files privately (e.g. via email).
-        > If you are unable to do this then we probably can't fix the issue.
+        
+        > If you are unable to share certain files (e.g. confidential PDFs), then state this in your response. Be prepared to share the files privately (e.g. via email). If you are unable to do this then we probably can't fix the issue.
 
-        Your response should include **complete**, **executable** code, ideally in the form of a git repo.
+        Your response should include **complete**, **executable** code, ideally in the form of a git repo. Read [www.sscce.org](http://www.sscce.org/) to learn how to create a Short, Self Contained, Correct (Compilable) Example.
+
+        Please also read [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html) and [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts). 
+
+        > We understand this is a nontrivial amount of reading. However, it's important that you create a well-defined report in order to reduce the demand placed on maintainers trying to help you. We want to make this a pleasant, efficient process for both you and us! 💖
 
         If your response only includes incomplete code or doesn't clearly state how to execute the code you've provided, your report will be closed without comment.
     validations:
@@ -79,3 +89,15 @@ body:
       placeholder: Tell us what you see!
     validations:
       required: false
+  - type: checkboxes
+    attributes:
+      label: Required Reading
+      options:
+        - label: I have read [www.sscce.org](http://www.sscce.org/).
+          required: true
+        - label: My report includes a Short, Self Contained, Correct (Compilable) Example.
+          required: true
+        - label: I have read [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html).
+          required: true
+        - label: I have read [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts).
+          required: true
