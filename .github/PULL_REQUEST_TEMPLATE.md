@@ -1,5 +1,5 @@
 ---
-labels: needs triage
+labels: needs-triage
 ---
 
 <!-- 
