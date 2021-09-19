@@ -1,3 +1,7 @@
+---
+labels: needs triage
+---
+
 <!-- 
 Thank you for taking the time to make a PR! 💖 
 Please fill out this template completely to help us provide a prompt review. 😃
