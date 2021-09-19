@@ -1,0 +1,23 @@
+name: Share What You're Working On ✨
+description: Working on something? Let us know!
+labels: ["in-progress", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to let other contributors and the `pdf-lib` maintainers know that you're working on something. 
+
+        You can read [MAINTAINERSHIP.md](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md) to learn more about how this repo is maintained.
+  - type: textarea
+    attributes:
+      label: What are you working on?
+      description: Clearly describe what you're working on. 
+    validations:
+      required: true      
+  - type: textarea
+    attributes:
+      label: Additional Notes
+      description: |
+        Please provide any additional information or observations here.
+    validations:
+      required: false
