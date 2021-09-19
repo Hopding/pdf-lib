@@ -24,13 +24,13 @@ Do not remove or skip any sections. ⛔️
 <!-- Please share any additional notes here. -->
 
 ## Checklist
-- [ ] I have read [CONTRIBUTING.md](https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md).
-- [ ] I have read [MAINTAINERSHIP.md#pull-requests](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md#pull-requests).
-- [ ] I have added/updated unit tests for my changes.
-- [ ] I have added/updated integration tests for my changes.
+- [ ] I read [CONTRIBUTING.md](https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md).
+- [ ] I read [MAINTAINERSHIP.md#pull-requests](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md#pull-requests).
+- [ ] I added/updated unit tests for my changes.
+- [ ] I added/updated integration tests for my changes.
 - [ ] I [ran the integration tests](https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md#running-the-integration-tests).
-- [ ] I've tested my changes in Node, Deno, and the browser.
-- [ ] I've viewed documents produced with my changes in Adobe Acrobat, Foxit Reader, Firefox, and Chrome.
-- [ ] I've added/updated doc comments for any new/modified public APIs.
+- [ ] I tested my changes in Node, Deno, and the browser.
+- [ ] I viewed documents produced with my changes in Adobe Acrobat, Foxit Reader, Firefox, and Chrome.
+- [ ] I added/updated doc comments for any new/modified public APIs.
 - [ ] My changes work for both **new** and **existing** PDF files.
 - [ ] I [ran the linter](https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md#running-the-linter) on my changes.
