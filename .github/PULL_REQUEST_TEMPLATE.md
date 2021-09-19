@@ -20,6 +20,12 @@ Do not remove or skip any sections. ⛔️
 ## Screenshots
 <!-- If your changes can affect the visual appearance of a PDF, then provide screenshots demonstrating this. Otherwise state "N/A".  -->
 
+## Suggested Reading?
+<!-- 
+Have you read the PDF specification sections recommended in https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md#understanding-pdfs? 
+State "Yes" or "No".
+-->
+
 ## Anything Else?
 <!-- Please share any additional notes here. -->
 
