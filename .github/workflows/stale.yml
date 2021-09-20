@@ -1,8 +1,14 @@
+# Uses https://github.com/marketplace/actions/close-stale-issues
+
 name: 'Close stale issues and PRs'
 on:
   workflow_dispatch:
   schedule:
     - cron: '30 1 * * *' # Every day at 1:30 AM
+    
+permissions:
+  issues: write
+  pull-requests: write
 
 jobs:
   stale:
@@ -10,15 +16,13 @@ jobs:
     steps:
       - uses: actions/stale@v4
         with:
-          debug-only: true
+          debug-only: false
 
           exempt-issue-labels: 'high-impact-bug,in-progress,needs-triage,not-stale'
           exempt-pr-labels: 'not-stale,needs-triage'
 
           stale-issue-label: 'stale'
           stale-pr-label: 'stale'
-          close-issue-label: 'stale'
-          close-pr-label: 'stale'
           
           stale-issue-message: 'This issue is stale because it has been open 2 weeks with no activity. It will be closed in 2 days unless there is new activity. See [MAINTAINERSHIP.md#issues](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md#issues) for details.'
           stale-pr-message: 'This PR is stale because it has been open 3 weeks with no activity. It will be be closed in 2 days unless there is new activity. See [MAINTAINERSHIP.md#pull-requests](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md#pull-requests) for details.'
