@@ -14,6 +14,11 @@ jobs:
 
           exempt-issue-labels: 'high-impact-bug,in-progress,needs-triage,not-stale'
           exempt-pr-labels: 'not-stale,needs-triage'
+
+          stale-issue-label: ''
+          stale-pr-label: ''
+          close-issue-label: 'stale'
+          close-pr-label: 'stale'
           
           stale-issue-message: 'This issue is stale because it has been open 2 weeks with no activity. It will be closed in 2 days unless there is new activity. See [MAINTAINERSHIP.md#issues](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md#issues) for details.'
           stale-pr-message: 'This PR is stale because it has been open 3 weeks with no activity. It will be be closed in 2 days unless there is new activity. See [MAINTAINERSHIP.md#pull-requests](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md#pull-requests) for details.'
