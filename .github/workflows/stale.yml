@@ -15,8 +15,8 @@ jobs:
           exempt-issue-labels: 'high-impact-bug,in-progress,needs-triage,not-stale'
           exempt-pr-labels: 'not-stale,needs-triage'
 
-          stale-issue-label: ''
-          stale-pr-label: ''
+          stale-issue-label: 'stale'
+          stale-pr-label: 'stale'
           close-issue-label: 'stale'
           close-pr-label: 'stale'
           
