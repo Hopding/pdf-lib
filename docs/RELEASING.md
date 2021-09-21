@@ -9,14 +9,14 @@ This document describes the process used to release a new version of pdf-lib. It
 3. Run `rm -rf node_modules && yarn install`.
 4. Run `yarn release:prep`.
 5. Run integration tests:
-   - Run `yarn apps:node 'Preview'`.
-   - Run `yarn apps:node 'Adobe Acrobat'`.
-   - Run `yarn apps:deno 'Foxit Reader'`.
-   - Run `yarn apps:web:mac` and test in Firefox.
-   - Run `yarn apps:web:mac` and test in Chrome.
+   - Run `yarn apps:node 'Preview'`
+   - Run `yarn apps:node 'Adobe Acrobat'`
+   - Run `yarn apps:deno 'Foxit Reader'`
+   - Run `yarn apps:web:mac` and test in Firefox
+   - Run `yarn apps:web:mac` and test in Chrom
    - Run `yarn apps:web:mac` and test in Safari.
-   - Run `yarn apps:rn:ios`.
-   - Run `yarn apps:rn:android`.
+   - Run `yarn apps:rn:ios`
+   - Run `yarn apps:rn:android`
 6. Run `git commit -am 'Bump version to X.Y.Z'`.
 7. Run `yarn release:next` or `yarn release:latest`.
 8. If you used `release:latest`:
