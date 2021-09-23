@@ -344,6 +344,13 @@ export default class PDFField {
     return widget;
   }
 
+  protected updateWidgetPageReference(
+    widget: PDFWidgetAnnotation,
+    pageRef: PDFRef,
+  ) {
+    widget.dict.set(PDFName.of('P'), pageRef);
+  }
+
   protected updateWidgetAppearanceWithFont(
     widget: PDFWidgetAnnotation,
     font: PDFFont,
