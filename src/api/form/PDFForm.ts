@@ -596,6 +596,15 @@ export default class PDFForm {
 
     pages.forEach((page) => page.node.removeAnnot(field.ref));
     this.acroForm.removeField(field.acroField);
+    const docHandle = this.doc;
+    field.acroField
+      .normalizedEntries()
+      .Kids.asArray()
+      .forEach((child) => {
+        if (child instanceof PDFRef) {
+          docHandle.context.delete(child);
+        }
+      });
     this.doc.context.delete(field.ref);
   }
 
