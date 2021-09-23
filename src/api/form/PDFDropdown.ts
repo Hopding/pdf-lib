@@ -561,6 +561,7 @@ export default class PDFDropdown extends PDFField {
 
     // Add widget to the given page
     page.node.addAnnot(widgetRef);
+    this.updateWidgetPageReference(widget, page.ref);
   }
 
   /**
