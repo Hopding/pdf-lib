@@ -48,8 +48,6 @@
 
 > **Learn more at [pdf-lib.js.org](https://pdf-lib.js.org)**
 
-_⚠️ Part of this repo's git history was recently rewritten to remove a specific file. This impacts you if you've forked the repo or have an open PR. Click [here](#git-history-rewrite) for more information._
-
 ## Table of Contents
 
 - [Features](#features)
