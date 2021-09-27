@@ -48,8 +48,6 @@
 
 > **Learn more at [pdf-lib.js.org](https://pdf-lib.js.org)**
 
-_⚠️ Part of this repo's git history was recently rewritten to remove a specific file. This impacts you if you've forked the repo or have an open PR. Click [here](#git-history-rewrite) for more information._
-
 ## Table of Contents
 
 - [Features](#features)
@@ -79,8 +77,9 @@ _⚠️ Part of this repo's git history was recently rewritten to remove a speci
 - [Limitations](#limitations)
 - [Help and Discussion](#help-and-discussion)
 - [Encryption Handling](#encryption-handling)
-- [Migrating to v1.0.0](/MIGRATION.md)
+- [Migrating to v1.0.0](docs/MIGRATION.md)
 - [Contributing](#contributing)
+- [Maintainership](#maintainership)
 - [Tutorials and Cool Stuff](#tutorials-and-cool-stuff)
 - [Prior Art](#prior-art)
 - [Git History Rewrite](#git-history-rewrite)
@@ -1400,7 +1399,9 @@ Below are some of the most commonly used methods for reading and filling the afo
 
 ## Help and Discussion
 
-[Our Discord server](https://discord.gg/Y7uuVMc) is a great place to chat with us, ask questions, and learn more about pdf-lib. Come join us!
+[Discussions](https://github.com/Hopding/pdf-lib/discussions) is the best place to chat with us, ask questions, and learn more about pdf-lib!
+
+See also [MAINTAINERSHIP.md#communication](docs/MAINTAINERSHIP.md#communication) and [MAINTAINERSHIP.md#discord](docs/MAINTAINERSHIP.md#discord).
 
 ## Encryption Handling
 
@@ -1435,7 +1436,11 @@ Note that **using this option does not decrypt the document**. This means that a
 
 ## Contributing
 
-We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine. (We try to make this as simple and fast as possible! :rocket:)
+We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](docs/CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine. (We try to make this as simple and fast as possible! :rocket:)
+
+## Maintainership
+
+Check out [MAINTAINERSHIP.md](docs/MAINTAINERSHIP.md) for details on how this repo is maintained and how we use [issues](docs/MAINTAINERSHIP.md#issues), [PRs](docs/MAINTAINERSHIP.md#pull-requests), and [discussions](docs/MAINTAINERSHIP.md#discussions).
 
 ## Tutorials and Cool Stuff
 

@@ -2,12 +2,15 @@
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
-`pdf-lib` is a JavaScript library designed to create and modify PDF files in any JavaScript environment. We welcome contributions from the open source community! Please read through this document to learn how to setup and run the project on your machine. If you have any questions or run into trouble, please [create an issue](https://github.com/Hopding/pdf-lib/issues/new).
+`pdf-lib` is a JavaScript library designed to create and modify PDF files in any JavaScript environment. Contributions are welcomed and appreciated! Please read through this document to learn how to setup and run the project on your machine. If you have any questions or run into trouble, please [create a discussion](https://github.com/Hopding/pdf-lib/discussions).
 
-Many contributions will require you to understand the structure of PDF files. You might be able to find some articles online explaining this, but they're generally pretty sparse. PDFs are a rather niche area in open source programming 🙂. The [PDF specification](https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/PDF32000_2008.pdf) is a useful reference and a great way to get started. Note that it can be a bit dense sometimes, and you certainly don't need to read all of it. But the first few sections related to PDF syntax and object structure will be useful to most contributors.
+Be sure to read through [MAINTAINERSHIP.md](MAINTAINERSHIP.md) so that you understand how this project is maintained.
 
 ### Table Of Contents
 
+- [PR Requirements](#pull-request-requirements)
+- [Adding Dependencies](#adding-dependencies)
+- [Understanding PDFs](#understanding-pdfs)
 - [Local Setup and Prerequisites](#local-setup-and-prerequisites)
 - [Running the Unit Tests](#running-the-unit-tests)
 - [Running the Integration Tests](#running-the-integration-tests)
@@ -18,6 +21,51 @@ Many contributions will require you to understand the structure of PDF files. Yo
 - [Running the Linter](#running-the-linter)
 - [Running the Type Checker](#running-the-type-checker)
 - [Debugging Tips](#debugging-tips)
+
+## Pull Request Requirements
+
+All PRs must:
+
+- Work in Node, Deno, Browser, and React Native environemnts.
+- Be explicitly tested in Node, Deno, and multiple browsers.
+- Work on **new** PDF files.
+- Work on all types of **existing** PDF files.
+- Be fully unit tested.
+- Be fully integration tested.
+- Have doc comments for new public APIs.
+
+See also [MAINTAINERSHIP.md#pull-requests](MAINTAINERSHIP.md#pull-requests).
+
+It is recommended to read the PR template before you get underway with your changes.
+
+## Adding Dependencies
+
+We try to avoid adding new dependencies to `pdf-lib` as they tend to have a high maintenance cost. However, new dependencies are sometimes necessary. If you're thinking about creating a PR that adds a new dependency, you should write a [proposal](https://github.com/Hopding/pdf-lib/issues/new?assignees=&labels=proposal%2Cneeds-triage&template=proposal.yml) first.
+
+If it's possible to build your PR without introducing new dependencies, then that's what you should do. But if you _really, truly_ think you need to introduce a new dependency, it will need to meet the following requirements:
+
+- It must be well tested.
+- It must be well documented.
+- It must be actively supported.
+- It must have a small bundle size.
+- It must work in all JS environments (Node, Deno, Browser, and React Native).
+
+## Understanding PDFs
+
+Most contributions will require you to understand the structure of PDF files. You might be able to find some articles online explaining this, but they're generally pretty sparse. PDFs are a rather niche area in open source programming 🙂.
+
+The [PDF specification](https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/PDF32000_2008.pdf) is an invaluable reference and a great way to get started. It can be a bit dense sometimes and you certainly don't need to read all of it. But the first few sections related to PDF syntax and object structure will be useful to most contributors.
+
+All contributors are advised to read the following sections:
+
+| Section Title                     | Page Numbers | Summary                                        |
+| --------------------------------- | ------------ | ---------------------------------------------- |
+| Introduction                      | Pages 7-8    | File format history and purpose                |
+| 7.1 General                       | Page 19      | Overview of PDF file syntax                    |
+| 7.2 Lexical Conventions           | Pages 19-21  | The characters used to express PDF objects     |
+| 7.3 Objects                       | Pages 13-30  | The types of objects used in PDF files         |
+| 7.5 File Structure                | Pages 38-63  | How PDF files are structured                   |
+| 7.8 Content Streams and Resources | Pages 89-92  | How visual content is represented in PDF files |
 
 ## Local Setup And Prerequisites
 
@@ -243,4 +291,10 @@ For example, to view the first 100 bytes following the offset 560477 (aka the by
 
 ```bash
 cat foo.pdf | tail -c +560477 | head -c 100
+```
+
+You can also pipe to `hexdump` to view the raw bytes:
+
+```bash
+cat foo.pdf | tail -c +OFFSET | head -c NUM_BYTES | hexdump -e '6/1 " %02X" "\n"'
 ```

@@ -1,0 +1,82 @@
+name: Proposal 💡
+description: We're eager to improve pdf-lib! Have an idea you'd like to propose?
+labels: ["proposal", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to submit a proposal!
+        
+        In most cases, [discussions](https://github.com/Hopding/pdf-lib/discussions) are a better place to submit feedback and discuss ideas. This form is meant for ideas that have a clear path to implementation. You should only use this form to submit a proposal if:
+        * You have a specific idea in mind to improve `pdf-lib`.
+        * You've done your research.
+        * You've read [CONTRIBUTING.md](https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md) and understand what involved in making a change to `pdf-lib`.
+        * You've read the sections of the PDF specification listed [here](https://github.com/Hopding/pdf-lib/blob/master/docs/CONTRIBUTING.md#understanding-pdfs).
+        * You can describe a technical approach to implementing your idea.
+
+        If you still think this is the right form to propose you're idea, then please fill it out. We love well thought out, detailed, technical proposals! 💖
+
+        Keep the following in mind when filling out this form:
+        * Be sure to answer **all** of the questions below.
+        * Provide lots of detail. Too much info is better than not enough.
+
+        Please help us help you by reading the following posts before submitting your report! 😃 
+        * [www.sscce.org](http://www.sscce.org/)
+        * [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html)
+        * [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts)
+
+        (These posts are focused more on issues/questions, but can still help you write a good proposal).
+
+        You can read [MAINTAINERSHIP.md](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md) to learn more about how this repo is maintained.
+  - type: textarea
+    attributes:
+      label: Describe your idea
+      description: Clearly describe your idea. How would it improve `pdf-lib`? Include code snippets to demonstrate what an API implementing your proposal could look like. Please provide visualizations (screenshots, diagrams, videos, etc...) if possible. 
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How could this be implemented?
+      description: Clearly describe how your idea could be implemented. Your response should be technical. What specific changes would be required to make this a reality?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What problem are you trying to solve?
+      description: Clearly explain the problem your proposal would solve. This might seem redundant in light of the previous question and that's okay.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Why does this matter to you?
+      description: Clearly explain why this proposal matters to you. What led you to think of it? Would it help you solve a problem or build a project?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Would others find this helpful?
+      description: Is this a niche problem/solution? How many other `pdf-lib` users do you think would benefit from your proposal?
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Are you interested in implementing your proposal?
+      multiple: false
+      options:
+        - 'Yes'
+        - 'No'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Why are you submitting a proposal?
+      description: Are you looking for somebody to work on this? Do you want to know if it's feasible? Just want to share your ideas & research? Do you want somebody to bounce ideas off of? Or something else?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional Notes
+      description: |
+        Please provide any additional information or observations here.
+    validations:
+      required: false
