@@ -27,7 +27,6 @@ export interface LoadOptions {
   throwOnInvalidObject?: boolean;
   updateMetadata?: boolean;
   capNumbers?: boolean;
-  returnCopy?: boolean;
 }
 
 export interface CreateOptions {
