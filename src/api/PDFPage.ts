@@ -601,14 +601,14 @@ export default class PDFPage {
 
   /**
    * Scale the annots of a page. This is useful if you want to scale a page with comments or other annots.
-   * ```JS
+   * ```js
    * // scale the content of the page down by 50% in x and y
    * page.scaleContent(0.5, 0.5);
    *
    * // scale the content of the page down by 50% in x and y
    * page.scaleAnnots(0.5, 0.5);
    * ```
-   * See alos: [[scaleContent]]
+   * See also: [[scaleContent]]
    * @param x The factor by wich the x-axis for the annots should be scaled (e.g. 0.5 is 50%)
    * @param y The factor by wich the y-axis for the annots should be scaled (e.g. 0.5 is 50%)
    */

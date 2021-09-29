@@ -52,7 +52,7 @@
 
     
     async function test() {
-        const existingPdfBytes = await fetchBinaryAsset('pdfs/american_flag.pdf')
+        const existingPdfBytes = await fetchBinaryAsset('pdfs/with_annots.pdf')
 
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
