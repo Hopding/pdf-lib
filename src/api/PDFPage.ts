@@ -43,7 +43,6 @@ import {
   PDFNumber,
   PDFDict,
   PDFArray,
-  PDFObject,
 } from 'src/core';
 import {
   addRandomSuffix,
@@ -616,26 +615,16 @@ export default class PDFPage {
   scaleAnnots(x: number, y: number) {
     const annots = this.node.Annots();
 
+    if (annots === undefined) return;
+
     // loop annotations
-    annots?.asArray().forEach((ref: PDFObject) => {
-      const i = annots.indexOf(ref);
-
-      if (i === undefined) return;
-
-      const annot = annots.lookup(i, PDFDict);
+    for (let ia = 0; ia < annots.size(); ia++) {
+      const annot = annots.lookup(ia, PDFDict);
 
       if (!annot) return;
 
-      ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'].forEach((el) => {
-        const list = annot.get(PDFName.of(el)) as PDFArray;
-        if (list) this.scalePDFNumbers(list, x, y);
-      });
-
-      const pdfNameInkList = annot.get(PDFName.of('InkList')) as PDFArray;
-      pdfNameInkList
-        ?.asArray()
-        .forEach((arr) => this.scalePDFNumbers(arr as PDFArray, x, y));
-    });
+      this.scaleAnnot(annot, x, y);
+    }
   }
 
   /**
@@ -1571,6 +1560,19 @@ export default class PDFPage {
     this.node.setExtGState(PDFName.of(key), graphicsState);
 
     return key;
+  }
+
+  private scaleAnnot(annot: PDFDict, x: number, y: number) {
+    ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'].forEach((el) => {
+      const list = annot.get(PDFName.of(el)) as PDFArray;
+      if (list) this.scalePDFNumbers(list, x, y);
+    });
+
+    const pdfNameInkList = annot.get(PDFName.of('InkList')) as PDFArray;
+
+    for (let index = 0; index < pdfNameInkList?.size(); index++) {
+      this.scalePDFNumbers(pdfNameInkList.get(index) as PDFArray, x, y);
+    }
   }
 
   private scalePDFNumbers(arr: PDFArray, x: number, y: number): void {
