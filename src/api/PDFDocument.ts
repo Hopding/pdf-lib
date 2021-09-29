@@ -133,14 +133,12 @@ export default class PDFDocument {
       throwOnInvalidObject = false,
       updateMetadata = true,
       capNumbers = false,
-      returnCopy = false,
     } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
     assertIs(parseSpeed, 'parseSpeed', ['number']);
     assertIs(throwOnInvalidObject, 'throwOnInvalidObject', ['boolean']);
-    assertIs(returnCopy, 'returnCopy', ['boolean']);
 
     const bytes = toUint8Array(pdf);
     const context = await PDFParser.forBytesWithOptions(
@@ -149,42 +147,6 @@ export default class PDFDocument {
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
-
-    if (returnCopy) {
-      const pdfDoc = new PDFDocument(context, ignoreEncryption, updateMetadata);
-      const pdfCopy = await PDFDocument.create();
-      const contentPages = await pdfCopy.copyPages(
-        pdfDoc,
-        pdfDoc.getPageIndices(),
-      );
-
-      for (const page of contentPages) {
-        pdfCopy.addPage(page);
-      }
-      if (pdfDoc.getAuthor() !== undefined) {
-        pdfCopy.setAuthor(pdfDoc.getAuthor()!);
-      }
-      if (pdfDoc.getCreationDate() !== undefined) {
-        pdfCopy.setCreationDate(pdfDoc.getCreationDate()!);
-      }
-      if (pdfDoc.getCreator() !== undefined) {
-        pdfCopy.setCreator(pdfDoc.getCreator()!);
-      }
-      if (pdfDoc.getModificationDate() !== undefined) {
-        pdfCopy.setModificationDate(pdfDoc.getModificationDate()!);
-      }
-      if (pdfDoc.getProducer() !== undefined) {
-        pdfCopy.setProducer(pdfDoc.getProducer()!);
-      }
-      if (pdfDoc.getSubject() !== undefined) {
-        pdfCopy.setSubject(pdfDoc.getSubject()!);
-      }
-      if (pdfDoc.getTitle() !== undefined) pdfCopy.setTitle(pdfDoc.getTitle()!);
-      pdfCopy.defaultWordBreaks = pdfDoc.defaultWordBreaks;
-
-      return pdfCopy;
-    }
-
     return new PDFDocument(context, ignoreEncryption, updateMetadata);
   }
 
@@ -771,6 +733,54 @@ export default class PDFDocument {
       copiedPages[idx] = PDFPage.of(copiedPage, ref, this);
     }
     return copiedPages;
+  }
+
+  /**
+   * Get a copy of this document.
+   * > **NOTE:**  This method won't copy all information over to the new doc (acroforms, etc...).
+   * 
+   * For example:
+   * ```js
+   * const srcDoc = await PDFDocument.load(...)
+   * const pdfDoc = await srcDoc.copy()
+   * ```
+   * @returns Resolves with a copy this document.
+   */
+   async copy(): Promise<PDFDocument> {
+    const pdfCopy = await PDFDocument.create();
+    const contentPages = await pdfCopy.copyPages(
+      this,
+      this.getPageIndices(),
+    );
+
+    for (const page of contentPages) {
+      pdfCopy.addPage(page);
+    }
+    
+    if (this.getAuthor() !== undefined) {
+      pdfCopy.setAuthor(this.getAuthor()!);
+    }
+    if (this.getCreationDate() !== undefined) {
+      pdfCopy.setCreationDate(this.getCreationDate()!);
+    }
+    if (this.getCreator() !== undefined) {
+      pdfCopy.setCreator(this.getCreator()!);
+    }
+    if (this.getModificationDate() !== undefined) {
+      pdfCopy.setModificationDate(this.getModificationDate()!);
+    }
+    if (this.getProducer() !== undefined) {
+      pdfCopy.setProducer(this.getProducer()!);
+    }
+    if (this.getSubject() !== undefined) {
+      pdfCopy.setSubject(this.getSubject()!);
+    }
+    if (this.getTitle() !== undefined) {
+      pdfCopy.setTitle(this.getTitle()!);
+    }
+    pdfCopy.defaultWordBreaks = this.defaultWordBreaks;
+
+    return pdfCopy;
   }
 
   /**
