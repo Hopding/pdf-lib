@@ -488,3 +488,47 @@ describe(`PDFDocument`, () => {
     });
   });
 });
+
+describe(`copy() method`, () => {
+  let pdfDoc: PDFDocument;
+  let srcDoc: PDFDocument;
+  beforeAll(async () => {
+    const parseSpeed = ParseSpeeds.Fastest;
+    srcDoc = await PDFDocument.load(unencryptedPdfBytes, { parseSpeed });
+    const title = '🥚 The Life of an Egg 🍳';
+    const author = 'Humpty Dumpty';
+    const subject = '📘 An Epic Tale of Woe 📖';
+    const keywords = ['eggs', 'wall', 'fall', 'king', 'horses', 'men', '🥚'];
+    const producer = 'PDF App 9000 🤖';
+    const creator = 'PDF App 8000 🤖';
+
+    // Milliseconds  will not get saved, so these dates do not have milliseconds.
+    const creationDate = new Date('1997-08-15T01:58:37Z');
+    const modificationDate = new Date('2018-12-21T07:00:11Z');
+
+    srcDoc.setTitle(title);
+    srcDoc.setAuthor(author);
+    srcDoc.setSubject(subject);
+    srcDoc.setKeywords(keywords);
+    srcDoc.setProducer(producer);
+    srcDoc.setCreator(creator);
+    srcDoc.setCreationDate(creationDate);
+    srcDoc.setModificationDate(modificationDate);
+    pdfDoc = await srcDoc.copy();
+  });
+  
+  it(`Returns a pdf with the same number of pages`, async () => {
+    expect(pdfDoc.getPageCount()).toBe(srcDoc.getPageCount());
+  });
+  
+  it(`Can copy author, creationDate, creator, producer, subject, title, defaultWordBreaks`, async () => {
+    expect(pdfDoc.getAuthor()).toBe(srcDoc.getAuthor());
+    expect(pdfDoc.getCreationDate()).toStrictEqual(srcDoc.getCreationDate());
+    expect(pdfDoc.getCreator()).toBe(srcDoc.getCreator());
+    expect(pdfDoc.getModificationDate()).toStrictEqual(srcDoc.getModificationDate());
+    expect(pdfDoc.getProducer()).toBe(srcDoc.getProducer());
+    expect(pdfDoc.getSubject()).toBe(srcDoc.getSubject());
+    expect(pdfDoc.getTitle()).toBe(srcDoc.getTitle());
+    expect(pdfDoc.defaultWordBreaks).toEqual(srcDoc.defaultWordBreaks);
+  });
+});
