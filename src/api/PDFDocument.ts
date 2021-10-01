@@ -737,26 +737,26 @@ export default class PDFDocument {
 
   /**
    * Get a copy of this document.
-   * > **NOTE:**  This method won't copy all information over to the new doc (acroforms, etc...).
-   * 
+   *
    * For example:
    * ```js
    * const srcDoc = await PDFDocument.load(...)
    * const pdfDoc = await srcDoc.copy()
    * ```
+   *
+   * > **NOTE:**  This method won't copy all information over to the new
+   * > document (acroforms, outlines, etc...).
+   *
    * @returns Resolves with a copy this document.
    */
-   async copy(): Promise<PDFDocument> {
+  async copy(): Promise<PDFDocument> {
     const pdfCopy = await PDFDocument.create();
-    const contentPages = await pdfCopy.copyPages(
-      this,
-      this.getPageIndices(),
-    );
+    const contentPages = await pdfCopy.copyPages(this, this.getPageIndices());
 
-    for (const page of contentPages) {
-      pdfCopy.addPage(page);
+    for (let idx = 0, len = contentPages.length; idx < len; idx++) {
+      pdfCopy.addPage(contentPages[idx]);
     }
-    
+
     if (this.getAuthor() !== undefined) {
       pdfCopy.setAuthor(this.getAuthor()!);
     }
