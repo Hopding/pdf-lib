@@ -13,7 +13,7 @@ This document describes the process used to release a new version of pdf-lib. It
    - Run `yarn apps:node 'Adobe Acrobat'`
    - Run `yarn apps:deno 'Foxit Reader'`
    - Run `yarn apps:web:mac` and test in Firefox
-   - Run `yarn apps:web:mac` and test in Chrom
+   - Run `yarn apps:web:mac` and test in Chrome
    - Run `yarn apps:web:mac` and test in Safari
    - Run `yarn apps:rn:ios`
    - Run `yarn apps:rn:android`
