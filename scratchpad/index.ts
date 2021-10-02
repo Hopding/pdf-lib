@@ -28,8 +28,6 @@ import { PDFDocument } from 'src/index';
   console.log('PrintPageRange:', viewerPrefs.getPrintPageRange());
   console.log('NumCopies:', viewerPrefs.getNumCopies());
 
-  pdfDoc.getPages().forEach(p => p.scale(2, 0.5));
-
   // Serialize the PDFDocument to bytes (a Uint8Array)
   const pdfBytes = await pdfDoc.save();
 
