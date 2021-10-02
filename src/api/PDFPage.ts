@@ -1568,10 +1568,12 @@ export default class PDFPage {
       if (list instanceof PDFArray) this.scalePDFNumbers(list, x, y);
     });
 
-    const pdfNameInkList = annot.get(PDFName.of('InkList')) as PDFArray;
-
-    for (let index = 0; index < pdfNameInkList?.size(); index++) {
-      this.scalePDFNumbers(pdfNameInkList.get(index) as PDFArray, x, y);
+    const inkLists = annot.lookup(PDFName.of('InkList'));
+    if (inkLists instanceof PDFArray) {
+      for (let index = 0; index < inkLists.size(); index++) {
+        const inkList = inkLists.lookup(index);
+        if (inkList instanceof PDFArray) this.scalePDFNumbers(inkList, x, y);
+      }
     }
   }
 
