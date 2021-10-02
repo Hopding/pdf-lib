@@ -1564,8 +1564,8 @@ export default class PDFPage {
 
   private scaleAnnot(annot: PDFDict, x: number, y: number) {
     ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'].forEach((el) => {
-      const list = annot.get(PDFName.of(el)) as PDFArray;
-      if (list) this.scalePDFNumbers(list, x, y);
+      const list = annot.lookup(PDFName.of(el));
+      if (list instanceof PDFArray) this.scalePDFNumbers(list, x, y);
     });
 
     const pdfNameInkList = annot.get(PDFName.of('InkList')) as PDFArray;
