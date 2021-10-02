@@ -293,6 +293,7 @@ export default class PDFField {
     rotate: Rotation;
     caption?: string;
     hidden?: boolean;
+    page?: PDFRef;
   }): PDFWidgetAnnotation {
     const textColor = options.textColor;
     const backgroundColor = options.backgroundColor;
@@ -305,6 +306,7 @@ export default class PDFField {
     const width = options.width + borderWidth;
     const height = options.height + borderWidth;
     const hidden = Boolean(options.hidden);
+    const pageRef = options.page;
 
     assertMultiple(degreesAngle, 'degreesAngle', 90);
 
@@ -318,6 +320,10 @@ export default class PDFField {
       degreesAngle,
     );
     widget.setRectangle(rect);
+
+    if(typeof pageRef !== 'undefined'){
+      widget.setP(pageRef);
+    }
 
     const ac = widget.getOrCreateAppearanceCharacteristics();
     if (backgroundColor) {
