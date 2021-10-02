@@ -170,6 +170,7 @@ export default class PDFCheckBox extends PDFField {
       borderWidth: options.borderWidth ?? 0,
       rotate: options.rotate ?? degrees(0),
       hidden: options.hidden,
+      page: page.ref,
     });
     const widgetRef = this.doc.context.register(widget.dict);
 
@@ -182,7 +183,6 @@ export default class PDFCheckBox extends PDFField {
 
     // Add widget to the given page
     page.node.addAnnot(widgetRef);
-    this.updateWidgetPageReference(widget, page.ref);
   }
 
   /**

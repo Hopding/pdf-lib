@@ -169,6 +169,7 @@ export default class PDFButton extends PDFField {
       rotate: options?.rotate ?? degrees(0),
       caption: text,
       hidden: options?.hidden,
+      page: page.ref,
     });
     const widgetRef = this.doc.context.register(widget.dict);
 
@@ -181,7 +182,6 @@ export default class PDFButton extends PDFField {
 
     // Add widget to the given page
     page.node.addAnnot(widgetRef);
-    this.updateWidgetPageReference(widget, page.ref);
   }
 
   /**
