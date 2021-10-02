@@ -584,7 +584,7 @@ export default class PDFPage {
    * @param y The factor by wich the y-axis for the content should be scaled (e.g. 0.5 is 50%)
    */
   scaleContent(x: number, y: number): void {
-    assertIs(x, 'x', ['number']);
+    assertRange(x, 'x', 0, 1);
     assertIs(y, 'y', ['number']);
 
     this.node.normalize();
