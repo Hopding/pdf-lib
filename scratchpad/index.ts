@@ -7,7 +7,7 @@ import { PDFDocument } from 'src/index';
   // This data can be obtained in a number of different ways
   // If your running in a Node environment, you could use fs.readFile()
   // In the browser, you could make a fetch() call and use res.arrayBuffer()
-  const existingPdfBytes = fs.readFileSync('assets/pdfs/with_viewer_prefs.pdf');
+  const existingPdfBytes = fs.readFileSync('assets/pdfs/with_annots.pdf');
 
   // Load a PDFDocument without updating its existing metadata
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -27,6 +27,8 @@ import { PDFDocument } from 'src/index';
   console.log('PickTrayByPDFSize:', viewerPrefs.getPickTrayByPDFSize());
   console.log('PrintPageRange:', viewerPrefs.getPrintPageRange());
   console.log('NumCopies:', viewerPrefs.getNumCopies());
+
+  pdfDoc.getPages().forEach(p => p.scale(2, 0.5));
 
   // Serialize the PDFDocument to bytes (a Uint8Array)
   const pdfBytes = await pdfDoc.save();

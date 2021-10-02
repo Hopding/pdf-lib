@@ -40,7 +40,6 @@ import {
   PDFOperator,
   PDFPageLeaf,
   PDFRef,
-  PDFNumber,
   PDFDict,
   PDFArray,
 } from 'src/core';
@@ -571,8 +570,24 @@ export default class PDFPage {
   }
 
   /**
+   * Scale the size, content and annotations of a page.
+   * ```js
+   * p.scale(0.5, 0.5);
+   * ```
+   * @param x The factor by wich the width for the page should be scaled (e.g. 0.5 is 50%)
+   * @param y The factor by wich the height for the page should be scaled (e.g. 0.5 is 50%)
+   */
+  scale(x: number, y: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    this.setSize(this.getWidth() * x, this.getHeight() * y);
+    this.scaleContent(x, y);
+    this.scaleAnnotations(x, y);
+  }
+
+  /**
    * Scale the content of a page. This is useful after resizing an exisiting page.
-   * This scales only the content not the annots. See also: [[scaleAnnots]]
+   * This scales only the content not the annotations. See also: [[scaleAnnotations]]
    * ```js
    * // bisect the size of the page
    * p.setSize(p.getWidth() / 2, p.getHeight() / 2);
@@ -600,19 +615,19 @@ export default class PDFPage {
   }
 
   /**
-   * Scale the annots of a page. This is useful if you want to scale a page with comments or other annots.
+   * Scale the annotations of a page. This is useful if you want to scale a page with comments or other annotations.
    * ```js
    * // scale the content of the page down by 50% in x and y
    * page.scaleContent(0.5, 0.5);
    *
    * // scale the content of the page down by 50% in x and y
-   * page.scaleAnnots(0.5, 0.5);
+   * page.scaleannotations(0.5, 0.5);
    * ```
    * See also: [[scaleContent]]
-   * @param x The factor by wich the x-axis for the annots should be scaled (e.g. 0.5 is 50%)
-   * @param y The factor by wich the y-axis for the annots should be scaled (e.g. 0.5 is 50%)
+   * @param x The factor by wich the x-axis for the annotations should be scaled (e.g. 0.5 is 50%)
+   * @param y The factor by wich the y-axis for the annotations should be scaled (e.g. 0.5 is 50%)
    */
-  scaleAnnots(x: number, y: number) {
+  scaleAnnotations(x: number, y: number) {
     const annots = this.node.Annots();
 
     if (annots === undefined) return;
@@ -1119,16 +1134,16 @@ export default class PDFPage {
 
     // prettier-ignore
     const xScale = (
-        options.width  !== undefined ? options.width / embeddedPage.width
-      : options.xScale !== undefined ? options.xScale
-      : 1
+      options.width !== undefined ? options.width / embeddedPage.width
+        : options.xScale !== undefined ? options.xScale
+          : 1
     );
 
     // prettier-ignore
     const yScale = (
-        options.height !== undefined ? options.height / embeddedPage.height
-      : options.yScale !== undefined ? options.yScale
-      : 1
+      options.height !== undefined ? options.height / embeddedPage.height
+        : options.yScale !== undefined ? options.yScale
+          : 1
     );
 
     const contentStream = this.getContentStream();
@@ -1563,24 +1578,18 @@ export default class PDFPage {
   }
 
   private scaleAnnot(annot: PDFDict, x: number, y: number) {
-    ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'].forEach((el) => {
-      const list = annot.get(PDFName.of(el)) as PDFArray;
-      if (list) this.scalePDFNumbers(list, x, y);
-    });
+    const selectors = ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'];
+    for (let sel of selectors) {
+      const list = annot.get(PDFName.of(sel)) as PDFArray;
+      if (list) list.scalePDFNumbers(x, y);
+    }
 
     const pdfNameInkList = annot.get(PDFName.of('InkList')) as PDFArray;
 
     for (let index = 0; index < pdfNameInkList?.size(); index++) {
-      this.scalePDFNumbers(pdfNameInkList.get(index) as PDFArray, x, y);
+      const arr = pdfNameInkList.get(index) as PDFArray;
+      arr.scalePDFNumbers(x, y);
     }
   }
 
-  private scalePDFNumbers(arr: PDFArray, x: number, y: number): void {
-    arr?.asArray().forEach((el, i) => {
-      if (el instanceof PDFNumber) {
-        const factor = i % 2 === 0 ? x : y;
-        arr.set(i, PDFNumber.of(el.asNumber() * factor));
-      }
-    });
-  }
 }
