@@ -614,16 +614,12 @@ export default class PDFPage {
    */
   scaleAnnots(x: number, y: number) {
     const annots = this.node.Annots();
-
-    if (annots === undefined) return;
+    if (!annots) return;
 
     // loop annotations
-    for (let ia = 0; ia < annots.size(); ia++) {
-      const annot = annots.lookup(ia, PDFDict);
-
-      if (!annot) return;
-
-      this.scaleAnnot(annot, x, y);
+    for (let idx = 0; idx < annots.size(); idx++) {
+      const annot = annots.lookup(idx);
+      if (annot instanceof PDFDict) this.scaleAnnot(annot, x, y);
     }
   }
 
