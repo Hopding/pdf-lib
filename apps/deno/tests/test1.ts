@@ -623,6 +623,29 @@ export default async (assets: Assets) => {
     font: ubuntuFont,
   });
 
+  page5.drawText('There should be no remnant of a field\nbelow this text!!', {
+    y: size - fMax * 5 - fPadding * 0 - fHeight * 3,
+    x: fPadding,
+    size: 18,
+    font: indieFlowerFont,
+    lineHeight: 18,
+  });
+  const textField = form.createTextField('a.new.text.field');
+  textField.setText('This Should Not Be Visible');
+  textField.addToPage(page5, {
+    x: fPadding,
+    y: size - fMax * 5 - fPadding * 3.5 - fHeight * 3,
+    width: fWidth * 2.5,
+    height: fHeight * 1,
+    borderWidth: 4,
+    backgroundColor: pastels.pinkish,
+    borderColor: pastels.blue,
+    textColor: pastels.darkBlue,
+    font: ubuntuFont,
+  });
+
+  form.removeField(textField);
+
   /********************** Print Metadata **********************/
 
   console.log('Title:', pdfDoc.getTitle());
