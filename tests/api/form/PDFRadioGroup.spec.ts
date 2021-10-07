@@ -164,4 +164,20 @@ describe(`PDFRadioGroup`, () => {
     expect(widgets().length).toBe(1);
     expect(widgets()[0].hasFlag(AnnotationFlags.Print)).toBe(true);
   });
+
+  it(`sets page reference when added to a page`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+
+    const form = pdfDoc.getForm();
+
+    const radioGroup = form.createRadioGroup('a.new.radio.group');
+
+    const widgets = () => radioGroup.acroField.getWidgets();
+    expect(widgets().length).toBe(0);
+
+    radioGroup.addOptionToPage('foo', page);
+    expect(widgets().length).toBe(1);
+    expect(widgets()[0].P()).toBe(page.ref);
+  });
 });

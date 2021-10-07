@@ -370,6 +370,7 @@ export default class PDFRadioGroup extends PDFField {
       borderWidth: options?.borderWidth ?? 1,
       rotate: options?.rotate ?? degrees(0),
       hidden: options?.hidden,
+      page: page.ref,
     });
     const widgetRef = this.doc.context.register(widget.dict);
 
