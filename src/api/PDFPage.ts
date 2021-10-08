@@ -599,7 +599,7 @@ export default class PDFPage {
    * @param y The factor by wich the y-axis for the content should be scaled (e.g. 0.5 is 50%)
    */
   scaleContent(x: number, y: number): void {
-    assertIs(y, 'y', ['number']);
+    assertIs(x, 'x', ['number']);
     assertIs(y, 'y', ['number']);
 
     this.node.normalize();
@@ -628,6 +628,8 @@ export default class PDFPage {
    * @param y The factor by wich the y-axis for the annotations should be scaled (e.g. 0.5 is 50%)
    */
   scaleAnnotations(x: number, y: number) {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
     const annots = this.node.Annots();
     if (!annots) return;
 
