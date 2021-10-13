@@ -893,18 +893,11 @@ export default class PDFPage {
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
-    const originalFont = (this.font && this.fontKey) ? this.font : undefined;
-    if (options.font) {
-      this.setFont(options.font);
-    } else if (!this.font || !this.fontKey) {
-      this.setFont(this.doc.embedStandardFont(StandardFonts.Helvetica));
-    }
-    const font = this.font!;
-    const fontKey = this.fontKey!;
+    const { oldFont, newFont, newFontKey } = this.setOrEmbedFont(options.font);
     const fontSize = options.size || this.fontSize;
 
     const wordBreaks = options.wordBreaks || this.doc.defaultWordBreaks;
-    const textWidth = (t: string) => font.widthOfTextAtSize(t, fontSize);
+    const textWidth = (t: string) => newFont.widthOfTextAtSize(t, fontSize);
     const lines =
       options.maxWidth === undefined
         ? lineSplit(cleanText(text))
@@ -912,7 +905,7 @@ export default class PDFPage {
 
     const encodedLines = new Array(lines.length) as PDFHexString[];
     for (let idx = 0, len = lines.length; idx < len; idx++) {
-      encodedLines[idx] = font.encodeText(lines[idx]);
+      encodedLines[idx] = newFont.encodeText(lines[idx]);
     }
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
@@ -924,7 +917,7 @@ export default class PDFPage {
     contentStream.push(
       ...drawLinesOfText(encodedLines, {
         color: options.color ?? this.fontColor,
-        font: fontKey,
+        font: newFontKey,
         size: fontSize,
         rotate: options.rotate ?? degrees(0),
         xSkew: options.xSkew ?? degrees(0),
@@ -937,11 +930,8 @@ export default class PDFPage {
     );
 
     if (options.font) {
-      if (originalFont) {
-        this.setFont(originalFont);
-      } else {
-        this.resetFont();
-      }
+      if (oldFont) this.setFont(oldFont);
+      else this.resetFont();
     }
   }
 
@@ -1458,6 +1448,27 @@ export default class PDFPage {
     const { size = 100 } = options;
     assertOrUndefined(size, 'size', ['number']);
     this.drawEllipse({ ...options, xScale: size, yScale: size });
+  }
+
+  private setOrEmbedFont(font?: PDFFont) {
+    const oldFont = this.font;
+    const oldFontKey = this.fontKey;
+
+    if (font) this.setFont(font);
+    else this.getFont();
+
+    const newFont = this.font!;
+    const newFontKey = this.fontKey!;
+
+    return { oldFont, oldFontKey, newFont, newFontKey };
+  }
+
+  private getFont(): [PDFFont, string] {
+    if (!this.font || !this.fontKey) {
+      const font = this.doc.embedStandardFont(StandardFonts.Helvetica);
+      this.setFont(font);
+    }
+    return [this.font!, this.fontKey!];
   }
 
   private resetFont(): void {
