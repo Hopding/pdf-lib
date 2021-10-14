@@ -41,7 +41,7 @@ import {
   PDFName,
   PDFWidgetAnnotation,
 } from 'src/core';
-import { addRandomSuffix, assertIs, Cache, assertOrUndefined } from 'src/utils';
+import { assertIs, Cache, assertOrUndefined } from 'src/utils';
 
 export interface FlattenOptions {
   updateFieldAppearances: boolean;
@@ -550,7 +550,7 @@ export default class PDFForm {
         const page = this.findWidgetPage(widget);
         const widgetRef = this.findWidgetAppearanceRef(field, widget);
 
-        const xObjectKey = addRandomSuffix(this.doc.context.rng, 'FlatWidget', 10);
+        const xObjectKey = this.doc.context.addRandomSuffix('FlatWidget', 10);
         page.node.setXObject(PDFName.of(xObjectKey), widgetRef);
 
         const rectangle = widget.getRectangle();

@@ -31,10 +31,6 @@ export const copyStringIntoBuffer = (
   return length;
 };
 
-export const addRandomSuffix = (rng: () => number, prefix: string, suffixLength = 4) => {
-  return `${prefix}-${Math.floor(rng() * 10 ** suffixLength)}`;
-}
-
 export const escapeRegExp = (str: string) =>
   str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

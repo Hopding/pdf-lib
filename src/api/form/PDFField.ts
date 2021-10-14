@@ -23,7 +23,6 @@ import {
   AnnotationFlags,
 } from 'src/core';
 import {
-  addRandomSuffix,
   assertIs,
   assertMultiple,
   assertOrUndefined,
@@ -489,7 +488,7 @@ export default class PDFField {
       options.y = adj.height - borderWidth - imageDims.height;
     }
 
-    const imageName = addRandomSuffix(this.doc.context.rng, 'Image', 10);
+    const imageName = this.doc.context.addRandomSuffix('Image', 10);
     const appearance = [...rotate, ...drawImage(imageName, options)];
     ////////////
 
