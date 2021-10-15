@@ -22,11 +22,7 @@ import {
   PDFAcroTerminal,
   AnnotationFlags,
 } from 'src/core';
-import {
-  assertIs,
-  assertMultiple,
-  assertOrUndefined,
-} from 'src/utils';
+import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 import { ImageAlignment } from '../image';
 import PDFImage from '../PDFImage';
 import { drawImage, rotateInPlace } from '../operations';
@@ -320,7 +316,7 @@ export default class PDFField {
     );
     widget.setRectangle(rect);
 
-    if(typeof pageRef !== 'undefined'){
+    if (typeof pageRef !== 'undefined') {
       widget.setP(pageRef);
     }
 

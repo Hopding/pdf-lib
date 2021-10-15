@@ -507,7 +507,9 @@ describe(`copy() method`, () => {
     expect(pdfDoc.getAuthor()).toBe(srcDoc.getAuthor());
     expect(pdfDoc.getCreationDate()).toStrictEqual(srcDoc.getCreationDate());
     expect(pdfDoc.getCreator()).toBe(srcDoc.getCreator());
-    expect(pdfDoc.getModificationDate()).toStrictEqual(srcDoc.getModificationDate());
+    expect(pdfDoc.getModificationDate()).toStrictEqual(
+      srcDoc.getModificationDate(),
+    );
     expect(pdfDoc.getProducer()).toBe(srcDoc.getProducer());
     expect(pdfDoc.getSubject()).toBe(srcDoc.getSubject());
     expect(pdfDoc.getTitle()).toBe(srcDoc.getTitle());

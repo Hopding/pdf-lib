@@ -8,12 +8,12 @@
 export class SimpleRNG {
   private seed = 1;
 
-  public constructor(seed: number) {
+  constructor(seed: number) {
     this.seed = seed;
-  };
+  }
 
   nextInt = () => {
     const x = Math.sin(this.seed++) * 10000;
     return x - Math.floor(x);
-  }
+  };
 }

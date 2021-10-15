@@ -68,7 +68,7 @@ class PDFContext {
     this.trailerInfo = {};
 
     this.indirectObjects = new Map();
-  	this.rng = new SimpleRNG(1);
+    this.rng = new SimpleRNG(1);
   }
 
   assign(ref: PDFRef, object: PDFObject): void {
@@ -291,9 +291,8 @@ class PDFContext {
     return this.popGraphicsStateContentStreamRef;
   }
 
-  addRandomSuffix = (prefix: string, suffixLength = 4) => {
-    return `${prefix}-${Math.floor(this.rng.nextInt() * 10 ** suffixLength)}`;
-  }
+  addRandomSuffix = (prefix: string, suffixLength = 4) =>
+    `${prefix}-${Math.floor(this.rng.nextInt() * 10 ** suffixLength)}`;
 }
 
 export default PDFContext;

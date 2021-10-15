@@ -105,7 +105,8 @@ class CustomFontEmbedder {
   }
 
   embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    this.baseFontName = this.customName || context.addRandomSuffix(this.fontName);
+    this.baseFontName =
+      this.customName || context.addRandomSuffix(this.fontName);
     return this.embedFontDict(context, ref);
   }
 
