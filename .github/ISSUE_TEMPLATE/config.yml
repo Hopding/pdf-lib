@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Get Help in GitHub Discussions 🎉
+    url: https://github.com/Hopding/pdf-lib/discussions
+    about: Have a question or idea? Want to talk to the community? Join us in pdf-lib's GitHub Discussions!
+  - name: Maintainership Information 🛠️
+    url: https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md
+    about: Learn how this repo is maintained and how we handle communication.
