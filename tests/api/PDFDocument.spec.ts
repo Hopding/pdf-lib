@@ -142,28 +142,10 @@ describe(`PDFDocument`, () => {
   });
 
   describe(`embedFont() method`, () => {
-    it(`serializes the same value on every save when using a custom font name`, async () => {
+    it(`serializes the same value on every save`, async () => {
       const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
-      const customName = 'Custom-Font-Name';
       const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
       const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
-
-      pdfDoc1.registerFontkit(fontkit);
-      pdfDoc2.registerFontkit(fontkit);
-
-      await pdfDoc1.embedFont(customFont, { customName });
-      await pdfDoc2.embedFont(customFont, { customName });
-
-      const savedDoc1 = await pdfDoc1.save();
-      const savedDoc2 = await pdfDoc2.save();
-
-      expect(savedDoc1).toEqual(savedDoc2);
-    });
-
-    it(`does not serialize the same on save when not using a custom font name`, async () => {
-      const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
-      const pdfDoc1 = await PDFDocument.create();
-      const pdfDoc2 = await PDFDocument.create();
 
       pdfDoc1.registerFontkit(fontkit);
       pdfDoc2.registerFontkit(fontkit);
@@ -174,7 +156,7 @@ describe(`PDFDocument`, () => {
       const savedDoc1 = await pdfDoc1.save();
       const savedDoc2 = await pdfDoc2.save();
 
-      expect(savedDoc1).not.toEqual(savedDoc2);
+      expect(savedDoc1).toEqual(savedDoc2);
     });
   });
 
@@ -516,11 +498,11 @@ describe(`copy() method`, () => {
     srcDoc.setModificationDate(modificationDate);
     pdfDoc = await srcDoc.copy();
   });
-  
+
   it(`Returns a pdf with the same number of pages`, async () => {
     expect(pdfDoc.getPageCount()).toBe(srcDoc.getPageCount());
   });
-  
+
   it(`Can copy author, creationDate, creator, producer, subject, title, defaultWordBreaks`, async () => {
     expect(pdfDoc.getAuthor()).toBe(srcDoc.getAuthor());
     expect(pdfDoc.getCreationDate()).toStrictEqual(srcDoc.getCreationDate());
