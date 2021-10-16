@@ -1060,6 +1060,7 @@ export default class PDFPage {
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const xObjectKey = this.doc.context.addRandomSuffix('Image', 10);
+    this.node.setXObject(PDFName.of(xObjectKey), image.ref);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
