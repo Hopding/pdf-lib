@@ -22,12 +22,7 @@ import {
   PDFAcroTerminal,
   AnnotationFlags,
 } from 'src/core';
-import {
-  addRandomSuffix,
-  assertIs,
-  assertMultiple,
-  assertOrUndefined,
-} from 'src/utils';
+import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
 import { ImageAlignment } from '../image';
 import PDFImage from '../PDFImage';
 import { drawImage, rotateInPlace } from '../operations';
@@ -321,7 +316,7 @@ export default class PDFField {
     );
     widget.setRectangle(rect);
 
-    if(typeof pageRef !== 'undefined'){
+    if (typeof pageRef !== 'undefined') {
       widget.setP(pageRef);
     }
 
@@ -495,7 +490,7 @@ export default class PDFField {
       options.y = adj.height - borderWidth - imageDims.height;
     }
 
-    const imageName = addRandomSuffix('Image', 10);
+    const imageName = this.doc.context.addRandomSuffix('Image', 10);
     const appearance = [...rotate, ...drawImage(imageName, options)];
     ////////////
 
