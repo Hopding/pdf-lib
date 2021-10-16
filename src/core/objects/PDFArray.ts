@@ -172,11 +172,11 @@ class PDFArray extends PDFObject {
   }
 
   scalePDFNumbers(x: number, y: number): void {
-    for (let i = 0; i < this.size(); i++) {
-      const el = this.get(i);
+    for (let idx = 0, len = this.size(); idx < len; idx++) {
+      const el = this.lookup(idx);
       if (el instanceof PDFNumber) {
-        const factor = i % 2 === 0 ? x : y;
-        this.set(i, PDFNumber.of(el.asNumber() * factor));
+        const factor = idx % 2 === 0 ? x : y;
+        this.set(idx, PDFNumber.of(el.asNumber() * factor));
       }
     }
   }

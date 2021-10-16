@@ -570,12 +570,17 @@ export default class PDFPage {
   }
 
   /**
-   * Scale the size, content and annotations of a page.
+   * Scale the size, content, and annotations of a page.
+   *
+   * For example:
    * ```js
-   * p.scale(0.5, 0.5);
+   * page.scale(0.5, 0.5);
    * ```
-   * @param x The factor by wich the width for the page should be scaled (e.g. 0.5 is 50%)
-   * @param y The factor by wich the height for the page should be scaled (e.g. 0.5 is 50%)
+   *
+   * @param x The factor by which the width for the page should be scaled
+   *          (e.g. `0.5` is 50%).
+   * @param y The factor by which the height for the page should be scaled
+   *          (e.g. `2.0` is 200%).
    */
   scale(x: number, y: number): void {
     assertIs(x, 'x', ['number']);
@@ -586,17 +591,22 @@ export default class PDFPage {
   }
 
   /**
-   * Scale the content of a page. This is useful after resizing an exisiting page.
-   * This scales only the content not the annotations. See also: [[scaleAnnotations]]
-   * ```js
-   * // bisect the size of the page
-   * p.setSize(p.getWidth() / 2, p.getHeight() / 2);
+   * Scale the content of a page. This is useful after resizing an existing
+   * page. This scales only the content, not the annotations.
    *
-   * // scale the content of the page down by 50% in x and y
+   * For example:
+   * ```js
+   * // Bisect the size of the page
+   * page.setSize(page.getWidth() / 2, page.getHeight() / 2);
+   *
+   * // Scale the content of the page down by 50% in x and y
    * page.scaleContent(0.5, 0.5);
    * ```
-   * @param x The factor by wich the x-axis for the content should be scaled (e.g. 0.5 is 50%)
-   * @param y The factor by wich the y-axis for the content should be scaled (e.g. 0.5 is 50%)
+   * See also: [[scaleAnnotations]]
+   * @param x The factor by which the x-axis for the content should be scaled
+   *          (e.g. `0.5` is 50%).
+   * @param y The factor by which the y-axis for the content should be scaled
+   *          (e.g. `2.0` is 200%).
    */
   scaleContent(x: number, y: number): void {
     assertIs(x, 'x', ['number']);
@@ -615,25 +625,28 @@ export default class PDFPage {
   }
 
   /**
-   * Scale the annotations of a page. This is useful if you want to scale a page with comments or other annotations.
+   * Scale the annotations of a page. This is useful if you want to scale a
+   * page with comments or other annotations.
    * ```js
-   * // scale the content of the page down by 50% in x and y
+   * // Scale the content of the page down by 50% in x and y
    * page.scaleContent(0.5, 0.5);
    *
-   * // scale the content of the page down by 50% in x and y
-   * page.scaleannotations(0.5, 0.5);
+   * // Scale the content of the page down by 50% in x and y
+   * page.scaleAnnotations(0.5, 0.5);
    * ```
    * See also: [[scaleContent]]
-   * @param x The factor by wich the x-axis for the annotations should be scaled (e.g. 0.5 is 50%)
-   * @param y The factor by wich the y-axis for the annotations should be scaled (e.g. 0.5 is 50%)
+   * @param x The factor by which the x-axis for the annotations should be
+   *          scaled (e.g. `0.5` is 50%).
+   * @param y The factor by which the y-axis for the annotations should be
+   *          scaled (e.g. `2.0` is 200%).
    */
   scaleAnnotations(x: number, y: number) {
     assertIs(x, 'x', ['number']);
     assertIs(y, 'y', ['number']);
+
     const annots = this.node.Annots();
     if (!annots) return;
 
-    // loop annotations
     for (let idx = 0; idx < annots.size(); idx++) {
       const annot = annots.lookup(idx);
       if (annot instanceof PDFDict) this.scaleAnnot(annot, x, y);
@@ -1132,16 +1145,16 @@ export default class PDFPage {
 
     // prettier-ignore
     const xScale = (
-      options.width !== undefined ? options.width / embeddedPage.width
-        : options.xScale !== undefined ? options.xScale
-          : 1
+         options.width !== undefined  ? options.width / embeddedPage.width
+       : options.xScale !== undefined ? options.xScale
+       : 1
     );
 
     // prettier-ignore
     const yScale = (
-      options.height !== undefined ? options.height / embeddedPage.height
+          options.height !== undefined  ? options.height / embeddedPage.height
         : options.yScale !== undefined ? options.yScale
-          : 1
+        : 1
     );
 
     const contentStream = this.getContentStream();
@@ -1577,17 +1590,17 @@ export default class PDFPage {
 
   private scaleAnnot(annot: PDFDict, x: number, y: number) {
     const selectors = ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'];
-    for (let sel of selectors) {
-      const list = annot.get(PDFName.of(sel));
+    for (let idx = 0, len = selectors.length; idx < len; idx++) {
+      const list = annot.lookup(PDFName.of(selectors[idx]));
       if (list instanceof PDFArray) list.scalePDFNumbers(x, y);
     }
 
-    const pdfNameInkList = annot.get(PDFName.of('InkList')) as PDFArray;
-
-    for (let index = 0; index < pdfNameInkList?.size(); index++) {
-      const arr = pdfNameInkList.get(index);
-      if (arr instanceof PDFArray) arr.scalePDFNumbers(x, y);
+    const inkLists = annot.lookup(PDFName.of('InkList'));
+    if (inkLists instanceof PDFArray) {
+      for (let idx = 0, len = inkLists.size(); idx < len; idx++) {
+        const arr = inkLists.lookup(idx);
+        if (arr instanceof PDFArray) arr.scalePDFNumbers(x, y);
+      }
     }
   }
-
 }
