@@ -53,11 +53,13 @@
         catRidingUnicornBytes,
         cmykBytes,
         normalPdfBase64,
+        existingPdfBytes,
       ] = await Promise.all([
         fetchStringAsset('pdfs/with_update_sections.pdf.base64.uri'),
         fetchBinaryAsset('images/cat_riding_unicorn.jpg'),
         fetchBinaryAsset('images/cmyk_colorspace.jpg'),
         fetchStringAsset('pdfs/normal.pdf.base64'),
+        fetchBinaryAsset('pdfs/with_annots.pdf'),
       ]);
 
       const pdfDoc = await PDFDocument.load(inputPdfBase64, {
@@ -82,8 +84,7 @@
 
       const page0 = pdfDoc.insertPage(0, [305, 250]);
       const page1 = pdfDoc.getPage(1);
-      
-      const existingPdfBytes = await fetchBinaryAsset('pdfs/with_annots.pdf');
+
       const docWithAnnots = await PDFDocument.load(existingPdfBytes);
       const [page2] = await pdfDoc.copyPages(docWithAnnots, [0]);
       page2.scaleContent(0.5, 0.5);
@@ -94,7 +95,7 @@
       const [page4] = await pdfDoc.copyPages(docWithAnnots, [0]);
       page4.scale(0.5, 0.5);
       pdfDoc.addPage(page4);
-      
+
       const page5 = pdfDoc.addPage([305, 250]);
 
       const hotPink = rgb(1, 0, 1);

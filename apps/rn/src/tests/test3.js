@@ -14,11 +14,13 @@ export default async () => {
     catRidingUnicornBytes,
     cmykBytes,
     normalPdfBase64,
+    existingPdfBytes,
   ] = await Promise.all([
     fetchAsset('pdfs/with_update_sections.pdf'),
     fetchAsset('images/cat_riding_unicorn_resized.jpg'),
     fetchAsset('images/cmyk_colorspace.jpg'),
     fetchAsset('pdfs/normal.pdf'),
+    fetchAsset('pdfs/with_annots.pdf'),
   ]);
 
   const pdfDoc = await PDFDocument.load(inputPdfBytes, {
@@ -42,7 +44,6 @@ export default async () => {
   const page0 = pdfDoc.insertPage(0, [305, 250]);
   const page1 = pdfDoc.getPage(1);
 
-  const existingPdfBytes = await fetchBinaryAsset('pdfs/with_annots.pdf');
   const docWithAnnots = await PDFDocument.load(existingPdfBytes);
   const [page2] = await pdfDoc.copyPages(docWithAnnots, [0]);
   page2.scaleContent(0.5, 0.5);
