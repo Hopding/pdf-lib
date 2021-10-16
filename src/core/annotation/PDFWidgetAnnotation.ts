@@ -46,8 +46,8 @@ class PDFWidgetAnnotation extends PDFAnnotation {
     return undefined;
   }
 
-  setP(page: PDFRef){
-    this.dict.set(PDFName.of('P'),page);
+  setP(page: PDFRef) {
+    this.dict.set(PDFName.of('P'), page);
   }
 
   setDefaultAppearance(appearance: string) {

@@ -443,19 +443,19 @@ export const rotateInPlace = (options: {
   rotation: 0 | 90 | 180 | 270;
 }) =>
     options.rotation === 0 ? [
-      translate(0, 0), 
-      rotateDegrees(0) 
+      translate(0, 0),
+      rotateDegrees(0)
     ]
   : options.rotation === 90 ? [
-      translate(options.width, 0), 
+      translate(options.width, 0),
       rotateDegrees(90)
     ]
   : options.rotation === 180 ? [
-      translate(options.width, options.height), 
+      translate(options.width, options.height),
       rotateDegrees(180)
     ]
   : options.rotation === 270 ? [
-      translate(0, options.height), 
+      translate(0, options.height),
       rotateDegrees(270)
     ]
   : []; // Invalid rotation - noop
