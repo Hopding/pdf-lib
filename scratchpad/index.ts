@@ -7,7 +7,7 @@ import { PDFDocument } from 'src/index';
   // This data can be obtained in a number of different ways
   // If your running in a Node environment, you could use fs.readFile()
   // In the browser, you could make a fetch() call and use res.arrayBuffer()
-  const existingPdfBytes = fs.readFileSync('assets/pdfs/with_viewer_prefs.pdf');
+  const existingPdfBytes = fs.readFileSync('assets/pdfs/with_annots.pdf');
 
   // Load a PDFDocument without updating its existing metadata
   const pdfDoc = await PDFDocument.load(existingPdfBytes);

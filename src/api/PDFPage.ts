@@ -13,6 +13,7 @@ import {
   pushGraphicsState,
   translate,
   LineCapStyle,
+  scale,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
@@ -39,6 +40,8 @@ import {
   PDFOperator,
   PDFPageLeaf,
   PDFRef,
+  PDFDict,
+  PDFArray,
 } from 'src/core';
 import {
   addRandomSuffix,
@@ -567,6 +570,77 @@ export default class PDFPage {
   }
 
   /**
+   * Scale the size, content and annotations of a page.
+   * ```js
+   * p.scale(0.5, 0.5);
+   * ```
+   * @param x The factor by wich the width for the page should be scaled (e.g. 0.5 is 50%)
+   * @param y The factor by wich the height for the page should be scaled (e.g. 0.5 is 50%)
+   */
+  scale(x: number, y: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    this.setSize(this.getWidth() * x, this.getHeight() * y);
+    this.scaleContent(x, y);
+    this.scaleAnnotations(x, y);
+  }
+
+  /**
+   * Scale the content of a page. This is useful after resizing an exisiting page.
+   * This scales only the content not the annotations. See also: [[scaleAnnotations]]
+   * ```js
+   * // bisect the size of the page
+   * p.setSize(p.getWidth() / 2, p.getHeight() / 2);
+   *
+   * // scale the content of the page down by 50% in x and y
+   * page.scaleContent(0.5, 0.5);
+   * ```
+   * @param x The factor by wich the x-axis for the content should be scaled (e.g. 0.5 is 50%)
+   * @param y The factor by wich the y-axis for the content should be scaled (e.g. 0.5 is 50%)
+   */
+  scaleContent(x: number, y: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+
+    this.node.normalize();
+    this.getContentStream();
+
+    const start = this.createContentStream(pushGraphicsState(), scale(x, y));
+    const startRef = this.doc.context.register(start);
+
+    const end = this.createContentStream(popGraphicsState());
+    const endRef = this.doc.context.register(end);
+
+    this.node.wrapContentStreams(startRef, endRef);
+  }
+
+  /**
+   * Scale the annotations of a page. This is useful if you want to scale a page with comments or other annotations.
+   * ```js
+   * // scale the content of the page down by 50% in x and y
+   * page.scaleContent(0.5, 0.5);
+   *
+   * // scale the content of the page down by 50% in x and y
+   * page.scaleannotations(0.5, 0.5);
+   * ```
+   * See also: [[scaleContent]]
+   * @param x The factor by wich the x-axis for the annotations should be scaled (e.g. 0.5 is 50%)
+   * @param y The factor by wich the y-axis for the annotations should be scaled (e.g. 0.5 is 50%)
+   */
+  scaleAnnotations(x: number, y: number) {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    const annots = this.node.Annots();
+    if (!annots) return;
+
+    // loop annotations
+    for (let idx = 0; idx < annots.size(); idx++) {
+      const annot = annots.lookup(idx);
+      if (annot instanceof PDFDict) this.scaleAnnot(annot, x, y);
+    }
+  }
+
+  /**
    * Reset the x and y coordinates of this page to `(0, 0)`. This operation is
    * often useful after calling [[translateContent]]. For example:
    * ```js
@@ -1058,16 +1132,16 @@ export default class PDFPage {
 
     // prettier-ignore
     const xScale = (
-        options.width  !== undefined ? options.width / embeddedPage.width
-      : options.xScale !== undefined ? options.xScale
-      : 1
+      options.width !== undefined ? options.width / embeddedPage.width
+        : options.xScale !== undefined ? options.xScale
+          : 1
     );
 
     // prettier-ignore
     const yScale = (
-        options.height !== undefined ? options.height / embeddedPage.height
-      : options.yScale !== undefined ? options.yScale
-      : 1
+      options.height !== undefined ? options.height / embeddedPage.height
+        : options.yScale !== undefined ? options.yScale
+          : 1
     );
 
     const contentStream = this.getContentStream();
@@ -1500,4 +1574,20 @@ export default class PDFPage {
 
     return key;
   }
+
+  private scaleAnnot(annot: PDFDict, x: number, y: number) {
+    const selectors = ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'];
+    for (let sel of selectors) {
+      const list = annot.get(PDFName.of(sel));
+      if (list instanceof PDFArray) list.scalePDFNumbers(x, y);
+    }
+
+    const pdfNameInkList = annot.get(PDFName.of('InkList')) as PDFArray;
+
+    for (let index = 0; index < pdfNameInkList?.size(); index++) {
+      const arr = pdfNameInkList.get(index);
+      if (arr instanceof PDFArray) arr.scalePDFNumbers(x, y);
+    }
+  }
+
 }
