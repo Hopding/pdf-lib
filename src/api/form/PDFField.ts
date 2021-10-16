@@ -316,9 +316,7 @@ export default class PDFField {
     );
     widget.setRectangle(rect);
 
-    if (typeof pageRef !== 'undefined') {
-      widget.setP(pageRef);
-    }
+    if (pageRef) widget.setP(pageRef);
 
     const ac = widget.getOrCreateAppearanceCharacteristics();
     if (backgroundColor) {
