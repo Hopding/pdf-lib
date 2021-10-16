@@ -13,6 +13,7 @@ import {
   pushGraphicsState,
   translate,
   LineCapStyle,
+  scale,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
@@ -39,6 +40,8 @@ import {
   PDFOperator,
   PDFPageLeaf,
   PDFRef,
+  PDFDict,
+  PDFArray,
 } from 'src/core';
 import {
   addRandomSuffix,
@@ -564,6 +567,90 @@ export default class PDFPage {
     const endRef = this.doc.context.register(end);
 
     this.node.wrapContentStreams(startRef, endRef);
+  }
+
+  /**
+   * Scale the size, content, and annotations of a page.
+   *
+   * For example:
+   * ```js
+   * page.scale(0.5, 0.5);
+   * ```
+   *
+   * @param x The factor by which the width for the page should be scaled
+   *          (e.g. `0.5` is 50%).
+   * @param y The factor by which the height for the page should be scaled
+   *          (e.g. `2.0` is 200%).
+   */
+  scale(x: number, y: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+    this.setSize(this.getWidth() * x, this.getHeight() * y);
+    this.scaleContent(x, y);
+    this.scaleAnnotations(x, y);
+  }
+
+  /**
+   * Scale the content of a page. This is useful after resizing an existing
+   * page. This scales only the content, not the annotations.
+   *
+   * For example:
+   * ```js
+   * // Bisect the size of the page
+   * page.setSize(page.getWidth() / 2, page.getHeight() / 2);
+   *
+   * // Scale the content of the page down by 50% in x and y
+   * page.scaleContent(0.5, 0.5);
+   * ```
+   * See also: [[scaleAnnotations]]
+   * @param x The factor by which the x-axis for the content should be scaled
+   *          (e.g. `0.5` is 50%).
+   * @param y The factor by which the y-axis for the content should be scaled
+   *          (e.g. `2.0` is 200%).
+   */
+  scaleContent(x: number, y: number): void {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+
+    this.node.normalize();
+    this.getContentStream();
+
+    const start = this.createContentStream(pushGraphicsState(), scale(x, y));
+    const startRef = this.doc.context.register(start);
+
+    const end = this.createContentStream(popGraphicsState());
+    const endRef = this.doc.context.register(end);
+
+    this.node.wrapContentStreams(startRef, endRef);
+  }
+
+  /**
+   * Scale the annotations of a page. This is useful if you want to scale a
+   * page with comments or other annotations.
+   * ```js
+   * // Scale the content of the page down by 50% in x and y
+   * page.scaleContent(0.5, 0.5);
+   *
+   * // Scale the content of the page down by 50% in x and y
+   * page.scaleAnnotations(0.5, 0.5);
+   * ```
+   * See also: [[scaleContent]]
+   * @param x The factor by which the x-axis for the annotations should be
+   *          scaled (e.g. `0.5` is 50%).
+   * @param y The factor by which the y-axis for the annotations should be
+   *          scaled (e.g. `2.0` is 200%).
+   */
+  scaleAnnotations(x: number, y: number) {
+    assertIs(x, 'x', ['number']);
+    assertIs(y, 'y', ['number']);
+
+    const annots = this.node.Annots();
+    if (!annots) return;
+
+    for (let idx = 0; idx < annots.size(); idx++) {
+      const annot = annots.lookup(idx);
+      if (annot instanceof PDFDict) this.scaleAnnot(annot, x, y);
+    }
   }
 
   /**
@@ -1499,5 +1586,21 @@ export default class PDFPage {
     this.node.setExtGState(PDFName.of(key), graphicsState);
 
     return key;
+  }
+
+  private scaleAnnot(annot: PDFDict, x: number, y: number) {
+    const selectors = ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'];
+    for (let idx = 0, len = selectors.length; idx < len; idx++) {
+      const list = annot.lookup(PDFName.of(selectors[idx]));
+      if (list instanceof PDFArray) list.scalePDFNumbers(x, y);
+    }
+
+    const inkLists = annot.lookup(PDFName.of('InkList'));
+    if (inkLists instanceof PDFArray) {
+      for (let idx = 0, len = inkLists.size(); idx < len; idx++) {
+        const arr = inkLists.lookup(idx);
+        if (arr instanceof PDFArray) arr.scalePDFNumbers(x, y);
+      }
+    }
   }
 }
