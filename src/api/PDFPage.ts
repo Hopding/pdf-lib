@@ -1145,16 +1145,16 @@ export default class PDFPage {
 
     // prettier-ignore
     const xScale = (
-         options.width !== undefined  ? options.width / embeddedPage.width
-       : options.xScale !== undefined ? options.xScale
-       : 1
+        options.width !== undefined  ? options.width / embeddedPage.width
+      : options.xScale !== undefined ? options.xScale
+      : 1
     );
 
     // prettier-ignore
     const yScale = (
-          options.height !== undefined  ? options.height / embeddedPage.height
-        : options.yScale !== undefined ? options.yScale
-        : 1
+        options.height !== undefined  ? options.height / embeddedPage.height
+      : options.yScale !== undefined ? options.yScale
+      : 1
     );
 
     const contentStream = this.getContentStream();
