@@ -977,6 +977,7 @@ export default class PDFPage {
     assertOrUndefined(options.lineHeight, 'options.lineHeight', ['number']);
     assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
+    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const { oldFont, newFont, newFontKey } = this.setOrEmbedFont(options.font);
@@ -1000,20 +1001,23 @@ export default class PDFPage {
     });
 
     const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawLinesOfText(encodedLines, {
-        color: options.color ?? this.fontColor,
-        font: newFontKey,
-        size: fontSize,
-        rotate: options.rotate ?? degrees(0),
-        xSkew: options.xSkew ?? degrees(0),
-        ySkew: options.ySkew ?? degrees(0),
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        lineHeight: options.lineHeight ?? this.lineHeight,
-        graphicsState: graphicsStateKey,
-      }),
-    );
+
+    const drawnText = drawLinesOfText(encodedLines, {
+      color: options.color ?? this.fontColor,
+      font: newFontKey,
+      size: fontSize,
+      rotate: options.rotate ?? degrees(0),
+      xSkew: options.xSkew ?? degrees(0),
+      ySkew: options.ySkew ?? degrees(0),
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      lineHeight: options.lineHeight ?? this.lineHeight,
+      graphicsState: graphicsStateKey,
+    });
+
+    if(!options.placeAtBack) contentStream.push(...drawnText);
+    else contentStream.splice(0, ...drawnText);
+
 
     if (options.font) {
       if (oldFont) this.setFont(oldFont);
@@ -1056,6 +1060,7 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
@@ -1068,18 +1073,20 @@ export default class PDFPage {
     });
 
     const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawImage(xObjectKey, {
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        width: options.width ?? image.size().width,
-        height: options.height ?? image.size().height,
-        rotate: options.rotate ?? degrees(0),
-        xSkew: options.xSkew ?? degrees(0),
-        ySkew: options.ySkew ?? degrees(0),
-        graphicsState: graphicsStateKey,
-      }),
-    );
+
+    const drawnImage = drawImage(xObjectKey, {
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      width: options.width ?? image.size().width,
+      height: options.height ?? image.size().height,
+      rotate: options.rotate ?? degrees(0),
+      xSkew: options.xSkew ?? degrees(0),
+      ySkew: options.ySkew ?? degrees(0),
+      graphicsState: graphicsStateKey,
+    });
+
+    if(!options.placeAtBack) contentStream.push(...drawnImage);
+    else contentStream.splice(0, ...drawnImage);
   }
 
   /**
@@ -1131,6 +1138,7 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
+    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
@@ -1157,18 +1165,20 @@ export default class PDFPage {
     );
 
     const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawPage(xObjectKey, {
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        xScale,
-        yScale,
-        rotate: options.rotate ?? degrees(0),
-        xSkew: options.xSkew ?? degrees(0),
-        ySkew: options.ySkew ?? degrees(0),
-        graphicsState: graphicsStateKey,
-      }),
-    );
+
+    const drawnPage = drawPage(xObjectKey, {
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      xScale,
+      yScale,
+      rotate: options.rotate ?? degrees(0),
+      xSkew: options.xSkew ?? degrees(0),
+      ySkew: options.ySkew ?? degrees(0),
+      graphicsState: graphicsStateKey,
+    });
+
+    if(!options.placeAtBack) contentStream.push(...drawnPage);
+    else contentStream.splice(0, ...drawnPage);
   }
 
   /**
@@ -1216,6 +1226,7 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
@@ -1250,21 +1261,23 @@ export default class PDFPage {
     }
 
     const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawSvgPath(path, {
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        scale: options.scale,
-        rotate: options.rotate ?? degrees(0),
-        color: options.color ?? undefined,
-        borderColor: options.borderColor ?? undefined,
-        borderWidth: options.borderWidth ?? 0,
-        borderDashArray: options.borderDashArray ?? undefined,
-        borderDashPhase: options.borderDashPhase ?? undefined,
-        borderLineCap: options.borderLineCap ?? undefined,
-        graphicsState: graphicsStateKey,
-      }),
-    );
+
+    const drawnPath = drawSvgPath(path, {
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      scale: options.scale,
+      rotate: options.rotate ?? degrees(0),
+      color: options.color ?? undefined,
+      borderColor: options.borderColor ?? undefined,
+      borderWidth: options.borderWidth ?? 0,
+      borderDashArray: options.borderDashArray ?? undefined,
+      borderDashPhase: options.borderDashPhase ?? undefined,
+      borderLineCap: options.borderLineCap ?? undefined,
+      graphicsState: graphicsStateKey,
+    });
+
+    if(!options.placeAtBack) contentStream.push(...drawnPath);
+    else contentStream.splice(0, ...drawnPath);
   }
 
   /**
@@ -1297,6 +1310,7 @@ export default class PDFPage {
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     assertOrUndefined(options.dashArray, 'options.dashArray', [Array]);
     assertOrUndefined(options.dashPhase, 'options.dashPhase', ['number']);
+    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
     assertIsOneOfOrUndefined(options.lineCap, 'options.lineCap', LineCapStyle);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
@@ -1311,18 +1325,20 @@ export default class PDFPage {
     }
 
     const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawLine({
-        start: options.start,
-        end: options.end,
-        thickness: options.thickness ?? 1,
-        color: options.color ?? undefined,
-        dashArray: options.dashArray ?? undefined,
-        dashPhase: options.dashPhase ?? undefined,
-        lineCap: options.lineCap ?? undefined,
-        graphicsState: graphicsStateKey,
-      }),
-    );
+
+    const drawnLine = drawLine({
+      start: options.start,
+      end: options.end,
+      thickness: options.thickness ?? 1,
+      color: options.color ?? undefined,
+      dashArray: options.dashArray ?? undefined,
+      dashPhase: options.dashPhase ?? undefined,
+      lineCap: options.lineCap ?? undefined,
+      graphicsState: graphicsStateKey,
+    });
+
+    if(!options.placeAtBack) contentStream.push(...drawnLine);
+    else contentStream.splice(0, ...drawnLine);
   }
 
   /**
@@ -1355,6 +1371,7 @@ export default class PDFPage {
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
@@ -1389,24 +1406,26 @@ export default class PDFPage {
     }
 
     const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawRectangle({
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        width: options.width ?? 150,
-        height: options.height ?? 100,
-        rotate: options.rotate ?? degrees(0),
-        xSkew: options.xSkew ?? degrees(0),
-        ySkew: options.ySkew ?? degrees(0),
-        borderWidth: options.borderWidth ?? 0,
-        color: options.color ?? undefined,
-        borderColor: options.borderColor ?? undefined,
-        borderDashArray: options.borderDashArray ?? undefined,
-        borderDashPhase: options.borderDashPhase ?? undefined,
-        graphicsState: graphicsStateKey,
-        borderLineCap: options.borderLineCap ?? undefined,
-      }),
-    );
+
+    const drawnRectangle = drawRectangle({
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      width: options.width ?? 150,
+      height: options.height ?? 100,
+      rotate: options.rotate ?? degrees(0),
+      xSkew: options.xSkew ?? degrees(0),
+      ySkew: options.ySkew ?? degrees(0),
+      borderWidth: options.borderWidth ?? 0,
+      color: options.color ?? undefined,
+      borderColor: options.borderColor ?? undefined,
+      borderDashArray: options.borderDashArray ?? undefined,
+      borderDashPhase: options.borderDashPhase ?? undefined,
+      graphicsState: graphicsStateKey,
+      borderLineCap: options.borderLineCap ?? undefined,
+    });
+
+    if(!options.placeAtBack) contentStream.push(...drawnRectangle);
+    else contentStream.splice(0, ...drawnRectangle);
   }
 
   /**
@@ -1460,6 +1479,7 @@ export default class PDFPage {
     assertOrUndefined(options.yScale, 'options.yScale', ['number']);
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
@@ -1494,22 +1514,24 @@ export default class PDFPage {
     }
 
     const contentStream = this.getContentStream();
-    contentStream.push(
-      ...drawEllipse({
-        x: options.x ?? this.x,
-        y: options.y ?? this.y,
-        xScale: options.xScale ?? 100,
-        yScale: options.yScale ?? 100,
-        rotate: options.rotate ?? undefined,
-        color: options.color ?? undefined,
-        borderColor: options.borderColor ?? undefined,
-        borderWidth: options.borderWidth ?? 0,
-        borderDashArray: options.borderDashArray ?? undefined,
-        borderDashPhase: options.borderDashPhase ?? undefined,
-        borderLineCap: options.borderLineCap ?? undefined,
-        graphicsState: graphicsStateKey,
-      }),
-    );
+
+    const drawnEllipse = drawEllipse({
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      xScale: options.xScale ?? 100,
+      yScale: options.yScale ?? 100,
+      rotate: options.rotate ?? undefined,
+      color: options.color ?? undefined,
+      borderColor: options.borderColor ?? undefined,
+      borderWidth: options.borderWidth ?? 0,
+      borderDashArray: options.borderDashArray ?? undefined,
+      borderDashPhase: options.borderDashPhase ?? undefined,
+      borderLineCap: options.borderLineCap ?? undefined,
+      graphicsState: graphicsStateKey,
+    });
+
+    if(!options.placeAtBack) contentStream.push(...drawnEllipse);
+    else contentStream.splice(0, ...drawnEllipse);
   }
 
   /**
