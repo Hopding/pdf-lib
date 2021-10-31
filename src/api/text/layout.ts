@@ -41,27 +41,39 @@ const computeFontSize = (
   while (fontSize < MAX_FONT_SIZE) {
     let linesUsed = 0;
 
-    for (let idx = 0, len = lines.length; idx < len; idx++) {
-      const line = lines[idx];
+    for (
+      let lineIdx = 0, lineLen = lines.length;
+      lineIdx < lineLen;
+      lineIdx++
+    ) {
+      linesUsed += 1;
+
+      const line = lines[lineIdx];
+      const words = line.split(' ');
+
+      // Layout the words using the current `fontSize`, line wrapping
+      // whenever we reach the end of the current line.
       let spaceInLineRemaining = bounds.width;
-      linesUsed += line.split(' ').reduce((used, word, i, words) => {
-        word = i === words.length - 1 ? word : word + ' ';
+      for (let idx = 0, len = words.length; idx < len; idx++) {
+        const isLastWord = idx === len - 1;
+        const word = isLastWord ? words[idx] : words[idx] + ' ';
         const widthOfWord = font.widthOfTextAtSize(word, fontSize);
         spaceInLineRemaining -= widthOfWord;
         if (spaceInLineRemaining <= 0) {
-          used++;
+          linesUsed += 1;
           spaceInLineRemaining = bounds.width - widthOfWord;
         }
-        return used;
-      }, 1);
+      }
     }
 
+    // Return if we exceeded the allowed width
     if (!multiline && linesUsed > lines.length) return fontSize - 1;
 
     const height = font.heightAtSize(fontSize);
     const lineHeight = height + height * 0.2;
     const totalHeight = lineHeight * linesUsed;
 
+    // Return if we exceeded the allowed height
     if (totalHeight > Math.abs(bounds.height)) return fontSize - 1;
 
     fontSize += 1;
