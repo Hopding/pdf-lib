@@ -32,7 +32,7 @@ export interface PDFPageDrawTextOptions {
   lineHeight?: number;
   maxWidth?: number;
   wordBreaks?: string[];
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }
 
 export interface PDFPageDrawImageOptions {
@@ -45,7 +45,7 @@ export interface PDFPageDrawImageOptions {
   ySkew?: Rotation;
   opacity?: number;
   blendMode?: BlendMode;
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }
 
 export interface PDFPageDrawPageOptions {
@@ -60,7 +60,7 @@ export interface PDFPageDrawPageOptions {
   ySkew?: Rotation;
   opacity?: number;
   blendMode?: BlendMode;
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }
 
 export interface PDFPageDrawSVGOptions {
@@ -77,7 +77,7 @@ export interface PDFPageDrawSVGOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }
 
 export interface PDFPageDrawLineOptions {
@@ -90,7 +90,7 @@ export interface PDFPageDrawLineOptions {
   dashArray?: number[];
   dashPhase?: number;
   blendMode?: BlendMode;
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }
 
 export interface PDFPageDrawRectangleOptions {
@@ -110,7 +110,7 @@ export interface PDFPageDrawRectangleOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }
 
 export interface PDFPageDrawSquareOptions {
@@ -129,7 +129,7 @@ export interface PDFPageDrawSquareOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }
 
 export interface PDFPageDrawEllipseOptions {
@@ -147,7 +147,7 @@ export interface PDFPageDrawEllipseOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }
 
 export interface PDFPageDrawCircleOptions {
@@ -163,5 +163,5 @@ export interface PDFPageDrawCircleOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
-  placeAtBack?: boolean;
+  placeBehindAll?: boolean;
 }

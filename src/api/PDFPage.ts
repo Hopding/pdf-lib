@@ -977,7 +977,7 @@ export default class PDFPage {
     assertOrUndefined(options.lineHeight, 'options.lineHeight', ['number']);
     assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
-    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
+    assertOrUndefined(options.placeBehindAll, 'options.placeBehindAll', ['boolean']);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const { oldFont, newFont, newFontKey } = this.setOrEmbedFont(options.font);
@@ -1015,7 +1015,7 @@ export default class PDFPage {
       graphicsState: graphicsStateKey,
     });
 
-    if(!options.placeAtBack) contentStream.push(...drawnText);
+    if(!options.placeBehindAll) contentStream.push(...drawnText);
     else contentStream.splice(0, ...drawnText);
 
 
@@ -1060,7 +1060,7 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
-    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
+    assertOrUndefined(options.placeBehindAll, 'options.placeBehindAll', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
@@ -1085,7 +1085,7 @@ export default class PDFPage {
       graphicsState: graphicsStateKey,
     });
 
-    if(!options.placeAtBack) contentStream.push(...drawnImage);
+    if(!options.placeBehindAll) contentStream.push(...drawnImage);
     else contentStream.splice(0, ...drawnImage);
   }
 
@@ -1138,7 +1138,7 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.xSkew, 'options.xSkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
-    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
+    assertOrUndefined(options.placeBehindAll, 'options.placeBehindAll', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
@@ -1177,7 +1177,7 @@ export default class PDFPage {
       graphicsState: graphicsStateKey,
     });
 
-    if(!options.placeAtBack) contentStream.push(...drawnPage);
+    if(!options.placeBehindAll) contentStream.push(...drawnPage);
     else contentStream.splice(0, ...drawnPage);
   }
 
@@ -1226,7 +1226,7 @@ export default class PDFPage {
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
+    assertOrUndefined(options.placeBehindAll, 'options.placeBehindAll', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
@@ -1276,7 +1276,7 @@ export default class PDFPage {
       graphicsState: graphicsStateKey,
     });
 
-    if(!options.placeAtBack) contentStream.push(...drawnPath);
+    if(!options.placeBehindAll) contentStream.push(...drawnPath);
     else contentStream.splice(0, ...drawnPath);
   }
 
@@ -1310,7 +1310,7 @@ export default class PDFPage {
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     assertOrUndefined(options.dashArray, 'options.dashArray', [Array]);
     assertOrUndefined(options.dashPhase, 'options.dashPhase', ['number']);
-    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
+    assertOrUndefined(options.placeBehindAll, 'options.placeBehindAll', ['boolean']);
     assertIsOneOfOrUndefined(options.lineCap, 'options.lineCap', LineCapStyle);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
@@ -1337,7 +1337,7 @@ export default class PDFPage {
       graphicsState: graphicsStateKey,
     });
 
-    if(!options.placeAtBack) contentStream.push(...drawnLine);
+    if(!options.placeBehindAll) contentStream.push(...drawnLine);
     else contentStream.splice(0, ...drawnLine);
   }
 
@@ -1371,7 +1371,7 @@ export default class PDFPage {
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
+    assertOrUndefined(options.placeBehindAll, 'options.placeBehindAll', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
@@ -1424,7 +1424,7 @@ export default class PDFPage {
       borderLineCap: options.borderLineCap ?? undefined,
     });
 
-    if(!options.placeAtBack) contentStream.push(...drawnRectangle);
+    if(!options.placeBehindAll) contentStream.push(...drawnRectangle);
     else contentStream.splice(0, ...drawnRectangle);
   }
 
@@ -1479,7 +1479,7 @@ export default class PDFPage {
     assertOrUndefined(options.yScale, 'options.yScale', ['number']);
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    assertOrUndefined(options.placeAtBack, 'options.placeAtBack', ['boolean']);
+    assertOrUndefined(options.placeBehindAll, 'options.placeBehindAll', ['boolean']);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
@@ -1530,7 +1530,7 @@ export default class PDFPage {
       graphicsState: graphicsStateKey,
     });
 
-    if(!options.placeAtBack) contentStream.push(...drawnEllipse);
+    if(!options.placeBehindAll) contentStream.push(...drawnEllipse);
     else contentStream.splice(0, ...drawnEllipse);
   }
 

@@ -47,6 +47,20 @@ describe(`PDFContentStream`, () => {
     );
   });
 
+  it(`allows operators to be spliced to the beginning of the stream`, () => {
+    const stream = PDFContentStream.of(dict, [pushGraphicsState()], false);
+    stream.splice(0, moveText(21, 99), popGraphicsState());
+    console.log(String(stream));
+    expect(String(stream)).toEqual(
+      '<<\n/Length 13\n>>\n' +
+        'stream\n' +
+        '21 99 Td\n' +
+        'Q\n' +
+        'q\n' +
+        '\nendstream',
+    );
+  });
+
   it(`can be cloned`, () => {
     const original = PDFContentStream.of(dict, operators, false);
     const clone = original.clone();

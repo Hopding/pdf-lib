@@ -646,6 +646,63 @@ export default async (assets: Assets) => {
 
   form.removeField(textField);
 
+  /********************** Page 6 **********************/
+
+  const page6 = pdfDoc.addPage([size, size]);
+
+  page6.drawText('This was drawn before the red square, but should be on top of it!', {
+    x: 0,
+    y: 120,
+    font: ubuntuFont,
+    size: 14
+  });
+  page6.drawSquare({
+    size: size / 4,
+    color: rgb(1, 0, 0),
+    y: 100,
+    placeBehindAll: true
+  });
+
+  // Draw a stack of objects in reverse
+  page6.drawText('These objects were drawn from smallest to largest, using placeBehindAll', {
+    y: (size/2) + 260,
+    x: (size/2) - 150,
+    font: ubuntuFont,
+    size: 14
+  });
+  page6.drawCircle({
+    size: size / 10,
+    color: rgb(1, 0, 0),
+    y: size/2,
+    x: size/2,
+    placeBehindAll: true
+  });
+  page6.drawEllipse({
+    xScale: size / 8,
+    yScale: size / 7,
+    color: rgb(1, 1, 0),
+    y: size/2,
+    x: size/2,
+    placeBehindAll: true
+  });
+  page6.drawRectangle({
+    width: size / 4,
+    height: size / 3,
+    color: rgb(0, 1, 1),
+    y: (size/2) - (size/6),
+    x: (size/2) - (size/6),
+    placeBehindAll: true
+  });
+  page6.drawImage(minionsLaughingImage, {
+    width: size / 2,
+    height: size / 2,
+    y: (size/2) - (size/4),
+    x: (size/2) - (size/4),
+    placeBehindAll: true
+  });
+
+  page6.pushOperators(popGraphicsState());
+
   /********************** Print Metadata **********************/
 
   console.log('Title:', pdfDoc.getTitle());
