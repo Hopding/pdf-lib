@@ -50,7 +50,6 @@ describe(`PDFContentStream`, () => {
   it(`allows operators to be spliced to the beginning of the stream`, () => {
     const stream = PDFContentStream.of(dict, [pushGraphicsState()], false);
     stream.splice(0, moveText(21, 99), popGraphicsState());
-    console.log(String(stream));
     expect(String(stream)).toEqual(
       '<<\n/Length 13\n>>\n' +
         'stream\n' +
