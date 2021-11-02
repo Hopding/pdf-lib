@@ -35,8 +35,8 @@ export default class PDFImage implements Embeddable {
   /** The height of this image in pixels. */
   readonly height: number;
 
-  private alreadyEmbedded = false;
-  private readonly embedder: ImageEmbedder;
+  private embedder: ImageEmbedder | undefined;
+  private embedderTask: Promise<PDFRef> | undefined;
 
   private constructor(ref: PDFRef, doc: PDFDocument, embedder: ImageEmbedder) {
     assertIs(ref, 'ref', [[PDFRef, 'PDFRef']]);
@@ -125,9 +125,15 @@ export default class PDFImage implements Embeddable {
    * @returns Resolves when the embedding is complete.
    */
   async embed(): Promise<void> {
-    if (!this.alreadyEmbedded) {
-      await this.embedder.embedIntoContext(this.doc.context, this.ref);
-      this.alreadyEmbedded = true;
+    const embedder = this.embedder;
+    if (!embedder) return;
+
+    let embedderTask = this.embedderTask;
+    if (!embedderTask) {
+      embedderTask = embedder.embedIntoContext(this.doc.context, this.ref);
+      this.embedderTask = embedderTask;
     }
+    await embedderTask;
+    this.embedder = undefined;
   }
 }

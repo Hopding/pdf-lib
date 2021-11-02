@@ -16,6 +16,8 @@ import {
   ViewerPreferences,
 } from 'src/index';
 
+const examplePngImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TxaoVBzuIdMhQnSyIijhKFYtgobQVWnUwufQLmjQkKS6OgmvBwY/FqoOLs64OroIg+AHi5uak6CIl/i8ptIjx4Lgf7+497t4BQqPCVLNrAlA1y0jFY2I2tyr2vKIfAgLoRVhipp5IL2bgOb7u4ePrXZRneZ/7cwwoeZMBPpF4jumGRbxBPLNp6Zz3iUOsJCnE58TjBl2Q+JHrsstvnIsOCzwzZGRS88QhYrHYwXIHs5KhEk8TRxRVo3wh67LCeYuzWqmx1j35C4N5bSXNdZphxLGEBJIQIaOGMiqwEKVVI8VEivZjHv4Rx58kl0yuMhg5FlCFCsnxg//B727NwtSkmxSMAd0vtv0xCvTsAs26bX8f23bzBPA/A1da219tALOfpNfbWuQIGNwGLq7bmrwHXO4Aw0+6ZEiO5KcpFArA+xl9Uw4YugX61tzeWvs4fQAy1NXyDXBwCIwVKXvd492Bzt7+PdPq7wcdn3KFLu4iBAAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAlFJREFUeNrt289r02AYB/Dvk6Sl4EDKpllTlFKsnUdBHXgUBEHwqHj2IJ72B0zwKHhxJ08i/gDxX/AiRfSkBxELXTcVxTa2s2xTsHNN8ngQbQL70RZqG/Z9b29JnvflkydP37whghG3ZaegoxzfwB5vBCAAAQhAAAIQgAAEIAABCEAAAhCAAAQgwB5rstWPtnP0LqBX/vZNyLF6vVrpN/hucewhb4g+B2AyAwiwY7NGOXijviS9vBeYh6CEP4edBLDADCAAAQhAAAIQgAAEIAABCDAUAFF/GIN1DM+PBYCo/ohMXDQ1WPjoeUZH1mMBEEh0oqLGvsHCy0S4NzWVWotJBogbvZB+brDwQT7UWSmXy5sxyQB9HQEROdVv4HQ+vx+QmS4iXsWmCK7Usu8AhOqAXMzlcn3VgWTbugQgEYrxMkZ/gyUPgnuhe2C6/Stxvdeg2ezMJERvhOuoZ+JBrNYBRuDdBtDuXkDM25nCHLbZSv9X6A4VHU+DpwCcbvbjcetLtTaOANtuirrux08HM0euisjDEMKC7RQuq+C+pVJqpzx3NZ3+eeBza9I0rWJgyHnxg2sAJrqnaHUzFcyN60Jox13hprv8aNopZBS4GcqWWVHM+lAkN0zY7ncgkYBukRoKLPpiXVj9UFkfV4Bdl8Jf60u3IMZZAG/6iLuhkDvaSZ74VqtUx3kp3NN7gUZt8RmA43a2eEY1OCfQ04AcBpAGkAKwpkBLIG8BfQE/eNJsvG/G4VlARj0BfjDBx2ECEIAABCAAAQhAAAIQgAAE+P/tN8YvpvbTDBOlAAAAAElFTkSuQmCC';
+
 const unencryptedPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 const oldEncryptedPdfBytes1 = fs.readFileSync('assets/pdfs/encrypted_old.pdf');
 
@@ -467,6 +469,67 @@ describe(`PDFDocument`, () => {
       const JSNames = Javascript.lookup(PDFName.of('Names'), PDFArray);
       expect(JSNames.lookup(0, PDFHexString).decodeText()).toEqual('first');
       expect(JSNames.lookup(2, PDFHexString).decodeText()).toEqual('second');
+    });
+  });
+
+  describe(`embedPng() method`, () => {
+    it(`It should still be possible to modify the PDFDocument even if a image has already been embedded`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const pdfPage = pdfDoc.addPage();
+
+      const noErrorFunc = async () => {
+        const embeddedImage = await pdfDoc.embedPng(examplePngImage);
+        await pdfPage.drawImage(embeddedImage);
+        await embeddedImage.embed();
+
+        const pdfPage2 = pdfDoc.addPage();
+        await pdfPage2.drawImage(embeddedImage);
+
+        pdfDoc.setTitle('Unit Test');
+      };
+
+      await expect(noErrorFunc()).resolves.not.toThrowError();
+    });
+  });
+
+  describe(`save() method`, () => {
+
+    it(`The save() function may be called several times with different changes`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const pdfPage = pdfDoc.addPage();
+      const embeddedImage = await pdfDoc.embedPng(examplePngImage);
+
+      const noErrorFunc = async () => {
+        await pdfPage.drawImage(embeddedImage);
+        await embeddedImage.embed();
+
+        const pdfPage2 = pdfDoc.addPage();
+        await pdfPage2.drawImage(embeddedImage);
+
+        pdfDoc.setTitle('Unit Test');
+
+        const pdfBytes1 = await pdfDoc.save();
+        expect(pdfBytes1.byteLength).toBeGreaterThan(0);
+
+        const pdfPage3 = pdfDoc.addPage();
+        await pdfPage3.drawImage(embeddedImage);
+
+        pdfDoc.setTitle('Unit Test 2. change');
+
+        const pdfBytes2 = await pdfDoc.save();
+        expect(pdfBytes2.byteLength).toBeGreaterThan(0);
+        expect(pdfBytes1.byteLength).not.toEqual(pdfBytes2.byteLength);
+
+        const pdf1 = await PDFDocument.load(pdfBytes1);
+        expect(pdf1.getTitle()).toEqual('Unit Test');
+        expect(pdf1.getPageCount()).toEqual(2);
+
+        const pdf2 = await PDFDocument.load(pdfBytes2);
+        expect(pdf2.getTitle()).toEqual('Unit Test 2. change');
+        expect(pdf2.getPageCount()).toEqual(3);
+      };
+
+      await expect(noErrorFunc()).resolves.not.toThrowError();
     });
   });
 });
