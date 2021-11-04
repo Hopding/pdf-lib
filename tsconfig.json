@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
     "allowJs": false,
     "checkJs": false,
@@ -18,16 +18,13 @@
     "downlevelIteration": false,
     "isolatedModules": false,
     "newLine": "LF",
-
     /* Strict Type-Checking Options */
     "strict": true,
-
     /* Additional Checks */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
     /* Module Resolution Options */
     "baseUrl": "./src",
     "paths": {

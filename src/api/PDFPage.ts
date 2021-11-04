@@ -30,6 +30,7 @@ import {
   PDFPageDrawSVGOptions,
   PDFPageDrawTextOptions,
   BlendMode,
+  PDFPageDrawSVGElementOptions,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
 import { StandardFonts } from 'src/api/StandardFonts';
@@ -55,6 +56,7 @@ import {
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
+import { drawSvg } from './svg';
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -1144,16 +1146,16 @@ export default class PDFPage {
 
     // prettier-ignore
     const xScale = (
-        options.width  !== undefined ? options.width / embeddedPage.width
-      : options.xScale !== undefined ? options.xScale
-      : 1
+      options.width !== undefined ? options.width / embeddedPage.width
+        : options.xScale !== undefined ? options.xScale
+          : 1
     );
 
     // prettier-ignore
     const yScale = (
-        options.height !== undefined ? options.height / embeddedPage.height
-      : options.yScale !== undefined ? options.yScale
-      : 1
+      options.height !== undefined ? options.height / embeddedPage.height
+        : options.yScale !== undefined ? options.yScale
+          : 1
     );
 
     const contentStream = this.getContentStream();
@@ -1547,6 +1549,33 @@ export default class PDFPage {
     const newFontKey = this.fontKey!;
 
     return { oldFont, oldFontKey, newFont, newFontKey };
+  }
+
+  /**
+   * Draw an SVG on this page. For example:
+   * ```js
+   * const svg = '<svg><path d="M 0,20 L 100,160 Q 130,200 150,120 C 190,-40 200,200 300,150 L 400,90"></path></svg>'
+   *
+   * // Draw svg
+   * page.drawSvg(svg, { x: 25, y: 75 })
+   * ```
+   * @param svg The SVG to be drawn.
+   * @param options The options to be used when drawing the SVG.
+   */
+  drawSvg(svg: string, options: PDFPageDrawSVGElementOptions = {}): void {
+    assertIs(svg, 'svg', ['string']);
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.width, 'options.width', ['number']);
+    assertOrUndefined(options.height, 'options.height', ['number']);
+
+    drawSvg(this, svg, {
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      fonts: options.fonts,
+      width: options.width,
+      height: options.height,
+    });
   }
 
   private getFont(): [PDFFont, string] {
