@@ -41,7 +41,8 @@ describe(`PDFImage`, () => {
       const ref = pdfDoc.context.nextRef();
       const pdfImage = PDFImage.of(ref, pdfDoc, embedder);
 
-      const task = () => pdfImage['embedTask'];
+      // prettier-ignore
+      const task = () => pdfImage['embedTask']
 
       expect(task()).toBeUndefined();
 
