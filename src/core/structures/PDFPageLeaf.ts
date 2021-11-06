@@ -150,14 +150,47 @@ class PDFPageLeaf extends PDFDict {
     Font.set(name, fontDictRef);
   }
 
+  newFontDictionaryKey(tag: string): PDFName {
+    const { Font } = this.normalizedEntries();
+    return Font.uniqueKey(tag);
+  }
+
+  newFontDictionary(tag: string, fontDictRef: PDFRef): PDFName {
+    const key = this.newFontDictionaryKey(tag);
+    this.setFontDictionary(key, fontDictRef);
+    return key;
+  }
+
   setXObject(name: PDFName, xObjectRef: PDFRef): void {
     const { XObject } = this.normalizedEntries();
     XObject.set(name, xObjectRef);
   }
 
+  newXObjectKey(tag: string): PDFName {
+    const { XObject } = this.normalizedEntries();
+    return XObject.uniqueKey(tag);
+  }
+
+  newXObject(tag: string, xObjectRef: PDFRef): PDFName {
+    const key = this.newXObjectKey(tag);
+    this.setXObject(key, xObjectRef);
+    return key;
+  }
+
   setExtGState(name: PDFName, extGStateRef: PDFRef | PDFDict): void {
     const { ExtGState } = this.normalizedEntries();
     ExtGState.set(name, extGStateRef);
+  }
+
+  newExtGStateKey(tag: string): PDFName {
+    const { ExtGState } = this.normalizedEntries();
+    return ExtGState.uniqueKey(tag);
+  }
+
+  newExtGState(tag: string, extGStateRef: PDFRef | PDFDict): PDFName {
+    const key = this.newExtGStateKey(tag);
+    this.setExtGState(key, extGStateRef);
+    return key;
   }
 
   ascend(visitor: (node: PDFPageTree | PDFPageLeaf) => any): void {
