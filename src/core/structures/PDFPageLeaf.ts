@@ -150,6 +150,17 @@ class PDFPageLeaf extends PDFDict {
     Font.set(name, fontDictRef);
   }
 
+  newFontDictionaryKey(tag: string): PDFName {
+    const { Font } = this.normalizedEntries();
+    return Font.uniqueKey(tag);
+  }
+
+  newFontDictionary(tag: string, fontDictRef: PDFRef): PDFName {
+    const key = this.newFontDictionaryKey(tag);
+    this.setFontDictionary(key, fontDictRef);
+    return key;
+  }
+
   setXObject(name: PDFName, xObjectRef: PDFRef): void {
     const { XObject } = this.normalizedEntries();
     XObject.set(name, xObjectRef);

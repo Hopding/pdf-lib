@@ -100,7 +100,7 @@ export default class PDFPage {
   /** The document to which this page belongs. */
   readonly doc: PDFDocument;
 
-  private fontKey?: string;
+  private fontKey?: PDFName;
   private font?: PDFFont;
   private fontSize = 24;
   private fontColor = rgb(0, 0, 0) as Color;
@@ -699,8 +699,7 @@ export default class PDFPage {
     // TODO: Reuse image Font name if we've already added this image to Resources.Fonts
     assertIs(font, 'font', [[PDFFont, 'PDFFont']]);
     this.font = font;
-    this.fontKey = this.doc.context.addRandomSuffix(this.font.name);
-    this.node.setFontDictionary(PDFName.of(this.fontKey), this.font.ref);
+    this.fontKey = this.node.newFontDictionary(this.font.name, this.font.ref);
   }
 
   /**
@@ -1548,7 +1547,7 @@ export default class PDFPage {
     return { oldFont, oldFontKey, newFont, newFontKey };
   }
 
-  private getFont(): [PDFFont, string] {
+  private getFont(): [PDFFont, PDFName] {
     if (!this.font || !this.fontKey) {
       const font = this.doc.embedStandardFont(StandardFonts.Helvetica);
       this.setFont(font);

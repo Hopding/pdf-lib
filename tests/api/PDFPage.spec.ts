@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PDFArray, PDFDocument, PDFName } from 'src/index';
+import { PDFArray, PDFDocument, PDFName, StandardFonts } from 'src/index';
 
 const birdPng = fs.readFileSync('assets/images/greyscale_bird.png');
 
@@ -122,5 +122,30 @@ describe(`PDFDocument`, () => {
     const key2 = page2.node.normalizedEntries().XObject.keys()[1];
     expect(key1).not.toEqual(key2);
     expect(page2.node.normalizedEntries().XObject.keys()).toEqual([key1, key2]);
+  });
+
+  // https://github.com/Hopding/pdf-lib/issues/1075
+  it(`setFont() does not reuse existing Font keys`, async () => {
+    const pdfDoc1 = await PDFDocument.create();
+    const font1 = await pdfDoc1.embedFont(StandardFonts.Helvetica);
+    const page1 = pdfDoc1.addPage();
+
+    expect(page1.node.normalizedEntries().Font.keys().length).toEqual(0);
+    page1.setFont(font1);
+    expect(page1.node.normalizedEntries().Font.keys().length).toEqual(1);
+
+    const key1 = page1.node.normalizedEntries().Font.keys()[0];
+
+    const pdfDoc2 = await PDFDocument.load(await pdfDoc1.save());
+    const font2 = await pdfDoc2.embedFont(StandardFonts.Helvetica);
+    const page2 = pdfDoc2.getPage(0);
+
+    expect(page2.node.normalizedEntries().Font.keys().length).toEqual(1);
+    page2.setFont(font2);
+    expect(page2.node.normalizedEntries().Font.keys().length).toEqual(2);
+
+    const key2 = page2.node.normalizedEntries().Font.keys()[1];
+    expect(key1).not.toEqual(key2);
+    expect(page2.node.normalizedEntries().Font.keys()).toEqual([key1, key2]);
   });
 });
