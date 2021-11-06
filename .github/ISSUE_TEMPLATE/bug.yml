@@ -43,13 +43,15 @@ body:
     attributes:
       label: How can we reproduce the issue?
       description: |
-        Provide **complete**, **executable** code that can be used to reproduce the bug (e.g. a git repo, ZIP file, or JSFiddle). You must attach (or provides links to) any PDFs, images, or other files necessary to run your code.
+        📣 _This is a very important part of your report._
+
+        Provide **complete**, **executable** code that can be used to reproduce the bug (e.g. a git repo, ZIP file, or JSFiddle). You must attach (or provide links to) any PDFs, images, or other files necessary to run your code.
 
         Your code example should be a [SSCCE](http://www.sscce.org/):
         - Short (Small) - Don't include code that is irrelevant or unnecessary.
         - Self Contained - Ensure everything is included, ready to go.
         - Correct - No additional code or changes are needed to copy, paste, and execute it. 
-        - Example - Displays the problem you are reporting.
+        - Example - Demonstrates the problem you are reporting.
 
         Please also type out a list of specific steps we can take to run your code and reproduce the issue. Depending on what you're reporting, this might be simple as running a JSFiddle or downloading a ZIP file and executing `node index.js`. Some issues will require more instructions. 
 
@@ -57,7 +59,7 @@ body:
      
         ⚠️ If your response includes incomplete code or doesn't clearly state how to execute the code you've provided, your report will be closed without comment.
         
-        Thank you for taking the time to create a well-defined report. This helps reduce the demand placed on maintainers trying to help you. We want to make this a pleasant, efficient process for both you and us! 💖
+        💖 Thank you for taking the time to create a well-defined report! This helps reduce the demand placed on maintainers trying to help you. We want to make this a pleasant, efficient process for both you and us!
     validations:
       required: true
   - type: input
@@ -80,11 +82,11 @@ body:
       required: true
   - type: checkboxes
     attributes:
-      label: Required Reading
+      label: Checklist
       options:
         - label: My report includes a Short, Self Contained, Correct (Compilable) Example.
           required: true
-        - label: I have attached all PDFs, images, and fonts needed to run my SSCCE.
+        - label: I have attached all PDFs, images, and other files needed to run my SSCCE.
           required: true
   - type: textarea
     attributes:
