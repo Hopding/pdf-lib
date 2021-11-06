@@ -182,6 +182,17 @@ class PDFPageLeaf extends PDFDict {
     ExtGState.set(name, extGStateRef);
   }
 
+  newExtGStateKey(tag: string): PDFName {
+    const { ExtGState } = this.normalizedEntries();
+    return ExtGState.uniqueKey(tag);
+  }
+
+  newExtGState(tag: string, extGStateRef: PDFRef | PDFDict): PDFName {
+    const key = this.newExtGStateKey(tag);
+    this.setExtGState(key, extGStateRef);
+    return key;
+  }
+
   ascend(visitor: (node: PDFPageTree | PDFPageLeaf) => any): void {
     visitor(this);
     const Parent = this.Parent();

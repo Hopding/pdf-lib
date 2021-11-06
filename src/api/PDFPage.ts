@@ -1132,8 +1132,10 @@ export default class PDFPage {
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
-    const xObjectKey = this.doc.context.addRandomSuffix('EmbeddedPdfPage', 10);
-    this.node.setXObject(PDFName.of(xObjectKey), embeddedPage.ref);
+    const xObjectKey = this.node.newXObject(
+      'EmbeddedPdfPage',
+      embeddedPage.ref,
+    );
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
