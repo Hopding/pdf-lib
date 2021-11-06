@@ -155,6 +155,17 @@ class PDFPageLeaf extends PDFDict {
     XObject.set(name, xObjectRef);
   }
 
+  newXObjectKey(tag: string): PDFName {
+    const { XObject } = this.normalizedEntries();
+    return XObject.uniqueKey(tag);
+  }
+
+  newXObject(tag: string, xObjectRef: PDFRef): PDFName {
+    const key = this.newXObjectKey(tag);
+    this.setXObject(key, xObjectRef);
+    return key;
+  }
+
   setExtGState(name: PDFName, extGStateRef: PDFRef | PDFDict): void {
     const { ExtGState } = this.normalizedEntries();
     ExtGState.set(name, extGStateRef);
