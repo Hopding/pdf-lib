@@ -57,7 +57,7 @@ describe(`PDFRadioGroup`, () => {
     expect(historicalFigures.isOffToggleable()).toBe(false);
   });
 
-  it.only(`supports mutualExclusion=true`, async () => {
+  it(`supports mutualExclusion=true`, async () => {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage();
     const form = pdfDoc.getForm();
@@ -103,7 +103,7 @@ describe(`PDFRadioGroup`, () => {
     expect((opt.get(3) as PDFHexString).decodeText()).toBe('qux');
   });
 
-  it.only(`supports mutualExclusion=false`, async () => {
+  it(`supports mutualExclusion=false`, async () => {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage();
     const form = pdfDoc.getForm();
