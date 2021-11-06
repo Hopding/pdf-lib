@@ -1580,7 +1580,7 @@ export default class PDFPage {
     opacity?: number;
     borderOpacity?: number;
     blendMode?: BlendMode;
-  }): string | undefined {
+  }): PDFName | undefined {
     const { opacity, borderOpacity, blendMode } = options;
 
     if (
@@ -1591,8 +1591,6 @@ export default class PDFPage {
       return undefined;
     }
 
-    const key = this.doc.context.addRandomSuffix('GS', 10);
-
     const graphicsState = this.doc.context.obj({
       Type: 'ExtGState',
       ca: opacity,
@@ -1600,7 +1598,7 @@ export default class PDFPage {
       BM: blendMode,
     });
 
-    this.node.setExtGState(PDFName.of(key), graphicsState);
+    const key = this.node.newExtGState('GS', graphicsState);
 
     return key;
   }
