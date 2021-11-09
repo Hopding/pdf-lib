@@ -3,38 +3,23 @@ import { openPdf, Reader } from './open';
 import { PDFDocument } from 'src/index';
 
 (async () => {
-  // This should be a Uint8Array or ArrayBuffer
-  // This data can be obtained in a number of different ways
-  // If your running in a Node environment, you could use fs.readFile()
-  // In the browser, you could make a fetch() call and use res.arrayBuffer()
-  const existingPdfBytes = fs.readFileSync('assets/pdfs/with_annots.pdf');
+  const pdfDoc1 = await PDFDocument.create();
+  const image1 = await pdfDoc1.embedPng(
+    fs.readFileSync('assets/images/mario_emblem.png'),
+  );
+  const page1 = pdfDoc1.addPage();
+  page1.drawImage(image1, { ...image1.scale(1.0) });
 
-  // Load a PDFDocument without updating its existing metadata
-  const pdfDoc = await PDFDocument.load(existingPdfBytes);
-  const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+  const pdfDoc1Bytes = await pdfDoc1.save();
 
-  // Print all available viewer preference fields
-  console.log('HideToolbar:', viewerPrefs.getHideToolbar());
-  console.log('HideMenubar:', viewerPrefs.getHideMenubar());
-  console.log('HideWindowUI:', viewerPrefs.getHideWindowUI());
-  console.log('FitWindow:', viewerPrefs.getFitWindow());
-  console.log('CenterWindow:', viewerPrefs.getCenterWindow());
-  console.log('DisplayDocTitle:', viewerPrefs.getDisplayDocTitle());
-  console.log('NonFullScreenPageMode:', viewerPrefs.getNonFullScreenPageMode());
-  console.log('ReadingDirection:', viewerPrefs.getReadingDirection());
-  console.log('PrintScaling:', viewerPrefs.getPrintScaling());
-  console.log('Duplex:', viewerPrefs.getDuplex());
-  console.log('PickTrayByPDFSize:', viewerPrefs.getPickTrayByPDFSize());
-  console.log('PrintPageRange:', viewerPrefs.getPrintPageRange());
-  console.log('NumCopies:', viewerPrefs.getNumCopies());
+  const pdfDoc2 = await PDFDocument.load(pdfDoc1Bytes);
+  const image2 = await pdfDoc2.embedPng(
+    fs.readFileSync('assets/images/minions_banana_alpha.png'),
+  );
+  const page2 = pdfDoc2.getPage(0);
+  page2.drawImage(image2, { ...image2.scale(0.5), x: 100, y: 100 });
 
-  // Serialize the PDFDocument to bytes (a Uint8Array)
-  const pdfBytes = await pdfDoc.save();
-
-  // For example, `pdfBytes` can be:
-  //   • Written to a file in Node
-  //   • Downloaded from the browser
-  //   • Rendered in an <iframe>
+  const pdfBytes = await pdfDoc2.save();
 
   fs.writeFileSync('out.pdf', pdfBytes);
   openPdf('out.pdf', Reader.Preview);

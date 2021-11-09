@@ -138,7 +138,7 @@ describe(`PDFDict`, () => {
     );
   });
 
-  it(`return "undefined" if the underlying value is "PDFNull"`, () => {
+  it(`returns "undefined" if the underlying value is "PDFNull"`, () => {
     const dict = context.obj({ foo: null });
     dict.set(PDFName.of('Bar'), PDFNull);
     context.assign(PDFRef.of(21), PDFNull);
@@ -163,5 +163,33 @@ describe(`PDFDict`, () => {
     expect(dict.lookupMaybe(PDFName.of('foo'), PDFDict)).toBe(undefined);
     expect(dict.lookupMaybe(PDFName.of('Bar'), PDFDict)).toBe(undefined);
     expect(dict.lookupMaybe(PDFName.of('qux'), PDFDict)).toBe(undefined);
+  });
+
+  // https://github.com/Hopding/pdf-lib/issues/1075
+  it(`can generate new keys that don't conflict with existing ones`, () => {
+    const anotherContext = PDFContext.create();
+    const anotherDict = anotherContext.obj({});
+    const anotherKey = anotherDict.uniqueKey();
+
+    const dict = context.obj({});
+    expect(dict.keys().length).toBe(0);
+
+    dict.set(anotherKey, context.obj('boing'));
+    expect(dict.keys().length).toBe(1);
+
+    const key1 = dict.uniqueKey();
+    dict.set(key1, context.obj('beep'));
+    expect(dict.keys().length).toBe(2);
+
+    const key2 = dict.uniqueKey();
+    dict.set(key2, context.obj('boop'));
+    expect(dict.keys().length).toBe(3);
+
+    const key3 = dict.uniqueKey();
+    dict.set(key3, context.obj('baap'));
+    expect(dict.keys().length).toBe(4);
+
+    expect(new Set(dict.keys()).size).toBe(4);
+    expect(dict.keys()).toEqual([anotherKey, key1, key2, key3]);
   });
 });

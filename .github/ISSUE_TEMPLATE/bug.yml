@@ -5,27 +5,20 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to submit a bug report!
+        Thanks for taking the time to submit a bug report! 😃
         * Be sure to answer **all** of the questions below.
         * Provide lots of detail. Too much info is better than not enough.
         * If we can't reproduce the issue, we can't fix it.
 
-        Please help us help you by reading the following posts before submitting your report! 😃
-        * [www.sscce.org](http://www.sscce.org/)
-        * [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html)
+        If you've never created an issue on GitHub before, you might find these links helpful:
         * [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts)
+        * [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html)
 
         You can read [MAINTAINERSHIP.md](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md) to learn more about how this repo is maintained.
   - type: textarea
     attributes:
       label: What were you trying to do?
       description: Clearly describe what you were trying to do when you found this bug.
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Why were you trying to do this?
-      description: Explain why you were trying to do this.
     validations:
       required: true
   - type: textarea
@@ -50,17 +43,23 @@ body:
     attributes:
       label: How can we reproduce the issue?
       description: |
-        Type out a list of specific steps we can take to reproduce the bug you've found. Your response must include both prose and code snippets. You must attach (or provides links to) any PDFs, images, or other files necessary to complete the steps.
-        
+        📣 _This is a very important part of your report._
+
+        Provide **complete**, **executable** code that can be used to reproduce the bug (e.g. a git repo, ZIP file, or JSFiddle). You must attach (or provide links to) any PDFs, images, or other files necessary to run your code.
+
+        Your code example should be a [SSCCE](http://www.sscce.org/):
+        - Short (Small) - Don't include code that is irrelevant or unnecessary.
+        - Self Contained - Ensure everything is included, ready to go.
+        - Correct - No additional code or changes are needed to copy, paste, and execute it. 
+        - Example - Demonstrates the problem you are reporting.
+
+        Please also type out a list of specific steps we can take to run your code and reproduce the issue. Depending on what you're reporting, this might be simple as running a JSFiddle or downloading a ZIP file and executing `node index.js`. Some issues will require more instructions. 
+
         > If you are unable to share certain files (e.g. confidential PDFs), then state this in your response. Be prepared to share the files privately (e.g. via email). If you are unable to do this then we probably can't fix the issue.
-
-        Your response should include **complete**, **executable** code, ideally in the form of a git repo. Read [www.sscce.org](http://www.sscce.org/) to learn how to create a Short, Self Contained, Correct (Compilable) Example.
-
-        Please also read [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html) and [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts). 
-
-        > We understand this is a nontrivial amount of reading. However, it's important that you create a well-defined report in order to reduce the demand placed on maintainers trying to help you. We want to make this a pleasant, efficient process for both you and us! 💖
-
-        If your response only includes incomplete code or doesn't clearly state how to execute the code you've provided, your report will be closed without comment.
+     
+        ⚠️ If your response includes incomplete code or doesn't clearly state how to execute the code you've provided, your report will be closed without comment.
+        
+        💖 Thank you for taking the time to create a well-defined report! This helps reduce the demand placed on maintainers trying to help you. We want to make this a pleasant, efficient process for both you and us!
     validations:
       required: true
   - type: input
@@ -83,15 +82,11 @@ body:
       required: true
   - type: checkboxes
     attributes:
-      label: Required Reading
+      label: Checklist
       options:
-        - label: I have read [www.sscce.org](http://www.sscce.org/).
-          required: true
         - label: My report includes a Short, Self Contained, Correct (Compilable) Example.
           required: true
-        - label: I have read [Smart Questions](http://catb.org/~esr/faqs/smart-questions.html).
-          required: true
-        - label: I have read [45 GitHub Issues Dos and Don'ts](https://davidwalsh.name/45-github-issues-dos-donts).
+        - label: I have attached all PDFs, images, and other files needed to run my SSCCE.
           required: true
   - type: textarea
     attributes:
