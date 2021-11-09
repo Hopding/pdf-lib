@@ -1,92 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="
+
+<head>
+  <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' 'unsafe-inline' blob: resource:;
         object-src 'self' blob:;
         frame-src 'self' blob:;
-      "
-    />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
-    <title>Test 19</title>
-    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
-    <script type="text/javascript" src="/apps/web/utils.js"></script>
-  </head>
-  <body>
-    <div id="button-container">
-      <button onclick="window.location.href = '/apps/web/test3.html'">
-        Prev
-      </button>
-      <button onclick="test()">Run Test</button>
-      <button onclick="window.location.href = '/apps/web/test5.html'">
-        Next
-      </button>
-    </div>
-    <!-- <div  ></div> -->
-    <iframe id="iframe"></iframe>
-  </body>
+      " />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+  <title>Test 19</title>
+  <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+  <script type="text/javascript" src="/apps/web/utils.js"></script>
+</head>
 
-  <script type="text/javascript">
-    // startFpsTracker('animation-target');
+<body>
+  <div id="button-container">
+    <button onclick="window.location.href = '/apps/web/test3.html'">
+      Prev
+    </button>
+    <button onclick="test()">Run Test</button>
+    <button onclick="window.location.href = '/apps/web/test5.html'">
+      Next
+    </button>
+  </div>
+  <!-- <div  ></div> -->
+  <iframe id="iframe"></iframe>
+</body>
 
-    const renderInIframe = (pdfBytes) => {
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const blobUrl = URL.createObjectURL(blob);
-      document.getElementById('iframe').src = blobUrl;
-    };
+<script type="text/javascript">
+  // startFpsTracker('animation-target');
 
-    async function test() {
-      const {
-        PDFDocument,
-        PDFPage,
-        radians,
-        StandardFonts,
-        rgb,
-        degrees,
-      } = PDFLib;
+  const renderInIframe = (pdfBytes) => {
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const blobUrl = URL.createObjectURL(blob);
+    document.getElementById('iframe').src = blobUrl;
+  };
 
-      const pdfDoc = await PDFDocument.create();
-      const firstPage = pdfDoc.addPage([1000, 1000]);
+  async function test() {
+    const {
+      PDFDocument,
+      PDFPage,
+      radians,
+      StandardFonts,
+      rgb,
+      degrees,
+    } = PDFLib;
 
-      const fontSize = 20;
+    const pdfDoc = await PDFDocument.create();
+    const firstPage = pdfDoc.addPage([1000, 1000]);
 
-      const svg = `
+    const fontSize = 20;
+
+    const svg = `
+      <svg version="1.1"
+        width="300" height="200"
+        xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="red" />
+        <circle cx="150" cy="100" r="80" fill="green" />
+        <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
+      </svg>
       `;
 
-      Array(10)
-        .fill(1)
-        .map((v, i) => i)
-        .forEach((v) => {
-          firstPage.drawText('----' + v, {
-            x: 5,
-            y: v * 100,
-            size: 20,
-          });
+    Array(10)
+      .fill(1)
+      .map((v, i) => i)
+      .forEach((v) => {
+        firstPage.drawText('----' + v, {
+          x: 5,
+          y: v * 100,
+          size: 20,
         });
-      Array(100)
-        .fill(1)
-        .map((v, i) => i)
-        .forEach((v) => {
-          firstPage.drawText(v % 5 == 0 ? '---' : '--', {
-            x: 5,
-            y: v * 10,
-            size: 20,
-          });
+      });
+    Array(100)
+      .fill(1)
+      .map((v, i) => i)
+      .forEach((v) => {
+        firstPage.drawText(v % 5 == 0 ? '---' : '--', {
+          x: 5,
+          y: v * 10,
+          size: 20,
         });
-
-      firstPage.drawSvg(svg, {
-        x: 100,
-        y: 800,
       });
 
-      const pdfBytes = await pdfDoc.save();
+    firstPage.drawSvg(svg, {
+      x: 100,
+      y: 800,
+    });
 
-      renderInIframe(pdfBytes);
-    }
-  </script>
+    const pdfBytes = await pdfDoc.save();
+
+    renderInIframe(pdfBytes);
+  }
+</script>
+
 </html>

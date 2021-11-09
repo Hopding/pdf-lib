@@ -13,6 +13,7 @@ import { LineCapStyle, LineJoinStyle } from './operators';
 import { Rectangle, Point, Segment } from 'src/utils/elements';
 import { getIntersections } from 'src/utils/intersections';
 import { distanceCoords, isEqual, distance } from 'src/utils/maths';
+
 interface Position {
   x: number;
   y: number;
@@ -155,7 +156,10 @@ const runnersToPage = (
     const anchor = element.svgAttributes.textAnchor;
     const text = element.childNodes[0].text;
     const fontSize = element.svgAttributes.fontSize || 12;
-    const textWidth = (text.length * fontSize) / 2; // We try to approx the width of the text
+    const font = options.fonts && element.svgAttributes.fontFamily
+      ? options.fonts[element.svgAttributes.fontFamily]
+      : undefined
+    const textWidth = (font || page.getFont()[0]).widthOfTextAtSize(text, fontSize)
     const offset =
       anchor === 'middle' ? textWidth / 2 : anchor === 'end' ? textWidth : 0;
     const point = new Point({
@@ -179,10 +183,7 @@ const runnersToPage = (
       page.drawText(text, {
         x: point.x,
         y: point.y,
-        font:
-          options.fonts && element.svgAttributes.fontFamily
-            ? options.fonts[element.svgAttributes.fontFamily]
-            : undefined,
+        font,
         size: fontSize,
         color: element.svgAttributes.fill,
         opacity: element.svgAttributes.fillOpacity,
@@ -275,8 +276,8 @@ const runnersToPage = (
           const endInstruction = isEndInside
             ? ''
             : isLocalInstruction
-            ? `M${normalizedNext.x},${normalizedNext.y}`
-            : `M${params[0]},${params[1]}`;
+              ? `M${normalizedNext.x},${normalizedNext.y}`
+              : `M${params[0]},${params[1]}`;
           return {
             point: nextPoint,
             command: `${startInstruction} L${endPoint.x},${endPoint.y} ${endInstruction} `,
@@ -682,7 +683,7 @@ const parseAttributes = (
         const pageYDirection = -1;
         newInherited.rotation = degrees(
           pageYDirection * args[0] * Math.sign(xDirection * yDirection) +
-            (inherited.rotation?.angle || 0),
+          (inherited.rotation?.angle || 0),
         );
         svgAttributes.rotate = newInherited.rotation;
       }

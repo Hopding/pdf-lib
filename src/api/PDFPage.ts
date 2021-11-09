@@ -1578,7 +1578,7 @@ export default class PDFPage {
     });
   }
 
-  private getFont(): [PDFFont, PDFName] {
+  getFont(): [PDFFont, PDFName] {
     if (!this.font || !this.fontKey) {
       const font = this.doc.embedStandardFont(StandardFonts.Helvetica);
       this.setFont(font);
