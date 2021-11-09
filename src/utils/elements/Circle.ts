@@ -5,33 +5,32 @@ import {
   minus,
   plus,
   times,
-  unitVector
-} from '../maths'
+  unitVector,
+} from '../maths';
 
-import GraphElement from './GraphElement'
-import Point from './Point'
-export default class Circle extends GraphElement{
-  static type = 'Circle'
-  O: Point
-  r: number
+import GraphElement from './GraphElement';
+import Point from './Point';
+export default class Circle extends GraphElement {
+  O: Point;
+  r: number;
 
   constructor(O: Point = new Point(), r = 1) {
-    super()
-    this.O = O
-    this.r = r
+    super();
+    this.O = O;
+    this.r = r;
   }
 
   ray() {
-    return this.r
+    return this.r;
   }
 
   center() {
-    return this.O
+    return this.O;
   }
 
   /** This is used to standardize type Circle | Arc */
   getCircle() {
-    return this
+    return this;
   }
 
   isEqual(element: GraphElement): boolean {
@@ -39,18 +38,18 @@ export default class Circle extends GraphElement{
       element instanceof Circle &&
       this.center().isEqual(element.center()) &&
       isEqual(this.ray(), element.ray())
-    )
+    );
   }
 
   includes(P: Point) {
-    return isEqual(distance(this.center(), P), this.ray())
+    return isEqual(distance(this.center(), P), this.ray());
   }
 
   orthoProjection(P: Point) {
-    const center = this.center().toCoords()
-    const coords = P.toCoords()
-    if (distanceCoords(coords, center) < this.ray()) return P
-    const vect = times(unitVector(minus(coords, center)), this.ray())
-    return new Point(plus(center, vect))
+    const center = this.center().toCoords();
+    const coords = P.toCoords();
+    if (distanceCoords(coords, center) < this.ray()) return P;
+    const vect = times(unitVector(minus(coords, center)), this.ray());
+    return new Point(plus(center, vect));
   }
 }

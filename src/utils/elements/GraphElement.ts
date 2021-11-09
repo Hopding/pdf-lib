@@ -1,15 +1,14 @@
-import { distance } from '../maths'
+import { distance } from '../maths';
 
-import Point from './Point'
+import Point from './Point';
 
 export default abstract class GraphElement {
+  abstract isEqual(element: GraphElement): boolean;
 
-  abstract isEqual(element: GraphElement): boolean
-
-  abstract orthoProjection(P: Point): Point
+  abstract orthoProjection(P: Point): Point;
 
   distance(P: Point) {
-    const H = this.orthoProjection(P)
-    return distance(H, P)
+    const H = this.orthoProjection(P);
+    return distance(H, P);
   }
 }
