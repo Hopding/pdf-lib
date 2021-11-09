@@ -44,8 +44,7 @@ export const intersections = (
 export const intersection = (
   A: GraphicElement,
   B: GraphicElement,
-): Coordinates | undefined =>
-  intersections(A, B)[0];
+): Coordinates | undefined => intersections(A, B)[0];
 
 const intersectionsLine = (
   A: Line,

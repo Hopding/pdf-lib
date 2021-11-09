@@ -47,7 +47,9 @@ const openPdf = (path: string, _reader?: string) => {
   } else if (process.platform === 'linux') {
     execSync(`xdg-open ${path}`);
   } else {
-    console.warn(`No script found for ${process.platform} platform. Please report this.`)
+    console.warn(
+      `No script found for ${process.platform} platform. Please report this.`,
+    );
   }
 };
 

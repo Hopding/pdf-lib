@@ -156,10 +156,14 @@ const runnersToPage = (
     const anchor = element.svgAttributes.textAnchor;
     const text = element.childNodes[0].text;
     const fontSize = element.svgAttributes.fontSize || 12;
-    const font = options.fonts && element.svgAttributes.fontFamily
-      ? options.fonts[element.svgAttributes.fontFamily]
-      : undefined
-    const textWidth = (font || page.getFont()[0]).widthOfTextAtSize(text, fontSize)
+    const font =
+      options.fonts && element.svgAttributes.fontFamily
+        ? options.fonts[element.svgAttributes.fontFamily]
+        : undefined;
+    const textWidth = (font || page.getFont()[0]).widthOfTextAtSize(
+      text,
+      fontSize,
+    );
     const offset =
       anchor === 'middle' ? textWidth / 2 : anchor === 'end' ? textWidth : 0;
     const point = new Point({
@@ -276,8 +280,8 @@ const runnersToPage = (
           const endInstruction = isEndInside
             ? ''
             : isLocalInstruction
-              ? `M${normalizedNext.x},${normalizedNext.y}`
-              : `M${params[0]},${params[1]}`;
+            ? `M${normalizedNext.x},${normalizedNext.y}`
+            : `M${params[0]},${params[1]}`;
           return {
             point: nextPoint,
             command: `${startInstruction} L${endPoint.x},${endPoint.y} ${endInstruction} `,
@@ -683,7 +687,7 @@ const parseAttributes = (
         const pageYDirection = -1;
         newInherited.rotation = degrees(
           pageYDirection * args[0] * Math.sign(xDirection * yDirection) +
-          (inherited.rotation?.angle || 0),
+            (inherited.rotation?.angle || 0),
         );
         svgAttributes.rotate = newInherited.rotation;
       }
