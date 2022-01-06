@@ -18,7 +18,7 @@ class BaseParser {
   }
 
   protected parseRawInt(): number {
-    let value = '';
+    let value = '0';
 
     while (!this.bytes.done()) {
       const byte = this.bytes.peek();
