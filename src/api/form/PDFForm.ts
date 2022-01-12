@@ -45,6 +45,7 @@ import { assertIs, Cache, assertOrUndefined } from 'src/utils';
 
 export interface FlattenOptions {
   updateFieldAppearances: boolean;
+  removeField?: boolean;
 }
 
 /**
@@ -534,7 +535,12 @@ export default class PDFForm {
    * form.flatten();
    * ```
    */
-  flatten(options: FlattenOptions = { updateFieldAppearances: true }) {
+  flatten(
+    options: FlattenOptions = {
+      updateFieldAppearances: true,
+      removeField: true,
+    },
+  ) {
     if (options.updateFieldAppearances) {
       this.updateFieldAppearances();
     }
@@ -564,8 +570,41 @@ export default class PDFForm {
         page.pushOperators(...operators);
       }
 
-      this.removeField(field);
+      if (options.removeField !== false) {
+        this.removeField(field);
+      } else {
+        this.hideField(field);
+      }
     }
+  }
+
+  /**
+   * Hide a field by removing its reference on pages,
+   * this is useful during the flattening process particularly
+   * if we only want to hide the field but preverse the accessibility tag reference to a form field object
+   *
+   * For example:
+   * ```js
+   * const form = pdfDoc.getForm();
+   * const ageField = form.getFields().find(x => x.getName() === 'Age');
+   * form.hideField(ageField);
+   * ```
+   */
+  hideField(field: PDFField) {
+    const widgets = field.acroField.getWidgets();
+    const pages: Set<PDFPage> = new Set();
+
+    for (let i = 0, len = widgets.length; i < len; i++) {
+      const widget = widgets[i];
+      const widgetRef = this.findWidgetAppearanceRef(field, widget);
+
+      const page = this.findWidgetPage(widget);
+      pages.add(page);
+
+      page.node.removeAnnot(widgetRef);
+    }
+
+    pages.forEach((page) => page.node.removeAnnot(field.ref));
   }
 
   /**
