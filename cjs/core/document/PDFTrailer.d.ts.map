@@ -1,0 +1,1 @@
+{"version":3,"file":"PDFTrailer.d.ts","sourceRoot":"","sources":["../../../src/core/document/PDFTrailer.ts"],"names":[],"mappings":"AAGA,cAAM,UAAU;IACd,MAAM,CAAC,4BAA4B,WAAY,MAAM,gBAC5B;IAEzB,OAAO,CAAC,QAAQ,CAAC,cAAc,CAAS;IAExC,OAAO;IAIP,QAAQ,IAAI,MAAM;IAIlB,WAAW,IAAI,MAAM;IAIrB,aAAa,CAAC,MAAM,EAAE,UAAU,EAAE,MAAM,EAAE,MAAM,GAAG,MAAM;CAyB1D;AAED,eAAe,UAAU,CAAC"}

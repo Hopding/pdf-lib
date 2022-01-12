@@ -1,0 +1,1 @@
+{"version":3,"file":"PDFObject.d.ts","sourceRoot":"","sources":["../../../src/core/objects/PDFObject.ts"],"names":[],"mappings":"AACA,OAAO,UAAU,sBAA4B;AAE7C,cAAM,SAAS;IACb,KAAK,CAAC,QAAQ,CAAC,EAAE,UAAU,GAAG,SAAS;IAIvC,QAAQ,IAAI,MAAM;IAIlB,WAAW,IAAI,MAAM;IAIrB,aAAa,CAAC,OAAO,EAAE,UAAU,EAAE,OAAO,EAAE,MAAM,GAAG,MAAM;CAG5D;AAED,eAAe,SAAS,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"PDFAcroSignature.d.ts","sourceRoot":"","sources":["../../../src/core/acroform/PDFAcroSignature.ts"],"names":[],"mappings":"AAAA,OAAO,OAAO,2BAAiC;AAC/C,OAAO,MAAM,0BAAgC;AAC7C,OAAO,eAAe,0BAA0C;AAEhE,cAAM,gBAAiB,SAAQ,eAAe;IAC5C,MAAM,CAAC,QAAQ,SAAU,OAAO,OAAO,MAAM,sBACX;CACnC;AAED,eAAe,gBAAgB,CAAC"}

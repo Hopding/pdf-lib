@@ -1,0 +1,1 @@
+{"version":3,"file":"PDFNull.d.ts","sourceRoot":"","sources":["../../../src/core/objects/PDFNull.ts"],"names":[],"mappings":"AAAA,OAAO,SAAS,oBAAmC;AAGnD,cAAM,OAAQ,SAAQ,SAAS;IAC7B,MAAM,IAAI,IAAI;IAId,KAAK,IAAI,OAAO;IAIhB,QAAQ,IAAI,MAAM;IAIlB,WAAW,IAAI,MAAM;IAIrB,aAAa,CAAC,MAAM,EAAE,UAAU,EAAE,MAAM,EAAE,MAAM,GAAG,MAAM;CAO1D;;AAED,wBAA6B"}

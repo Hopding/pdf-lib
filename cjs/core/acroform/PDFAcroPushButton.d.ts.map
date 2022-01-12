@@ -1,0 +1,1 @@
+{"version":3,"file":"PDFAcroPushButton.d.ts","sourceRoot":"","sources":["../../../src/core/acroform/PDFAcroPushButton.ts"],"names":[],"mappings":"AAAA,OAAO,OAAO,2BAAiC;AAC/C,OAAO,aAAa,wBAAwC;AAC5D,OAAO,UAAU,sBAA4B;AAC7C,OAAO,MAAM,0BAAgC;AAG7C,cAAM,iBAAkB,SAAQ,aAAa;IAC3C,MAAM,CAAC,QAAQ,SAAU,OAAO,OAAO,MAAM,uBACV;IAEnC,MAAM,CAAC,MAAM,YAAa,UAAU,uBAQlC;CACH;AAED,eAAe,iBAAiB,CAAC"}

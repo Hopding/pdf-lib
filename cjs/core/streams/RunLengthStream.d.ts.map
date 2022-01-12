@@ -1,0 +1,1 @@
+{"version":3,"file":"RunLengthStream.d.ts","sourceRoot":"","sources":["../../../src/core/streams/RunLengthStream.ts"],"names":[],"mappings":"AAQA,OAAO,YAAY,uBAAsC;AACzD,OAAO,EAAE,UAAU,EAAE,iBAAgC;AAErD,cAAM,eAAgB,SAAQ,YAAY;IACxC,OAAO,CAAC,MAAM,CAAa;gBAEf,MAAM,EAAE,UAAU,EAAE,WAAW,CAAC,EAAE,MAAM;IAKpD,SAAS,CAAC,SAAS;CAiCpB;AAED,eAAe,eAAe,CAAC"}
