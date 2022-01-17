@@ -386,7 +386,13 @@ const runnersToPage = (
     });
   },
   async image(element) {
-    const img = await page.doc.embedPng(element.svgAttributes.src!);
+    const { src } = element.svgAttributes;
+    if (!src) return;
+    const isPng = src.match(/\.png(\?|$)|^data:image\/png;base64/gim);
+    const img = isPng
+      ? await page.doc.embedPng(src)
+      : await page.doc.embedJpg(src);
+
     const { x, y, width, height } = getFittingRectangle(
       img.width,
       img.height,
