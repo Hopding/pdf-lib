@@ -490,9 +490,7 @@
         rotate: degrees(-90),
       });
 
-      const [normalPdfBytes] = await Promise.all([
-        fetchBinaryAsset('pdfs/normal.pdf'),
-      ]);
+      const normalPdfBytes = await fetchBinaryAsset('pdfs/normal.pdf')
 
       const [
         embeddedPage1,
