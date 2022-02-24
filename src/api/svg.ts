@@ -246,13 +246,38 @@ const runnersToPage = (
             command: `${command}${params[0]},${params[1]}`,
           };
         }
+        case 'v':
+        case 'V':
+        case 'h':
+        case 'H':
         case 'l':
         case 'L': {
-          const isLocalInstruction = command === 'l';
-          const nextPoint = new Point({
-            x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
-            y: (isLocalInstruction ? origin.y : basePoint.y) + params[1],
-          });
+          const isLocalInstruction = ['l', 'v', 'h'].includes(command);
+          const getNextPoint = () => {
+            switch (command.toLocaleLowerCase()) {
+              case 'l':
+                return new Point({
+                  x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
+                  y: (isLocalInstruction ? origin.y : basePoint.y) + params[1],
+                });
+              case 'v':
+                return new Point({
+                  x: origin.x,
+                  y: (isLocalInstruction ? origin.y : basePoint.y) + params[0],
+                });
+              case 'h':
+                return new Point({
+                  x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
+                  y: origin.y,
+                });
+              default:
+                return new Point({
+                  x: 0,
+                  y: 0,
+                });
+            }
+          }
+          const nextPoint = getNextPoint()
           const normalizedNext = normalizePoint(nextPoint);
 
           let endPoint = new Point({ x: nextPoint.x, y: nextPoint.y });
@@ -315,27 +340,15 @@ const runnersToPage = (
             command: `${command} ${params.map((p) => `${p}`).join()}`,
           };
         }
-        case 'h':
-        case 'H': {
-          const isLocalInstruction = command === 'h';
+        case 'q':
+        case 'Q': {
+          const isLocalInstruction = command === 'q';
+          const [, , x, y] = params;
           const nextPoint = new Point({
-            x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
-            y: origin.y,
+            x: (isLocalInstruction ? origin.x : basePoint.x) + x,
+            y: (isLocalInstruction ? origin.y : basePoint.y) + y,
           });
-          // TODO: implement the code to fit the LineTo instructions into the viewbox
-          return {
-            point: nextPoint,
-            command: `${command} ${params.map((p) => `${p}`).join()}`,
-          };
-        }
-        case 'v':
-        case 'V': {
-          const isLocalInstruction = command === 'v';
-          const nextPoint = new Point({
-            x: origin.x,
-            y: (isLocalInstruction ? origin.y : basePoint.y) + params[0],
-          });
-          // TODO: implement the code to fit the LineTo instructions into the viewbox
+          // TODO: implement the code to fit the Quadratic Bézier Curve instructions into the viewbox
           return {
             point: nextPoint,
             command: `${command} ${params.map((p) => `${p}`).join()}`,
@@ -737,7 +750,7 @@ const parseAttributes = (
   }
   // We convert all the points from the path
   if (attributes.d) {
-    const { x: xOrigin, y: yOrigin } = converter.point(0, 0);
+    const { x: xOrigin, y: yOrigin } = newConverter.point(0, 0);
 
     svgAttributes.d = attributes.d?.replace(
       /(l|m|s|t|q|c|z|a|v|h)([0-9,e\s.-]*)/gi,
@@ -756,8 +769,8 @@ const parseAttributes = (
               .map((value) => {
                 const coord = parseFloatValue(value) || 1;
                 return letter === letter.toLowerCase()
-                  ? 'v' + converter.size(1, coord).height * -1
-                  : 'V' + (converter.point(1, coord).y - yOrigin);
+                  ? 'v' + newConverter.size(1, coord).height * -1
+                  : 'V' + (newConverter.point(1, coord).y - yOrigin);
               })
               .join(' ');
           }
@@ -766,8 +779,8 @@ const parseAttributes = (
               .map((value) => {
                 const coord = parseFloatValue(value) || 1;
                 return letter === letter.toLowerCase()
-                  ? 'h' + converter.size(coord, 1).width
-                  : 'H' + (converter.point(coord, 1).x - xOrigin);
+                  ? 'h' + newConverter.size(coord, 1).width
+                  : 'H' + (newConverter.point(coord, 1).x - xOrigin);
               })
               .join(' ');
           }
@@ -788,21 +801,21 @@ const parseAttributes = (
                 const realRy = parseFloatValue(ryPixel, inherited.height) || 0;
                 const realX = parseFloatValue(xPixel, inherited.width) || 0;
                 const realY = parseFloatValue(yPixel, inherited.height) || 0;
-                const { width: newRx, height: newRy } = converter.size(
+                const { width: newRx, height: newRy } = newConverter.size(
                   realRx,
                   realRy,
                 );
                 let newRealX;
                 let newRealY;
                 if (letter === letter.toLowerCase()) {
-                  const { width: newWidth, height: newHeight } = converter.size(
+                  const { width: newWidth, height: newHeight } = newConverter.size(
                     realX,
                     realY,
                   );
                   newRealX = newWidth;
                   newRealY = -newHeight;
                 } else {
-                  const { x: pX, y: pY } = converter.point(realX, realY);
+                  const { x: pX, y: pY } = newConverter.point(realX, realY);
                   newRealX = pX - xOrigin;
                   newRealY = pY - yOrigin;
                 }
@@ -828,13 +841,13 @@ const parseAttributes = (
               ])
               .map(([xReal, yReal]) => {
                 if (letter === letter!.toLowerCase()) {
-                  const { width: dx, height: dy } = converter.size(
+                  const { width: dx, height: dy } = newConverter.size(
                     xReal,
                     yReal,
                   );
                   return [dx, -dy].join(',');
                 } else {
-                  const { x: xPixel, y: yPixel } = converter.point(
+                  const { x: xPixel, y: yPixel } = newConverter.point(
                     xReal,
                     yReal,
                   );
@@ -1067,12 +1080,8 @@ export const drawSvg = async (
   svg: string,
   options: PDFPageDrawSVGElementOptions,
 ) => {
+  if (!svg) return
   const size = page.getSize();
-  // The y axis of the page is reverted
-  const defaultConverter = {
-    point: (xP: number, yP: number) => ({ x: xP, y: size.height - yP }),
-    size: (w: number, h: number) => ({ width: w, height: h }),
-  };
   const firstChild = parseHtml(svg).firstChild as HTMLElement;
   const x =
     options.x !== undefined ? options.x : parseFloat(firstChild.attributes.x);
@@ -1089,11 +1098,22 @@ export const drawSvg = async (
     options.width !== undefined ? options.width : parseFloat(widthRaw);
   const height =
     options.height !== undefined ? options.height : parseFloat(heightRaw);
+  
+  // it's important to add the viewBox to allow svg resizing through the options
+  if (!attributes.viewBox) {
+    firstChild.setAttribute('viewBox', `0 0 ${widthRaw || width} ${heightRaw || height}`)
+  }
+
+  // The y axis of the page is reverted
+  const defaultConverter = {
+    point: (xP: number, yP: number) => ({ x: xP, y: size.height - yP }),
+    size: (w: number, h: number) => ({ width: w, height: h }),
+  };
   const svgRect = new Rectangle(
     new Point({ x, y }),
     new Point({ x: x + width, y: y - height }),
   );
   const runners = runnersToPage(svgRect, page, options);
-  const elements = parse(svg, options, size, defaultConverter);
+  const elements = parse(firstChild.outerHTML, options, size, defaultConverter);
   elements.forEach((elt) => runners[elt.tagName]?.(elt));
 };
