@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource:;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 19</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test3.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test5.html'">
+        Next
+      </button>
+    </div>
+    <!-- <div  ></div> -->
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    // startFpsTracker('animation-target');
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const {
+        PDFDocument,
+        PDFPage,
+        radians,
+        StandardFonts,
+        rgb,
+        degrees,
+      } = PDFLib;
+
+      const pdfDoc = await PDFDocument.create();
+      const firstPage = pdfDoc.addPage([500, 1000]);
+      // firstPage.setRotation(degrees(90));
+
+      const secondPage = pdfDoc.addPage([500, 1000]);
+      secondPage.setRotation(degrees(90));
+
+      const fontSize = 20;
+
+      const svg = `<svg width='89.60480000000001' height='128.85523199999997'><g transform="translate(0 0)"><svg xmlns='http://www.w3.org/2000/svg' width="3.888" height="107.37935999999999" viewBox="0 0 3.888 107.37935999999999">
+    <path d="M3.888 1 Q1.944 0.9071999999999999 1.944 2.7215999999999996 v49.412879999999994" fill="none" stroke="black" stroke-width="2"/>
+          <path d="M3.888 1 Q1.944 0.9071999999999999 1.944 2.7215999999999996 v49.412879999999994" fill="none" stroke="black" stroke-width="2" transform="translate(0 107.37935999999999) scale(1 -1)"/>
+          <path d="M1.944 52.134479999999996 Q1.944 53.689679999999996 0 53.689679999999996" fill="none" stroke="black" stroke-width="2"/>
+          <path d="M1.944 52.134479999999996 Q1.944 53.689679999999996 0 53.689679999999996" fill="none" stroke="black" stroke-width="2" transform="translate(0 107.37935999999999) scale(1 -1)"/>
+  </svg><g transform="translate(3 0)"><g transform="translate(6.888 0)"><g transform="translate(0 0)"><g transform="translate(0 0)"><g transform="translate(20.162 20)"><g transform="translate(0 0)"><text x='3.1752000000000002' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>x</text></g><g transform="translate(11.3504 0)"><text x='3.5640000000000005' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>=</text></g><g transform="translate(23.4784 0)"><text x='3.0132000000000003' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>1</text></g></g></g><g transform="translate(0 48.689679999999996)"><g transform="translate(20 20)"><g transform="translate(0 0)"><text x='3.3372' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>y</text></g><g transform="translate(11.6744 0)"><text x='3.5640000000000005' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>=</text></g><g transform="translate(23.802400000000002 0)"><text x='3.0132000000000003' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>2</text></g></g></g></g></g></g><g transform="translate(85.7168 0)"><svg xmlns='http://www.w3.org/2000/svg' width="0" height="0" viewBox="0 0 0 0">
+  </svg></g></g></svg>`;
+
+      const drawLines = (page) => {
+        Array(10)
+        .fill(1)
+        .map((v, i) => i)
+        .forEach((v) => {
+          page.drawText('----' + v, {
+            x: 5,
+            y: v * 100,
+            size: 20,
+          });
+        });
+        Array(100)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText(v % 5 == 0 ? '---' : '--', {
+              x: 5,
+              y: v * 10,
+              size: 20,
+            });
+          });
+      }
+      drawLines(firstPage)
+      drawLines(secondPage)
+
+      firstPage.drawSvg(svg, {
+        x: 100,
+        y: 800,
+        width: 67.94697142857142,
+        height: 95.01877028571428,
+      });
+
+      /* secondPage.drawSvg(svg, {
+        x: 100,
+        y: 800,
+      }); */
+
+      const pdfBytes = await pdfDoc.save();
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

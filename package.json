@@ -29,7 +29,8 @@
     "Bj Tecu (https://github.com/btecu)",
     "Brent McSharry (https://github.com/mcshaz)",
     "Tim Knapp (https://github.com/duffyd)",
-    "Ching Chang (https://github.com/ChingChang9)"
+    "Ching Chang (https://github.com/ChingChang9)",
+    "François Billioud (https://github.com/Sharcoux)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
@@ -90,14 +91,17 @@
   "dependencies": {
     "@pdf-lib/standard-fonts": "^1.0.0",
     "@pdf-lib/upng": "^1.0.1",
+    "color": "^3.1.3",
+    "node-html-better-parser": "^1.1.25",
     "pako": "^1.0.11",
-    "tslib": "^1.11.1"
+    "tslib": "^2.1.0"
   },
   "devDependencies": {
     "@pdf-lib/fontkit": "^1.1.0",
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
+    "@types/color": "^3.0.1",
     "@types/jest": "^26.0.0",
     "@types/node-fetch": "^2.5.7",
     "@types/pako": "^1.0.1",
