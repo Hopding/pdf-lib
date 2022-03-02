@@ -1452,6 +1452,7 @@ Check out [MAINTAINERSHIP.md](docs/MAINTAINERSHIP.md) for details on how this re
 - [Working With PDFs in Node.js Using pdf-lib](http://thecodebarbarian.com/working-with-pdfs-in-node-js.html) - a tutorial by Valeri Karpov
 - [Electron app for resizing PDFs](https://github.com/vegarringdal/simple-pdf-resizer) - a tool created by @vegarringdal
 - [PDF Shelter](https://pdfshelter.com) - online PDF manipulation tools by Lucas Morais
+- [Populate medical claim form using pdf-lib](https://www.youtube.com/watch?v=0sfs0AGWU0g&t=14s) - a video by Kalman Hazins
 
 ## Prior Art
 
