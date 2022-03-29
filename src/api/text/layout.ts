@@ -143,18 +143,24 @@ const splitOutLines = (
         let line = '';
         let remainder;
         if (/\s/.test(s)) {
-          line = tokens.map((token, i) => token + (whitespaces[i] ?? '')).join('');
+          line = tokens
+            .map((token, tokenIdx) => token + (whitespaces[tokenIdx] ?? ''))
+            .join('');
           remainder = input.substring(i) || undefined;
         } else {
-          // We're in the middle of a token so go back to the last token and 
+          // We're in the middle of a token so go back to the last token and
           // adjust remainder based on the length of the current incomplete token
-          line = tokens.slice(0, tokens.length - 1).map((token, i) => token + (whitespaces[i] ?? '')).join('');
-          
-          const whitespaceLength = (whitespaces[whitespaces.length - 1] || '').length;
+          line = tokens
+            .slice(0, tokens.length - 1)
+            .map((token, tokenIdx) => token + (whitespaces[tokenIdx] ?? ''))
+            .join('');
+
+          const whitespaceLength = (whitespaces[whitespaces.length - 1] || '')
+            .length;
           const tokenLength = (tokens[tokens.length - 1] || '').length;
           if (whitespaceLength === 0) {
-              // Not able to layout this input within the maxWidth.
-              break;
+            // Not able to layout this input within the maxWidth.
+            break;
           }
           const remainderIndex = i - whitespaceLength - tokenLength;
           remainder = input.substring(remainderIndex) || undefined;
@@ -164,12 +170,12 @@ const splitOutLines = (
           line,
           encoded: font.encodeText(line),
           width: font.widthOfTextAtSize(line, fontSize),
-          remainder
+          remainder,
         };
       }
 
       if (/\s/.test(s)) {
-        // Found a word boundary. 
+        // Found a word boundary.
         // We will add each subsequent character to the current token until we find another word boundary.
         whitespaces.push(s);
         tokens.push('');
