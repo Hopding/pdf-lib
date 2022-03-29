@@ -124,29 +124,67 @@ export interface MultilineTextLayout {
   lineHeight: number;
 }
 
-const lastIndexOfWhitespace = (line: string) => {
-  for (let idx = line.length; idx > 0; idx--) {
-    if (/\s/.test(line[idx])) return idx;
-  }
-  return undefined;
-};
-
 const splitOutLines = (
   input: string,
   maxWidth: number,
   font: PDFFont,
   fontSize: number,
 ) => {
-  let lastWhitespaceIdx = input.length;
-  while (lastWhitespaceIdx > 0) {
-    const line = input.substring(0, lastWhitespaceIdx);
-    const encoded = font.encodeText(line);
-    const width = font.widthOfTextAtSize(line, fontSize);
-    if (width < maxWidth) {
-      const remainder = input.substring(lastWhitespaceIdx) || undefined;
-      return { line, encoded, width, remainder };
+  if (font.widthOfTextAtSize(input, fontSize) > maxWidth) {
+    const tokens: string[] = [''];
+    const whitespaces: string[] = [];
+    let width = 0;
+
+    for (let i = 0; i < input.length; i++) {
+      const s = input[i];
+
+      // If this character puts us over then we're done.
+      if (width + font.widthOfTextAtSize(s, fontSize) >= maxWidth) {
+        let line = '';
+        let remainder;
+        if (/\s/.test(s)) {
+          line = tokens
+            .map((token, tokenIdx) => token + (whitespaces[tokenIdx] ?? ''))
+            .join('');
+          remainder = input.substring(i) || undefined;
+        } else {
+          // We're in the middle of a token so go back to the last token and
+          // adjust remainder based on the length of the current incomplete token
+          line = tokens
+            .slice(0, tokens.length - 1)
+            .map((token, tokenIdx) => token + (whitespaces[tokenIdx] ?? ''))
+            .join('');
+
+          const whitespaceLength = (whitespaces[whitespaces.length - 1] || '')
+            .length;
+          const tokenLength = (tokens[tokens.length - 1] || '').length;
+          if (whitespaceLength === 0) {
+            // Not able to layout this input within the maxWidth.
+            break;
+          }
+          const remainderIndex = i - whitespaceLength - tokenLength;
+          remainder = input.substring(remainderIndex) || undefined;
+        }
+
+        return {
+          line,
+          encoded: font.encodeText(line),
+          width: font.widthOfTextAtSize(line, fontSize),
+          remainder,
+        };
+      }
+
+      if (/\s/.test(s)) {
+        // Found a word boundary.
+        // We will add each subsequent character to the current token until we find another word boundary.
+        whitespaces.push(s);
+        tokens.push('');
+      } else {
+        tokens[tokens.length - 1] += s;
+      }
+
+      width += font.widthOfTextAtSize(s, fontSize);
     }
-    lastWhitespaceIdx = lastIndexOfWhitespace(line) ?? 0;
   }
 
   // We were unable to split the input enough to get a chunk that would fit
