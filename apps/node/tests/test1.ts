@@ -21,6 +21,7 @@ import {
   StandardFonts,
   typedArrayFor,
   AFRelationship,
+  TextRenderingMode,
 } from '../../..';
 
 const ipsumLines = [
