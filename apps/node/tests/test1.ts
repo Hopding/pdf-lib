@@ -645,13 +645,11 @@ export default async (assets: Assets) => {
 
   form.removeField(textField);
 
+  /********************** Page 6 **********************/
   // This page tests different drawing operations as well as adding custom
   // operators to the page content.
 
   const page6 = pdfDoc.addPage([size, size]);
-
-  // Upper-left Quadrant
-  page6.moveTo(0, size / 2);
 
   const text = "These are the test words. "
   page6.drawText(text + 'regular', {
