@@ -14,7 +14,6 @@ import {
   translate,
   LineCapStyle,
   scale,
-  TextRenderingMode,
 } from 'src/api/operators';
 import PDFDocument from 'src/api/PDFDocument';
 import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
@@ -977,11 +976,6 @@ export default class PDFPage {
     assertOrUndefined(options.lineHeight, 'options.lineHeight', ['number']);
     assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
-    assertOrUndefined(options.horizontalScale, 'options.horizontalScale', ['number']);
-    assertOrUndefined(options.wordSpace, 'options.wordSpace', ['number']);
-    assertOrUndefined(options.characterSpace, 'options.characterSpace', ['number']);
-    assertOrUndefined(options.rise, 'options.rise', ['number']);
-    assertIsOneOfOrUndefined(options.renderingMode, 'options.renderingMode', TextRenderingMode);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const { oldFont, newFont, newFontKey } = this.setOrEmbedFont(options.font);
@@ -1016,13 +1010,7 @@ export default class PDFPage {
         x: options.x ?? this.x,
         y: options.y ?? this.y,
         lineHeight: options.lineHeight ?? this.lineHeight,
-        // optional:
         graphicsState: graphicsStateKey,
-        horizontalScale: options.horizontalScale, // defaults to 100
-        wordSpace: options.wordSpace, // defaults to 0
-        characterSpace: options.characterSpace, // defaults to 0
-        rise: options.rise, // defaults to 0
-        renderingMode: options.renderingMode, // defaults to TextRenderingMode.Fill
       }),
     );
 

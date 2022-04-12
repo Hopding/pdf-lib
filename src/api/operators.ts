@@ -213,23 +213,15 @@ export const setFontAndSize = (
   size: number | PDFNumber,
 ) => PDFOperator.of(Ops.SetFontAndSize, [asPDFName(name), asPDFNumber(size)]);
 
-/** @param characterSpace extra space between characters; in unscaled text sapce units; can also be negative **/
 export const setCharacterSpacing = (spacing: number | PDFNumber) =>
   PDFOperator.of(Ops.SetCharacterSpacing, [asPDFNumber(spacing)]);
 
-/**@param wordSpace space "between words" (actually extra space for every ASCII SPACE character); in unscaled text sapce units; can also be negative; NOTE: This only works for fonts that define code 32 (=space) as a single-byte code, according to the standard. (E.g. it works with Helvetica, but not with ubuntuFont.) **/
 export const setWordSpacing = (spacing: number | PDFNumber) =>
   PDFOperator.of(Ops.SetWordSpacing, [asPDFNumber(spacing)]);
 
-/**
- * DEPRECATED: use "setHorizontalScaling" instead 
- * @param squeeze horizontal character spacing */
+/** @param squeeze horizontal character spacing */
 export const setCharacterSqueeze = (squeeze: number | PDFNumber) =>
   PDFOperator.of(Ops.SetTextHorizontalScaling, [asPDFNumber(squeeze)]);
-
-/** @param horizontalScaling horizontal character spacing; value in %; default = 100 **/
-export const setHorizontalScaling = (horizontalScaling: number | PDFNumber) =>
-  PDFOperator.of(Ops.SetTextHorizontalScaling, [asPDFNumber(horizontalScaling)]);
 
 export const setLineHeight = (lineHeight: number | PDFNumber) =>
   PDFOperator.of(Ops.SetTextLineHeight, [asPDFNumber(lineHeight)]);

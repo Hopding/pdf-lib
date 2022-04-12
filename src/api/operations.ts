@@ -31,12 +31,6 @@ import {
   clip,
   endPath,
   appendBezierCurve,
-  TextRenderingMode,
-  setCharacterSpacing, 
-  setHorizontalScaling, 
-  setTextRenderingMode, 
-  setTextRise, 
-  setWordSpacing,
 } from 'src/api/operators';
 import { Rotation, degrees, toRadians } from 'src/api/rotations';
 import { svgPathToOperators } from 'src/api/svgPath';
@@ -53,11 +47,6 @@ export interface DrawTextOptions {
   x: number | PDFNumber;
   y: number | PDFNumber;
   graphicsState?: string | PDFName;
-  horizontalScale?: number | PDFNumber;
-  wordSpace?: number | PDFNumber;
-  characterSpace?: number | PDFNumber;
-  rise?: number | PDFNumber;
-  renderingMode?: TextRenderingMode;
 }
 
 export const drawText = (
@@ -77,11 +66,6 @@ export const drawText = (
       options.x,
       options.y,
     ),
-    options.horizontalScale && setHorizontalScaling(options.horizontalScale),
-    options.wordSpace && setWordSpacing(options.wordSpace),
-    options.characterSpace && setCharacterSpacing(options.characterSpace),
-    options.rise && setTextRise(options.rise),
-    options.renderingMode && setTextRenderingMode(options.renderingMode),
     showText(line),
     endText(),
     popGraphicsState(),
@@ -102,11 +86,6 @@ export const drawLinesOfText = (
     setFillingColor(options.color),
     setFontAndSize(options.font, options.size),
     setLineHeight(options.lineHeight),
-    options.horizontalScale && setHorizontalScaling(options.horizontalScale),
-    options.wordSpace && setWordSpacing(options.wordSpace),
-    options.characterSpace && setCharacterSpacing(options.characterSpace),
-    options.rise && setTextRise(options.rise),
-    options.renderingMode && setTextRenderingMode(options.renderingMode),
     rotateAndSkewTextRadiansAndTranslate(
       toRadians(options.rotate),
       toRadians(options.xSkew),
