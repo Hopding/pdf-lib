@@ -576,6 +576,10 @@ describe(`PDFObjectParser`, () => {
         '<<>>\n\rstream\n\rthingz\n\rendstream',
         '<<\n/Length 8\n>>\nstream\n\rthingz\n\nendstream',
       ],
+      [
+        '<<>>\n\rstream\n\rthingz bitstream\n\rendstream',
+        '<<\n/Length 18\n>>\nstream\n\rthingz bitstream\n\nendstream',
+      ],
     ].forEach(([input, output]) => {
       it(`can parse ${JSON.stringify(input)}`, () => {
         const object = parse(typedArrayFor(input));
