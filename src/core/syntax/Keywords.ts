@@ -1,6 +1,14 @@
 import CharCodes from 'src/core/syntax/CharCodes';
 
-const { Space, CarriageReturn, Newline } = CharCodes;
+const {
+  Space,
+  CarriageReturn,
+  Newline,
+  Tab,
+  LessThan,
+  GreaterThan,
+  BackSlash,
+} = CharCodes;
 
 const stream = [
   CharCodes.s,
@@ -76,6 +84,13 @@ export const Keywords = {
   streamEOF2: [...stream, CarriageReturn, Newline],
   streamEOF3: [...stream, CarriageReturn],
   streamEOF4: [...stream, Newline],
+  embeddedStream1: [Tab, ...stream],
+  embeddedStream2: [Space, ...stream],
+  embeddedStream3: [CarriageReturn, ...stream],
+  embeddedStream4: [Newline, ...stream],
+  embeddedStream5: [LessThan, ...stream],
+  embeddedStream6: [GreaterThan, ...stream],
+  embeddedStream7: [BackSlash, ...stream],
   endstream,
   EOF1endstream: [CarriageReturn, Newline, ...endstream],
   EOF2endstream: [CarriageReturn, ...endstream],
