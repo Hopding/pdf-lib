@@ -1,6 +1,14 @@
 import CharCodes from 'src/core/syntax/CharCodes';
 
-const { Space, CarriageReturn, Newline, Tab, LessThan, GreaterThan, BackSlash } = CharCodes;
+const {
+  Space,
+  CarriageReturn,
+  Newline,
+  Tab,
+  LessThan,
+  GreaterThan,
+  BackSlash,
+} = CharCodes;
 
 const stream = [
   CharCodes.s,
