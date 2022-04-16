@@ -243,14 +243,25 @@ class PDFObjectParser extends BaseParser {
 
   protected findEndOfStreamFallback(startPos: Position) {
     // Move to end of stream, while handling nested streams
+    let acceptUnprefixedStream = true;
     let nestingLvl = 1;
     let end = this.bytes.offset();
 
     while (!this.bytes.done()) {
       end = this.bytes.offset();
 
-      if (this.matchKeyword(Keywords.stream)) {
+      if (
+        this.matchKeyword(Keywords.embeddedStream1) ||
+        this.matchKeyword(Keywords.embeddedStream2) ||
+        this.matchKeyword(Keywords.embeddedStream3) ||
+        this.matchKeyword(Keywords.embeddedStream4) ||
+        this.matchKeyword(Keywords.embeddedStream5) ||
+        this.matchKeyword(Keywords.embeddedStream6) ||
+        this.matchKeyword(Keywords.embeddedStream7) ||
+        (acceptUnprefixedStream && this.matchKeyword(Keywords.stream))
+      ) {
         nestingLvl += 1;
+        acceptUnprefixedStream = true;
       } else if (
         this.matchKeyword(Keywords.EOF1endstream) ||
         this.matchKeyword(Keywords.EOF2endstream) ||
@@ -258,8 +269,10 @@ class PDFObjectParser extends BaseParser {
         this.matchKeyword(Keywords.endstream)
       ) {
         nestingLvl -= 1;
+        acceptUnprefixedStream = true;
       } else {
         this.bytes.next();
+        acceptUnprefixedStream = false;
       }
 
       if (nestingLvl === 0) break;
