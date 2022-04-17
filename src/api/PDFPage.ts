@@ -977,11 +977,19 @@ export default class PDFPage {
     assertOrUndefined(options.lineHeight, 'options.lineHeight', ['number']);
     assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
-    assertOrUndefined(options.horizontalScale, 'options.horizontalScale', ['number']);
+    assertOrUndefined(options.horizontalScale, 'options.horizontalScale', [
+      'number',
+    ]);
     assertOrUndefined(options.wordSpace, 'options.wordSpace', ['number']);
-    assertOrUndefined(options.characterSpace, 'options.characterSpace', ['number']);
+    assertOrUndefined(options.characterSpace, 'options.characterSpace', [
+      'number',
+    ]);
     assertOrUndefined(options.rise, 'options.rise', ['number']);
-    assertIsOneOfOrUndefined(options.renderingMode, 'options.renderingMode', TextRenderingMode);
+    assertIsOneOfOrUndefined(
+      options.renderingMode,
+      'options.renderingMode',
+      TextRenderingMode,
+    );
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
 
     const { oldFont, newFont, newFontKey } = this.setOrEmbedFont(options.font);

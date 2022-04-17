@@ -653,7 +653,7 @@ export default async (assets: Assets) => {
 
   const page6 = pdfDoc.addPage([size, size]);
 
-  const text = "These are the test words. "
+  const text = 'These are the test words. ';
   page6.drawText(text + 'regular', {
     y: size - 20,
     size: 20,
