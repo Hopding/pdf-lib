@@ -1,7 +1,7 @@
 import { Color } from 'src/api/colors';
 import PDFFont from 'src/api/PDFFont';
 import { Rotation } from 'src/api/rotations';
-import { LineCapStyle } from 'src/api/operators';
+import { LineCapStyle, TextRenderingMode } from 'src/api/operators';
 
 export enum BlendMode {
   Normal = 'Normal',
@@ -32,6 +32,11 @@ export interface PDFPageDrawTextOptions {
   lineHeight?: number;
   maxWidth?: number;
   wordBreaks?: string[];
+  horizontalScale?: number;
+  wordSpace?: number;
+  characterSpace?: number;
+  rise?: number;
+  renderingMode?: TextRenderingMode;
 }
 
 export interface PDFPageDrawImageOptions {

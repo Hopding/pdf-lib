@@ -23,6 +23,7 @@ import {
   setLineJoin,
   StandardFonts,
   AFRelationship,
+  TextRenderingMode,
 } from '../../../dist/pdf-lib.esm.js';
 
 const ipsumLines = [
@@ -645,6 +646,50 @@ export default async (assets: Assets) => {
   });
 
   form.removeField(textField);
+
+  /********************** Page 6 **********************/
+  // This page tests different drawing operations as well as adding custom
+  // operators to the page content.
+
+  const page6 = pdfDoc.addPage([size, size]);
+
+  const text = 'These are the test words. ';
+  page6.drawText(text + 'regular', {
+    y: size - 20,
+    size: 20,
+    lineHeight: 20,
+  });
+  page6.drawText(text + '+5 raised and fontsize 12 instead of 20', {
+    y: size - 20,
+    x: 325,
+    size: 12,
+    lineHeight: 20,
+    rise: 5,
+  });
+  page6.drawText(text + '50% horizontal scale', {
+    y: size - 40,
+    size: 20,
+    lineHeight: 20,
+    horizontalScale: 50,
+  });
+  page6.drawText(text + '+10 word space', {
+    y: size - 60,
+    size: 20,
+    lineHeight: 20,
+    wordSpace: 10,
+  });
+  page6.drawText(text + '+4 character space', {
+    y: size - 80,
+    size: 20,
+    lineHeight: 20,
+    characterSpace: 4,
+  });
+  page6.drawText(text + 'textRenderingMode = outline', {
+    y: size - 100,
+    size: 20,
+    lineHeight: 20,
+    renderingMode: TextRenderingMode.Outline,
+  });
 
   /********************** Print Metadata **********************/
 
