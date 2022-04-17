@@ -20,6 +20,7 @@ import {
   setLineJoin,
   StandardFonts,
   AFRelationship,
+  TextRenderingMode,
 } from 'pdf-lib';
 
 import { fetchAsset } from './assets';
@@ -685,52 +686,35 @@ export default async () => {
 
   const page6 = pdfDoc.addPage([size, size]);
 
-  const text = "These are the test words. "
+  const text = 'These are the test words. ';
   page6.drawText(text + 'regular', {
     y: size - 20,
     size: 20,
     lineHeight: 20,
-    //horizontalScale: 50,
-    //rise: 0,
-    //wordSpace: 10,
-    //characterSpace: -2,
   });
   page6.drawText(text + '+5 raised and fontsize 12 instead of 20', {
     y: size - 20,
     x: 325,
     size: 12,
     lineHeight: 20,
-    //horizontalScale: 50,
     rise: 5,
-    //wordSpace: 10,
-    //characterSpace: -2,
   });
   page6.drawText(text + '50% horizontal scale', {
     y: size - 40,
     size: 20,
     lineHeight: 20,
     horizontalScale: 50,
-    //rise: 0,
-    //wordSpace: 10,
-    //characterSpace: -2,
   });
   page6.drawText(text + '+10 word space', {
     y: size - 60,
     size: 20,
     lineHeight: 20,
-    //horizontalScale: 50,
-    //rise: 0,
     wordSpace: 10,
-    //characterSpace: -2,
-    renderingMode: TextRenderingMode.Outline,
   });
   page6.drawText(text + '+4 character space', {
     y: size - 80,
     size: 20,
     lineHeight: 20,
-    //horizontalScale: 50,
-    //rise: 0,
-    //wordSpace: 10,
     characterSpace: 4,
   });
   page6.drawText(text + 'textRenderingMode = outline', {

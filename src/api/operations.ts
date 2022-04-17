@@ -32,10 +32,10 @@ import {
   endPath,
   appendBezierCurve,
   TextRenderingMode,
-  setCharacterSpacing, 
-  setHorizontalScaling, 
-  setTextRenderingMode, 
-  setTextRise, 
+  setCharacterSpacing,
+  setHorizontalScaling,
+  setTextRenderingMode,
+  setTextRise,
   setWordSpacing,
 } from 'src/api/operators';
 import { Rotation, degrees, toRadians } from 'src/api/rotations';
