@@ -54,7 +54,7 @@ If it's possible to build your PR without introducing new dependencies, then tha
 
 Most contributions will require you to understand the structure of PDF files. You might be able to find some articles online explaining this, but they're generally pretty sparse. PDFs are a rather niche area in open source programming 🙂.
 
-The [PDF specification](https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/PDF32000_2008.pdf) is an invaluable reference and a great way to get started. It can be a bit dense sometimes and you certainly don't need to read all of it. But the first few sections related to PDF syntax and object structure will be useful to most contributors.
+The [PDF specification](https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf) is an invaluable reference and a great way to get started. It can be a bit dense sometimes and you certainly don't need to read all of it. But the first few sections related to PDF syntax and object structure will be useful to most contributors.
 
 All contributors are advised to read the following sections:
 
