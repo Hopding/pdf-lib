@@ -887,7 +887,8 @@ const parseAttributes = (
       },
     };
   }
-  if (newInherited.fontSize) {
+  // apply the converter only when there's a local fontSize instruction
+  if (fontSizeRaw && newInherited.fontSize) {
     newInherited.fontSize = newConverter.size(1, newInherited.fontSize).height;
   }
   if (newInherited.fontFamily) {

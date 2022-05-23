@@ -60,13 +60,11 @@
 
       const fontSize = 20;
 
-      const svg = `<svg width='89.60480000000001' height='128.85523199999997'><g transform="translate(0 0)"><svg xmlns='http://www.w3.org/2000/svg' width="3.888" height="107.37935999999999" viewBox="0 0 3.888 107.37935999999999">
-    <path d="M3.888 1 Q1.944 0.9071999999999999 1.944 2.7215999999999996 v49.412879999999994" fill="none" stroke="black" stroke-width="2"/>
-          <path d="M3.888 1 Q1.944 0.9071999999999999 1.944 2.7215999999999996 v49.412879999999994" fill="none" stroke="black" stroke-width="2" transform="translate(0 107.37935999999999) scale(1 -1)"/>
-          <path d="M1.944 52.134479999999996 Q1.944 53.689679999999996 0 53.689679999999996" fill="none" stroke="black" stroke-width="2"/>
-          <path d="M1.944 52.134479999999996 Q1.944 53.689679999999996 0 53.689679999999996" fill="none" stroke="black" stroke-width="2" transform="translate(0 107.37935999999999) scale(1 -1)"/>
-  </svg><g transform="translate(3 0)"><g transform="translate(6.888 0)"><g transform="translate(0 0)"><g transform="translate(0 0)"><g transform="translate(20.162 20)"><g transform="translate(0 0)"><text x='3.1752000000000002' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>x</text></g><g transform="translate(11.3504 0)"><text x='3.5640000000000005' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>=</text></g><g transform="translate(23.4784 0)"><text x='3.0132000000000003' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>1</text></g></g></g><g transform="translate(0 48.689679999999996)"><g transform="translate(20 20)"><g transform="translate(0 0)"><text x='3.3372' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>y</text></g><g transform="translate(11.6744 0)"><text x='3.5640000000000005' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>=</text></g><g transform="translate(23.802400000000002 0)"><text x='3.0132000000000003' y='8.68968' text-anchor="middle" font-size='12.96' style='font-family:"Linux Libertine O"; text-align: center;' fill='#000'>2</text></g></g></g></g></g></g><g transform="translate(85.7168 0)"><svg xmlns='http://www.w3.org/2000/svg' width="0" height="0" viewBox="0 0 0 0">
-  </svg></g></g></svg>`;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="80" viewBox="0 0 32 40" version="1.1" font-size="16px">   <text x="1" y="16">5</text>   
+  <line stroke="#000" x1="1" y1="39" y2="1" x2="31" stroke-linecap="round" stroke-linejoin="round"></line>   
+  <text x="31" y="39" text-anchor="end">10</text> 
+</svg>
+`;
 
       const drawLines = (page) => {
         Array(10)
@@ -90,14 +88,27 @@
             });
           });
       }
+      const drawGrid = (page) => {
+        Array(parseInt(page.getHeight() / 10)).fill(1).map((v, i) => {
+          page.drawLine({
+            start: {x: 0 , y: i * 10},
+            end: { x: page.getWidth(), y: i * 10}
+          });
+        })
+        Array(parseInt(page.getWidth() / 10)).fill(1).map((v, i) => {
+          page.drawLine({
+            start: {x: i * 10, y: 0},
+            end: { x: i * 10, y: page.getHeight()}
+          });
+        })
+      }
+      drawGrid(firstPage)
       drawLines(firstPage)
       drawLines(secondPage)
 
       firstPage.drawSvg(svg, {
         x: 100,
         y: 800,
-        width: 67.94697142857142,
-        height: 95.01877028571428,
       });
 
       /* secondPage.drawSvg(svg, {
