@@ -21,6 +21,10 @@ import {
   PDFCatalog,
   PDFContext,
   PDFDict,
+  PDFArray,
+  decodePDFRawStream,
+  PDFStream,
+  PDFRawStream,
   PDFHexString,
   PDFName,
   PDFObjectCopier,
@@ -898,6 +902,47 @@ export default class PDFDocument {
     const ref = this.context.nextRef();
     const embeddedFile = PDFEmbeddedFile.of(ref, this, embedder);
     this.embeddedFiles.push(embeddedFile);
+  }
+
+  private getRawAttachments() {
+    if (!this.catalog.has(PDFName.of('Names'))) return [];
+    const Names = this.catalog.lookup(PDFName.of('Names'), PDFDict);
+
+    if (!Names.has(PDFName.of('EmbeddedFiles'))) return [];
+    const EmbeddedFiles = Names.lookup(PDFName.of('EmbeddedFiles'), PDFDict);
+
+    if (!EmbeddedFiles.has(PDFName.of('Names'))) return [];
+    const EFNames = EmbeddedFiles.lookup(PDFName.of('Names'), PDFArray);
+
+    const rawAttachments = [];
+    for (let idx = 0, len = EFNames.size(); idx < len; idx += 2) {
+      const fileName = EFNames.lookup(idx) as PDFHexString | PDFString;
+      const fileSpec = EFNames.lookup(idx + 1, PDFDict);
+      rawAttachments.push({ fileName, fileSpec });
+    }
+
+    return rawAttachments;
+  }
+
+  /**
+   * Get all attachments that are embedded in this document.
+   *
+   * > **NOTE:** If you build a document with this library, this won't return
+   * > anything until you call [[save]] on the document.
+   *
+   * @returns Array of attachments with name and data
+   */
+  getAttachments() {
+    const rawAttachments = this.getRawAttachments();
+    return rawAttachments.map(({ fileName, fileSpec }) => {
+      const stream = fileSpec
+        .lookup(PDFName.of('EF'), PDFDict)
+        .lookup(PDFName.of('F'), PDFStream) as PDFRawStream;
+      return {
+        name: fileName.decodeText(),
+        data: decodePDFRawStream(stream).decode(),
+      };
+    });
   }
 
   /**
