@@ -63,6 +63,7 @@
   - [Embed PDF Pages](#embed-pdf-pages)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
   - [Add Attachments](#add-attachments)
+  - [Extract Attachments](#extract-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
   - [Set Viewer Preferences](#set-viewer-preferences)
@@ -108,6 +109,7 @@
 - Set viewer preferences
 - Read viewer preferences
 - Add attachments
+- Extract attachments
 
 ## Motivation
 
@@ -755,6 +757,23 @@ const pdfBytes = await pdfDoc.save()
 //   • Downloaded from the browser
 //   • Rendered in an <iframe>
 ```
+
+### Extract Attachments
+
+If you load a PDF that has `cars.csv` as an attachment, you can use the
+following to extract the attachments:
+
+<!-- prettier-ignore -->
+```js
+const pdfDoc = await PDFDocument.load(...)
+const attachments = pdfDoc.getAttachments()
+const csv = attachments.find(({ name }) => name === 'cars.csv')
+fs.writeFileSync(csv.name, csv.data)
+```
+
+> NOTE: If you are building a pdf file with this library, any attachments you've
+> added won't be returned by this function until after you call `save` on the
+> document.
 
 ### Set Document Metadata
 

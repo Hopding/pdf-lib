@@ -37,6 +37,9 @@ const normalPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 const withViewerPrefsPdfBytes = fs.readFileSync(
   'assets/pdfs/with_viewer_prefs.pdf',
 );
+const hasAttachmentPdfBytes = fs.readFileSync(
+  'assets/pdfs/examples/add_attachments.pdf',
+);
 
 describe(`PDFDocument`, () => {
   describe(`load() method`, () => {
@@ -571,6 +574,145 @@ describe(`PDFDocument`, () => {
       expect(pdfDoc.getSubject()).toBe(srcDoc.getSubject());
       expect(pdfDoc.getTitle()).toBe(srcDoc.getTitle());
       expect(pdfDoc.defaultWordBreaks).toEqual(srcDoc.defaultWordBreaks);
+    });
+  });
+
+  describe(`attach() method`, () => {
+    it(`Saves to the same value after attaching a file`, async () => {
+      const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
+      const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
+
+      const jpgAttachmentBytes = fs.readFileSync(
+        'assets/images/cat_riding_unicorn.jpg',
+      );
+      const pdfAttachmentBytes = fs.readFileSync(
+        'assets/pdfs/us_constitution.pdf',
+      );
+
+      await pdfDoc1.attach(jpgAttachmentBytes, 'cat_riding_unicorn.jpg', {
+        mimeType: 'image/jpeg',
+        description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+        creationDate: new Date('2019/12/01'),
+        modificationDate: new Date('2020/04/19'),
+      });
+
+      await pdfDoc1.attach(pdfAttachmentBytes, 'us_constitution.pdf', {
+        mimeType: 'application/pdf',
+        description: 'Constitution of the United States 🇺🇸🦅',
+        creationDate: new Date('1787/09/17'),
+        modificationDate: new Date('1992/05/07'),
+      });
+
+      await pdfDoc2.attach(jpgAttachmentBytes, 'cat_riding_unicorn.jpg', {
+        mimeType: 'image/jpeg',
+        description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+        creationDate: new Date('2019/12/01'),
+        modificationDate: new Date('2020/04/19'),
+      });
+
+      await pdfDoc2.attach(pdfAttachmentBytes, 'us_constitution.pdf', {
+        mimeType: 'application/pdf',
+        description: 'Constitution of the United States 🇺🇸🦅',
+        creationDate: new Date('1787/09/17'),
+        modificationDate: new Date('1992/05/07'),
+      });
+
+      const savedDoc1 = await pdfDoc1.save();
+      const savedDoc2 = await pdfDoc2.save();
+
+      expect(savedDoc1).toEqual(savedDoc2);
+    });
+  });
+
+  describe(`getAttachments() method`, () => {
+    it(`Can read attachments from an existing pdf file`, async () => {
+      const pdfDoc = await PDFDocument.load(hasAttachmentPdfBytes);
+      const attachments = pdfDoc.getAttachments();
+      expect(attachments.length).toEqual(2);
+      const jpgAttachmentExtractedBytes = attachments.find(
+        (attachment) => attachment.name === 'cat_riding_unicorn.jpg',
+      )!;
+      const pdfAttachmentExtractedBytes = attachments.find(
+        (attachment) => attachment.name === 'us_constitution.pdf',
+      )!;
+      expect(pdfAttachmentExtractedBytes).toBeDefined();
+      expect(jpgAttachmentExtractedBytes).toBeDefined();
+      const jpgAttachmentBytes = fs.readFileSync(
+        'assets/images/cat_riding_unicorn.jpg',
+      );
+      const pdfAttachmentBytes = fs.readFileSync(
+        'assets/pdfs/us_constitution.pdf',
+      );
+      expect(jpgAttachmentBytes).toEqual(
+        Buffer.from(jpgAttachmentExtractedBytes.data),
+      );
+      expect(pdfAttachmentBytes).toEqual(
+        Buffer.from(pdfAttachmentExtractedBytes.data),
+      );
+    });
+
+    it(`Saves to the same value after round tripping`, async () => {
+      const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
+      const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
+
+      const jpgAttachmentBytes = fs.readFileSync(
+        'assets/images/cat_riding_unicorn.jpg',
+      );
+      const pdfAttachmentBytes = fs.readFileSync(
+        'assets/pdfs/us_constitution.pdf',
+      );
+
+      await pdfDoc1.attach(jpgAttachmentBytes, 'cat_riding_unicorn.jpg', {
+        mimeType: 'image/jpeg',
+        description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+        creationDate: new Date('2019/12/01'),
+        modificationDate: new Date('2020/04/19'),
+      });
+
+      await pdfDoc1.attach(pdfAttachmentBytes, 'us_constitution.pdf', {
+        mimeType: 'application/pdf',
+        description: 'Constitution of the United States 🇺🇸🦅',
+        creationDate: new Date('1787/09/17'),
+        modificationDate: new Date('1992/05/07'),
+      });
+
+      // This is the currently documented behavior before save has been called
+      const noAttachments = pdfDoc1.getAttachments();
+      expect(noAttachments).toEqual([]);
+
+      const savedDoc1 = await pdfDoc1.save();
+      const attachments = pdfDoc1.getAttachments();
+      const jpgAttachmentExtractedBytes = attachments.find(
+        (attachment) => attachment.name === 'cat_riding_unicorn.jpg',
+      )!;
+      const pdfAttachmentExtractedBytes = attachments.find(
+        (attachment) => attachment.name === 'us_constitution.pdf',
+      )!;
+
+      await pdfDoc2.attach(
+        jpgAttachmentExtractedBytes.data,
+        'cat_riding_unicorn.jpg',
+        {
+          mimeType: 'image/jpeg',
+          description: 'Cool cat riding a unicorn! 🦄🐈🕶️',
+          creationDate: new Date('2019/12/01'),
+          modificationDate: new Date('2020/04/19'),
+        },
+      );
+
+      await pdfDoc2.attach(
+        pdfAttachmentExtractedBytes.data,
+        'us_constitution.pdf',
+        {
+          mimeType: 'application/pdf',
+          description: 'Constitution of the United States 🇺🇸🦅',
+          creationDate: new Date('1787/09/17'),
+          modificationDate: new Date('1992/05/07'),
+        },
+      );
+
+      const savedDoc2 = await pdfDoc2.save();
+      expect(savedDoc1).toEqual(savedDoc2);
     });
   });
 });
