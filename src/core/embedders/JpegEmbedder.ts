@@ -29,7 +29,11 @@ const ChannelToColorSpace: { [idx: number]: ColorSpace | undefined } = {
  */
 class JpegEmbedder {
   static async for(imageData: Uint8Array) {
-    const dataView = new DataView(imageData.buffer);
+    const dataView = new DataView(
+      imageData.buffer,
+      imageData.byteOffset,
+      imageData.byteLength,
+    );
 
     const soi = dataView.getUint16(0);
     if (soi !== 0xffd8) throw new Error('SOI not found in JPEG');
