@@ -59,4 +59,17 @@ describe(`JpegEmbedder`, () => {
     expect(embedder.width).toBe(500);
     expect(embedder.colorSpace).toBe('DeviceCMYK');
   });
+
+  it(`can extract properties of JPEG images have offset backing buffers`, async () => {
+    // This can happen with buffers that are pooled or sprite sheets
+    const oddCmykJpg = Buffer.alloc(10 + cmykJpg.byteLength);
+    cmykJpg.copy(oddCmykJpg, 10);
+    const oddCmykJpgView = oddCmykJpg.subarray(10);
+    const embedder = await JpegEmbedder.for(oddCmykJpgView);
+
+    expect(embedder.bitsPerComponent).toBe(8);
+    expect(embedder.height).toBe(333);
+    expect(embedder.width).toBe(500);
+    expect(embedder.colorSpace).toBe('DeviceCMYK');
+  });
 });
