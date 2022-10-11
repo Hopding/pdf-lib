@@ -40,6 +40,7 @@ class PDFName extends PDFObject {
   static readonly Font = PDFName.of('Font');
   static readonly XObject = PDFName.of('XObject');
   static readonly ExtGState = PDFName.of('ExtGState');
+  static readonly ColorSpace = PDFName.of('ColorSpace');
   static readonly Contents = PDFName.of('Contents');
   static readonly Type = PDFName.of('Type');
   static readonly Parent = PDFName.of('Parent');

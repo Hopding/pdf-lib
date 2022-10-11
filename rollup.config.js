@@ -9,6 +9,7 @@ const IgnoredWarnings = [
   // Mac & Linux
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFFont.js -> es/api/PDFDocument.js',
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFImage.js -> es/api/PDFDocument.js',
+  'Circular dependency: es/api/PDFDocument.js -> es/api/PDFSeparation.js -> es/api/PDFDocument.js',
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFPage.js -> es/api/PDFDocument.js',
   'Circular dependency: es/api/PDFPage.js -> es/api/PDFDocument.js -> es/api/PDFPage.js',
   'Circular dependency: es/api/PDFDocument.js -> es/api/PDFEmbeddedPage.js -> es/api/PDFDocument.js',
@@ -25,6 +26,7 @@ const IgnoredWarnings = [
   // Windows
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFFont.js -> es\\api\\PDFDocument.js',
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFImage.js -> es\\api\\PDFDocument.js',
+  'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFSeparation.js -> es\\api\\PDFDocument.js',
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFPage.js -> es\\api\\PDFDocument.js',
   'Circular dependency: es\\api\\PDFPage.js -> es\\api\\PDFDocument.js -> es\\api\\PDFPage.js',
   'Circular dependency: es\\api\\PDFDocument.js -> es\\api\\PDFEmbeddedPage.js -> es\\api\\PDFDocument.js',

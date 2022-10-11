@@ -1,5 +1,13 @@
 import fs from 'fs';
-import { PDFArray, PDFDocument, PDFName, StandardFonts } from 'src/index';
+import {
+  cmyk,
+  PDFArray,
+  PDFDocument,
+  PDFName,
+  StandardFonts,
+  Separation,
+  ColorTypes,
+} from 'src/index';
 
 const birdPng = fs.readFileSync('assets/images/greyscale_bird.png');
 
@@ -147,5 +155,51 @@ describe(`PDFDocument`, () => {
     const key2 = page2.node.normalizedEntries().Font.keys()[1];
     expect(key1).not.toEqual(key2);
     expect(page2.node.normalizedEntries().Font.keys()).toEqual([key1, key2]);
+  });
+
+  describe('getSeparationColor', () => {
+    it('returns a new separation color', async () => {
+      const pdfDoc = await PDFDocument.create();
+      const page = await pdfDoc.addPage();
+      const pdfSeparation = await pdfDoc.embedSeparation(
+        'PANTONE 123 C',
+        cmyk(0, 0.22, 0.83, 0),
+      );
+      const color = page.getSeparationColor(pdfSeparation, 0.5);
+      expect(color.type).toBe(ColorTypes.Separation);
+      expect((color as Separation).tint).toEqual(0.5);
+    });
+
+    it('adds the separation color to the page resources', async () => {
+      const pdfDoc = await PDFDocument.create();
+      const page = await pdfDoc.addPage();
+      const pdfSeparation = await pdfDoc.embedSeparation(
+        'PANTONE 123 C',
+        cmyk(0, 0.22, 0.83, 0),
+      );
+      const color = page.getSeparationColor(pdfSeparation, 0.5);
+      const { ColorSpace } = page.node.normalizedEntries();
+      expect(ColorSpace.keys()).toEqual([(color as Separation).name]);
+      expect(ColorSpace.get((color as Separation).name)).toEqual(
+        pdfSeparation.ref,
+      );
+    });
+
+    it('does not add the same separation color twice', async () => {
+      const pdfDoc = await PDFDocument.create();
+      const page = await pdfDoc.addPage();
+      const pdfSeparation = await pdfDoc.embedSeparation(
+        'PANTONE 123 C',
+        cmyk(0, 0.22, 0.83, 0),
+      );
+      const color1 = page.getSeparationColor(pdfSeparation, 0.5);
+      const color2 = page.getSeparationColor(pdfSeparation, 0.5);
+      expect(color1).toEqual(color2);
+      const { ColorSpace } = page.node.normalizedEntries();
+      expect(ColorSpace.keys()).toEqual([(color1 as Separation).name]);
+      expect(ColorSpace.get((color1 as Separation).name)).toEqual(
+        pdfSeparation.ref,
+      );
+    });
   });
 });

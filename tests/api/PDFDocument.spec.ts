@@ -14,6 +14,7 @@ import {
   PrintScaling,
   ReadingDirection,
   ViewerPreferences,
+  rgb,
 } from 'src/index';
 
 const examplePngImage =
@@ -155,6 +156,21 @@ describe(`PDFDocument`, () => {
 
       await pdfDoc1.embedFont(customFont);
       await pdfDoc2.embedFont(customFont);
+
+      const savedDoc1 = await pdfDoc1.save();
+      const savedDoc2 = await pdfDoc2.save();
+
+      expect(savedDoc1).toEqual(savedDoc2);
+    });
+  });
+
+  describe(`embedSeparation() method`, () => {
+    it(`serializes the same value on every save`, async () => {
+      const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
+      const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
+
+      pdfDoc1.embedSeparation('PANTONE 123 C', rgb(1, 0, 0));
+      pdfDoc2.embedSeparation('PANTONE 123 C', rgb(1, 0, 0));
 
       const savedDoc1 = await pdfDoc1.save();
       const savedDoc2 = await pdfDoc2.save();

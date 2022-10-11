@@ -1,4 +1,4 @@
-import { Color, rgb } from 'src/api/colors';
+import { Color, rgb, separation } from 'src/api/colors';
 import {
   drawImage,
   drawLine,
@@ -55,6 +55,7 @@ import {
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
+import PDFSeparation from './PDFSeparation';
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -761,6 +762,30 @@ export default class PDFPage {
   setLineHeight(lineHeight: number): void {
     assertIs(lineHeight, 'lineHeight', ['number']);
     this.lineHeight = lineHeight;
+  }
+
+  /**
+   * Creates a local Separation color for this page. The color can then be
+   * used to draw text or fill shapes. For example:
+   * ```js
+   * const pdfSeparation = await pdfDoc.embedSeparation(
+   *   'PANTONE 123 C',
+   *   cmyk(0, 0.22, 0.83, 0),
+   * );
+   * const color = page.getSeparationColor(pdfSeparation, 0.5);
+   * page.drawText('This text will be printed using a spot color', { color });
+   * ```
+   *
+   * @param pdfSeparation A PDFSeparation object that was embedded into the
+   *                      document.
+   * @param tint          The tint (intensity) value to use for the color.
+   *
+   * @returns The name of the color space in the page's resources.
+   */
+  getSeparationColor(pdfSeparation: PDFSeparation, tint: number): Color {
+    const name = pdfSeparation.name;
+    const ref = pdfSeparation.ref;
+    return separation(this.node.newColorSpace(name, ref), tint);
   }
 
   /**
