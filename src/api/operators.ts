@@ -363,7 +363,7 @@ export const setStrokingColorspace = (name: string | PDFName) =>
 
 export const setStrokingSpecialColor = (
   ...components: (number | PDFNumber)[]
-) => [PDFOperator.of(Ops.StrokingColorN, [...components.map(asPDFNumber)])];
+) => PDFOperator.of(Ops.StrokingColorN, [...components.map(asPDFNumber)]);
 
 /* ==================== Marked Content Operators ==================== */
 

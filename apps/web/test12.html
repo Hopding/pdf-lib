@@ -321,6 +321,46 @@
       });
     };
 
+    const fourthPage = async (pdfDoc) => {
+      const page = pdfDoc.addPage(PageSizes.Letter);
+
+      const pdfSeparation = await pdfDoc.embedSeparation(
+        'PANTONE 123 C',
+        cmyk(0, 0.22, 0.83, 0),
+      );
+
+      const color = page.getSeparationColor(pdfSeparation, 0.5);
+      const borderColor = page.getSeparationColor(pdfSeparation, 1);
+      page.drawText('This text will be printed using a spot color', { color });
+
+      page.drawSvgPath('M 100 100 L 300 100 L 200 300 z', {
+        x: inchToPt(-1),
+        y: inchToPt(12),
+        color,
+        borderColor,
+        borderWidth: 1,
+      });
+
+      // rectangle example
+      page.drawRectangle({
+        x: 350,
+        y: 220,
+        width: 60,
+        height: 160,
+        rotate: degrees(-30),
+        color,
+        borderColor,
+        borderWidth: 2,
+      });
+
+      // circle example
+      page.drawCircle({
+        x: inchToPt(3),
+        y: inchToPt(5),
+        color,
+      });
+    };
+
     async function test() {
       const [selfDrivePngBytes, simplePdf2ExampleBytes] = await Promise.all([
         fetchBinaryAsset('images/self_drive.png'),
@@ -332,6 +372,7 @@
       await firstPage(pdfDoc);
       await secondPage(pdfDoc);
       await thirdPage(pdfDoc, { selfDrivePngBytes, simplePdf2ExampleBytes });
+      await fourthPage(pdfDoc);
 
       const pdfBytes = await pdfDoc.save();
 
