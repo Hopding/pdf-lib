@@ -287,6 +287,18 @@ describe(`PDFPageLeaf`, () => {
     );
   });
 
+  it(`can set ColorSpace refs`, () => {
+    const context = PDFContext.create();
+    const parentRef = PDFRef.of(1);
+    const pageTree = PDFPageLeaf.withContextAndParent(context, parentRef);
+
+    const ColorSpace = PDFName.of('ColorSpace');
+    pageTree.setColorSpace(PDFName.of('Foo'), PDFRef.of(21));
+    expect(pageTree.Resources()!.get(ColorSpace)!.toString()).toBe(
+      '<<\n/Foo 21 0 R\n>>',
+    );
+  });
+
   it(`can be ascended`, () => {
     const context = PDFContext.create();
 
@@ -325,7 +337,7 @@ describe(`PDFPageLeaf`, () => {
 
     expect(pageTree.Contents()!.toString()).toBe('[ 21 0 R ]');
     expect(pageTree.Resources()!.toString()).toBe(
-      '<<\n/Font <<\n>>\n/XObject <<\n>>\n/ExtGState <<\n>>\n>>',
+      '<<\n/Font <<\n>>\n/XObject <<\n>>\n/ExtGState <<\n>>\n/ColorSpace <<\n>>\n>>',
     );
   });
 
@@ -349,7 +361,7 @@ describe(`PDFPageLeaf`, () => {
       `[ ${pushRef} 21 0 R ${popRef} ]`,
     );
     expect(pageTree.Resources()!.toString()).toBe(
-      '<<\n/Font <<\n>>\n/XObject <<\n>>\n/ExtGState <<\n>>\n>>',
+      '<<\n/Font <<\n>>\n/XObject <<\n>>\n/ExtGState <<\n>>\n/ColorSpace <<\n>>\n>>',
     );
   });
 });

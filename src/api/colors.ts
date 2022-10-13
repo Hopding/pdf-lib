@@ -2,16 +2,22 @@ import {
   setFillingCmykColor,
   setFillingGrayscaleColor,
   setFillingRgbColor,
+  setFillingSpecialColor,
   setStrokingCmykColor,
   setStrokingGrayscaleColor,
   setStrokingRgbColor,
+  setStrokingSpecialColor,
+  setFillingColorspace,
+  setStrokingColorspace,
 } from 'src/api/operators';
 import { assertRange, error } from 'src/utils';
+import { PDFName } from 'src/core';
 
 export enum ColorTypes {
   Grayscale = 'Grayscale',
   RGB = 'RGB',
   CMYK = 'CMYK',
+  Separation = 'Separation',
 }
 
 export interface Grayscale {
@@ -34,7 +40,13 @@ export interface CMYK {
   key: number;
 }
 
-export type Color = Grayscale | RGB | CMYK;
+export interface Separation {
+  type: ColorTypes.Separation;
+  name: PDFName;
+  tint: number;
+}
+
+export type Color = Grayscale | RGB | CMYK | Separation;
 
 export const grayscale = (gray: number): Grayscale => {
   assertRange(gray, 'gray', 0.0, 1.0);
@@ -61,20 +73,33 @@ export const cmyk = (
   return { type: ColorTypes.CMYK, cyan, magenta, yellow, key };
 };
 
-const { Grayscale, RGB, CMYK } = ColorTypes;
+export const separation = (name: PDFName, tint: number): Separation => {
+  assertRange(tint, 'tint', 0, 1);
+  return { type: ColorTypes.Separation, name, tint };
+};
+
+const { Grayscale, RGB, CMYK, Separation } = ColorTypes;
+
+export const setFillingColorspaceOrUndefined = (color: Color) =>
+  color.type === Separation ? setFillingColorspace(color.name) : undefined;
 
 // prettier-ignore
 export const setFillingColor = (color: Color) => 
-    color.type === Grayscale ? setFillingGrayscaleColor(color.gray)
-  : color.type === RGB       ? setFillingRgbColor(color.red, color.green, color.blue)
-  : color.type === CMYK      ? setFillingCmykColor(color.cyan, color.magenta, color.yellow, color.key)
+    color.type === Grayscale  ? setFillingGrayscaleColor(color.gray)
+  : color.type === RGB        ? setFillingRgbColor(color.red, color.green, color.blue)
+  : color.type === CMYK       ? setFillingCmykColor(color.cyan, color.magenta, color.yellow, color.key)
+  : color.type === Separation ? setFillingSpecialColor(color.tint)
   : error(`Invalid color: ${JSON.stringify(color)}`);
+
+export const setStrokingColorspaceOrUndefined = (color: Color) =>
+  color.type === Separation ? setStrokingColorspace(color.name) : undefined;
 
 // prettier-ignore
 export const setStrokingColor = (color: Color) => 
-    color.type === Grayscale ? setStrokingGrayscaleColor(color.gray)
-  : color.type === RGB       ? setStrokingRgbColor(color.red, color.green, color.blue)
-  : color.type === CMYK      ? setStrokingCmykColor(color.cyan, color.magenta, color.yellow, color.key)
+    color.type === Grayscale  ? setStrokingGrayscaleColor(color.gray)
+  : color.type === RGB        ? setStrokingRgbColor(color.red, color.green, color.blue)
+  : color.type === CMYK       ? setStrokingCmykColor(color.cyan, color.magenta, color.yellow, color.key)
+  : color.type === Separation ? setStrokingSpecialColor(color.tint)
   : error(`Invalid color: ${JSON.stringify(color)}`);
 
 // prettier-ignore

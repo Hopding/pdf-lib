@@ -352,6 +352,19 @@ export const setStrokingCmykColor = (
     asPDFNumber(key),
   ]);
 
+export const setFillingColorspace = (name: string | PDFName) =>
+  PDFOperator.of(Ops.NonStrokingColorspace, [asPDFName(name)]);
+
+export const setFillingSpecialColor = (...components: (number | PDFNumber)[]) =>
+  PDFOperator.of(Ops.NonStrokingColorN, [...components.map(asPDFNumber)]);
+
+export const setStrokingColorspace = (name: string | PDFName) =>
+  PDFOperator.of(Ops.StrokingColorspace, [asPDFName(name)]);
+
+export const setStrokingSpecialColor = (
+  ...components: (number | PDFNumber)[]
+) => PDFOperator.of(Ops.StrokingColorN, [...components.map(asPDFNumber)]);
+
 /* ==================== Marked Content Operators ==================== */
 
 export const beginMarkedContent = (tag: string | PDFName) =>

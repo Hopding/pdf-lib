@@ -10,6 +10,7 @@ import PDFFont from 'src/api/PDFFont';
 import PDFImage from 'src/api/PDFImage';
 import PDFPage from 'src/api/PDFPage';
 import PDFForm from 'src/api/form/PDFForm';
+import PDFSeparation from 'src/api/PDFSeparation';
 import { PageSizes } from 'src/api/sizes';
 import { StandardFonts } from 'src/api/StandardFonts';
 import {
@@ -33,6 +34,7 @@ import {
   PDFWriter,
   PngEmbedder,
   StandardFontEmbedder,
+  SeparationEmbedder,
   UnexpectedObjectTypeError,
 } from 'src/core';
 import {
@@ -61,11 +63,13 @@ import {
   pluckIndices,
   range,
   toUint8Array,
+  error,
 } from 'src/utils';
 import FileEmbedder, { AFRelationship } from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 import PDFJavaScript from 'src/api/PDFJavaScript';
 import JavaScriptEmbedder from 'src/core/embedders/JavaScriptEmbedder';
+import { Color, ColorTypes, colorToComponents } from './colors';
 
 /**
  * Represents a PDF document.
@@ -185,6 +189,7 @@ export default class PDFDocument {
   private readonly formCache: Cache<PDFForm>;
   private readonly fonts: PDFFont[];
   private readonly images: PDFImage[];
+  private readonly separationColorSpaces: PDFSeparation[];
   private readonly embeddedPages: PDFEmbeddedPage[];
   private readonly embeddedFiles: PDFEmbeddedFile[];
   private readonly javaScripts: PDFJavaScript[];
@@ -206,6 +211,7 @@ export default class PDFDocument {
     this.formCache = Cache.populatedBy(this.getOrCreateForm);
     this.fonts = [];
     this.images = [];
+    this.separationColorSpaces = [];
     this.embeddedPages = [];
     this.embeddedFiles = [];
     this.javaScripts = [];
@@ -998,6 +1004,32 @@ export default class PDFDocument {
   }
 
   /**
+   * Embed a separation color space into this document.
+   * For example:
+   * ```js
+   * import { rgb } from 'pdf-lib'
+   * const separation = pdfDoc.embedSeparation('PANTONE 123 C', rgb(1, 0, 0))
+   * ```
+   *
+   * @param name      The name of the separation color space.
+   * @param alternate An alternate color to be used to approximate the intended
+   *                  color.
+   */
+  embedSeparation(name: string, alternate: Color): PDFSeparation {
+    const ref = this.context.nextRef();
+    const alternateColorSpace = getColorSpace(alternate);
+    const alternateColorComponents = colorToComponents(alternate);
+    const embedder = SeparationEmbedder.for(
+      name,
+      alternateColorSpace,
+      alternateColorComponents,
+    );
+    const separation = PDFSeparation.of(ref, this, embedder);
+    this.separationColorSpaces.push(separation);
+    return separation;
+  }
+
+  /**
    * Embed a JPEG image into this document. The input data can be provided in
    * multiple formats:
    *
@@ -1243,6 +1275,7 @@ export default class PDFDocument {
   async flush(): Promise<void> {
     await this.embedAll(this.fonts);
     await this.embedAll(this.images);
+    await this.embedAll(this.separationColorSpaces);
     await this.embedAll(this.embeddedPages);
     await this.embedAll(this.embeddedFiles);
     await this.embedAll(this.javaScripts);
@@ -1393,3 +1426,10 @@ function assertIsLiteralOrHexString(
     throw new UnexpectedObjectTypeError([PDFHexString, PDFString], pdfObject);
   }
 }
+
+// prettier-ignore
+const getColorSpace = (color: Color) => 
+    color.type === ColorTypes.Grayscale  ? 'DeviceGray'
+  : color.type === ColorTypes.RGB        ? 'DeviceRGB'
+  : color.type === ColorTypes.CMYK       ? 'DeviceCMYK'
+  : error(`Invalid alternate color: ${JSON.stringify(color)}`);

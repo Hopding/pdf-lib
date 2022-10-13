@@ -1,4 +1,4 @@
-import { Color, rgb } from 'src/api/colors';
+import { Color, rgb, separation } from 'src/api/colors';
 import {
   drawImage,
   drawLine,
@@ -55,6 +55,7 @@ import {
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
 } from 'src/utils';
+import PDFSeparation from './PDFSeparation';
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -764,6 +765,30 @@ export default class PDFPage {
   }
 
   /**
+   * Creates a local Separation color for this page. The color can then be
+   * used to draw text or fill shapes. For example:
+   * ```js
+   * const pdfSeparation = await pdfDoc.embedSeparation(
+   *   'PANTONE 123 C',
+   *   cmyk(0, 0.22, 0.83, 0),
+   * );
+   * const color = page.getSeparationColor(pdfSeparation, 0.5);
+   * page.drawText('This text will be printed using a spot color', { color });
+   * ```
+   *
+   * @param pdfSeparation A PDFSeparation object that was embedded into the
+   *                      document.
+   * @param tint          The tint (intensity) value to use for the color.
+   *
+   * @returns The name of the color space in the page's resources.
+   */
+  getSeparationColor(pdfSeparation: PDFSeparation, tint: number): Color {
+    const name = pdfSeparation.name;
+    const ref = pdfSeparation.ref;
+    return separation(this.node.newColorSpace(name, ref), tint);
+  }
+
+  /**
    * Get the default position of this page. For example:
    * ```js
    * const { x, y } = page.getPosition()
@@ -966,6 +991,7 @@ export default class PDFPage {
     assertIs(text, 'text', ['string']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
     assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
+    assertOrUndefined(options.overprint, 'options.overprint', ['boolean']);
     assertOrUndefined(options.font, 'options.font', [[PDFFont, 'PDFFont']]);
     assertOrUndefined(options.size, 'options.size', ['number']);
     assertOrUndefined(options.rotate, 'options.rotate', [[Object, 'Rotation']]);
@@ -996,6 +1022,7 @@ export default class PDFPage {
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
       blendMode: options.blendMode,
+      overprint: options.overprint,
     });
 
     const contentStream = this.getContentStream();
@@ -1063,6 +1090,7 @@ export default class PDFPage {
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
       blendMode: options.blendMode,
+      overprint: options.overprint,
     });
 
     const contentStream = this.getContentStream();
@@ -1140,6 +1168,7 @@ export default class PDFPage {
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
       blendMode: options.blendMode,
+      overprint: options.overprint,
     });
 
     // prettier-ignore
@@ -1243,6 +1272,8 @@ export default class PDFPage {
       opacity: options.opacity,
       borderOpacity: options.borderOpacity,
       blendMode: options.blendMode,
+      overprint: options.overprint,
+      nonStrokingOverprint: options.nonStrokingOverprint,
     });
 
     if (!('color' in options) && !('borderColor' in options)) {
@@ -1304,6 +1335,7 @@ export default class PDFPage {
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       borderOpacity: options.opacity,
       blendMode: options.blendMode,
+      overprint: options.overprint,
     });
 
     if (!('color' in options)) {
@@ -1382,6 +1414,8 @@ export default class PDFPage {
       opacity: options.opacity,
       borderOpacity: options.borderOpacity,
       blendMode: options.blendMode,
+      overprint: options.overprint,
+      nonStrokingOverprint: options.nonStrokingOverprint,
     });
 
     if (!('color' in options) && !('borderColor' in options)) {
@@ -1487,6 +1521,8 @@ export default class PDFPage {
       opacity: options.opacity,
       borderOpacity: options.borderOpacity,
       blendMode: options.blendMode,
+      overprint: options.overprint,
+      nonStrokingOverprint: options.nonStrokingOverprint,
     });
 
     if (!('color' in options) && !('borderColor' in options)) {
@@ -1580,13 +1616,23 @@ export default class PDFPage {
     opacity?: number;
     borderOpacity?: number;
     blendMode?: BlendMode;
+    overprint?: boolean;
+    nonStrokingOverprint?: boolean;
   }): PDFName | undefined {
-    const { opacity, borderOpacity, blendMode } = options;
+    const {
+      opacity,
+      borderOpacity,
+      blendMode,
+      overprint,
+      nonStrokingOverprint,
+    } = options;
 
     if (
       opacity === undefined &&
       borderOpacity === undefined &&
-      blendMode === undefined
+      blendMode === undefined &&
+      overprint === undefined &&
+      nonStrokingOverprint === undefined
     ) {
       return undefined;
     }
@@ -1596,6 +1642,8 @@ export default class PDFPage {
       ca: opacity,
       CA: borderOpacity,
       BM: blendMode,
+      OP: overprint,
+      op: nonStrokingOverprint,
     });
 
     const key = this.node.newExtGState('GS', graphicsState);

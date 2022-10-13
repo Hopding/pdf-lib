@@ -1,4 +1,10 @@
-import { Color, setFillingColor, setStrokingColor } from 'src/api/colors';
+import {
+  Color,
+  setFillingColor,
+  setStrokingColor,
+  setFillingColorspaceOrUndefined,
+  setStrokingColorspaceOrUndefined,
+} from 'src/api/colors';
 import {
   beginText,
   closePath,
@@ -57,6 +63,7 @@ export const drawText = (
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
     beginText(),
+    setFillingColorspaceOrUndefined(options.color),
     setFillingColor(options.color),
     setFontAndSize(options.font, options.size),
     rotateAndSkewTextRadiansAndTranslate(
@@ -83,6 +90,7 @@ export const drawLinesOfText = (
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
     beginText(),
+    setFillingColorspaceOrUndefined(options.color),
     setFillingColor(options.color),
     setFontAndSize(options.font, options.size),
     setLineHeight(options.lineHeight),
@@ -164,6 +172,7 @@ export const drawLine = (options: {
   [
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
+    options.color && setStrokingColorspaceOrUndefined(options.color),
     options.color && setStrokingColor(options.color),
     setLineWidth(options.thickness),
     setDashPattern(options.dashArray ?? [], options.dashPhase ?? 0),
@@ -194,7 +203,10 @@ export const drawRectangle = (options: {
   [
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
+    options.color && setFillingColorspaceOrUndefined(options.color),
     options.color && setFillingColor(options.color),
+    options.borderColor &&
+      setStrokingColorspaceOrUndefined(options.borderColor),
     options.borderColor && setStrokingColor(options.borderColor),
     setLineWidth(options.borderWidth),
     options.borderLineCap && setLineCap(options.borderLineCap),
@@ -302,7 +314,10 @@ export const drawEllipse = (options: {
   [
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
+    options.color && setFillingColorspaceOrUndefined(options.color),
     options.color && setFillingColor(options.color),
+    options.borderColor &&
+      setStrokingColorspaceOrUndefined(options.borderColor),
     options.borderColor && setStrokingColor(options.borderColor),
     setLineWidth(options.borderWidth),
     options.borderLineCap && setLineCap(options.borderLineCap),
@@ -360,7 +375,10 @@ export const drawSvgPath = (
     // SVG path Y axis is opposite pdf-lib's
     options.scale ? scale(options.scale, -options.scale) : scale(1, -1),
 
+    options.color && setFillingColorspaceOrUndefined(options.color),
     options.color && setFillingColor(options.color),
+    options.borderColor &&
+      setStrokingColorspaceOrUndefined(options.borderColor),
     options.borderColor && setStrokingColor(options.borderColor),
     options.borderWidth && setLineWidth(options.borderWidth),
     options.borderLineCap && setLineCap(options.borderLineCap),
@@ -423,6 +441,7 @@ export const drawCheckMark = (options: {
 
   return [
     pushGraphicsState(),
+    options.color && setStrokingColorspaceOrUndefined(options.color),
     options.color && setStrokingColor(options.color),
     setLineWidth(options.thickness),
 
@@ -602,9 +621,10 @@ export const drawTextLines = (
 ): PDFOperator[] => {
   const operators = [
     beginText(),
+    setFillingColorspaceOrUndefined(options.color),
     setFillingColor(options.color),
     setFontAndSize(options.font, options.size),
-  ];
+  ].filter(Boolean) as PDFOperator[];
 
   for (let idx = 0, len = lines.length; idx < len; idx++) {
     const { encoded, x, y } = lines[idx];

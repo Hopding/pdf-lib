@@ -22,6 +22,7 @@ export interface PDFPageDrawTextOptions {
   color?: Color;
   opacity?: number;
   blendMode?: BlendMode;
+  overprint?: boolean;
   font?: PDFFont;
   size?: number;
   rotate?: Rotation;
@@ -44,6 +45,7 @@ export interface PDFPageDrawImageOptions {
   ySkew?: Rotation;
   opacity?: number;
   blendMode?: BlendMode;
+  overprint?: boolean;
 }
 
 export interface PDFPageDrawPageOptions {
@@ -58,6 +60,7 @@ export interface PDFPageDrawPageOptions {
   ySkew?: Rotation;
   opacity?: number;
   blendMode?: BlendMode;
+  overprint?: boolean;
 }
 
 export interface PDFPageDrawSVGOptions {
@@ -74,6 +77,8 @@ export interface PDFPageDrawSVGOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
+  overprint?: boolean;
+  nonStrokingOverprint?: boolean;
 }
 
 export interface PDFPageDrawLineOptions {
@@ -86,6 +91,7 @@ export interface PDFPageDrawLineOptions {
   dashArray?: number[];
   dashPhase?: number;
   blendMode?: BlendMode;
+  overprint?: boolean;
 }
 
 export interface PDFPageDrawRectangleOptions {
@@ -105,6 +111,8 @@ export interface PDFPageDrawRectangleOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
+  overprint?: boolean;
+  nonStrokingOverprint?: boolean;
 }
 
 export interface PDFPageDrawSquareOptions {
@@ -123,6 +131,8 @@ export interface PDFPageDrawSquareOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
+  overprint?: boolean;
+  nonStrokingOverprint?: boolean;
 }
 
 export interface PDFPageDrawEllipseOptions {
@@ -140,6 +150,8 @@ export interface PDFPageDrawEllipseOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
+  overprint?: boolean;
+  nonStrokingOverprint?: boolean;
 }
 
 export interface PDFPageDrawCircleOptions {
@@ -155,4 +167,6 @@ export interface PDFPageDrawCircleOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
+  overprint?: boolean;
+  nonStrokingOverprint?: boolean;
 }

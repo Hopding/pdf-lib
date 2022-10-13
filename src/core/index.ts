@@ -18,6 +18,7 @@ export {
   default as FileEmbedder,
   AFRelationship,
 } from 'src/core/embedders/FileEmbedder';
+export { default as SeparationEmbedder } from 'src/core/embedders/SeparationEmbedder';
 export { default as JpegEmbedder } from 'src/core/embedders/JpegEmbedder';
 export { default as PngEmbedder } from 'src/core/embedders/PngEmbedder';
 export {
