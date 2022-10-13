@@ -8,6 +8,7 @@ import {
   setStrokingRgbColor,
   setStrokingSpecialColor,
   setFillingColorspace,
+  setStrokingColorspace,
 } from 'src/api/operators';
 import { assertRange, error } from 'src/utils';
 import { PDFName } from 'src/core';
@@ -91,7 +92,7 @@ export const setFillingColor = (color: Color) =>
   : error(`Invalid color: ${JSON.stringify(color)}`);
 
 export const setStrokingColorspaceOrUndefined = (color: Color) =>
-  color.type === Separation ? setFillingColorspace(color.name) : undefined;
+  color.type === Separation ? setStrokingColorspace(color.name) : undefined;
 
 // prettier-ignore
 export const setStrokingColor = (color: Color) => 

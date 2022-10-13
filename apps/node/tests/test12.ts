@@ -270,7 +270,7 @@ const thirdPage = async (pdfDoc: PDFDocument, assets: Assets) => {
 };
 
 const fourthPage = async (pdfDoc: PDFDocument) => {
-  const page = pdfDoc.addPage(PageSizes.Letter);
+  const page = pdfDoc.addPage();
 
   const pdfSeparation = await pdfDoc.embedSeparation(
     'PANTONE 123 C',
@@ -279,20 +279,35 @@ const fourthPage = async (pdfDoc: PDFDocument) => {
 
   const color = page.getSeparationColor(pdfSeparation, 0.5);
   const borderColor = page.getSeparationColor(pdfSeparation, 1);
-  page.drawText('This text will be printed using a spot color', { color });
+
+  page.drawRectangle({
+    x: inchToPt(0),
+    y: inchToPt(0),
+    width: inchToPt(8.5),
+    height: inchToPt(12),
+    color: cmyk(0, 0, 0, 1),
+  });
+
+  page.drawText('This text will be printed using a spot color', {
+    x: inchToPt(0.5),
+    y: inchToPt(11),
+    size: 16,
+    color,
+  });
+
+  // No overprint
 
   page.drawSvgPath('M 100 100 L 300 100 L 200 300 z', {
     x: inchToPt(-1),
     y: inchToPt(12),
     color,
     borderColor,
-    borderWidth: 1,
+    borderWidth: 2,
   });
 
-  // rectangle example
   page.drawRectangle({
-    x: 350,
-    y: 220,
+    x: inchToPt(2),
+    y: inchToPt(8),
     width: 60,
     height: 160,
     rotate: degrees(-30),
@@ -301,11 +316,98 @@ const fourthPage = async (pdfDoc: PDFDocument) => {
     borderWidth: 2,
   });
 
-  // circle example
   page.drawCircle({
-    x: inchToPt(3),
+    x: inchToPt(5),
+    y: inchToPt(9),
+    color,
+    borderColor,
+    borderWidth: 2,
+  });
+
+  // Overprint
+
+  page.drawText('This text will be printed over the existing background', {
+    x: inchToPt(0.5),
+    y: inchToPt(7),
+    color,
+    size: 16,
+    overprint: true,
+  });
+
+  page.drawSvgPath('M 100 100 L 300 100 L 200 300 z', {
+    x: inchToPt(-1),
+    y: inchToPt(8),
+    color,
+    borderColor,
+    borderWidth: 2,
+    overprint: true,
+  });
+
+  page.drawRectangle({
+    x: inchToPt(2),
+    y: inchToPt(4),
+    width: 60,
+    height: 160,
+    rotate: degrees(-30),
+    color,
+    borderColor,
+    borderWidth: 2,
+    overprint: true,
+  });
+
+  page.drawCircle({
+    x: inchToPt(5),
     y: inchToPt(5),
     color,
+    borderColor,
+    borderWidth: 2,
+    overprint: true,
+  });
+
+  // Overprint only for strokes
+
+  page.drawText(
+    'Only the filling will be overprinted on the following shapes',
+    {
+      x: inchToPt(0.5),
+      y: inchToPt(3),
+      color,
+      size: 16,
+      overprint: true,
+    },
+  );
+
+  page.drawSvgPath('M 100 100 L 300 100 L 200 300 z', {
+    x: inchToPt(-1),
+    y: inchToPt(4),
+    color,
+    borderColor,
+    borderWidth: 2,
+    overprint: false,
+    nonStrokingOverprint: true,
+  });
+
+  page.drawRectangle({
+    x: inchToPt(2),
+    y: inchToPt(0),
+    width: 60,
+    height: 160,
+    rotate: degrees(-30),
+    color,
+    borderColor,
+    borderWidth: 2,
+    overprint: false,
+    nonStrokingOverprint: true,
+  });
+
+  page.drawCircle({
+    x: inchToPt(5),
+    y: inchToPt(1),
+    color,
+    borderColor,
+    borderWidth: 2,
+    overprint: false,
+    nonStrokingOverprint: true,
   });
 };
 

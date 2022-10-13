@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { openPdf, Reader } from './open';
-import { PDFDocument } from 'src/index';
+import { PDFDocument, cmyk } from 'src/index';
 
 (async () => {
   const pdfDoc1 = await PDFDocument.create();
@@ -18,6 +18,12 @@ import { PDFDocument } from 'src/index';
   );
   const page2 = pdfDoc2.getPage(0);
   page2.drawImage(image2, { ...image2.scale(0.5), x: 100, y: 100 });
+  page2.drawText('Hello World!', {
+    x: 100,
+    y: 200,
+    overprint: true,
+    color: cmyk(0, 0, 0, 1),
+  });
 
   const pdfBytes = await pdfDoc2.save();
 
