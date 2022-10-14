@@ -237,10 +237,9 @@ class CustomFontEmbedder {
   }
 
   private allGlyphsInFontSortedById = (): Glyph[] => {
-    const glyphs: Glyph[] = new Array(this.font.characterSet.length);
+    const glyphs: Glyph[] = new Array(this.font.numGlyphs);
     for (let idx = 0, len = glyphs.length; idx < len; idx++) {
-      const codePoint = this.font.characterSet[idx];
-      glyphs[idx] = this.font.glyphForCodePoint(codePoint);
+      glyphs[idx] = this.font.getGlyph(idx);
     }
     return sortedUniq(glyphs.sort(byAscendingId), (g) => g.id);
   };

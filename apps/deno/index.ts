@@ -76,6 +76,7 @@ const assets = {
       indie_flower_r: readFont('indie_flower/IndieFlower.ttf'),
       great_vibes_r: readFont('great_vibes/GreatVibes-Regular.ttf'),
       nunito: readFont('nunito/Nunito-Regular.ttf'),
+      lobster: readFont('lobster/Lobster-Regular.ttf'),
     },
     otf: {
       fantasque_sans_mono_bi: readFont(

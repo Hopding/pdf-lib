@@ -234,9 +234,14 @@ export default async () => {
 
   // This page tests placement of text with different fonts
 
-  const page2 = pdfDoc.addPage([size, size]);
+  const height = size + 100;
+  const page2 = pdfDoc.addPage([size, height]);
 
-  page2.drawSquare({ size, color: rgb(253 / 255, 246 / 255, 227 / 255) });
+  page2.drawRectangle({
+    width: size,
+    height,
+    color: rgb(253 / 255, 246 / 255, 227 / 255),
+  });
   page2.setFontColor(rgb(101 / 255, 123 / 255, 131 / 255));
 
   const [
@@ -248,6 +253,7 @@ export default async () => {
     bioRhymeBytes,
     pressStart2PBytes,
     hussar3DBytes,
+    lobsterBytes,
   ] = await Promise.all([
     fetchAsset('fonts/ubuntu/Ubuntu-R.ttf'),
     fetchAsset('fonts/fantasque/OTF/FantasqueSansMono-BoldItalic.otf'),
@@ -257,11 +263,12 @@ export default async () => {
     fetchAsset('fonts/bio_rhyme/BioRhymeExpanded-Regular.ttf'),
     fetchAsset('fonts/press_start_2p/PressStart2P-Regular.ttf'),
     fetchAsset('fonts/hussar_3d/Hussar3DFour.otf'),
+    fetchAsset('fonts/lobster/Lobster-Regular.ttf'),
   ]);
 
   const ubuntuFont = await pdfDoc.embedFont(ubuntuBytes, { subset: true });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 20,
+    y: height - 20,
     size: 20,
     font: ubuntuFont,
     lineHeight: 20,
@@ -269,7 +276,7 @@ export default async () => {
 
   const fantasqueFont = await pdfDoc.embedFont(fantasqueBytes);
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 105,
+    y: height - 105,
     size: 25,
     font: fantasqueFont,
     lineHeight: 25,
@@ -279,7 +286,7 @@ export default async () => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 200,
+    y: height - 200,
     size: 25,
     font: indieFlowerFont,
     lineHeight: 25,
@@ -289,7 +296,7 @@ export default async () => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 300,
+    y: height - 300,
     size: 30,
     font: greatVibesFont,
     lineHeight: 30,
@@ -297,7 +304,7 @@ export default async () => {
 
   const appleStormFont = await pdfDoc.embedFont(appleStormBytes);
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 425,
+    y: height - 425,
     size: 25,
     font: appleStormFont,
     lineHeight: 25,
@@ -307,7 +314,7 @@ export default async () => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 500,
+    y: height - 500,
     size: 15,
     font: bioRhymeFont,
     lineHeight: 15,
@@ -317,7 +324,7 @@ export default async () => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 575,
+    y: height - 575,
     size: 15,
     font: pressStart2PFont,
     lineHeight: 15,
@@ -325,9 +332,17 @@ export default async () => {
 
   const hussar3DFont = await pdfDoc.embedFont(hussar3DBytes);
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 650,
+    y: height - 650,
     size: 25,
     font: hussar3DFont,
+    lineHeight: 25,
+  });
+
+  const lobsterFont = await pdfDoc.embedFont(lobsterBytes);
+  page2.drawText(ipsumLines.join('\n'), {
+    y: height - 750,
+    size: 25,
+    font: lobsterFont,
     lineHeight: 25,
   });
 
