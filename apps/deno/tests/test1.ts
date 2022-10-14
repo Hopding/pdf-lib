@@ -231,9 +231,14 @@ export default async (assets: Assets) => {
 
   // This page tests placement of text with different fonts
 
-  const page2 = pdfDoc.addPage([size, size]);
+  const height = size + 100;
+  const page2 = pdfDoc.addPage([size, height]);
 
-  page2.drawSquare({ size, color: rgb(253 / 255, 246 / 255, 227 / 255) });
+  page2.drawRectangle({
+    width: size,
+    height,
+    color: rgb(253 / 255, 246 / 255, 227 / 255),
+  });
   page2.setFontColor(rgb(101 / 255, 123 / 255, 131 / 255));
 
   const { fonts } = assets;
@@ -242,7 +247,7 @@ export default async (assets: Assets) => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 20,
+    y: height - 20,
     size: 20,
     font: ubuntuFont,
     lineHeight: 20,
@@ -252,7 +257,7 @@ export default async (assets: Assets) => {
     fonts.otf.fantasque_sans_mono_bi,
   );
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 105,
+    y: height - 105,
     size: 25,
     font: fantasqueFont,
     lineHeight: 25,
@@ -262,7 +267,7 @@ export default async (assets: Assets) => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 200,
+    y: height - 200,
     size: 25,
     font: indieFlowerFont,
     lineHeight: 25,
@@ -272,7 +277,7 @@ export default async (assets: Assets) => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 300,
+    y: height - 300,
     size: 30,
     font: greatVibesFont,
     lineHeight: 30,
@@ -280,7 +285,7 @@ export default async (assets: Assets) => {
 
   const appleStormFont = await pdfDoc.embedFont(fonts.otf.apple_storm_r);
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 425,
+    y: height - 425,
     size: 25,
     font: appleStormFont,
     lineHeight: 25,
@@ -290,7 +295,7 @@ export default async (assets: Assets) => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 500,
+    y: height - 500,
     size: 15,
     font: bioRhymeFont,
     lineHeight: 15,
@@ -300,7 +305,7 @@ export default async (assets: Assets) => {
     subset: true,
   });
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 575,
+    y: height - 575,
     size: 15,
     font: pressStart2PFont,
     lineHeight: 15,
@@ -308,9 +313,17 @@ export default async (assets: Assets) => {
 
   const hussar3DFont = await pdfDoc.embedFont(fonts.otf.hussar_3d_r);
   page2.drawText(ipsumLines.join('\n'), {
-    y: size - 650,
+    y: height - 650,
     size: 25,
     font: hussar3DFont,
+    lineHeight: 25,
+  });
+
+  const lobsterFont = await pdfDoc.embedFont(fonts.ttf.lobster);
+  page2.drawText(ipsumLines.join('\n'), {
+    y: height - 750,
+    size: 25,
+    font: lobsterFont,
     lineHeight: 25,
   });
 
