@@ -1,6 +1,6 @@
 {
   "name": "@cantoo/pdf-lib",
-  "version": "1.17.3",
+  "version": "1.17.4",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -33,6 +33,7 @@
     "François Billioud (https://github.com/Sharcoux)"
   ],
   "scripts": {
+    "release": "yarn build && release-it",
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
     "release:next": "yarn publish --tag next",
     "release:prep": "yarn clean && yarn lint && yarn typecheck && yarn test && yarn build",
@@ -112,6 +113,7 @@
     "jest": "^26.0.1",
     "node-fetch": "^2.6.0",
     "prettier": "^2.0.5",
+    "release-it": "^15.5.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.17.1",
     "rollup-plugin-terser": "^6.1.0",
