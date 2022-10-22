@@ -1,3 +1,11 @@
+## Forked by [Cantoo](https://cantoo.fr)
+
+This fork adds the support for svg to the pdf-lib project. Until pdf-lib project gets a better maintainance, we will maintain this project as long as we need it but cannot guarantee the support for issues too far from our own roadmap.
+
+Install with: `npm install @cantoo/pdf-lib`
+
+<hr/>
+
 <a href="https://pdf-lib.js.org">
 <h1 align="center">
 <img alt="pdf-lib" height="300" src="https://raw.githubusercontent.com/Hopding/pdf-lib-docs/master/assets/logo-full.svg?sanitize=true">
