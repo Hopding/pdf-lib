@@ -160,15 +160,30 @@ const runnersToPage = (
     const fontSize = element.svgAttributes.fontSize || 12;
     const fontStyle = element.svgAttributes.fontStyle
       ? `_${element.svgAttributes.fontStyle}`
-      : '';
+      : ' '; // adding this space ensures that .find in fontsFallbacks will not return a false positive
     const fontWeight = element.svgAttributes.fontWeight
       ? `_${element.svgAttributes.fontWeight}`
-      : '';
-    const svgFont = element.svgAttributes.fontFamily
-      ? element.svgAttributes.fontFamily + fontWeight + fontStyle
+      : ' ';
+    const fontFamily = element.svgAttributes.fontFamily;
+    const svgFont = fontFamily
+      ? fontFamily + fontWeight.trimRight() + fontStyle.trimRight()
       : undefined;
 
-    const font = options.fonts && svgFont ? options.fonts[svgFont] : undefined;
+    const fontsFallbacks = [
+      svgFont || '',
+      fontFamily + fontWeight,
+      fontFamily + fontStyle,
+      fontFamily || '',
+    ];
+
+    const font =
+      options.fonts && svgFont
+        ? options.fonts[
+            fontsFallbacks.find(
+              (fontFallback) => options.fonts![fontFallback],
+            ) || ''
+          ]
+        : undefined;
     const textWidth = (font || page.getFont()[0]).widthOfTextAtSize(
       text,
       fontSize,
@@ -246,7 +261,7 @@ const runnersToPage = (
       switch (command) {
         case 'm':
         case 'M': {
-          const isLocalInstruction = command === command.toLocaleLowerCase()
+          const isLocalInstruction = command === command.toLocaleLowerCase();
           const nextPoint = new Point({
             x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
             y: (isLocalInstruction ? origin.y : basePoint.y) + params[1],
@@ -340,17 +355,17 @@ const runnersToPage = (
         case 'C': {
           const isLocalInstruction = command === 'c';
 
-          let x = 0
-          let y = 0
+          let x = 0;
+          let y = 0;
 
           for (
             let pendingParams = params;
             pendingParams.length > 0;
             pendingParams = pendingParams.slice(6)
           ) {
-            const [, , , , pendingX, pendingY] = pendingParams
-            x += pendingX
-            y += pendingY
+            const [, , , , pendingX, pendingY] = pendingParams;
+            x += pendingX;
+            y += pendingY;
           }
 
           const nextPoint = new Point({
@@ -367,17 +382,17 @@ const runnersToPage = (
         case 'S':
           const isLocalInstruction = command === 's';
 
-          let x = 0
-          let y = 0
+          let x = 0;
+          let y = 0;
 
           for (
             let pendingParams = params;
             pendingParams.length > 0;
             pendingParams = pendingParams.slice(4)
           ) {
-            const [, , pendingX, pendingY] = pendingParams
-            x += pendingX
-            y += pendingY
+            const [, , pendingX, pendingY] = pendingParams;
+            x += pendingX;
+            y += pendingY;
           }
 
           const nextPoint = new Point({
@@ -420,7 +435,9 @@ const runnersToPage = (
       ?.map((command) => {
         const letter = command.match(/[a-z]/i)?.[0];
         const params = command
-          .match(/(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|(-?[0-9]+)/gi)
+          .match(
+            /(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|(-?[0-9]+)/gi,
+          )
           ?.filter((m) => m !== '')
           .map((v) => parseFloat(v));
         if (letter && params) {
@@ -812,7 +829,9 @@ const parseAttributes = (
         if (letter?.toLocaleLowerCase() === 'z') return letter;
         // const params = command.match(/([0-9e.-]+)/ig)?.filter(m => m !== '')//.map(v => parseFloat(v))
         const params = command
-          .match(/(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|([0-9]+)/gi)
+          .match(
+            /(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|([0-9]+)/gi,
+          )
           ?.filter((m) => m !== ''); // .map(v => parseFloat(v))
 
         if (!params) return letter || '';
