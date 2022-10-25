@@ -411,7 +411,7 @@ const runnersToPage = (
       ?.map((command) => {
         const letter = command.match(/[a-z]/i)?.[0];
         const params = command
-          .match(/(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|([0-9]+)/gi)
+          .match(/(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|(-?[0-9]+)/gi)
           ?.filter((m) => m !== '')
           .map((v) => parseFloat(v));
         if (letter && params) {
