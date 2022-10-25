@@ -44,6 +44,8 @@ type InheritedAttributes = {
   strokeLineCap?: LineCapStyle;
   strokeLineJoin?: LineJoinStyle;
   fontFamily?: string;
+  fontStyle?: string;
+  fontWeight?: string;
   fontSize?: number;
   rotation?: Degrees;
 };
@@ -156,10 +158,17 @@ const runnersToPage = (
     const anchor = element.svgAttributes.textAnchor;
     const text = element.childNodes[0].text;
     const fontSize = element.svgAttributes.fontSize || 12;
-    const font =
-      options.fonts && element.svgAttributes.fontFamily
-        ? options.fonts[element.svgAttributes.fontFamily]
-        : undefined;
+    const fontStyle = element.svgAttributes.fontStyle
+      ? `_${element.svgAttributes.fontStyle}`
+      : '';
+    const fontWeight = element.svgAttributes.fontWeight
+      ? `_${element.svgAttributes.fontWeight}`
+      : '';
+    const svgFont = element.svgAttributes.fontFamily
+      ? element.svgAttributes.fontFamily + fontWeight + fontStyle
+      : undefined;
+
+    const font = options.fonts && svgFont ? options.fonts[svgFont] : undefined;
     const textWidth = (font || page.getFont()[0]).widthOfTextAtSize(
       text,
       fontSize,
@@ -277,8 +286,8 @@ const runnersToPage = (
                   y: 0,
                 });
             }
-          }
-          const nextPoint = getNextPoint()
+          };
+          const nextPoint = getNextPoint();
           const normalizedNext = normalizePoint(nextPoint);
 
           let endPoint = new Point({ x: nextPoint.x, y: nextPoint.y });
@@ -645,6 +654,8 @@ const parseAttributes = (
   );
   const strokeWidthRaw = styleOrAttribute(attributes, style, 'stroke-width');
   const fontFamilyRaw = styleOrAttribute(attributes, style, 'font-family');
+  const fontStyleRaw = styleOrAttribute(attributes, style, 'font-style');
+  const fontWeightRaw = styleOrAttribute(attributes, style, 'font-weight');
   const fontSizeRaw = styleOrAttribute(attributes, style, 'font-size');
 
   const width = parseFloatValue(widthRaw, inherited.width);
@@ -662,6 +673,8 @@ const parseAttributes = (
 
   const newInherited: InheritedAttributes = {
     fontFamily: fontFamilyRaw || inherited.fontFamily,
+    fontStyle: fontStyleRaw || inherited.fontStyle,
+    fontWeight: fontWeightRaw || inherited.fontWeight,
     fontSize: parseFloatValue(fontSizeRaw) ?? inherited.fontSize,
     fill: fillRaw?.rgb || inherited.fill,
     fillOpacity:
@@ -848,10 +861,10 @@ const parseAttributes = (
                 let newRealX;
                 let newRealY;
                 if (letter === letter.toLowerCase()) {
-                  const { width: newWidth, height: newHeight } = newConverter.size(
-                    realX,
-                    realY,
-                  );
+                  const {
+                    width: newWidth,
+                    height: newHeight,
+                  } = newConverter.size(realX, realY);
                   newRealX = newWidth;
                   newRealY = -newHeight;
                 } else {
@@ -1121,7 +1134,7 @@ export const drawSvg = async (
   svg: string,
   options: PDFPageDrawSVGElementOptions,
 ) => {
-  if (!svg) return
+  if (!svg) return;
   const size = page.getSize();
   const firstChild = parseHtml(svg).firstChild as HTMLElement;
   const x =
@@ -1139,10 +1152,13 @@ export const drawSvg = async (
     options.width !== undefined ? options.width : parseFloat(widthRaw);
   const height =
     options.height !== undefined ? options.height : parseFloat(heightRaw);
-  
+
   // it's important to add the viewBox to allow svg resizing through the options
   if (!attributes.viewBox) {
-    firstChild.setAttribute('viewBox', `0 0 ${widthRaw || width} ${heightRaw || height}`)
+    firstChild.setAttribute(
+      'viewBox',
+      `0 0 ${widthRaw || width} ${heightRaw || height}`,
+    );
   }
 
   // The y axis of the page is reverted
