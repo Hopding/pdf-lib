@@ -7,6 +7,7 @@ import {
 } from 'node-html-better-parser';
 import { Color, colorString } from './colors';
 import { Degrees, degreesToRadians, RotationTypes, degrees } from './rotations';
+import PDFFont from './PDFFont';
 import PDFPage from './PDFPage';
 import { PDFPageDrawSVGElementOptions } from './PDFPageOptions';
 import { LineCapStyle, LineJoinStyle } from './operators';
@@ -158,32 +159,30 @@ const runnersToPage = (
     const anchor = element.svgAttributes.textAnchor;
     const text = element.childNodes[0].text;
     const fontSize = element.svgAttributes.fontSize || 12;
-    const fontStyle = element.svgAttributes.fontStyle
-      ? `_${element.svgAttributes.fontStyle}`
-      : ' '; // adding this space ensures that .find in fontsFallbacks will not return a false positive
-    const fontWeight = element.svgAttributes.fontWeight
-      ? `_${element.svgAttributes.fontWeight}`
-      : ' ';
-    const fontFamily = element.svgAttributes.fontFamily;
-    const svgFont = fontFamily
-      ? fontFamily + fontWeight.trimRight() + fontStyle.trimRight()
-      : undefined;
 
-    const fontsFallbacks = [
-      svgFont || '',
-      fontFamily + fontWeight,
-      fontFamily + fontStyle,
-      fontFamily || '',
-    ];
+    /** This will find the best font for the provided style in the list */
+    function getBestFont(
+      style: InheritedAttributes,
+      fonts: { [fontName: string]: PDFFont },
+    ) {
+      const family = style.fontFamily;
+      if (!family) return undefined;
+      const isBold =
+        style.fontWeight === 'bold' || Number(style.fontWeight) >= 700;
+      const isItalic = style.fontStyle === 'italic';
+      const getFont = (bold: boolean, italic: boolean, family: string) =>
+        fonts[family + (bold ? '_bold' : '') + (italic ? '_italic' : '')];
+      return (
+        getFont(isBold, isItalic, family) ||
+        getFont(isBold, false, family) ||
+        getFont(false, isItalic, family) ||
+        getFont(false, false, family) ||
+        Object.keys(fonts).find((fontFamily) => fontFamily.startsWith(family))
+      );
+    }
 
     const font =
-      options.fonts && svgFont
-        ? options.fonts[
-            fontsFallbacks.find(
-              (fontFallback) => options.fonts![fontFallback],
-            ) || ''
-          ]
-        : undefined;
+      options.fonts && getBestFont(element.svgAttributes, options.fonts);
     const textWidth = (font || page.getFont()[0]).widthOfTextAtSize(
       text,
       fontSize,
