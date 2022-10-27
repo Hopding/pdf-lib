@@ -829,7 +829,7 @@ const parseAttributes = (
         // const params = command.match(/([0-9e.-]+)/ig)?.filter(m => m !== '')//.map(v => parseFloat(v))
         const params = command
           .match(
-            /(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|([0-9]+)/gi,
+            /(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|(-?[0-9]+)/gi,
           )
           ?.filter((m) => m !== ''); // .map(v => parseFloat(v))
 
