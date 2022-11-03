@@ -573,6 +573,18 @@ const transform = (
         };
       }
     }
+    case 'matrix': {
+      const [scaleX, skewY, skewX, scaleY, translateX, translateY] = args;
+      return {
+        point: (x: number, y: number) => {
+          return converter.point(
+            x * scaleX + y * skewX + translateX, 
+            x * skewY + y * scaleY + translateY
+          );
+        },
+        size: (w: number, h: number) => converter.size(w * scaleX, h * scaleY), 
+      };
+    }
     case 'skewX': {
       const angle = degreesToRadians(args[0]);
       return {
@@ -835,6 +847,25 @@ const parseAttributes = (
 
         if (!params) return letter || '';
         switch (letter?.toLocaleLowerCase()) {
+          case 'm': 
+          case 'l': {
+            const groupedParams = groupBy<string>(params, 2);
+            return groupedParams
+              .map((pair, pairIndex) => {
+                const [x, y] = pair;
+                const xReal = parseFloatValue(x, inherited.width) || 0;
+                const yReal = parseFloatValue(y, innerHeight) || 0;
+                if (letter === letter.toLowerCase()) {
+                  const { width: dx, height: dy } = newConverter.size(xReal, yReal);
+                  return (pairIndex > 0 || letter === 'l' ? 'l' : 'm') + [dx, -dy].join(',');
+                } else {
+                  const { x: xPixel, y: yPixel } = newConverter.point(xReal, yReal);
+                  return (pairIndex > 0 || letter === 'L' ? 'L': 'M') + 
+                    [xPixel - xOrigin, yPixel - yOrigin].join(',');
+                }
+              })
+              .join(' ');
+          }
           case 'v': {
             return params
               .map((value) => {
