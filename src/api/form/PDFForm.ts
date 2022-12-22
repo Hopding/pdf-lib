@@ -44,7 +44,8 @@ import {
 import { assertIs, Cache, assertOrUndefined } from 'src/utils';
 
 export interface FlattenOptions {
-  updateFieldAppearances: boolean;
+  updateFieldAppearances?: boolean;
+  filter?: (field: PDFField) => boolean;
 }
 
 /**
@@ -533,9 +534,17 @@ export default class PDFForm {
    * const form = pdfDoc.getForm();
    * form.flatten();
    * ```
+   *
+   * A filter function can also be provided to only flatten certain fields.
+   *
+   * For example, keep signature fields intact:
+   * ```js
+   * const form = pdfDoc.getForm();
+   * form.flatten({ filter: (field) => !(field instanceof PDFSignature) });
+   * ```
    */
-  flatten(options: FlattenOptions = { updateFieldAppearances: true }) {
-    if (options.updateFieldAppearances) {
+  flatten(options?: FlattenOptions) {
+    if (options?.updateFieldAppearances ?? true) {
       this.updateFieldAppearances();
     }
 
@@ -543,6 +552,9 @@ export default class PDFForm {
 
     for (let i = 0, lenFields = fields.length; i < lenFields; i++) {
       const field = fields[i];
+
+      if (options?.filter && !options.filter(field)) continue;
+
       const widgets = field.acroField.getWidgets();
 
       for (let j = 0, lenWidgets = widgets.length; j < lenWidgets; j++) {
