@@ -312,7 +312,7 @@ const runnersToPage = (
               point: nextPoint,
               command: isLocalInstruction
                 ? `M${normalizedNext.x},${normalizedNext.y}`
-                : `M${params[0]},${params[1]}`,
+                : `M${nextPoint.x},${nextPoint.y}`,
             };
           }
 
@@ -330,7 +330,7 @@ const runnersToPage = (
             ? ''
             : isLocalInstruction
             ? `M${normalizedNext.x},${normalizedNext.y}`
-            : `M${params[0]},${params[1]}`;
+            : `M${nextPoint.x},${nextPoint.y}`;
           return {
             point: nextPoint,
             command: `${startInstruction} L${endPoint.x},${endPoint.y} ${endInstruction} `,
