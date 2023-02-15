@@ -49,6 +49,7 @@ type InheritedAttributes = {
   fontWeight?: string;
   fontSize?: number;
   rotation?: Degrees;
+  viewBox: Box
 };
 type SVGAttributes = {
   rotate?: Degrees;
@@ -148,10 +149,269 @@ const getInnerSegment = (start: Point, end: Point, rect: Rectangle) => {
   return new Segment(resultLineStart, resultLineEnd);
 };
 
+const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
+  switch (element.tagName) {
+    case 'text':{
+      const fontSize = element.svgAttributes.fontSize || 12
+      // TODO: compute the right font boundaries to know which characters should be drawn
+      // this is an workaround to draw text that are just a little outside the viewbox boundaries
+      const start = new Point({
+        x: element.svgAttributes.x || 0,
+        y: element.svgAttributes.y || 0,
+      })
+      const paddingRect = new Rectangle(
+        new Point({
+          x: svgRect.start.x - fontSize,
+          y: svgRect.start.y + fontSize,
+        }),
+        new Point({ x: svgRect.end.x + fontSize, y: svgRect.end.y - fontSize }),
+      );
+      if (!isCoordinateInsideTheRect(start, paddingRect)) 
+        element.set_content('')
+      break
+    }
+    case 'line': {
+      const start = new Point({
+        x: element.svgAttributes.x1!,
+        y: element.svgAttributes.y1!,
+      });
+  
+      const end = new Point({
+        x: element.svgAttributes.x2!,
+        y: element.svgAttributes.y2!,
+      });
+      const line = getInnerSegment(start, end, svgRect);
+      element.svgAttributes.x1 = line ? line.A.x : 0
+      element.svgAttributes.x2 = line ? line.B.x : 0
+      element.svgAttributes.y1 = line ? line.A.y : 0
+      element.svgAttributes.y2 = line ? line.B.y : 0
+      break
+    }
+    case 'path': {
+      // the path origin coordinate
+      const basePoint = new Point({
+        x: element.svgAttributes.x || 0,
+        y: element.svgAttributes.y || 0,
+      });
+      const normalizePoint = (p: Point) =>
+        new Point({ x: p.x - basePoint.x, y: p.y - basePoint.y });
+
+      /**
+       *
+       * @param origin is the origin of the current drawing in the page coordinate system
+       * @param command the path instruction
+       * @param params the instruction params
+       * @returns the point where the next instruction starts and the new instruction text
+       */
+      const handlePath = (origin: Point, command: string, params: number[]) => {
+        switch (command) {
+          case 'm':
+          case 'M': {
+            const isLocalInstruction = command === command.toLocaleLowerCase();
+            const nextPoint = new Point({
+              x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
+              y: (isLocalInstruction ? origin.y : basePoint.y) + params[1],
+            });
+            return {
+              point: nextPoint,
+              command: `${command}${params[0]},${params[1]}`,
+            };
+          }
+          case 'v':
+          case 'V':
+          case 'h':
+          case 'H':
+          case 'l':
+          case 'L': {
+            const isLocalInstruction = ['l', 'v', 'h'].includes(command);
+            const getNextPoint = () => {
+              switch (command.toLocaleLowerCase()) {
+                case 'l':
+                  return new Point({
+                    x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
+                    y: (isLocalInstruction ? origin.y : basePoint.y) + params[1],
+                  });
+                case 'v':
+                  return new Point({
+                    x: origin.x,
+                    y: (isLocalInstruction ? origin.y : basePoint.y) + params[0],
+                  });
+                case 'h':
+                  return new Point({
+                    x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
+                    y: origin.y,
+                  });
+                default:
+                  return new Point({
+                    x: 0,
+                    y: 0,
+                  });
+              }
+            };
+            const nextPoint = getNextPoint();
+            const normalizedNext = normalizePoint(nextPoint);
+
+            let endPoint = new Point({ x: nextPoint.x, y: nextPoint.y });
+            let startPoint = new Point({ x: origin.x, y: origin.y });
+            const result = getInnerSegment(startPoint, endPoint, svgRect);
+            if (!result) {
+              return {
+                point: nextPoint,
+                command: isLocalInstruction
+                  ? `M${normalizedNext.x},${normalizedNext.y}`
+                  : `M${nextPoint.x},${nextPoint.y}`,
+              };
+            }
+
+            // if the point wasn't moved it means that it's inside the rect
+            const isStartInside = result.A.isEqual(startPoint);
+            const isEndInside = result.B.isEqual(endPoint);
+
+            // the intersection points are referencing the pdf coordinates, it's necessary to convert these points to the path's origin point
+            endPoint = normalizePoint(new Point(result.B.toCoords()));
+            startPoint = normalizePoint(new Point(result.A.toCoords()));
+            const startInstruction = isStartInside
+              ? ''
+              : `M${startPoint.x},${startPoint.y}`;
+            const endInstruction = isEndInside
+              ? ''
+              : isLocalInstruction
+              ? `M${normalizedNext.x},${normalizedNext.y}`
+              : `M${nextPoint.x},${nextPoint.y}`;
+            return {
+              point: nextPoint,
+              command: `${startInstruction} L${endPoint.x},${endPoint.y} ${endInstruction} `,
+            };
+          }
+          case 'a':
+          case 'A': {
+            const isLocalInstruction = command === 'a';
+            const [, , , , , x, y] = params;
+            const nextPoint = new Point({
+              x: (isLocalInstruction ? origin.x : basePoint.x) + x,
+              y: (isLocalInstruction ? origin.y : basePoint.y) + y,
+            });
+            // TODO: implement the code to fit the Elliptical Arc Curve instructions into the viewbox
+            return {
+              point: nextPoint,
+              command: `${command} ${params.map((p) => `${p}`).join()}`,
+            };
+          }
+          case 'c':
+          case 'C': {
+            const isLocalInstruction = command === 'c';
+
+            let x = 0;
+            let y = 0;
+
+            for (
+              let pendingParams = params;
+              pendingParams.length > 0;
+              pendingParams = pendingParams.slice(6)
+            ) {
+              const [, , , , pendingX, pendingY] = pendingParams;
+              x += pendingX;
+              y += pendingY;
+            }
+
+            const nextPoint = new Point({
+              x: (isLocalInstruction ? origin.x : basePoint.x) + x,
+              y: (isLocalInstruction ? origin.y : basePoint.y) + y,
+            });
+            // TODO: implement the code to fit the Cubic Bézier Curve instructions into the viewbox
+            return {
+              point: nextPoint,
+              command: `${command} ${params.map((p) => `${p}`).join()}`,
+            };
+          }
+          case 's':
+          case 'S':
+            const isLocalInstruction = command === 's';
+
+            let x = 0;
+            let y = 0;
+
+            for (
+              let pendingParams = params;
+              pendingParams.length > 0;
+              pendingParams = pendingParams.slice(4)
+            ) {
+              const [, , pendingX, pendingY] = pendingParams;
+              x += pendingX;
+              y += pendingY;
+            }
+
+            const nextPoint = new Point({
+              x: (isLocalInstruction ? origin.x : basePoint.x) + x,
+              y: (isLocalInstruction ? origin.y : basePoint.y) + y,
+            });
+
+            return {
+              point: nextPoint,
+              command: `${command} ${params.map((p) => `${p}`).join()}`,
+            };
+          case 'q':
+          case 'Q': {
+            const isLocalInstruction = command === 'q';
+            const [, , x, y] = params;
+            const nextPoint = new Point({
+              x: (isLocalInstruction ? origin.x : basePoint.x) + x,
+              y: (isLocalInstruction ? origin.y : basePoint.y) + y,
+            });
+            // TODO: implement the code to fit the Quadratic Bézier Curve instructions into the viewbox
+            return {
+              point: nextPoint,
+              command: `${command} ${params.map((p) => `${p}`).join()}`,
+            };
+          }
+          // TODO: Handle the remaining svg instructions: t,q
+          default:
+            return {
+              point: origin,
+              command: `${command} ${params.map((p) => `${p}`).join()}`,
+            };
+        }
+      };
+
+      const commands = element.svgAttributes.d?.match(
+        /(v|h|a|l|t|m|q|c|s|z)([0-9,e\s.-]*)/gi,
+      );
+      let currentPoint = new Point({ x: basePoint.x, y: basePoint.y });
+      const newPath = commands
+        ?.map((command) => {
+          const letter = command.match(/[a-z]/i)?.[0];
+          const params = command
+            .match(
+              /(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|(-?[0-9]+)/gi,
+            )
+            ?.filter((m) => m !== '')
+            .map((v) => parseFloat(v));
+          if (letter && params) {
+            const result = handlePath(currentPoint, letter, params);
+            if (result) {
+              currentPoint = result.point;
+              return result.command;
+            }
+          }
+          return command;
+        })
+        .join(' ');
+      element.svgAttributes.d = newPath
+      break
+    }
+    // TODO: implement the crop for the following elements
+    case 'image':
+    case 'rect':
+    case 'ellipse':
+    case 'circle':
+    default:
+      return element
+  }
+  return element
+}
 // TODO: Improve type system to require the correct props for each tagName.
 /** methods to draw SVGElements onto a PDFPage */
 const runnersToPage = (
-  svgRect: Rectangle,
   page: PDFPage,
   options: PDFPageDrawSVGElementOptions,
 ): SVGElementToDrawMap => ({
@@ -195,45 +455,27 @@ const runnersToPage = (
     });
     // TODO: compute the right font boundaries to know which characters should be drawed
     // this is an workaround to draw text that are just a little outside the viewbox boundaries
-    const start = new Point({
-      x: element.svgAttributes.x || 0,
-      y: element.svgAttributes.y || 0,
+    page.drawText(text, {
+      x: point.x,
+      y: point.y,
+      font,
+      size: fontSize,
+      color: element.svgAttributes.fill,
+      opacity: element.svgAttributes.fillOpacity,
+      rotate: element.svgAttributes.rotate,
     });
-    const paddingRect = new Rectangle(
-      new Point({
-        x: svgRect.start.x - fontSize,
-        y: svgRect.start.y + fontSize,
-      }),
-      new Point({ x: svgRect.end.x + fontSize, y: svgRect.end.y - fontSize }),
-    );
-    if (isCoordinateInsideTheRect(start, paddingRect)) {
-      page.drawText(text, {
-        x: point.x,
-        y: point.y,
-        font,
-        size: fontSize,
-        color: element.svgAttributes.fill,
-        opacity: element.svgAttributes.fillOpacity,
-        rotate: element.svgAttributes.rotate,
-      });
-    }
+
   },
   async line(element) {
-    const start = new Point({
-      x: element.svgAttributes.x1!,
-      y: element.svgAttributes.y1!,
-    });
-
-    const end = new Point({
-      x: element.svgAttributes.x2!,
-      y: element.svgAttributes.y2!,
-    });
-    const line = getInnerSegment(start, end, svgRect);
-    if (!line) return;
-
     page.drawLine({
-      start: line.A.toCoords(),
-      end: line.B.toCoords(),
+      start: {
+        x: element.svgAttributes.x1!,
+        y: element.svgAttributes.y1!,
+      },
+      end: {
+        x: element.svgAttributes.x2!,
+        y: element.svgAttributes.y2!,
+      },
       thickness: element.svgAttributes.strokeWidth,
       color: element.svgAttributes.stroke,
       opacity: element.svgAttributes.strokeOpacity,
@@ -241,216 +483,8 @@ const runnersToPage = (
     });
   },
   async path(element) {
-    // the path origin coordinate
-    const basePoint = new Point({
-      x: element.svgAttributes.x || 0,
-      y: element.svgAttributes.y || 0,
-    });
-    const normalizePoint = (p: Point) =>
-      new Point({ x: p.x - basePoint.x, y: p.y - basePoint.y });
-
-    /**
-     *
-     * @param origin is the origin of the current drawing in the page coordinate system
-     * @param command the path instruction
-     * @param params the instrction params
-     * @returns the point where the next instruction starts and the new instruction text
-     */
-    const handlePath = (origin: Point, command: string, params: number[]) => {
-      switch (command) {
-        case 'm':
-        case 'M': {
-          const isLocalInstruction = command === command.toLocaleLowerCase();
-          const nextPoint = new Point({
-            x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
-            y: (isLocalInstruction ? origin.y : basePoint.y) + params[1],
-          });
-          return {
-            point: nextPoint,
-            command: `${command}${params[0]},${params[1]}`,
-          };
-        }
-        case 'v':
-        case 'V':
-        case 'h':
-        case 'H':
-        case 'l':
-        case 'L': {
-          const isLocalInstruction = ['l', 'v', 'h'].includes(command);
-          const getNextPoint = () => {
-            switch (command.toLocaleLowerCase()) {
-              case 'l':
-                return new Point({
-                  x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
-                  y: (isLocalInstruction ? origin.y : basePoint.y) + params[1],
-                });
-              case 'v':
-                return new Point({
-                  x: origin.x,
-                  y: (isLocalInstruction ? origin.y : basePoint.y) + params[0],
-                });
-              case 'h':
-                return new Point({
-                  x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
-                  y: origin.y,
-                });
-              default:
-                return new Point({
-                  x: 0,
-                  y: 0,
-                });
-            }
-          };
-          const nextPoint = getNextPoint();
-          const normalizedNext = normalizePoint(nextPoint);
-
-          let endPoint = new Point({ x: nextPoint.x, y: nextPoint.y });
-          let startPoint = new Point({ x: origin.x, y: origin.y });
-          const result = getInnerSegment(startPoint, endPoint, svgRect);
-          if (!result) {
-            return {
-              point: nextPoint,
-              command: isLocalInstruction
-                ? `M${normalizedNext.x},${normalizedNext.y}`
-                : `M${nextPoint.x},${nextPoint.y}`,
-            };
-          }
-
-          // if the point wasn't moved it means that it's inside the rect
-          const isStartInside = result.A.isEqual(startPoint);
-          const isEndInside = result.B.isEqual(endPoint);
-
-          // the intersection points are referencing the pdf coordinates, it's necessary to convert these points to the path's origin point
-          endPoint = normalizePoint(new Point(result.B.toCoords()));
-          startPoint = normalizePoint(new Point(result.A.toCoords()));
-          const startInstruction = isStartInside
-            ? ''
-            : `M${startPoint.x},${startPoint.y}`;
-          const endInstruction = isEndInside
-            ? ''
-            : isLocalInstruction
-            ? `M${normalizedNext.x},${normalizedNext.y}`
-            : `M${nextPoint.x},${nextPoint.y}`;
-          return {
-            point: nextPoint,
-            command: `${startInstruction} L${endPoint.x},${endPoint.y} ${endInstruction} `,
-          };
-        }
-        case 'a':
-        case 'A': {
-          const isLocalInstruction = command === 'a';
-          const [, , , , , x, y] = params;
-          const nextPoint = new Point({
-            x: (isLocalInstruction ? origin.x : basePoint.x) + x,
-            y: (isLocalInstruction ? origin.y : basePoint.y) + y,
-          });
-          // TODO: implement the code to fit the Elliptical Arc Curve instructions into the viewbox
-          return {
-            point: nextPoint,
-            command: `${command} ${params.map((p) => `${p}`).join()}`,
-          };
-        }
-        case 'c':
-        case 'C': {
-          const isLocalInstruction = command === 'c';
-
-          let x = 0;
-          let y = 0;
-
-          for (
-            let pendingParams = params;
-            pendingParams.length > 0;
-            pendingParams = pendingParams.slice(6)
-          ) {
-            const [, , , , pendingX, pendingY] = pendingParams;
-            x += pendingX;
-            y += pendingY;
-          }
-
-          const nextPoint = new Point({
-            x: (isLocalInstruction ? origin.x : basePoint.x) + x,
-            y: (isLocalInstruction ? origin.y : basePoint.y) + y,
-          });
-          // TODO: implement the code to fit the Cubic Bézier Curve instructions into the viewbox
-          return {
-            point: nextPoint,
-            command: `${command} ${params.map((p) => `${p}`).join()}`,
-          };
-        }
-        case 's':
-        case 'S':
-          const isLocalInstruction = command === 's';
-
-          let x = 0;
-          let y = 0;
-
-          for (
-            let pendingParams = params;
-            pendingParams.length > 0;
-            pendingParams = pendingParams.slice(4)
-          ) {
-            const [, , pendingX, pendingY] = pendingParams;
-            x += pendingX;
-            y += pendingY;
-          }
-
-          const nextPoint = new Point({
-            x: (isLocalInstruction ? origin.x : basePoint.x) + x,
-            y: (isLocalInstruction ? origin.y : basePoint.y) + y,
-          });
-
-          return {
-            point: nextPoint,
-            command: `${command} ${params.map((p) => `${p}`).join()}`,
-          };
-        case 'q':
-        case 'Q': {
-          const isLocalInstruction = command === 'q';
-          const [, , x, y] = params;
-          const nextPoint = new Point({
-            x: (isLocalInstruction ? origin.x : basePoint.x) + x,
-            y: (isLocalInstruction ? origin.y : basePoint.y) + y,
-          });
-          // TODO: implement the code to fit the Quadratic Bézier Curve instructions into the viewbox
-          return {
-            point: nextPoint,
-            command: `${command} ${params.map((p) => `${p}`).join()}`,
-          };
-        }
-        // TODO: Handle the remaining svg instructions: t,q
-        default:
-          return {
-            point: origin,
-            command: `${command} ${params.map((p) => `${p}`).join()}`,
-          };
-      }
-    };
-
-    const commands = element.svgAttributes.d?.match(
-      /(v|h|a|l|t|m|q|c|s|z)([0-9,e\s.-]*)/gi,
-    );
-    let currentPoint = new Point({ x: basePoint.x, y: basePoint.y });
-    const newPath = commands
-      ?.map((command) => {
-        const letter = command.match(/[a-z]/i)?.[0];
-        const params = command
-          .match(
-            /(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|(-?[0-9]+)/gi,
-          )
-          ?.filter((m) => m !== '')
-          .map((v) => parseFloat(v));
-        if (letter && params) {
-          const result = handlePath(currentPoint, letter, params);
-          if (result) {
-            currentPoint = result.point;
-            return result.command;
-          }
-        }
-        return command;
-      })
-      .join(' ');
     // See https://jsbin.com/kawifomupa/edit?html,output and
-    page.drawSvgPath(newPath!, {
+    page.drawSvgPath(element.svgAttributes.d!, {
       x: element.svgAttributes.x || 0,
       y: element.svgAttributes.y || 0,
       borderColor: element.svgAttributes.stroke,
@@ -523,7 +557,7 @@ const runnersToPage = (
     });
   },
   async circle(element) {
-    return runnersToPage(svgRect, page, options).ellipse(element);
+    return runnersToPage(page, options).ellipse(element);
   },
 });
 
@@ -658,7 +692,6 @@ const parseAttributes = (
 ): ParsedAttributes => {
   const attributes = element.attributes;
   const style = parseStyles(attributes.style);
-
   const widthRaw = styleOrAttribute(attributes, style, 'width', '');
   const heightRaw = styleOrAttribute(attributes, style, 'height', '');
   const fillRaw = parseColor(styleOrAttribute(attributes, style, 'fill'));
@@ -720,6 +753,7 @@ const parseAttributes = (
     width: width || inherited.width,
     height: height || inherited.height,
     rotation: inherited.rotation,
+    viewBox: element.tagName === 'svg' && element.attributes.viewBox ? parseViewBox(element.attributes.viewBox)! : inherited.viewBox
   };
 
   const svgAttributes: SVGAttributes = {
@@ -966,9 +1000,10 @@ const parseAttributes = (
   if (attributes.viewBox) {
     const viewBox = parseViewBox(attributes.viewBox)!;
     const size = {
-      width: width || inherited.width,
-      height: height || inherited.height,
+      width: width || inherited.viewBox.width,
+      height: height || inherited.viewBox.height,
     };
+
     const localConverter = getConverterWithAspectRatio(
       size,
       viewBox,
@@ -1039,6 +1074,8 @@ const getConverterWithAspectRatio = (
   viewBox: Box,
   preserveAspectRatio?: string,
 ) => {
+  // explanation about how the svg attributes applies transformations to the child elements
+  // https://www.w3.org/TR/SVG/coords.html#ComputingAViewportsTransform
   const { x, y, width, height } = getFittingRectangle(
     viewBox.width,
     viewBox.height,
@@ -1108,9 +1145,16 @@ const parseHTMLNode = (
 ): SVGElement[] => {
   if (node.nodeType === NodeType.COMMENT_NODE) return [];
   else if (node.nodeType === NodeType.TEXT_NODE) return [];
-  else if (node.tagName === 'g' || node.tagName === 'svg') {
+  else if (node.tagName === 'g') {
     return parseGroupNode(
-      node as HTMLElement & { tagName: 'svg' | 'g' },
+      node as HTMLElement & { tagName: 'g' },
+      inherited,
+      converter,
+    );
+  } 
+  else if (node.tagName === 'svg') {
+    return parseSvgNode(
+      node as HTMLElement & { tagName: 'svg' },
       inherited,
       converter,
     );
@@ -1125,17 +1169,41 @@ const parseHTMLNode = (
   }
 };
 
-const parseGroupNode = (
-  node: HTMLElement & { tagName: 'svg' | 'g' },
+const parseSvgNode = (
+  node: HTMLElement & { tagName: 'svg' },
   inherited: InheritedAttributes,
   converter: SVGSizeConverter,
 ): SVGElement[] => {
   const attributes = parseAttributes(node, inherited, converter);
   const result: SVGElement[] = [];
-  node.childNodes.forEach((child) =>
+  const viewBox = parseViewBox(node.attributes.viewBox)!
+  const svgRect = new Rectangle(
+    new Point(attributes.converter.point(viewBox.x, viewBox.y)),
+    new Point(attributes.converter.point(viewBox.x + viewBox.width, viewBox.y + viewBox.height)),
+  );
+  node.childNodes.forEach((child) => {
+    const parsedNodes = parseHTMLNode(child, attributes.inherited, attributes.converter).map(el => cropSvgElement(
+      svgRect,
+      el
+    ))
+    result.push(...parsedNodes)
+  }
+  );
+  return result;
+};
+
+const parseGroupNode = (
+  node: HTMLElement & { tagName: 'g' },
+  inherited: InheritedAttributes,
+  converter: SVGSizeConverter,
+): SVGElement[] => {
+  const attributes = parseAttributes(node, inherited, converter);
+  const result: SVGElement[] = [];
+  node.childNodes.forEach((child) => {
     result.push(
-      ...parseHTMLNode(child, attributes.inherited, attributes.converter),
-    ),
+      ...parseHTMLNode(child, attributes.inherited, attributes.converter)
+    )
+  }
   );
   return result;
 };
@@ -1175,7 +1243,8 @@ const parse = (
   if (x !== undefined) htmlElement.setAttribute('x', x + '');
   if (y !== undefined) htmlElement.setAttribute('y', size.height - y + '');
   if (fontSize) htmlElement.setAttribute('font-size', fontSize + '');
-  return parseHTMLNode(htmlElement, size, converter);
+  // TODO: what should be the default viewBox?
+  return parseHTMLNode(htmlElement, { ...size, viewBox: parseViewBox(htmlElement.attributes.viewBox || '0 0 1 1')! }, converter);
 };
 
 export const drawSvg = async (
@@ -1186,10 +1255,6 @@ export const drawSvg = async (
   if (!svg) return;
   const size = page.getSize();
   const firstChild = parseHtml(svg).firstChild as HTMLElement;
-  const x =
-    options.x !== undefined ? options.x : parseFloat(firstChild.attributes.x);
-  const y =
-    options.y !== undefined ? options.y : parseFloat(firstChild.attributes.y);
 
   const attributes = firstChild.attributes;
   const style = parseStyles(attributes.style);
@@ -1215,11 +1280,8 @@ export const drawSvg = async (
     point: (xP: number, yP: number) => ({ x: xP, y: size.height - yP }),
     size: (w: number, h: number) => ({ width: w, height: h }),
   };
-  const svgRect = new Rectangle(
-    new Point({ x, y }),
-    new Point({ x: x + width, y: y - height }),
-  );
-  const runners = runnersToPage(svgRect, page, options);
+
+  const runners = runnersToPage(page, options);
   const elements = parse(firstChild.outerHTML, options, size, defaultConverter);
   elements.forEach((elt) => runners[elt.tagName]?.(elt));
 };
