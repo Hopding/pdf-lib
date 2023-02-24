@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
-    <title>Test 23</title>
+    <title>Test 24</title>
     <script type="text/javascript" src="/dist/pdf-lib.js"></script>
     <script type="text/javascript" src="/apps/web/utils.js"></script>
   </head>
@@ -135,10 +135,14 @@
       </g>
     </svg>`;
     const svg2 = `<svg width="100" height="100" viewBox="0 0 100 100">
-      <rect width="100" height="100" x="0" y="0" fill="black"/>
-      <circle cx="50" cy="40" r="55" fill="red"/>
-      </svg>`
-      // <circle cx="80" cy="80" r="25" fill="red"/>
+  <rect width="100" height="100" x="0" y="0" fill="black"/>
+  <circle cx="45" cy="50" r="20" fill="red"/>
+  <circle cx="85" cy="50" r="25" fill="green"/>
+  <circle cx="85" cy="5" r="30" fill="blue"/>
+  <circle cx="15" cy="5" r="30" fill="#e1e1e1"/>
+  <circle cx="15" cy="85" r="30" fill="#e1e1e1"/>
+</svg>`
+      // M 100,700 L 193.9,700A 70,70 0 0,0 200, 693.3 L 200,606.6A 70,70 0 0,0 193.9, 600 L 100,600A 70,70 0 0,0 100, 700
       
       const drawLines = (page) => {
         Array(10)
@@ -179,11 +183,11 @@
       // drawGrid(firstPage)
       drawLines(firstPage)
 
-      firstPage.drawSvg(svg, {
-        height: 595.28,
-        width: 841.89,
-        // height: 100,
-        // width: 100,
+      firstPage.drawSvg(svg2, {
+        // height: 595.28,
+        // width: 841.89,
+        height: 100,
+        width: 100,
         x: 100,
         y: 700
       });

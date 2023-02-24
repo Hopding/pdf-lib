@@ -6,12 +6,12 @@ import {
   NodeType,
 } from 'node-html-better-parser';
 import { Color, colorString } from './colors';
-import { Degrees, degreesToRadians, RotationTypes, degrees } from './rotations';
+import { Degrees, degreesToRadians, RotationTypes, degrees, radiansToDegrees } from './rotations';
 import PDFFont from './PDFFont';
 import PDFPage from './PDFPage';
 import { PDFPageDrawSVGElementOptions } from './PDFPageOptions';
 import { LineCapStyle, LineJoinStyle } from './operators';
-import { Rectangle, Point, Segment } from 'src/utils/elements';
+import { Rectangle, Point, Segment, Circle } from 'src/utils/elements';
 import { getIntersections } from 'src/utils/intersections';
 import { distanceCoords, isEqual, distance } from 'src/utils/maths';
 
@@ -401,11 +401,128 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
       element.svgAttributes.d = newPath
       break
     }
+    case 'ellipse':
+    case 'circle': {
+      if (element.svgAttributes.cx === undefined || element.svgAttributes.cy === undefined || element.svgAttributes.rx === undefined || element.svgAttributes.ry === undefined) break
+      // TODO: improve the following code to handle the case when rx !== ry
+      if (element.svgAttributes.rx !== element.svgAttributes.ry) break
+      const { cx = 0, cy = 0, rx = 0, ry = 0 } = element.svgAttributes
+      const center = new Point({
+        x: cx,
+        y: cy
+      })
+      const circle = new Circle(center, element.svgAttributes.rx)
+      const intersections = getIntersections([svgRect, circle])
+      const isCenterInsideRect = isCoordinateInsideTheRect(center, svgRect)
+      // TODO: handle the case when the center is in the middle of the rect and the circle is too big
+      // in this case a rectangle should be draw.
+      // circle segments should be [top, right, bottom, left]
+      /** 
+       * if there are less than 2 intersection, there are two possibilities:
+       * - the circle is outside the viewbox and therefore isn't visible
+       * - the circle is inside the viewbox and don't need to be cropped
+       */
+      if(intersections.length < 2) {
+        !isCenterInsideRect && element.setAttribute('rx', '0')
+        !isCenterInsideRect && (element.svgAttributes.rx = 0)
+        !isCenterInsideRect && element.setAttribute('ry', '0')
+        !isCenterInsideRect && (element.svgAttributes.ry = 0)
+        break
+      }
+
+      // viewbox rectangle corrdinates
+      const P1 = new Point(svgRect.getCoords())
+      const P3 = new Point(svgRect.getEnd())
+      const P2 = new Point({ x: P3.x, y: P1.y })
+      const P4 = new Point({ x: P1.x, y: P3.y })
+      const top = new Segment(P1, P2)
+      const right = new Segment(P2, P3)
+      const bottom = new Segment(P3, P4)
+      const left = new Segment(P4, P1)
+      console.log({top, right, bottom, left})
+      // check if the rect boundaries are inside the circle
+      const isRectInsideCircle = circle.ray() >= Math.max(circle.center().distance(P1), circle.center().distance(P2), circle.center().distance(P3), circle.center().distance(P4))
+      const isPointInsideCircle = (P: Point) => circle.ray() >= circle.center().distance(P)
+
+      // the segments that are intersecting the circle. And, therefore, are lines that are cropping the drawing
+      const circleSegments = isRectInsideCircle ? [top, right, bottom, left] : [top, right, bottom, left].map((segment, i) => {
+        const [p1, p2] = getIntersections([segment, circle])
+        if (p1 && p2) {
+          // TODO: check the order of intersections
+          return new Segment(new Point(p2), new Point(p1))
+        // if the other point isn't inside the circle it means that the circle isn't cropped by the segment
+        } else if (p1 && (isPointInsideCircle(segment.A) || isPointInsideCircle(segment.B))) {
+          const intersectionPoint = new Point(p1)
+          const innerPoint = isPointInsideCircle(segment.A) ? segment.A : segment.B
+          // ensures that the segment is always following the clockwise direction
+          const start = innerPoint.isEqual(segment.A) ? innerPoint : intersectionPoint
+          const end = innerPoint.isEqual(segment.A) ? intersectionPoint : innerPoint
+          return new Segment(start, end)
+        } else if (!(p1 && p2) && isPointInsideCircle(segment.A) && isPointInsideCircle(segment.B)) return segment
+        return
+      })
+
+      let startPoint: (Point | undefined)
+      // the point where the pen is located 
+      let currentPoint: (Point | undefined)
+      let lastSegment:  (Segment | undefined)
+
+      const inverseAngle = (angle: number) => (360 - angle) % 360
+      const pointsAngle = (p1: Point, p2: Point, direction: 'clockwise' | 'counter-clockwise' = 'clockwise') => {
+        const startAngle = radiansToDegrees(Math.atan2(p1.y - center.y, p1.x - center.x))
+        const endAngle = radiansToDegrees(Math.atan2(p2.y - center.y, p2.x - center.x))
+        const arcAngle = (endAngle + (360 - startAngle)) % 360
+        console.log({p1, p2, startAngle, endAngle, arcAngle})
+        return direction === 'clockwise' ? arcAngle : inverseAngle(arcAngle)
+      }
+      console.log({circleSegments})
+      /**
+       * draw a line for each segment
+       * - if two segments aren't connected draw an arc connecting them
+       */
+      let path = circleSegments.reduce((path, segment) => {
+        if (!segment) return path
+        if (!startPoint) {
+          startPoint = segment.A
+          path = `M ${segment.A.x},${segment.A.y}`
+        }
+        // if the current segment isn't connected to the last one, connect both with an arc
+        if (lastSegment && !lastSegment.B.isEqual(segment.A)) {
+          // const startAngle = radiansToDegrees(Math.atan2(segment.A.y, segment.A.x))
+          // const endAngle = radiansToDegrees(Math.atan2(lastSegment.A.y, lastSegment.A.x))
+          const arcAngle = pointsAngle(segment.A, lastSegment.B) // (endAngle + (360 - startAngle)) % 360
+          path += `A ${rx},${ry} 0 ${arcAngle > 180 ? 1 : 0},0 ${segment.A.x}, ${segment.A.y}`
+        }
+        path += ` L ${segment.B.x},${segment.B.y}`
+        currentPoint = segment.B
+        lastSegment = segment
+        return path
+      }, '')
+
+      // if the path isn't closed, close it by drawing an arc
+      if (startPoint && currentPoint && !startPoint.isEqual(currentPoint)) {
+        // const startAngle = radiansToDegrees(Math.atan2(currentPoint.y, currentPoint.x))
+        // const endAngle = radiansToDegrees(Math.atan2(startPoint.y, startPoint.x))
+        const arcAngle = pointsAngle(currentPoint, startPoint, 'counter-clockwise') // (endAngle + (360 - startAngle)) % 360
+        console.log('end circle', arcAngle)
+        path += `A ${rx},${ry} 0 ${arcAngle > 180 ? 1 : 0},0 ${startPoint.x}, ${startPoint.y}`
+      }
+      const newElement = parseHtml(`<path d="${path}" fill="red"/>`).firstChild
+      const svgAttributes = {
+        ...element.svgAttributes,
+        // the x and y values are 0 because all the path coordinates are computed based on the final page position
+        x: 0,
+        y: 0,
+        d: path
+      }
+      Object.assign(newElement, { svgAttributes })
+      console.log({ intersections, path, svgAttributes })
+      // if there are intersections the circle need to be cropped
+      return newElement as SVGElement
+    }
     // TODO: implement the crop for the following elements
     case 'image':
     case 'rect':
-    case 'ellipse':
-    case 'circle':
     default:
       return element
   }
@@ -485,6 +602,7 @@ const runnersToPage = (
     });
   },
   async path(element) {
+    console.log('path', element)
     // See https://jsbin.com/kawifomupa/edit?html,output and
     page.drawSvgPath(element.svgAttributes.d!, {
       x: element.svgAttributes.x || 0,
