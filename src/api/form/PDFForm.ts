@@ -705,7 +705,7 @@ export default class PDFForm {
     return this.defaultFontCache.access();
   }
 
-  private findWidgetPage(widget: PDFWidgetAnnotation): PDFPage {
+  private findWidgetPage(widget: PDFWidgetAnnotation): PDFPage | undefined {
     const pageRef = widget.P();
     let page = this.doc.getPages().find((x) => x.ref === pageRef);
     if (page === undefined) {
