@@ -195,7 +195,6 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
       });
       const normalizePoint = (p: Point) =>
         new Point({ x: p.x - basePoint.x, y: p.y - basePoint.y });
-
       /**
        *
        * @param origin is the origin of the current drawing in the page coordinate system
@@ -257,12 +256,9 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
             if (!result) {
               return {
                 point: nextPoint,
-                command: isLocalInstruction
-                  ? `M${normalizedNext.x},${normalizedNext.y}`
-                  : `M${nextPoint.x},${nextPoint.y}`,
+                command: `M${normalizedNext.x},${normalizedNext.y}`,
               };
             }
-
             // if the point wasn't moved it means that it's inside the rect
             const isStartInside = result.A.isEqual(startPoint);
             const isEndInside = result.B.isEqual(endPoint);
@@ -277,6 +273,7 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
               ? ''
               : isLocalInstruction
               ? `M${normalizedNext.x},${normalizedNext.y}`
+              // TODO: check this -> maybe the move command should be always normalized when cropping segments
               : `M${nextPoint.x},${nextPoint.y}`;
             return {
               point: nextPoint,
@@ -310,8 +307,13 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
               pendingParams = pendingParams.slice(6)
             ) {
               const [, , , , pendingX, pendingY] = pendingParams;
-              x += pendingX;
-              y += pendingY;
+              if (isLocalInstruction) {
+                x += pendingX;
+                y += pendingY;
+              } else {
+                x = pendingX;
+                y = pendingY;
+              }
             }
 
             const nextPoint = new Point({
@@ -866,7 +868,9 @@ const parseAttributes = (
   // We convert all the points from the path
   if (attributes.d) {
     const { x: xOrigin, y: yOrigin } = newConverter.point(0, 0);
-
+    // these are the x and y coordinates relative to the svg space, therefore these values weren't parsed by any converter. Each instruction will left the cursor on new position
+    let currentX = 0
+    let currentY = 0
     svgAttributes.d = attributes.d?.replace(
       /(l|m|s|t|q|c|z|a|v|h)([0-9,e\s.-]*)/gi,
       (command) => {
@@ -878,7 +882,6 @@ const parseAttributes = (
             /(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|(-?[0-9]+)/gi,
           )
           ?.filter((m) => m !== ''); // .map(v => parseFloat(v))
-
         if (!params) return letter || '';
         switch (letter?.toLocaleLowerCase()) {
           case 'm': 
@@ -890,33 +893,47 @@ const parseAttributes = (
                 const xReal = parseFloatValue(x, inherited.width) || 0;
                 const yReal = parseFloatValue(y, innerHeight) || 0;
                 if (letter === letter.toLowerCase()) {
-                  const { width: dx, height: dy } = newConverter.size(xReal, yReal);
-                  return (pairIndex > 0 || letter === 'l' ? 'l' : 'm') + [dx, -dy].join(',');
+                  currentX += xReal
+                  currentY += yReal
                 } else {
-                  const { x: xPixel, y: yPixel } = newConverter.point(xReal, yReal);
-                  return (pairIndex > 0 || letter === 'L' ? 'L': 'M') + 
-                    [xPixel - xOrigin, yPixel - yOrigin].join(',');
+                  currentX = xReal
+                  currentY = yReal
                 }
+                const point = newConverter.point(currentX, currentY)
+                return ((pairIndex > 0 || letter.toUpperCase() === 'L') ? 'L': 'M') + 
+                [point.x - xOrigin, point.y - yOrigin].join(',');
               })
               .join(' ');
-          }
-          case 'v': {
+            }
+            case 'v': {
             return params
-              .map((value) => {
-                const coord = parseFloatValue(value) || 1;
-                return letter === letter.toLowerCase()
-                  ? 'v' + newConverter.size(1, coord).height * -1
-                  : 'V' + (newConverter.point(1, coord).y - yOrigin);
+            .map((value) => {
+                const coord = parseFloatValue(value) || 0;
+                if (letter === letter.toLowerCase()) {
+                  currentY += coord
+                } else {
+                  currentY = coord
+                }
+                const point = newConverter.point(currentX, currentY)
+                // we can't use 'v' as the final command because rotations might require a different command after the path parsing
+                // for instance, a 90 degree rotation would turn a 'v' into an 'h' command
+                return `L${point.x - xOrigin} ${point.y - yOrigin}`
               })
               .join(' ');
           }
           case 'h': {
             return params
               .map((value) => {
-                const coord = parseFloatValue(value) || 1;
-                return letter === letter.toLowerCase()
-                  ? 'h' + newConverter.size(coord, 1).width
-                  : 'H' + (newConverter.point(coord, 1).x - xOrigin);
+                const coord = parseFloatValue(value) || 0;
+                if (letter === letter.toLowerCase()) {
+                  currentX += coord
+                } else {
+                  currentX = coord
+                }
+                const point = newConverter.point(currentX, currentY)
+                // we can't use 'h' as the final command because rotations might require a different command after the path parsing
+                // for instance, a 90 degree rotation would turn a 'h' into an 'v' command
+                return `L${point.x - xOrigin} ${point.y - yOrigin}`
               })
               .join(' ');
           }
@@ -941,32 +958,97 @@ const parseAttributes = (
                   realRx,
                   realRy,
                 );
-                let newRealX;
-                let newRealY;
+                let point
                 if (letter === letter.toLowerCase()) {
-                  const {
-                    width: newWidth,
-                    height: newHeight,
-                  } = newConverter.size(realX, realY);
-                  newRealX = newWidth;
-                  newRealY = -newHeight;
+                  currentX += realX
+                  currentY += realY
                 } else {
-                  const { x: pX, y: pY } = newConverter.point(realX, realY);
-                  newRealX = pX - xOrigin;
-                  newRealY = pY - yOrigin;
+                  currentX = realX
+                  currentY = realY
                 }
+                point = newConverter.point(currentX, currentY)
                 return [
-                  letter,
+                  letter.toUpperCase(),
                   newRx,
                   newRy,
                   xAxisRotation,
                   largeArc,
                   sweepFlag === '0' ? '1' : '0',
-                  newRealX,
-                  newRealY,
+                  point.x - xOrigin,
+                  point.y - yOrigin,
                 ].join(' ');
               })
               .join(' ');
+          }
+          case 'c': {
+            const groupedParams = groupBy<string>(params, 6);
+            const result = groupedParams!
+              .map(([c1X, c1Y, c2X, c2Y, xString, yString]) => [
+                parseFloatValue(c1X, inherited.width) || 0,
+                parseFloatValue(c1Y, inherited.height) || 0,
+                parseFloatValue(c2X, inherited.width) || 0,
+                parseFloatValue(c2Y, inherited.height) || 0,
+                parseFloatValue(xString, inherited.width) || 0,
+                parseFloatValue(yString, inherited.height) || 0,
+              ])
+              .map(([c1X, c1Y, c2X, c2Y, xReal, yReal]) => {
+                let controlPoint1X
+                let controlPoint1Y
+                let controlPoint2X
+                let controlPoint2Y
+                if (letter === letter!.toLowerCase()) {
+                  controlPoint1X = currentX + c1X
+                  controlPoint1Y = currentY + c1Y
+                  controlPoint2X = currentX + c2X
+                  controlPoint2Y = currentY + c2Y
+                  currentX += xReal
+                  currentY += yReal
+                } else {
+                  controlPoint1X = c1X
+                  controlPoint1Y = c1Y
+                  controlPoint2X = c2X
+                  controlPoint2Y = c2Y
+                  currentX = xReal
+                  currentY = yReal
+                }
+                const controlPoint1 = newConverter.point(controlPoint1X, controlPoint1Y)
+                const controlPoint2 = newConverter.point(controlPoint2X, controlPoint2Y)
+                const point = newConverter.point(currentX, currentY)
+                return [controlPoint1.x - xOrigin, controlPoint1.y - yOrigin, controlPoint2.x - xOrigin, controlPoint2.y - yOrigin, point.x - xOrigin, point.y - yOrigin].join(',')
+              })
+              .join(' ');
+            return letter?.toUpperCase() + '' + result;
+          }
+          case 's': {
+            const groupedParams = groupBy<string>(params, 4);
+            const result = groupedParams!
+              // the control point 1 is omitted because it's the reflection of c2
+              .map(([c2X, c2Y, xString, yString]) => [
+                parseFloatValue(c2X, inherited.width) || 0,
+                parseFloatValue(c2Y, inherited.height) || 0,
+                parseFloatValue(xString, inherited.width) || 0,
+                parseFloatValue(yString, inherited.height) || 0,
+              ])
+              .map(([c2X, c2Y, xReal, yReal]) => {
+                let controlPoint2X
+                let controlPoint2Y
+                if (letter === letter!.toLowerCase()) {
+                  controlPoint2X = currentX + c2X
+                  controlPoint2Y = currentY + c2Y
+                  currentX += xReal
+                  currentY += yReal
+                } else {
+                  controlPoint2X = c2X
+                  controlPoint2Y = c2Y
+                  currentX = xReal
+                  currentY = yReal
+                }
+                const controlPoint2 = newConverter.point(controlPoint2X, controlPoint2Y)
+                const point = newConverter.point(currentX, currentY)
+                return [controlPoint2.x - xOrigin, controlPoint2.y - yOrigin, point.x - xOrigin, point.y - yOrigin].join(',')
+              })
+              .join(' ');
+            return letter?.toUpperCase() + '' + result;
           }
           default: {
             const groupedParams = groupBy<string>(params, 2);
@@ -977,21 +1059,17 @@ const parseAttributes = (
               ])
               .map(([xReal, yReal]) => {
                 if (letter === letter!.toLowerCase()) {
-                  const { width: dx, height: dy } = newConverter.size(
-                    xReal,
-                    yReal,
-                  );
-                  return [dx, -dy].join(',');
+                  currentX += xReal
+                  currentY += yReal
                 } else {
-                  const { x: xPixel, y: yPixel } = newConverter.point(
-                    xReal,
-                    yReal,
-                  );
-                  return [xPixel - xOrigin, yPixel - yOrigin].join(',');
+                  currentX = xReal
+                  currentY = yReal
                 }
+                const point = newConverter.point(currentX, currentY)
+                return [point.x - xOrigin, point.y - yOrigin].join(',')
               })
               .join(' ');
-            return letter + '' + result;
+            return letter?.toUpperCase() + '' + result;
           }
         }
       },
