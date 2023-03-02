@@ -1,6 +1,6 @@
 {
   "name": "@cantoo/pdf-lib",
-  "version": "1.17.14",
+  "version": "1.17.15",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -93,7 +93,7 @@
     "@pdf-lib/standard-fonts": "^1.0.0",
     "@pdf-lib/upng": "^1.0.1",
     "color": "^4.2.3",
-    "node-html-better-parser": "^1.2.3",
+    "node-html-better-parser": "^1.4.0",
     "pako": "^1.0.11",
     "tslib": "^2.1.0"
   },
