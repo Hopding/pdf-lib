@@ -1,6 +1,6 @@
 {
   "name": "@cantoo/pdf-lib",
-  "version": "1.17.13",
+  "version": "1.17.14",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
