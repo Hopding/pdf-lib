@@ -1388,7 +1388,11 @@ const parseSvgNode = (
 ): SVGElement[] => {
   const attributes = parseAttributes(node, inherited, converter);
   const result: SVGElement[] = [];
-  const viewBox = parseViewBox(node.attributes.viewBox)!
+  const viewBox = node.attributes.viewBox 
+    ? parseViewBox(node.attributes.viewBox)!
+    : node.attributes.width && node.attributes.height 
+      ? parseViewBox(`0 0 ${node.attributes.width} ${node.attributes.height}`)!
+      : inherited.viewBox
   const svgRect = new Rectangle(
     new Point(attributes.converter.point(viewBox.x, viewBox.y)),
     new Point(attributes.converter.point(viewBox.x + viewBox.width, viewBox.y + viewBox.height)),
