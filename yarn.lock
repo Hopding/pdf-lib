@@ -3049,10 +3049,10 @@ node-fetch@^2.6.0:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
-node-html-better-parser@^1.2.3:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/node-html-better-parser/-/node-html-better-parser-1.2.3.tgz#97f0ecf105771af9484579401f1411961149f029"
-  integrity sha512-aImot+a0iSMd1bVeYzYGJ4TJH0onNL88Ajcp0xMtSinYr1EIFhAdnbkVFeB28ydXlmryA0lFBbuftVFzVNopCA==
+node-html-better-parser@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/node-html-better-parser/-/node-html-better-parser-1.4.0.tgz#ed0548a954fb02fa7c26837a45cd2da6a70b470b"
+  integrity sha512-jSo+cUxZy5SI8vql7D66Cagcco6ca8PQp+aS/JSAr+4+rl/+PLsXw1sVE1NneuwXr2JQpU5iRLixFu4Ifel32w==
   dependencies:
     html-entities "^2.3.2"
 
@@ -3554,7 +3554,7 @@ resolve@^1.12.0:
   dependencies:
     path-parse "^1.0.6"
 
-resolve@^1.3.2, resolve@^1.9.0:
+resolve@^1.3.2:
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.10.1.tgz#664842ac960795bbe758221cdccda61fb64b5f18"
   integrity sha512-KuIe4mf++td/eFb6wkaPbMDnP6kObCaEtIDuHOUED6MNUo4K670KZUHuuvYPZDxNF0WVLw49n06M2m2dXphEzA==
@@ -4159,13 +4159,6 @@ tsutils@^2.29.0:
   integrity sha512-g5JVHCIJwzfISaXpXE1qvNalca5Jwob6FjI4AoPlqMusJ6ftFE7IkkFoMhVLRgK+4Kx3gkzb8UZK5t5yTTvEmA==
   dependencies:
     tslib "^1.8.1"
-
-ttypescript@^1.5.10:
-  version "1.5.10"
-  resolved "https://registry.yarnpkg.com/ttypescript/-/ttypescript-1.5.10.tgz#5045083a91cf09a735ecc95d4711c1f3b83f2059"
-  integrity sha512-Hk7TRej1hM+p+Fo+Pyb/XK9pe9CAt3Sh5n5YRutxFS8hUgkh2u1Vd2K40kMcNP3WYhiVFBMqXwM/2E8O95Ep6g==
-  dependencies:
-    resolve "^1.9.0"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
