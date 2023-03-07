@@ -1,4 +1,4 @@
-import { PNG } from 'src/utils/png';
+import { PNG } from '../../src/utils/png';
 
 describe(`PNG`, () => {
   it(`can load images with alpha values greater than 1`, () => {

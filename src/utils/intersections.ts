@@ -17,7 +17,7 @@ import {
   unitVector,
   vector,
   rotate,
-} from '../utils/maths'
+} from './maths'
 
 export function intersections(A: GraphicElement, B: GraphicElement): Coordinates[] {
   if (A instanceof Point || B instanceof Point) return []

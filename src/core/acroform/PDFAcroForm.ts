@@ -1,14 +1,14 @@
-import PDFContext from 'src/core/PDFContext';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFName from 'src/core/objects/PDFName';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFAcroField from 'src/core/acroform/PDFAcroField';
-import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
+import PDFContext from '../PDFContext';
+import PDFDict from '../objects/PDFDict';
+import PDFArray from '../objects/PDFArray';
+import PDFName from '../objects/PDFName';
+import PDFRef from '../objects/PDFRef';
+import PDFAcroField from './PDFAcroField';
+import PDFAcroNonTerminal from './PDFAcroNonTerminal';
 import {
   createPDFAcroField,
   createPDFAcroFields,
-} from 'src/core/acroform/utils';
+} from './utils';
 
 class PDFAcroForm {
   readonly dict: PDFDict;

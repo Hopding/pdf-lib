@@ -1,25 +1,25 @@
-import PDFDocument from 'src/api/PDFDocument';
-import PDFPage from 'src/api/PDFPage';
-import PDFFont from 'src/api/PDFFont';
-import PDFImage from 'src/api/PDFImage';
+import PDFDocument from '../PDFDocument';
+import PDFPage from '../PDFPage';
+import PDFFont from '../PDFFont';
+import PDFImage from '../PDFImage';
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
-} from 'src/api/form/PDFField';
+} from './PDFField';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
   defaultTextFieldAppearanceProvider,
-} from 'src/api/form/appearances';
-import { rgb } from 'src/api/colors';
-import { degrees } from 'src/api/rotations';
+} from './appearances';
+import { rgb } from '../colors';
+import { degrees } from '../rotations';
 import {
   RichTextFieldReadError,
   ExceededMaxLengthError,
   InvalidMaxLengthError,
-} from 'src/api/errors';
-import { ImageAlignment } from 'src/api/image/alignment';
-import { TextAlignment } from 'src/api/text/alignment';
+} from '../errors';
+import { ImageAlignment } from '../image/alignment';
+import { TextAlignment } from '../text/alignment';
 
 import {
   PDFHexString,
@@ -28,14 +28,14 @@ import {
   PDFAcroText,
   AcroTextFlags,
   PDFWidgetAnnotation,
-} from 'src/core';
+} from '../../core';
 import {
   assertIs,
   assertIsOneOf,
   assertOrUndefined,
   assertPositive,
   assertRangeOrUndefined,
-} from 'src/utils';
+} from '../../utils';
 
 /**
  * Represents a text field of a [[PDFForm]].

@@ -1,6 +1,6 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
 
 // TODO: Also handle the `/S` and `/D` entries
 class BorderStyle {

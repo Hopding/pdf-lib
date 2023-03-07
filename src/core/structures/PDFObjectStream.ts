@@ -1,11 +1,11 @@
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFContext from 'src/core/PDFContext';
-import PDFFlateStream from 'src/core/structures/PDFFlateStream';
-import CharCodes from 'src/core/syntax/CharCodes';
-import { copyStringIntoBuffer, last } from 'src/utils';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
+import PDFObject from '../objects/PDFObject';
+import PDFRef from '../objects/PDFRef';
+import PDFContext from '../PDFContext';
+import PDFFlateStream from './PDFFlateStream';
+import CharCodes from '../syntax/CharCodes';
+import { copyStringIntoBuffer, last } from '../../utils';
 
 export type IndirectObject = [PDFRef, PDFObject];
 

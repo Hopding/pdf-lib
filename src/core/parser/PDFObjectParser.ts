@@ -3,31 +3,31 @@ import {
   PDFStreamParsingError,
   Position,
   UnbalancedParenthesisError,
-} from 'src/core/errors';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFBool from 'src/core/objects/PDFBool';
-import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNull from 'src/core/objects/PDFNull';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFString from 'src/core/objects/PDFString';
-import BaseParser from 'src/core/parser/BaseParser';
-import ByteStream from 'src/core/parser/ByteStream';
-import PDFContext from 'src/core/PDFContext';
-import PDFCatalog from 'src/core/structures/PDFCatalog';
-import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
-import PDFPageTree from 'src/core/structures/PDFPageTree';
-import CharCodes from 'src/core/syntax/CharCodes';
-import { IsDelimiter } from 'src/core/syntax/Delimiters';
-import { Keywords } from 'src/core/syntax/Keywords';
-import { IsDigit, IsNumeric } from 'src/core/syntax/Numeric';
-import { IsWhitespace } from 'src/core/syntax/Whitespace';
-import { charFromCode } from 'src/utils';
+} from '../errors';
+import PDFArray from '../objects/PDFArray';
+import PDFBool from '../objects/PDFBool';
+import PDFDict, { DictMap } from '../objects/PDFDict';
+import PDFHexString from '../objects/PDFHexString';
+import PDFName from '../objects/PDFName';
+import PDFNull from '../objects/PDFNull';
+import PDFNumber from '../objects/PDFNumber';
+import PDFObject from '../objects/PDFObject';
+import PDFRawStream from '../objects/PDFRawStream';
+import PDFRef from '../objects/PDFRef';
+import PDFStream from '../objects/PDFStream';
+import PDFString from '../objects/PDFString';
+import BaseParser from './BaseParser';
+import ByteStream from './ByteStream';
+import PDFContext from '../PDFContext';
+import PDFCatalog from '../structures/PDFCatalog';
+import PDFPageLeaf from '../structures/PDFPageLeaf';
+import PDFPageTree from '../structures/PDFPageTree';
+import CharCodes from '../syntax/CharCodes';
+import { IsDelimiter } from '../syntax/Delimiters';
+import { Keywords } from '../syntax/Keywords';
+import { IsDigit, IsNumeric } from '../syntax/Numeric';
+import { IsWhitespace } from '../syntax/Whitespace';
+import { charFromCode } from '../../utils';
 
 // TODO: Throw error if eof is reached before finishing object parse...
 class PDFObjectParser extends BaseParser {

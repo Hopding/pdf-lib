@@ -1,6 +1,6 @@
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFContext from 'src/core/PDFContext';
-import PDFRef from 'src/core/objects/PDFRef';
+import PDFHexString from '../objects/PDFHexString';
+import PDFContext from '../PDFContext';
+import PDFRef from '../objects/PDFRef';
 
 class JavaScriptEmbedder {
   static for(script: string, scriptName: string) {

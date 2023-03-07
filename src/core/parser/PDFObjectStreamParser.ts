@@ -1,11 +1,11 @@
-import { ReparseError } from 'src/core/errors';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import PDFRef from 'src/core/objects/PDFRef';
-import ByteStream from 'src/core/parser/ByteStream';
-import PDFObjectParser from 'src/core/parser/PDFObjectParser';
-import { waitForTick } from 'src/utils';
+import { ReparseError } from '../errors';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
+import PDFRawStream from '../objects/PDFRawStream';
+import PDFRef from '../objects/PDFRef';
+import ByteStream from './ByteStream';
+import PDFObjectParser from './PDFObjectParser';
+import { waitForTick } from '../../utils';
 
 class PDFObjectStreamParser extends PDFObjectParser {
   static forStream = (

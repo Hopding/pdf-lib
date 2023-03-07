@@ -5,7 +5,7 @@ import {
   PDFArray,
   PDFHexString,
   AnnotationFlags,
-} from 'src/index';
+} from '../../../src/index';
 
 const fancyFieldsPdfBytes = fs.readFileSync('assets/pdfs/fancy_fields.pdf');
 

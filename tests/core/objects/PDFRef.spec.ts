@@ -1,5 +1,5 @@
-import { PDFRef, PrivateConstructorError } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFRef, PrivateConstructorError } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
 describe(`PDFRef`, () => {
   it(`can be constructed from PDFRef.of(...)`, () => {

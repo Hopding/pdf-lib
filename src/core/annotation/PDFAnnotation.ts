@@ -1,9 +1,9 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFNumber from 'src/core/objects/PDFNumber';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFStream from '../objects/PDFStream';
+import PDFArray from '../objects/PDFArray';
+import PDFRef from '../objects/PDFRef';
+import PDFNumber from '../objects/PDFNumber';
 
 class PDFAnnotation {
   readonly dict: PDFDict;

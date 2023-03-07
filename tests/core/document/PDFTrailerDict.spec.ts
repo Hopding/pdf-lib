@@ -1,5 +1,5 @@
-import { PDFContext, PDFTrailerDict } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFContext, PDFTrailerDict } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
 describe(`PDFTrailerDict`, () => {
   const dict = PDFContext.create().obj({ Foo: 'Bar' });

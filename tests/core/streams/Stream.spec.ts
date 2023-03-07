@@ -1,4 +1,4 @@
-import Stream from 'src/core/streams/Stream';
+import Stream from '../../../src/core/streams/Stream';
 
 describe(`Stream`, () => {
   it('can get the stream length', () => {

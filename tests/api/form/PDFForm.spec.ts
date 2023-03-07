@@ -13,7 +13,7 @@ import {
   PDFForm,
   PDFAcroForm,
   PDFRef,
-} from 'src/index';
+} from '../../../src/index';
 
 const getWidgets = (pdfDoc: PDFDocument) =>
   pdfDoc.context

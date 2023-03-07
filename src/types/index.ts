@@ -6,7 +6,7 @@ import Plot from '../utils/elements/Plot';
 import Point from '../utils/elements/Point';
 import Rectangle from '../utils/elements/Rectangle';
 import Segment from '../utils/elements/Segment';
-export { TransformationMatrix } from 'src/types/matrix';
+export { TransformationMatrix } from './matrix';
 
 export type Size = {
   width: number;

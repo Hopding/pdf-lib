@@ -6,14 +6,14 @@
  * under the Apache 2.0 open source license.
  */
 
-import DecodeStream from 'src/core/streams/DecodeStream';
-import { StreamType } from 'src/core/streams/Stream';
+import DecodeStream from './DecodeStream';
+import { StreamType } from './Stream';
 
 class LZWStream extends DecodeStream {
   private stream: StreamType;
   private cachedData: number;
   private bitsCached: number;
-  private lzwState: {
+  private lzwState?: {
     earlyChange: 0 | 1;
     codeLength: number;
     nextCode: number;

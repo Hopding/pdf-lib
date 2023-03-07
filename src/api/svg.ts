@@ -11,9 +11,9 @@ import PDFFont from './PDFFont';
 import PDFPage from './PDFPage';
 import { PDFPageDrawSVGElementOptions } from './PDFPageOptions';
 import { LineCapStyle, LineJoinStyle } from './operators';
-import { Rectangle, Point, Segment, Ellipse } from 'src/utils/elements';
-import { getIntersections } from 'src/utils/intersections';
-import { distanceCoords, isEqual, distance } from 'src/utils/maths';
+import { Rectangle, Point, Segment, Ellipse } from '../utils/elements';
+import { getIntersections } from '../utils/intersections';
+import { distanceCoords, isEqual, distance } from '../utils/maths';
 
 interface Position {
   x: number;

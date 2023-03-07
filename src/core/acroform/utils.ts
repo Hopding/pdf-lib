@@ -1,23 +1,23 @@
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFRef from 'src/core/objects/PDFRef';
+import PDFObject from '../objects/PDFObject';
+import PDFNumber from '../objects/PDFNumber';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFArray from '../objects/PDFArray';
+import PDFRef from '../objects/PDFRef';
 
-import PDFAcroField from 'src/core/acroform/PDFAcroField';
-import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
-import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
-import PDFAcroSignature from 'src/core/acroform/PDFAcroSignature';
-import PDFAcroChoice from 'src/core/acroform/PDFAcroChoice';
-import PDFAcroText from 'src/core/acroform/PDFAcroText';
-import PDFAcroPushButton from 'src/core/acroform/PDFAcroPushButton';
-import PDFAcroRadioButton from 'src/core/acroform/PDFAcroRadioButton';
-import PDFAcroCheckBox from 'src/core/acroform/PDFAcroCheckBox';
-import PDFAcroComboBox from 'src/core/acroform/PDFAcroComboBox';
-import PDFAcroListBox from 'src/core/acroform/PDFAcroListBox';
-import { AcroButtonFlags, AcroChoiceFlags } from 'src/core/acroform/flags';
+import PDFAcroField from './PDFAcroField';
+import PDFAcroTerminal from './PDFAcroTerminal';
+import PDFAcroNonTerminal from './PDFAcroNonTerminal';
+import PDFAcroButton from './PDFAcroButton';
+import PDFAcroSignature from './PDFAcroSignature';
+import PDFAcroChoice from './PDFAcroChoice';
+import PDFAcroText from './PDFAcroText';
+import PDFAcroPushButton from './PDFAcroPushButton';
+import PDFAcroRadioButton from './PDFAcroRadioButton';
+import PDFAcroCheckBox from './PDFAcroCheckBox';
+import PDFAcroComboBox from './PDFAcroComboBox';
+import PDFAcroListBox from './PDFAcroListBox';
+import { AcroButtonFlags, AcroChoiceFlags } from './flags';
 
 export const createPDFAcroFields = (
   kidDicts?: PDFArray,

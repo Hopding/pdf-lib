@@ -5,8 +5,8 @@ import {
   setStrokingCmykColor,
   setStrokingGrayscaleColor,
   setStrokingRgbColor,
-} from 'src/api/operators';
-import { assertRange, assertIs, error } from 'src/utils';
+} from './operators';
+import { assertRange, assertIs, error } from '../utils';
 import ColorParser from 'color';
 
 export enum ColorTypes {

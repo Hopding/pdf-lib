@@ -1,4 +1,4 @@
-import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
+import PDFPageLeaf from '../../../src/core/structures/PDFPageLeaf';
 import {
   mergeIntoTypedArray,
   PDFArray,
@@ -17,7 +17,7 @@ import {
   PDFString,
   typedArrayFor,
   numberToString,
-} from 'src/index';
+} from '../../../src/index';
 
 type ParseOptions = { capNumbers?: boolean };
 

@@ -1,4 +1,4 @@
-import CharCodes from 'src/core/syntax/CharCodes';
+import CharCodes from './CharCodes';
 
 export const IsWhitespace = new Uint8Array(256);
 

@@ -1,4 +1,4 @@
-import { MethodNotImplementedError, PDFObject } from 'src/core';
+import { MethodNotImplementedError, PDFObject } from '../../../src/core';
 
 describe(`PDFObject`, () => {
   const pdfObject = new PDFObject();

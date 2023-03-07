@@ -1,6 +1,6 @@
-import { PrivateConstructorError } from 'src/core/errors';
-import PDFObject from 'src/core/objects/PDFObject';
-import CharCodes from 'src/core/syntax/CharCodes';
+import { PrivateConstructorError } from '../errors';
+import PDFObject from './PDFObject';
+import CharCodes from '../syntax/CharCodes';
 
 const ENFORCER = {};
 

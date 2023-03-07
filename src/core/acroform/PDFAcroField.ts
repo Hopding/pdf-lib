@@ -1,13 +1,13 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFString from 'src/core/objects/PDFString';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFRef from 'src/core/objects/PDFRef';
-import { findLastMatch } from 'src/utils';
-import { MissingDAEntryError, MissingTfOperatorError } from 'src/core/errors';
+import PDFDict from '../objects/PDFDict';
+import PDFString from '../objects/PDFString';
+import PDFHexString from '../objects/PDFHexString';
+import PDFName from '../objects/PDFName';
+import PDFObject from '../objects/PDFObject';
+import PDFNumber from '../objects/PDFNumber';
+import PDFArray from '../objects/PDFArray';
+import PDFRef from '../objects/PDFRef';
+import { findLastMatch } from '../../utils';
+import { MissingDAEntryError, MissingTfOperatorError } from '../errors';
 
 // Examples:
 //   `/Helv 12 Tf` -> ['Helv', '12']

@@ -12,8 +12,8 @@ import {
   PDFNumber,
   PDFRef,
   PDFString,
-} from 'src/core';
-import { mergeIntoTypedArray } from 'src/utils';
+} from '../../src/core';
+import { mergeIntoTypedArray } from '../../src/utils';
 
 describe(`PDFContext`, () => {
   it(`retains assigned objects`, () => {
