@@ -13,7 +13,7 @@ import { PDFPageDrawSVGElementOptions } from './PDFPageOptions';
 import { LineCapStyle, LineJoinStyle } from './operators';
 import { Rectangle, Point, Segment, Ellipse } from '../utils/elements';
 import { getIntersections } from '../utils/intersections';
-import { distanceCoords, isEqual, distance } from '../utils/maths';
+import { distanceCoords, isEqual, distance, rotate } from '../utils/maths';
 
 interface Position {
   x: number;
@@ -410,12 +410,16 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
         x: cx,
         y: cy
       })
-      
-      const A = new Point({ x: cx - rx, y: cy})
-      const B = new Point({ x: cx + rx, y: cy})
-      const C = new Point({ x: cx, y: cy + ry })
+      const rotation = element.svgAttributes.rotation?.angle || 0
+      // these points are relative to the ellipse's center
+      const a = new Point(rotate({ x: -rx, y: 0 }, degreesToRadians(rotation)))
+      const b = new Point(rotate({ x: rx, y: 0 }, degreesToRadians(rotation)))
+      const c = new Point(rotate({ x: 0, y: ry }, degreesToRadians(rotation)))
+      // these points are relative to the real coordinate system
+      const A = center.plus(a)
+      const B = center.plus(b)
+      const C = center.plus(c)
       const ellipse = new Ellipse(A, B, C)
-    
       const intersections = getIntersections([svgRect, ellipse])
       const isCenterInsideRect = isCoordinateInsideTheRect(center, svgRect)
       /** 
@@ -511,7 +515,7 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
         if (lastSegment && !lastSegment.B.isEqual(segment.A)) {
           const arcAngle = pointsAngle(segment.A, lastSegment.B)
           // angles greater than 180 degrees are marked as large-arc-flag = 1
-          path += `A ${rx},${ry} 0 ${arcAngle > 180 ? 1 : 0},0 ${segment.A.x}, ${segment.A.y}`
+          path += `A ${rx},${ry} ${rotation} ${arcAngle > 180 ? 1 : 0},0 ${segment.A.x}, ${segment.A.y}`
         }
         path += ` L ${segment.B.x},${segment.B.y}`
         currentPoint = segment.B
@@ -523,16 +527,18 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
       if (startPoint && currentPoint && !startPoint.isEqual(currentPoint)) {
         const arcAngle = pointsAngle(currentPoint, startPoint, 'counter-clockwise')
         // angles greater than 180 degrees are marked as large-arc-flag = 1
-        path += `A ${rx},${ry} 0 ${arcAngle > 180 ? 1 : 0},0 ${startPoint.x}, ${startPoint.y}`
+        path += `A ${rx},${ry} ${rotation} ${arcAngle > 180 ? 1 : 0},0 ${startPoint.x}, ${startPoint.y}`
       }
 
       // create a new element that will represent the cropped ellipse
       const newElement = parseHtml(`<path d="${path}" fill="red"/>`).firstChild
-      const svgAttributes = {
+      const svgAttributes: SVGAttributes = {
         ...element.svgAttributes,
         // the x and y values are 0 because all the path coordinates are global
         x: 0,
         y: 0,
+        // the path coordinates are already rotated
+        rotate: undefined,
         d: path
       }
       Object.assign(newElement, { svgAttributes })
@@ -949,7 +955,7 @@ const parseAttributes = (
         .filter((value) => value.length > 0)
         .map((value) => parseFloat(value));
       if (name === 'rotate') {
-        // transformations over x and y axis might change the page cood direction
+        // transformations over x and y axis might change the page coord direction
         const { width: xDirection, height: yDirection } = newConverter.size(
           1,
           1,
