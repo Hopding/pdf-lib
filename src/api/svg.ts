@@ -73,6 +73,7 @@ type SVGAttributes = {
   src?: string;
   textAnchor?: string;
   preserveAspectRatio?: string;
+  strokeWidth?: number;
 };
 
 export type SVGElement = HTMLElement & {
@@ -1251,7 +1252,7 @@ const parseAttributes = (
       newInherited.strokeWidth,
       newInherited.strokeWidth,
     );
-    newInherited.strokeWidth = Math.max(
+    svgAttributes.strokeWidth = Math.max(
       Math.min(Math.abs(result.width), Math.abs(result.height)),
       1,
     );
@@ -1386,6 +1387,9 @@ const parseSvgNode = (
   inherited: InheritedAttributes,
   converter: SVGSizeConverter,
 ): SVGElement[] => {
+  // if the width/height aren't set, the svg will have the same dimension as the current drawing space
+  node.attributes.width ?? node.setAttribute('width', inherited.viewBox.width + '')
+  node.attributes.height ?? node.setAttribute('height', inherited.viewBox.height + '')
   const attributes = parseAttributes(node, inherited, converter);
   const result: SVGElement[] = [];
   const viewBox = node.attributes.viewBox 
@@ -1398,7 +1402,7 @@ const parseSvgNode = (
     new Point(attributes.converter.point(viewBox.x + viewBox.width, viewBox.y + viewBox.height)),
   );
   node.childNodes.forEach((child) => {
-    const parsedNodes = parseHTMLNode(child, attributes.inherited, attributes.converter).map(el => cropSvgElement(
+    const parsedNodes = parseHTMLNode(child, { ...attributes.inherited, viewBox }, attributes.converter).map(el => cropSvgElement(
       svgRect,
       el
     ))
