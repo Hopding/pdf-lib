@@ -560,7 +560,7 @@ const runnersToPage = (
 ): SVGElementToDrawMap => ({
   async text(element) {
     const anchor = element.svgAttributes.textAnchor;
-    const text = element.text;
+    const text = element.text.trim().replace(/\s/g, ' ');
     const fontSize = element.svgAttributes.fontSize || 12;
 
     /** This will find the best font for the provided style in the list */
