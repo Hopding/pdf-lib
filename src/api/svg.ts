@@ -1000,8 +1000,8 @@ const parseAttributes = (
   }
   if (attributes.width || attributes.height) {
     const size = newConverter.size(
-      width || inherited.width,
-      height || inherited.height,
+      width ?? inherited.width,
+      height ?? inherited.height,
     );
     svgAttributes.width = size.width;
     svgAttributes.height = size.height;
