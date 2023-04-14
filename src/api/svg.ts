@@ -1501,6 +1501,12 @@ export const drawSvg = async (
     );
   }
 
+  if (width !== undefined && 'width' in style) {
+    if (width !== undefined && 'width' in style) style.width = width + 'px'
+    if (height !== undefined && 'height' in style) style.height = height + 'px'
+    firstChild.setAttribute('style', Object.entries(style).map(([key, val]) => `${key}:${val};`).join(''))
+  }
+
   // The y axis of the page is reverted
   const defaultConverter = {
     point: (xP: number, yP: number) => ({ x: xP, y: size.height - yP }),
