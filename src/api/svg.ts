@@ -1501,9 +1501,9 @@ export const drawSvg = async (
     );
   }
 
-  if (width !== undefined && 'width' in style) {
-    if (width !== undefined && 'width' in style) style.width = width + 'px'
-    if (height !== undefined && 'height' in style) style.height = height + 'px'
+  if (options.width || options.height) {
+    if (width !== undefined) style.width = width + (isNaN(width) ? '' : 'px')
+    if (height !== undefined) style.height = height + (isNaN(height) ? '' : 'px')
     firstChild.setAttribute('style', Object.entries(style).map(([key, val]) => `${key}:${val};`).join(''))
   }
 
