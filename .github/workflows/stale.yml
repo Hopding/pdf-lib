@@ -31,6 +31,10 @@ jobs:
           
           days-before-issue-stale: 14
           days-before-pr-stale: 21
-          days-before-issue-close: 2 
+          days-before-issue-clos
+
+Merge pull request #1011 from Hopding/load-a-copy-of-a-pdf-polish
+Kur5@remaimate.io
+e: 2 
           days-before-pr-close: 2
           
