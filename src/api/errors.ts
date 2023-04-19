@@ -6,6 +6,7 @@ export class EncryptedPDFError extends Error {
     const msg =
       'Input document to `PDFDocument.load` is encrypted. You can use `PDFDocument.load(..., { ignoreEncryption: true })` if you wish to load the document anyways.';
     super(msg);
+    (<any>Object).setPrototypeOf(this, EncryptedPDFError.prototype);
   }
 }
 
@@ -15,6 +16,7 @@ export class FontkitNotRegisteredError extends Error {
     const msg =
       'Input to `PDFDocument.embedFont` was a custom font, but no `fontkit` instance was found. You must register a `fontkit` instance with `PDFDocument.registerFontkit(...)` before embedding custom fonts.';
     super(msg);
+    (<any>Object).setPrototypeOf(this, FontkitNotRegisteredError.prototype);
   }
 }
 
@@ -24,6 +26,7 @@ export class ForeignPageError extends Error {
     const msg =
       'A `page` passed to `PDFDocument.addPage` or `PDFDocument.insertPage` was from a different (foreign) PDF document. If you want to copy pages from one PDFDocument to another, you must use `PDFDocument.copyPages(...)` to copy the pages before adding or inserting them.';
     super(msg);
+    (<any>Object).setPrototypeOf(this, ForeignPageError.prototype);
   }
 }
 
@@ -33,6 +36,7 @@ export class RemovePageFromEmptyDocumentError extends Error {
     const msg =
       'PDFDocument has no pages so `PDFDocument.removePage` cannot be called';
     super(msg);
+    (<any>Object).setPrototypeOf(this, RemovePageFromEmptyDocumentError.prototype);
   }
 }
 
@@ -40,6 +44,7 @@ export class NoSuchFieldError extends Error {
   constructor(name: string) {
     const msg = `PDFDocument has no form field with the name "${name}"`;
     super(msg);
+(<any>Object).setPrototypeOf(this, NoSuchFieldError.prototype);
   }
 }
 
@@ -51,6 +56,7 @@ export class UnexpectedFieldTypeError extends Error {
       `Expected field "${name}" to be of type ${expectedType}, ` +
       `but it is actually of type ${actualType}`;
     super(msg);
+  (<any>Object).setPrototypeOf(this, UnexpectedFieldTypeError.prototype);
   }
 }
 
@@ -58,6 +64,7 @@ export class MissingOnValueCheckError extends Error {
   constructor(onValue: any) {
     const msg = `Failed to select check box due to missing onValue: "${onValue}"`;
     super(msg);
+    (<any>Object).setPrototypeOf(this, MissingOnValueCheckError.prototype);
   }
 }
 
@@ -65,6 +72,7 @@ export class FieldAlreadyExistsError extends Error {
   constructor(name: string) {
     const msg = `A field already exists with the specified name: "${name}"`;
     super(msg);
+    (<any>Object).setPrototypeOf(this, FieldAlreadyExistsError.prototype);
   }
 }
 
@@ -72,6 +80,7 @@ export class InvalidFieldNamePartError extends Error {
   constructor(namePart: string) {
     const msg = `Field name contains invalid component: "${namePart}"`;
     super(msg);
+    (<any>Object).setPrototypeOf(this, InvalidFieldNamePartError.prototype);
   }
 }
 
@@ -79,6 +88,7 @@ export class FieldExistsAsNonTerminalError extends Error {
   constructor(name: string) {
     const msg = `A non-terminal field already exists with the specified name: "${name}"`;
     super(msg);
+    (<any>Object).setPrototypeOf(this, FieldExistsAsNonTerminalError.prototype);
   }
 }
 
@@ -86,6 +96,7 @@ export class RichTextFieldReadError extends Error {
   constructor(fieldName: string) {
     const msg = `Reading rich text fields is not supported: Attempted to read rich text field: ${fieldName}`;
     super(msg);
+    (<any>Object).setPrototypeOf(this, RichTextFieldReadError.prototype);
   }
 }
 
@@ -93,6 +104,7 @@ export class CombedTextLayoutError extends Error {
   constructor(lineLength: number, cellCount: number) {
     const msg = `Failed to layout combed text as lineLength=${lineLength} is greater than cellCount=${cellCount}`;
     super(msg);
+    (<any>Object).setPrototypeOf(this, CombedTextLayoutError.prototype);
   }
 }
 
@@ -100,6 +112,7 @@ export class ExceededMaxLengthError extends Error {
   constructor(textLength: number, maxLength: number, name: string) {
     const msg = `Attempted to set text with length=${textLength} for TextField with maxLength=${maxLength} and name=${name}`;
     super(msg);
+    (<any>Object).setPrototypeOf(this, ExceededMaxLengthError.prototype);
   }
 }
 
@@ -107,5 +120,6 @@ export class InvalidMaxLengthError extends Error {
   constructor(textLength: number, maxLength: number, name: string) {
     const msg = `Attempted to set maxLength=${maxLength}, which is less than ${textLength}, the length of this field's current value (name=${name})`;
     super(msg);
+    (<any>Object).setPrototypeOf(this, InvalidMaxLengthError.prototype);
   }
 }
