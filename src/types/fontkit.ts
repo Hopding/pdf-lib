@@ -228,18 +228,34 @@ export interface SubsetStream {
   ) => SubsetStream;
 }
 
-export interface Subset {
+export type Subset = {
   /**
    * Includes the given glyph object or glyph ID in the subset.
    * Returns the glyph's new ID in the subset.
    */
   includeGlyph(glyph: number | Glyph): number;
+} & (SubsetV1 | SubsetV2);
 
+/**
+ * Compatible with https://github.com/foliojs/fontkit (v1.x)
+ */
+interface SubsetV1 {
   /**
    * Returns a stream containing the encoded font file that can be piped to a
    * destination, such as a file.
    */
   encodeStream(): SubsetStream;
+}
+
+/**
+ * Compatible with https://github.com/foliojs/fontkit (v2.x)
+ */
+interface SubsetV2 {
+  /**
+   * Returns a unit8array containing the encoded font file that can be piped to a
+   * destination, such as a file.
+   */
+  encode(): Uint8Array;
 }
 
 /**
