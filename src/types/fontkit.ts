@@ -221,13 +221,6 @@ export interface GlyphRun {
   bbox: BoundingBox;
 }
 
-export interface SubsetStream {
-  on: (
-    eventType: 'data' | 'end',
-    callback: (data: Uint8Array) => any,
-  ) => SubsetStream;
-}
-
 export interface Subset {
   /**
    * Includes the given glyph object or glyph ID in the subset.
@@ -236,10 +229,10 @@ export interface Subset {
   includeGlyph(glyph: number | Glyph): number;
 
   /**
-   * Returns a stream containing the encoded font file that can be piped to a
+   * Returns a buffer containing the encoded font file that can be piped to a
    * destination, such as a file.
    */
-  encodeStream(): SubsetStream;
+  encode(): Buffer;
 }
 
 /**

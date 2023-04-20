@@ -2,8 +2,7 @@ import { Font, Fontkit, Glyph, Subset, TypeFeatures } from 'src/types/fontkit';
 
 import CustomFontEmbedder from 'src/core/embedders/CustomFontEmbedder';
 import PDFHexString from 'src/core/objects/PDFHexString';
-import { Cache, mergeUint8Arrays, toHexStringOfMinLength } from 'src/utils';
-
+import { Cache, toHexStringOfMinLength } from 'src/utils';
 /**
  * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as
  * this class borrows from:
@@ -71,12 +70,11 @@ class CustomFontSubsetEmbedder extends CustomFontEmbedder {
 
   protected serializeFont(): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
-      const parts: Uint8Array[] = [];
-      this.subset
-        .encodeStream()
-        .on('data', (bytes) => parts.push(bytes))
-        .on('end', () => resolve(mergeUint8Arrays(parts)))
-        .on('error' as any, (err) => reject(err));
+      try {
+        resolve(this.subset.encode());
+      } catch (err) {
+        reject(err);
+      }
     });
   }
 }

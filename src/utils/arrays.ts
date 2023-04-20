@@ -43,23 +43,6 @@ export const mergeIntoTypedArray = (...arrays: (string | Uint8Array)[]) => {
   return merged;
 };
 
-export const mergeUint8Arrays = (arrays: Uint8Array[]): Uint8Array => {
-  let totalSize = 0;
-  for (let idx = 0, len = arrays.length; idx < len; idx++) {
-    totalSize += arrays[idx].length;
-  }
-
-  const mergedBuffer = new Uint8Array(totalSize);
-  let offset = 0;
-  for (let idx = 0, len = arrays.length; idx < len; idx++) {
-    const array = arrays[idx];
-    mergedBuffer.set(array, offset);
-    offset += array.length;
-  }
-
-  return mergedBuffer;
-};
-
 export const arrayAsString = (array: Uint8Array | number[]): string => {
   let str = '';
   for (let idx = 0, len = array.length; idx < len; idx++) {
