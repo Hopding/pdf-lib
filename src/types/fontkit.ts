@@ -232,7 +232,7 @@ export interface Subset {
    * Returns a buffer containing the encoded font file that can be piped to a
    * destination, such as a file.
    */
-  encode(): Buffer;
+  encode(): Uint8Array;
 }
 
 /**
