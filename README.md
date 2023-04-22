@@ -4,6 +4,23 @@ this version is forked from [Hopding/pdf-lib](https://github.com/Hopding/pdf-lib
 
 To fix this issue -> [Character corruption occurs when enabling subsets for some Japanese and Chinese fonts #162](https://github.com/pdfme/pdfme/issues/162)
 
+```js
+import { PDFDocument, rgb } from 'pdf-lib'
+import fontkit from 'fontkit' // <- Do not use @pdf-lib/fontkit
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If you're running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const fontBytes = ...
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Register the `fontkit` instance
+pdfDoc.registerFontkit(fontkit)
+```
+
 
 ---
 
