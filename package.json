@@ -94,7 +94,7 @@
     "tslib": "^1.11.1"
   },
   "devDependencies": {
-    "@pdf-lib/fontkit": "^1.1.0",
+    "pdf-fontkit": "https://github.com/magchi888/pdf-fontkit.git",
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
