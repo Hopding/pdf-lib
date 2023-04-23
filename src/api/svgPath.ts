@@ -273,8 +273,6 @@ const runners: CmdToOperatorsMap = {
     }
 
     const cmd = appendQuadraticCurve(px, py, a[0], a[1]);
-    px = cx - (px - cx);
-    py = cy - (py - cy);
     cx = a[0];
     cy = a[1];
     return cmd;
