@@ -1019,25 +1019,25 @@ import {
   PDFDocument,
   StandardFonts,
   rgb,
-} from 'https://cdn.skypack.dev/pdf-lib@^1.11.1?dts';
+} from 'https://cdn.skypack.dev/pdf-lib@^1.11.1?dts'
 
-const pdfDoc = await PDFDocument.create();
-const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+const pdfDoc = await PDFDocument.create()
+const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
 
-const page = pdfDoc.addPage();
-const { width, height } = page.getSize();
-const fontSize = 30;
+const page = pdfDoc.addPage()
+const { width, height } = page.getSize()
+const fontSize = 30
 page.drawText('Creating PDFs in JavaScript is awesome!', {
   x: 50,
   y: height - 4 * fontSize,
   size: fontSize,
   font: timesRomanFont,
   color: rgb(0, 0.53, 0.71),
-});
+})
 
-const pdfBytes = await pdfDoc.save();
+const pdfBytes = await pdfDoc.save()
 
-await Deno.writeFile('out.pdf', pdfBytes);
+await Deno.writeFile('out.pdf', pdfBytes)
 ```
 
 If you save this script as `create-document.ts`, you can execute it using Deno with the following command:
@@ -1058,23 +1058,23 @@ import {
   PDFDocument,
   rgb,
   StandardFonts,
-} from 'https://cdn.skypack.dev/pdf-lib@^1.11.1?dts';
-import fontkit from 'https://cdn.skypack.dev/@pdf-lib/fontkit@^1.0.0?dts';
+} from 'https://cdn.skypack.dev/pdf-lib@^1.11.1?dts'
+import fontkit from 'https://cdn.skypack.dev/@pdf-lib/fontkit@^1.0.0?dts'
 
-const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
-const fontBytes = await fetch(url).then((res) => res.arrayBuffer());
+const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf'
+const fontBytes = await fetch(url).then((res) => res.arrayBuffer())
 
-const pdfDoc = await PDFDocument.create();
+const pdfDoc = await PDFDocument.create()
 
-pdfDoc.registerFontkit(fontkit);
-const customFont = await pdfDoc.embedFont(fontBytes);
+pdfDoc.registerFontkit(fontkit)
+const customFont = await pdfDoc.embedFont(fontBytes)
 
-const page = pdfDoc.addPage();
+const page = pdfDoc.addPage()
 
-const text = 'This is text in an embedded font!';
-const textSize = 35;
-const textWidth = customFont.widthOfTextAtSize(text, textSize);
-const textHeight = customFont.heightAtSize(textSize);
+const text = 'This is text in an embedded font!'
+const textSize = 35
+const textWidth = customFont.widthOfTextAtSize(text, textSize)
+const textHeight = customFont.heightAtSize(textSize)
 
 page.drawText(text, {
   x: 40,
@@ -1082,7 +1082,7 @@ page.drawText(text, {
   size: textSize,
   font: customFont,
   color: rgb(0, 0.53, 0.71),
-});
+})
 page.drawRectangle({
   x: 40,
   y: 450,
@@ -1090,11 +1090,11 @@ page.drawRectangle({
   height: textHeight,
   borderColor: rgb(1, 0, 0),
   borderWidth: 1.5,
-});
+})
 
-const pdfBytes = await pdfDoc.save();
+const pdfBytes = await pdfDoc.save()
 
-await Deno.writeFile('out.pdf', pdfBytes);
+await Deno.writeFile('out.pdf', pdfBytes)
 ```
 
 If you save this script as `custom-font.ts`, you can execute it with the following command:
@@ -1288,39 +1288,39 @@ See the [form creation](#create-form) and [form filling](#fill-form) usage examp
 You can use an embedded font when filling form fields as follows:
 
 ```js
-import { PDFDocument } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
+import { PDFDocument } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 
 // Fetch the PDF with form fields
-const formUrl = 'https://pdf-lib.js.org/assets/dod_character.pdf';
-const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer());
+const formUrl = 'https://pdf-lib.js.org/assets/dod_character.pdf'
+const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
 
 // Fetch the Ubuntu font
-const fontUrl = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
-const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer());
+const fontUrl = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf'
+const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
 
 // Load the PDF with form fields
-const pdfDoc = await PDFDocument.load(formBytes);
+const pdfDoc = await PDFDocument.load(formBytes)
 
 // Embed the Ubuntu font
-pdfDoc.registerFontkit(fontkit);
-const ubuntuFont = await pdfDoc.embedFont(fontBytes);
+pdfDoc.registerFontkit(fontkit)
+const ubuntuFont = await pdfDoc.embedFont(fontBytes)
 
 // Get two text fields from the form
-const form = pdfDoc.getForm();
-const nameField = form.getTextField('CharacterName 2');
-const ageField = form.getTextField('Age');
+const form = pdfDoc.getForm()
+const nameField = form.getTextField('CharacterName 2')
+const ageField = form.getTextField('Age')
 
 // Fill the text fields with some fancy Unicode characters (outside
 // the WinAnsi latin character set)
-nameField.setText('Ӎӑȑїõ');
-ageField.setText('24 ŷȇȁŗš');
+nameField.setText('Ӎӑȑїõ')
+ageField.setText('24 ŷȇȁŗš')
 
 // **Key Step:** Update the field appearances with the Ubuntu font
 form.updateFieldAppearances(ubuntuFont);
 
 // Save the PDF with filled form fields
-const pdfBytes = await pdfDoc.save();
+const pdfBytes = await pdfDoc.save()
 ```
 
 ### Handy Methods for Filling, Creating, and Reading Form Fields
