@@ -150,7 +150,7 @@ const getInnerSegment = (start: Point, end: Point, rect: Rectangle) => {
   return new Segment(resultLineStart, resultLineEnd);
 };
 
-const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
+const cropSvgElement = (svgRect: Rectangle, element: SVGElement): SVGElement => {
   switch (element.tagName) {
     case 'text':{
       const fontSize = element.svgAttributes.fontSize || 12
@@ -544,9 +544,43 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement) => {
       Object.assign(newElement, { svgAttributes })
       return newElement as SVGElement
     }
+    case 'rect':
+      {
+        const { x = 0, y = 0, width = 0, height = 0, rotate: rawRotation } = element.svgAttributes
+        const rotation = rawRotation?.angle || 0
+        if (!(width && height)) return element
+        // bottomLeft point
+        const origin = new Point({x, y})
+
+        const rotateAroundOrigin = (p: Point) => new Point(rotate(normalize(p), degreesToRadians(rotation))).plus(origin)
+        const normalize = (p: Point) => p.plus({x: -origin.x, y: -origin.y })
+
+        const topLeft = rotateAroundOrigin(origin.plus({x: 0, y: -height}))
+        const topRight = rotateAroundOrigin(origin.plus({x: width, y: -height}))
+        const bottomRight = rotateAroundOrigin(origin.plus({x: width, y: 0}))
+        
+        const pointToString = (p: Point) => [p.x, p.y].join()
+
+        const d = `M${pointToString(topLeft)} L${pointToString(topRight)} L${pointToString(bottomRight)} L${pointToString(origin)}  L${pointToString(topLeft)}`
+        const el = parseHtml(`<path d="${d}"/>`).firstChild
+
+        const newAttributes = {
+          ...element.svgAttributes,
+          d,
+          x: 0,
+          y: 0,
+        }
+        delete newAttributes.width
+        delete newAttributes.height
+        delete newAttributes.rotate
+        delete newAttributes.rotation
+        Object.assign(el, {
+          svgAttributes: newAttributes
+        })
+        return cropSvgElement(svgRect, el as unknown as SVGElement)
+      }
     // TODO: implement the crop for the following elements
     case 'image':
-    case 'rect':
     default:
       return element
   }
