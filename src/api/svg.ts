@@ -1549,5 +1549,9 @@ export const drawSvg = async (
 
   const runners = runnersToPage(page, options);
   const elements = parse(firstChild.outerHTML, options, size, defaultConverter);
-  elements.forEach((elt) => runners[elt.tagName]?.(elt));
+
+  await elements.reduce(async (prev, elt) => {
+    await prev
+    return runners[elt.tagName]?.(elt)
+  }, Promise.resolve());
 };
