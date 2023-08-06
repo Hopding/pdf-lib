@@ -1127,7 +1127,7 @@ To install the latest stable version:
 npm install --save pdf-lib
 
 # With yarn
-yarn add pdf-lib
+yarn add -D pdf-lib
 ```
 
 This assumes you're using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/lang/en/) as your package manager.
