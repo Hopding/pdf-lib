@@ -18,6 +18,7 @@ import {
   JpegEmbedder,
   PageBoundingBox,
   PageEmbeddingMismatchedContextError,
+  PDFArray,
   PDFCatalog,
   PDFContext,
   PDFDict,
@@ -66,6 +67,7 @@ import FileEmbedder, { AFRelationship } from '../core/embedders/FileEmbedder';
 import PDFEmbeddedFile from './PDFEmbeddedFile';
 import PDFJavaScript from './PDFJavaScript';
 import JavaScriptEmbedder from '../core/embedders/JavaScriptEmbedder';
+import { CipherTransformFactory } from '../core/crypto';
 
 /**
  * Represents a PDF document.
@@ -147,7 +149,20 @@ export default class PDFDocument {
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
-    return new PDFDocument(context, ignoreEncryption, updateMetadata);
+    const pdfDoc = new PDFDocument(context, ignoreEncryption, updateMetadata, false);
+
+    if (pdfDoc.isEncrypted) {
+      // Decrypt
+      const context = await PDFParser.forBytesWithOptions(
+        bytes,
+        parseSpeed,
+        throwOnInvalidObject,
+        capNumbers,
+        pdfDoc.cryptoFactory
+      ).parseDocument();
+      return new PDFDocument(context, true, updateMetadata, true);
+    }
+    return pdfDoc;
   }
 
   /**
@@ -163,7 +178,7 @@ export default class PDFDocument {
     const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
     context.trailerInfo.Root = context.register(catalog);
 
-    return new PDFDocument(context, false, updateMetadata);
+    return new PDFDocument(context, false, updateMetadata, false);
   }
 
   /** The low-level context of this document. */
@@ -174,6 +189,8 @@ export default class PDFDocument {
 
   /** Whether or not this document is encrypted. */
   readonly isEncrypted: boolean;
+
+  readonly cryptoFactory?: CipherTransformFactory;
 
   /** The default word breaks used in PDFPage.drawText */
   defaultWordBreaks: string[] = [' '];
@@ -193,6 +210,7 @@ export default class PDFDocument {
     context: PDFContext,
     ignoreEncryption: boolean,
     updateMetadata: boolean,
+    isDecrypted: boolean
   ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
@@ -200,6 +218,15 @@ export default class PDFDocument {
     this.context = context;
     this.catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
     this.isEncrypted = !!context.lookup(context.trailerInfo.Encrypt);
+
+    if (this.isEncrypted && !isDecrypted) {
+      const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
+      const fileIds = context.lookup(context.trailerInfo.ID, PDFArray);
+      this.cryptoFactory = new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes())
+    } else if (this.isEncrypted) {
+      // context.delete(context.trailerInfo.Encrypt);
+      delete context.trailerInfo.Encrypt;
+    }
 
     this.pageCache = Cache.populatedBy(this.computePages);
     this.pageMap = new Map();

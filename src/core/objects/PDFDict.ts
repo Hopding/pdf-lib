@@ -23,6 +23,8 @@ class PDFDict extends PDFObject {
 
   private readonly dict: DictMap;
 
+  public suppressEncryption: boolean = false;
+
   protected constructor(map: DictMap, context: PDFContext) {
     super();
     this.dict = map;

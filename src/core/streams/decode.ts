@@ -45,8 +45,12 @@ const decodeStream = (
   throw new UnsupportedEncodingError(encoding.asString());
 };
 
-export const decodePDFRawStream = ({ dict, contents }: PDFRawStream) => {
+export const decodePDFRawStream = ({ dict, contents, transform }: PDFRawStream) => {
   let stream: StreamType = new Stream(contents);
+
+  if (transform) {
+    stream = transform.createStream(stream, contents.length);
+  }
 
   const Filter = dict.lookup(PDFName.of('Filter'));
   const DecodeParms = dict.lookup(PDFName.of('DecodeParms'));

@@ -19,6 +19,12 @@ export const padStart = (value: string, length: number, padChar: string) => {
   return padding + value;
 };
 
+export const stringAsByteArray = (str: string): Uint8Array => {
+  const buffer = new Uint8Array(str.length);
+  copyStringIntoBuffer(str, buffer, 0);
+  return buffer;
+}
+
 export const copyStringIntoBuffer = (
   str: string,
   buffer: Uint8Array,

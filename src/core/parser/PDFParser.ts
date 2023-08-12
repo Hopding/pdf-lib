@@ -23,6 +23,7 @@ import CharCodes from '../syntax/CharCodes';
 import { Keywords } from '../syntax/Keywords';
 import { IsDigit } from '../syntax/Numeric';
 import { waitForTick } from '../../utils';
+import { CipherTransformFactory } from '../crypto';
 
 class PDFParser extends PDFObjectParser {
   static forBytesWithOptions = (
@@ -30,8 +31,9 @@ class PDFParser extends PDFObjectParser {
     objectsPerTick?: number,
     throwOnInvalidObject?: boolean,
     capNumbers?: boolean,
+    cryptoFactory?: CipherTransformFactory
   ) =>
-    new PDFParser(pdfBytes, objectsPerTick, throwOnInvalidObject, capNumbers);
+    new PDFParser(pdfBytes, objectsPerTick, throwOnInvalidObject, capNumbers, cryptoFactory);
 
   private readonly objectsPerTick: number;
   private readonly throwOnInvalidObject: boolean;
@@ -43,8 +45,9 @@ class PDFParser extends PDFObjectParser {
     objectsPerTick = Infinity,
     throwOnInvalidObject = false,
     capNumbers = false,
+    cryptoFactory?: CipherTransformFactory
   ) {
-    super(ByteStream.of(pdfBytes), PDFContext.create(), capNumbers);
+    super(ByteStream.of(pdfBytes), PDFContext.create(), capNumbers, cryptoFactory);
     this.objectsPerTick = objectsPerTick;
     this.throwOnInvalidObject = throwOnInvalidObject;
   }
@@ -146,7 +149,7 @@ class PDFParser extends PDFObjectParser {
     const ref = this.parseIndirectObjectHeader();
 
     this.skipWhitespaceAndComments();
-    const object = this.parseObject();
+    const object = this.parseObject(ref);
 
     this.skipWhitespaceAndComments();
     // if (!this.matchKeyword(Keywords.endobj)) {
