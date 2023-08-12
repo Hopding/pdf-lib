@@ -135,6 +135,7 @@ export default class PDFDocument {
       throwOnInvalidObject = false,
       updateMetadata = true,
       capNumbers = false,
+      password
     } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
@@ -160,7 +161,7 @@ export default class PDFDocument {
         capNumbers,
         pdfDoc.cryptoFactory
       ).parseDocument();
-      return new PDFDocument(context, true, updateMetadata, true);
+      return new PDFDocument(context, true, updateMetadata, true, password);
     }
     return pdfDoc;
   }
@@ -210,7 +211,8 @@ export default class PDFDocument {
     context: PDFContext,
     ignoreEncryption: boolean,
     updateMetadata: boolean,
-    isDecrypted: boolean
+    isDecrypted: boolean,
+    password?: string
   ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
@@ -222,7 +224,7 @@ export default class PDFDocument {
     if (this.isEncrypted && !isDecrypted) {
       const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
       const fileIds = context.lookup(context.trailerInfo.ID, PDFArray);
-      this.cryptoFactory = new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes())
+      this.cryptoFactory = new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes(), password)
     } else if (this.isEncrypted) {
       // context.delete(context.trailerInfo.Encrypt);
       delete context.trailerInfo.Encrypt;
