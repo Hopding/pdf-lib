@@ -72,10 +72,6 @@ class PDFContext {
     this.rng = SimpleRNG.withSeed(1);
   }
 
-  hasEncryption(): boolean {
-    return !!this.lookup(this.trailerInfo.Encrypt) && !this.isDecrypted;
-  }
-
   assign(ref: PDFRef, object: PDFObject): void {
     this.indirectObjects.set(ref, object);
     if (ref.objectNumber > this.largestObjectNumber) {
