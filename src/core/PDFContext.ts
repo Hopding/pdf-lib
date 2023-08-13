@@ -73,7 +73,7 @@ class PDFContext {
   }
 
   hasEncryption(): boolean {
-    return !!this.lookup(this.trailerInfo.Encrypt);
+    return !!this.lookup(this.trailerInfo.Encrypt) || !this.isDecrypted;
   }
 
   assign(ref: PDFRef, object: PDFObject): void {

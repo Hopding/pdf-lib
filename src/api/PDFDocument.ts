@@ -151,7 +151,7 @@ export default class PDFDocument {
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
-    if (!!context.hasEncryption()) {
+    if (context.hasEncryption()) {
       // Decrypt
       const fileIds = context.lookup(context.trailerInfo.ID, PDFArray);
       const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
@@ -226,7 +226,7 @@ export default class PDFDocument {
       // context.delete(context.trailerInfo.Encrypt);
       delete context.trailerInfo.Encrypt;
     }
-    this.isEncrypted = !!context.hasEncryption();
+    this.isEncrypted = context.hasEncryption();
 
     this.pageCache = Cache.populatedBy(this.computePages);
     this.pageMap = new Map();
