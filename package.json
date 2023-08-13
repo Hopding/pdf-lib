@@ -1,6 +1,6 @@
 {
   "name": "@cantoo/pdf-lib",
-  "version": "1.19.1",
+  "version": "1.19.2",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -33,9 +33,9 @@
     "François Billioud (https://github.com/Sharcoux)"
   ],
   "scripts": {
-    "release": "yarn build && yarn release:latest && git add . && git commit -m \"v$(yarn --silent get:version)\" && git push origin master",
-    "release:latest": "yarn publish --tag latest && yarn pack",
-    "release:next": "yarn publish --tag next",
+    "release": "yarn build && npm run release:latest && git add . && git commit -m \"v$(yarn --silent get:version)\" && git push origin master",
+    "release:latest": "npm publish --tag latest && yarn pack",
+    "release:next": "npm publish --tag next",
     "release:prep": "yarn clean && yarn lint && yarn typecheck && yarn test && yarn build",
     "release:tag": "TAG=\"v$(yarn --silent get:version)\" && git tag $TAG && git push origin $TAG",
     "get:version": "node --eval 'console.log(require(`./package.json`).version)'",
