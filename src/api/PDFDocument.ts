@@ -142,6 +142,7 @@ export default class PDFDocument {
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
     assertIs(parseSpeed, 'parseSpeed', ['number']);
     assertIs(throwOnInvalidObject, 'throwOnInvalidObject', ['boolean']);
+    assertIs(password, 'password', ['string', 'undefined']);
 
     const bytes = toUint8Array(pdf);
     const context = await PDFParser.forBytesWithOptions(
@@ -150,20 +151,21 @@ export default class PDFDocument {
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
-    const pdfDoc = new PDFDocument(context, ignoreEncryption, updateMetadata, false);
-
-    if (pdfDoc.isEncrypted) {
+    if(!!context.lookup(context.trailerInfo.Encrypt)) {
       // Decrypt
-      const context = await PDFParser.forBytesWithOptions(
+      const fileIds = context.lookup(context.trailerInfo.ID, PDFArray)
+      const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict)
+      const decryptedContext = await PDFParser.forBytesWithOptions(
         bytes,
         parseSpeed,
         throwOnInvalidObject,
         capNumbers,
-        pdfDoc.cryptoFactory
+        new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes(), password)
       ).parseDocument();
-      return new PDFDocument(context, true, updateMetadata, true, password);
+      return new PDFDocument(decryptedContext, true, updateMetadata, true);
+    } else {
+      return new PDFDocument(context, ignoreEncryption, updateMetadata, false);
     }
-    return pdfDoc;
   }
 
   /**
@@ -191,8 +193,6 @@ export default class PDFDocument {
   /** Whether or not this document is encrypted. */
   readonly isEncrypted: boolean;
 
-  readonly cryptoFactory?: CipherTransformFactory;
-
   /** The default word breaks used in PDFPage.drawText */
   defaultWordBreaks: string[] = [' '];
 
@@ -212,7 +212,6 @@ export default class PDFDocument {
     ignoreEncryption: boolean,
     updateMetadata: boolean,
     isDecrypted: boolean,
-    password?: string
   ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
@@ -221,13 +220,9 @@ export default class PDFDocument {
     this.catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
     this.isEncrypted = !!context.lookup(context.trailerInfo.Encrypt);
 
-    if (this.isEncrypted && !isDecrypted) {
-      const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
-      const fileIds = context.lookup(context.trailerInfo.ID, PDFArray);
-      this.cryptoFactory = new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes(), password)
-    } else if (this.isEncrypted) {
+    if (this.isEncrypted && isDecrypted) {
       // context.delete(context.trailerInfo.Encrypt);
-      delete context.trailerInfo.Encrypt;
+      // delete context.trailerInfo.Encrypt;
     }
 
     this.pageCache = Cache.populatedBy(this.computePages);

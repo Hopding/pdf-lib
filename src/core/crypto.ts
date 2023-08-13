@@ -1385,40 +1385,41 @@ class PDF20 {
   }
 }
 
+type Cipher = ARCFourCipher | NullCipher | AES128Cipher | AES256Cipher
 class CipherTransform {
-  private StringCipherConstructor: any;
-  private StreamCipherConstructor: any;
+  private StringCipherConstructor: () => Cipher;
+  private StreamCipherConstructor: () => Cipher;
 
-  constructor(stringCipherConstructor: any, streamCipherConstructor: any) {
+  constructor(stringCipherConstructor: () => Cipher, streamCipherConstructor: () => Cipher) {
     this.StringCipherConstructor = stringCipherConstructor;
     this.StreamCipherConstructor = streamCipherConstructor;
   }
 
   createStream(stream: StreamType, length: number) {
-    const cipher = new this.StreamCipherConstructor();
+    const cipher = this.StreamCipherConstructor();
     return new DecryptStream(
       stream,
       function cipherTransformDecryptStream(data, finalize) {
-        return cipher.decryptBlock(data, finalize);
+        return cipher.decryptBlock(data as Uint8Array, finalize);
       },
       length,
     );
   }
 
   decryptString(s: string) {
-    const cipher = new this.StringCipherConstructor();
+    const cipher = this.StringCipherConstructor();
     let data = stringAsByteArray(s);
     data = cipher.decryptBlock(data, true);
     return arrayAsString(data);
   }
 
   decryptBytes(d: Uint8Array) {
-    const cipher = new this.StringCipherConstructor();
+    const cipher = this.StringCipherConstructor();
     return cipher.decryptBlock(d, true);
   }
 
   encryptString(s: string) {
-    const cipher = new this.StringCipherConstructor();
+    const cipher = this.StringCipherConstructor();
     if (cipher instanceof AESBaseCipher) {
       // Append some chars equal to "16 - (M mod 16)"
       // where M is the string length (see section 7.6.2 in PDF specification)
@@ -1538,7 +1539,7 @@ class CipherTransformFactory {
     // meaningful when V is 4 or 5
     const encryptMetadata =
       (algorithm === 4 || algorithm === 5) &&
-      (dict.get(PDFName.of("EncryptMetadata")) as PDFBool).asBoolean() !== false;
+      (dict.get(PDFName.of("EncryptMetadata")) as PDFBool)?.asBoolean() !== false;
     this.encryptMetadata = encryptMetadata;
 
     let passwordBytes: Uint8Array | undefined;
