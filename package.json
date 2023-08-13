@@ -33,7 +33,7 @@
     "François Billioud (https://github.com/Sharcoux)"
   ],
   "scripts": {
-    "release": "yarn build && npm run release:latest && git add . && git commit -m \"v$(yarn --silent get:version)\" && git push origin master",
+    "release": "yarn build && npm run release:latest && git add . && git commit -m \"v$(yarn --silent get:version)\" && release:tag && git push origin master",
     "release:latest": "npm publish --tag latest && yarn pack",
     "release:next": "npm publish --tag next",
     "release:prep": "yarn clean && yarn lint && yarn typecheck && yarn test && yarn build",

@@ -151,7 +151,7 @@ export default class PDFDocument {
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
-    if(!!context.lookup(context.trailerInfo.Encrypt)) {
+    if(!!context.hasEncryption()) {
       // Decrypt
       const fileIds = context.lookup(context.trailerInfo.ID, PDFArray)
       const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict)
@@ -162,9 +162,9 @@ export default class PDFDocument {
         capNumbers,
         new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes(), password)
       ).parseDocument();
-      return new PDFDocument(decryptedContext, true, updateMetadata, true);
+      return new PDFDocument(decryptedContext, true, updateMetadata);
     } else {
-      return new PDFDocument(context, ignoreEncryption, updateMetadata, false);
+      return new PDFDocument(context, ignoreEncryption, updateMetadata);
     }
   }
 
@@ -181,7 +181,7 @@ export default class PDFDocument {
     const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
     context.trailerInfo.Root = context.register(catalog);
 
-    return new PDFDocument(context, false, updateMetadata, false);
+    return new PDFDocument(context, false, updateMetadata);
   }
 
   /** The low-level context of this document. */
@@ -211,19 +211,18 @@ export default class PDFDocument {
     context: PDFContext,
     ignoreEncryption: boolean,
     updateMetadata: boolean,
-    isDecrypted: boolean,
   ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
 
     this.context = context;
     this.catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
-    this.isEncrypted = !!context.lookup(context.trailerInfo.Encrypt);
 
-    if (this.isEncrypted && isDecrypted) {
+    if (this.context.isDecrypted) {
       // context.delete(context.trailerInfo.Encrypt);
-      // delete context.trailerInfo.Encrypt;
+      delete context.trailerInfo.Encrypt;
     }
+    this.isEncrypted = !!context.hasEncryption();
 
     this.pageCache = Cache.populatedBy(this.computePages);
     this.pageMap = new Map();

@@ -50,6 +50,7 @@ class PDFParser extends PDFObjectParser {
     super(ByteStream.of(pdfBytes), PDFContext.create(), capNumbers, cryptoFactory);
     this.objectsPerTick = objectsPerTick;
     this.throwOnInvalidObject = throwOnInvalidObject;
+    this.context.isDecrypted = !!cryptoFactory
   }
 
   async parseDocument(): Promise<PDFContext> {

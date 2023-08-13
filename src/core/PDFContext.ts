@@ -45,6 +45,7 @@ const byAscendingObjectNumber = (
 ) => a.objectNumber - b.objectNumber;
 
 class PDFContext {
+  isDecrypted = false
   static create = () => new PDFContext();
 
   largestObjectNumber: number;
@@ -69,6 +70,10 @@ class PDFContext {
 
     this.indirectObjects = new Map();
     this.rng = SimpleRNG.withSeed(1);
+  }
+
+  hasEncryption(): boolean {
+    return !!this.lookup(this.trailerInfo.Encrypt)
   }
 
   assign(ref: PDFRef, object: PDFObject): void {
