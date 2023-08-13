@@ -94,7 +94,7 @@ export const isArrayEqual = <T>(arr1: ArrayLike<T>, arr2: ArrayLike<T>) => {
     }
   }
   return true;
-}
+};
 
 // Arrays and TypedArrays in JS both have .reverse() methods, which would seem
 // to negate the need for this function. However, not all runtimes support this

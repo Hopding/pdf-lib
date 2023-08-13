@@ -6,7 +6,13 @@ import {
   NodeType,
 } from 'node-html-better-parser';
 import { Color, colorString } from './colors';
-import { Degrees, degreesToRadians, RotationTypes, degrees, radiansToDegrees } from './rotations';
+import {
+  Degrees,
+  degreesToRadians,
+  RotationTypes,
+  degrees,
+  radiansToDegrees,
+} from './rotations';
 import PDFFont from './PDFFont';
 import PDFPage from './PDFPage';
 import { PDFPageDrawSVGElementOptions } from './PDFPageOptions';
@@ -49,7 +55,7 @@ type InheritedAttributes = {
   fontWeight?: string;
   fontSize?: number;
   rotation?: Degrees;
-  viewBox: Box
+  viewBox: Box;
 };
 type SVGAttributes = {
   rotate?: Degrees;
@@ -150,16 +156,19 @@ const getInnerSegment = (start: Point, end: Point, rect: Rectangle) => {
   return new Segment(resultLineStart, resultLineEnd);
 };
 
-const cropSvgElement = (svgRect: Rectangle, element: SVGElement): SVGElement => {
+const cropSvgElement = (
+  svgRect: Rectangle,
+  element: SVGElement,
+): SVGElement => {
   switch (element.tagName) {
-    case 'text':{
-      const fontSize = element.svgAttributes.fontSize || 12
+    case 'text': {
+      const fontSize = element.svgAttributes.fontSize || 12;
       // TODO: compute the right font boundaries to know which characters should be drawn
       // this is an workaround to draw text that are just a little outside the viewbox boundaries
       const start = new Point({
         x: element.svgAttributes.x || 0,
         y: element.svgAttributes.y || 0,
-      })
+      });
       const paddingRect = new Rectangle(
         new Point({
           x: svgRect.start.x - fontSize,
@@ -167,26 +176,27 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement): SVGElement => 
         }),
         new Point({ x: svgRect.end.x + fontSize, y: svgRect.end.y - fontSize }),
       );
-      if (!isCoordinateInsideTheRect(start, paddingRect)) 
-        element.set_content('')
-      break
+      if (!isCoordinateInsideTheRect(start, paddingRect)) {
+        element.set_content('');
+      }
+      break;
     }
     case 'line': {
       const start = new Point({
         x: element.svgAttributes.x1!,
         y: element.svgAttributes.y1!,
       });
-  
+
       const end = new Point({
         x: element.svgAttributes.x2!,
         y: element.svgAttributes.y2!,
       });
       const line = getInnerSegment(start, end, svgRect);
-      element.svgAttributes.x1 = line ? line.A.x : 0
-      element.svgAttributes.x2 = line ? line.B.x : 0
-      element.svgAttributes.y1 = line ? line.A.y : 0
-      element.svgAttributes.y2 = line ? line.B.y : 0
-      break
+      element.svgAttributes.x1 = line ? line.A.x : 0;
+      element.svgAttributes.x2 = line ? line.B.x : 0;
+      element.svgAttributes.y1 = line ? line.A.y : 0;
+      element.svgAttributes.y2 = line ? line.B.y : 0;
+      break;
     }
     case 'path': {
       // the path origin coordinate
@@ -228,17 +238,21 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement): SVGElement => 
               switch (command.toLocaleLowerCase()) {
                 case 'l':
                   return new Point({
-                    x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
-                    y: (isLocalInstruction ? origin.y : basePoint.y) + params[1],
+                    x:
+                      (isLocalInstruction ? origin.x : basePoint.x) + params[0],
+                    y:
+                      (isLocalInstruction ? origin.y : basePoint.y) + params[1],
                   });
                 case 'v':
                   return new Point({
                     x: origin.x,
-                    y: (isLocalInstruction ? origin.y : basePoint.y) + params[0],
+                    y:
+                      (isLocalInstruction ? origin.y : basePoint.y) + params[0],
                   });
                 case 'h':
                   return new Point({
-                    x: (isLocalInstruction ? origin.x : basePoint.x) + params[0],
+                    x:
+                      (isLocalInstruction ? origin.x : basePoint.x) + params[0],
                     y: origin.y,
                   });
                 default:
@@ -274,8 +288,8 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement): SVGElement => 
               ? ''
               : isLocalInstruction
               ? `M${normalizedNext.x},${normalizedNext.y}`
-              // TODO: check this -> maybe the move command should be always normalized when cropping segments
-              : `M${nextPoint.x},${nextPoint.y}`;
+              : // TODO: check this -> maybe the move command should be always normalized when cropping segments
+                `M${nextPoint.x},${nextPoint.y}`;
             return {
               point: nextPoint,
               command: `${startInstruction} L${endPoint.x},${endPoint.y} ${endInstruction} `,
@@ -399,139 +413,182 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement): SVGElement => 
           return command;
         })
         .join(' ');
-      element.svgAttributes.d = newPath
-      break
+      element.svgAttributes.d = newPath;
+      break;
     }
     case 'ellipse':
     case 'circle': {
-      if (element.svgAttributes.cx === undefined || element.svgAttributes.cy === undefined || element.svgAttributes.rx === undefined || element.svgAttributes.ry === undefined) break
-      const { cx = 0, cy = 0, rx = 0, ry = 0 } = element.svgAttributes
+      if (
+        element.svgAttributes.cx === undefined ||
+        element.svgAttributes.cy === undefined ||
+        element.svgAttributes.rx === undefined ||
+        element.svgAttributes.ry === undefined
+      ) {
+        break;
+      }
+      const { cx = 0, cy = 0, rx = 0, ry = 0 } = element.svgAttributes;
       const center = new Point({
         x: cx,
-        y: cy
-      })
-      const rotation = element.svgAttributes.rotation?.angle || 0
+        y: cy,
+      });
+      const rotation = element.svgAttributes.rotation?.angle || 0;
       // these points are relative to the ellipse's center
-      const a = new Point(rotate({ x: -rx, y: 0 }, degreesToRadians(rotation)))
-      const b = new Point(rotate({ x: rx, y: 0 }, degreesToRadians(rotation)))
-      const c = new Point(rotate({ x: 0, y: ry }, degreesToRadians(rotation)))
+      const a = new Point(rotate({ x: -rx, y: 0 }, degreesToRadians(rotation)));
+      const b = new Point(rotate({ x: rx, y: 0 }, degreesToRadians(rotation)));
+      const c = new Point(rotate({ x: 0, y: ry }, degreesToRadians(rotation)));
       // these points are relative to the real coordinate system
-      const A = center.plus(a)
-      const B = center.plus(b)
-      const C = center.plus(c)
-      const ellipse = new Ellipse(A, B, C)
-      const intersections = getIntersections([svgRect, ellipse])
-      const isCenterInsideRect = isCoordinateInsideTheRect(center, svgRect)
-      /** 
+      const A = center.plus(a);
+      const B = center.plus(b);
+      const C = center.plus(c);
+      const ellipse = new Ellipse(A, B, C);
+      const intersections = getIntersections([svgRect, ellipse]);
+      const isCenterInsideRect = isCoordinateInsideTheRect(center, svgRect);
+      /**
        * if there are less than 2 intersection, there are two possibilities:
        * - the ellipse is outside the viewbox and therefore isn't visible
        * - the ellipse is inside the viewbox and don't need to be cropped
        */
-      if(intersections.length < 2) {
-        !isCenterInsideRect && element.setAttribute('rx', '0')
-        !isCenterInsideRect && (element.svgAttributes.rx = 0)
-        !isCenterInsideRect && element.setAttribute('ry', '0')
-        !isCenterInsideRect && (element.svgAttributes.ry = 0)
-        break
+      if (intersections.length < 2) {
+        !isCenterInsideRect && element.setAttribute('rx', '0');
+        !isCenterInsideRect && (element.svgAttributes.rx = 0);
+        !isCenterInsideRect && element.setAttribute('ry', '0');
+        !isCenterInsideRect && (element.svgAttributes.ry = 0);
+        break;
       }
 
       // viewbox rectangle coordinates
-      const P1 = new Point(svgRect.getCoords())
-      const P3 = new Point(svgRect.getEnd())
-      const P2 = new Point({ x: P3.x, y: P1.y })
-      const P4 = new Point({ x: P1.x, y: P3.y })
-      const top = new Segment(P1, P2)
-      const right = new Segment(P2, P3)
-      const bottom = new Segment(P3, P4)
-      const left = new Segment(P4, P1)
+      const P1 = new Point(svgRect.getCoords());
+      const P3 = new Point(svgRect.getEnd());
+      const P2 = new Point({ x: P3.x, y: P1.y });
+      const P4 = new Point({ x: P1.x, y: P3.y });
+      const top = new Segment(P1, P2);
+      const right = new Segment(P2, P3);
+      const bottom = new Segment(P3, P4);
+      const left = new Segment(P4, P1);
       // Warning: keep the order of the segments, it's important when building the path that will represent the ellipse
-      const rectSegments = [top, right, bottom, left]
+      const rectSegments = [top, right, bottom, left];
 
-      const isPointInsideEllipse = (P: Point) => 
-        (((P.x - cx) ** 2) / rx ** 2) + (((P.y - cy) ** 2) / ry ** 2) <= 1
+      const isPointInsideEllipse = (P: Point) =>
+        (P.x - cx) ** 2 / rx ** 2 + (P.y - cy) ** 2 / ry ** 2 <= 1;
       // check if the rect boundaries are inside the circle
-      const isRectInsideEllipse = isPointInsideEllipse(P1) && isPointInsideEllipse(P2) && isPointInsideEllipse(P3) && isPointInsideEllipse(P4) 
-      
+      const isRectInsideEllipse =
+        isPointInsideEllipse(P1) &&
+        isPointInsideEllipse(P2) &&
+        isPointInsideEllipse(P3) &&
+        isPointInsideEllipse(P4);
 
       // the segments that are intersecting the circle. And, therefore, are lines that are cropping the drawing
-      const circleSegments = isRectInsideEllipse ? rectSegments : rectSegments.map((segment, i) => {
-        const [p1, p2] = getIntersections([segment, ellipse])
-          // it's important to sort the segment's point because it impacts the angle of the arc, the points are sorted on clockwise direction
-          .sort((p1, p2) => {
-            // top
-            if (i === 0) {
-              return p1.x - p2.x
-            // right
-            } else if (i === 1) {
-              return p2.y - p1.y
-            // bottom
-            } else if (i === 2) {
-              return p2.x - p1.x
-            // left
-            } else {
-              return p1.y - p2.y
+      const circleSegments = isRectInsideEllipse
+        ? rectSegments
+        : rectSegments.map((segment, i) => {
+            const [p1, p2] = getIntersections([segment, ellipse])
+              // it's important to sort the segment's point because it impacts the angle of the arc, the points are sorted on clockwise direction
+              .sort((p1, p2) => {
+                // top
+                if (i === 0) {
+                  return p1.x - p2.x;
+                  // right
+                } else if (i === 1) {
+                  return p2.y - p1.y;
+                  // bottom
+                } else if (i === 2) {
+                  return p2.x - p1.x;
+                  // left
+                } else {
+                  return p1.y - p2.y;
+                }
+              });
+
+            if (p1 && p2) {
+              return new Segment(new Point(p1), new Point(p2));
+              // if the other point isn't inside the circle it means that the circle isn't cropped by the segment
+            } else if (
+              p1 &&
+              (isPointInsideEllipse(segment.A) ||
+                isPointInsideEllipse(segment.B))
+            ) {
+              const intersectionPoint = new Point(p1);
+              const innerPoint = isPointInsideEllipse(segment.A)
+                ? segment.A
+                : segment.B;
+              // ensures that the segment is always following the clockwise direction
+              const start = innerPoint.isEqual(segment.A)
+                ? innerPoint
+                : intersectionPoint;
+              const end = innerPoint.isEqual(segment.A)
+                ? intersectionPoint
+                : innerPoint;
+              return new Segment(start, end);
+              // if there's no intersection and the segment's points are inside the Ellipse it means that the segment should be drawn as part of the ellipse
+            } else if (
+              !(p1 && p2) &&
+              isPointInsideEllipse(segment.A) &&
+              isPointInsideEllipse(segment.B)
+            ) {
+              return segment;
             }
-          })
+            return;
+          });
 
-        if (p1 && p2) {
-          return new Segment(new Point(p1), new Point(p2))
-        // if the other point isn't inside the circle it means that the circle isn't cropped by the segment
-        } else if (p1 && (isPointInsideEllipse(segment.A) || isPointInsideEllipse(segment.B))) {
-          const intersectionPoint = new Point(p1)
-          const innerPoint = isPointInsideEllipse(segment.A) ? segment.A : segment.B
-          // ensures that the segment is always following the clockwise direction
-          const start = innerPoint.isEqual(segment.A) ? innerPoint : intersectionPoint
-          const end = innerPoint.isEqual(segment.A) ? intersectionPoint : innerPoint
-          return new Segment(start, end)
-        // if there's no intersection and the segment's points are inside the Ellipse it means that the segment should be drawn as part of the ellipse
-        } else if (!(p1 && p2) && isPointInsideEllipse(segment.A) && isPointInsideEllipse(segment.B)) return segment
-        return
-      })
-
-      
-      const inverseAngle = (angle: number) => (360 - angle) % 360
-      const pointsAngle = (p1: Point, p2: Point, direction: 'clockwise' | 'counter-clockwise' = 'clockwise') => {
-        const startAngle = radiansToDegrees(Math.atan2(p1.y - center.y, p1.x - center.x))
-        const endAngle = radiansToDegrees(Math.atan2(p2.y - center.y, p2.x - center.x))
-        const arcAngle = (endAngle + (360 - startAngle)) % 360
-        return direction === 'clockwise' ? arcAngle : inverseAngle(arcAngle)
-      }
+      const inverseAngle = (angle: number) => (360 - angle) % 360;
+      const pointsAngle = (
+        p1: Point,
+        p2: Point,
+        direction: 'clockwise' | 'counter-clockwise' = 'clockwise',
+      ) => {
+        const startAngle = radiansToDegrees(
+          Math.atan2(p1.y - center.y, p1.x - center.x),
+        );
+        const endAngle = radiansToDegrees(
+          Math.atan2(p2.y - center.y, p2.x - center.x),
+        );
+        const arcAngle = (endAngle + (360 - startAngle)) % 360;
+        return direction === 'clockwise' ? arcAngle : inverseAngle(arcAngle);
+      };
 
       /**
        * - draw a line for each segment
        * - if two segments aren't connected draw an arc connecting them
-      */
-      let startPoint: (Point | undefined)
-      // the point where the pen is located 
-      let currentPoint: (Point | undefined)
-      let lastSegment:  (Segment | undefined)
+       */
+      let startPoint: Point | undefined;
+      // the point where the pen is located
+      let currentPoint: Point | undefined;
+      let lastSegment: Segment | undefined;
       let path = circleSegments.reduce((path, segment) => {
-        if (!segment) return path
+        if (!segment) return path;
         if (!startPoint) {
-          startPoint = segment.A
-          path = `M ${segment.A.x},${segment.A.y}`
+          startPoint = segment.A;
+          path = `M ${segment.A.x},${segment.A.y}`;
         }
         // if the current segment isn't connected to the last one, connect both with an arc
         if (lastSegment && !lastSegment.B.isEqual(segment.A)) {
-          const arcAngle = pointsAngle(segment.A, lastSegment.B)
+          const arcAngle = pointsAngle(segment.A, lastSegment.B);
           // angles greater than 180 degrees are marked as large-arc-flag = 1
-          path += `A ${rx},${ry} ${rotation} ${arcAngle > 180 ? 1 : 0},0 ${segment.A.x}, ${segment.A.y}`
+          path += `A ${rx},${ry} ${rotation} ${arcAngle > 180 ? 1 : 0},0 ${
+            segment.A.x
+          }, ${segment.A.y}`;
         }
-        path += ` L ${segment.B.x},${segment.B.y}`
-        currentPoint = segment.B
-        lastSegment = segment
-        return path
-      }, '')
+        path += ` L ${segment.B.x},${segment.B.y}`;
+        currentPoint = segment.B;
+        lastSegment = segment;
+        return path;
+      }, '');
 
       // if the path isn't closed, close it by drawing an arc
       if (startPoint && currentPoint && !startPoint.isEqual(currentPoint)) {
-        const arcAngle = pointsAngle(currentPoint, startPoint, 'counter-clockwise')
+        const arcAngle = pointsAngle(
+          currentPoint,
+          startPoint,
+          'counter-clockwise',
+        );
         // angles greater than 180 degrees are marked as large-arc-flag = 1
-        path += `A ${rx},${ry} ${rotation} ${arcAngle > 180 ? 1 : 0},0 ${startPoint.x}, ${startPoint.y}`
+        path += `A ${rx},${ry} ${rotation} ${arcAngle > 180 ? 1 : 0},0 ${
+          startPoint.x
+        }, ${startPoint.y}`;
       }
 
       // create a new element that will represent the cropped ellipse
-      const newElement = parseHtml(`<path d="${path}" fill="red"/>`).firstChild
+      const newElement = parseHtml(`<path d="${path}" fill="red"/>`).firstChild;
       const svgAttributes: SVGAttributes = {
         ...element.svgAttributes,
         // the x and y values are 0 because all the path coordinates are global
@@ -539,53 +596,69 @@ const cropSvgElement = (svgRect: Rectangle, element: SVGElement): SVGElement => 
         y: 0,
         // the path coordinates are already rotated
         rotate: undefined,
-        d: path
-      }
-      Object.assign(newElement, { svgAttributes })
-      return newElement as SVGElement
+        d: path,
+      };
+      Object.assign(newElement, { svgAttributes });
+      return newElement as SVGElement;
     }
-    case 'rect':
-      {
-        const { x = 0, y = 0, width = 0, height = 0, rotate: rawRotation } = element.svgAttributes
-        const rotation = rawRotation?.angle || 0
-        if (!(width && height)) return element
-        // bottomLeft point
-        const origin = new Point({x, y})
+    case 'rect': {
+      const {
+        x = 0,
+        y = 0,
+        width = 0,
+        height = 0,
+        rotate: rawRotation,
+      } = element.svgAttributes;
+      const rotation = rawRotation?.angle || 0;
+      if (!(width && height)) return element;
+      // bottomLeft point
+      const origin = new Point({ x, y });
 
-        const rotateAroundOrigin = (p: Point) => new Point(rotate(normalize(p), degreesToRadians(rotation))).plus(origin)
-        const normalize = (p: Point) => p.plus({x: -origin.x, y: -origin.y })
+      const rotateAroundOrigin = (p: Point) =>
+        new Point(rotate(normalize(p), degreesToRadians(rotation))).plus(
+          origin,
+        );
+      const normalize = (p: Point) => p.plus({ x: -origin.x, y: -origin.y });
 
-        const topLeft = rotateAroundOrigin(origin.plus({x: 0, y: -height}))
-        const topRight = rotateAroundOrigin(origin.plus({x: width, y: -height}))
-        const bottomRight = rotateAroundOrigin(origin.plus({x: width, y: 0}))
-        
-        const pointToString = (p: Point) => [p.x, p.y].join()
+      const topLeft = rotateAroundOrigin(origin.plus({ x: 0, y: -height }));
+      const topRight = rotateAroundOrigin(
+        origin.plus({ x: width, y: -height }),
+      );
+      const bottomRight = rotateAroundOrigin(origin.plus({ x: width, y: 0 }));
 
-        const d = `M${pointToString(topLeft)} L${pointToString(topRight)} L${pointToString(bottomRight)} L${pointToString(origin)}  L${pointToString(topLeft)}`
-        const el = parseHtml(`<path d="${d}"/>`).firstChild
+      const pointToString = (p: Point) => [p.x, p.y].join();
 
-        const newAttributes = {
-          ...element.svgAttributes,
-          d,
-          x: 0,
-          y: 0,
-        }
-        delete newAttributes.width
-        delete newAttributes.height
-        delete newAttributes.rotate
-        delete newAttributes.rotation
-        Object.assign(el, {
-          svgAttributes: newAttributes
-        })
-        return cropSvgElement(svgRect, el as unknown as SVGElement)
-      }
+      const d = `M${pointToString(topLeft)} L${pointToString(
+        topRight,
+      )} L${pointToString(bottomRight)} L${pointToString(
+        origin,
+      )}  L${pointToString(topLeft)}`;
+      const el = parseHtml(`<path d="${d}"/>`).firstChild;
+
+      const newAttributes = {
+        ...element.svgAttributes,
+        d,
+        x: 0,
+        y: 0,
+      };
+      // @ts-ignore
+      delete newAttributes.width;
+      // @ts-ignore
+      delete newAttributes.height;
+      delete newAttributes.rotate;
+      delete newAttributes.rotation;
+      Object.assign(el, {
+        svgAttributes: newAttributes,
+      });
+      return cropSvgElement(svgRect, el as unknown as SVGElement);
+    }
     // TODO: implement the crop for the following elements
     case 'image':
     default:
-      return element
+      return element;
   }
-  return element
-}
+  return element;
+};
 // TODO: Improve type system to require the correct props for each tagName.
 /** methods to draw SVGElements onto a PDFPage */
 const runnersToPage = (
@@ -641,7 +714,6 @@ const runnersToPage = (
       opacity: element.svgAttributes.fillOpacity,
       rotate: element.svgAttributes.rotate,
     });
-
   },
   async line(element) {
     page.drawLine({
@@ -787,13 +859,12 @@ const transform = (
     case 'matrix': {
       const [scaleX, skewY, skewX, scaleY, translateX, translateY] = args;
       return {
-        point: (x: number, y: number) => {
-          return converter.point(
-            x * scaleX + y * skewX + translateX, 
-            x * skewY + y * scaleY + translateY
-          );
-        },
-        size: (w: number, h: number) => converter.size(w * scaleX, h * scaleY), 
+        point: (x: number, y: number) =>
+          converter.point(
+            x * scaleX + y * skewX + translateX,
+            x * skewY + y * scaleY + translateY,
+          ),
+        size: (w: number, h: number) => converter.size(w * scaleX, h * scaleY),
       };
     }
     case 'skewX': {
@@ -930,7 +1001,10 @@ const parseAttributes = (
     width: width || inherited.width,
     height: height || inherited.height,
     rotation: inherited.rotation,
-    viewBox: element.tagName === 'svg' && element.attributes.viewBox ? parseViewBox(element.attributes.viewBox)! : inherited.viewBox
+    viewBox:
+      element.tagName === 'svg' && element.attributes.viewBox
+        ? parseViewBox(element.attributes.viewBox)!
+        : inherited.viewBox,
   };
 
   const svgAttributes: SVGAttributes = {
@@ -1044,8 +1118,8 @@ const parseAttributes = (
   if (attributes.d) {
     const { x: xOrigin, y: yOrigin } = newConverter.point(0, 0);
     // these are the x and y coordinates relative to the svg space, therefore these values weren't parsed by any converter. Each instruction will left the cursor on new position
-    let currentX = 0
-    let currentY = 0
+    let currentX = 0;
+    let currentY = 0;
     svgAttributes.d = attributes.d?.replace(
       /(l|m|s|t|q|c|z|a|v|h)([0-9,e\s.-]*)/gi,
       (command) => {
@@ -1059,7 +1133,7 @@ const parseAttributes = (
           ?.filter((m) => m !== ''); // .map(v => parseFloat(v))
         if (!params) return letter || '';
         switch (letter?.toLocaleLowerCase()) {
-          case 'm': 
+          case 'm':
           case 'l': {
             const groupedParams = groupBy<string>(params, 2);
             return groupedParams
@@ -1068,31 +1142,33 @@ const parseAttributes = (
                 const xReal = parseFloatValue(x, inherited.width) || 0;
                 const yReal = parseFloatValue(y, innerHeight) || 0;
                 if (letter === letter.toLowerCase()) {
-                  currentX += xReal
-                  currentY += yReal
+                  currentX += xReal;
+                  currentY += yReal;
                 } else {
-                  currentX = xReal
-                  currentY = yReal
+                  currentX = xReal;
+                  currentY = yReal;
                 }
-                const point = newConverter.point(currentX, currentY)
-                return ((pairIndex > 0 || letter.toUpperCase() === 'L') ? 'L': 'M') + 
-                [point.x - xOrigin, point.y - yOrigin].join(',');
+                const point = newConverter.point(currentX, currentY);
+                return (
+                  (pairIndex > 0 || letter.toUpperCase() === 'L' ? 'L' : 'M') +
+                  [point.x - xOrigin, point.y - yOrigin].join(',')
+                );
               })
               .join(' ');
-            }
-            case 'v': {
+          }
+          case 'v': {
             return params
-            .map((value) => {
+              .map((value) => {
                 const coord = parseFloatValue(value) || 0;
                 if (letter === letter.toLowerCase()) {
-                  currentY += coord
+                  currentY += coord;
                 } else {
-                  currentY = coord
+                  currentY = coord;
                 }
-                const point = newConverter.point(currentX, currentY)
+                const point = newConverter.point(currentX, currentY);
                 // we can't use 'v' as the final command because rotations might require a different command after the path parsing
                 // for instance, a 90 degree rotation would turn a 'v' into an 'h' command
-                return `L${point.x - xOrigin} ${point.y - yOrigin}`
+                return `L${point.x - xOrigin} ${point.y - yOrigin}`;
               })
               .join(' ');
           }
@@ -1101,14 +1177,14 @@ const parseAttributes = (
               .map((value) => {
                 const coord = parseFloatValue(value) || 0;
                 if (letter === letter.toLowerCase()) {
-                  currentX += coord
+                  currentX += coord;
                 } else {
-                  currentX = coord
+                  currentX = coord;
                 }
-                const point = newConverter.point(currentX, currentY)
+                const point = newConverter.point(currentX, currentY);
                 // we can't use 'h' as the final command because rotations might require a different command after the path parsing
                 // for instance, a 90 degree rotation would turn a 'h' into an 'v' command
-                return `L${point.x - xOrigin} ${point.y - yOrigin}`
+                return `L${point.x - xOrigin} ${point.y - yOrigin}`;
               })
               .join(' ');
           }
@@ -1133,15 +1209,15 @@ const parseAttributes = (
                   realRx,
                   realRy,
                 );
-                let point
+                let point;
                 if (letter === letter.toLowerCase()) {
-                  currentX += realX
-                  currentY += realY
+                  currentX += realX;
+                  currentY += realY;
                 } else {
-                  currentX = realX
-                  currentY = realY
+                  currentX = realX;
+                  currentY = realY;
                 }
-                point = newConverter.point(currentX, currentY)
+                point = newConverter.point(currentX, currentY);
                 return [
                   letter.toUpperCase(),
                   newRx,
@@ -1167,29 +1243,42 @@ const parseAttributes = (
                 parseFloatValue(yString, inherited.height) || 0,
               ])
               .map(([c1X, c1Y, c2X, c2Y, xReal, yReal]) => {
-                let controlPoint1X
-                let controlPoint1Y
-                let controlPoint2X
-                let controlPoint2Y
+                let controlPoint1X;
+                let controlPoint1Y;
+                let controlPoint2X;
+                let controlPoint2Y;
                 if (letter === letter!.toLowerCase()) {
-                  controlPoint1X = currentX + c1X
-                  controlPoint1Y = currentY + c1Y
-                  controlPoint2X = currentX + c2X
-                  controlPoint2Y = currentY + c2Y
-                  currentX += xReal
-                  currentY += yReal
+                  controlPoint1X = currentX + c1X;
+                  controlPoint1Y = currentY + c1Y;
+                  controlPoint2X = currentX + c2X;
+                  controlPoint2Y = currentY + c2Y;
+                  currentX += xReal;
+                  currentY += yReal;
                 } else {
-                  controlPoint1X = c1X
-                  controlPoint1Y = c1Y
-                  controlPoint2X = c2X
-                  controlPoint2Y = c2Y
-                  currentX = xReal
-                  currentY = yReal
+                  controlPoint1X = c1X;
+                  controlPoint1Y = c1Y;
+                  controlPoint2X = c2X;
+                  controlPoint2Y = c2Y;
+                  currentX = xReal;
+                  currentY = yReal;
                 }
-                const controlPoint1 = newConverter.point(controlPoint1X, controlPoint1Y)
-                const controlPoint2 = newConverter.point(controlPoint2X, controlPoint2Y)
-                const point = newConverter.point(currentX, currentY)
-                return [controlPoint1.x - xOrigin, controlPoint1.y - yOrigin, controlPoint2.x - xOrigin, controlPoint2.y - yOrigin, point.x - xOrigin, point.y - yOrigin].join(',')
+                const controlPoint1 = newConverter.point(
+                  controlPoint1X,
+                  controlPoint1Y,
+                );
+                const controlPoint2 = newConverter.point(
+                  controlPoint2X,
+                  controlPoint2Y,
+                );
+                const point = newConverter.point(currentX, currentY);
+                return [
+                  controlPoint1.x - xOrigin,
+                  controlPoint1.y - yOrigin,
+                  controlPoint2.x - xOrigin,
+                  controlPoint2.y - yOrigin,
+                  point.x - xOrigin,
+                  point.y - yOrigin,
+                ].join(',');
               })
               .join(' ');
             return letter?.toUpperCase() + '' + result;
@@ -1205,22 +1294,30 @@ const parseAttributes = (
                 parseFloatValue(yString, inherited.height) || 0,
               ])
               .map(([c2X, c2Y, xReal, yReal]) => {
-                let controlPoint2X
-                let controlPoint2Y
+                let controlPoint2X;
+                let controlPoint2Y;
                 if (letter === letter!.toLowerCase()) {
-                  controlPoint2X = currentX + c2X
-                  controlPoint2Y = currentY + c2Y
-                  currentX += xReal
-                  currentY += yReal
+                  controlPoint2X = currentX + c2X;
+                  controlPoint2Y = currentY + c2Y;
+                  currentX += xReal;
+                  currentY += yReal;
                 } else {
-                  controlPoint2X = c2X
-                  controlPoint2Y = c2Y
-                  currentX = xReal
-                  currentY = yReal
+                  controlPoint2X = c2X;
+                  controlPoint2Y = c2Y;
+                  currentX = xReal;
+                  currentY = yReal;
                 }
-                const controlPoint2 = newConverter.point(controlPoint2X, controlPoint2Y)
-                const point = newConverter.point(currentX, currentY)
-                return [controlPoint2.x - xOrigin, controlPoint2.y - yOrigin, point.x - xOrigin, point.y - yOrigin].join(',')
+                const controlPoint2 = newConverter.point(
+                  controlPoint2X,
+                  controlPoint2Y,
+                );
+                const point = newConverter.point(currentX, currentY);
+                return [
+                  controlPoint2.x - xOrigin,
+                  controlPoint2.y - yOrigin,
+                  point.x - xOrigin,
+                  point.y - yOrigin,
+                ].join(',');
               })
               .join(' ');
             return letter?.toUpperCase() + '' + result;
@@ -1234,14 +1331,14 @@ const parseAttributes = (
               ])
               .map(([xReal, yReal]) => {
                 if (letter === letter!.toLowerCase()) {
-                  currentX += xReal
-                  currentY += yReal
+                  currentX += xReal;
+                  currentY += yReal;
                 } else {
-                  currentX = xReal
-                  currentY = yReal
+                  currentX = xReal;
+                  currentY = yReal;
                 }
-                const point = newConverter.point(currentX, currentY)
-                return [point.x - xOrigin, point.y - yOrigin].join(',')
+                const point = newConverter.point(currentX, currentY);
+                return [point.x - xOrigin, point.y - yOrigin].join(',');
               })
               .join(' ');
             return letter?.toUpperCase() + '' + result;
@@ -1404,8 +1501,7 @@ const parseHTMLNode = (
       inherited,
       converter,
     );
-  } 
-  else if (node.tagName === 'svg') {
+  } else if (node.tagName === 'svg') {
     return parseSvgNode(
       node as HTMLElement & { tagName: 'svg' },
       inherited,
@@ -1428,27 +1524,34 @@ const parseSvgNode = (
   converter: SVGSizeConverter,
 ): SVGElement[] => {
   // if the width/height aren't set, the svg will have the same dimension as the current drawing space
-  node.attributes.width ?? node.setAttribute('width', inherited.viewBox.width + '')
-  node.attributes.height ?? node.setAttribute('height', inherited.viewBox.height + '')
+  node.attributes.width ??
+    node.setAttribute('width', inherited.viewBox.width + '');
+  node.attributes.height ??
+    node.setAttribute('height', inherited.viewBox.height + '');
   const attributes = parseAttributes(node, inherited, converter);
   const result: SVGElement[] = [];
-  const viewBox = node.attributes.viewBox 
+  const viewBox = node.attributes.viewBox
     ? parseViewBox(node.attributes.viewBox)!
-    : node.attributes.width && node.attributes.height 
-      ? parseViewBox(`0 0 ${node.attributes.width} ${node.attributes.height}`)!
-      : inherited.viewBox
+    : node.attributes.width && node.attributes.height
+    ? parseViewBox(`0 0 ${node.attributes.width} ${node.attributes.height}`)!
+    : inherited.viewBox;
   const svgRect = new Rectangle(
     new Point(attributes.converter.point(viewBox.x, viewBox.y)),
-    new Point(attributes.converter.point(viewBox.x + viewBox.width, viewBox.y + viewBox.height)),
+    new Point(
+      attributes.converter.point(
+        viewBox.x + viewBox.width,
+        viewBox.y + viewBox.height,
+      ),
+    ),
   );
   node.childNodes.forEach((child) => {
-    const parsedNodes = parseHTMLNode(child, { ...attributes.inherited, viewBox }, attributes.converter).map(el => cropSvgElement(
-      svgRect,
-      el
-    ))
-    result.push(...parsedNodes)
-  }
-  );
+    const parsedNodes = parseHTMLNode(
+      child,
+      { ...attributes.inherited, viewBox },
+      attributes.converter,
+    ).map((el) => cropSvgElement(svgRect, el));
+    result.push(...parsedNodes);
+  });
   return result;
 };
 
@@ -1461,10 +1564,9 @@ const parseGroupNode = (
   const result: SVGElement[] = [];
   node.childNodes.forEach((child) => {
     result.push(
-      ...parseHTMLNode(child, attributes.inherited, attributes.converter)
-    )
-  }
-  );
+      ...parseHTMLNode(child, attributes.inherited, attributes.converter),
+    );
+  });
   return result;
 };
 
@@ -1504,7 +1606,14 @@ const parse = (
   if (y !== undefined) htmlElement.setAttribute('y', size.height - y + '');
   if (fontSize) htmlElement.setAttribute('font-size', fontSize + '');
   // TODO: what should be the default viewBox?
-  return parseHTMLNode(htmlElement, { ...size, viewBox: parseViewBox(htmlElement.attributes.viewBox || '0 0 1 1')! }, converter);
+  return parseHTMLNode(
+    htmlElement,
+    {
+      ...size,
+      viewBox: parseViewBox(htmlElement.attributes.viewBox || '0 0 1 1')!,
+    },
+    converter,
+  );
 };
 
 export const drawSvg = async (
@@ -1536,9 +1645,16 @@ export const drawSvg = async (
   }
 
   if (options.width || options.height) {
-    if (width !== undefined) style.width = width + (isNaN(width) ? '' : 'px')
-    if (height !== undefined) style.height = height + (isNaN(height) ? '' : 'px')
-    firstChild.setAttribute('style', Object.entries(style).map(([key, val]) => `${key}:${val};`).join(''))
+    if (width !== undefined) style.width = width + (isNaN(width) ? '' : 'px');
+    if (height !== undefined) {
+      style.height = height + (isNaN(height) ? '' : 'px');
+    }
+    firstChild.setAttribute(
+      'style',
+      Object.entries(style)
+        .map(([key, val]) => `${key}:${val};`)
+        .join(''),
+    );
   }
 
   // The y axis of the page is reverted
@@ -1551,7 +1667,7 @@ export const drawSvg = async (
   const elements = parse(firstChild.outerHTML, options, size, defaultConverter);
 
   await elements.reduce(async (prev, elt) => {
-    await prev
-    return runners[elt.tagName]?.(elt)
+    await prev;
+    return runners[elt.tagName]?.(elt);
   }, Promise.resolve());
 };

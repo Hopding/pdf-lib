@@ -135,7 +135,7 @@ export default class PDFDocument {
       throwOnInvalidObject = false,
       updateMetadata = true,
       capNumbers = false,
-      password
+      password,
     } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
@@ -151,16 +151,20 @@ export default class PDFDocument {
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
-    if(!!context.hasEncryption()) {
+    if (!!context.hasEncryption()) {
       // Decrypt
-      const fileIds = context.lookup(context.trailerInfo.ID, PDFArray)
-      const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict)
+      const fileIds = context.lookup(context.trailerInfo.ID, PDFArray);
+      const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
       const decryptedContext = await PDFParser.forBytesWithOptions(
         bytes,
         parseSpeed,
         throwOnInvalidObject,
         capNumbers,
-        new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes(), password)
+        new CipherTransformFactory(
+          encryptDict,
+          (fileIds.get(0) as PDFHexString).asBytes(),
+          password,
+        ),
       ).parseDocument();
       return new PDFDocument(decryptedContext, true, updateMetadata);
     } else {

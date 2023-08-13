@@ -4,10 +4,7 @@ import PDFString from '../objects/PDFString';
 import PDFArray from '../objects/PDFArray';
 import PDFName from '../objects/PDFName';
 import { AcroChoiceFlags } from './flags';
-import {
-  InvalidAcroFieldValueError,
-  MultiSelectValueError,
-} from '../errors';
+import { InvalidAcroFieldValueError, MultiSelectValueError } from '../errors';
 
 class PDFAcroChoice extends PDFAcroTerminal {
   setValues(values: (PDFString | PDFHexString)[]) {

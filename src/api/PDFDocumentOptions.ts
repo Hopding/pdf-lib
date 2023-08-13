@@ -27,7 +27,7 @@ export interface LoadOptions {
   throwOnInvalidObject?: boolean;
   updateMetadata?: boolean;
   capNumbers?: boolean;
-  password?: string
+  password?: string;
 }
 
 export interface CreateOptions {

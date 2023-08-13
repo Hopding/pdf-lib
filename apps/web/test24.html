@@ -42,14 +42,8 @@
     };
 
     async function test() {
-      const {
-        PDFDocument,
-        PDFPage,
-        radians,
-        StandardFonts,
-        rgb,
-        degrees,
-      } = PDFLib;
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
 
       const pdfDoc = await PDFDocument.create();
       const firstPage = pdfDoc.addPage([1000, 1000]);
@@ -113,7 +107,7 @@
     </svg>
 
 `;
-    const circles = `<svg width="100" height="100" viewBox="0 0 100 100">
+      const circles = `<svg width="100" height="100" viewBox="0 0 100 100">
       <rect width="100" height="100" x="0" y="0" fill="black"/>
       <circle cx="85" cy="5" r="30" fill="blue"/>
       <circle cx="85" cy="50" r="25" fill="green"/>
@@ -122,29 +116,29 @@
       <circle cx="15" cy="55" r="20" fill="yellow"/>
       <circle cx="15" cy="5" r="30" fill="#e1e1e1"/>
       <circle cx="15" cy="85" r="30" fill="#e1e1e1"/>
-    </svg>`
+    </svg>`;
 
-    const ellipses = `<svg width="100" height="100" viewBox="0 0 100 100">
+      const ellipses = `<svg width="100" height="100" viewBox="0 0 100 100">
       <rect width="100" height="100" fill="black" x="0" y="0"/>
       <ellipse rx="20" ry="10" cx="70" cy="5" fill="red"/>
       <ellipse rx="20" ry="10" cx="90" cy="35" fill="red"/>
       <ellipse rx="10" ry="20" cx="50" cy="50" fill="red"/>
       <ellipse rx="10" ry="20" cx="80" cy="90" fill="red"/>
       <ellipse rx="10" ry="80" cx="15" cy="75" fill="red"/>
-    </svg>`
+    </svg>`;
       // M 100,700 L 193.9,700A 70,70 0 0,0 200, 693.3 L 200,606.6A 70,70 0 0,0 193.9, 600 L 100,600A 70,70 0 0,0 100, 700
-      
+
       const drawLines = (page) => {
         Array(10)
-        .fill(1)
-        .map((v, i) => i)
-        .forEach((v) => {
-          page.drawText('----' + v, {
-            x: 5,
-            y: v * 100,
-            size: 20,
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText('----' + v, {
+              x: 5,
+              y: v * 100,
+              size: 20,
+            });
           });
-        });
         Array(100)
           .fill(1)
           .map((v, i) => i)
@@ -155,23 +149,27 @@
               size: 20,
             });
           });
-      }
+      };
       const drawGrid = (page) => {
-        Array(parseInt(page.getHeight() / 10)).fill(1).map((v, i) => {
-          page.drawLine({
-            start: {x: 0 , y: i * 10},
-            end: { x: page.getWidth(), y: i * 10}
+        Array(parseInt(page.getHeight() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: 0, y: i * 10 },
+              end: { x: page.getWidth(), y: i * 10 },
+            });
           });
-        })
-        Array(parseInt(page.getWidth() / 10)).fill(1).map((v, i) => {
-          page.drawLine({
-            start: {x: i * 10, y: 0},
-            end: { x: i * 10, y: page.getHeight()}
+        Array(parseInt(page.getWidth() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: i * 10, y: 0 },
+              end: { x: i * 10, y: page.getHeight() },
+            });
           });
-        })
-      }
+      };
       // drawGrid(firstPage)
-      drawLines(firstPage)
+      drawLines(firstPage);
 
       firstPage.drawSvg(svg, {
         height: 719,
@@ -179,7 +177,7 @@
         // height: 100,
         // width: 100,
         x: 100,
-        y: 800
+        y: 800,
       });
 
       const pdfBytes = await pdfDoc.save();

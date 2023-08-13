@@ -47,10 +47,15 @@ class PDFObjectParser extends BaseParser {
   protected readonly context: PDFContext;
   private readonly cryptoFactory?: CipherTransformFactory;
 
-  constructor(byteStream: ByteStream, context: PDFContext, capNumbers = false, cryptoFactory?: CipherTransformFactory) {
+  constructor(
+    byteStream: ByteStream,
+    context: PDFContext,
+    capNumbers = false,
+    cryptoFactory?: CipherTransformFactory,
+  ) {
     super(byteStream, capNumbers);
     this.context = context;
-    this.cryptoFactory = cryptoFactory
+    this.cryptoFactory = cryptoFactory;
   }
 
   // TODO: Is it possible to reduce duplicate parsing for ref lookaheads?
@@ -107,9 +112,15 @@ class PDFObjectParser extends BaseParser {
     this.bytes.assertNext(CharCodes.GreaterThan);
 
     if (this.cryptoFactory && ref) {
-      const transformer = this.cryptoFactory.createCipherTransform(ref.objectNumber, ref.generationNumber);
+      const transformer = this.cryptoFactory.createCipherTransform(
+        ref.objectNumber,
+        ref.generationNumber,
+      );
       const arr = transformer.decryptBytes(PDFHexString.of(value).asBytes());
-      value = arr.reduce((str: string, byte: number) => str + byte.toString(16).padStart(2, '0'), '');
+      value = arr.reduce(
+        (str: string, byte: number) => str + byte.toString(16).padStart(2, '0'),
+        '',
+      );
     }
 
     return PDFHexString.of(value);
@@ -139,10 +150,13 @@ class PDFObjectParser extends BaseParser {
 
       // Once (if) the unescaped parenthesis balance out, return their contents
       if (nestingLvl === 0) {
-        let actualValue = value.substring(1, value.length - 1)
+        let actualValue = value.substring(1, value.length - 1);
 
         if (this.cryptoFactory && ref) {
-          const transformer = this.cryptoFactory.createCipherTransform(ref.objectNumber, ref.generationNumber);
+          const transformer = this.cryptoFactory.createCipherTransform(
+            ref.objectNumber,
+            ref.generationNumber,
+          );
           actualValue = transformer.decryptString(actualValue);
         }
         // Remove the outer parens so they aren't part of the contents
@@ -254,7 +268,10 @@ class PDFObjectParser extends BaseParser {
     let contents = this.bytes.slice(start, end);
 
     if (this.cryptoFactory && ref) {
-      const transform = this.cryptoFactory.createCipherTransform(ref.objectNumber, ref.generationNumber);
+      const transform = this.cryptoFactory.createCipherTransform(
+        ref.objectNumber,
+        ref.generationNumber,
+      );
       contents = transform.decryptBytes(contents);
     }
 

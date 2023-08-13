@@ -7,6 +7,7 @@
     "checkJs": false,
     "declaration": true,
     "declarationMap": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./build",
     "rootDir": "./src",
@@ -35,5 +36,17 @@
     "preserveSymlinks": true,
     "moduleResolution": "node",
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": [
+    ".circleci",
+    ".github",
+    ".vscode",
+    "apps",
+    "assets",
+    "cjs",
+    "docs",
+    "node_modules",
+    "scratchpad",
+    "tests"
+  ]
 }

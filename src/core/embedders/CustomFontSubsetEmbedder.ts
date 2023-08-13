@@ -1,4 +1,10 @@
-import { Font, Fontkit, Glyph, Subset, TypeFeatures } from '../../types/fontkit';
+import {
+  Font,
+  Fontkit,
+  Glyph,
+  Subset,
+  TypeFeatures,
+} from '../../types/fontkit';
 
 import CustomFontEmbedder from './CustomFontEmbedder';
 import PDFHexString from '../objects/PDFHexString';

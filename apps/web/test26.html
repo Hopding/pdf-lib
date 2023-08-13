@@ -42,14 +42,8 @@
     };
 
     async function test() {
-      const {
-        PDFDocument,
-        PDFPage,
-        radians,
-        StandardFonts,
-        rgb,
-        degrees,
-      } = PDFLib;
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
 
       const pdfDoc = await PDFDocument.create();
       const firstPage = pdfDoc.addPage([1000, 1000]);
@@ -110,15 +104,15 @@
 
       const drawLines = (page) => {
         Array(10)
-        .fill(1)
-        .map((v, i) => i)
-        .forEach((v) => {
-          page.drawText('----' + v, {
-            x: 5,
-            y: v * 100,
-            size: 20,
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText('----' + v, {
+              x: 5,
+              y: v * 100,
+              size: 20,
+            });
           });
-        });
         Array(100)
           .fill(1)
           .map((v, i) => i)
@@ -129,29 +123,33 @@
               size: 20,
             });
           });
-      }
+      };
       const drawGrid = (page) => {
-        Array(parseInt(page.getHeight() / 10)).fill(1).map((v, i) => {
-          page.drawLine({
-            start: {x: 0 , y: i * 10},
-            end: { x: page.getWidth(), y: i * 10}
+        Array(parseInt(page.getHeight() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: 0, y: i * 10 },
+              end: { x: page.getWidth(), y: i * 10 },
+            });
           });
-        })
-        Array(parseInt(page.getWidth() / 10)).fill(1).map((v, i) => {
-          page.drawLine({
-            start: {x: i * 10, y: 0},
-            end: { x: i * 10, y: page.getHeight()}
+        Array(parseInt(page.getWidth() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: i * 10, y: 0 },
+              end: { x: i * 10, y: page.getHeight() },
+            });
           });
-        })
-      }
+      };
       // drawGrid(firstPage)
-      drawLines(firstPage)
+      drawLines(firstPage);
 
       firstPage.drawSvg(svg, {
         height: 240.75,
         width: 249.75,
         x: 100,
-        y: 700
+        y: 700,
       });
 
       const pdfBytes = await pdfDoc.save();

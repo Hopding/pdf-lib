@@ -5,10 +5,7 @@ import PDFName from '../objects/PDFName';
 import PDFRef from '../objects/PDFRef';
 import PDFAcroField from './PDFAcroField';
 import PDFAcroNonTerminal from './PDFAcroNonTerminal';
-import {
-  createPDFAcroField,
-  createPDFAcroFields,
-} from './utils';
+import { createPDFAcroField, createPDFAcroFields } from './utils';
 
 class PDFAcroForm {
   readonly dict: PDFDict;

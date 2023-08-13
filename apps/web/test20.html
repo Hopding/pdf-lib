@@ -41,14 +41,8 @@
     };
 
     async function test() {
-      const {
-        PDFDocument,
-        PDFPage,
-        radians,
-        StandardFonts,
-        rgb,
-        degrees,
-      } = PDFLib;
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
 
       const pdfDoc = await PDFDocument.create();
       const firstPage = pdfDoc.addPage([1000, 1000]);

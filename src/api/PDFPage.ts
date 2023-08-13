@@ -1562,7 +1562,10 @@ export default class PDFPage {
    * @param svg The SVG to be drawn.
    * @param options The options to be used when drawing the SVG.
    */
-  async drawSvg(svg: string, options: PDFPageDrawSVGElementOptions = {}): Promise<void> {
+  async drawSvg(
+    svg: string,
+    options: PDFPageDrawSVGElementOptions = {},
+  ): Promise<void> {
     assertIs(svg, 'svg', ['string']);
     assertOrUndefined(options.x, 'options.x', ['number']);
     assertOrUndefined(options.y, 'options.y', ['number']);

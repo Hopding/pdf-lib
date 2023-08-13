@@ -45,7 +45,7 @@ const byAscendingObjectNumber = (
 ) => a.objectNumber - b.objectNumber;
 
 class PDFContext {
-  isDecrypted = false
+  isDecrypted = false;
   static create = () => new PDFContext();
 
   largestObjectNumber: number;
@@ -73,7 +73,7 @@ class PDFContext {
   }
 
   hasEncryption(): boolean {
-    return !!this.lookup(this.trailerInfo.Encrypt)
+    return !!this.lookup(this.trailerInfo.Encrypt);
   }
 
   assign(ref: PDFRef, object: PDFObject): void {
