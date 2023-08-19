@@ -68,6 +68,7 @@
   - [Set Viewer Preferences](#set-viewer-preferences)
   - [Read Viewer Preferences](#read-viewer-preferences)
   - [Draw SVG Paths](#draw-svg-paths)
+  - [Set Print Profile](#set-print-profile)
 - [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
@@ -108,6 +109,8 @@
 - Set viewer preferences
 - Read viewer preferences
 - Add attachments
+- Set print profile
+- Read print profile
 
 ## Motivation
 
@@ -1002,6 +1005,43 @@ const pdfBytes = await pdfDoc.save()
 //   • Written to a file in Node
 //   • Downloaded from the browser
 //   • Rendered in an <iframe>
+```
+
+### Set Print Profile
+
+*Icc profiles can find in [adobe](https://www.adobe.com/support/downloads/iccprofiles/iccprofiles_win.html) and [color.org](https://www.color.org/registry/index.xalter)*
+
+```js
+import { PDFDocument, rgb } from 'pdf-lib'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// get buffer from icc file
+const iccBuffer = fs.readFileSync('path/to/profile.icc');
+
+// example for PDF/X-4
+pdfDoc.setPrintProfile({
+  identifier: 'Coated_FOGRA39',
+  info: 'Coated FOGRA39 (ISO 12647-2:2004)',
+  subType: 'GTS_PDFX',
+  iccBuffer,
+});
+
+// example for PDF/A
+pdfDoc.setPrintProfile({
+  identifier: 'sRGB',
+  subType: 'GTS_PDFA1',
+  iccBuffer,
+});
+
+// save pdf
+await pdfDoc.save()
+
+// you can also get print profile from document
+const printProfile = pdfDoc.getPrintProfile();
+
+console.log(printProfile)
 ```
 
 ## Deno Usage
