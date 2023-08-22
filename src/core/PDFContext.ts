@@ -19,6 +19,8 @@ import Ops from 'src/core/operators/PDFOperatorNames';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
 import { assertSecurity, typedArrayFor, Uint8ArrToHex } from 'src/utils';
 import PDFSecurity from './security/PDFSecurity';
+import { typedArrayFor } from 'src/utils';
+import { SimpleRNG } from 'src/utils/rng';
 
 type LookupKey = PDFRef | PDFObject | undefined;
 
@@ -55,6 +57,7 @@ class PDFContext {
     Info?: PDFObject;
     ID?: PDFObject;
   };
+  rng: SimpleRNG;
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
 
@@ -68,6 +71,7 @@ class PDFContext {
     this.trailerInfo = {};
 
     this.indirectObjects = new Map();
+    this.rng = SimpleRNG.withSeed(1);
   }
 
   getSecurity(): PDFSecurity | null {
@@ -300,6 +304,10 @@ class PDFContext {
     const stream = PDFContentStream.of(dict, [op]);
     this.popGraphicsStateContentStreamRef = this.register(stream);
     return this.popGraphicsStateContentStreamRef;
+  }
+
+  addRandomSuffix(prefix: string, suffixLength = 4): string {
+    return `${prefix}-${Math.floor(this.rng.nextInt() * 10 ** suffixLength)}`;
   }
 }
 

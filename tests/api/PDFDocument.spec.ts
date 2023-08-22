@@ -16,6 +16,9 @@ import {
   ViewerPreferences,
 } from 'src/index';
 
+const examplePngImage =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TxaoVBzuIdMhQnSyIijhKFYtgobQVWnUwufQLmjQkKS6OgmvBwY/FqoOLs64OroIg+AHi5uak6CIl/i8ptIjx4Lgf7+497t4BQqPCVLNrAlA1y0jFY2I2tyr2vKIfAgLoRVhipp5IL2bgOb7u4ePrXZRneZ/7cwwoeZMBPpF4jumGRbxBPLNp6Zz3iUOsJCnE58TjBl2Q+JHrsstvnIsOCzwzZGRS88QhYrHYwXIHs5KhEk8TRxRVo3wh67LCeYuzWqmx1j35C4N5bSXNdZphxLGEBJIQIaOGMiqwEKVVI8VEivZjHv4Rx58kl0yuMhg5FlCFCsnxg//B727NwtSkmxSMAd0vtv0xCvTsAs26bX8f23bzBPA/A1da219tALOfpNfbWuQIGNwGLq7bmrwHXO4Aw0+6ZEiO5KcpFArA+xl9Uw4YugX61tzeWvs4fQAy1NXyDXBwCIwVKXvd492Bzt7+PdPq7wcdn3KFLu4iBAAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAlFJREFUeNrt289r02AYB/Dvk6Sl4EDKpllTlFKsnUdBHXgUBEHwqHj2IJ72B0zwKHhxJ08i/gDxX/AiRfSkBxELXTcVxTa2s2xTsHNN8ngQbQL70RZqG/Z9b29JnvflkydP37whghG3ZaegoxzfwB5vBCAAAQhAAAIQgAAEIAABCEAAAhCAAAQgwB5rstWPtnP0LqBX/vZNyLF6vVrpN/hucewhb4g+B2AyAwiwY7NGOXijviS9vBeYh6CEP4edBLDADCAAAQhAAAIQgAAEIAABCDAUAFF/GIN1DM+PBYCo/ohMXDQ1WPjoeUZH1mMBEEh0oqLGvsHCy0S4NzWVWotJBogbvZB+brDwQT7UWSmXy5sxyQB9HQEROdVv4HQ+vx+QmS4iXsWmCK7Usu8AhOqAXMzlcn3VgWTbugQgEYrxMkZ/gyUPgnuhe2C6/Stxvdeg2ezMJERvhOuoZ+JBrNYBRuDdBtDuXkDM25nCHLbZSv9X6A4VHU+DpwCcbvbjcetLtTaOANtuirrux08HM0euisjDEMKC7RQuq+C+pVJqpzx3NZ3+eeBza9I0rWJgyHnxg2sAJrqnaHUzFcyN60Jox13hprv8aNopZBS4GcqWWVHM+lAkN0zY7ncgkYBukRoKLPpiXVj9UFkfV4Bdl8Jf60u3IMZZAG/6iLuhkDvaSZ74VqtUx3kp3NN7gUZt8RmA43a2eEY1OCfQ04AcBpAGkAKwpkBLIG8BfQE/eNJsvG/G4VlARj0BfjDBx2ECEIAABCAAAQhAAAIQgAAE+P/tN8YvpvbTDBOlAAAAAElFTkSuQmCC';
+
 const unencryptedPdfBytes = fs.readFileSync('assets/pdfs/normal.pdf');
 const oldEncryptedPdfBytes1 = fs.readFileSync('assets/pdfs/encrypted_old.pdf');
 
@@ -142,28 +145,10 @@ describe(`PDFDocument`, () => {
   });
 
   describe(`embedFont() method`, () => {
-    it(`serializes the same value on every save when using a custom font name`, async () => {
+    it(`serializes the same value on every save`, async () => {
       const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
-      const customName = 'Custom-Font-Name';
       const pdfDoc1 = await PDFDocument.create({ updateMetadata: false });
       const pdfDoc2 = await PDFDocument.create({ updateMetadata: false });
-
-      pdfDoc1.registerFontkit(fontkit);
-      pdfDoc2.registerFontkit(fontkit);
-
-      await pdfDoc1.embedFont(customFont, { customName });
-      await pdfDoc2.embedFont(customFont, { customName });
-
-      const savedDoc1 = await pdfDoc1.save();
-      const savedDoc2 = await pdfDoc2.save();
-
-      expect(savedDoc1).toEqual(savedDoc2);
-    });
-
-    it(`does not serialize the same on save when not using a custom font name`, async () => {
-      const customFont = fs.readFileSync('assets/fonts/ubuntu/Ubuntu-B.ttf');
-      const pdfDoc1 = await PDFDocument.create();
-      const pdfDoc2 = await PDFDocument.create();
 
       pdfDoc1.registerFontkit(fontkit);
       pdfDoc2.registerFontkit(fontkit);
@@ -174,7 +159,7 @@ describe(`PDFDocument`, () => {
       const savedDoc1 = await pdfDoc1.save();
       const savedDoc2 = await pdfDoc2.save();
 
-      expect(savedDoc1).not.toEqual(savedDoc2);
+      expect(savedDoc1).toEqual(savedDoc2);
     });
   });
 
@@ -450,7 +435,7 @@ describe(`PDFDocument`, () => {
     });
   });
 
-  describe(`addJavaScript method`, () => {
+  describe(`addJavaScript() method`, () => {
     it(`adds the script to the catalog`, async () => {
       const pdfDoc = await PDFDocument.create();
       pdfDoc.addJavaScript(
@@ -487,48 +472,105 @@ describe(`PDFDocument`, () => {
       expect(JSNames.lookup(2, PDFHexString).decodeText()).toEqual('second');
     });
   });
-});
 
-describe(`copy() method`, () => {
-  let pdfDoc: PDFDocument;
-  let srcDoc: PDFDocument;
-  beforeAll(async () => {
-    const parseSpeed = ParseSpeeds.Fastest;
-    srcDoc = await PDFDocument.load(unencryptedPdfBytes, { parseSpeed });
-    const title = '🥚 The Life of an Egg 🍳';
-    const author = 'Humpty Dumpty';
-    const subject = '📘 An Epic Tale of Woe 📖';
-    const keywords = ['eggs', 'wall', 'fall', 'king', 'horses', 'men', '🥚'];
-    const producer = 'PDF App 9000 🤖';
-    const creator = 'PDF App 8000 🤖';
+  describe(`embedPng() method`, () => {
+    it(`does not prevent the PDFDocument from being modified after embedding an image`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const pdfPage = pdfDoc.addPage();
 
-    // Milliseconds  will not get saved, so these dates do not have milliseconds.
-    const creationDate = new Date('1997-08-15T01:58:37Z');
-    const modificationDate = new Date('2018-12-21T07:00:11Z');
+      const noErrorFunc = async () => {
+        const embeddedImage = await pdfDoc.embedPng(examplePngImage);
+        pdfPage.drawImage(embeddedImage);
+        await embeddedImage.embed();
 
-    srcDoc.setTitle(title);
-    srcDoc.setAuthor(author);
-    srcDoc.setSubject(subject);
-    srcDoc.setKeywords(keywords);
-    srcDoc.setProducer(producer);
-    srcDoc.setCreator(creator);
-    srcDoc.setCreationDate(creationDate);
-    srcDoc.setModificationDate(modificationDate);
-    pdfDoc = await srcDoc.copy();
+        const pdfPage2 = pdfDoc.addPage();
+        pdfPage2.drawImage(embeddedImage);
+
+        pdfDoc.setTitle('Unit Test');
+      };
+
+      await expect(noErrorFunc()).resolves.not.toThrowError();
+    });
   });
-  
-  it(`Returns a pdf with the same number of pages`, async () => {
-    expect(pdfDoc.getPageCount()).toBe(srcDoc.getPageCount());
+
+  describe(`save() method`, () => {
+    it(`can called multiple times on the same PDFDocument with different changes`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const embeddedImage = await pdfDoc.embedPng(examplePngImage);
+
+      const noErrorFunc = async () => {
+        const page1 = pdfDoc.addPage();
+        page1.drawImage(embeddedImage);
+
+        const pdfBytes1 = await pdfDoc.save();
+        expect(pdfBytes1.byteLength).toBeGreaterThan(0);
+
+        const page2 = pdfDoc.addPage();
+        page2.drawImage(embeddedImage);
+
+        pdfDoc.setTitle('Unit Test');
+
+        const pdfBytes2 = await pdfDoc.save();
+        expect(pdfBytes2.byteLength).toBeGreaterThan(0);
+        expect(pdfBytes2.byteLength).not.toEqual(pdfBytes1.byteLength);
+
+        const pdfPage3 = pdfDoc.addPage();
+        pdfPage3.drawImage(embeddedImage);
+
+        pdfDoc.setTitle('Unit Test 2. change');
+
+        const pdfBytes3 = await pdfDoc.save();
+        expect(pdfBytes3.byteLength).toBeGreaterThan(0);
+        expect(pdfBytes3.byteLength).not.toEqual(pdfBytes2.byteLength);
+      };
+
+      await expect(noErrorFunc()).resolves.not.toThrowError();
+    });
   });
-  
-  it(`Can copy author, creationDate, creator, producer, subject, title, defaultWordBreaks`, async () => {
-    expect(pdfDoc.getAuthor()).toBe(srcDoc.getAuthor());
-    expect(pdfDoc.getCreationDate()).toStrictEqual(srcDoc.getCreationDate());
-    expect(pdfDoc.getCreator()).toBe(srcDoc.getCreator());
-    expect(pdfDoc.getModificationDate()).toStrictEqual(srcDoc.getModificationDate());
-    expect(pdfDoc.getProducer()).toBe(srcDoc.getProducer());
-    expect(pdfDoc.getSubject()).toBe(srcDoc.getSubject());
-    expect(pdfDoc.getTitle()).toBe(srcDoc.getTitle());
-    expect(pdfDoc.defaultWordBreaks).toEqual(srcDoc.defaultWordBreaks);
+
+  describe(`copy() method`, () => {
+    let pdfDoc: PDFDocument;
+    let srcDoc: PDFDocument;
+    beforeAll(async () => {
+      const parseSpeed = ParseSpeeds.Fastest;
+      srcDoc = await PDFDocument.load(unencryptedPdfBytes, { parseSpeed });
+      const title = '🥚 The Life of an Egg 🍳';
+      const author = 'Humpty Dumpty';
+      const subject = '📘 An Epic Tale of Woe 📖';
+      const keywords = ['eggs', 'wall', 'fall', 'king', 'horses', 'men', '🥚'];
+      const producer = 'PDF App 9000 🤖';
+      const creator = 'PDF App 8000 🤖';
+
+      // Milliseconds  will not get saved, so these dates do not have milliseconds.
+      const creationDate = new Date('1997-08-15T01:58:37Z');
+      const modificationDate = new Date('2018-12-21T07:00:11Z');
+
+      srcDoc.setTitle(title);
+      srcDoc.setAuthor(author);
+      srcDoc.setSubject(subject);
+      srcDoc.setKeywords(keywords);
+      srcDoc.setProducer(producer);
+      srcDoc.setCreator(creator);
+      srcDoc.setCreationDate(creationDate);
+      srcDoc.setModificationDate(modificationDate);
+      pdfDoc = await srcDoc.copy();
+    });
+
+    it(`Returns a pdf with the same number of pages`, async () => {
+      expect(pdfDoc.getPageCount()).toBe(srcDoc.getPageCount());
+    });
+
+    it(`Can copy author, creationDate, creator, producer, subject, title, defaultWordBreaks`, async () => {
+      expect(pdfDoc.getAuthor()).toBe(srcDoc.getAuthor());
+      expect(pdfDoc.getCreationDate()).toStrictEqual(srcDoc.getCreationDate());
+      expect(pdfDoc.getCreator()).toBe(srcDoc.getCreator());
+      expect(pdfDoc.getModificationDate()).toStrictEqual(
+        srcDoc.getModificationDate(),
+      );
+      expect(pdfDoc.getProducer()).toBe(srcDoc.getProducer());
+      expect(pdfDoc.getSubject()).toBe(srcDoc.getSubject());
+      expect(pdfDoc.getTitle()).toBe(srcDoc.getTitle());
+      expect(pdfDoc.defaultWordBreaks).toEqual(srcDoc.defaultWordBreaks);
+    });
   });
 });

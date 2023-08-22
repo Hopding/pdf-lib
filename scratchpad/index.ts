@@ -40,6 +40,7 @@ import { PDFDocument } from 'src/index';
   //   permissions: { modifying: true },
   // });
 
+
   // const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
   // fs.writeFileSync('simple0.pdf', pdfBytes);
   const pdfBytes = await pdfDoc.save({ useObjectStreams: true });

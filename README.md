@@ -493,7 +493,7 @@ const secondDonorPdfBytes = ...
 const firstDonorPdfDoc = await PDFDocument.load(firstDonorPdfBytes)
 const secondDonorPdfDoc = await PDFDocument.load(secondDonorPdfBytes)
 
-// Copy the 1st page from the first donor document, and 
+// Copy the 1st page from the first donor document, and
 // the 743rd page from the second donor document
 const [firstDonorPage] = await pdfDoc.copyPages(firstDonorPdfDoc, [0])
 const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [742])
@@ -501,7 +501,7 @@ const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [742])
 // Add the first copied page
 pdfDoc.addPage(firstDonorPage)
 
-// Insert the second copied page to index 0, so it will be the 
+// Insert the second copied page to index 0, so it will be the
 // first page in `pdfDoc`
 pdfDoc.insertPage(0, secondDonorPage)
 
@@ -606,11 +606,11 @@ const preamble = await pdfDoc.embedPage(usConstitutionPdf.getPages()[1], {
   top: 575,
 })
 
-// Get the width/height of the American flag PDF scaled down to 30% of 
+// Get the width/height of the American flag PDF scaled down to 30% of
 // its original size
 const americanFlagDims = americanFlag.scale(0.3)
 
-// Get the width/height of the preamble clipping scaled up to 225% of 
+// Get the width/height of the preamble clipping scaled up to 225% of
 // its original size
 const preambleDims = preamble.scale(2.25)
 
@@ -813,8 +813,8 @@ import { PDFDocument } from 'pdf-lib'
 const existingPdfBytes = ...
 
 // Load a PDFDocument without updating its existing metadata
-const pdfDoc = await PDFDocument.load(existingPdfBytes, { 
-  updateMetadata: false 
+const pdfDoc = await PDFDocument.load(existingPdfBytes, {
+  updateMetadata: false
 })
 
 // Print all available metadata fields
@@ -1228,7 +1228,7 @@ When working with PDFs, you will frequently come across the terms "character enc
   const pdfDoc = await PDFDocument.create()
   const courierFont = await pdfDoc.embedFont(StandardFonts.Courier)
   const page = pdfDoc.addPage()
-  page.drawText('Some boring latin text in the Courier font', { 
+  page.drawText('Some boring latin text in the Courier font', {
     font: courierFont,
   })
   ```
@@ -1248,7 +1248,7 @@ When working with PDFs, you will frequently come across the terms "character enc
   const ubuntuFont = await pdfDoc.embedFont(fontBytes)
 
   const page = pdfDoc.addPage()
-  page.drawText('Some fancy Unicode text in the ŪЬȕǹƚü font', { 
+  page.drawText('Some fancy Unicode text in the ŪЬȕǹƚü font', {
     font: ubuntuFont,
   })
   ```

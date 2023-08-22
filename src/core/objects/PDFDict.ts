@@ -159,6 +159,16 @@ class PDFDict extends PDFObject {
     return new Map(this.dict);
   }
 
+  /** Generate a random key that doesn't exist in current key set */
+  uniqueKey(tag = ''): PDFName {
+    const existingKeys = this.keys();
+    let key = PDFName.of(this.context.addRandomSuffix(tag, 10));
+    while (existingKeys.includes(key)) {
+      key = PDFName.of(this.context.addRandomSuffix(tag, 10));
+    }
+    return key;
+  }
+
   clone(context?: PDFContext): PDFDict {
     const clone = PDFDict.withContext(context || this.context);
     const entries = this.entries();

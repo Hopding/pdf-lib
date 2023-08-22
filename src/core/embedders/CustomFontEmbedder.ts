@@ -7,7 +7,6 @@ import PDFRef from 'src/core/objects/PDFRef';
 import PDFString from 'src/core/objects/PDFString';
 import PDFContext from 'src/core/PDFContext';
 import {
-  addRandomSuffix,
   byAscendingId,
   Cache,
   sortedUniq,
@@ -106,7 +105,8 @@ class CustomFontEmbedder {
   }
 
   embedIntoContext(context: PDFContext, ref?: PDFRef): Promise<PDFRef> {
-    this.baseFontName = this.customName || addRandomSuffix(this.fontName);
+    this.baseFontName =
+      this.customName || context.addRandomSuffix(this.fontName);
     return this.embedFontDict(context, ref);
   }
 

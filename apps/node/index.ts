@@ -134,6 +134,7 @@ const assets = {
     with_xfa_fields: readPdf('with_xfa_fields.pdf'),
     fancy_fields: readPdf('fancy_fields.pdf'),
     form_to_flatten: readPdf('form_to_flatten.pdf'),
+    with_annots: readPdf('with_annots.pdf'),
   },
 };
 

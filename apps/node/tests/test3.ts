@@ -34,7 +34,19 @@ export default async (assets: Assets) => {
 
   const page0 = pdfDoc.insertPage(0, [305, 250]);
   const page1 = pdfDoc.getPage(1);
-  const page2 = pdfDoc.addPage([305, 250]);
+
+  const docWithAnnots = await PDFDocument.load(assets.pdfs.with_annots);
+  const [page2] = await pdfDoc.copyPages(docWithAnnots, [0]);
+  page2.scaleContent(0.5, 0.5);
+  pdfDoc.addPage(page2);
+  const [page3] = await pdfDoc.copyPages(docWithAnnots, [0]);
+  page3.scaleAnnotations(0.5, 0.5);
+  pdfDoc.addPage(page3);
+  const [page4] = await pdfDoc.copyPages(docWithAnnots, [0]);
+  page4.scale(0.5, 0.5);
+  pdfDoc.addPage(page4);
+
+  const page5 = pdfDoc.addPage([305, 250]);
 
   const hotPink = rgb(1, 0, 1);
   const red = rgb(1, 0, 0);
@@ -73,25 +85,25 @@ export default async (assets: Assets) => {
     ySkew: degrees(15),
   });
 
-  page2.setFontSize(24);
-  page2.drawText('This is the last page!', {
+  page5.setFontSize(24);
+  page5.drawText('This is the last page!', {
     x: 30,
     y: 215,
     font: helveticaFont,
     color: hotPink,
   });
-  page2.drawLine({
+  page5.drawLine({
     start: { x: 30, y: 205 },
     end: { x: 30 + lastPageTextWidth, y: 205 },
     color: hotPink,
     thickness: 5,
   });
-  page2.drawImage(cmykImage, {
+  page5.drawImage(cmykImage, {
     ...cmykDims,
     x: 30,
     y: 30,
   });
-  page2.drawLine({
+  page5.drawLine({
     start: { x: 30, y: 240 },
     end: { x: 30 + lastPageTextWidth, y: 240 },
     color: hotPink,

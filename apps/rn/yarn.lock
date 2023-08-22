@@ -4885,7 +4885,7 @@ path-type@^3.0.0:
     pify "^3.0.0"
 
 pdf-lib@./../..:
-  version "1.16.0"
+  version "1.17.1"
   dependencies:
     "@pdf-lib/standard-fonts" "^1.0.0"
     "@pdf-lib/upng" "^1.0.1"

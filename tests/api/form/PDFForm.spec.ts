@@ -328,6 +328,43 @@ describe(`PDFForm`, () => {
     rgWidgetRefs.forEach((ref) => expect(refs2).not.toContain(ref));
   });
 
+  it(`it cleans references of removed fields and their widgets when created with pdf-lib`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+    const form = pdfDoc.getForm();
+
+    const cb = form.createCheckBox('a.new.check.box');
+    const tf = form.createTextField('a.new.text.field');
+
+    cb.addToPage(page);
+    tf.addToPage(page);
+
+    const refs1 = getRefs(pdfDoc);
+
+    const cbWidgetRefs = cb.acroField.normalizedEntries().Kids.asArray();
+    const tfWidgetRefs = cb.acroField.normalizedEntries().Kids.asArray();
+
+    expect(cbWidgetRefs.length).toBeGreaterThan(0);
+    expect(tfWidgetRefs.length).toBeGreaterThan(0);
+
+    // Assert that refs are present before their fields have been removed
+    expect(refs1.includes(cb.ref)).toBe(true);
+    expect(refs1.includes(tf.ref)).toBe(true);
+    cbWidgetRefs.forEach((ref) => expect(refs1).toContain(ref));
+    tfWidgetRefs.forEach((ref) => expect(refs1).toContain(ref));
+
+    form.removeField(cb);
+    form.removeField(tf);
+
+    const refs2 = getRefs(pdfDoc);
+
+    // Assert that refs are not present after their fields have been removed
+    expect(refs2.includes(cb.ref)).toBe(false);
+    expect(refs2.includes(tf.ref)).toBe(false);
+    cbWidgetRefs.forEach((ref) => expect(refs2).not.toContain(ref));
+    tfWidgetRefs.forEach((ref) => expect(refs2).not.toContain(ref));
+  });
+
   // TODO: Add method to remove APs and use `NeedsAppearances`? How would this
   //       work with RadioGroups? Just set the APs to `null`but keep the keys?
 });

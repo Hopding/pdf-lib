@@ -1,6 +1,6 @@
 {
   "name": "pdf-lib",
-  "version": "1.16.0",
+  "version": "1.17.1",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
   "contributors": [
@@ -29,6 +29,7 @@
     "Bj Tecu (https://github.com/btecu)",
     "Brent McSharry (https://github.com/mcshaz)",
     "Tim Knapp (https://github.com/duffyd)",
+    "Ching Chang (https://github.com/ChingChang9)",
     "Phakorn Kiong (https://github.com/PhakornKiong)"
   ],
   "scripts": {

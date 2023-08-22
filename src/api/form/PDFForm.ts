@@ -41,7 +41,7 @@ import {
   PDFName,
   PDFWidgetAnnotation,
 } from 'src/core';
-import { addRandomSuffix, assertIs, Cache, assertOrUndefined } from 'src/utils';
+import { assertIs, Cache, assertOrUndefined } from 'src/utils';
 
 export interface FlattenOptions {
   updateFieldAppearances: boolean;
@@ -550,11 +550,9 @@ export default class PDFForm {
         const page = this.findWidgetPage(widget);
         const widgetRef = this.findWidgetAppearanceRef(field, widget);
 
-        const xObjectKey = addRandomSuffix('FlatWidget', 10);
-        page.node.setXObject(PDFName.of(xObjectKey), widgetRef);
+        const xObjectKey = page.node.newXObject('FlatWidget', widgetRef);
 
         const rectangle = widget.getRectangle();
-
         const operators = [
           pushGraphicsState(),
           translate(rectangle.x, rectangle.y),
@@ -596,6 +594,14 @@ export default class PDFForm {
 
     pages.forEach((page) => page.node.removeAnnot(field.ref));
     this.acroForm.removeField(field.acroField);
+    const fieldKids = field.acroField.normalizedEntries().Kids;
+    const kidsCount = fieldKids.size();
+    for (let childIndex = 0; childIndex < kidsCount; childIndex++) {
+      const child = fieldKids.get(childIndex);
+      if (child instanceof PDFRef) {
+        this.doc.context.delete(child);
+      }
+    }
     this.doc.context.delete(field.ref);
   }
 
