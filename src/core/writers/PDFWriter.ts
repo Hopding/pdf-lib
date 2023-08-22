@@ -9,6 +9,8 @@ import PDFContext from 'src/core/PDFContext';
 import PDFObjectStream from 'src/core/structures/PDFObjectStream';
 import CharCodes from 'src/core/syntax/CharCodes';
 import { copyStringIntoBuffer, waitForTick } from 'src/utils';
+import PDFStream from '../objects/PDFStream';
+import PDFSecurity, { EncryptFn } from '../security/PDFSecurity';
 
 export interface SerializationInfo {
   size: number;
@@ -119,18 +121,28 @@ class PDFWriter {
   }
 
   protected async computeBufferSize(): Promise<SerializationInfo> {
-    const header = PDFHeader.forVersion(1, 7);
+    const header = this.context.header;
 
     let size = header.sizeInBytes() + 2;
 
     const xref = PDFCrossRefSection.create();
 
+    const pdfSecurity = this.context.getSecurity();
+
     const indirectObjects = this.context.enumerateIndirectObjects();
 
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
       const indirectObject = indirectObjects[idx];
-      const [ref] = indirectObject;
+      const [ref, object] = indirectObject;
       xref.addEntry(ref, size);
+
+      // Only encrypt item that is under PDFStream
+      // Run the content through EncryptFn and update the content
+      // before compute of object size to ensure correct buffer size
+      if (pdfSecurity && object instanceof PDFStream) {
+        this.encrypt(ref, object, pdfSecurity);
+      }
+
       size += this.computeIndirectObjectSize(indirectObject);
       if (this.shouldWaitForTick(1)) await waitForTick();
     }
@@ -151,6 +163,20 @@ class PDFWriter {
     this.parsedObjects += n;
     return this.parsedObjects % this.objectsPerTick === 0;
   };
+
+  protected encrypt(ref: PDFRef, object: PDFStream, pdfSecurity: PDFSecurity) {
+    const encryptFn: EncryptFn = pdfSecurity.getEncryptFn(
+      ref.objectNumber,
+      ref.generationNumber,
+    );
+
+    let toBeEncrypt = object.getContents();
+    if (encryptFn) {
+      toBeEncrypt = new Uint8Array(encryptFn(toBeEncrypt));
+
+      object.updateContent(toBeEncrypt);
+    }
+  }
 }
 
 export default PDFWriter;

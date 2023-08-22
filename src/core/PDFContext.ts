@@ -17,13 +17,14 @@ import PDFString from 'src/core/objects/PDFString';
 import PDFOperator from 'src/core/operators/PDFOperator';
 import Ops from 'src/core/operators/PDFOperatorNames';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
-import { typedArrayFor } from 'src/utils';
+import { assertSecurity, typedArrayFor, Uint8ArrToHex } from 'src/utils';
+import PDFSecurity from './security/PDFSecurity';
 import { SimpleRNG } from 'src/utils/rng';
 
 type LookupKey = PDFRef | PDFObject | undefined;
 
-interface LiteralObject {
-  [name: string]: Literal | PDFObject;
+export interface LiteralObject {
+  [name: string]: Literal | PDFObject | object;
 }
 
 interface LiteralArray {
@@ -61,6 +62,7 @@ class PDFContext {
 
   private pushGraphicsStateContentStreamRef?: PDFRef;
   private popGraphicsStateContentStreamRef?: PDFRef;
+  private _security!: PDFSecurity | null;
 
   private constructor() {
     this.largestObjectNumber = 0;
@@ -69,6 +71,15 @@ class PDFContext {
 
     this.indirectObjects = new Map();
     this.rng = SimpleRNG.withSeed(1);
+  }
+
+  getSecurity(): PDFSecurity | null {
+    return this._security;
+  }
+
+  setSecurity(pdfSecurity: PDFSecurity): void {
+    assertSecurity(pdfSecurity, 'PDFSecurity Instance');
+    this._security = pdfSecurity;
   }
 
   assign(ref: PDFRef, object: PDFObject): void {
@@ -202,6 +213,9 @@ class PDFContext {
       return PDFNumber.of(literal);
     } else if (typeof literal === 'boolean') {
       return literal ? PDFBool.True : PDFBool.False;
+    } else if (literal instanceof Uint8Array) {
+      // Convert ID/U/O field of Security to Hex String
+      return PDFHexString.of(Uint8ArrToHex(literal));
     } else if (Array.isArray(literal)) {
       const array = PDFArray.withContext(this);
       for (let idx = 0, len = literal.length; idx < len; idx++) {

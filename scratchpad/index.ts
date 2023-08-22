@@ -3,24 +3,47 @@ import { openPdf, Reader } from './open';
 import { PDFDocument } from 'src/index';
 
 (async () => {
-  const pdfDoc1 = await PDFDocument.create();
-  const image1 = await pdfDoc1.embedPng(
-    fs.readFileSync('assets/images/mario_emblem.png'),
-  );
-  const page1 = pdfDoc1.addPage();
-  page1.drawImage(image1, { ...image1.scale(1.0) });
+  // Case 1 - Using StreamWriter
+  const existingPdfBytes = fs.readFileSync('assets/pdfs/sample_form.pdf');
+  const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  const page = pdfDoc.addPage();
+  page.drawText('Creating PDFs in JavaScript is awesome!', {
+    x: 100,
+    y: 100,
+  });
 
-  const pdfDoc1Bytes = await pdfDoc1.save();
+  await pdfDoc.encrypt({
+    userPassword: 'abcd',
+    permissions: { modifying: true },
+  });
 
-  const pdfDoc2 = await PDFDocument.load(pdfDoc1Bytes);
-  const image2 = await pdfDoc2.embedPng(
-    fs.readFileSync('assets/images/minions_banana_alpha.png'),
-  );
-  const page2 = pdfDoc2.getPage(0);
-  page2.drawImage(image2, { ...image2.scale(0.5), x: 100, y: 100 });
+  // const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  // fs.writeFileSync('out.pdf', pdfBytes);
+  // openPdf('out.pdf', Reader.Preview);
 
-  const pdfBytes = await pdfDoc2.save();
+  // Case 2 - Using PDFWriter
+  // const existingPdfBytes = fs.readFileSync('assets/pdfs/sample_form.pdf');
+  // const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-  fs.writeFileSync('out.pdf', pdfBytes);
+  // const pdfDoc = await PDFDocument.create();
+  // const existingPdfBytes = fs.readFileSync('test.pdf');
+  // const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  // const page = pdfDoc.addPage();
+  // page.drawText('Creating PDFs in JavaScript is awesome!', {
+  //   x: 50,
+  //   y: 700,
+  // });
+
+  // pdfDoc.encrypt({
+  //   userPassword: 'abcd',
+  //   ownerPassword: '1234',
+  //   permissions: { modifying: true },
+  // });
+
+
+  // const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
+  // fs.writeFileSync('simple0.pdf', pdfBytes);
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  fs.writeFileSync('simplexx.pdf', pdfBytes);
   openPdf('out.pdf', Reader.Preview);
 })();
