@@ -28,7 +28,8 @@
     "DkDavid (https://github.com/DkDavid)",
     "Bj Tecu (https://github.com/btecu)",
     "Brent McSharry (https://github.com/mcshaz)",
-    "Tim Knapp (https://github.com/duffyd)"
+    "Tim Knapp (https://github.com/duffyd)",
+    "Phakorn Kiong (https://github.com/PhakornKiong)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
@@ -89,7 +90,11 @@
   "dependencies": {
     "@pdf-lib/standard-fonts": "^1.0.0",
     "@pdf-lib/upng": "^1.0.1",
+    "@types/crypto-js": "^4.0.2",
+    "@types/saslprep": "^1.0.1",
+    "crypto-js": "^4.1.1",
     "pako": "^1.0.11",
+    "saslprep": "^1.0.3",
     "tslib": "^1.11.1"
   },
   "devDependencies": {
@@ -109,6 +114,7 @@
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.17.1",
+    "rollup-plugin-polyfill-node": "^0.7.0",
     "rollup-plugin-terser": "^6.1.0",
     "ts-jest": "^26.1.0",
     "tslint": "^6.1.2",

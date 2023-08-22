@@ -3,39 +3,46 @@ import { openPdf, Reader } from './open';
 import { PDFDocument } from 'src/index';
 
 (async () => {
-  // This should be a Uint8Array or ArrayBuffer
-  // This data can be obtained in a number of different ways
-  // If your running in a Node environment, you could use fs.readFile()
-  // In the browser, you could make a fetch() call and use res.arrayBuffer()
-  const existingPdfBytes = fs.readFileSync('assets/pdfs/with_viewer_prefs.pdf');
-
-  // Load a PDFDocument without updating its existing metadata
+  // Case 1 - Using StreamWriter
+  const existingPdfBytes = fs.readFileSync('assets/pdfs/sample_form.pdf');
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
-  const viewerPrefs = pdfDoc.catalog.getOrCreateViewerPreferences();
+  const page = pdfDoc.addPage();
+  page.drawText('Creating PDFs in JavaScript is awesome!', {
+    x: 100,
+    y: 100,
+  });
 
-  // Print all available viewer preference fields
-  console.log('HideToolbar:', viewerPrefs.getHideToolbar());
-  console.log('HideMenubar:', viewerPrefs.getHideMenubar());
-  console.log('HideWindowUI:', viewerPrefs.getHideWindowUI());
-  console.log('FitWindow:', viewerPrefs.getFitWindow());
-  console.log('CenterWindow:', viewerPrefs.getCenterWindow());
-  console.log('DisplayDocTitle:', viewerPrefs.getDisplayDocTitle());
-  console.log('NonFullScreenPageMode:', viewerPrefs.getNonFullScreenPageMode());
-  console.log('ReadingDirection:', viewerPrefs.getReadingDirection());
-  console.log('PrintScaling:', viewerPrefs.getPrintScaling());
-  console.log('Duplex:', viewerPrefs.getDuplex());
-  console.log('PickTrayByPDFSize:', viewerPrefs.getPickTrayByPDFSize());
-  console.log('PrintPageRange:', viewerPrefs.getPrintPageRange());
-  console.log('NumCopies:', viewerPrefs.getNumCopies());
+  await pdfDoc.encrypt({
+    userPassword: 'abcd',
+    permissions: { modifying: true },
+  });
 
-  // Serialize the PDFDocument to bytes (a Uint8Array)
-  const pdfBytes = await pdfDoc.save();
+  // const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  // fs.writeFileSync('out.pdf', pdfBytes);
+  // openPdf('out.pdf', Reader.Preview);
 
-  // For example, `pdfBytes` can be:
-  //   • Written to a file in Node
-  //   • Downloaded from the browser
-  //   • Rendered in an <iframe>
+  // Case 2 - Using PDFWriter
+  // const existingPdfBytes = fs.readFileSync('assets/pdfs/sample_form.pdf');
+  // const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-  fs.writeFileSync('out.pdf', pdfBytes);
+  // const pdfDoc = await PDFDocument.create();
+  // const existingPdfBytes = fs.readFileSync('test.pdf');
+  // const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  // const page = pdfDoc.addPage();
+  // page.drawText('Creating PDFs in JavaScript is awesome!', {
+  //   x: 50,
+  //   y: 700,
+  // });
+
+  // pdfDoc.encrypt({
+  //   userPassword: 'abcd',
+  //   ownerPassword: '1234',
+  //   permissions: { modifying: true },
+  // });
+
+  // const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
+  // fs.writeFileSync('simple0.pdf', pdfBytes);
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  fs.writeFileSync('simplexx.pdf', pdfBytes);
   openPdf('out.pdf', Reader.Preview);
 })();

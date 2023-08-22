@@ -22,6 +22,8 @@ import test15 from './tests/test15';
 import test16 from './tests/test16';
 import test17 from './tests/test17';
 import test18 from './tests/test18';
+import test19 from './tests/test19';
+import test20 from './tests/test20';
 
 const cli = readline.createInterface({
   input: process.stdin,
@@ -161,8 +163,8 @@ const main = async () => {
 
     // prettier-ignore
     const allTests = [
-    test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
-    test11, test12, test13, test14, test15, test16, test17, test18
+       test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
+    test11, test12, test13, test14, test15, test16, test17, test18, test19, test20
   ];
 
     const tests = testIdx ? [allTests[testIdx - 1]] : allTests;

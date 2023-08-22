@@ -66,11 +66,13 @@ import FileEmbedder, { AFRelationship } from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 import PDFJavaScript from 'src/api/PDFJavaScript';
 import JavaScriptEmbedder from 'src/core/embedders/JavaScriptEmbedder';
-
+import PDFSecurity, { SecurityOption } from 'src/core/security/PDFSecurity';
 /**
  * Represents a PDF document.
  */
 export default class PDFDocument {
+  _id!: Uint8Array;
+  _security!: PDFSecurity | null;
   /**
    * Load an existing [[PDFDocument]]. The input data can be provided in
    * multiple formats:
@@ -163,7 +165,37 @@ export default class PDFDocument {
     const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
     context.trailerInfo.Root = context.register(catalog);
 
-    return new PDFDocument(context, false, updateMetadata);
+    const pdfDoc = new PDFDocument(context, false, updateMetadata);
+
+    return pdfDoc;
+  }
+
+  /**
+   * Instantiate PDF-Security for encryption of file
+   * @param SecurityOption {@link SecurityOption}
+   *  SecurityOption
+   * ```javascript
+   * {
+   * `ownerPassword`?: string;
+   * `userPassword`: string;
+   * `permissions`?: UserPermission;
+   * `pdfVersion`?: string;
+   * }
+   * ```
+   *
+   * @returns void
+   */
+  async encrypt(options: SecurityOption) {
+    options.pdfVersion = this.context.header.getVersion();
+    this._id = PDFSecurity.generateFileID(this.getInfoDict());
+    const newInfo = this.context.obj([this._id, this._id]);
+    this.context.trailerInfo.ID = newInfo;
+
+    this._security = PDFSecurity.create(this, options);
+    this.context.setSecurity(this._security);
+
+    const newSecurity = this.context.obj(this._security.dictionary);
+    this.context.trailerInfo.Encrypt = this.context.register(newSecurity);
   }
 
   /** The low-level context of this document. */
