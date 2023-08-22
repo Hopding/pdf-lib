@@ -19,7 +19,6 @@ import Ops from 'src/core/operators/PDFOperatorNames';
 import PDFContentStream from 'src/core/structures/PDFContentStream';
 import { assertSecurity, typedArrayFor, Uint8ArrToHex } from 'src/utils';
 import PDFSecurity from './security/PDFSecurity';
-import { typedArrayFor } from 'src/utils';
 import { SimpleRNG } from 'src/utils/rng';
 
 type LookupKey = PDFRef | PDFObject | undefined;
