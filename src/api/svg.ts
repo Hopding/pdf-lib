@@ -80,6 +80,7 @@ type SVGAttributes = {
   textAnchor?: string;
   preserveAspectRatio?: string;
   strokeWidth?: number;
+  dominantBaseline?: string
 };
 
 export type SVGElement = HTMLElement & {
@@ -287,8 +288,8 @@ const cropSvgElement = (
             const endInstruction = isEndInside
               ? ''
               : isLocalInstruction
-              ? `M${normalizedNext.x},${normalizedNext.y}`
-              : // TODO: check this -> maybe the move command should be always normalized when cropping segments
+                ? `M${normalizedNext.x},${normalizedNext.y}`
+                : // TODO: check this -> maybe the move command should be always normalized when cropping segments
                 `M${nextPoint.x},${nextPoint.y}`;
             return {
               point: nextPoint,
@@ -481,54 +482,54 @@ const cropSvgElement = (
       const circleSegments = isRectInsideEllipse
         ? rectSegments
         : rectSegments.map((segment, i) => {
-            const [p1, p2] = getIntersections([segment, ellipse])
-              // it's important to sort the segment's point because it impacts the angle of the arc, the points are sorted on clockwise direction
-              .sort((p1, p2) => {
-                // top
-                if (i === 0) {
-                  return p1.x - p2.x;
-                  // right
-                } else if (i === 1) {
-                  return p2.y - p1.y;
-                  // bottom
-                } else if (i === 2) {
-                  return p2.x - p1.x;
-                  // left
-                } else {
-                  return p1.y - p2.y;
-                }
-              });
+          const [p1, p2] = getIntersections([segment, ellipse])
+            // it's important to sort the segment's point because it impacts the angle of the arc, the points are sorted on clockwise direction
+            .sort((p1, p2) => {
+              // top
+              if (i === 0) {
+                return p1.x - p2.x;
+                // right
+              } else if (i === 1) {
+                return p2.y - p1.y;
+                // bottom
+              } else if (i === 2) {
+                return p2.x - p1.x;
+                // left
+              } else {
+                return p1.y - p2.y;
+              }
+            });
 
-            if (p1 && p2) {
-              return new Segment(new Point(p1), new Point(p2));
-              // if the other point isn't inside the circle it means that the circle isn't cropped by the segment
-            } else if (
-              p1 &&
-              (isPointInsideEllipse(segment.A) ||
-                isPointInsideEllipse(segment.B))
-            ) {
-              const intersectionPoint = new Point(p1);
-              const innerPoint = isPointInsideEllipse(segment.A)
-                ? segment.A
-                : segment.B;
-              // ensures that the segment is always following the clockwise direction
-              const start = innerPoint.isEqual(segment.A)
-                ? innerPoint
-                : intersectionPoint;
-              const end = innerPoint.isEqual(segment.A)
-                ? intersectionPoint
-                : innerPoint;
-              return new Segment(start, end);
-              // if there's no intersection and the segment's points are inside the Ellipse it means that the segment should be drawn as part of the ellipse
-            } else if (
-              !(p1 && p2) &&
-              isPointInsideEllipse(segment.A) &&
-              isPointInsideEllipse(segment.B)
-            ) {
-              return segment;
-            }
-            return;
-          });
+          if (p1 && p2) {
+            return new Segment(new Point(p1), new Point(p2));
+            // if the other point isn't inside the circle it means that the circle isn't cropped by the segment
+          } else if (
+            p1 &&
+            (isPointInsideEllipse(segment.A) ||
+              isPointInsideEllipse(segment.B))
+          ) {
+            const intersectionPoint = new Point(p1);
+            const innerPoint = isPointInsideEllipse(segment.A)
+              ? segment.A
+              : segment.B;
+            // ensures that the segment is always following the clockwise direction
+            const start = innerPoint.isEqual(segment.A)
+              ? innerPoint
+              : intersectionPoint;
+            const end = innerPoint.isEqual(segment.A)
+              ? intersectionPoint
+              : innerPoint;
+            return new Segment(start, end);
+            // if there's no intersection and the segment's points are inside the Ellipse it means that the segment should be drawn as part of the ellipse
+          } else if (
+            !(p1 && p2) &&
+            isPointInsideEllipse(segment.A) &&
+            isPointInsideEllipse(segment.B)
+          ) {
+            return segment;
+          }
+          return;
+        });
 
       const inverseAngle = (angle: number) => (360 - angle) % 360;
       const pointsAngle = (
@@ -582,9 +583,8 @@ const cropSvgElement = (
           'counter-clockwise',
         );
         // angles greater than 180 degrees are marked as large-arc-flag = 1
-        path += `A ${rx},${ry} ${rotation} ${arcAngle > 180 ? 1 : 0},0 ${
-          startPoint.x
-        }, ${startPoint.y}`;
+        path += `A ${rx},${ry} ${rotation} ${arcAngle > 180 ? 1 : 0},0 ${startPoint.x
+          }, ${startPoint.y}`;
       }
 
       // create a new element that will represent the cropped ellipse
@@ -667,6 +667,7 @@ const runnersToPage = (
 ): SVGElementToDrawMap => ({
   async text(element) {
     const anchor = element.svgAttributes.textAnchor;
+    const dominantBaseline = element.svgAttributes.dominantBaseline
     const text = element.text.trim().replace(/\s/g, ' ');
     const fontSize = element.svgAttributes.fontSize || 12;
 
@@ -697,11 +698,22 @@ const runnersToPage = (
       text,
       fontSize,
     );
-    const offset =
+
+    const textHeight = (font || page.getFont()[0]).heightAtSize(fontSize)
+    const offsetX =
       anchor === 'middle' ? textWidth / 2 : anchor === 'end' ? textWidth : 0;
+
+    const offsetY =
+      dominantBaseline === 'text-before-edge'
+        ? textHeight
+        : dominantBaseline === 'text-after-edge'
+        ? -textHeight
+        : dominantBaseline === 'middle'
+        ? textHeight / 2
+        : 0
     const point = new Point({
-      x: (element.svgAttributes.x || 0) - offset,
-      y: element.svgAttributes.y || 0,
+      x: (element.svgAttributes.x || 0) - offsetX,
+      y: (element.svgAttributes.y || 0) - offsetY,
     });
     // TODO: compute the right font boundaries to know which characters should be drawed
     // this is an workaround to draw text that are just a little outside the viewbox boundaries
@@ -1010,6 +1022,7 @@ const parseAttributes = (
   const svgAttributes: SVGAttributes = {
     src: attributes.src || attributes['xlink:href'],
     textAnchor: attributes['text-anchor'],
+    dominantBaseline: attributes['dominant-baseline'],
     preserveAspectRatio: attributes.preserveAspectRatio,
   };
 
@@ -1072,7 +1085,7 @@ const parseAttributes = (
         const pageYDirection = -1;
         newInherited.rotation = degrees(
           pageYDirection * args[0] * Math.sign(xDirection * yDirection) +
-            (inherited.rotation?.angle || 0),
+          (inherited.rotation?.angle || 0),
         );
         svgAttributes.rotate = newInherited.rotation;
       }
@@ -1533,8 +1546,8 @@ const parseSvgNode = (
   const viewBox = node.attributes.viewBox
     ? parseViewBox(node.attributes.viewBox)!
     : node.attributes.width && node.attributes.height
-    ? parseViewBox(`0 0 ${node.attributes.width} ${node.attributes.height}`)!
-    : inherited.viewBox;
+      ? parseViewBox(`0 0 ${node.attributes.width} ${node.attributes.height}`)!
+      : inherited.viewBox;
   const svgRect = new Rectangle(
     new Point(attributes.converter.point(viewBox.x, viewBox.y)),
     new Point(
