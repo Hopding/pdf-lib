@@ -287,10 +287,7 @@ const cropSvgElement = (
               : `M${startPoint.x},${startPoint.y}`;
             const endInstruction = isEndInside
               ? ''
-              : isLocalInstruction
-                ? `M${normalizedNext.x},${normalizedNext.y}`
-                : // TODO: check this -> maybe the move command should be always normalized when cropping segments
-                `M${nextPoint.x},${nextPoint.y}`;
+              : `M${normalizedNext.x},${normalizedNext.y}`
             return {
               point: nextPoint,
               command: `${startInstruction} L${endPoint.x},${endPoint.y} ${endInstruction} `,
