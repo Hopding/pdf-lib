@@ -546,22 +546,26 @@ export default class PDFForm {
       const widgets = field.acroField.getWidgets();
 
       for (let j = 0, lenWidgets = widgets.length; j < lenWidgets; j++) {
-        const widget = widgets[j];
-        const page = this.findWidgetPage(widget);
-        const widgetRef = this.findWidgetAppearanceRef(field, widget);
+        try {
+          const widget = widgets[j];
+          const page = this.findWidgetPage(widget);
+          const widgetRef = this.findWidgetAppearanceRef(field, widget);
 
-        const xObjectKey = page.node.newXObject('FlatWidget', widgetRef);
+          const xObjectKey = page.node.newXObject('FlatWidget', widgetRef);
 
-        const rectangle = widget.getRectangle();
-        const operators = [
-          pushGraphicsState(),
-          translate(rectangle.x, rectangle.y),
-          ...rotateInPlace({ ...rectangle, rotation: 0 }),
-          drawObject(xObjectKey),
-          popGraphicsState(),
-        ].filter(Boolean) as PDFOperator[];
+          const rectangle = widget.getRectangle();
+          const operators = [
+            pushGraphicsState(),
+            translate(rectangle.x, rectangle.y),
+            ...rotateInPlace({ ...rectangle, rotation: 0 }),
+            drawObject(xObjectKey),
+            popGraphicsState(),
+          ].filter(Boolean) as PDFOperator[];
 
-        page.pushOperators(...operators);
+          page.pushOperators(...operators);
+        } catch(err) {
+          console.error(err)
+        }
       }
 
       this.removeField(field);
@@ -583,13 +587,17 @@ export default class PDFForm {
     const pages: Set<PDFPage> = new Set();
 
     for (let i = 0, len = widgets.length; i < len; i++) {
-      const widget = widgets[i];
-      const widgetRef = this.findWidgetAppearanceRef(field, widget);
+      try {
+        const widget = widgets[i];
+        const widgetRef = this.findWidgetAppearanceRef(field, widget);
 
-      const page = this.findWidgetPage(widget);
-      pages.add(page);
+        const page = this.findWidgetPage(widget);
+        pages.add(page);
 
-      page.node.removeAnnot(widgetRef);
+        page.node.removeAnnot(widgetRef);
+      } catch(err) {
+        console.error(err)
+      }
     }
 
     pages.forEach((page) => page.node.removeAnnot(field.ref));
