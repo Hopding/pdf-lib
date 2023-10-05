@@ -80,7 +80,8 @@ type SVGAttributes = {
   textAnchor?: string;
   preserveAspectRatio?: string;
   strokeWidth?: number;
-  dominantBaseline?: string
+  dominantBaseline?: string;
+  points?: string;
 };
 
 export type SVGElement = HTMLElement & {
@@ -817,6 +818,12 @@ const runnersToPage = (
   async circle(element) {
     return runnersToPage(page, options).ellipse(element);
   },
+  async polygon(element) {
+    const d = `M ${element.svgAttributes.points} Z`;
+    element.tagName = 'path';
+    element.svgAttributes['d'] = d;
+    return runnersToPage(page, options).path(element);
+  },
 });
 
 const transform = (
@@ -1123,6 +1130,25 @@ const parseAttributes = (
     );
     svgAttributes.width = size.width;
     svgAttributes.height = size.height;
+  }
+
+  if (attributes.points) {
+    const { x: xOrigin, y: yOrigin } = newConverter.point(0, 0);
+    const params = attributes.points.match(
+      /(-?[0-9]+\.[0-9]+(e[+-]?[0-9]+)?)|(-?\.[0-9]+(e[+-]?[0-9]+)?)|(-?[0-9]+)/gi,
+    );
+    if (params) {
+      const groupedParams = groupBy<string>(params, 2);
+      svgAttributes.points = groupedParams
+        .map((pair) => {
+          const [x, y] = pair;
+          const xReal = parseFloatValue(x, inherited.width) || 0;
+          const yReal = parseFloatValue(y, innerHeight) || 0;
+          const point = newConverter.point(xReal, yReal);
+          return [point.x - xOrigin, point.y - yOrigin].join(',');
+        })
+        .join(' ');
+    }
   }
   // We convert all the points from the path
   if (attributes.d) {
