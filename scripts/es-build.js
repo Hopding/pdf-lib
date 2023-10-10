@@ -22,8 +22,8 @@ files.forEach((file) => {
     if (file.endsWith('.js')) {
         let content = fs.readFileSync(file, 'utf-8');
         content = content.replace(/from '(.+?)'/g, (match, p1) => {
-            // If it's an absolute path or URL, or it already ends with .js, don't change it
-            if (p1.startsWith('/') || p1.startsWith('http') || p1.endsWith('.js')) {
+            // If it's an absolute path, a module or URL, or it already ends with .js, don't change it
+            if (!p1.startsWith('.') || p1.endsWith('.js')) {
                 return match;
             }
             // If it's referencing a directory (implying index.js inside that directory)
