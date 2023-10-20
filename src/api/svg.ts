@@ -1085,7 +1085,7 @@ const parseAttributes = (
           1,
           1,
         );
-        // the page Y coord is inverteds so the angle rotation is inverted too
+        // the page Y coord is inverted so the angle rotation is inverted too
         const pageYDirection = -1;
         newInherited.rotation = degrees(
           pageYDirection * args[0] * Math.sign(xDirection * yDirection) +
@@ -1254,13 +1254,21 @@ const parseAttributes = (
                   currentY = realY;
                 }
                 point = newConverter.point(currentX, currentY);
+                // transformations over x and y axis might change the page coord direction
+                const { width: xDirection, height: yDirection } = newConverter.size(
+                  1,
+                  1,
+                );
+                // -1 is the default direction
+                const pageYDirection = -1 * Math.sign(xDirection * yDirection);
+                const oppositeSweepFlag = sweepFlag === '0' ? '1' : '0'
                 return [
                   letter.toUpperCase(),
                   newRx,
                   newRy,
                   xAxisRotation,
                   largeArc,
-                  sweepFlag === '0' ? '1' : '0',
+                  pageYDirection === -1 ? oppositeSweepFlag : sweepFlag,
                   point.x - xOrigin,
                   point.y - yOrigin,
                 ].join(' ');

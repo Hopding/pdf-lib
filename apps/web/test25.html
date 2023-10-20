@@ -1,56 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="
+
+<head>
+  <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' 'unsafe-inline' blob: resource:;
         object-src 'self' blob:;
         frame-src 'self' blob:;
-      "
-    />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
-    <title>Test 25</title>
-    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
-    <script type="text/javascript" src="/apps/web/utils.js"></script>
-  </head>
+      " />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+  <title>Test 25</title>
+  <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+  <script type="text/javascript" src="/apps/web/utils.js"></script>
+</head>
 
-  <body>
-    <div id="button-container">
-      <button onclick="window.location.href = '/apps/web/test24.html'">
-        Prev
-      </button>
-      <button onclick="test()">Run Test</button>
-      <button onclick="window.location.href = '/apps/web/test26.html'">
-        Next
-      </button>
-    </div>
-    <!-- <div  ></div> -->
-    <iframe id="iframe"></iframe>
-  </body>
+<body>
+  <div id="button-container">
+    <button onclick="window.location.href = '/apps/web/test24.html'">
+      Prev
+    </button>
+    <button onclick="test()">Run Test</button>
+    <button onclick="window.location.href = '/apps/web/test26.html'">
+      Next
+    </button>
+  </div>
+  <!-- <div  ></div> -->
+  <iframe id="iframe"></iframe>
+</body>
 
-  <script type="text/javascript">
-    // startFpsTracker('animation-target');
+<script type="text/javascript">
+  // startFpsTracker('animation-target');
 
-    const renderInIframe = (pdfBytes) => {
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const blobUrl = URL.createObjectURL(blob);
-      document.getElementById('iframe').src = blobUrl;
-    };
+  const renderInIframe = (pdfBytes) => {
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const blobUrl = URL.createObjectURL(blob);
+    document.getElementById('iframe').src = blobUrl;
+  };
 
-    async function test() {
-      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
-        PDFLib;
+  async function test() {
+    const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+      PDFLib;
 
-      const pdfDoc = await PDFDocument.create();
-      const firstPage = pdfDoc.addPage([1000, 1000]);
+    const pdfDoc = await PDFDocument.create();
+    const firstPage = pdfDoc.addPage([1000, 1000]);
 
-      const fontSize = 20;
+    const fontSize = 20;
 
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="409" height="602" viewBox="-9.746610357857302 -12.53611913758613 18.181818181818183 26.761502556123585" data-plugin-name="science" alt=" ">
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="409" height="602" viewBox="-9.746610357857302 -12.53611913758613 18.181818181818183 26.761502556123585" data-plugin-name="science" alt=" ">
       <g transform="scale(1 -1) translate(0 -1.689264280951324)">
       <g transform="translate(-7.154396186440678 4.212791313559322) scale(1 -1) "><svg viewBox="0 0 32 32" width="4.576271186440678" height="4.110169491525422"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" id="692640ba-d133-4cb2-8c3e-d1483bb7141f" preserveAspectRatio="xMidYMid"><path d="M14.814 10.811a1.049 1.049 0 0 0-1.791-.742l-6.971 6.972 1.484 1.483 5.18-5.18v17.607c0 .58.47 1.049 1.049 1.049h9.084v-2.1h-8.035V10.81z" fill="#000000FF"></path><path d="M19.25 25.254V8.148l6.665-6.664L24.43 0l-6.97 6.971a1.05 1.05 0 0 0-.308.742v18.59c0 .58.47 1.05 1.05 1.05h7.745v-2.099h-6.696z" fill="#000000FF"></path></svg></svg></g>
 <g transform="translate(1.955773305084744 0.017876059322032845) scale(1 -1) "><svg viewBox="0 0 32 32" width="3.8983050847457648" height="6.059322033898304"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" id="3b8642ac-fae7-4db2-ad01-f129efa090a9" preserveAspectRatio="xMidYMid"><path d="M16 2.395c-1.848 0-3.61.371-5.217 1.041V0H8.696v4.527C4.91 6.946 2.396 11.185 2.396 16s2.514 9.054 6.3 11.473V32h2.087v-3.436A13.53 13.53 0 0 0 16 29.604c1.848 0 3.61-.37 5.217-1.04V32h2.087v-4.527c3.786-2.419 6.3-6.658 6.3-11.473 0-7.502-6.102-13.605-13.604-13.605zm5.217 23.871a11.431 11.431 0 0 1-4.173 1.204v-6.654l.613.614 1.476-1.476L16 16.822l-3.133 3.132 1.476 1.476.614-.613v6.653a11.43 11.43 0 0 1-4.174-1.204V15.652h10.434v10.614zm2.087-1.367v-10.29c0-.577-.467-1.044-1.043-1.044H9.739c-.576 0-1.043.467-1.043 1.044v10.29A11.5 11.5 0 0 1 4.482 16a11.5 11.5 0 0 1 4.214-8.899v1.942c0 .577.467 1.044 1.043 1.044h8.309V8h-7.265V5.734c1.567-.8 3.34-1.252 5.217-1.252 6.35 0 11.517 5.167 11.517 11.518a11.5 11.5 0 0 1-4.213 8.898z" fill="#000000FF"></path></svg></svg></g>
@@ -74,100 +72,103 @@
       </g>
     </svg>`;
 
-      const svg2 = `
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="409" height="602" viewBox="-9.746610357857302 -12.53611913758613 18.181818181818183 26.761502556123585">
-      <g transform="scale(1 -1) translate(0 -1.689264280951324)">
-        <g transform="translate(6.828654661016948 5.441604872881356) scale(1 -1) "><svg viewBox="0 0 32 32" width="2.2033898305084776" height="2.5">
-          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid">
-            <path d="M28.84 14.9h-5.218v-8c0-.576-.467-1.043-1.044-1.043h-4.173c-.577 0-1.044.467-1.044 1.043v18.087c0 .577.467 1.044 1.044 1.044h4.174c.576 0 1.043-.467 1.043-1.044v-8h5.217v-2.087zM21.564 24h-2.087V8h2.087v16z" fill="#000000FF"></path>
-            <circle cx="28.84" cy="14.9" r="0.3" fill="red"/>
-          </svg>
-    </svg></g>
-      </g>
-    </svg>
-`;
+    const svg2 = `<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <path d="M300,200 H150 A150,150 0 1,0 300,50 z" fill="red"/>
+  <circle r="5" fill="black" cx="300" cy="200"/>
+  <circle r="5" fill="green" cx="150" cy="200"/>
+  <circle r="5" fill="blue" cx="300" cy="50"/>
+</svg>`;
 
-      const svg3 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="129 223.625 71 78" data-id="b981990b-9fa0-423d-9663-3ddea2958150" data-plugin="{&quot;elements&quot;:[{&quot;dependants&quot;:[],&quot;color&quot;:&quot;#000000FF&quot;,&quot;uuid&quot;:&quot;92523b0f-3b9a-4a81-8739-9002b0631d17&quot;,&quot;strokeWidth&quot;:3,&quot;content&quot;:&quot;&lt;svg fill=\&quot;none\&quot; xmlns=\&quot;http://www.w3.org/2000/svg\&quot; viewBox=\&quot;3 0 27 32\&quot;&gt;&lt;g fill=\&quot;currentColor\&quot;&gt;&lt;path d=\&quot;M8.801 0h14.423l.05-.001a1.044 1.044 0 0 1 .043 2.087H21.6v11.75c.245.095.486.196.722.302l-1.204 1.753a12.713 12.713 0 0 0-.887-.328l-.718-.235V2.087h-7.028V3.22h2.596a1.044 1.044 0 1 1-.046 2.087h-2.549v1.664h2.582v.006h.013a1.044 1.044 0 1 1-.113 2.081h-2.482v6.269l-.718.235c-1.38.453-2.593 1.106-3.591 1.904h-.004s-.671.583-1.043.99c-.371.409-.86 1.099-.86 1.099l-.001.002c-.727 1.13-1.127 2.393-1.127 3.708 0 2.595 1.593 5.063 4.276 6.647h13.164c2.683-1.584 4.276-4.052 4.277-6.647 0-1.313-.4-2.574-1.124-3.702.047.05-.005-.008-.005-.008l.005.008-.007-.008c-.006-.006-.025-.034-.057-.079-.114-.16-.382-.538-.697-.897l.041.028 1.21-1.762c.142.148.28.298.412.452 1.51 1.754 2.308 3.818 2.309 5.968 0 3.436-2.085 6.651-5.577 8.602l-.237.132H8.868l-.237-.133c-3.492-1.95-5.576-5.165-5.576-8.6 0-2.15.798-4.215 2.308-5.969 1.286-1.494 3.017-2.681 5.036-3.462V2.086H8.683v-.002a1.044 1.044 0 0 1 0-2.083V0H8.7a1.062 1.062 0 0 1 .101 0z\&quot;/&gt;&lt;path d=\&quot;m23.003 16.02-.436.738-1.507-.889 1.63-2.764 1.532-2.595a.875.875 0 0 1 1.507.89l-2.717 4.605-.009.014zm3.427 2.56-.664.877-1.158-1.283 1.541-2.512 1.56-2.578a.875.875 0 1 1 1.498.905l-2.767 4.576-.01.014z\&quot;/&gt;&lt;/g&gt;&lt;/svg&gt;&quot;,&quot;start&quot;:{&quot;x&quot;:-3.359375,&quot;y&quot;:-2.5671875},&quot;end&quot;:{&quot;x&quot;:0.390625,&quot;y&quot;:-5.6171875},&quot;@type&quot;:&quot;ImageTranslatable&quot;}],&quot;config&quot;:{&quot;space&quot;:{&quot;xMin&quot;:-11.825687603053858,&quot;xMax&quot;:15.886274265286612,&quot;yMin&quot;:-12.783595557772513,&quot;yMax&quot;:14.92836631056796},&quot;magnetism&quot;:{&quot;enabled&quot;:false},&quot;orthonormal&quot;:true,&quot;precision&quot;:{&quot;anglePrecision&quot;:0.01,&quot;measurePrecision&quot;:0.01,&quot;fontSize&quot;:16},&quot;scale&quot;:{&quot;showGrid&quot;:false,&quot;showXAxis&quot;:false,&quot;showYAxis&quot;:false,&quot;xScale&quot;:1,&quot;yScale&quot;:1},&quot;addConstruction&quot;:false,&quot;showShapeElements&quot;:true},&quot;croppedSvgAttributes&quot;:{&quot;viewBox&quot;:&quot;129 223.625 71 78&quot;,&quot;width&quot;:&quot;440&quot;,&quot;height&quot;:&quot;374.81481481481484&quot;},&quot;version&quot;:1}" data-plugin-name="science" alt=" " width="71" height="78">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="440" height="374.81481481481484" viewBox="-11.825687603053858 -10.53199865596985 27.71196186834047 23.208768064735146" x="0" y="0">
-          <g transform="scale(1 -1) translate(0 -2.144770752795445)">
-            <g transform="translate(-3.359375 -2.5671875) scale(1 -1) ">
-              <svg viewBox="0 0 27 32" width="3.75" height="3.05">
-                <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="3 0 27 32" id="92523b0f-3b9a-4a81-8739-9002b0631d17" preserveAspectRatio="xMidYMid">
-                  <g fill="#000000FF">
-                    <path d="M8.801 0h14.423l.05-.001a1.044 1.044 0 0 1 .043 2.087H21.6v11.75c.245.095.486.196.722.302l-1.204 1.753a12.713 12.713 0 0 0-.887-.328l-.718-.235V2.087h-7.028V3.22h2.596a1.044 1.044 0 1 1-.046 2.087h-2.549v1.664h2.582v.006h.013a1.044 1.044 0 1 1-.113 2.081h-2.482v6.269l-.718.235c-1.38.453-2.593 1.106-3.591 1.904h-.004s-.671.583-1.043.99c-.371.409-.86 1.099-.86 1.099l-.001.002c-.727 1.13-1.127 2.393-1.127 3.708 0 2.595 1.593 5.063 4.276 6.647h13.164c2.683-1.584 4.276-4.052 4.277-6.647 0-1.313-.4-2.574-1.124-3.702.047.05-.005-.008-.005-.008l.005.008-.007-.008c-.006-.006-.025-.034-.057-.079-.114-.16-.382-.538-.697-.897l.041.028 1.21-1.762c.142.148.28.298.412.452 1.51 1.754 2.308 3.818 2.309 5.968 0 3.436-2.085 6.651-5.577 8.602l-.237.132H8.868l-.237-.133c-3.492-1.95-5.576-5.165-5.576-8.6 0-2.15.798-4.215 2.308-5.969 1.286-1.494 3.017-2.681 5.036-3.462V2.086H8.683v-.002a1.044 1.044 0 0 1 0-2.083V0H8.7a1.062 1.062 0 0 1 .101 0z">
-                    </path>
-                    <path d="m23.003 16.02-.436.738-1.507-.889 1.63-2.764 1.532-2.595a.875.875 0 0 1 1.507.89l-2.717 4.605-.009.014zm3.427 2.56-.664.877-1.158-1.283 1.541-2.512 1.56-2.578a.875.875 0 1 1 1.498.905l-2.767 4.576-.01.014z">
-                    </path>
-                  </g>
-                </svg>
-              </svg>
-            </g>
-          </g>
-        </svg>
-      </svg>`
+    const svg3 = `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" id="692640ba-d133-4cb2-8c3e-d1483bb7141f" preserveAspectRatio="xMidYMid">
+  <path d="M14.814 10.811a1.049 1.049 0 0 0-1.791-.742l-6.971 6.972 1.484 1.483 5.18-5.18v17.607c0 .58.47 1.049 1.049 1.049h9.084v-2.1h-8.035V10.81z" fill="#000000FF"/>
+  <circle r="0.3" fill="red" cx="14.8" cy="10.8"/>
+  </svg>`
 
-      const drawLines = (page) => {
-        Array(10)
-          .fill(1)
-          .map((v, i) => i)
-          .forEach((v) => {
-            page.drawText('----' + v, {
-              x: 5,
-              y: v * 100,
-              size: 20,
-            });
+    const svg4 = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="437" height="437" viewBox="-5.766990291262136 -11.939927184466018 8.349514563106796 8.194174757281553" style="width: 437px; height: 437px;">
+  <g transform="scale(1 -1) translate(0 0)">
+    <ellipse cx="-1.5000455013203968" cy="8.015083253349824" rx="2.5000000000000004" ry="2.426413513777" transform="rotate(0.34568480052757566 -1.5000455013203968 8.015083253349824)" stroke-width="0.04576659038901602" stroke="black" fill="none"/>
+    <ellipse cx="-2.5" cy="8.75" rx="0.20594965675057209" ry="0.20594965675057209" fill="#000000ff"/>
+    <ellipse cx="-0.5" cy="8.5" rx="0.20594965675057209" ry="0.20594965675057209" fill="#000000ff"/>
+    <path d="M -0.9955958173813108,6.843589816313437 A 0.9999999999999999,0.9999999999999999 0 0 0 -2.6956699856847175 7.174871904974261" stroke="#000000ff" stroke-width="0.13729977116704806" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>`
+    // <path d="M19.25 25.254V8.148l6.665-6.664L24.43 0l-6.97 6.971a1.05 1.05 0 0 0-.308.742v18.59c0 .58.47 1.05 1.05 1.05h7.745v-2.099h-6.696z" fill="#000000FF"/>
+
+    const drawLines = (page) => {
+      Array(10)
+        .fill(1)
+        .map((v, i) => i)
+        .forEach((v) => {
+          page.drawText('----' + v, {
+            x: 5,
+            y: v * 100,
+            size: 20,
           });
-        Array(100)
-          .fill(1)
-          .map((v, i) => i)
-          .forEach((v) => {
-            page.drawText(v % 5 == 0 ? '---' : '--', {
-              x: 5,
-              y: v * 10,
-              size: 20,
-            });
+        });
+      Array(100)
+        .fill(1)
+        .map((v, i) => i)
+        .forEach((v) => {
+          page.drawText(v % 5 == 0 ? '---' : '--', {
+            x: 5,
+            y: v * 10,
+            size: 20,
           });
-      };
-      const drawGrid = (page) => {
-        Array(parseInt(page.getHeight() / 10))
-          .fill(1)
-          .map((v, i) => {
-            page.drawLine({
-              start: { x: 0, y: i * 10 },
-              end: { x: page.getWidth(), y: i * 10 },
-            });
+        });
+    };
+    const drawGrid = (page) => {
+      Array(parseInt(page.getHeight() / 10))
+        .fill(1)
+        .map((v, i) => {
+          page.drawLine({
+            start: { x: 0, y: i * 10 },
+            end: { x: page.getWidth(), y: i * 10 },
           });
-        Array(parseInt(page.getWidth() / 10))
-          .fill(1)
-          .map((v, i) => {
-            page.drawLine({
-              start: { x: i * 10, y: 0 },
-              end: { x: i * 10, y: page.getHeight() },
-            });
+        });
+      Array(parseInt(page.getWidth() / 10))
+        .fill(1)
+        .map((v, i) => {
+          page.drawLine({
+            start: { x: i * 10, y: 0 },
+            end: { x: i * 10, y: page.getHeight() },
           });
-      };
-      // drawGrid(firstPage)
-      drawLines(firstPage);
+        });
+    };
+    // drawGrid(firstPage)
+    drawLines(firstPage);
 
-      await firstPage.drawSvg(svg, {
-        height: 602,
-        width: 409,
-        // height: 32,
-        // width: 32,
-        x: 100,
-        y: 700,
-      });
+    await firstPage.drawSvg(svg, {
+      height: 602,
+      width: 409,
+      // height: 32,
+      // width: 32,
+      x: 100,
+      y: 700,
+    });
 
-      await firstPage.drawSvg(svg3, {
-        height: 100,
-        width: 100,
-        x: 100,
-        y: 700
-      })
+    await firstPage.drawSvg(svg3, {
+      height: 100,
+      width: 100,
+      x: 100,
+      y: 700
+    })
 
-      const pdfBytes = await pdfDoc.save();
+    // await firstPage.drawSvg(svg2, {
+    //   height: 100,
+    //   width: 100,
+    //   x: 100,
+    //   y: 500
+    // })
 
-      renderInIframe(pdfBytes);
-    }
-  </script>
+    // await firstPage.drawSvg(svg4, {
+    //   height: 100,
+    //   width: 100,
+    //   x: 100,
+    //   y: 400
+    // })
+    const pdfBytes = await pdfDoc.save();
+
+    renderInIframe(pdfBytes);
+  }
+</script>
 </html>
