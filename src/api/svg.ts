@@ -16,7 +16,7 @@ import {
 import PDFFont from './PDFFont';
 import PDFPage from './PDFPage';
 import { PDFPageDrawSVGElementOptions } from './PDFPageOptions';
-import { LineCapStyle, LineJoinStyle } from './operators';
+import { LineCapStyle, LineJoinStyle, FillRule } from './operators';
 import { Rectangle, Point, Segment, Ellipse } from '../utils/elements';
 import { getIntersections } from '../utils/intersections';
 import { distanceCoords, isEqual, distance, rotate } from '../utils/maths';
@@ -49,6 +49,7 @@ type InheritedAttributes = {
   strokeWidth?: number;
   strokeOpacity?: number;
   strokeLineCap?: LineCapStyle;
+  fillRule?: FillRule;
   strokeLineJoin?: LineJoinStyle;
   fontFamily?: string;
   fontStyle?: string;
@@ -117,6 +118,11 @@ const StrokeLineCapMap: Record<string, LineCapStyle> = {
   butt: LineCapStyle.Butt,
   round: LineCapStyle.Round,
   square: LineCapStyle.Projecting,
+};
+
+const FillRuleMap: Record<string, FillRule> = {
+  evenodd: FillRule.EvenOdd,
+  nonzero: FillRule.NonZero
 };
 
 const StrokeLineJoinMap: Record<string, LineJoinStyle> = {
@@ -754,6 +760,7 @@ const runnersToPage = (
       opacity: element.svgAttributes.fillOpacity,
       scale: element.svgAttributes.scale,
       rotate: element.svgAttributes.rotate,
+      fillRule: element.svgAttributes.fillRule,
     });
   },
   async image(element) {
@@ -977,6 +984,11 @@ const parseAttributes = (
     style,
     'stroke-linejoin',
   );
+  const fillRuleRaw = styleOrAttribute(
+    attributes,
+    style,
+    'fill-rule',
+  );
   const strokeWidthRaw = styleOrAttribute(attributes, style, 'stroke-width');
   const fontFamilyRaw = styleOrAttribute(attributes, style, 'font-family');
   const fontStyleRaw = styleOrAttribute(attributes, style, 'font-style');
@@ -1005,6 +1017,7 @@ const parseAttributes = (
     fillOpacity:
       parseFloatValue(fillOpacityRaw || opacityRaw || fillRaw?.alpha) ??
       inherited.fillOpacity,
+    fillRule: FillRuleMap[fillRuleRaw] || inherited.fillRule,
     stroke: strokeRaw?.rgb || inherited.stroke,
     strokeWidth: parseFloatValue(strokeWidthRaw) ?? inherited.strokeWidth,
     strokeOpacity:

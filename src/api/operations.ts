@@ -31,6 +31,8 @@ import {
   clip,
   endPath,
   appendBezierCurve,
+  FillRule,
+  fillEvenOdd,
 } from './operators';
 import { Rotation, degrees, toRadians } from './rotations';
 import { svgPathToOperators } from './svgPath';
@@ -348,6 +350,7 @@ export const drawSvgPath = (
     borderDashPhase?: number | PDFNumber;
     borderLineCap?: LineCapStyle;
     graphicsState?: string | PDFName;
+    fillRule?: FillRule
   },
 ) =>
   [
@@ -369,7 +372,7 @@ export const drawSvgPath = (
 
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()
-  : options.color                      ? fill()
+  : options.color                      ? options.fillRule === FillRule.EvenOdd ? fillEvenOdd() : fill()
   : options.borderColor                ? stroke()
   : closePath(),
 

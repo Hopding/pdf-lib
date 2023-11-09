@@ -14,6 +14,7 @@ import {
   translate,
   LineCapStyle,
   scale,
+  FillRule,
 } from './operators';
 import PDFDocument from './PDFDocument';
 import PDFEmbeddedPage from './PDFEmbeddedPage';
@@ -1240,6 +1241,7 @@ export default class PDFPage {
       1,
     );
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
+    assertIsOneOfOrUndefined(options.fillRule, 'options.fillRule', FillRule);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -1265,6 +1267,7 @@ export default class PDFPage {
         borderDashPhase: options.borderDashPhase ?? undefined,
         borderLineCap: options.borderLineCap ?? undefined,
         graphicsState: graphicsStateKey,
+        fillRule: options.fillRule,
       }),
     );
   }

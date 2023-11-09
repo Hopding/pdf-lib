@@ -1,7 +1,7 @@
 import { Color } from './colors';
 import PDFFont from './PDFFont';
 import { Rotation } from './rotations';
-import { LineCapStyle } from './operators';
+import { FillRule, LineCapStyle } from './operators';
 
 export enum BlendMode {
   Normal = 'Normal',
@@ -74,6 +74,7 @@ export interface PDFPageDrawSVGOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
+  fillRule?: FillRule
 }
 
 export interface PDFPageDrawLineOptions {
