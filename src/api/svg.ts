@@ -748,8 +748,9 @@ const runnersToPage = (
     });
   },
   async path(element) {
+    if (!element.svgAttributes.d) return
     // See https://jsbin.com/kawifomupa/edit?html,output and
-    page.drawSvgPath(element.svgAttributes.d!, {
+    page.drawSvgPath(element.svgAttributes.d, {
       x: element.svgAttributes.x || 0,
       y: element.svgAttributes.y || 0,
       borderColor: element.svgAttributes.stroke,
