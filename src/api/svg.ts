@@ -19,7 +19,7 @@ import { PDFPageDrawSVGElementOptions } from './PDFPageOptions';
 import { LineCapStyle, LineJoinStyle, FillRule } from './operators';
 import { Rectangle, Point, Segment, Ellipse } from '../utils/elements';
 import { getIntersections } from '../utils/intersections';
-import { distanceCoords, isEqual, distance, rotate } from '../utils/maths';
+import { distanceCoords, isEqual, distance, rotate, angle, minus } from '../utils/maths';
 
 interface Position {
   x: number;
@@ -1052,6 +1052,7 @@ const parseAttributes = (
     'scale',
     'scaleX',
     'scaleY',
+    'matrix',
   ].forEach((name) => {
     if (attributes[name]) {
       transformList = attributes[name] + ' ' + transformList;
@@ -1087,21 +1088,26 @@ const parseAttributes = (
         .split(/\s*,\s*|\s+/)
         .filter((value) => value.length > 0)
         .map((value) => parseFloat(value));
-      if (name === 'rotate') {
+      const currentConverter = newConverter
+      newConverter = transform(newConverter, name, args);
+      const xAxisVector = minus(currentConverter.point(0, 0), currentConverter.point(1, 0))
+      const xAxisVectorPostTransform = minus(newConverter.point(0, 0), newConverter.point(1, 0))
+      // matrix transform may also represent rotations: https://www.w3.org/TR/SVGTiny12/coords.html
+      if (name === 'rotate' || name === 'matrix') {
         // transformations over x and y axis might change the page coord direction
-        const { width: xDirection, height: yDirection } = newConverter.size(
+        const { width: xDirection, height: yDirection } = currentConverter.size(
           1,
           1,
         );
+        const rotationAdded = name === 'rotate' ? args[0] : radiansToDegrees(angle(xAxisVectorPostTransform, xAxisVector))
         // the page Y coord is inverted so the angle rotation is inverted too
         const pageYDirection = -1;
         newInherited.rotation = degrees(
-          pageYDirection * args[0] * Math.sign(xDirection * yDirection) +
+          pageYDirection * rotationAdded * Math.sign(xDirection * yDirection) +
           (inherited.rotation?.angle || 0),
         );
         svgAttributes.rotate = newInherited.rotation;
       }
-      newConverter = transform(newConverter, name, args);
       parsed = regexTransform.exec(transformList);
     }
   }
