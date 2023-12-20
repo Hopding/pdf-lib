@@ -1,24 +1,24 @@
 import pako from 'pako';
 
-import PDFHeader from 'src/core/document/PDFHeader';
-import { UnexpectedObjectTypeError } from 'src/core/errors';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFBool from 'src/core/objects/PDFBool';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNull from 'src/core/objects/PDFNull';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFString from 'src/core/objects/PDFString';
-import PDFOperator from 'src/core/operators/PDFOperator';
-import Ops from 'src/core/operators/PDFOperatorNames';
-import PDFContentStream from 'src/core/structures/PDFContentStream';
-import { typedArrayFor } from 'src/utils';
-import { SimpleRNG } from 'src/utils/rng';
+import PDFHeader from './document/PDFHeader';
+import { UnexpectedObjectTypeError } from './errors';
+import PDFArray from './objects/PDFArray';
+import PDFBool from './objects/PDFBool';
+import PDFDict from './objects/PDFDict';
+import PDFHexString from './objects/PDFHexString';
+import PDFName from './objects/PDFName';
+import PDFNull from './objects/PDFNull';
+import PDFNumber from './objects/PDFNumber';
+import PDFObject from './objects/PDFObject';
+import PDFRawStream from './objects/PDFRawStream';
+import PDFRef from './objects/PDFRef';
+import PDFStream from './objects/PDFStream';
+import PDFString from './objects/PDFString';
+import PDFOperator from './operators/PDFOperator';
+import Ops from './operators/PDFOperatorNames';
+import PDFContentStream from './structures/PDFContentStream';
+import { typedArrayFor } from '../utils';
+import { SimpleRNG } from '../utils/rng';
 
 type LookupKey = PDFRef | PDFObject | undefined;
 
@@ -45,6 +45,7 @@ const byAscendingObjectNumber = (
 ) => a.objectNumber - b.objectNumber;
 
 class PDFContext {
+  isDecrypted = true;
   static create = () => new PDFContext();
 
   largestObjectNumber: number;

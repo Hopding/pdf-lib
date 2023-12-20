@@ -1,5 +1,5 @@
-import { PDFContext, PDFDict, PDFRawStream } from 'src/core';
-import { mergeIntoTypedArray, toCharCode } from 'src/utils';
+import { PDFContext, PDFDict, PDFRawStream } from '../../../src/core';
+import { mergeIntoTypedArray, toCharCode } from '../../../src/utils';
 
 describe(`PDFRawStream`, () => {
   const context = PDFContext.create();

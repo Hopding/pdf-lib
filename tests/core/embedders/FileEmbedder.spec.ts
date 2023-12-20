@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PDFContext, PDFDict, PDFRef, FileEmbedder } from 'src/index';
+import { PDFContext, PDFDict, PDFRef, FileEmbedder } from '../../../src/index';
 
 const catRidingUnicornJpg = fs.readFileSync(
   'assets/images/cat_riding_unicorn.jpg',

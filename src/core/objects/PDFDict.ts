@@ -1,15 +1,15 @@
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFBool from 'src/core/objects/PDFBool';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNull from 'src/core/objects/PDFNull';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFString from 'src/core/objects/PDFString';
-import PDFContext from 'src/core/PDFContext';
-import CharCodes from 'src/core/syntax/CharCodes';
+import PDFArray from './PDFArray';
+import PDFBool from './PDFBool';
+import PDFHexString from './PDFHexString';
+import PDFName from './PDFName';
+import PDFNull from './PDFNull';
+import PDFNumber from './PDFNumber';
+import PDFObject from './PDFObject';
+import PDFRef from './PDFRef';
+import PDFStream from './PDFStream';
+import PDFString from './PDFString';
+import PDFContext from '../PDFContext';
+import CharCodes from '../syntax/CharCodes';
 
 export type DictMap = Map<PDFName, PDFObject>;
 
@@ -22,6 +22,8 @@ class PDFDict extends PDFObject {
   readonly context: PDFContext;
 
   private readonly dict: DictMap;
+
+  suppressEncryption: boolean = false;
 
   protected constructor(map: DictMap, context: PDFContext) {
     super();

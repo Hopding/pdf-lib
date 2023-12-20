@@ -1,5 +1,5 @@
-import { PDFHexString } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFHexString } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
 describe(`PDFHexString`, () => {
   it(`can be constructed from PDFHexString.of(...)`, () => {

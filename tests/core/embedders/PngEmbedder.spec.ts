@@ -1,5 +1,10 @@
 import fs from 'fs';
-import { PDFContext, PDFRawStream, PDFRef, PngEmbedder } from 'src/core';
+import {
+  PDFContext,
+  PDFRawStream,
+  PDFRef,
+  PngEmbedder,
+} from '../../../src/core';
 
 const greyscalePng = fs.readFileSync('./assets/images/greyscale_bird.png');
 const rgbaPng = fs.readFileSync('./assets/images/minions_banana_alpha.png');

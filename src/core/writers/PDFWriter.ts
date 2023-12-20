@@ -1,14 +1,14 @@
-import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
-import PDFHeader from 'src/core/document/PDFHeader';
-import PDFTrailer from 'src/core/document/PDFTrailer';
-import PDFTrailerDict from 'src/core/document/PDFTrailerDict';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFContext from 'src/core/PDFContext';
-import PDFObjectStream from 'src/core/structures/PDFObjectStream';
-import CharCodes from 'src/core/syntax/CharCodes';
-import { copyStringIntoBuffer, waitForTick } from 'src/utils';
+import PDFCrossRefSection from '../document/PDFCrossRefSection';
+import PDFHeader from '../document/PDFHeader';
+import PDFTrailer from '../document/PDFTrailer';
+import PDFTrailerDict from '../document/PDFTrailerDict';
+import PDFDict from '../objects/PDFDict';
+import PDFObject from '../objects/PDFObject';
+import PDFRef from '../objects/PDFRef';
+import PDFContext from '../PDFContext';
+import PDFObjectStream from '../structures/PDFObjectStream';
+import CharCodes from '../syntax/CharCodes';
+import { copyStringIntoBuffer, waitForTick } from '../../utils';
 
 export interface SerializationInfo {
   size: number;
@@ -34,14 +34,8 @@ class PDFWriter {
   }
 
   async serializeToBuffer(): Promise<Uint8Array> {
-    const {
-      size,
-      header,
-      indirectObjects,
-      xref,
-      trailerDict,
-      trailer,
-    } = await this.computeBufferSize();
+    const { size, header, indirectObjects, xref, trailerDict, trailer } =
+      await this.computeBufferSize();
 
     let offset = 0;
     const buffer = new Uint8Array(size);

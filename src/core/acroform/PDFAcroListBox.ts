@@ -1,7 +1,7 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFAcroChoice from 'src/core/acroform/PDFAcroChoice';
-import PDFContext from 'src/core/PDFContext';
-import PDFRef from 'src/core/objects/PDFRef';
+import PDFDict from '../objects/PDFDict';
+import PDFAcroChoice from './PDFAcroChoice';
+import PDFContext from '../PDFContext';
+import PDFRef from '../objects/PDFRef';
 
 class PDFAcroListBox extends PDFAcroChoice {
   static fromDict = (dict: PDFDict, ref: PDFRef) =>

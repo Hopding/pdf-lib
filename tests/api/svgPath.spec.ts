@@ -1,4 +1,4 @@
-import { svgPathToOperators } from 'src/api/svgPath';
+import { svgPathToOperators } from '../../src/api/svgPath';
 
 // Test paths adapted from https://svgwg.org/svg2-draft/paths.html
 describe(`svgPathToOperators`, () => {
@@ -137,6 +137,17 @@ describe(`svgPathToOperators`, () => {
     expect(operators.length).toBe(6);
     expect(operators.toString()).toBe(
       '100 100 m,100 100 100 200 v,100 300 200 200 v,90 120 m,90 120 90 220 v,90 320 190 220 v',
+    );
+  });
+
+  it(`correctly updates control points for T command`, () => {
+    // See https://github.com/Hopding/pdf-lib/issues/1443
+    const operators = svgPathToOperators(
+      'M 10,25 Q 30,0 50,25 Q 70,50 90,25 T 130,25 T 170,25',
+    );
+    expect(operators.length).toBe(5);
+    expect(operators.toString()).toBe(
+      '10 25 m,30 0 50 25 v,70 50 90 25 v,110 0 130 25 v,150 50 170 25 v'
     );
   });
 });

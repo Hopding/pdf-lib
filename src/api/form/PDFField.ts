@@ -1,7 +1,7 @@
-import PDFDocument from 'src/api/PDFDocument';
-import PDFFont from 'src/api/PDFFont';
-import { AppearanceMapping } from 'src/api/form/appearances';
-import { Color, colorToComponents, setFillingColor } from 'src/api/colors';
+import PDFDocument from '../PDFDocument';
+import PDFFont from '../PDFFont';
+import { AppearanceMapping } from './appearances';
+import { Color, colorToComponents, setFillingColor } from '../colors';
 import {
   Rotation,
   toDegrees,
@@ -9,7 +9,7 @@ import {
   reduceRotation,
   adjustDimsForRotation,
   degrees,
-} from 'src/api/rotations';
+} from '../rotations';
 
 import {
   PDFRef,
@@ -21,8 +21,8 @@ import {
   AcroFieldFlags,
   PDFAcroTerminal,
   AnnotationFlags,
-} from 'src/core';
-import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
+} from '../../core';
+import { assertIs, assertMultiple, assertOrUndefined } from '../../utils';
 import { ImageAlignment } from '../image';
 import PDFImage from '../PDFImage';
 import { drawImage, rotateInPlace } from '../operations';

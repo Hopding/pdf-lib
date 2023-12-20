@@ -15,8 +15,8 @@
  */
 
 /* tslint:disable  no-conditional-assignment */
-import DecodeStream from 'src/core/streams/DecodeStream';
-import { StreamType } from 'src/core/streams/Stream';
+import DecodeStream from '../../core/streams/DecodeStream';
+import { StreamType } from '../../core/streams/Stream';
 
 // prettier-ignore
 const codeLenCodeMap = new Int32Array([

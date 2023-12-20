@@ -1,5 +1,5 @@
-import { PDFString } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFString } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
 describe(`PDFString`, () => {
   it(`can be constructed from PDFString.of(...)`, () => {

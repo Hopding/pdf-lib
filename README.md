@@ -1,8 +1,19 @@
-@pdfme/pdf-lib  
-this version is forked from [Hopding/pdf-lib](https://github.com/Hopding/pdf-lib).  
-@pdfme/pdf-lib compatible with [foliojs/fontkit](https://github.com/foliojs/fontkit) v2
+# @pdfme/pdf-lib
 
-To fix this issue -> [Character corruption occurs when enabling subsets for some Japanese and Chinese fonts #162](https://github.com/pdfme/pdfme/issues/162)
+This version is forked from [Hopding/pdf-lib](https://github.com/Hopding/pdf-lib).  
+Incorporated several bug fixes and additional features into the original code.
+
+ <details>
+  <summary><a href="https://github.com/cantoo-scribe/pdf-lib">2023/12/20 - Incorporate @cantoo/pdf-lib that is fork of pdf-lib to use drawSvg method</a></summary>
+
+To achieve [Add SVG Schema #29](https://github.com/pdfme/pdfme/issues/29) feature, pull the [@cantoo/pdf-lib](https://github.com/cantoo-scribe/pdf-lib) into this repo.
+
+</details>
+
+<details>
+  <summary><a href="https://github.com/pdfme/pdfme/issues/162">2023/04/20 - Character corruption occurs when enabling subsets for some Japanese and Chinese fonts #162</a></summary>
+
+@pdfme/pdf-lib compatible with [foliojs/fontkit](https://github.com/foliojs/fontkit) v2
 
 ```js
 import { PDFDocument, rgb } from 'pdf-lib'
@@ -21,6 +32,7 @@ const pdfDoc = await PDFDocument.create()
 pdfDoc.registerFontkit(fontkit)
 ```
 
+</details>
 
 ---
 
@@ -1431,34 +1443,25 @@ See also [MAINTAINERSHIP.md#communication](docs/MAINTAINERSHIP.md#communication)
 
 ## Encryption Handling
 
-**`pdf-lib` does not currently support encrypted documents.** You should not use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
+**`pdf-lib` does support encrypted documents.**
 
-When an encrypted document is passed to `PDFDocument.load(...)`, an error will be thrown:
-
-<!-- prettier-ignore -->
-```js
-import { PDFDocument, EncryptedPDFError } from 'pdf-lib'
-
-const encryptedPdfBytes = ...
-
-// Assignment fails. Throws an `EncryptedPDFError`.
-const pdfDoc = PDFDocument.load(encryptedPdfBytes)
-```
-
-This default behavior is usually what you want. It allows you to easily detect if a given document is encrypted, and it prevents you from trying to modify it. However, if you really want to load the document, you can use the `{ ignoreEncryption: true }` option:
+To load a document, use this:
 
 ```js
-import { PDFDocument } from 'pdf-lib'
-
-const encryptedPdfBytes = ...
-
-// Assignment succeeds. Does not throw an error.
-const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
+// Load a random document you know nothing about:
+const doc = PDFDocument.load(content, { ignoreEncryption: true });
+// Check if the document is encrypted:
+const isEncrypted = doc.isEncrypted;
+// If isEncrypted is true, you know the you need to ask the user for the password.
 ```
 
-Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
+If you know the password of the document, or if it was provided by the user, you can now open the document with it:
 
-**You should not use this option.** It only exists for backwards compatibility reasons.
+```js
+// Load an encrypted document with its password:
+const password = 'The password';
+const doc = PDFDocument.load(content, { ignoreEncryption: true, password });
+```
 
 ## Contributing
 

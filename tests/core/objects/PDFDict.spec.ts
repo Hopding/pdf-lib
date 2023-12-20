@@ -10,8 +10,8 @@ import {
   PDFRef,
   PDFString,
   PDFObject,
-} from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+} from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
 describe(`PDFDict`, () => {
   const context = PDFContext.create();

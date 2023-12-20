@@ -1,5 +1,5 @@
-import { decodeFromBase64DataUri } from 'src/utils/base64';
-import { charFromCode } from 'src/utils/strings';
+import { decodeFromBase64DataUri } from './base64';
+import { charFromCode } from './strings';
 
 export const last = <T>(array: T[]): T => array[array.length - 1];
 
@@ -82,6 +82,18 @@ export const sortedUniq = <T>(array: T[], indexer: (elem: T) => any): T[] => {
   }
 
   return uniq;
+};
+
+export const isArrayEqual = <T>(arr1: ArrayLike<T>, arr2: ArrayLike<T>) => {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (let i = 0, ii = arr1.length; i < ii; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
 };
 
 // Arrays and TypedArrays in JS both have .reverse() methods, which would seem

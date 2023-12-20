@@ -1,28 +1,28 @@
-import PDFDocument from 'src/api/PDFDocument';
-import PDFPage from 'src/api/PDFPage';
-import PDFField from 'src/api/form/PDFField';
-import PDFButton from 'src/api/form/PDFButton';
-import PDFCheckBox from 'src/api/form/PDFCheckBox';
-import PDFDropdown from 'src/api/form/PDFDropdown';
-import PDFOptionList from 'src/api/form/PDFOptionList';
-import PDFRadioGroup from 'src/api/form/PDFRadioGroup';
-import PDFSignature from 'src/api/form/PDFSignature';
-import PDFTextField from 'src/api/form/PDFTextField';
+import PDFDocument from '../PDFDocument';
+import PDFPage from '../PDFPage';
+import PDFField from './PDFField';
+import PDFButton from './PDFButton';
+import PDFCheckBox from './PDFCheckBox';
+import PDFDropdown from './PDFDropdown';
+import PDFOptionList from './PDFOptionList';
+import PDFRadioGroup from './PDFRadioGroup';
+import PDFSignature from './PDFSignature';
+import PDFTextField from './PDFTextField';
 import {
   NoSuchFieldError,
   UnexpectedFieldTypeError,
   FieldAlreadyExistsError,
   InvalidFieldNamePartError,
-} from 'src/api/errors';
-import PDFFont from 'src/api/PDFFont';
-import { StandardFonts } from 'src/api/StandardFonts';
-import { rotateInPlace } from 'src/api/operations';
+} from '../errors';
+import PDFFont from '../PDFFont';
+import { StandardFonts } from '../StandardFonts';
+import { rotateInPlace } from '../operations';
 import {
   drawObject,
   popGraphicsState,
   pushGraphicsState,
   translate,
-} from 'src/api/operators';
+} from '../operators';
 import {
   PDFAcroForm,
   PDFAcroField,
@@ -40,8 +40,8 @@ import {
   createPDFAcroFields,
   PDFName,
   PDFWidgetAnnotation,
-} from 'src/core';
-import { assertIs, Cache, assertOrUndefined } from 'src/utils';
+} from '../../core';
+import { assertIs, Cache, assertOrUndefined } from '../../utils';
 
 export interface FlattenOptions {
   updateFieldAppearances: boolean;
@@ -546,22 +546,26 @@ export default class PDFForm {
       const widgets = field.acroField.getWidgets();
 
       for (let j = 0, lenWidgets = widgets.length; j < lenWidgets; j++) {
-        const widget = widgets[j];
-        const page = this.findWidgetPage(widget);
-        const widgetRef = this.findWidgetAppearanceRef(field, widget);
+        try {
+          const widget = widgets[j];
+          const page = this.findWidgetPage(widget);
+          const widgetRef = this.findWidgetAppearanceRef(field, widget);
 
-        const xObjectKey = page.node.newXObject('FlatWidget', widgetRef);
+          const xObjectKey = page.node.newXObject('FlatWidget', widgetRef);
 
-        const rectangle = widget.getRectangle();
-        const operators = [
-          pushGraphicsState(),
-          translate(rectangle.x, rectangle.y),
-          ...rotateInPlace({ ...rectangle, rotation: 0 }),
-          drawObject(xObjectKey),
-          popGraphicsState(),
-        ].filter(Boolean) as PDFOperator[];
+          const rectangle = widget.getRectangle();
+          const operators = [
+            pushGraphicsState(),
+            translate(rectangle.x, rectangle.y),
+            ...rotateInPlace({ ...rectangle, rotation: 0 }),
+            drawObject(xObjectKey),
+            popGraphicsState(),
+          ].filter(Boolean) as PDFOperator[];
 
-        page.pushOperators(...operators);
+          page.pushOperators(...operators);
+        } catch(err) {
+          console.error(err)
+        }
       }
 
       this.removeField(field);
@@ -583,13 +587,17 @@ export default class PDFForm {
     const pages: Set<PDFPage> = new Set();
 
     for (let i = 0, len = widgets.length; i < len; i++) {
-      const widget = widgets[i];
-      const widgetRef = this.findWidgetAppearanceRef(field, widget);
+      try {
+        const widget = widgets[i];
+        const widgetRef = this.findWidgetAppearanceRef(field, widget);
 
-      const page = this.findWidgetPage(widget);
-      pages.add(page);
+        const page = this.findWidgetPage(widget);
+        pages.add(page);
 
-      page.node.removeAnnot(widgetRef);
+        page.node.removeAnnot(widgetRef);
+      } catch(err) {
+        console.error(err)
+      }
     }
 
     pages.forEach((page) => page.node.removeAnnot(field.ref));

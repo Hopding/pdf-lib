@@ -1,5 +1,5 @@
-import { PDFNull } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFNull } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
 describe(`PDFNull`, () => {
   it(`cannot be publicly constructed`, () => {

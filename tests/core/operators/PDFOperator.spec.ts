@@ -5,7 +5,7 @@ import {
   PDFString,
   toCharCode,
   typedArrayFor,
-} from 'src/index';
+} from '../../../src/index';
 
 describe(`PDFOperator`, () => {
   it(`can be constructed with args`, () => {

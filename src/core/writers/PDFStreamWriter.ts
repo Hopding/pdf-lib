@@ -1,16 +1,16 @@
-import PDFHeader from 'src/core/document/PDFHeader';
-import PDFTrailer from 'src/core/document/PDFTrailer';
-import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFContext from 'src/core/PDFContext';
-import PDFCrossRefStream from 'src/core/structures/PDFCrossRefStream';
-import PDFObjectStream from 'src/core/structures/PDFObjectStream';
-import PDFWriter from 'src/core/writers/PDFWriter';
-import { last, waitForTick } from 'src/utils';
+import PDFHeader from '../document/PDFHeader';
+import PDFTrailer from '../document/PDFTrailer';
+import PDFInvalidObject from '../objects/PDFInvalidObject';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
+import PDFObject from '../objects/PDFObject';
+import PDFRef from '../objects/PDFRef';
+import PDFStream from '../objects/PDFStream';
+import PDFContext from '../PDFContext';
+import PDFCrossRefStream from '../structures/PDFCrossRefStream';
+import PDFObjectStream from '../structures/PDFObjectStream';
+import PDFWriter from './PDFWriter';
+import { last, waitForTick } from '../../utils';
 
 class PDFStreamWriter extends PDFWriter {
   static forContext = (

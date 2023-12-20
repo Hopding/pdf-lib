@@ -437,10 +437,10 @@ export default async () => {
 
   const [normalPdfBytes] = await Promise.all([fetchAsset('pdfs/normal.pdf')]);
 
-  const [embeddedPage1, embeddedPage2] = await pdfDoc.embedPdf(normalPdfBytes, [
-    0,
-    1,
-  ]);
+  const [embeddedPage1, embeddedPage2] = await pdfDoc.embedPdf(
+    normalPdfBytes,
+    [0, 1],
+  );
   page4.drawPage(embeddedPage1, {
     x: 40,
     y: 100,

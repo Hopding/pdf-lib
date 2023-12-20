@@ -1,5 +1,5 @@
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFContext from 'src/core/PDFContext';
+import PDFRef from '../objects/PDFRef';
+import PDFContext from '../PDFContext';
 
 // prettier-ignore
 const MARKERS = [

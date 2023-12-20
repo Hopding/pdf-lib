@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource:;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 20</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test19.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test21.html'">
+        Next
+      </button>
+    </div>
+    <!-- <div  ></div> -->
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    // startFpsTracker('animation-target');
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
+
+      const pdfDoc = await PDFDocument.create();
+      const firstPage = pdfDoc.addPage([1000, 1000]);
+
+      const fontSize = 20;
+
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="542" height="609" viewBox="-12.63679245283019 -9.532281839622643 16.77358490566038 18.952830188679243" style="width:542px;height:609px;"><g transform="scale(1 -1) translate(0 -9.401183626602595)"><circle cx="-3.6809271217712167" cy="9.028482472324727" r="3" stroke-width="0.1971348667549198" stroke="#000000ff" fill="none"></circle> <rect x="-8.25" y="4.620407566885847" rx="0.911107922838356" ry="1.0629592433114152" width="9.11107922838356" height="10.629592433114153" stroke="#000000ff" fill="none" stroke-width="0.1971348667549198"></rect> <line id="6708bf71-f4a9-49f8-a3bc-350a01d85900" x1="-10.25" x2="2.2308466938719143" y1="16.25" y2="3.279708337740953" stroke-width="0.1971348667549198" stroke-linecap="round" stroke="#000000ff"></line></g></svg>`;
+      const svg3 = `<svg width="100" height="100">
+  <rect y="0" x="0" width="100" height="100" fill="none" stroke="black"/>
+  <rect y="50" x="50" width="50" height="50" fill="black"/>
+</svg>`;
+      const svg2 = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="437" height="437" viewBox="-5.766990291262136 -11.939927184466018 8.349514563106796 8.194174757281553" style="width: 437px; height: 437px;">
+  <g transform="scale(1 -1) translate(0 0)">
+    <line id="gridX:0" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:1" x1="1" x2="1" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:2" x1="2" x2="2" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:3" x1="3" x2="3" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:4" x1="4" x2="4" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:5" x1="5" x2="5" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:6" x1="6" x2="6" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:7" x1="7" x2="7" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:8" x1="8" x2="8" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridX:9" x1="9" x2="9" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-1" x1="-1" x2="-1" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-2" x1="-2" x2="-2" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-3" x1="-3" x2="-3" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-4" x1="-4" x2="-4" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-5" x1="-5" x2="-5" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-6" x1="-6" x2="-6" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-7" x1="-7" x2="-7" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-8" x1="-8" x2="-8" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridx:-9" x1="-9" x2="-9" y1="-15.354691075514873" y2="15.354691075514873" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:0" x1="-10" x2="10" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:1" x1="-10" x2="10" y1="1" y2="1" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:2" x1="-10" x2="10" y1="2" y2="2" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:3" x1="-10" x2="10" y1="3" y2="3" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:4" x1="-10" x2="10" y1="4" y2="4" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:5" x1="-10" x2="10" y1="5" y2="5" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:6" x1="-10" x2="10" y1="6" y2="6" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:7" x1="-10" x2="10" y1="7" y2="7" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:8" x1="-10" x2="10" y1="8" y2="8" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:9" x1="-10" x2="10" y1="9" y2="9" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:10" x1="-10" x2="10" y1="10" y2="10" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:11" x1="-10" x2="10" y1="11" y2="11" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:12" x1="-10" x2="10" y1="12" y2="12" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:13" x1="-10" x2="10" y1="13" y2="13" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:14" x1="-10" x2="10" y1="14" y2="14" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:15" x1="-10" x2="10" y1="15" y2="15" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-1" x1="-10" x2="10" y1="-1" y2="-1" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-2" x1="-10" x2="10" y1="-2" y2="-2" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-3" x1="-10" x2="10" y1="-3" y2="-3" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-4" x1="-10" x2="10" y1="-4" y2="-4" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-5" x1="-10" x2="10" y1="-5" y2="-5" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-6" x1="-10" x2="10" y1="-6" y2="-6" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-7" x1="-10" x2="10" y1="-7" y2="-7" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-8" x1="-10" x2="10" y1="-8" y2="-8" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-9" x1="-10" x2="10" y1="-9" y2="-9" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-10" x1="-10" x2="10" y1="-10" y2="-10" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-11" x1="-10" x2="10" y1="-11" y2="-11" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-12" x1="-10" x2="10" y1="-12" y2="-12" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-13" x1="-10" x2="10" y1="-13" y2="-13" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-14" x1="-10" x2="10" y1="-14" y2="-14" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <line id="gridy:-15" x1="-10" x2="10" y1="-15" y2="-15" stroke-width="0.04576659038901602" stroke-linecap="round" stroke="#E5E5E5"/>
+    <ellipse id="84b31d0d-98d7-4994-972f-016d761b185c" cx="-1.5000455013203968" cy="8.015083253349824" rx="2.5000000000000004" ry="2.426413513777" transform="rotate(0.34568480052757566 -1.5000455013203968 8.015083253349824)" stroke-width="0.04576659038901602" stroke="black" fill="none"/>
+    <ellipse id="e9eb473d-1844-48d3-9404-dbca51bcc25f" cx="-2.5" cy="8.75" rx="0.20594965675057209" ry="0.20594965675057209" fill="#000000ff"/>
+    <ellipse id="ea62b610-1076-461c-8e77-c331971461a1" cx="-0.5" cy="8.5" rx="0.20594965675057209" ry="0.20594965675057209" fill="#000000ff"/>
+    <path id="cdd6485a-18f3-4324-87bb-18be669474cf" d="M -0.9955958173813108,6.843589816313437 A 0.9999999999999999,0.9999999999999999 0 0 0 -2.6956699856847175 7.174871904974261" stroke="#000000ff" stroke-width="0.13729977116704806" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>
+`;
+
+      Array(10)
+        .fill(1)
+        .map((v, i) => i)
+        .forEach((v) => {
+          firstPage.drawText('----' + v, {
+            x: 5,
+            y: v * 100,
+            size: 20,
+          });
+        });
+      Array(100)
+        .fill(1)
+        .map((v, i) => i)
+        .forEach((v) => {
+          firstPage.drawText(v % 5 == 0 ? '---' : '--', {
+            x: 5,
+            y: v * 10,
+            size: 20,
+          });
+        });
+      /* firstPage.drawSvg(svg, {
+        x: 100,
+        y: 1000
+      }); */
+      await firstPage.drawSvg(svg3, {
+        x: 100,
+        y: 950,
+      });
+      await firstPage.drawSvg(svg2, {
+        x: 100,
+        y: 800,
+      });
+
+      const pdfBytes = await pdfDoc.save();
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

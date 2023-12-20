@@ -1,5 +1,5 @@
-import { PDFNumber } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFNumber } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
 describe(`PDFNumber`, () => {
   it(`can be constructed from PDFNumber.of(...)`, () => {

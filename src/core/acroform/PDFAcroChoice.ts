@@ -1,13 +1,10 @@
-import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFString from 'src/core/objects/PDFString';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFName from 'src/core/objects/PDFName';
-import { AcroChoiceFlags } from 'src/core/acroform/flags';
-import {
-  InvalidAcroFieldValueError,
-  MultiSelectValueError,
-} from 'src/core/errors';
+import PDFAcroTerminal from './PDFAcroTerminal';
+import PDFHexString from '../objects/PDFHexString';
+import PDFString from '../objects/PDFString';
+import PDFArray from '../objects/PDFArray';
+import PDFName from '../objects/PDFName';
+import { AcroChoiceFlags } from './flags';
+import { InvalidAcroFieldValueError, MultiSelectValueError } from '../errors';
 
 class PDFAcroChoice extends PDFAcroTerminal {
   setValues(values: (PDFString | PDFHexString)[]) {

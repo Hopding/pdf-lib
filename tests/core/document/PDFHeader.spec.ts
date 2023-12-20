@@ -1,5 +1,5 @@
-import { PDFHeader } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFHeader } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
 describe(`PDFHeader`, () => {
   it(`can be constructed from PDFHeader.forVersion(...)`, () => {

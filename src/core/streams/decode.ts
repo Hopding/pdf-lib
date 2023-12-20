@@ -1,19 +1,16 @@
-import {
-  UnexpectedObjectTypeError,
-  UnsupportedEncodingError,
-} from 'src/core/errors';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNull from 'src/core/objects/PDFNull';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import Ascii85Stream from 'src/core/streams/Ascii85Stream';
-import AsciiHexStream from 'src/core/streams/AsciiHexStream';
-import FlateStream from 'src/core/streams/FlateStream';
-import LZWStream from 'src/core/streams/LZWStream';
-import RunLengthStream from 'src/core/streams/RunLengthStream';
-import Stream, { StreamType } from 'src/core/streams/Stream';
+import { UnexpectedObjectTypeError, UnsupportedEncodingError } from '../errors';
+import PDFArray from '../objects/PDFArray';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFNull from '../objects/PDFNull';
+import PDFNumber from '../objects/PDFNumber';
+import PDFRawStream from '../objects/PDFRawStream';
+import Ascii85Stream from './Ascii85Stream';
+import AsciiHexStream from './AsciiHexStream';
+import FlateStream from './FlateStream';
+import LZWStream from './LZWStream';
+import RunLengthStream from './RunLengthStream';
+import Stream, { StreamType } from './Stream';
 
 const decodeStream = (
   stream: StreamType,
@@ -45,8 +42,16 @@ const decodeStream = (
   throw new UnsupportedEncodingError(encoding.asString());
 };
 
-export const decodePDFRawStream = ({ dict, contents }: PDFRawStream) => {
+export const decodePDFRawStream = ({
+  dict,
+  contents,
+  transform,
+}: PDFRawStream) => {
   let stream: StreamType = new Stream(contents);
+
+  if (transform) {
+    stream = transform.createStream(stream, contents.length);
+  }
 
   const Filter = dict.lookup(PDFName.of('Filter'));
   const DecodeParms = dict.lookup(PDFName.of('DecodeParms'));

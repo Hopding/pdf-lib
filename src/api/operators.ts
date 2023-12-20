@@ -1,12 +1,12 @@
-import { asNumber, asPDFName, asPDFNumber } from 'src/api/objects';
-import { degreesToRadians } from 'src/api/rotations';
+import { asNumber, asPDFName, asPDFNumber } from './objects';
+import { degreesToRadians } from './rotations';
 import {
   PDFHexString,
   PDFName,
   PDFNumber,
   PDFOperator,
   PDFOperatorNames as Ops,
-} from 'src/core';
+} from '../core';
 
 /* ==================== Clipping Path Operators ==================== */
 
@@ -185,7 +185,14 @@ export const square = (xPos: number, yPos: number, size: number) =>
 
 export const stroke = () => PDFOperator.of(Ops.StrokePath);
 
+export enum FillRule {
+  NonZero = 'f',
+  EvenOdd = 'f*'
+}
+
 export const fill = () => PDFOperator.of(Ops.FillNonZero);
+
+export const fillEvenOdd = () => PDFOperator.of(Ops.FillEvenOdd);
 
 export const fillAndStroke = () => PDFOperator.of(Ops.FillNonZeroAndStroke);
 

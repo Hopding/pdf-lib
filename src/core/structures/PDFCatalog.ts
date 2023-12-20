@@ -1,9 +1,9 @@
-import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFContext from 'src/core/PDFContext';
-import PDFPageTree from 'src/core/structures/PDFPageTree';
-import { PDFAcroForm } from 'src/core/acroform';
+import PDFDict, { DictMap } from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFRef from '../objects/PDFRef';
+import PDFContext from '../PDFContext';
+import PDFPageTree from './PDFPageTree';
+import { PDFAcroForm } from '../acroform';
 import ViewerPreferences from '../interactive/ViewerPreferences';
 
 class PDFCatalog extends PDFDict {

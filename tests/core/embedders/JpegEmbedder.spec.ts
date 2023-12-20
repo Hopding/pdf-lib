@@ -1,5 +1,10 @@
 import fs from 'fs';
-import { JpegEmbedder, PDFContext, PDFRawStream, PDFRef } from 'src/core';
+import {
+  JpegEmbedder,
+  PDFContext,
+  PDFRawStream,
+  PDFRef,
+} from '../../../src/core';
 
 const catUnicornJpg = fs.readFileSync('./assets/images/cat_riding_unicorn.jpg');
 const minionsLaughing = fs.readFileSync('./assets/images/minions_laughing.jpg');

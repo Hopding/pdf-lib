@@ -19,6 +19,12 @@ export const padStart = (value: string, length: number, padChar: string) => {
   return padding + value;
 };
 
+export const stringAsByteArray = (str: string): Uint8Array => {
+  const buffer = new Uint8Array(str.length);
+  copyStringIntoBuffer(str, buffer, 0);
+  return buffer;
+};
+
 export const copyStringIntoBuffer = (
   str: string,
   buffer: Uint8Array,
@@ -139,7 +145,8 @@ export const breakTextIntoLines = (
 };
 
 // See section "7.9.4 Dates" of the PDF specification
-const dateRegex = /^D:(\d\d\d\d)(\d\d)?(\d\d)?(\d\d)?(\d\d)?(\d\d)?([+\-Z])?(\d\d)?'?(\d\d)?'?$/;
+const dateRegex =
+  /^D:(\d\d\d\d)(\d\d)?(\d\d)?(\d\d)?(\d\d)?(\d\d)?([+\-Z])?(\d\d)?'?(\d\d)?'?$/;
 
 export const parseDate = (dateStr: string): Date | undefined => {
   const match = dateStr.match(dateRegex);

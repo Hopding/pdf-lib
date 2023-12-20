@@ -3,31 +3,32 @@ import {
   PDFStreamParsingError,
   Position,
   UnbalancedParenthesisError,
-} from 'src/core/errors';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFBool from 'src/core/objects/PDFBool';
-import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNull from 'src/core/objects/PDFNull';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFString from 'src/core/objects/PDFString';
-import BaseParser from 'src/core/parser/BaseParser';
-import ByteStream from 'src/core/parser/ByteStream';
-import PDFContext from 'src/core/PDFContext';
-import PDFCatalog from 'src/core/structures/PDFCatalog';
-import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
-import PDFPageTree from 'src/core/structures/PDFPageTree';
-import CharCodes from 'src/core/syntax/CharCodes';
-import { IsDelimiter } from 'src/core/syntax/Delimiters';
-import { Keywords } from 'src/core/syntax/Keywords';
-import { IsDigit, IsNumeric } from 'src/core/syntax/Numeric';
-import { IsWhitespace } from 'src/core/syntax/Whitespace';
-import { charFromCode } from 'src/utils';
+} from '../errors';
+import PDFArray from '../objects/PDFArray';
+import PDFBool from '../objects/PDFBool';
+import PDFDict, { DictMap } from '../objects/PDFDict';
+import PDFHexString from '../objects/PDFHexString';
+import PDFName from '../objects/PDFName';
+import PDFNull from '../objects/PDFNull';
+import PDFNumber from '../objects/PDFNumber';
+import PDFObject from '../objects/PDFObject';
+import PDFRawStream from '../objects/PDFRawStream';
+import PDFRef from '../objects/PDFRef';
+import PDFStream from '../objects/PDFStream';
+import PDFString from '../objects/PDFString';
+import BaseParser from './BaseParser';
+import ByteStream from './ByteStream';
+import PDFContext from '../PDFContext';
+import PDFCatalog from '../structures/PDFCatalog';
+import PDFPageLeaf from '../structures/PDFPageLeaf';
+import PDFPageTree from '../structures/PDFPageTree';
+import CharCodes from '../syntax/CharCodes';
+import { IsDelimiter } from '../syntax/Delimiters';
+import { Keywords } from '../syntax/Keywords';
+import { IsDigit, IsNumeric } from '../syntax/Numeric';
+import { IsWhitespace } from '../syntax/Whitespace';
+import { charFromCode } from '../../utils';
+import { CipherTransformFactory } from '../crypto';
 
 // TODO: Throw error if eof is reached before finishing object parse...
 class PDFObjectParser extends BaseParser {
@@ -44,14 +45,21 @@ class PDFObjectParser extends BaseParser {
   ) => new PDFObjectParser(byteStream, context, capNumbers);
 
   protected readonly context: PDFContext;
+  private readonly cryptoFactory?: CipherTransformFactory;
 
-  constructor(byteStream: ByteStream, context: PDFContext, capNumbers = false) {
+  constructor(
+    byteStream: ByteStream,
+    context: PDFContext,
+    capNumbers = false,
+    cryptoFactory?: CipherTransformFactory,
+  ) {
     super(byteStream, capNumbers);
     this.context = context;
+    this.cryptoFactory = cryptoFactory;
   }
 
   // TODO: Is it possible to reduce duplicate parsing for ref lookaheads?
-  parseObject(): PDFObject {
+  parseObject(ref?: PDFRef): PDFObject {
     this.skipWhitespaceAndComments();
 
     if (this.matchKeyword(Keywords.true)) return PDFBool.True;
@@ -64,12 +72,12 @@ class PDFObjectParser extends BaseParser {
       byte === CharCodes.LessThan &&
       this.bytes.peekAhead(1) === CharCodes.LessThan
     ) {
-      return this.parseDictOrStream();
+      return this.parseDictOrStream(ref);
     }
-    if (byte === CharCodes.LessThan) return this.parseHexString();
-    if (byte === CharCodes.LeftParen) return this.parseString();
+    if (byte === CharCodes.LessThan) return this.parseHexString(ref);
+    if (byte === CharCodes.LeftParen) return this.parseString(ref);
     if (byte === CharCodes.ForwardSlash) return this.parseName();
-    if (byte === CharCodes.LeftSquareBracket) return this.parseArray();
+    if (byte === CharCodes.LeftSquareBracket) return this.parseArray(ref);
     if (IsNumeric[byte]) return this.parseNumberOrRef();
 
     throw new PDFObjectParsingError(this.bytes.position(), byte);
@@ -94,7 +102,7 @@ class PDFObjectParser extends BaseParser {
   }
 
   // TODO: Maybe update PDFHexString.of() logic to remove whitespace and validate input?
-  protected parseHexString(): PDFHexString {
+  protected parseHexString(ref?: PDFRef): PDFHexString {
     let value = '';
 
     this.bytes.assertNext(CharCodes.LessThan);
@@ -103,10 +111,22 @@ class PDFObjectParser extends BaseParser {
     }
     this.bytes.assertNext(CharCodes.GreaterThan);
 
+    if (this.cryptoFactory && ref) {
+      const transformer = this.cryptoFactory.createCipherTransform(
+        ref.objectNumber,
+        ref.generationNumber,
+      );
+      const arr = transformer.decryptBytes(PDFHexString.of(value).asBytes());
+      value = arr.reduce(
+        (str: string, byte: number) => str + byte.toString(16).padStart(2, '0'),
+        '',
+      );
+    }
+
     return PDFHexString.of(value);
   }
 
-  protected parseString(): PDFString {
+  protected parseString(ref?: PDFRef): PDFString {
     let nestingLvl = 0;
     let isEscaped = false;
     let value = '';
@@ -130,8 +150,17 @@ class PDFObjectParser extends BaseParser {
 
       // Once (if) the unescaped parenthesis balance out, return their contents
       if (nestingLvl === 0) {
+        let actualValue = value.substring(1, value.length - 1);
+
+        if (this.cryptoFactory && ref) {
+          const transformer = this.cryptoFactory.createCipherTransform(
+            ref.objectNumber,
+            ref.generationNumber,
+          );
+          actualValue = transformer.decryptString(actualValue);
+        }
         // Remove the outer parens so they aren't part of the contents
-        return PDFString.of(value.substring(1, value.length - 1));
+        return PDFString.of(actualValue);
       }
     }
 
@@ -154,13 +183,13 @@ class PDFObjectParser extends BaseParser {
     return PDFName.of(name);
   }
 
-  protected parseArray(): PDFArray {
+  protected parseArray(ref?: PDFRef): PDFArray {
     this.bytes.assertNext(CharCodes.LeftSquareBracket);
     this.skipWhitespaceAndComments();
 
     const pdfArray = PDFArray.withContext(this.context);
     while (this.bytes.peek() !== CharCodes.RightSquareBracket) {
-      const element = this.parseObject();
+      const element = this.parseObject(ref);
       pdfArray.push(element);
       this.skipWhitespaceAndComments();
     }
@@ -168,7 +197,7 @@ class PDFObjectParser extends BaseParser {
     return pdfArray;
   }
 
-  protected parseDict(): PDFDict {
+  protected parseDict(ref?: PDFRef): PDFDict {
     this.bytes.assertNext(CharCodes.LessThan);
     this.bytes.assertNext(CharCodes.LessThan);
     this.skipWhitespaceAndComments();
@@ -181,7 +210,7 @@ class PDFObjectParser extends BaseParser {
       this.bytes.peekAhead(1) !== CharCodes.GreaterThan
     ) {
       const key = this.parseName();
-      const value = this.parseObject();
+      const value = this.parseObject(ref);
       dict.set(key, value);
       this.skipWhitespaceAndComments();
     }
@@ -203,10 +232,10 @@ class PDFObjectParser extends BaseParser {
     }
   }
 
-  protected parseDictOrStream(): PDFDict | PDFStream {
+  protected parseDictOrStream(ref?: PDFRef): PDFDict | PDFStream {
     const startPos = this.bytes.position();
 
-    const dict = this.parseDict();
+    const dict = this.parseDict(ref);
 
     this.skipWhitespaceAndComments();
 
@@ -236,7 +265,15 @@ class PDFObjectParser extends BaseParser {
       end = this.findEndOfStreamFallback(startPos);
     }
 
-    const contents = this.bytes.slice(start, end);
+    let contents = this.bytes.slice(start, end);
+
+    if (this.cryptoFactory && ref) {
+      const transform = this.cryptoFactory.createCipherTransform(
+        ref.objectNumber,
+        ref.generationNumber,
+      );
+      contents = transform.decryptBytes(contents);
+    }
 
     return PDFRawStream.of(dict, contents);
   }

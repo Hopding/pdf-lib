@@ -10,7 +10,7 @@ import {
   PDFString,
   toCharCode,
   typedArrayFor,
-} from 'src/index';
+} from '../../../src/index';
 
 describe(`PDFObjectStream`, () => {
   const context = PDFContext.create();

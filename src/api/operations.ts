@@ -1,4 +1,4 @@
-import { Color, setFillingColor, setStrokingColor } from 'src/api/colors';
+import { Color, setFillingColor, setStrokingColor } from './colors';
 import {
   beginText,
   closePath,
@@ -31,11 +31,13 @@ import {
   clip,
   endPath,
   appendBezierCurve,
-} from 'src/api/operators';
-import { Rotation, degrees, toRadians } from 'src/api/rotations';
-import { svgPathToOperators } from 'src/api/svgPath';
-import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
-import { asNumber } from 'src/api/objects';
+  FillRule,
+  fillEvenOdd,
+} from './operators';
+import { Rotation, degrees, toRadians } from './rotations';
+import { svgPathToOperators } from './svgPath';
+import { PDFHexString, PDFName, PDFNumber, PDFOperator } from '../core';
+import { asNumber } from './objects';
 
 export interface DrawTextOptions {
   color: Color;
@@ -348,6 +350,7 @@ export const drawSvgPath = (
     borderDashPhase?: number | PDFNumber;
     borderLineCap?: LineCapStyle;
     graphicsState?: string | PDFName;
+    fillRule?: FillRule
   },
 ) =>
   [
@@ -357,9 +360,7 @@ export const drawSvgPath = (
     translate(options.x, options.y),
     rotateRadians(toRadians(options.rotate ?? degrees(0))),
 
-    // SVG path Y axis is opposite pdf-lib's
-    options.scale ? scale(options.scale, -options.scale) : scale(1, -1),
-
+    options.scale && scale(options.scale, options.scale),
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     options.borderWidth && setLineWidth(options.borderWidth),
@@ -371,7 +372,7 @@ export const drawSvgPath = (
 
     // prettier-ignore
     options.color && options.borderWidth ? fillAndStroke()
-  : options.color                      ? fill()
+  : options.color                      ? options.fillRule === FillRule.EvenOdd ? fillEvenOdd() : fill()
   : options.borderColor                ? stroke()
   : closePath(),
 
