@@ -68,6 +68,7 @@ import FileEmbedder, { AFRelationship } from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 import PDFJavaScript from 'src/api/PDFJavaScript';
 import JavaScriptEmbedder from 'src/core/embedders/JavaScriptEmbedder';
+import PDFBlock from './PDFBlock';
 
 /**
  * Represents a PDF document.
@@ -177,6 +178,9 @@ export default class PDFDocument {
   /** Whether or not this document is encrypted. */
   readonly isEncrypted: boolean;
 
+  /** Rectangles blocks */
+  readonly rectangleBlocks: Map<PDFName, PDFBlock> = new Map();
+
   /** The default word breaks used in PDFPage.drawText */
   defaultWordBreaks: string[] = [' '];
 
@@ -262,6 +266,58 @@ export default class PDFDocument {
       form.deleteXFA();
     }
     return form;
+  }
+
+  /**
+   * get rectangles from pdf
+   * ```js
+   * pdfDoc.getRectangleBlocks();
+   * ```
+   */
+  getRectangleBlocks(): Map<PDFName, PDFBlock> {
+    if (this.rectangleBlocks.size !== 0) return this.rectangleBlocks;
+
+    for (let i = 0; i < this.getPageCount(); i++) {
+      const page = this.getPage(i);
+      const pieceInfo = page.getPieceInfo();
+      if (!pieceInfo) continue;
+
+      pieceInfo.asMap().forEach((infoRef: PDFObject) => {
+        /**
+         * get last modified dict by using ref
+         * which has private dictionary, which include all the
+         * block components from the page
+         */
+        const modifiedDict = this.context.lookup(infoRef) as
+          | PDFDict
+          | undefined;
+        if (!modifiedDict) return;
+
+        /** get private data from private dict */
+        const privateDict = modifiedDict.lookup(
+          PDFName.of('Private'),
+        ) as PDFDict;
+
+        if (!privateDict) return;
+
+        /** get modified blocks dict from private dict  */
+        const modifiedBlocksDict = privateDict.lookup(
+          PDFName.of('Blocks'),
+        ) as PDFDict;
+
+        modifiedBlocksDict
+          .asMap()
+          .forEach((blockRef: PDFObject, name: PDFName) => {
+            const dict = this.context.lookup(blockRef as PDFRef) as PDFDict;
+            const blockDict = new PDFBlock(dict, name, i);
+            if (blockDict.isRectangleBlock()) {
+              this.rectangleBlocks.set(name, blockDict);
+            }
+          });
+      });
+    }
+
+    return this.rectangleBlocks;
   }
 
   /**

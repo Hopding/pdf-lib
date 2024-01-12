@@ -68,6 +68,10 @@ class PDFPageLeaf extends PDFDict {
       | undefined;
   }
 
+  PieceInfo(): PDFDict | undefined {
+    return this.lookupMaybe(PDFName.of('PieceInfo'), PDFDict);
+  }
+
   Annots(): PDFArray | undefined {
     return this.lookupMaybe(PDFName.Annots, PDFArray);
   }
