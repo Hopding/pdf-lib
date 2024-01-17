@@ -18,6 +18,7 @@ import {
   JpegEmbedder,
   PageBoundingBox,
   PageEmbeddingMismatchedContextError,
+  PDFArray,
   PDFCatalog,
   PDFContext,
   PDFDict,
@@ -28,6 +29,7 @@ import {
   PDFPageLeaf,
   PDFPageTree,
   PDFParser,
+  PDFRawStream,
   PDFStreamWriter,
   PDFString,
   PDFWriter,
@@ -66,6 +68,7 @@ import FileEmbedder, { AFRelationship } from 'src/core/embedders/FileEmbedder';
 import PDFEmbeddedFile from 'src/api/PDFEmbeddedFile';
 import PDFJavaScript from 'src/api/PDFJavaScript';
 import JavaScriptEmbedder from 'src/core/embedders/JavaScriptEmbedder';
+import PDFBlock from './PDFBlock';
 
 /**
  * Represents a PDF document.
@@ -175,6 +178,9 @@ export default class PDFDocument {
   /** Whether or not this document is encrypted. */
   readonly isEncrypted: boolean;
 
+  /** Rectangles blocks */
+  readonly rectangleBlocks: Map<PDFName, PDFBlock> = new Map();
+
   /** The default word breaks used in PDFPage.drawText */
   defaultWordBreaks: string[] = [' '];
 
@@ -260,6 +266,58 @@ export default class PDFDocument {
       form.deleteXFA();
     }
     return form;
+  }
+
+  /**
+   * get rectangles from pdf
+   * ```js
+   * pdfDoc.getRectangleBlocks();
+   * ```
+   */
+  getRectangleBlocks(): Map<PDFName, PDFBlock> {
+    if (this.rectangleBlocks.size !== 0) return this.rectangleBlocks;
+
+    for (let i = 0; i < this.getPageCount(); i++) {
+      const page = this.getPage(i);
+      const pieceInfo = page.getPieceInfo();
+      if (!pieceInfo) continue;
+
+      pieceInfo.asMap().forEach((infoRef: PDFObject) => {
+        /**
+         * get last modified dict by using ref
+         * which has private dictionary, which include all the
+         * block components from the page
+         */
+        const modifiedDict = this.context.lookup(infoRef) as
+          | PDFDict
+          | undefined;
+        if (!modifiedDict) return;
+
+        /** get private data from private dict */
+        const privateDict = modifiedDict.lookup(
+          PDFName.of('Private'),
+        ) as PDFDict;
+
+        if (!privateDict) return;
+
+        /** get modified blocks dict from private dict  */
+        const modifiedBlocksDict = privateDict.lookup(
+          PDFName.of('Blocks'),
+        ) as PDFDict;
+
+        modifiedBlocksDict
+          .asMap()
+          .forEach((blockRef: PDFObject, name: PDFName) => {
+            const dict = this.context.lookup(blockRef as PDFRef) as PDFDict;
+            const blockDict = new PDFBlock(dict, name, i);
+            if (blockDict.isRectangleBlock()) {
+              this.rectangleBlocks.set(name, blockDict);
+            }
+          });
+      });
+    }
+
+    return this.rectangleBlocks;
   }
 
   /**
@@ -527,6 +585,84 @@ export default class PDFDocument {
     assertIs(modificationDate, 'modificationDate', [[Date, 'Date']]);
     const key = PDFName.of('ModDate');
     this.getInfoDict().set(key, PDFString.fromDate(modificationDate));
+  }
+
+  /**
+   * set printing profile of this document.
+   * Reference - https://www.color.org/registry/index.xalter
+   *
+   * @param subType eg. GTS_PDFA1, GTS_PDFX
+   * @param icc icc profile buffer content
+   */
+  setPrintProfile({
+    subType,
+    iccBuffer,
+    info,
+    identifier,
+  }: {
+    identifier: string;
+    info?: string;
+    subType: string;
+    iccBuffer: Buffer;
+  }): void {
+    const iccStream = this.context.stream(iccBuffer, {
+      Length: iccBuffer.length,
+    });
+    const outputIntent = this.context.obj({
+      Type: 'OutputIntent',
+      S: subType,
+      OutputConditionIdentifier: PDFString.of(identifier),
+      Info: info ? PDFString.of(info) : PDFString.of(identifier),
+      DestOutputProfile: this.context.register(iccStream),
+    });
+    const outputIntentRef = this.context.register(outputIntent);
+    this.catalog.set(
+      PDFName.of('OutputIntents'),
+      this.context.obj([outputIntentRef]),
+    );
+  }
+
+  /**
+   * Get printing profile
+   * Reference - https://www.color.org/registry/index.xalter
+   *
+   * @returns printing profile info.
+   */
+  getPrintProfile():
+    | {
+        type?: string;
+        subType?: string;
+        identifier: string;
+        info?: string;
+        iccBuffer?: Uint8Array;
+      }
+    | undefined {
+    const printProfile = this.catalog.lookup(
+      PDFName.of('OutputIntents'),
+    ) as PDFArray;
+    if (!printProfile) return undefined;
+
+    const object = printProfile.lookup(0) as PDFDict;
+    if (!object) return undefined;
+
+    const type = object.lookup(PDFName.of('Type')) as PDFName;
+    const subType = object.lookup(PDFName.of('S')) as PDFName;
+    const identifier = object.lookup(
+      PDFName.of('OutputConditionIdentifier'),
+    ) as PDFName;
+    const info = object.lookup(PDFName.of('Info')) as PDFName;
+
+    const profile = object.lookup(
+      PDFName.of('DestOutputProfile'),
+    ) as PDFRawStream;
+
+    return {
+      type: type?.decodeText(),
+      subType: subType?.decodeText(),
+      identifier: identifier?.decodeText(),
+      info: info?.decodeText(),
+      iccBuffer: profile.contents,
+    };
   }
 
   /**

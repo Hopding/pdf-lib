@@ -121,6 +121,15 @@ export default class PDFPage {
   }
 
   /**
+   * get modified info(PieceInfo) from page.
+   * PieceInfo is the last modified reference of the page
+   * @returns PDFDict
+   */
+  getPieceInfo(): PDFDict | undefined {
+    return this.node.PieceInfo();
+  }
+
+  /**
    * Rotate this page by a multiple of 90 degrees. For example:
    * ```js
    * import { degrees } from 'pdf-lib'

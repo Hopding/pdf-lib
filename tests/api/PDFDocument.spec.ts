@@ -573,4 +573,58 @@ describe(`PDFDocument`, () => {
       expect(pdfDoc.defaultWordBreaks).toEqual(srcDoc.defaultWordBreaks);
     });
   });
+
+  describe(`set/get printing profile`, () => {
+    it(`shoud return undefined when printing profile is not set`, async () => {
+      // create pdf document
+      const pdfDoc = await PDFDocument.create();
+      // save PDF
+      await pdfDoc.save();
+      // get print profile
+      const printProfile = pdfDoc.getPrintProfile();
+      expect(printProfile).toBe(undefined);
+    });
+
+    it(`shoud be able to read from load pdf`, async () => {
+      // create pdf document
+      const pdfDoc = await PDFDocument.load(
+        fs.readFileSync('assets/pdfs/with_print_profile.pdf'),
+        { updateMetadata: false },
+      );
+      // get print profile
+      const printProfile = pdfDoc.getPrintProfile();
+
+      expect(printProfile?.type).toBe('OutputIntent');
+      expect(printProfile?.subType).toBe('GTS_PDFX');
+      expect(printProfile?.identifier).toBe(
+        'Coated FOGRA39 (ISO 12647-2:2004)',
+      );
+      expect(printProfile?.info).toBe('Coated FOGRA39 (ISO 12647-2:2004)');
+      expect(Buffer.isBuffer(printProfile?.iccBuffer)).toBe(true);
+    });
+
+    it(`shoud be able to set and get printing profile`, async () => {
+      // create pdf document
+      const pdfDoc = await PDFDocument.create();
+      // get buffer from icc file
+      const iccBuffer = fs.readFileSync('assets/profiles/CoatedFOGRA39.icc');
+      // set for PDF/X-4 with Coated FOGRA39
+      pdfDoc.setPrintProfile({
+        identifier: 'Coated_FOGRA39',
+        info: 'Coated FOGRA39 (ISO 12647-2:2004)',
+        subType: 'GTS_PDFX',
+        iccBuffer,
+      });
+      // save PDF
+      await pdfDoc.save();
+      // get print profile
+      const printProfile = pdfDoc.getPrintProfile();
+
+      expect(printProfile?.type).toBe('OutputIntent');
+      expect(printProfile?.subType).toBe('GTS_PDFX');
+      expect(printProfile?.identifier).toBe('Coated_FOGRA39');
+      expect(printProfile?.info).toBe('Coated FOGRA39 (ISO 12647-2:2004)');
+      expect(Buffer.isBuffer(printProfile?.iccBuffer)).toBe(true);
+    });
+  });
 });
