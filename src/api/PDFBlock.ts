@@ -73,7 +73,7 @@ class PDFBlock {
   }
 
   getY(): number {
-    return this.getRect()[1] + this.getHeight() - (this.getFontSize() ?? 12);
+    return this.getRect()[1] + this.getHeight();
   }
 
   getPaddingPosition(): [number, number] {
