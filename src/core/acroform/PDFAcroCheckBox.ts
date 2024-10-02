@@ -19,7 +19,7 @@ class PDFAcroCheckBox extends PDFAcroButton {
   };
 
   setValue(value: PDFName) {
-    const onValue = this.getOnValue().in ?? PDFName.of('Yes');
+    const onValue = this.getOnValue().length > 0 ? this.getOnValue() : [PDFName.of('Yes')];
     if (!onValue.includes(value) && value !== PDFName.of('Off')) {
       throw new InvalidAcroFieldValueError();
     }
