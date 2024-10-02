@@ -41,7 +41,7 @@ class PDFAcroCheckBox extends PDFAcroButton {
   }
 
   getOnValue(): PDFName[] {
-    return this.getWidgets().map((widget) => widget.getOnValue());
+    return (this.getWidgets() ?? []).map((widget) => widget.getOnValue());
   }
 }
 
