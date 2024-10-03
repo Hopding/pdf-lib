@@ -17,3 +17,4 @@ out.pdf
 *.tgz
 
 .vscode/settings.json
+/.idea

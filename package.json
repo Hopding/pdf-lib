@@ -29,7 +29,8 @@
     "Bj Tecu (https://github.com/btecu)",
     "Brent McSharry (https://github.com/mcshaz)",
     "Tim Knapp (https://github.com/duffyd)",
-    "Ching Chang (https://github.com/ChingChang9)"
+    "Ching Chang (https://github.com/ChingChang9)",
+    "Marc Moreau (https://github.com/MockingMagician)"
   ],
   "scripts": {
     "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
@@ -106,7 +107,7 @@
     "flamebearer": "^1.1.3",
     "http-server": "^0.12.3",
     "jest": "^26.0.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.17.1",

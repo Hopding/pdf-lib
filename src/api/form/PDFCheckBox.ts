@@ -81,8 +81,9 @@ export default class PDFCheckBox extends PDFField {
    * streams will display a check mark inside the widgets of this check box
    * field.
    */
-  check() {
-    const onValue = this.acroField.getOnValue() ?? PDFName.of('Yes');
+  check(widgetIndex = 0) {
+    const onValue =
+      this.acroField.getOnValue()[widgetIndex] || PDFName.of('Yes');
     this.markAsDirty();
     this.acroField.setValue(onValue);
   }
@@ -119,7 +120,7 @@ export default class PDFCheckBox extends PDFField {
    */
   isChecked(): boolean {
     const onValue = this.acroField.getOnValue();
-    return !!onValue && onValue === this.acroField.getValue();
+    return onValue.length > 0 && onValue.includes(this.acroField.getValue());
   }
 
   /**

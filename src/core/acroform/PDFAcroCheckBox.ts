@@ -19,8 +19,9 @@ class PDFAcroCheckBox extends PDFAcroButton {
   };
 
   setValue(value: PDFName) {
-    const onValue = this.getOnValue() ?? PDFName.of('Yes');
-    if (value !== onValue && value !== PDFName.of('Off')) {
+    const onValue =
+      this.getOnValue().length > 0 ? this.getOnValue() : [PDFName.of('Yes')];
+    if (!onValue.includes(value) && value !== PDFName.of('Off')) {
       throw new InvalidAcroFieldValueError();
     }
 
@@ -40,9 +41,10 @@ class PDFAcroCheckBox extends PDFAcroButton {
     return PDFName.of('Off');
   }
 
-  getOnValue(): PDFName | undefined {
-    const [widget] = this.getWidgets();
-    return widget?.getOnValue();
+  getOnValue(): PDFName[] {
+    return this.getWidgets()
+      .map((widget) => widget.getOnValue())
+      .filter((v) => v !== undefined) as PDFName[];
   }
 }
 
