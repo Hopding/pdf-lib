@@ -88,6 +88,15 @@ export interface PDFPageDrawLineOptions {
   blendMode?: BlendMode;
 }
 
+export interface PDFPageDrawLinkOptions {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  borderWidth?: number;
+  color?: Color;
+}
+
 export interface PDFPageDrawRectangleOptions {
   x?: number;
   y?: number;

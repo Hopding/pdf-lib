@@ -1,4 +1,4 @@
-import { Color, rgb } from 'src/api/colors';
+import { Color, colorToComponents, rgb } from 'src/api/colors';
 import {
   drawImage,
   drawLine,
@@ -24,6 +24,7 @@ import {
   PDFPageDrawEllipseOptions,
   PDFPageDrawImageOptions,
   PDFPageDrawLineOptions,
+  PDFPageDrawLinkOptions,
   PDFPageDrawPageOptions,
   PDFPageDrawRectangleOptions,
   PDFPageDrawSquareOptions,
@@ -42,6 +43,7 @@ import {
   PDFRef,
   PDFDict,
   PDFArray,
+  PDFString,
 } from 'src/core';
 import {
   assertEachIs,
@@ -1323,6 +1325,79 @@ export default class PDFPage {
         graphicsState: graphicsStateKey,
       }),
     );
+  }
+
+  /**
+   * Draw a link on this page.
+   *
+   * In the PDF specification,you define a rectangular section of the page
+   * that when clicked should activate the link
+   *
+   * For example:
+   * ```js
+   * page.drawLink('https://pdf-lib.js.org', {
+   *  x: 50,
+   *  y: 50,
+   *  width: 200,
+   *  height: 100
+   * })
+   * ```
+   * @param options The options to be used when drawing the line.
+   * @see https://github.com/Hopding/pdf-lib/issues/555#issuecomment-670195238
+   */
+  drawLink(link: string, options: PDFPageDrawLinkOptions): void {
+    assertIs(options.x, 'options.x', ['number']);
+    assertIs(options.y, 'options.y', ['number']);
+    assertIs(options.width, 'options.width', ['number']);
+    assertIs(options.height, 'options.height', ['number']);
+
+    assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
+    assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
+
+    const pdfRef: PDFRef = this.doc.context.register(
+      this.doc.context.obj({
+        Type: 'Annot',
+        Subtype: 'Link',
+        Rect: [
+          // lower left x coord
+          options.x,
+          // lower left y coord
+          options.y,
+          // upper right x coord
+          options.x + options.width,
+          // upper right y coord
+          options.y + options.height,
+        ],
+
+        // The three parameters are:
+        // * horizontal corner radius,
+        // * vertical corner radius, and
+        // * border width
+        //
+        // Default to a square border, 0 width.
+        Border: [0, 0, options.borderWidth ?? 0],
+
+        /* Default to transparent */
+        C: options.color ? colorToComponents(options.color) : [],
+
+        // Name unique identifier
+        // NM: string
+
+        /* Page to be visited when the link is clicked */
+        A: {
+          Type: 'Action',
+          S: 'URI',
+          URI: PDFString.of(link),
+        },
+      }),
+    );
+
+    // Annots Dictionary may or may not exist--create it if it doesn't.
+    if (this.node.Annots()) {
+      this.node.Annots()?.push(pdfRef);
+    } else {
+      this.node.set(PDFName.Annots, this.doc.context.obj([pdfRef]));
+    }
   }
 
   /**
