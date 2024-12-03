@@ -798,6 +798,9 @@ const pdfBytes = await pdfDoc.save()
 //   • Rendered in an <iframe>
 ```
 
+Be aware that pdf-lib currently only supports metadata in the the widely used info dictionary.
+There is an alternative way of encoding XMP metadata in a in a metadata stream which is currently not supported.
+
 ### Read Document Metadata
 
 [Try the JSFiddle demo](https://jsfiddle.net/Hopding/eg8rfz3k/16/)
