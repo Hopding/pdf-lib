@@ -75,8 +75,10 @@ export const getType = (val: any) => {
   if (val === null) return 'null';
   if (val === undefined) return 'undefined';
   if (typeof val === 'string') return 'string';
-  if (isNaN(val)) return 'NaN';
-  if (typeof val === 'number') return 'number';
+  if (typeof val === 'number') {
+    if (Number.isNaN(val)) return 'NaN';
+    return 'number';
+  }
   if (typeof val === 'boolean') return 'boolean';
   if (typeof val === 'symbol') return 'symbol';
   if (typeof val === 'bigint') return 'bigint';
