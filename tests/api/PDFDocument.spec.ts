@@ -526,6 +526,16 @@ describe(`PDFDocument`, () => {
 
       await expect(noErrorFunc()).resolves.not.toThrowError();
     });
+
+    it(`keep the same PDF version`, async () => {
+      const pdfDoc = await PDFDocument.load(unencryptedPdfBytes);
+      const pdfBytes = await pdfDoc.save();
+      const newPdfDoc = await PDFDocument.load(Buffer.from(pdfBytes));
+
+      expect(pdfDoc.context.header.toString()).toEqual(
+        newPdfDoc.context.header.toString(),
+      );
+    });
   });
 
   describe(`copy() method`, () => {
