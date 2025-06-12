@@ -162,6 +162,10 @@ class PDFAcroField {
     const parent = this.getParent();
     if (parent) parent.ascend(visitor);
   }
+
+  static fromDict(dict: PDFDict, ref: PDFRef): PDFAcroField {
+    return new PDFAcroField(dict, ref);
+  }
 }
 
 export default PDFAcroField;
