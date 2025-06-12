@@ -1,4 +1,5 @@
 import PDFDocument from 'src/api/PDFDocument';
+import PDFAcroField from 'src/core/acroform/PDFAcroField';
 import PDFFont from 'src/api/PDFFont';
 import { AppearanceMapping } from 'src/api/form/appearances';
 import { Color, colorToComponents, setFillingColor } from 'src/api/colors';
@@ -517,5 +518,34 @@ export default class PDFField {
     appearanceDict.set(PDFName.of('Off'), offStreamRef);
 
     return appearanceDict;
+  }
+
+  /**
+   * Renames this field to the new partial name. Note that this only changes the partial name of the field itself, not its fully qualified name.
+   * For example, if a field's fully qualified name is 'Parent.OldName', calling rename('NewName') will change its fully qualified name to 'Parent.NewName'.
+   * @param newName The new partial name for this field.
+   */
+  rename(newName: string): void {
+    assertIs(newName, 'newName', ['string']);
+    if (newName.indexOf('.') !== -1) {
+      throw new Error('Field partial names must not contain periods.');
+    }
+    const parent = this.acroField.getParent();
+    if (parent) {
+      const siblings = parent.Kids();
+      if (siblings) {
+        for (let idx = 0, len = siblings.size(); idx < len; idx++) {
+          const siblingDict = siblings.lookup(idx, PDFDict);
+          const siblingRef = this.doc.context.getObjectRef(siblingDict);
+          if (siblingRef) {
+            const sibling = PDFAcroField.fromDict(siblingDict, siblingRef);
+            if (sibling.getPartialName() === newName) {
+              throw new Error(`A field with partial name '${newName}' already exists as a sibling.`);
+            }
+          }
+        }
+      }
+    }
+    this.acroField.setPartialName(newName);
   }
 }

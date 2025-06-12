@@ -44,7 +44,7 @@ const getApRefs = (widget: PDFWidgetAnnotation) => {
 };
 
 const flatten = <T>(arr: T[][]): T[] =>
-  arr.reduce((curr, acc) => [...acc, ...curr], []);
+  arr.reduce((curr, acc) => acc.concat(curr), []);
 
 const fancyFieldsPdfBytes = fs.readFileSync('assets/pdfs/fancy_fields.pdf');
 // const sampleFormPdfBytes = fs.readFileSync('assets/pdfs/sample_form.pdf');
@@ -367,4 +367,89 @@ describe(`PDFForm`, () => {
 
   // TODO: Add method to remove APs and use `NeedsAppearances`? How would this
   //       work with RadioGroups? Just set the APs to `null`but keep the keys?
+});
+
+describe('PDFForm Field Rename', () => {
+  let pdfDoc: PDFDocument;
+  let form: PDFForm;
+
+  beforeEach(async () => {
+    // Create a new PDF document for each test
+    pdfDoc = await PDFDocument.create();
+    form = pdfDoc.getForm();
+  });
+
+  it('should successfully rename a text field', async () => {
+    // Create a text field with initial name
+    const textField = form.createTextField('OldFieldName');
+    textField.setText('Test Value');
+
+    // Verify initial name
+    expect(textField.getName()).toBe('OldFieldName');
+
+    // Rename the field
+    textField.rename('NewFieldName');
+
+    // Verify new name
+    expect(textField.getName()).toBe('NewFieldName');
+
+    // Verify we can get the field by its new name
+    const renamedField = form.getField('NewFieldName') as PDFTextField;
+    expect(renamedField.getName()).toBe('NewFieldName');
+
+    // Verify old name is no longer valid
+    expect(() => form.getField('OldFieldName')).toThrow();
+  });
+
+  it('should maintain field value after rename', async () => {
+    // Create and set up initial field
+    const textField = form.createTextField('OldFieldName');
+    const testValue = 'Test Value';
+    textField.setText(testValue);
+
+    // Rename the field
+    textField.rename('NewFieldName');
+
+    // Verify value is preserved
+    const renamedField = form.getField('NewFieldName') as PDFTextField;
+    expect(renamedField.getText()).toBe(testValue);
+  });
+
+  it('should throw error when trying to rename to a name with periods', async () => {
+    // Create field
+    const textField = form.createTextField('OldFieldName');
+    textField.setText('Test Value');
+
+    // Attempt to rename to a name with periods
+    expect(() => textField.rename('New.Field.Name')).toThrow('Field partial names must not contain periods');
+  });
+
+  it('should handle rename of fields with special characters', async () => {
+    // Create field with special characters
+    const textField = form.createTextField('Old_Field_Name');
+    textField.setText('Test Value');
+
+    // Rename to new name with special characters
+    textField.rename('New_Field_Name');
+
+    // Verify new name
+    expect(textField.getName()).toBe('New_Field_Name');
+    expect(form.getField('New_Field_Name')).toBeDefined();
+  });
+
+  it('should preserve field properties after rename', async () => {
+    // Create field with specific properties
+    const textField = form.createTextField('OldFieldName');
+    textField.setText('Test Value');
+    textField.enableMultiline();
+    textField.enableReadOnly();
+
+    // Rename the field
+    textField.rename('NewFieldName');
+
+    // Verify properties are preserved
+    const renamedField = form.getField('NewFieldName') as PDFTextField;
+    expect(renamedField.isMultiline()).toBe(true);
+    expect(renamedField.isReadOnly()).toBe(true);
+  });
 });
