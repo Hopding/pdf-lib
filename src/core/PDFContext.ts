@@ -56,6 +56,7 @@ class PDFContext {
     ID?: PDFObject;
   };
   rng: SimpleRNG;
+  needsReordering: boolean;
 
   private readonly indirectObjects: Map<PDFRef, PDFObject>;
 
@@ -64,6 +65,7 @@ class PDFContext {
 
   private constructor() {
     this.largestObjectNumber = 0;
+    this.needsReordering = false;
     this.header = PDFHeader.forVersion(1, 7);
     this.trailerInfo = {};
 
@@ -85,6 +87,7 @@ class PDFContext {
 
   register(object: PDFObject): PDFRef {
     const ref = this.nextRef();
+    this.needsReordering = true;
     this.assign(ref, object);
     return ref;
   }
@@ -179,9 +182,12 @@ class PDFContext {
   }
 
   enumerateIndirectObjects(): [PDFRef, PDFObject][] {
-    return Array.from(this.indirectObjects.entries()).sort(
-      byAscendingObjectNumber,
-    );
+    const entries = Array.from(this.indirectObjects.entries());
+
+    if (this.needsReordering) {
+      return entries.sort(byAscendingObjectNumber);
+    }
+    return entries;
   }
 
   obj(literal: null | undefined): typeof PDFNull;
