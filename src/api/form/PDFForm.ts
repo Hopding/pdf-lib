@@ -45,6 +45,7 @@ import { assertIs, Cache, assertOrUndefined } from 'src/utils';
 
 export interface FlattenOptions {
   updateFieldAppearances: boolean;
+  fields?: PDFField[];
 }
 
 /**
@@ -514,7 +515,7 @@ export default class PDFForm {
   }
 
   /**
-   * Flatten all fields in this [[PDFForm]].
+   * Flatten fields in this [[PDFForm]].
    *
    * Flattening a form field will take the current appearance for each of that
    * field's widgets and make them part of their page's content stream. All form
@@ -528,18 +529,26 @@ export default class PDFForm {
    * document, fill its fields, flatten it, and then copy its pages into the
    * recipient document - the filled fields will be copied over.
    *
-   * For example:
+   * For example (flatten all fields):
    * ```js
    * const form = pdfDoc.getForm();
    * form.flatten();
    * ```
+   *
+   * To flatten specific fields, you can use this syntax:
+   * ```js
+   * const form = pdfDoc.getForm();
+   * form.flatten({ fields: [
+   *     form.getField('Example')
+   * ] });
+   * ```
    */
-  flatten(options: FlattenOptions = { updateFieldAppearances: true }) {
+  flatten(options: FlattenOptions = { updateFieldAppearances: true }): void {
     if (options.updateFieldAppearances) {
       this.updateFieldAppearances();
     }
 
-    const fields = this.getFields();
+    const fields = options.fields ?? this.getFields();
 
     for (let i = 0, lenFields = fields.length; i < lenFields; i++) {
       const field = fields[i];
