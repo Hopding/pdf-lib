@@ -45,6 +45,7 @@ import { assertIs, Cache, assertOrUndefined } from 'src/utils';
 
 export interface FlattenOptions {
   updateFieldAppearances: boolean;
+  fields?: PDFField[];
 }
 
 /**
@@ -534,12 +535,14 @@ export default class PDFForm {
    * form.flatten();
    * ```
    */
-  flatten(options: FlattenOptions = { updateFieldAppearances: true }) {
+  flatten(options: FlattenOptions = { updateFieldAppearances: true }): void {
     if (options.updateFieldAppearances) {
       this.updateFieldAppearances();
     }
 
-    const fields = this.getFields();
+    if (!options.fields) return this.flatten({...options, fields: this.getFields()});
+
+    const fields = options.fields;
 
     for (let i = 0, lenFields = fields.length; i < lenFields; i++) {
       const field = fields[i];
