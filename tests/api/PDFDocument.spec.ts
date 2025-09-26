@@ -258,14 +258,17 @@ describe(`PDFDocument`, () => {
       pdfDoc.setCreationDate(creationDate);
       pdfDoc.setModificationDate(modificationDate);
 
-      expect(pdfDoc.getTitle()).toBe(title);
-      expect(pdfDoc.getAuthor()).toBe(author);
-      expect(pdfDoc.getSubject()).toBe(subject);
-      expect(pdfDoc.getProducer()).toBe(producer);
-      expect(pdfDoc.getCreator()).toBe(creator);
-      expect(pdfDoc.getKeywords()).toBe(keywords.join(' '));
-      expect(pdfDoc.getCreationDate()).toStrictEqual(creationDate);
+      const savedPdfDoc = await PDFDocument.load(await pdfDoc.save())
+      expect(savedPdfDoc.getTitle()).toBe(title);
+      expect(savedPdfDoc.getAuthor()).toBe(author);
+      expect(savedPdfDoc.getSubject()).toBe(subject);
+      expect(savedPdfDoc.getProducer()).toBe(producer);
+      expect(savedPdfDoc.getCreator()).toBe(creator);
+      expect(savedPdfDoc.getKeywords()).toBe(keywords.join(' '));
+      expect(savedPdfDoc.getCreationDate()).toStrictEqual(creationDate);
+      
       expect(pdfDoc.getModificationDate()).toStrictEqual(modificationDate);
+      expect(savedPdfDoc.getModificationDate()).not.toEqual(modificationDate);
     });
 
     it(`they can retrieve the title, author, subject, producer, creator, and keywords from an existing document`, async () => {
