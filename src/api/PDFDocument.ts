@@ -683,9 +683,9 @@ export default class PDFDocument {
     assertRange(index, 'index', 0, pageCount);
     assertIs(page, 'page', ['undefined', [PDFPage, 'PDFPage'], Array]);
     if (!page || Array.isArray(page)) {
-      const dims = Array.isArray(page) ? page : PageSizes.A4;
+      const [width, height] = page ?? PageSizes.A4;
       page = PDFPage.create(this);
-      page.setSize(...dims);
+      page.setSize(width, height);
     } else if (page.doc !== this) {
       throw new ForeignPageError();
     }
