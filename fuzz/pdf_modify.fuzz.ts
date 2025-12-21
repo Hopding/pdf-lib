@@ -62,10 +62,17 @@ export async function fuzz(data: Buffer): Promise<void> {
     });
 
     // Try to save (exercises the writer)
-    await pdfDoc.save({
+    const savedBytes = await pdfDoc.save({
       useObjectStreams: false,
       addDefaultPage: false,
       updateFieldAppearances: false,
+    });
+
+    // Round-trip validation: ensure the saved PDF can be loaded back
+    await PDFDocument.load(savedBytes, {
+      ignoreEncryption: true,
+      throwOnInvalidObject: false,
+      updateMetadata: false,
     });
 
   } catch (e) {

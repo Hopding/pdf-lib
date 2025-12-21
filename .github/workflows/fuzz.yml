@@ -39,9 +39,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install fuzzing dependencies
-        run: npm install --save-dev @jazzer.js/core esbuild
-
       - name: Build fuzzer
         run: |
           npx esbuild fuzz/${{ matrix.fuzzer }}.fuzz.ts \
@@ -57,7 +54,6 @@ jobs:
             --mode regression \
             --corpus fuzz/corpus/pdf_parser \
             --timeout 30
-        continue-on-error: true
 
       - name: Run short fuzz session
         run: |
@@ -79,9 +75,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm install --save-dev @jazzer.js/core esbuild
+        run: npm install
 
       - name: Build all fuzzers
         run: |
@@ -89,13 +83,16 @@ jobs:
             npx esbuild fuzz/${fuzzer}.fuzz.ts --bundle --platform=node --target=node18 --outfile=fuzz/${fuzzer}.fuzz.js --format=cjs
           done
 
-      - name: Generate coverage report
+      - name: Generate combined coverage report
         run: |
-          npx jazzer fuzz/pdf_parser.fuzz.js \
-            --corpus fuzz/corpus/pdf_parser \
-            --coverage \
-            --mode regression \
-            || true
+          for fuzzer in pdf_parser pdf_modify pdf_form jpeg_embed png_embed stream_decode object_parser pdf_string xref_stream page_embed; do
+            echo "Running coverage for ${fuzzer}..."
+            npx jazzer fuzz/${fuzzer}.fuzz.js \
+              --corpus fuzz/corpus/pdf_parser \
+              --coverage \
+              --mode regression \
+              || true
+          done
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4

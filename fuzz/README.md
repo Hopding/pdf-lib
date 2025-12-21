@@ -23,7 +23,6 @@ This directory contains fuzz targets for [OSS-Fuzz](https://github.com/google/os
 
 ```bash
 npm install
-npm install --save-dev @jazzer.js/core esbuild
 ```
 
 ### Build a Fuzzer
@@ -68,7 +67,7 @@ fuzz/
 
 ## OSS-Fuzz Integration
 
-The OSS-Fuzz configuration is in `/oss-fuzz/`:
+The OSS-Fuzz configuration is in `oss-fuzz/` at the repository root:
 
 - `Dockerfile` - Build environment
 - `build.sh` - Build script
