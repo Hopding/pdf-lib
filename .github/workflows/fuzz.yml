@@ -1,0 +1,104 @@
+name: Fuzz Testing
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  schedule:
+    # Run weekly on Sunday at midnight
+    - cron: '0 0 * * 0'
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        fuzzer:
+          - pdf_parser
+          - pdf_modify
+          - pdf_form
+          - jpeg_embed
+          - png_embed
+          - stream_decode
+          - object_parser
+          - pdf_string
+          - xref_stream
+          - page_embed
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install fuzzing dependencies
+        run: npm install --save-dev @jazzer.js/core esbuild
+
+      - name: Build fuzzer
+        run: |
+          npx esbuild fuzz/${{ matrix.fuzzer }}.fuzz.ts \
+            --bundle \
+            --platform=node \
+            --target=node18 \
+            --outfile=fuzz/${{ matrix.fuzzer }}.fuzz.js \
+            --format=cjs
+
+      - name: Run fuzzer regression test
+        run: |
+          npx jazzer fuzz/${{ matrix.fuzzer }}.fuzz.js \
+            --mode regression \
+            --corpus fuzz/corpus/pdf_parser \
+            --timeout 30
+        continue-on-error: true
+
+      - name: Run short fuzz session
+        run: |
+          timeout 60 npx jazzer fuzz/${{ matrix.fuzzer }}.fuzz.js \
+            --corpus fuzz/corpus/pdf_parser \
+            --max_total_time 30 \
+            || true
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: fuzz
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install --save-dev @jazzer.js/core esbuild
+
+      - name: Build all fuzzers
+        run: |
+          for fuzzer in pdf_parser pdf_modify pdf_form jpeg_embed png_embed stream_decode object_parser pdf_string xref_stream page_embed; do
+            npx esbuild fuzz/${fuzzer}.fuzz.ts --bundle --platform=node --target=node18 --outfile=fuzz/${fuzzer}.fuzz.js --format=cjs
+          done
+
+      - name: Generate coverage report
+        run: |
+          npx jazzer fuzz/pdf_parser.fuzz.js \
+            --corpus fuzz/corpus/pdf_parser \
+            --coverage \
+            --mode regression \
+            || true
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
