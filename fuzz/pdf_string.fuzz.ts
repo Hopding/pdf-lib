@@ -44,9 +44,10 @@ export async function fuzz(data: Buffer): Promise<void> {
         break;
 
       case 1:
-        // Test PDFHexString.of
+        // Test PDFHexString.of with raw fuzz data as potential hex characters
+        // This tests parsing of arbitrary characters (valid/invalid hex)
         {
-          const hexStr = PDFHexString.of(testData.toString('hex'));
+          const hexStr = PDFHexString.of(testData.toString('latin1'));
           hexStr.decodeText();
           hexStr.decodeDate();
           hexStr.asString();

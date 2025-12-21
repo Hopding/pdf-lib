@@ -29,7 +29,8 @@ export async function fuzz(data: Buffer): Promise<void> {
   // Use fuzzer data to construct the xref stream content
 
   // Minimal PDF 1.5+ with XRef stream
-  const pdfPrefix = `%PDF-1.5
+  // Build in parts to calculate offset correctly
+  const pdfHeader = `%PDF-1.5
 %\x80\x80\x80\x80
 1 0 obj
 << /Type /Catalog /Pages 2 0 R >>
@@ -37,20 +38,23 @@ endobj
 2 0 obj
 << /Type /Pages /Kids [] /Count 0 >>
 endobj
-3 0 obj
+`;
+
+  // XRef stream object starts here - this is what startxref should point to
+  const xrefOffset = Buffer.from(pdfHeader).length;
+
+  const xrefObj = `3 0 obj
 << /Type /XRef /Size 4 /W [1 2 1] /Root 1 0 R /Length ${data.length} >>
 stream
 `;
+
+  const pdfPrefix = pdfHeader + xrefObj;
 
   const pdfSuffix = `
 endstream
 endobj
 startxref
 `;
-
-  // Calculate offset of xref stream object
-  const prefixLen = pdfPrefix.length;
-  const xrefOffset = Buffer.from(pdfPrefix).length - 1;
 
   // Build PDF with fuzzed xref stream data
   const pdfData = Buffer.concat([

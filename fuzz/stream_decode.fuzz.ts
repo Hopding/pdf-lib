@@ -54,13 +54,10 @@ export async function fuzz(data: Buffer): Promise<void> {
     // Create raw stream
     const rawStream = PDFRawStream.of(dict, streamData);
 
-    // Try to decode - this exercises the stream decoders
+    // Decode the stream - this exercises the stream decoders
+    // decodePDFRawStream returns a wrapped stream, decode() triggers actual decompression
     const decoded = decodePDFRawStream(rawStream);
-
-    // Exercise the decoded stream
-    if (decoded) {
-      decoded.decode();
-    }
+    decoded.decode();
 
   } catch (e) {
     // Expected for malformed compressed data

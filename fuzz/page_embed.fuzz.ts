@@ -20,8 +20,8 @@
 import PDFDocument from '../src/api/PDFDocument';
 
 export async function fuzz(data: Buffer): Promise<void> {
-  // Skip empty or too large inputs
-  if (data.length === 0 || data.length > 512 * 1024) {
+  // Skip empty or too large inputs (1MB matches page_embed.options max_len)
+  if (data.length === 0 || data.length > 1024 * 1024) {
     return;
   }
 

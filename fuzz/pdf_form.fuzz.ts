@@ -13,9 +13,16 @@
 // limitations under the License.
 
 import PDFDocument from '../src/api/PDFDocument';
+import PDFTextField from '../src/api/form/PDFTextField';
+import PDFCheckBox from '../src/api/form/PDFCheckBox';
+import PDFRadioGroup from '../src/api/form/PDFRadioGroup';
+import PDFDropdown from '../src/api/form/PDFDropdown';
+import PDFOptionList from '../src/api/form/PDFOptionList';
+import PDFButton from '../src/api/form/PDFButton';
+import PDFSignature from '../src/api/form/PDFSignature';
 
 export async function fuzz(data: Buffer): Promise<void> {
-  // Skip empty or too large inputs
+  // Skip empty or too large inputs (1MB matches pdf_form.options max_len)
   if (data.length === 0 || data.length > 1024 * 1024) {
     return;
   }
@@ -33,56 +40,43 @@ export async function fuzz(data: Buffer): Promise<void> {
     // Get all fields
     const fields = form.getFields();
 
-    // Iterate through fields and exercise them
+    // Iterate through fields using instanceof for type-specific logic
     for (const field of fields) {
-      try {
-        field.getName();
+      field.getName();
 
-        // Try to get field as different types
-        try {
-          const textField = form.getTextField(field.getName());
-          textField.getText();
-          textField.setText('test');
-        } catch (e) { /* not a text field */ }
-
-        try {
-          const checkBox = form.getCheckBox(field.getName());
-          checkBox.isChecked();
-        } catch (e) { /* not a checkbox */ }
-
-        try {
-          const radioGroup = form.getRadioGroup(field.getName());
-          radioGroup.getOptions();
-          radioGroup.getSelected();
-        } catch (e) { /* not a radio group */ }
-
-        try {
-          const dropdown = form.getDropdown(field.getName());
-          dropdown.getOptions();
-          dropdown.getSelected();
-        } catch (e) { /* not a dropdown */ }
-
-        try {
-          const optionList = form.getOptionList(field.getName());
-          optionList.getOptions();
-          optionList.getSelected();
-        } catch (e) { /* not an option list */ }
-
-        try {
-          const button = form.getButton(field.getName());
-        } catch (e) { /* not a button */ }
-
-      } catch (e) {
-        // Field access errors are expected
+      if (field instanceof PDFTextField) {
+        field.getText();
+        field.setText('test');
+        field.getMaxLength();
+        field.isMultiline();
+        field.isPassword();
+        field.isFileSelector();
+        field.isRichFormatted();
+      } else if (field instanceof PDFCheckBox) {
+        field.isChecked();
+        field.check();
+        field.uncheck();
+      } else if (field instanceof PDFRadioGroup) {
+        field.getOptions();
+        field.getSelected();
+      } else if (field instanceof PDFDropdown) {
+        field.getOptions();
+        field.getSelected();
+        field.isEditable();
+        field.isMultiselect();
+      } else if (field instanceof PDFOptionList) {
+        field.getOptions();
+        field.getSelected();
+        field.isMultiselect();
+      } else if (field instanceof PDFButton) {
+        field.isReadOnly();
+      } else if (field instanceof PDFSignature) {
+        field.isReadOnly();
       }
     }
 
     // Try to flatten the form
-    try {
-      form.flatten();
-    } catch (e) {
-      // Flatten errors are expected for malformed forms
-    }
+    form.flatten();
 
   } catch (e) {
     // Expected for malformed PDF data
