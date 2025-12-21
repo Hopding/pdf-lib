@@ -15,9 +15,8 @@
 #
 ################################################################################
 
-# Install dependencies
+# Install dependencies (includes @jazzer.js/core and esbuild from devDependencies)
 npm install
-npm install --save-dev @jazzer.js/core esbuild
 
 # Build each fuzzer using esbuild (bundles TypeScript and resolves path aliases)
 FUZZERS="pdf_parser pdf_modify pdf_form jpeg_embed png_embed stream_decode object_parser pdf_string xref_stream page_embed"

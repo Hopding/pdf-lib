@@ -56,8 +56,12 @@ export async function fuzz(data: Buffer): Promise<void> {
 
     // Decode the stream - this exercises the stream decoders
     // decodePDFRawStream returns a wrapped stream, decode() triggers actual decompression
-    const decoded = decodePDFRawStream(rawStream);
-    decoded.decode();
+    const stream = decodePDFRawStream(rawStream);
+
+    // Safely call decode - stream is always defined but guard against edge cases
+    if (stream && typeof stream.decode === 'function') {
+      stream.decode();
+    }
 
   } catch (e) {
     // Expected for malformed compressed data
