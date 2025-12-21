@@ -39,6 +39,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install fuzzing dependencies
+        run: npm install --no-save @jazzer.js/core esbuild
+
       - name: Build fuzzer
         run: |
           npx esbuild fuzz/${{ matrix.fuzzer }}.fuzz.ts \
@@ -76,6 +79,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Install fuzzing dependencies
+        run: npm install --no-save @jazzer.js/core esbuild
 
       - name: Build all fuzzers
         run: |

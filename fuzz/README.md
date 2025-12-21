@@ -23,6 +23,7 @@ This directory contains fuzz targets for [OSS-Fuzz](https://github.com/google/os
 
 ```bash
 npm install
+npm install --no-save @jazzer.js/core esbuild
 ```
 
 ### Build a Fuzzer
