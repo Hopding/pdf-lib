@@ -1,0 +1,4 @@
+[libfuzzer]
+max_len = 1048576
+timeout = 60
+rss_limit_mb = 2048

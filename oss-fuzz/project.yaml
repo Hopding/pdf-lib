@@ -1,0 +1,8 @@
+homepage: "https://github.com/Hopding/pdf-lib"
+language: javascript
+primary_contact: "andrew.dillon.j@gmail.com"
+main_repo: "https://github.com/Hopding/pdf-lib"
+fuzzing_engines:
+  - libfuzzer
+sanitizers:
+  - none

@@ -1,0 +1,79 @@
+# PNG dictionary for fuzzing
+# PNG signature
+"\x89PNG\x0d\x0a\x1a\x0a"
+
+# Critical chunks
+"IHDR"
+"PLTE"
+"IDAT"
+"IEND"
+
+# Ancillary chunks
+"cHRM"
+"gAMA"
+"iCCP"
+"sBIT"
+"sRGB"
+"bKGD"
+"hIST"
+"tRNS"
+"pHYs"
+"sPLT"
+"tIME"
+"iTXt"
+"tEXt"
+"zTXt"
+
+# Common chunk lengths
+"\x00\x00\x00\x00"
+"\x00\x00\x00\x01"
+"\x00\x00\x00\x04"
+"\x00\x00\x00\x08"
+"\x00\x00\x00\x0d"
+"\x00\x00\x00\x10"
+"\x00\x00\x00\x20"
+
+# IHDR chunk structure
+"\x00\x00\x00\x0dIHDR"
+
+# Color types
+"\x00"
+"\x02"
+"\x03"
+"\x04"
+"\x06"
+
+# Bit depths
+"\x01"
+"\x02"
+"\x04"
+"\x08"
+"\x10"
+
+# Compression method
+"\x00"
+
+# Filter method
+"\x00"
+
+# Interlace method
+"\x00"
+"\x01"
+
+# Common dimensions (big endian)
+"\x00\x00\x00\x01"
+"\x00\x00\x00\x10"
+"\x00\x00\x00\x40"
+"\x00\x00\x00\x64"
+"\x00\x00\x01\x00"
+
+# IEND chunk
+"\x00\x00\x00\x00IEND\xaeB`\x82"
+
+# zlib header
+"\x78\x9c"
+"\x78\x01"
+"\x78\xda"
+
+# Adler-32 checksum placeholder
+"\x00\x00\x00\x01"
