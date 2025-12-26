@@ -62,6 +62,16 @@ class PDFContext {
   private pushGraphicsStateContentStreamRef?: PDFRef;
   private popGraphicsStateContentStreamRef?: PDFRef;
 
+  /**
+   * Tracks whether new objects have been registered in this context.
+   * When true, objects will be sorted by object number during enumeration.
+   * When false, objects maintain their original order (important for PDFs
+   * with incremental updates where reordering can cause corruption).
+   * 
+   * @see https://github.com/Hopding/pdf-lib/issues/951
+   */
+  private needsReordering: boolean;
+
   private constructor() {
     this.largestObjectNumber = 0;
     this.header = PDFHeader.forVersion(1, 7);
@@ -69,6 +79,7 @@ class PDFContext {
 
     this.indirectObjects = new Map();
     this.rng = SimpleRNG.withSeed(1);
+    this.needsReordering = false;
   }
 
   assign(ref: PDFRef, object: PDFObject): void {
@@ -80,6 +91,7 @@ class PDFContext {
 
   nextRef(): PDFRef {
     this.largestObjectNumber += 1;
+    this.needsReordering = true;
     return PDFRef.of(this.largestObjectNumber);
   }
 
@@ -178,10 +190,24 @@ class PDFContext {
     return undefined;
   }
 
+  /**
+   * Returns all indirect objects in this context.
+   * 
+   * If new objects have been registered (needsReordering=true), objects are
+   * sorted by ascending object number to ensure proper XRef table generation.
+   * 
+   * If no new objects have been registered (needsReordering=false), objects
+   * maintain their original parsing order. This is crucial for PDFs with
+   * incremental updates, where reordering objects can cause corruption.
+   * 
+   * @see https://github.com/Hopding/pdf-lib/issues/951
+   */
   enumerateIndirectObjects(): [PDFRef, PDFObject][] {
-    return Array.from(this.indirectObjects.entries()).sort(
-      byAscendingObjectNumber,
-    );
+    const entries = Array.from(this.indirectObjects.entries());
+    if (this.needsReordering) {
+      return entries.sort(byAscendingObjectNumber);
+    }
+    return entries;
   }
 
   obj(literal: null | undefined): typeof PDFNull;
