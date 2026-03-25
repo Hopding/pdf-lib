@@ -1,3 +1,43 @@
+
+## From v1.x.x (>= v1.17.1) to v2.0.0 and above
+
+The latest release of `pdf-lib` (`v2.0.0`) introduced a breaking change in the API for drawSVG, making it asynchronous. You'll also need to manually embed the images that might be contained inside your svg file.
+
+### If your svg doesn't contain images
+
+To update your code, you just need to convert it into synchronous mode:
+
+```js
+const svg = `<svg width="100" height="100">
+  <rect y="0" x="0" width="100" height="100" fill="none" stroke="black"/>
+  <rect y="25" x="25" width="50" height="50" fill="black"/>
+</svg>`;
+await pdfPage.drawSvg(svg)
+```
+
+Will become:
+
+```js
+const svg = `<svg width="100" height="100">
+  <rect y="0" x="0" width="100" height="100" fill="none" stroke="black"/>
+  <rect y="25" x="25" width="50" height="50" fill="black"/>
+</svg>`;
+pdfPage.drawSvg(svg)
+```
+
+### If your svg might contain an image
+
+To update your code, you must call embedSvg first
+
+```js
+const svg = '<svg><image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="/></svg>'
+const pdfSvg = await pdfDoc.embedSvg(svg)
+pdfPage.drawSvg(pdfSvg)
+```
+
+
+## From v0.x.x to v1.0.0 and above
+
 The latest release of `pdf-lib` (`v1.0.0`) includes several breaking API changes. If you have code written for older versions of `pdf-lib` (`v0.x.x`), you can use the following instructions to help migrate your code to v1.0.0.
 
 Note that many of the API methods are now asynchronous and return promises, so you'll need to `await` on them (or use promise chaining: `.then(res => ...)`).

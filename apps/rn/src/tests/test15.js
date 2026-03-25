@@ -1,6 +1,6 @@
-import { PDFDocument, StandardFonts, rgb, TextAlignment } from 'pdf-lib';
+import { PDFDocument, rgb, TextAlignment } from 'pdf-lib';
 
-import { fetchAsset, writePdf } from './assets';
+import { fetchAsset } from './assets';
 
 export default async () => {
   const [dodCharacterPdf, smallMarioPng, marioEmblemPng] = await Promise.all([
@@ -18,7 +18,7 @@ export default async () => {
 
   form.getTextField('CharacterName 2').setText('Mario');
   form.getTextField('Age').setText('24 years');
-  form.getTextField('Height').setText(`5' 1"`);
+  form.getTextField('Height').setText('5\' 1"');
   form.getTextField('Weight').setText('196 lbs');
   form.getTextField('Eyes').setText('blue');
   form.getTextField('Skin').setText('white');
@@ -30,38 +30,38 @@ export default async () => {
     .getTextField('Allies')
     .setText(
       [
-        `Allies:`,
-        `  • Princess Daisy`,
-        `  • Princess Peach`,
-        `  • Rosalina`,
-        `  • Geno`,
-        `  • Luigi`,
-        `  • Donkey Kong`,
-        `  • Yoshi`,
-        `  • Diddy Kong`,
-        ``,
-        `Organizations:`,
-        `  • Italian Plumbers Association`,
+        'Allies:',
+        '  • Princess Daisy',
+        '  • Princess Peach',
+        '  • Rosalina',
+        '  • Geno',
+        '  • Luigi',
+        '  • Donkey Kong',
+        '  • Yoshi',
+        '  • Diddy Kong',
+        '',
+        'Organizations:',
+        '  • Italian Plumbers Association',
       ].join('\n'),
     );
 
-  form.getTextField('FactionName').setText(`Mario's Emblem`);
+  form.getTextField('FactionName').setText("Mario's Emblem");
   form.getTextField('Faction Symbol Image').setImage(emblemImage);
 
   form
     .getTextField('Backstory')
     .setText(
-      `Mario is a fictional character in the Mario video game franchise, owned by Nintendo and created by Japanese video game designer Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist of the series, Mario has appeared in over 200 video games since his creation. Depicted as a short, pudgy, Italian plumber who resides in the Mushroom Kingdom, his adventures generally center upon rescuing Princess Peach from the Koopa villain Bowser. His younger brother and sidekick is Luigi.`,
+      "Mario is a fictional character in the Mario video game franchise, owned by Nintendo and created by Japanese video game designer Shigeru Miyamoto. Serving as the company's mascot and the eponymous protagonist of the series, Mario has appeared in over 200 video games since his creation. Depicted as a short, pudgy, Italian plumber who resides in the Mushroom Kingdom, his adventures generally center upon rescuing Princess Peach from the Koopa villain Bowser. His younger brother and sidekick is Luigi.",
     );
 
   form
     .getTextField('Feat+Traits')
     .setText(
       [
-        `Mario can use three basic three power-ups:`,
-        `  • the Super Mushroom, which causes Mario to grow larger`,
-        `  • the Fire Flower, which allows Mario to throw fireballs`,
-        `  • the Starman, which gives Mario temporary invincibility`,
+        'Mario can use three basic three power-ups:',
+        '  • the Super Mushroom, which causes Mario to grow larger',
+        '  • the Fire Flower, which allows Mario to throw fireballs',
+        '  • the Starman, which gives Mario temporary invincibility',
       ].join('\n'),
     );
 

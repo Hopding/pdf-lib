@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource: https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 33 - PDF Incremental update</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js"
+    ></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test32.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test34.html'">
+        Next
+      </button>
+    </div>
+    <div id="animation-target"></div>
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    const { PDFDocument, StandardFonts } = PDFLib;
+
+    startFpsTracker('animation-target');
+
+    const fetchBinaryAsset = (asset) =>
+      fetch(`/assets/${asset}`).then((res) => res.arrayBuffer());
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const simplePdf = await fetchBinaryAsset('pdfs/simple.pdf');
+
+      const pdfDoc = await PDFDocument.load(simplePdf);
+      const snapshot = pdfDoc.takeSnapshot();
+      const page = pdfDoc.getPage(0);
+      snapshot.markRefForSave(page.ref);
+      const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+      const fontSize = 30;
+      const { height } = page.getSize();
+      page.drawText('Incremental saving is also awesome!', {
+        x: 50,
+        y: height - 8 * fontSize,
+        size: fontSize,
+        font: timesRomanFont,
+      });
+
+      const pdfIncrementalBytes = await pdfDoc.saveIncremental(snapshot);
+
+      const pdfBytes = new Uint8Array([
+        ...new Uint8Array(simplePdf),
+        ...pdfIncrementalBytes,
+      ]);
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

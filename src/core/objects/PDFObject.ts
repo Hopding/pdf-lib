@@ -1,7 +1,19 @@
-import { MethodNotImplementedError } from 'src/core/errors';
-import PDFContext from 'src/core/PDFContext';
+import { PDFClasses } from '../../api/objects';
+import { MethodNotImplementedError } from '../errors';
+import PDFContext from '../PDFContext';
 
 class PDFObject {
+  static className = () => PDFClasses.PDFObject;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFObject;
+  }
+
+  registerChange() {
+    throw new MethodNotImplementedError(
+      this.constructor.name,
+      'registerChange',
+    );
+  }
   clone(_context?: PDFContext): PDFObject {
     throw new MethodNotImplementedError(this.constructor.name, 'clone');
   }

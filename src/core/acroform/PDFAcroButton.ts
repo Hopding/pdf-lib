@@ -1,11 +1,12 @@
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFString from 'src/core/objects/PDFString';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFName from 'src/core/objects/PDFName';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import { IndexOutOfBoundsError } from 'src/core/errors';
+import PDFObject from '../objects/PDFObject';
+import PDFString from '../objects/PDFString';
+import PDFHexString from '../objects/PDFHexString';
+import PDFArray from '../objects/PDFArray';
+import PDFName from '../objects/PDFName';
+import PDFRef from '../objects/PDFRef';
+import PDFAcroTerminal from './PDFAcroTerminal';
+import { IndexOutOfBoundsError } from '../errors';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 class PDFAcroButton extends PDFAcroTerminal {
   Opt(): PDFString | PDFHexString | PDFArray | undefined {
@@ -26,15 +27,21 @@ class PDFAcroButton extends PDFAcroTerminal {
 
     if (!opt) return undefined;
 
-    if (opt instanceof PDFString || opt instanceof PDFHexString) {
-      return [opt];
+    if (
+      isPDFInstance(opt, PDFClasses.PDFString) ||
+      isPDFInstance(opt, PDFClasses.PDFHexString)
+    ) {
+      return [opt as PDFString | PDFHexString];
     }
 
     const values: (PDFString | PDFHexString)[] = [];
-    for (let idx = 0, len = opt.size(); idx < len; idx++) {
-      const value = opt.lookup(idx);
-      if (value instanceof PDFString || value instanceof PDFHexString) {
-        values.push(value);
+    for (let idx = 0, len = (opt as PDFArray).size(); idx < len; idx++) {
+      const value = (opt as PDFArray).lookup(idx);
+      if (
+        isPDFInstance(value, PDFClasses.PDFString) ||
+        isPDFInstance(value, PDFClasses.PDFHexString)
+      ) {
+        values.push(value as PDFString | PDFHexString);
       }
     }
 
@@ -46,14 +53,17 @@ class PDFAcroButton extends PDFAcroTerminal {
 
     if (!opt) return;
 
-    if (opt instanceof PDFString || opt instanceof PDFHexString) {
+    if (
+      isPDFInstance(opt, PDFClasses.PDFString) ||
+      isPDFInstance(opt, PDFClasses.PDFHexString)
+    ) {
       if (idx !== 0) throw new IndexOutOfBoundsError(idx, 0, 0);
       this.setOpt([]);
     } else {
-      if (idx < 0 || idx > opt.size()) {
-        throw new IndexOutOfBoundsError(idx, 0, opt.size());
+      if (idx < 0 || idx > (opt as PDFArray).size()) {
+        throw new IndexOutOfBoundsError(idx, 0, (opt as PDFArray).size());
       }
-      opt.remove(idx);
+      (opt as PDFArray).remove(idx);
     }
   }
 

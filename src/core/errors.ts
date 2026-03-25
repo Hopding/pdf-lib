@@ -1,6 +1,6 @@
 // tslint:disable: max-classes-per-file
-import PDFObject from 'src/core/objects/PDFObject';
-import { arrayAsString } from 'src/utils';
+import PDFObject from './objects/PDFObject';
+import { arrayAsString } from '../utils';
 
 export class MethodNotImplementedError extends Error {
   constructor(className: string, methodName: string) {
@@ -55,7 +55,7 @@ export class MissingCatalogError extends Error {
 
 export class MissingPageContentsEmbeddingError extends Error {
   constructor() {
-    const msg = `Can't embed page with missing Contents`;
+    const msg = "Can't embed page with missing Contents";
     super(msg);
   }
 }
@@ -70,7 +70,8 @@ export class UnrecognizedStreamTypeError extends Error {
 
 export class PageEmbeddingMismatchedContextError extends Error {
   constructor() {
-    const msg = `Found mismatched contexts while embedding pages. All pages in the array passed to \`PDFDocument.embedPages()\` must be from the same document.`;
+    const msg =
+      'Found mismatched contexts while embedding pages. All pages in the array passed to `PDFDocument.embedPages()` must be from the same document.';
     super(msg);
   }
 }
@@ -112,14 +113,14 @@ export class IndexOutOfBoundsError extends Error {
 
 export class InvalidAcroFieldValueError extends Error {
   constructor() {
-    const msg = `Attempted to set invalid field value`;
+    const msg = 'Attempted to set invalid field value';
     super(msg);
   }
 }
 
 export class MultiSelectValueError extends Error {
   constructor() {
-    const msg = `Attempted to select multiple values for single-select field`;
+    const msg = 'Attempted to select multiple values for single-select field';
     super(msg);
   }
 }
@@ -149,7 +150,7 @@ export interface Position {
 export class NumberParsingError extends Error {
   constructor(pos: Position, value: string) {
     const msg =
-      `Failed to parse number ` +
+      'Failed to parse number ' +
       `(line:${pos.line} col:${pos.column} offset=${pos.offset}): "${value}"`;
     super(msg);
   }
@@ -158,7 +159,7 @@ export class NumberParsingError extends Error {
 export class PDFParsingError extends Error {
   constructor(pos: Position, details: string) {
     const msg =
-      `Failed to parse PDF document ` +
+      'Failed to parse PDF document ' +
       `(line:${pos.line} col:${pos.column} offset=${pos.offset}): ${details}`;
     super(msg);
   }
@@ -180,35 +181,36 @@ export class PDFObjectParsingError extends PDFParsingError {
 
 export class PDFInvalidObjectParsingError extends PDFParsingError {
   constructor(pos: Position) {
-    const msg = `Failed to parse invalid PDF object`;
+    const msg = 'Failed to parse invalid PDF object';
     super(pos, msg);
   }
 }
 
 export class PDFStreamParsingError extends PDFParsingError {
   constructor(pos: Position) {
-    const msg = `Failed to parse PDF stream`;
+    const msg = 'Failed to parse PDF stream';
     super(pos, msg);
   }
 }
 
 export class UnbalancedParenthesisError extends PDFParsingError {
   constructor(pos: Position) {
-    const msg = `Failed to parse PDF literal string due to unbalanced parenthesis`;
+    const msg =
+      'Failed to parse PDF literal string due to unbalanced parenthesis';
     super(pos, msg);
   }
 }
 
 export class StalledParserError extends PDFParsingError {
   constructor(pos: Position) {
-    const msg = `Parser stalled`;
+    const msg = 'Parser stalled';
     super(pos, msg);
   }
 }
 
 export class MissingPDFHeaderError extends PDFParsingError {
   constructor(pos: Position) {
-    const msg = `No PDF header found`;
+    const msg = 'No PDF header found';
     super(pos, msg);
   }
 }

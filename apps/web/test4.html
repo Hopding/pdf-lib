@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta
@@ -48,14 +48,8 @@
     };
 
     async function test() {
-      const {
-        PDFDocument,
-        PDFPage,
-        radians,
-        StandardFonts,
-        rgb,
-        degrees,
-      } = PDFLib;
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
 
       const [inputPdfBase64, minionsLaughingBytes] = await Promise.all([
         fetchStringAsset('pdfs/normal.pdf.base64'),

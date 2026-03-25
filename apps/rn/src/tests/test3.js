@@ -6,7 +6,7 @@ import {
   LineCapStyle,
 } from 'pdf-lib';
 
-import { fetchAsset, writePdf } from './assets';
+import { fetchAsset } from './assets';
 
 export default async () => {
   const [

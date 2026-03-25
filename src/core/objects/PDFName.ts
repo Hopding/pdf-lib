@@ -1,13 +1,14 @@
-import { PrivateConstructorError } from 'src/core/errors';
-import PDFObject from 'src/core/objects/PDFObject';
-import CharCodes from 'src/core/syntax/CharCodes';
-import { IsIrregular } from 'src/core/syntax/Irregular';
+import { PrivateConstructorError } from '../errors';
+import PDFObject from './PDFObject';
+import CharCodes from '../syntax/CharCodes';
+import { IsIrregular } from '../syntax/Irregular';
 import {
   charFromHexCode,
   copyStringIntoBuffer,
   toCharCode,
   toHexString,
-} from 'src/utils';
+} from '../../utils';
+import { PDFClasses } from '../../api/objects';
 
 const decodeName = (name: string) =>
   name.replace(/#([\dABCDEF]{2})/g, (_, hex) => charFromHexCode(hex));
@@ -21,6 +22,10 @@ const ENFORCER = {};
 const pool = new Map<string, PDFName>();
 
 class PDFName extends PDFObject {
+  static className = () => PDFClasses.PDFName;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFName;
+  }
   static of = (name: string): PDFName => {
     const decodedValue = decodeName(name);
 
@@ -151,7 +156,7 @@ class PDFName extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
-    offset += copyStringIntoBuffer(this.encodedName, buffer, offset);
+    copyStringIntoBuffer(this.encodedName, buffer, offset);
     return this.encodedName.length;
   }
 }

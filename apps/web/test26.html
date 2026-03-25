@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource:;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 26 - test rect cropping</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test25.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test27.html'">
+        Next
+      </button>
+    </div>
+    <!-- <div  ></div> -->
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    // startFpsTracker('animation-target');
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
+
+      const pdfDoc = await PDFDocument.create();
+      const firstPage = pdfDoc.addPage([1000, 1000]);
+
+      const fontSize = 20;
+
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="82.5 59 333 321" data-id="6c5452c0-3221-49be-aa99-6e914bb27a84" data-plugin-name="geometry" alt=" " width="333" height="321"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="550" height="715" viewBox="-10 -13.439363817097416 20 26.87872763419483" x="0" y="0">
+      <g transform="scale(1 -1) translate(0 0)">
+      <line id="gridX:0" x1="0" x2="0" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:1" x1="1" x2="1" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:2" x1="2" x2="2" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:3" x1="3" x2="3" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:4" x1="4" x2="4" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:5" x1="5" x2="5" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:6" x1="6" x2="6" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:7" x1="7" x2="7" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:8" x1="8" x2="8" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:9" x1="9" x2="9" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-1" x1="-1" x2="-1" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-2" x1="-2" x2="-2" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-3" x1="-3" x2="-3" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-4" x1="-4" x2="-4" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-5" x1="-5" x2="-5" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-6" x1="-6" x2="-6" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-7" x1="-7" x2="-7" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-8" x1="-8" x2="-8" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-9" x1="-9" x2="-9" y1="-13.439363817097416" y2="13.439363817097416" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:0" x1="-10" x2="10" y1="0" y2="0" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:1" x1="-10" x2="10" y1="1" y2="1" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:2" x1="-10" x2="10" y1="2" y2="2" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:3" x1="-10" x2="10" y1="3" y2="3" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:4" x1="-10" x2="10" y1="4" y2="4" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:5" x1="-10" x2="10" y1="5" y2="5" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:6" x1="-10" x2="10" y1="6" y2="6" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:7" x1="-10" x2="10" y1="7" y2="7" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:8" x1="-10" x2="10" y1="8" y2="8" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:9" x1="-10" x2="10" y1="9" y2="9" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:10" x1="-10" x2="10" y1="10" y2="10" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:11" x1="-10" x2="10" y1="11" y2="11" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:12" x1="-10" x2="10" y1="12" y2="12" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:13" x1="-10" x2="10" y1="13" y2="13" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-1" x1="-10" x2="10" y1="-1" y2="-1" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-2" x1="-10" x2="10" y1="-2" y2="-2" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-3" x1="-10" x2="10" y1="-3" y2="-3" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-4" x1="-10" x2="10" y1="-4" y2="-4" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-5" x1="-10" x2="10" y1="-5" y2="-5" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-6" x1="-10" x2="10" y1="-6" y2="-6" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-7" x1="-10" x2="10" y1="-7" y2="-7" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-8" x1="-10" x2="10" y1="-8" y2="-8" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-9" x1="-10" x2="10" y1="-9" y2="-9" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-10" x1="-10" x2="10" y1="-10" y2="-10" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-11" x1="-10" x2="10" y1="-11" y2="-11" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-12" x1="-10" x2="10" y1="-12" y2="-12" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-13" x1="-10" x2="10" y1="-13" y2="-13" stroke-width="0.039761431411530816" stroke-linecap="round" stroke="#E5E5E5"></line>
+<rect id="591b1d79-cdd3-4376-96d5-8690da409941" x="-4.75" y="2.691765053813202" width="12.62132280455583" height="6.058234946186798" stroke="#000000" fill="none" stroke-width="0.11928429423459244" transform="rotate(50 -4.75 2.691765053813202)"></rect>
+      </g>
+    </svg></svg>`;
+
+      const drawLines = (page) => {
+        Array(10)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText('----' + v, {
+              x: 5,
+              y: v * 100,
+              size: 20,
+            });
+          });
+        Array(100)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText(v % 5 == 0 ? '---' : '--', {
+              x: 5,
+              y: v * 10,
+              size: 20,
+            });
+          });
+      };
+      const drawGrid = (page) => {
+        Array(parseInt(page.getHeight() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: 0, y: i * 10 },
+              end: { x: page.getWidth(), y: i * 10 },
+            });
+          });
+        Array(parseInt(page.getWidth() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: i * 10, y: 0 },
+              end: { x: i * 10, y: page.getHeight() },
+            });
+          });
+      };
+      // drawGrid(firstPage)
+      drawLines(firstPage);
+
+      firstPage.drawSvg(svg, {
+        height: 240.75,
+        width: 249.75,
+        x: 100,
+        y: 700,
+      });
+
+      const pdfBytes = await pdfDoc.save();
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

@@ -1,14 +1,19 @@
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFContext from 'src/core/PDFContext';
-import PDFPageTree from 'src/core/structures/PDFPageTree';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
+import PDFArray from '../objects/PDFArray';
+import PDFDict, { DictMap } from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
+import PDFObject from '../objects/PDFObject';
+import PDFRef from '../objects/PDFRef';
+import PDFStream from '../objects/PDFStream';
+import PDFContext from '../PDFContext';
+import PDFPageTree from './PDFPageTree';
 
 class PDFPageLeaf extends PDFDict {
+  static className = () => PDFClasses.PDFPageLeaf;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFPageLeaf;
+  }
   static readonly InheritableEntries = [
     'Resources',
     'MediaBox',
@@ -124,9 +129,9 @@ class PDFPageLeaf extends PDFDict {
 
   wrapContentStreams(startStream: PDFRef, endStream: PDFRef): boolean {
     const Contents = this.Contents();
-    if (Contents instanceof PDFArray) {
-      Contents.insert(0, startStream);
-      Contents.push(endStream);
+    if (isPDFInstance(Contents, PDFClasses.PDFArray)) {
+      (Contents as PDFArray).insert(0, startStream);
+      (Contents as PDFArray).push(endStream);
       return true;
     }
     return false;
@@ -135,6 +140,7 @@ class PDFPageLeaf extends PDFDict {
   addAnnot(annotRef: PDFRef): void {
     const { Annots } = this.normalizedEntries();
     Annots.push(annotRef);
+    this.registerChange();
   }
 
   removeAnnot(annotRef: PDFRef) {
@@ -142,6 +148,7 @@ class PDFPageLeaf extends PDFDict {
     const index = Annots.indexOf(annotRef);
     if (index !== undefined) {
       Annots.remove(index);
+      this.registerChange();
     }
   }
 
@@ -206,7 +213,7 @@ class PDFPageLeaf extends PDFDict {
 
     const contentsRef = this.get(PDFName.Contents);
     const contents = this.context.lookup(contentsRef);
-    if (contents instanceof PDFStream) {
+    if (isPDFInstance(contents, PDFClasses.PDFStream)) {
       this.set(PDFName.Contents, context.obj([contentsRef]));
     }
 

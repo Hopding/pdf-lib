@@ -1,13 +1,11 @@
-import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFString from 'src/core/objects/PDFString';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFName from 'src/core/objects/PDFName';
-import { AcroChoiceFlags } from 'src/core/acroform/flags';
-import {
-  InvalidAcroFieldValueError,
-  MultiSelectValueError,
-} from 'src/core/errors';
+import PDFAcroTerminal from './PDFAcroTerminal';
+import PDFHexString from '../objects/PDFHexString';
+import PDFString from '../objects/PDFString';
+import PDFArray from '../objects/PDFArray';
+import PDFName from '../objects/PDFName';
+import { AcroChoiceFlags } from './flags';
+import { InvalidAcroFieldValueError, MultiSelectValueError } from '../errors';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 class PDFAcroChoice extends PDFAcroTerminal {
   setValues(values: (PDFString | PDFHexString)[]) {
@@ -65,15 +63,22 @@ class PDFAcroChoice extends PDFAcroTerminal {
   getValues(): (PDFString | PDFHexString)[] {
     const v = this.V();
 
-    if (v instanceof PDFString || v instanceof PDFHexString) return [v];
+    if (
+      isPDFInstance(v, PDFClasses.PDFString) ||
+      isPDFInstance(v, PDFClasses.PDFHexString)
+    )
+      return [v as PDFString | PDFHexString];
 
-    if (v instanceof PDFArray) {
+    if (isPDFInstance(v, PDFClasses.PDFArray)) {
       const values: (PDFString | PDFHexString)[] = [];
 
-      for (let idx = 0, len = v.size(); idx < len; idx++) {
-        const value = v.lookup(idx);
-        if (value instanceof PDFString || value instanceof PDFHexString) {
-          values.push(value);
+      for (let idx = 0, len = (v as PDFArray).size(); idx < len; idx++) {
+        const value = (v as PDFArray).lookup(idx);
+        if (
+          isPDFInstance(value, PDFClasses.PDFString) ||
+          isPDFInstance(value, PDFClasses.PDFHexString)
+        ) {
+          values.push(value as PDFString | PDFHexString);
         }
       }
 
@@ -113,31 +118,49 @@ class PDFAcroChoice extends PDFAcroTerminal {
     const Opt = this.Opt();
 
     // Not supposed to happen - Opt _should_ always be `PDFArray | undefined`
-    if (Opt instanceof PDFString || Opt instanceof PDFHexString) {
-      return [{ value: Opt, display: Opt }];
+    if (
+      isPDFInstance(Opt, PDFClasses.PDFString) ||
+      isPDFInstance(Opt, PDFClasses.PDFHexString)
+    ) {
+      return [
+        {
+          value: Opt as PDFString | PDFHexString,
+          display: Opt as PDFString | PDFHexString,
+        },
+      ];
     }
 
-    if (Opt instanceof PDFArray) {
+    if (isPDFInstance(Opt, PDFClasses.PDFArray)) {
       const res: {
         value: PDFString | PDFHexString;
         display: PDFString | PDFHexString;
       }[] = [];
 
-      for (let idx = 0, len = Opt.size(); idx < len; idx++) {
-        const item = Opt.lookup(idx);
+      for (let idx = 0, len = (Opt as PDFArray).size(); idx < len; idx++) {
+        const item = (Opt as PDFArray).lookup(idx);
 
         // If `item` is a string, use that as both the export and text value
-        if (item instanceof PDFString || item instanceof PDFHexString) {
-          res.push({ value: item, display: item });
+        if (
+          isPDFInstance(item, PDFClasses.PDFString) ||
+          isPDFInstance(item, PDFClasses.PDFHexString)
+        ) {
+          res.push({
+            value: item as PDFString | PDFHexString,
+            display: item as PDFString | PDFHexString,
+          });
         }
 
         // If `item` is an array of one, treat it the same as just a string,
         // if it's an array of two then `item[0]` is the export value and
         // `item[1]` is the text value
-        if (item instanceof PDFArray) {
-          if (item.size() > 0) {
-            const first = item.lookup(0, PDFString, PDFHexString);
-            const second = item.lookupMaybe(1, PDFString, PDFHexString);
+        if (isPDFInstance(item, PDFClasses.PDFArray)) {
+          if ((item as PDFArray).size() > 0) {
+            const first = (item as PDFArray).lookup(0, PDFString, PDFHexString);
+            const second = (item as PDFArray).lookupMaybe(
+              1,
+              PDFString,
+              PDFHexString,
+            );
             res.push({ value: first, display: second || first });
           }
         }

@@ -1,12 +1,13 @@
-import { ReparseError } from 'src/core/errors';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import PDFRef from 'src/core/objects/PDFRef';
-import ByteStream from 'src/core/parser/ByteStream';
-import PDFContext from 'src/core/PDFContext';
+import { ReparseError } from '../errors';
+import PDFArray from '../objects/PDFArray';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
+import PDFRawStream from '../objects/PDFRawStream';
+import PDFRef from '../objects/PDFRef';
+import ByteStream from './ByteStream';
+import PDFContext from '../PDFContext';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 export interface Entry {
   ref: PDFRef;
@@ -36,15 +37,20 @@ class PDFXRefStreamParser {
     this.dict = rawStream.dict;
     this.bytes = ByteStream.fromPDFRawStream(rawStream);
     this.context = this.dict.context;
+    this.context.pdfFileDetails.useObjectStreams = true;
 
     const Size = this.dict.lookup(PDFName.of('Size'), PDFNumber);
 
     const Index = this.dict.lookup(PDFName.of('Index'));
-    if (Index instanceof PDFArray) {
+    if (isPDFInstance(Index, PDFClasses.PDFArray)) {
       this.subsections = [];
-      for (let idx = 0, len = Index.size(); idx < len; idx += 2) {
-        const firstObjectNumber = Index.lookup(idx + 0, PDFNumber).asNumber();
-        const length = Index.lookup(idx + 1, PDFNumber).asNumber();
+      for (let idx = 0, len = (Index as PDFArray).size(); idx < len; idx += 2) {
+        const firstObjectNumber = (Index as PDFArray)
+          .lookup(idx + 0, PDFNumber)
+          .asNumber();
+        const length = (Index as PDFArray)
+          .lookup(idx + 1, PDFNumber)
+          .asNumber();
         this.subsections.push({ firstObjectNumber, length });
       }
     } else {
@@ -65,11 +71,19 @@ class PDFXRefStreamParser {
     this.alreadyParsed = true;
 
     this.context.trailerInfo = {
+      Size: this.dict.lookup(PDFName.of('Size'), PDFNumber),
       Root: this.dict.get(PDFName.of('Root')),
       Encrypt: this.dict.get(PDFName.of('Encrypt')),
       Info: this.dict.get(PDFName.of('Info')),
       ID: this.dict.get(PDFName.of('ID')),
     };
+    // if open for incremental update, make sure next object number doesn't overlap a deleted one
+    if (
+      this.context.trailerInfo.Size &&
+      this.context.pdfFileDetails.originalBytes
+    )
+      this.context.largestObjectNumber =
+        this.context.trailerInfo.Size.asNumber() - 1;
 
     const entries = this.parseEntries();
 
@@ -113,7 +127,7 @@ class PDFXRefStreamParser {
 
         const objectNumber = firstObjectNumber + objIdx;
         const entry = {
-          ref: PDFRef.of(objectNumber, generationNumber),
+          ref: PDFRef.of(objectNumber, type === 2 ? 0 : generationNumber),
           offset,
           deleted: type === 0,
           inObjectStream: type === 2,

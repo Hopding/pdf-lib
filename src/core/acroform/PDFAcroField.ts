@@ -1,21 +1,26 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFString from 'src/core/objects/PDFString';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFRef from 'src/core/objects/PDFRef';
-import { findLastMatch } from 'src/utils';
-import { MissingDAEntryError, MissingTfOperatorError } from 'src/core/errors';
+import PDFDict from '../objects/PDFDict';
+import PDFString from '../objects/PDFString';
+import PDFHexString from '../objects/PDFHexString';
+import PDFName from '../objects/PDFName';
+import PDFObject from '../objects/PDFObject';
+import PDFNumber from '../objects/PDFNumber';
+import PDFArray from '../objects/PDFArray';
+import PDFRef from '../objects/PDFRef';
+import { findLastMatch } from '../../utils';
+import { MissingDAEntryError, MissingTfOperatorError } from '../errors';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 // Examples:
 //   `/Helv 12 Tf` -> ['Helv', '12']
 //   `/HeBo 8.00 Tf` -> ['HeBo', '8.00']
 //   `/HeBo Tf` -> ['HeBo', undefined]
-const tfRegex = /\/([^\0\t\n\f\r\ ]+)[\0\t\n\f\r\ ]*(\d*\.\d+|\d+)?[\0\t\n\f\r\ ]+Tf/;
-
+const tfRegex =
+  /\/([^\0\t\n\f\r ]+)[\0\t\n\f\r ]*(\d*\.\d+|\d+)?[\0\t\n\f\r ]+Tf/;
 class PDFAcroField {
+  static className = () => PDFClasses.PDFAcroField;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFAcroField;
+  }
   readonly dict: PDFDict;
   readonly ref: PDFRef;
 
@@ -48,7 +53,11 @@ class PDFAcroField {
 
   DA(): PDFString | PDFHexString | undefined {
     const da = this.dict.lookup(PDFName.of('DA'));
-    if (da instanceof PDFString || da instanceof PDFHexString) return da;
+    if (
+      isPDFInstance(da, PDFClasses.PDFString) ||
+      isPDFInstance(da, PDFClasses.PDFHexString)
+    )
+      return da as PDFString | PDFHexString;
     return undefined;
   }
 
@@ -62,9 +71,9 @@ class PDFAcroField {
     // return new PDFAcroField(parent);
 
     const parentRef = this.dict.get(PDFName.of('Parent'));
-    if (parentRef instanceof PDFRef) {
+    if (isPDFInstance(parentRef, PDFClasses.PDFRef)) {
       const parent = this.dict.lookup(PDFName.of('Parent'), PDFDict);
-      return new PDFAcroField(parent, parentRef);
+      return new PDFAcroField(parent, parentRef as PDFRef);
     }
 
     return undefined;
@@ -97,8 +106,8 @@ class PDFAcroField {
   getDefaultAppearance(): string | undefined {
     const DA = this.DA();
 
-    if (DA instanceof PDFHexString) {
-      return DA.decodeText();
+    if (isPDFInstance(DA, PDFClasses.PDFHexString)) {
+      return (DA as PDFHexString).decodeText();
     }
 
     return DA?.asString();

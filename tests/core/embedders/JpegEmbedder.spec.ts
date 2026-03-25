@@ -1,17 +1,22 @@
 import fs from 'fs';
-import { JpegEmbedder, PDFContext, PDFRawStream, PDFRef } from 'src/core';
+import {
+  JpegEmbedder,
+  PDFContext,
+  PDFRawStream,
+  PDFRef,
+} from '../../../src/core';
 
 const catUnicornJpg = fs.readFileSync('./assets/images/cat_riding_unicorn.jpg');
 const minionsLaughing = fs.readFileSync('./assets/images/minions_laughing.jpg');
 const cmykJpg = fs.readFileSync('./assets/images/cmyk_colorspace.jpg');
 
-describe(`JpegEmbedder`, () => {
-  it(`can be constructed with JpegEmbedder.for(...)`, async () => {
+describe('JpegEmbedder', () => {
+  it('can be constructed with JpegEmbedder.for(...)', async () => {
     const embedder = await JpegEmbedder.for(catUnicornJpg);
     expect(embedder).toBeInstanceOf(JpegEmbedder);
   });
 
-  it(`can embed JPEG images into PDFContexts without a predefined ref`, async () => {
+  it('can embed JPEG images into PDFContexts without a predefined ref', async () => {
     const context = PDFContext.create();
     const embedder = await JpegEmbedder.for(catUnicornJpg);
 
@@ -21,7 +26,7 @@ describe(`JpegEmbedder`, () => {
     expect(context.lookup(ref)).toBeInstanceOf(PDFRawStream);
   });
 
-  it(`can embed JPEG images into PDFContexts with a predefined ref`, async () => {
+  it('can embed JPEG images into PDFContexts with a predefined ref', async () => {
     const context = PDFContext.create();
     const predefinedRef = PDFRef.of(9999);
     const embedder = await JpegEmbedder.for(catUnicornJpg);
@@ -33,7 +38,7 @@ describe(`JpegEmbedder`, () => {
     expect(ref).toBe(predefinedRef);
   });
 
-  it(`can extract properties of JPEG images (1)`, async () => {
+  it('can extract properties of JPEG images (1)', async () => {
     const embedder = await JpegEmbedder.for(catUnicornJpg);
 
     expect(embedder.bitsPerComponent).toBe(8);
@@ -42,7 +47,7 @@ describe(`JpegEmbedder`, () => {
     expect(embedder.colorSpace).toBe('DeviceRGB');
   });
 
-  it(`can extract properties of JPEG images (2)`, async () => {
+  it('can extract properties of JPEG images (2)', async () => {
     const embedder = await JpegEmbedder.for(minionsLaughing);
 
     expect(embedder.bitsPerComponent).toBe(8);
@@ -51,7 +56,7 @@ describe(`JpegEmbedder`, () => {
     expect(embedder.colorSpace).toBe('DeviceRGB');
   });
 
-  it(`can extract properties of JPEG images (3)`, async () => {
+  it('can extract properties of JPEG images (3)', async () => {
     const embedder = await JpegEmbedder.for(cmykJpg);
 
     expect(embedder.bitsPerComponent).toBe(8);

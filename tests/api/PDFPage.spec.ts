@@ -1,11 +1,12 @@
 import fs from 'fs';
-import { PDFArray, PDFDocument, PDFName, StandardFonts } from 'src/index';
+import { PDFArray, PDFDocument, PDFName, StandardFonts } from '../../src/index';
 
 const birdPng = fs.readFileSync('assets/images/greyscale_bird.png');
+const simplePDF = fs.readFileSync('assets/pdfs/simple.pdf');
 
-describe(`PDFDocument`, () => {
-  describe(`getSize() method`, () => {
-    it(`returns the width and height of the the page's MediaBox`, async () => {
+describe('PDFDocument', () => {
+  describe('getSize() method', () => {
+    it("returns the width and height of the the page's MediaBox", async () => {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
       page.node.set(PDFName.MediaBox, pdfDoc.context.obj([5, 5, 20, 50]));
@@ -13,8 +14,45 @@ describe(`PDFDocument`, () => {
     });
   });
 
-  describe(`setSize() method`, () => {
-    it(`sets the width and height of only the the page's MediaBox when the other boxes are not defined`, async () => {
+  describe('page adding', () => {
+    it('adds page with sizes to existing doc', async () => {
+      const pdfDoc = await PDFDocument.load(simplePDF, {
+        forIncrementalUpdate: true,
+      });
+      const ipc = pdfDoc.getPageCount();
+      pdfDoc.addPage([500, 200]);
+      expect(pdfDoc.getPageCount()).toBe(ipc + 1);
+    });
+
+    it('adds pages to existing doc', async () => {
+      const pdfDoc = await PDFDocument.load(simplePDF, {
+        forIncrementalUpdate: true,
+      });
+      const ipc = pdfDoc.getPageCount();
+      pdfDoc.addPage();
+      pdfDoc.insertPage(0);
+      expect(pdfDoc.getPageCount()).toBe(ipc + 2);
+    });
+  });
+
+  describe('page deletion', () => {
+    it('deletes pages', async () => {
+      const pdfDoc = await PDFDocument.load(simplePDF, {
+        forIncrementalUpdate: true,
+      });
+      const p0Num = pdfDoc.getPage(0).ref.objectNumber;
+      pdfDoc.removePage(0);
+      expect(pdfDoc.getPageCount()).toBe(1);
+      const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
+      const rex = new RegExp(
+        `xref[\r\n|\n]0 .*[\r\n|\n]${p0Num.toString().padStart(10, '0')} 65535 f`,
+      );
+      expect(Buffer.from(pdfBytes).toString()).toMatch(rex);
+    });
+  });
+
+  describe('setSize() method', () => {
+    it("sets the width and height of only the the page's MediaBox when the other boxes are not defined", async () => {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
 
@@ -36,7 +74,7 @@ describe(`PDFDocument`, () => {
       expect(page.node.ArtBox()).toBeUndefined();
     });
 
-    it(`sets the width and height of the the page's CropBox, BleedBox, TrimBox, and ArtBox when they equal the MediaBox`, async () => {
+    it("sets the width and height of the the page's CropBox, BleedBox, TrimBox, and ArtBox when they equal the MediaBox", async () => {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
 
@@ -67,7 +105,7 @@ describe(`PDFDocument`, () => {
       expect(page.getArtBox()).toEqual({ x: 5, y: 5, width: 15, height: 45 });
     });
 
-    it(`does not set the width and height of the the page's CropBox, BleedBox, TrimBox, or ArtBox when they do not equal the MediaBox`, async () => {
+    it("does not set the width and height of the the page's CropBox, BleedBox, TrimBox, or ArtBox when they do not equal the MediaBox", async () => {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
 
@@ -100,7 +138,7 @@ describe(`PDFDocument`, () => {
   });
 
   // https://github.com/Hopding/pdf-lib/issues/1075
-  it(`drawImage() does not reuse existing XObject keys`, async () => {
+  it('drawImage() does not reuse existing XObject keys', async () => {
     const pdfDoc1 = await PDFDocument.create();
     const image1 = await pdfDoc1.embedPng(birdPng);
     const page1 = pdfDoc1.addPage();
@@ -125,7 +163,7 @@ describe(`PDFDocument`, () => {
   });
 
   // https://github.com/Hopding/pdf-lib/issues/1075
-  it(`setFont() does not reuse existing Font keys`, async () => {
+  it('setFont() does not reuse existing Font keys', async () => {
     const pdfDoc1 = await PDFDocument.create();
     const font1 = await pdfDoc1.embedFont(StandardFonts.Helvetica);
     const page1 = pdfDoc1.addPage();

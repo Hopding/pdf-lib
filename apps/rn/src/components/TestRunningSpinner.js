@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
-import PdfView from 'react-native-pdf';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,7 +15,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: -50,
     marginBottom: 50,
   },
 });

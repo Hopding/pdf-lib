@@ -5,10 +5,10 @@ import {
   PDFHexString,
   PDFName,
   PDFNull,
-} from 'src/index';
+} from '../../../src/index';
 
-describe(`PDFWidgetAnnotation`, () => {
-  it(`returns undefined for missing (DAs)`, () => {
+describe('PDFWidgetAnnotation', () => {
+  it('returns undefined for missing (DAs)', () => {
     const context = PDFContext.create();
 
     const parentRef = context.nextRef();
@@ -18,7 +18,7 @@ describe(`PDFWidgetAnnotation`, () => {
     expect(widget.getDefaultAppearance()).toBe(undefined);
   });
 
-  it(`returns normal direct appearance strings (DAs)`, () => {
+  it('returns normal direct appearance strings (DAs)', () => {
     const context = PDFContext.create();
 
     const parentRef = context.nextRef();
@@ -28,7 +28,7 @@ describe(`PDFWidgetAnnotation`, () => {
     expect(widget.getDefaultAppearance()).toBe('/ZaDb 10 Tf 0 g');
   });
 
-  it(`returns hexadecimal (non-standard) direct appearance strings (DAs)`, () => {
+  it('returns hexadecimal (non-standard) direct appearance strings (DAs)', () => {
     const context = PDFContext.create();
 
     const parentRef = context.nextRef();

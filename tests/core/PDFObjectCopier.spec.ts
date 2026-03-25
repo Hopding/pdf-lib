@@ -14,10 +14,10 @@ import {
   PDFRawStream,
   PDFRef,
   PDFString,
-} from 'src/index';
+} from '../../src/index';
 
-describe(`PDFObjectCopier`, () => {
-  it(`copies PDFDicts, including their indirect references`, () => {
+describe('PDFObjectCopier', () => {
+  it('copies PDFDicts, including their indirect references', () => {
     // Arrange
     const src = PDFContext.create();
     const origDict = src.obj({
@@ -72,7 +72,7 @@ describe(`PDFObjectCopier`, () => {
     expect(destBar1.get(Baz)).toBeInstanceOf(PDFName);
   });
 
-  it(`copies PDFArrays, including their indirect references`, () => {
+  it('copies PDFArrays, including their indirect references', () => {
     // Arrange
     const src = PDFContext.create();
     const origArray = src.obj([
@@ -126,7 +126,7 @@ describe(`PDFObjectCopier`, () => {
     expect(dest1Bar.get(0)).toBeInstanceOf(PDFName);
   });
 
-  it(`copies PDFStreams, including their indirect references`, () => {
+  it('copies PDFStreams, including their indirect references', () => {
     // Arrange
     const src = PDFContext.create();
     const origStream = src.stream(new Uint8Array([1, 2, 3, 4, 5]), {
@@ -184,7 +184,7 @@ describe(`PDFObjectCopier`, () => {
     expect(destBar1.get(Baz)).toBeInstanceOf(PDFName);
   });
 
-  it(`copies PDFRefs, including their indirect references`, () => {
+  it('copies PDFRefs, including their indirect references', () => {
     // Arrange
     const src = PDFContext.create();
     const origRef = PDFRef.of(21);
@@ -242,7 +242,7 @@ describe(`PDFObjectCopier`, () => {
     expect(destBar1.get(Baz)).toBeInstanceOf(PDFName);
   });
 
-  it(`copies individual PDFPageLeaf objects, without bringing along the whole page tree`, () => {
+  it('copies individual PDFPageLeaf objects, without bringing along the whole page tree', () => {
     // Arrange
     const src = PDFContext.create();
 
@@ -309,7 +309,7 @@ describe(`PDFObjectCopier`, () => {
     expect(Rotate).toBeInstanceOf(PDFNumber);
   });
 
-  it(`copies objects with cyclic references`, () => {
+  it('copies objects with cyclic references', () => {
     // Arrange
     const src = PDFContext.create();
 
@@ -333,7 +333,7 @@ describe(`PDFObjectCopier`, () => {
     );
   });
 
-  it(`copies all types of PDFObjects`, () => {
+  it('copies all types of PDFObjects', () => {
     // Arrange
     const src = PDFContext.create();
     const dest = PDFContext.create();
@@ -394,7 +394,7 @@ describe(`PDFObjectCopier`, () => {
     expect(copiedString).toBeInstanceOf(PDFString);
   });
 
-  it(`copies objects with undefined references`, () => {
+  it('copies objects with undefined references', () => {
     // Arrange
     const src = PDFContext.create();
     const dest = PDFContext.create();

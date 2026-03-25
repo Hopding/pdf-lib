@@ -1,5 +1,5 @@
-import CharCodes from 'src/core/syntax/CharCodes';
-import { copyStringIntoBuffer } from 'src/utils';
+import CharCodes from '../syntax/CharCodes';
+import { copyStringIntoBuffer } from '../../utils';
 
 class PDFTrailer {
   static forLastCrossRefSectionOffset = (offset: number) =>

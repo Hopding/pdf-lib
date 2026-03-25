@@ -5,8 +5,9 @@ import {
   setStrokingCmykColor,
   setStrokingGrayscaleColor,
   setStrokingRgbColor,
-} from 'src/api/operators';
-import { assertRange, error } from 'src/utils';
+} from './operators';
+import { assertRange, assertIs, error } from '../utils';
+import ColorParser from 'color';
 
 export enum ColorTypes {
   Grayscale = 'Grayscale',
@@ -61,20 +62,27 @@ export const cmyk = (
   return { type: ColorTypes.CMYK, cyan, magenta, yellow, key };
 };
 
-const { Grayscale, RGB, CMYK } = ColorTypes;
+export const colorString = (color: string): { rgb: Color; alpha?: number } => {
+  assertIs(color, 'color', ['string']);
+  const colorDescription = ColorParser(color).unitObject();
+  return {
+    rgb: rgb(colorDescription.r, colorDescription.g, colorDescription.b),
+    alpha: colorDescription.alpha,
+  };
+};
 
 // prettier-ignore
-export const setFillingColor = (color: Color) => 
-    color.type === Grayscale ? setFillingGrayscaleColor(color.gray)
-  : color.type === RGB       ? setFillingRgbColor(color.red, color.green, color.blue)
-  : color.type === CMYK      ? setFillingCmykColor(color.cyan, color.magenta, color.yellow, color.key)
+export const setFillingColor = (color: Color) =>
+    color.type === ColorTypes.Grayscale ? setFillingGrayscaleColor(color.gray)
+  : color.type === ColorTypes.RGB       ? setFillingRgbColor(color.red, color.green, color.blue)
+  : color.type === ColorTypes.CMYK      ? setFillingCmykColor(color.cyan, color.magenta, color.yellow, color.key)
   : error(`Invalid color: ${JSON.stringify(color)}`);
 
 // prettier-ignore
-export const setStrokingColor = (color: Color) => 
-    color.type === Grayscale ? setStrokingGrayscaleColor(color.gray)
-  : color.type === RGB       ? setStrokingRgbColor(color.red, color.green, color.blue)
-  : color.type === CMYK      ? setStrokingCmykColor(color.cyan, color.magenta, color.yellow, color.key)
+export const setStrokingColor = (color: Color) =>
+    color.type === ColorTypes.Grayscale ? setStrokingGrayscaleColor(color.gray)
+  : color.type === ColorTypes.RGB       ? setStrokingRgbColor(color.red, color.green, color.blue)
+  : color.type === ColorTypes.CMYK      ? setStrokingCmykColor(color.cyan, color.magenta, color.yellow, color.key)
   : error(`Invalid color: ${JSON.stringify(color)}`);
 
 // prettier-ignore
@@ -83,14 +91,14 @@ export const componentsToColor = (comps?: number[], scale = 1) => (
       comps[0] * scale,
     )
   : comps?.length === 3 ? rgb(
-      comps[0] * scale, 
-      comps[1] * scale, 
+      comps[0] * scale,
+      comps[1] * scale,
       comps[2] * scale,
     )
   : comps?.length === 4 ? cmyk(
-      comps[0] * scale, 
-      comps[1] * scale, 
-      comps[2] * scale, 
+      comps[0] * scale,
+      comps[1] * scale,
+      comps[2] * scale,
       comps[3] * scale,
     )
   : undefined
@@ -98,7 +106,7 @@ export const componentsToColor = (comps?: number[], scale = 1) => (
 
 // prettier-ignore
 export const colorToComponents = (color: Color) =>
-    color.type === Grayscale ? [color.gray]
-  : color.type === RGB       ? [color.red, color.green, color.blue]
-  : color.type === CMYK      ? [color.cyan, color.magenta, color.yellow, color.key]
+    color.type === ColorTypes.Grayscale ? [color.gray]
+  : color.type === ColorTypes.RGB       ? [color.red, color.green, color.blue]
+  : color.type === ColorTypes.CMYK      ? [color.cyan, color.magenta, color.yellow, color.key]
   : error(`Invalid color: ${JSON.stringify(color)}`);

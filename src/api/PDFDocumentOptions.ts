@@ -1,5 +1,5 @@
-import { EmbeddedFileOptions } from 'src/core/embedders/FileEmbedder';
-import { TypeFeatures } from 'src/types/fontkit';
+import { EmbeddedFileOptions } from '../core/embedders/FileEmbedder';
+import { TypeFeatures } from '../types/fontkit';
 
 export enum ParseSpeeds {
   Fastest = Infinity,
@@ -15,6 +15,12 @@ export interface SaveOptions {
   addDefaultPage?: boolean;
   objectsPerTick?: number;
   updateFieldAppearances?: boolean;
+  rewrite?: boolean;
+}
+
+export interface IncrementalSaveOptions {
+  objectsPerTick?: number;
+  useObjectStreams?: boolean;
 }
 
 export interface Base64SaveOptions extends SaveOptions {
@@ -25,8 +31,12 @@ export interface LoadOptions {
   ignoreEncryption?: boolean;
   parseSpeed?: ParseSpeeds | number;
   throwOnInvalidObject?: boolean;
+  warnOnInvalidObjects?: boolean;
   updateMetadata?: boolean;
   capNumbers?: boolean;
+  password?: string;
+  forIncrementalUpdate?: boolean;
+  preserveObjectsVersions?: boolean;
 }
 
 export interface CreateOptions {

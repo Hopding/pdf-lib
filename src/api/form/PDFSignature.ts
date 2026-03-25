@@ -1,8 +1,9 @@
-import PDFDocument from 'src/api/PDFDocument';
-import PDFField from 'src/api/form/PDFField';
+import PDFDocument from '../PDFDocument';
+import PDFField from './PDFField';
 
-import { PDFRef, PDFAcroSignature } from 'src/core';
-import { assertIs } from 'src/utils';
+import { PDFRef, PDFAcroSignature } from '../../core';
+import { assertIs } from '../../utils';
+import { PDFClasses } from '../objects';
 
 /**
  * Represents a signature field of a [[PDFForm]].
@@ -12,6 +13,10 @@ import { assertIs } from 'src/utils';
  * reading the contents of existing digital signatures.
  */
 export default class PDFSignature extends PDFField {
+  static className = () => PDFClasses.PDFSignature;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFSignature;
+  }
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
    * > consider using the [[PDFForm.getSignature]] method, which will create an

@@ -1,5 +1,5 @@
-import CharCodes from 'src/core/syntax/CharCodes';
-import { charFromCode, copyStringIntoBuffer } from 'src/utils';
+import CharCodes from '../syntax/CharCodes';
+import { charFromCode, copyStringIntoBuffer } from '../../utils';
 
 class PDFHeader {
   static forVersion = (major: number, minor: number) =>
@@ -11,6 +11,10 @@ class PDFHeader {
   private constructor(major: number, minor: number) {
     this.major = String(major);
     this.minor = String(minor);
+  }
+
+  getVersionString(): string {
+    return `${this.major}.${this.minor}`;
   }
 
   toString(): string {

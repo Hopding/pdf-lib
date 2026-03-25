@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource:;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 22</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test21.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test23.html'">
+        Next
+      </button>
+    </div>
+    <!-- <div  ></div> -->
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    // startFpsTracker('animation-target');
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
+
+      const pdfDoc = await PDFDocument.create();
+      const firstPage = pdfDoc.addPage([500, 1000]);
+
+      const fontSize = 20;
+
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="167.68455000000003" height="173.0060640625">
+  <rect width="167.68455000000003" height="173.0060640625" fill="#00ff00"/>
+  <g transform="translate(0 0)">
+    <line x1="2" x2="4.6655999999999995" y1="1" y2="1" stroke-width="2" stroke="black"/>
+    <path d="M2 0 V169.8956640625" fill="none" stroke-width="2" stroke="black"/>
+    <line x1="2" x2="4.6655999999999995" y1="168.8956640625" y2="168.8956640625" stroke-width="2" stroke="black"/>
+    <g transform="translate(3 0)">
+      <g transform="translate(7.6655999999999995 0)">
+        <g transform="translate(0 0)">
+          <g transform="translate(0 0)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center; font-style: italic;" fill="#000000">1</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(47.22925 0)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center;" fill="#000">0</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(94.4585 0)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center;" fill="#000">0</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(0 53.2985546875)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center;" fill="#000">0</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(47.22925 53.2985546875)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center;" fill="#000">1</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(94.4585 53.2985546875)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center;" fill="#000">0</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(0 106.597109375)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center;" fill="#000">0</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(47.22925 106.597109375)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center;" fill="#000">0</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(94.4585 106.597109375)">
+            <g transform="translate(20 20)">
+              <g transform="translate(0 0)">
+                <text x="3.6146249999999998" y="11.743354687499998" text-anchor="middle" font-size="15.552" style="font-family:&quot;LinLibertine_R&quot;; text-align: center;" fill="#000">1</text>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+    <g transform="translate(158.35335 0)">
+      <g transform="translate(4.6655999999999995 0) scale(-1 1)">
+        <line x1="2" x2="4.6655999999999995" y1="1" y2="1" stroke-width="2" stroke="black"/>
+        <path d="M2 0 V169.8956640625" fill="none" stroke-width="2" stroke="black"/>
+        <line x1="2" x2="4.6655999999999995" y1="168.8956640625" y2="168.8956640625" stroke-width="2" stroke="black"/>
+      </g>
+    </g>
+  </g>
+</svg>
+`;
+
+      const drawLines = (page) => {
+        Array(10)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText('----' + v, {
+              x: 5,
+              y: v * 100,
+              size: 20,
+            });
+          });
+        Array(100)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText(v % 5 == 0 ? '---' : '--', {
+              x: 5,
+              y: v * 10,
+              size: 20,
+            });
+          });
+      };
+      const drawGrid = (page) => {
+        Array(parseInt(page.getHeight() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: 0, y: i * 10 },
+              end: { x: page.getWidth(), y: i * 10 },
+            });
+          });
+        Array(parseInt(page.getWidth() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: i * 10, y: 0 },
+              end: { x: i * 10, y: page.getHeight() },
+            });
+          });
+      };
+      // drawGrid(firstPage)
+      drawLines(firstPage);
+
+      firstPage.drawSvg(svg, {
+        height: 173.0060640625,
+        width: 167.68455000000003,
+        x: 100,
+        y: 700,
+      });
+
+      const pdfBytes = await pdfDoc.save();
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

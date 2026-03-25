@@ -1,6 +1,6 @@
 import { PDFDocument, values, PDFTextField } from 'pdf-lib';
 
-import { fetchAsset, writePdf } from './assets';
+import { fetchAsset } from './assets';
 
 const fieldNames = {
   // Page 1

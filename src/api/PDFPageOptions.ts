@@ -1,7 +1,13 @@
-import { Color } from 'src/api/colors';
-import PDFFont from 'src/api/PDFFont';
-import { Rotation } from 'src/api/rotations';
-import { LineCapStyle } from 'src/api/operators';
+import { Color } from './colors';
+import PDFFont from './PDFFont';
+import { Rotation } from './rotations';
+import { FillRule, LineCapStyle, TextRenderingMode } from './operators';
+import type { Space, TransformationMatrix } from '../types';
+
+interface SvgOptions {
+  matrix?: TransformationMatrix;
+  clipSpaces?: Space[];
+}
 
 export enum BlendMode {
   Normal = 'Normal',
@@ -18,7 +24,7 @@ export enum BlendMode {
   Exclusion = 'Exclusion',
 }
 
-export interface PDFPageDrawTextOptions {
+export interface PDFPageDrawTextOptions extends SvgOptions {
   color?: Color;
   opacity?: number;
   blendMode?: BlendMode;
@@ -32,9 +38,12 @@ export interface PDFPageDrawTextOptions {
   lineHeight?: number;
   maxWidth?: number;
   wordBreaks?: string[];
+  strokeWidth?: number;
+  strokeColor?: Color;
+  renderMode?: TextRenderingMode;
 }
 
-export interface PDFPageDrawImageOptions {
+export interface PDFPageDrawImageOptions extends SvgOptions {
   x?: number;
   y?: number;
   width?: number;
@@ -60,7 +69,7 @@ export interface PDFPageDrawPageOptions {
   blendMode?: BlendMode;
 }
 
-export interface PDFPageDrawSVGOptions {
+export interface PDFPageDrawSVGOptions extends SvgOptions {
   x?: number;
   y?: number;
   scale?: number;
@@ -74,9 +83,10 @@ export interface PDFPageDrawSVGOptions {
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
+  fillRule?: FillRule;
 }
 
-export interface PDFPageDrawLineOptions {
+export interface PDFPageDrawLineOptions extends SvgOptions {
   start: { x: number; y: number };
   end: { x: number; y: number };
   thickness?: number;
@@ -88,9 +98,11 @@ export interface PDFPageDrawLineOptions {
   blendMode?: BlendMode;
 }
 
-export interface PDFPageDrawRectangleOptions {
+export interface PDFPageDrawRectangleOptions extends SvgOptions {
   x?: number;
   y?: number;
+  rx?: number;
+  ry?: number;
   width?: number;
   height?: number;
   rotate?: Rotation;
@@ -107,7 +119,7 @@ export interface PDFPageDrawRectangleOptions {
   blendMode?: BlendMode;
 }
 
-export interface PDFPageDrawSquareOptions {
+export interface PDFPageDrawSquareOptions extends SvgOptions {
   x?: number;
   y?: number;
   size?: number;
@@ -125,7 +137,7 @@ export interface PDFPageDrawSquareOptions {
   blendMode?: BlendMode;
 }
 
-export interface PDFPageDrawEllipseOptions {
+export interface PDFPageDrawEllipseOptions extends SvgOptions {
   x?: number;
   y?: number;
   xScale?: number;
@@ -142,7 +154,7 @@ export interface PDFPageDrawEllipseOptions {
   blendMode?: BlendMode;
 }
 
-export interface PDFPageDrawCircleOptions {
+export interface PDFPageDrawCircleOptions extends SvgOptions {
   x?: number;
   y?: number;
   size?: number;
@@ -154,5 +166,15 @@ export interface PDFPageDrawCircleOptions {
   borderDashArray?: number[];
   borderDashPhase?: number;
   borderLineCap?: LineCapStyle;
+  blendMode?: BlendMode;
+}
+
+export interface PDFPageDrawSVGElementOptions {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  fontSize?: number;
+  fonts?: { [fontName: string]: PDFFont };
   blendMode?: BlendMode;
 }

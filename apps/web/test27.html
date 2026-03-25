@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource:;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 27 - test rect cropping</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test26.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test28.html'">
+        Next
+      </button>
+    </div>
+    <!-- <div  ></div> -->
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    // startFpsTracker('animation-target');
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
+
+      const pdfDoc = await PDFDocument.create();
+      const firstPage = pdfDoc.addPage([1000, 1000]);
+
+      const fontSize = 20;
+
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="231" height="246.75" viewBox="646 102 231 246.75" alt=" ">
+        <rect width="231" height="246.75" x="646" y="102" fill="#00ff00" />
+        <rect x='647' y='283.125' width='229' height='6' fill='#2A044A' rx='4.166666666666667' ry='4.166666666666667'>
+        </rect><svg width="22" height="22" x="659.5" y="235.8125" color="#2A044A"><svg xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 10 10' stroke='#2A044A' stroke-linecap='round' stroke-width='2'>
+                <path d='M1,5 L9,5' fill="#000000"></path>
+                <path d='M5,1 L5,9' fill="#000000"></path>
+            </svg></svg><text dominant-baseline="text-before-edge" text-anchor="middle" x="740.109375"
+            y="155.04166666666666" font-weight="bold" font-size="39.375" fill="#2A044A">1</text><text
+            dominant-baseline="text-before-edge" text-anchor="middle" x="786.359375" y="155.04166666666666"
+            font-weight="bold" font-size="39.375" fill="#2A044A"
+            font-family="'NunitoSans', 'Arial', sans-serif">2</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="832.609375" y="155.04166666666666" font-weight="bold" font-size="39.375" fill="#2A044A"
+            font-family="'NunitoSans', 'Arial', sans-serif">3</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="740.109375" y="218.41666666666666" font-weight="bold" font-size="39.375" fill="#2A044A"
+            font-family="'NunitoSans', 'Arial', sans-serif">1</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="786.359375" y="218.41666666666666" font-weight="bold" font-size="39.375" fill="#2A044A"
+            font-family="'NunitoSans', 'Arial', sans-serif">2</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="832.609375" y="218.41666666666666" font-weight="bold" font-size="39.375" fill="#2A044A"
+            font-family="'NunitoSans', 'Arial', sans-serif">3</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="740.109375" y="299.9166666666667" font-weight="bold" font-size="39.375" fill="#2A044A"
+            font-family="'NunitoSans', 'Arial', sans-serif">1</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="786.359375" y="299.9166666666667" font-weight="bold" font-size="39.375" fill="#2A044A"
+            font-family="'NunitoSans', 'Arial', sans-serif">2</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="832.609375" y="299.9166666666667" font-weight="bold" font-size="39.375" fill="#2A044A"
+            font-family="'NunitoSans', 'Arial', sans-serif">3</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="742.40625" y="100.5" font-weight="bold" font-size="35" fill="#126CE3"
+            font-family="'NunitoSans', 'Arial', sans-serif">1</text><text dominant-baseline="text-before-edge"
+            text-anchor="middle" x="788.703125" y="100.5" font-weight="bold" font-size="35" fill="#126CE3"
+            font-family="'NunitoSans', 'Arial', sans-serif">2</text>
+        <circle r="3" cx="786.359375" cy="299.9166666666667" fill="red" />
+</svg>`;
+
+      const cutArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="104 88.828125 217 217" alt=" " width="217" height="217" id="7d9b6377-21db-4e9c-9c83-7519454de3f5" class="r-maxHeight-pm9dpa r-maxWidth-dnmrzs r-pointerEvents-633pao" style="height: 217px; width: 217px;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="440" height="396" viewBox="-10 -9.075 20 18.15" x="0" y="0">
+      <g transform="scale(1 -1) translate(0 0)">
+      <line id="gridX:1" x1="1" x2="1" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:2" x1="2" x2="2" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:3" x1="3" x2="3" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:4" x1="4" x2="4" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:5" x1="5" x2="5" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:6" x1="6" x2="6" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:7" x1="7" x2="7" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:8" x1="8" x2="8" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:9" x1="9" x2="9" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-1" x1="-1" x2="-1" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-2" x1="-2" x2="-2" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-3" x1="-3" x2="-3" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-4" x1="-4" x2="-4" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-5" x1="-5" x2="-5" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-6" x1="-6" x2="-6" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-7" x1="-7" x2="-7" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-8" x1="-8" x2="-8" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridx:-9" x1="-9" x2="-9" y1="-9.075" y2="9.075" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:1" x1="-10" x2="10" y1="1" y2="1" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:2" x1="-10" x2="10" y1="2" y2="2" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:3" x1="-10" x2="10" y1="3" y2="3" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:4" x1="-10" x2="10" y1="4" y2="4" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:5" x1="-10" x2="10" y1="5" y2="5" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:6" x1="-10" x2="10" y1="6" y2="6" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:7" x1="-10" x2="10" y1="7" y2="7" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:8" x1="-10" x2="10" y1="8" y2="8" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:9" x1="-10" x2="10" y1="9" y2="9" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-1" x1="-10" x2="10" y1="-1" y2="-1" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-2" x1="-10" x2="10" y1="-2" y2="-2" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-3" x1="-10" x2="10" y1="-3" y2="-3" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-4" x1="-10" x2="10" y1="-4" y2="-4" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-5" x1="-10" x2="10" y1="-5" y2="-5" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-6" x1="-10" x2="10" y1="-6" y2="-6" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-7" x1="-10" x2="10" y1="-7" y2="-7" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-8" x1="-10" x2="10" y1="-8" y2="-8" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:-9" x1="-10" x2="10" y1="-9" y2="-9" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#E5E5E5"></line>
+<g id="xAxis"><line id="xAxis-line" x1="-10" x2="10" y1="0" y2="0" stroke-width="0.09999999999999999" stroke-linecap="round" stroke="#000000"></line><polygon points="9.538060233744357,-0.19134171618254492 9.538060233744357,0.19134171618254492 10,0" fill="#000000" stroke="#000000" stroke-width="0.09999999999999999"></polygon>
+  </g>
+<line id="xGrad:1" x1="1" x2="1" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:1" transform="translate(1 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:1-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">1</text>
+  </g>
+<line id="xGrad:2" x1="2" x2="2" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:2" transform="translate(2 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:2-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">2</text>
+  </g>
+<line id="xGrad:3" x1="3" x2="3" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:3" transform="translate(3 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:3-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">3</text>
+  </g>
+<line id="xGrad:4" x1="4" x2="4" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:4" transform="translate(4 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:4-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">4</text>
+  </g>
+<line id="xGrad:5" x1="5" x2="5" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:5" transform="translate(5 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:5-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">5</text>
+  </g>
+<line id="xGrad:6" x1="6" x2="6" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:6" transform="translate(6 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:6-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">6</text>
+  </g>
+<line id="xGrad:7" x1="7" x2="7" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:7" transform="translate(7 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:7-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">7</text>
+  </g>
+<line id="xGrad:8" x1="8" x2="8" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:8" transform="translate(8 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:8-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">8</text>
+  </g>
+<line id="xGrad:9" x1="9" x2="9" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:9" transform="translate(9 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:9-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">9</text>
+  </g>
+<line id="xGrad:-1" x1="-1" x2="-1" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-1" transform="translate(-1 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-1-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-1</text>
+  </g>
+<line id="xGrad:-2" x1="-2" x2="-2" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-2" transform="translate(-2 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-2-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-2</text>
+  </g>
+<line id="xGrad:-3" x1="-3" x2="-3" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-3" transform="translate(-3 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-3-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-3</text>
+  </g>
+<line id="xGrad:-4" x1="-4" x2="-4" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-4" transform="translate(-4 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-4-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-4</text>
+  </g>
+<line id="xGrad:-5" x1="-5" x2="-5" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-5" transform="translate(-5 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-5-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-5</text>
+  </g>
+<line id="xGrad:-6" x1="-6" x2="-6" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-6" transform="translate(-6 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-6-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-6</text>
+  </g>
+<line id="xGrad:-7" x1="-7" x2="-7" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-7" transform="translate(-7 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-7-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-7</text>
+  </g>
+<line id="xGrad:-8" x1="-8" x2="-8" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-8" transform="translate(-8 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-8-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-8</text>
+  </g>
+<line id="xGrad:-9" x1="-9" x2="-9" y1="-0.35" y2="0" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="x:-9" transform="translate(-9 -1.15) scale(1.0000000000000002 -1)">
+  <text id="x:-9-0" dominant-baseline="auto" text-anchor="middle" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-9</text>
+  </g>
+<g id="yAxis"><line id="yAxis-line" x1="0" x2="0" y1="-9.075" y2="9.075" stroke-width="0.09999999999999999" stroke-linecap="round" stroke="#000000"></line><polygon points="0.19134171618254484,8.613060233744356 -0.19134171618254484,8.613060233744356 0,9.075" fill="#000000" stroke="#000000" stroke-width="0.09999999999999999"></polygon>
+  </g>
+<line id="yGrad:1" x1="-0.35000000000000003" x2="0" y1="1" y2="1" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:1" transform="translate(-0.45000000000000007 0.8) scale(1.0000000000000002 -1)">
+  <text id="y:1-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">1</text>
+  </g>
+<line id="yGrad:2" x1="-0.35000000000000003" x2="0" y1="2" y2="2" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:2" transform="translate(-0.45000000000000007 1.8) scale(1.0000000000000002 -1)">
+  <text id="y:2-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">2</text>
+  </g>
+<line id="yGrad:3" x1="-0.35000000000000003" x2="0" y1="3" y2="3" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:3" transform="translate(-0.45000000000000007 2.8) scale(1.0000000000000002 -1)">
+  <text id="y:3-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">3</text>
+  </g>
+<line id="yGrad:4" x1="-0.35000000000000003" x2="0" y1="4" y2="4" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:4" transform="translate(-0.45000000000000007 3.8) scale(1.0000000000000002 -1)">
+  <text id="y:4-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">4</text>
+  </g>
+<line id="yGrad:5" x1="-0.35000000000000003" x2="0" y1="5" y2="5" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:5" transform="translate(-0.45000000000000007 4.8) scale(1.0000000000000002 -1)">
+  <text id="y:5-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">5</text>
+  </g>
+<line id="yGrad:6" x1="-0.35000000000000003" x2="0" y1="6" y2="6" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:6" transform="translate(-0.45000000000000007 5.8) scale(1.0000000000000002 -1)">
+  <text id="y:6-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">6</text>
+  </g>
+<line id="yGrad:7" x1="-0.35000000000000003" x2="0" y1="7" y2="7" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:7" transform="translate(-0.45000000000000007 6.8) scale(1.0000000000000002 -1)">
+  <text id="y:7-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">7</text>
+  </g>
+<line id="yGrad:8" x1="-0.35000000000000003" x2="0" y1="8" y2="8" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:8" transform="translate(-0.45000000000000007 7.8) scale(1.0000000000000002 -1)">
+  <text id="y:8-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">8</text>
+  </g>
+<line id="yGrad:-1" x1="-0.35000000000000003" x2="0" y1="-1" y2="-1" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-1" transform="translate(-0.45000000000000007 -1.2) scale(1.0000000000000002 -1)">
+  <text id="y:-1-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-1</text>
+  </g>
+<line id="yGrad:-2" x1="-0.35000000000000003" x2="0" y1="-2" y2="-2" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-2" transform="translate(-0.45000000000000007 -2.2) scale(1.0000000000000002 -1)">
+  <text id="y:-2-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-2</text>
+  </g>
+<line id="yGrad:-3" x1="-0.35000000000000003" x2="0" y1="-3" y2="-3" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-3" transform="translate(-0.45000000000000007 -3.2) scale(1.0000000000000002 -1)">
+  <text id="y:-3-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-3</text>
+  </g>
+<line id="yGrad:-4" x1="-0.35000000000000003" x2="0" y1="-4" y2="-4" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-4" transform="translate(-0.45000000000000007 -4.2) scale(1.0000000000000002 -1)">
+  <text id="y:-4-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-4</text>
+  </g>
+<line id="yGrad:-5" x1="-0.35000000000000003" x2="0" y1="-5" y2="-5" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-5" transform="translate(-0.45000000000000007 -5.2) scale(1.0000000000000002 -1)">
+  <text id="y:-5-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-5</text>
+  </g>
+<line id="yGrad:-6" x1="-0.35000000000000003" x2="0" y1="-6" y2="-6" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-6" transform="translate(-0.45000000000000007 -6.2) scale(1.0000000000000002 -1)">
+  <text id="y:-6-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-6</text>
+  </g>
+<line id="yGrad:-7" x1="-0.35000000000000003" x2="0" y1="-7" y2="-7" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-7" transform="translate(-0.45000000000000007 -7.2) scale(1.0000000000000002 -1)">
+  <text id="y:-7-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-7</text>
+  </g>
+<line id="yGrad:-8" x1="-0.35000000000000003" x2="0" y1="-8" y2="-8" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-8" transform="translate(-0.45000000000000007 -8.2) scale(1.0000000000000002 -1)">
+  <text id="y:-8-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-8</text>
+  </g>
+<line id="yGrad:-9" x1="-0.35000000000000003" x2="0" y1="-9" y2="-9" stroke-width="0.049999999999999996" stroke-linecap="round" stroke="#000000"></line>
+<g id="y:-9" transform="translate(-0.45000000000000007 -9.2) scale(1.0000000000000002 -1)">
+  <text id="y:-9-0" dominant-baseline="auto" text-anchor="end" font-size="0.7999999999999999" font-family="Nunito Sans" fill="black" x="0" y="0">-9</text>
+  </g>
+      </g>
+    </svg></svg>`;
+
+      const simpleCutArrowSvg = `<svg viewBox="63 90.828125 326 298" width="326" height="298">
+        <rect x="63" y="90.828125" width="326" height="290" fill="none" stroke="black" stroke-width="2" />
+        <svg width="440" height="505.99999999999994" viewBox="-10 -11.575 20 23.15" x="0" y="0">
+          <g transform="scale(1 -1) translate(0 0)">      
+            <polygon points="9.538060233744357,-0.1913417161825449 9.538060233744357,0.1913417161825449 10,0" fill="#000000" stroke="#000000" stroke-width="0.1" />
+            <polygon points="0.19134171618254484,11.113060233744356 -0.19134171618254484,11.113060233744356 0,11.575" fill="#000000" stroke="#000000" stroke-width="0.1" />
+          </g>
+        </svg>
+      </svg>`;
+
+      const drawLines = (page) => {
+        Array(10)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText('----' + v, {
+              x: 5,
+              y: v * 100,
+              size: 20,
+            });
+          });
+        Array(100)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText(v % 5 == 0 ? '---' : '--', {
+              x: 5,
+              y: v * 10,
+              size: 20,
+            });
+          });
+      };
+      const drawGrid = (page) => {
+        Array(parseInt(page.getHeight() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: 0, y: i * 10 },
+              end: { x: page.getWidth(), y: i * 10 },
+            });
+          });
+        Array(parseInt(page.getWidth() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: i * 10, y: 0 },
+              end: { x: i * 10, y: page.getHeight() },
+            });
+          });
+      };
+      // drawGrid(firstPage)
+      drawLines(firstPage);
+
+      firstPage.drawSvg(svg, {
+        height: 246.75,
+        width: 231,
+        x: 100,
+        y: 700,
+      });
+
+      firstPage.drawSvg(cutArrowSvg, {
+        height: 246.75,
+        width: 231,
+        x: 500,
+        y: 700,
+      });
+
+      firstPage.drawSvg(simpleCutArrowSvg, {
+        height: 246.75,
+        width: 231,
+        x: 500,
+        y: 300,
+      });
+
+      const pdfBytes = await pdfDoc.save();
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

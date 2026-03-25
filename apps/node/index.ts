@@ -22,15 +22,18 @@ import test15 from './tests/test15';
 import test16 from './tests/test16';
 import test17 from './tests/test17';
 import test18 from './tests/test18';
+import test19 from './tests/test19';
+import test20 from './tests/test20';
+import test21 from './tests/test21';
 
 const cli = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-const prompt = `Press <enter> to run the next test...`;
+const prompt = 'Press <enter> to run the next test...';
 const promptToContinue = () =>
-  new Promise((resolve) => cli.question(prompt, (_answer) => resolve()));
+  new Promise<void>((resolve) => cli.question(prompt, (_answer) => resolve()));
 
 // This needs to be more sophisticated to work on Linux as well.
 const openPdf = (path: string, _reader?: string) => {
@@ -44,11 +47,12 @@ const openPdf = (path: string, _reader?: string) => {
   } else if (process.platform === 'win32') {
     // Opens with the default PDF Reader, has room for improvement
     execSync(`start ${path}`);
+  } else if (process.platform === 'linux') {
+    execSync(`xdg-open ${path}`);
   } else {
-    const msg1 = `Note: Automatically opening PDFs currently only works on Macs and Windows. If you're using a Linux machine, please consider contributing to expand support for this feature`;
-    const msg2 = `(https://github.com/Hopding/pdf-lib/blob/master/apps/node/index.ts#L8-L17)\n`;
-    console.warn(msg1);
-    console.warn(msg2);
+    console.warn(
+      `No script found for ${process.platform} platform. Please report this.`,
+    );
   }
 };
 
@@ -133,6 +137,7 @@ const assets = {
     fancy_fields: readPdf('fancy_fields.pdf'),
     form_to_flatten: readPdf('form_to_flatten.pdf'),
     with_annots: readPdf('with_annots.pdf'),
+    simple: readPdf('simple.pdf'),
   },
 };
 
@@ -163,7 +168,8 @@ const main = async () => {
     // prettier-ignore
     const allTests = [
       test1, test2, test3, test4, test5, test6, test7, test8, test9, test10,
-      test11, test12, test13, test14, test15, test16, test17, test18, 
+      test11, test12, test13, test14, test15, test16, test17, test18, test19,
+      test20, test21
     ];
 
     const tests = testIdx ? [allTests[testIdx - 1]] : allTests;

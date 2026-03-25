@@ -1,15 +1,16 @@
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFBool from 'src/core/objects/PDFBool';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFContext from 'src/core/PDFContext';
+import PDFArray from '../objects/PDFArray';
+import PDFBool from '../objects/PDFBool';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
+import PDFContext from '../PDFContext';
 import {
   assertEachIs,
   assertInteger,
   assertIsOneOf,
   assertRange,
-} from 'src/utils';
+} from '../../utils';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 const asEnum = <T extends string | number, U extends { [key: string]: T }>(
   rawValue: T | undefined,
@@ -115,13 +116,15 @@ class ViewerPreferences {
 
   protected lookupBool(key: BoolViewerPrefKey): PDFBool | undefined {
     const returnObj = this.dict.lookup(PDFName.of(key));
-    if (returnObj instanceof PDFBool) return returnObj;
+    if (isPDFInstance(returnObj, PDFClasses.PDFBool))
+      return returnObj as PDFBool;
     return undefined;
   }
 
   protected lookupName(key: NameViewerPrefKey): PDFName | undefined {
     const returnObj = this.dict.lookup(PDFName.of(key));
-    if (returnObj instanceof PDFName) return returnObj;
+    if (isPDFInstance(returnObj, PDFClasses.PDFName))
+      return returnObj as PDFName;
     return undefined;
   }
 
@@ -183,14 +186,16 @@ class ViewerPreferences {
   /** @ignore */
   PrintPageRange(): PDFArray | undefined {
     const PrintPageRange = this.dict.lookup(PDFName.of('PrintPageRange'));
-    if (PrintPageRange instanceof PDFArray) return PrintPageRange;
+    if (isPDFInstance(PrintPageRange, PDFClasses.PDFArray))
+      return PrintPageRange as PDFArray;
     return undefined;
   }
 
   /** @ignore */
   NumCopies(): PDFNumber | undefined {
     const NumCopies = this.dict.lookup(PDFName.of('NumCopies'));
-    if (NumCopies instanceof PDFNumber) return NumCopies;
+    if (isPDFInstance(NumCopies, PDFClasses.PDFNumber))
+      return NumCopies as PDFNumber;
     return undefined;
   }
 

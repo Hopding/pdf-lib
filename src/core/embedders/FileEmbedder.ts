@@ -1,7 +1,7 @@
-import PDFString from 'src/core/objects/PDFString';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFContext from 'src/core/PDFContext';
-import PDFRef from 'src/core/objects/PDFRef';
+import PDFString from '../objects/PDFString';
+import PDFHexString from '../objects/PDFHexString';
+import PDFContext from '../PDFContext';
+import PDFRef from '../objects/PDFRef';
 
 /**
  * From the PDF-A3 specification, section **3.1. Requirements - General**.
@@ -89,6 +89,10 @@ class FileEmbedder {
     } else {
       return context.register(fileSpecDict);
     }
+  }
+
+  getFileData() {
+    return this.fileData;
   }
 }
 

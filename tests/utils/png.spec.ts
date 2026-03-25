@@ -1,7 +1,7 @@
-import { PNG } from 'src/utils/png';
+import { PNG } from '../../src/utils/png';
 
-describe(`PNG`, () => {
-  it(`can load images with alpha values greater than 1`, () => {
+describe('PNG', () => {
+  it('can load images with alpha values greater than 1', () => {
     // This Uint8Array contains a PNG image composed of a single pixel. It was
     // generated with the following code in a browser:
     // ```

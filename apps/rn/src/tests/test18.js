@@ -69,7 +69,7 @@ const loadB = async (assets) => {
 
   form.getTextField('CharacterName 2').setText('Mario');
   form.getTextField('Age').setText('24 years');
-  form.getTextField('Height').setText(`5' 1"`);
+  form.getTextField('Height').setText('5\' 1"');
   form.getTextField('Weight').setText('196 lbs');
   form.getTextField('Eyes').setText('blue');
   form.getTextField('Skin').setText('white');

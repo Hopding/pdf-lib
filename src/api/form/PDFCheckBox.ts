@@ -1,16 +1,16 @@
-import PDFDocument from 'src/api/PDFDocument';
-import PDFPage from 'src/api/PDFPage';
+import PDFDocument from '../PDFDocument';
+import PDFPage from '../PDFPage';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
   defaultCheckBoxAppearanceProvider,
-} from 'src/api/form/appearances';
-import { rgb } from 'src/api/colors';
-import { degrees } from 'src/api/rotations';
+} from './appearances';
+import { rgb } from '../colors';
+import { degrees } from '../rotations';
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
-} from 'src/api/form/PDFField';
+} from './PDFField';
 
 import {
   PDFName,
@@ -18,8 +18,9 @@ import {
   PDFDict,
   PDFAcroCheckBox,
   PDFWidgetAnnotation,
-} from 'src/core';
-import { assertIs, assertOrUndefined } from 'src/utils';
+} from '../../core';
+import { assertIs, assertOrUndefined } from '../../utils';
+import { isPDFInstance, PDFClasses } from '../objects';
 
 /**
  * Represents a check box field of a [[PDFForm]].
@@ -31,6 +32,10 @@ import { assertIs, assertOrUndefined } from 'src/utils';
  * square in shape and display a check mark when they are in the `on` state.
  */
 export default class PDFCheckBox extends PDFField {
+  static className = () => PDFClasses.PDFCheckBox;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFCheckBox;
+  }
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
    * > consider using the [[PDFForm.getCheckBox]] method, which will create an
@@ -201,8 +206,8 @@ export default class PDFCheckBox extends PDFField {
       const state = widget.getAppearanceState();
       const normal = widget.getAppearances()?.normal;
 
-      if (!(normal instanceof PDFDict)) return true;
-      if (state && !normal.has(state)) return true;
+      if (!isPDFInstance(normal, PDFClasses.PDFDict)) return true;
+      if (state && !(normal as PDFDict).has(state)) return true;
     }
 
     return false;

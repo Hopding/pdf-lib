@@ -1,20 +1,20 @@
-import { PDFName, PrivateConstructorError } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFName, PrivateConstructorError } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
-describe(`PDFName`, () => {
-  it(`can be constructed from PDFName.of(...)`, () => {
+describe('PDFName', () => {
+  it('can be constructed from PDFName.of(...)', () => {
     expect(PDFName.of('foobar')).toBeInstanceOf(PDFName);
     expect(PDFName.of('A;Name_With-***Characters?')).toBeInstanceOf(PDFName);
     expect(PDFName.of('paired#28#29parentheses')).toBeInstanceOf(PDFName);
   });
 
-  it(`cannot be publicly constructed`, () => {
+  it('cannot be publicly constructed', () => {
     expect(() => new (PDFName as any)({}, 'stuff')).toThrow(
       new PrivateConstructorError(PDFName.name),
     );
   });
 
-  it(`returns the same instance when given the same value`, () => {
+  it('returns the same instance when given the same value', () => {
     expect(PDFName.of('foobar')).toBe(PDFName.of('foobar'));
     expect(PDFName.of('A;Name_With-***Characters?')).toBe(
       PDFName.of('A;Name_With-***Characters?'),
@@ -24,7 +24,7 @@ describe(`PDFName`, () => {
     );
   });
 
-  it(`decodes hex codes in the values`, () => {
+  it('decodes hex codes in the values', () => {
     expect(PDFName.of('Lime#20Green')).toBe(PDFName.of('Lime Green'));
     expect(PDFName.of('paired#28#29parentheses')).toBe(
       PDFName.of('paired()parentheses'),
@@ -53,7 +53,7 @@ describe(`PDFName`, () => {
     expect(PDFName.of('#4F')).toBe(PDFName.of('O'));
   });
 
-  it(`encodes hashes, whitespace, and delimiters when serialized`, () => {
+  it('encodes hashes, whitespace, and delimiters when serialized', () => {
     expect(PDFName.of('Foo#').toString()).toBe('/Foo#23');
 
     // Note that the \0 shouldn't ever be written into a name,
@@ -77,12 +77,12 @@ describe(`PDFName`, () => {
     expect(PDFName.of('Foo%').toString()).toBe('/Foo#25');
   });
 
-  it(`can be cloned`, () => {
+  it('can be cloned', () => {
     expect(PDFName.of('foobar').clone()).toBe(PDFName.of('foobar'));
     expect(PDFName.of('Lime#20Green').clone()).toBe(PDFName.of('Lime Green'));
   });
 
-  it(`can be converted to a string`, () => {
+  it('can be converted to a string', () => {
     expect(String(PDFName.of('foobar'))).toBe('/foobar');
     expect(String(PDFName.of('Lime Green'))).toBe('/Lime#20Green');
     expect(String(PDFName.of('\0\t\n\f\r '))).toBe('/#00#09#0A#0C#0D#20');
@@ -96,7 +96,7 @@ describe(`PDFName`, () => {
     expect(String(PDFName.of('A#42'))).toBe('/AB');
   });
 
-  it(`can provide its size in bytes`, () => {
+  it('can provide its size in bytes', () => {
     expect(PDFName.of('foobar').sizeInBytes()).toBe(7);
     expect(PDFName.of('Lime Green').sizeInBytes()).toBe(13);
     expect(PDFName.of('\0\t\n\f\r ').sizeInBytes()).toBe(19);
@@ -106,7 +106,7 @@ describe(`PDFName`, () => {
     expect(PDFName.of('A#42').sizeInBytes()).toBe(3);
   });
 
-  it(`can be serialized`, () => {
+  it('can be serialized', () => {
     const buffer1 = new Uint8Array(23).fill(toCharCode(' '));
     expect(PDFName.of('\0\t\n\f\r ').copyBytesInto(buffer1, 3)).toBe(19);
     expect(buffer1).toEqual(typedArrayFor('   /#00#09#0A#0C#0D#20 '));

@@ -1,9 +1,8 @@
+/*eslint no-undef: "off"*/
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
-import { terser } from 'rollup-plugin-terser';
-
-const { MINIFY, MODULE_TYPE } = process.env;
+import terser from '@rollup/plugin-terser';
 
 const IgnoredWarnings = [
   // Mac & Linux
@@ -50,8 +49,13 @@ export default {
   input: 'es/index.js',
   output: {
     name: 'PDFLib',
-    format: MODULE_TYPE,
+    format: process.env.MODULE_TYPE,
     sourcemap: true,
   },
-  plugins: [resolve(), commonjs(), json(), MINIFY === 'true' && terser()],
+  plugins: [
+    resolve(),
+    commonjs(),
+    json(),
+    process.env.MINIFY === 'true' && terser(),
+  ],
 };

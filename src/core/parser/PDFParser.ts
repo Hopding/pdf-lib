@@ -1,40 +1,57 @@
-import PDFCrossRefSection from 'src/core/document/PDFCrossRefSection';
-import PDFHeader from 'src/core/document/PDFHeader';
-import PDFTrailer from 'src/core/document/PDFTrailer';
+import PDFCrossRefSection from '../document/PDFCrossRefSection';
+import PDFHeader from '../document/PDFHeader';
+import PDFTrailer from '../document/PDFTrailer';
 import {
   MissingKeywordError,
   MissingPDFHeaderError,
   PDFInvalidObjectParsingError,
   ReparseError,
   StalledParserError,
-} from 'src/core/errors';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
-import PDFName from 'src/core/objects/PDFName';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import PDFRef from 'src/core/objects/PDFRef';
-import ByteStream from 'src/core/parser/ByteStream';
-import PDFObjectParser from 'src/core/parser/PDFObjectParser';
-import PDFObjectStreamParser from 'src/core/parser/PDFObjectStreamParser';
-import PDFXRefStreamParser from 'src/core/parser/PDFXRefStreamParser';
-import PDFContext from 'src/core/PDFContext';
-import CharCodes from 'src/core/syntax/CharCodes';
-import { Keywords } from 'src/core/syntax/Keywords';
-import { IsDigit } from 'src/core/syntax/Numeric';
-import { waitForTick } from 'src/utils';
+} from '../errors';
+import PDFDict from '../objects/PDFDict';
+import PDFInvalidObject from '../objects/PDFInvalidObject';
+import PDFName from '../objects/PDFName';
+import PDFObject from '../objects/PDFObject';
+import PDFRawStream from '../objects/PDFRawStream';
+import PDFRef from '../objects/PDFRef';
+import ByteStream from './ByteStream';
+import PDFObjectParser from './PDFObjectParser';
+import PDFObjectStreamParser from './PDFObjectStreamParser';
+import PDFXRefStreamParser from './PDFXRefStreamParser';
+import PDFContext from '../PDFContext';
+import CharCodes from '../syntax/CharCodes';
+import { Keywords } from '../syntax/Keywords';
+import { IsDigit } from '../syntax/Numeric';
+import { waitForTick } from '../../utils';
+import { CipherTransformFactory } from '../crypto';
+import PDFNumber from '../objects/PDFNumber';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 class PDFParser extends PDFObjectParser {
   static forBytesWithOptions = (
     pdfBytes: Uint8Array,
     objectsPerTick?: number,
     throwOnInvalidObject?: boolean,
+    warnOnInvalidObjects?: boolean,
     capNumbers?: boolean,
+    cryptoFactory?: CipherTransformFactory,
+    forIncrementalUpdate?: boolean,
+    preserveObjectsVersions?: boolean,
   ) =>
-    new PDFParser(pdfBytes, objectsPerTick, throwOnInvalidObject, capNumbers);
+    new PDFParser(
+      pdfBytes,
+      objectsPerTick,
+      throwOnInvalidObject,
+      warnOnInvalidObjects,
+      capNumbers,
+      cryptoFactory,
+      forIncrementalUpdate,
+      preserveObjectsVersions,
+    );
 
   private readonly objectsPerTick: number;
   private readonly throwOnInvalidObject: boolean;
+  private readonly warnOnInvalidObjects: boolean;
   private alreadyParsed = false;
   private parsedObjects = 0;
 
@@ -42,11 +59,26 @@ class PDFParser extends PDFObjectParser {
     pdfBytes: Uint8Array,
     objectsPerTick = Infinity,
     throwOnInvalidObject = false,
+    warnOnInvalidObjects = false,
     capNumbers = false,
+    cryptoFactory?: CipherTransformFactory,
+    forIncrementalUpdate = false,
+    preserveObjectsVersions = false,
   ) {
-    super(ByteStream.of(pdfBytes), PDFContext.create(), capNumbers);
+    super(
+      ByteStream.of(pdfBytes),
+      PDFContext.create(preserveObjectsVersions),
+      capNumbers,
+      cryptoFactory,
+    );
     this.objectsPerTick = objectsPerTick;
     this.throwOnInvalidObject = throwOnInvalidObject;
+    this.warnOnInvalidObjects = warnOnInvalidObjects;
+    this.context.isDecrypted = !!cryptoFactory?.encryptionKey;
+    this.context.pdfFileDetails.pdfSize = pdfBytes.length;
+    if (forIncrementalUpdate) {
+      this.context.pdfFileDetails.originalBytes = pdfBytes;
+    }
   }
 
   async parseDocument(): Promise<PDFContext> {
@@ -79,8 +111,8 @@ class PDFParser extends PDFObjectParser {
 
   private maybeRecoverRoot(): void {
     const isValidCatalog = (obj?: PDFObject) =>
-      obj instanceof PDFDict &&
-      obj.lookup(PDFName.of('Type')) === PDFName.of('Catalog');
+      isPDFInstance(obj, PDFClasses.PDFDict) &&
+      (obj as PDFDict).lookup(PDFName.of('Type')) === PDFName.of('Catalog');
 
     const catalog = this.context.lookup(this.context.trailerInfo.Root);
 
@@ -146,7 +178,7 @@ class PDFParser extends PDFObjectParser {
     const ref = this.parseIndirectObjectHeader();
 
     this.skipWhitespaceAndComments();
-    const object = this.parseObject();
+    const object = this.parseObject(ref);
 
     this.skipWhitespaceAndComments();
     // if (!this.matchKeyword(Keywords.endobj)) {
@@ -157,21 +189,33 @@ class PDFParser extends PDFObjectParser {
     this.matchKeyword(Keywords.endobj);
 
     if (
-      object instanceof PDFRawStream &&
-      object.dict.lookup(PDFName.of('Type')) === PDFName.of('ObjStm')
+      isPDFInstance(object, PDFClasses.PDFRawStream) &&
+      (object as PDFRawStream).dict.lookup(PDFName.of('Type')) ===
+        PDFName.of('ObjStm')
     ) {
       await PDFObjectStreamParser.forStream(
-        object,
+        object as PDFRawStream,
         this.shouldWaitForTick,
       ).parseIntoContext();
     } else if (
-      object instanceof PDFRawStream &&
-      object.dict.lookup(PDFName.of('Type')) === PDFName.of('XRef')
+      isPDFInstance(object, PDFClasses.PDFRawStream) &&
+      (object as PDFRawStream).dict.lookup(PDFName.of('Type')) ===
+        PDFName.of('XRef')
     ) {
-      PDFXRefStreamParser.forStream(object).parseIntoContext();
-    } else {
-      this.context.assign(ref, object);
+      const entries = PDFXRefStreamParser.forStream(
+        object as PDFRawStream,
+      ).parseIntoContext();
+      if (entries.length) {
+        const xref = PDFCrossRefSection.createEmpty();
+        for (const entry of entries) {
+          if (entry.deleted) xref.addDeletedEntry(entry.ref, entry.offset);
+          else xref.addEntry(entry.ref, entry.offset);
+        }
+        this.context.xrefs.push(xref);
+      }
     }
+    // always register the object and the ref, to properly handle object numeration
+    this.context.assign(ref, object);
 
     return ref;
   }
@@ -182,11 +226,11 @@ class PDFParser extends PDFObjectParser {
 
     const msg = `Trying to parse invalid object: ${JSON.stringify(startPos)})`;
     if (this.throwOnInvalidObject) throw new Error(msg);
-    console.warn(msg);
+    if (this.warnOnInvalidObjects) console.warn(msg);
 
     const ref = this.parseIndirectObjectHeader();
 
-    console.warn(`Invalid object ref: ${ref}`);
+    if (this.warnOnInvalidObjects) console.warn(`Invalid object ref: ${ref}`);
 
     this.skipWhitespaceAndComments();
     const start = this.bytes.offset();
@@ -244,6 +288,11 @@ class PDFParser extends PDFObjectParser {
       const firstInt = this.parseRawInt();
       this.skipWhitespaceAndComments();
 
+      // Check if second digit is valid integer
+      if (!IsDigit[this.bytes.peek()]) {
+        return PDFCrossRefSection.createEmpty();
+      }
+
       const secondInt = this.parseRawInt();
       this.skipWhitespaceAndComments();
 
@@ -275,11 +324,17 @@ class PDFParser extends PDFObjectParser {
 
     const { context } = this;
     context.trailerInfo = {
+      Size:
+        dict.lookupMaybe(PDFName.of('Size'), PDFNumber) ||
+        context.trailerInfo.Size,
       Root: dict.get(PDFName.of('Root')) || context.trailerInfo.Root,
       Encrypt: dict.get(PDFName.of('Encrypt')) || context.trailerInfo.Encrypt,
       Info: dict.get(PDFName.of('Info')) || context.trailerInfo.Info,
       ID: dict.get(PDFName.of('ID')) || context.trailerInfo.ID,
     };
+    // if open for incremental update, then deleted objects need to be preserved, and largestObjectNumber has to be Size-1
+    if (context.trailerInfo.Size && context.pdfFileDetails.originalBytes)
+      context.largestObjectNumber = context.trailerInfo.Size.asNumber() - 1;
   }
 
   private maybeParseTrailer(): PDFTrailer | void {
@@ -288,6 +343,7 @@ class PDFParser extends PDFObjectParser {
     this.skipWhitespaceAndComments();
 
     const offset = this.parseRawInt();
+    this.context.pdfFileDetails.prevStartXRef = offset;
 
     this.skipWhitespace();
     this.matchKeyword(Keywords.eof);
@@ -300,7 +356,8 @@ class PDFParser extends PDFObjectParser {
 
   private async parseDocumentSection(): Promise<void> {
     await this.parseIndirectObjects();
-    this.maybeParseCrossRefSection();
+    const xref = this.maybeParseCrossRefSection();
+    if (xref) this.context.xrefs.push(xref);
     this.maybeParseTrailerDict();
     this.maybeParseTrailer();
 

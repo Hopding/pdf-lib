@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource: https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 34 - PDF automatic incremental update</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js"
+    ></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test33.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button disabled onclick="window.location.href = '/apps/web/test35.html'">
+        Next
+      </button>
+    </div>
+    <div id="animation-target"></div>
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    const { PDFDocument, StandardFonts } = PDFLib;
+
+    startFpsTracker('animation-target');
+
+    const fetchBinaryAsset = (asset) =>
+      fetch(`/assets/${asset}`).then((res) => res.arrayBuffer());
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const {
+        rgb,
+        PDFArray,
+        PDFNumber,
+        PDFName,
+        PDFHexString,
+        PDFString,
+        PDFInvalidObject,
+      } = PDFLib;
+      const simplePdf = await fetchBinaryAsset('pdfs/simple.pdf');
+      const pdfDoc = await PDFDocument.load(simplePdf, {
+        forIncrementalUpdate: true,
+      });
+      // add a page (small one), with the visual representation of the digital signature, as a
+      // square box with text centered in it.
+      const page = pdfDoc.addPage([500, 200]);
+      // remove a page from de PDF
+      pdfDoc.removePage(0);
+      // embed fonts for the visual representation of the signature
+      const font = pdfDoc.embedStandardFont(StandardFonts.Helvetica);
+      const fontBold = pdfDoc.embedStandardFont(
+        StandardFonts.HelveticaBoldOblique,
+      );
+      // couple of warning lines, about the signature and the visual representation
+      const signatureWarning =
+        '-- This is not the real signature of the document, just a a visual representation --';
+      const useLibreOffice =
+        '-- If your PDF viewer does not shows digital signatures, you can use "LibreOffice Draw" --';
+      const fontSize = 14;
+      const warningFontSize = 10;
+      // text in the visual representation maximun width
+      const textWidth = Math.max(
+        font.widthOfTextAtSize('Electronic Signature Test #20', fontSize),
+        fontBold.widthOfTextAtSize(useLibreOffice, warningFontSize),
+      );
+      // text line in the visual representation maximun height
+      const textHeight =
+        Math.max(
+          font.heightAtSize(fontSize),
+          fontBold.heightAtSize(warningFontSize),
+        ) + 2;
+      // X position where the visual representation square starts
+      const startXpos = Math.trunc((page.getWidth() - textWidth) / 2);
+      // total vertical size of the visual representation
+      const visualRepHeight = textHeight * 4 + 20;
+      // rectangle containing the text
+      page.drawRectangle({
+        x: startXpos - 10,
+        y: page.getHeight() - visualRepHeight - 50,
+        width: textWidth + 20,
+        height: visualRepHeight,
+        borderWidth: 2,
+        borderColor: rgb(0.45, 0.45, 0.45),
+      });
+      let lineWidth = font.widthOfTextAtSize(
+        'Electronic Signature Test #20',
+        fontSize,
+      );
+      // vertial position where the text line will be outputted
+      let currentYPos = page.getHeight() - textHeight - 60;
+      // line #1
+      page.drawText('Electronic Signature Test #20', {
+        x: startXpos + Math.round((textWidth - lineWidth) / 2),
+        y: currentYPos,
+        size: fontSize,
+        font,
+      });
+      // timestamp of the signature, line #2
+      const signatureTimestamp = new Date().toISOString();
+      lineWidth = font.widthOfTextAtSize(signatureTimestamp, fontSize);
+      currentYPos -= textHeight;
+      page.drawText(signatureTimestamp, {
+        x: startXpos + Math.round((textWidth - lineWidth) / 2),
+        y: currentYPos,
+        size: fontSize,
+        font,
+      });
+      // first warning, line #3
+      lineWidth = fontBold.widthOfTextAtSize(signatureWarning, warningFontSize);
+      currentYPos -= textHeight;
+      page.drawText(signatureWarning, {
+        x: startXpos + Math.round((textWidth - lineWidth) / 2),
+        y: currentYPos,
+        size: warningFontSize,
+        font: fontBold,
+      });
+      // second warning, line #4
+      lineWidth = fontBold.widthOfTextAtSize(useLibreOffice, warningFontSize);
+      currentYPos -= textHeight;
+      page.drawText(useLibreOffice, {
+        x: startXpos + Math.round((textWidth - lineWidth) / 2),
+        y: currentYPos,
+        size: warningFontSize,
+        font: fontBold,
+      });
+
+      // Add an AcroForm or update the existing one
+      let acroForm = pdfDoc.catalog.getOrCreateAcroForm();
+
+      // Create a placeholder where the the last 3 parameters of the
+      // actual range will be replaced when signing is done.
+      const byteRange = PDFArray.withContext(pdfDoc.context);
+      byteRange.push(PDFNumber.of(0));
+      byteRange.push(PDFName.of('*********'));
+      byteRange.push(PDFName.of('*********'));
+      byteRange.push(PDFName.of('*********'));
+
+      // Fill the contents of the placeholder with 00s.
+      const placeholder = PDFHexString.of(String.fromCharCode(0).repeat(8096));
+
+      // Create a signature dictionary to be referenced in the signature widget.
+      const appBuild = { App: { Name: 'Test #20' } };
+      const signatureDict = pdfDoc.context.obj({
+        Type: 'Sig',
+        Filter: 'Adobe.PPKLite',
+        SubFilter: 'adbe.pkcs7.detached',
+        ByteRange: byteRange,
+        Contents: placeholder,
+        Reason: PDFString.of('Test #20'),
+        M: PDFString.fromDate(new Date()),
+        ContactInfo: PDFString.of('dabdala@adnsistemas.com.ar'),
+        Name: PDFString.of('David Abdala'),
+        Location: PDFString.of('Mendoza, Argentina'),
+        Prop_Build: {
+          Filter: { Name: 'Adobe.PPKLite' },
+          ...appBuild,
+        },
+      });
+      // Register signatureDict as a PDFInvalidObject to prevent PDFLib from serializing it
+      // in an object stream.
+      const signatureBuffer = new Uint8Array(signatureDict.sizeInBytes());
+      signatureDict.copyBytesInto(signatureBuffer, 0);
+      const signatureObj = PDFInvalidObject.of(signatureBuffer);
+      const signatureDictRef = pdfDoc.context.register(signatureObj);
+
+      // Create the signature widget
+      const widgetRect = [0, 0, 0, 0];
+      const rect = PDFArray.withContext(pdfDoc.context);
+      widgetRect.forEach((c) => rect.push(PDFNumber.of(c)));
+      const apStream = pdfDoc.context.formXObject([], {
+        BBox: widgetRect,
+        Resources: {}, // Necessary to avoid Acrobat bug (see https://stackoverflow.com/a/73011571)
+      });
+      const widgetDict = pdfDoc.context.obj({
+        Type: 'Annot',
+        Subtype: 'Widget',
+        FT: 'Sig',
+        Rect: rect,
+        V: signatureDictRef,
+        T: PDFString.of('TestSig'),
+        TU: PDFString.of('Electronic Signature Test #20'),
+        F: 2,
+        P: page.ref,
+        AP: { N: pdfDoc.context.register(apStream) }, // Required for PDF/A compliance
+      });
+      const widgetDictRef = pdfDoc.context.register(widgetDict);
+
+      // Annotate the widget on the given page
+      let annotations = page.node.lookupMaybe(PDFName.of('Annots'), PDFArray);
+      if (typeof annotations === 'undefined') {
+        annotations = pdfDoc.context.obj([]);
+      }
+      annotations.push(widgetDictRef);
+      page.node.set(PDFName.of('Annots'), annotations);
+
+      let sigFlags;
+      if (acroForm.dict.has(PDFName.of('SigFlags'))) {
+        // Already has some flags, will merge
+        sigFlags = acroForm.dict.get(PDFName.of('SigFlags'));
+      } else {
+        // Create blank flags
+        sigFlags = PDFNumber.of(0);
+      }
+      const updatedFlags = PDFNumber.of(sigFlags.asNumber() | 1 | 2);
+      acroForm.dict.set(PDFName.of('SigFlags'), updatedFlags);
+      let fields = acroForm.dict.get(PDFName.of('Fields'));
+      if (!(fields instanceof PDFArray)) {
+        fields = pdfDoc.context.obj([]);
+        acroForm.dict.set(PDFName.of('Fields'), fields);
+      }
+      fields.push(widgetDictRef);
+      const pdfBytes = await pdfDoc.save();
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

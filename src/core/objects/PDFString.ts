@@ -1,5 +1,5 @@
-import PDFObject from 'src/core/objects/PDFObject';
-import CharCodes from 'src/core/syntax/CharCodes';
+import PDFObject from './PDFObject';
+import CharCodes from '../syntax/CharCodes';
 import {
   copyStringIntoBuffer,
   padStart,
@@ -8,10 +8,15 @@ import {
   toCharCode,
   parseDate,
   hasUtf16BOM,
-} from 'src/utils';
-import { InvalidPDFDateStringError } from 'src/core/errors';
+} from '../../utils';
+import { InvalidPDFDateStringError } from '../errors';
+import { PDFClasses } from '../../api/objects';
 
 class PDFString extends PDFObject {
+  static className = () => PDFClasses.PDFString;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFString;
+  }
   // The PDF spec allows newlines and parens to appear directly within a literal
   // string. These character _may_ be escaped. But they do not _have_ to be. So
   // for simplicity, we will not bother escaping them.
@@ -62,7 +67,7 @@ class PDFString extends PDFObject {
         else if (byte === CharCodes.f) pushByte(CharCodes.FormFeed);
         else if (byte === CharCodes.LeftParen) pushByte(CharCodes.LeftParen);
         else if (byte === CharCodes.RightParen) pushByte(CharCodes.RightParen);
-        else if (byte === CharCodes.Backspace) pushByte(CharCodes.BackSlash);
+        else if (byte === CharCodes.BackSlash) pushByte(CharCodes.BackSlash);
         else if (byte >= CharCodes.Zero && byte <= CharCodes.Seven) {
           octal += char;
           if (octal.length === 3 || !(nextChar >= '0' && nextChar <= '7')) {

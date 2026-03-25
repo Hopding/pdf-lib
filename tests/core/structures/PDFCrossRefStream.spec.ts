@@ -6,13 +6,13 @@ import {
   PDFCrossRefStream,
   PDFRef,
   toCharCode,
-} from 'src/index';
+} from '../../../src/index';
 
-describe(`PDFCrossRefStream`, () => {
+describe('PDFCrossRefStream', () => {
   const context = PDFContext.create();
   const dict = context.obj({});
 
-  it(`can be constructed from PDFCrossRefStream.create(...)`, () => {
+  it('can be constructed from PDFCrossRefStream.create(...)', () => {
     expect(PDFCrossRefStream.create(dict, false)).toBeInstanceOf(
       PDFCrossRefStream,
     );
@@ -29,14 +29,14 @@ describe(`PDFCrossRefStream`, () => {
   stream2.addUncompressedEntry(PDFRef.of(9000), 600);
   stream2.addCompressedEntry(PDFRef.of(9001), PDFRef.of(10), 1);
 
-  it(`can be cloned`, () => {
+  it('can be cloned', () => {
     const original = stream1;
     const clone = original.clone();
     expect(clone).not.toBe(original);
     expect(String(clone)).toBe(String(original));
   });
 
-  it(`can be converted to a string`, () => {
+  it('can be converted to a string', () => {
     expect(String(stream1)).toEqual(
       '<<\n/Type /XRef\n/Length 16\n/W [ 1 1 2 ]\n/Index [ 0 3 21 1 ]\n>>\n' +
         'stream\n' +
@@ -45,7 +45,7 @@ describe(`PDFCrossRefStream`, () => {
     );
   });
 
-  it(`can be converted to a string without object number 1`, () => {
+  it('can be converted to a string without object number 1', () => {
     expect(String(stream2)).toEqual(
       '<<\n/Type /XRef\n/Length 25\n/W [ 1 2 2 ]\n/Index [ 0 1 2 2 9000 2 ]\n>>\n' +
         'stream\n' +
@@ -54,15 +54,15 @@ describe(`PDFCrossRefStream`, () => {
     );
   });
 
-  it(`can provide its size in bytes`, () => {
+  it('can provide its size in bytes', () => {
     expect(stream1.sizeInBytes()).toBe(95);
   });
 
-  it(`can provide its size in bytes without object number 1`, () => {
+  it('can provide its size in bytes without object number 1', () => {
     expect(stream2.sizeInBytes()).toBe(110);
   });
 
-  it(`can be serialized`, () => {
+  it('can be serialized', () => {
     const buffer = new Uint8Array(stream1.sizeInBytes() + 3).fill(
       toCharCode(' '),
     );
@@ -86,7 +86,7 @@ describe(`PDFCrossRefStream`, () => {
     );
   });
 
-  it(`can be serialized without object number 1`, () => {
+  it('can be serialized without object number 1', () => {
     const buffer = new Uint8Array(stream2.sizeInBytes() + 3).fill(
       toCharCode(' '),
     );
@@ -111,7 +111,7 @@ describe(`PDFCrossRefStream`, () => {
     );
   });
 
-  it(`can be serialized when encoded`, () => {
+  it('can be serialized when encoded', () => {
     const stream = PDFCrossRefStream.create(dict, true);
     stream.addUncompressedEntry(PDFRef.of(2), 300);
     stream.addCompressedEntry(PDFRef.of(3), PDFRef.of(10), 0);

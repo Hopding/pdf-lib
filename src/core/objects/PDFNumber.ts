@@ -1,8 +1,13 @@
-import { copyStringIntoBuffer, numberToString } from 'src/utils/index';
+import { PDFClasses } from '../../api/objects';
+import { copyStringIntoBuffer, numberToString } from '../../utils/index';
 
-import PDFObject from 'src/core/objects/PDFObject';
+import PDFObject from './PDFObject';
 
 class PDFNumber extends PDFObject {
+  static className = () => PDFClasses.PDFNumber;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFNumber;
+  }
   static of = (value: number) => new PDFNumber(value);
 
   private readonly numberValue: number;
@@ -36,7 +41,7 @@ class PDFNumber extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
-    offset += copyStringIntoBuffer(this.stringValue, buffer, offset);
+    copyStringIntoBuffer(this.stringValue, buffer, offset);
     return this.stringValue.length;
   }
 }

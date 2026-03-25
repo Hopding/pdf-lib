@@ -609,7 +609,7 @@ export default async (assets: Assets) => {
   const multilineTf = form.createTextField('moi.multiline.text.field');
   multilineTf.enableMultiline();
   multilineTf.setText(
-    `In the morning, when you can't get out of bed, tell yourself: "I'm getting up to do the work only a man can do. How can I possibly hesitate or complain when I'm about to accomplish the task for which I was born? Was I made for lying warm in bed under a pile of blankets?"\n\n"But I enjoy it here."\n\nWas it for enjoyment you were born? Are you designed to act or to be acted upon?\n\n\t\t\t\t\t\t\t\t\t\t - Marcus Aurelius`,
+    'In the morning, when you can\'t get out of bed, tell yourself: "I\'m getting up to do the work only a man can do. How can I possibly hesitate or complain when I\'m about to accomplish the task for which I was born? Was I made for lying warm in bed under a pile of blankets?"\n\n"But I enjoy it here."\n\nWas it for enjoyment you were born? Are you designed to act or to be acted upon?\n\n\t\t\t\t\t\t\t\t\t\t - Marcus Aurelius',
   );
   multilineTf.addToPage(page5, {
     x: fPadding * 3 + fWidth / 2 + fWidth * 2.5,

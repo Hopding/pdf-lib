@@ -1,5 +1,5 @@
-import { decodeFromBase64DataUri } from 'src/utils/base64';
-import { charFromCode } from 'src/utils/strings';
+import { decodeFromBase64DataUri } from './base64';
+import { charFromCode } from './strings';
 
 export const last = <T>(array: T[]): T => array[array.length - 1];
 
@@ -84,6 +84,18 @@ export const sortedUniq = <T>(array: T[], indexer: (elem: T) => any): T[] => {
   return uniq;
 };
 
+export const isArrayEqual = <T>(arr1: ArrayLike<T>, arr2: ArrayLike<T>) => {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (let i = 0, ii = arr1.length; i < ii; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
+};
+
 // Arrays and TypedArrays in JS both have .reverse() methods, which would seem
 // to negate the need for this function. However, not all runtimes support this
 // method (e.g. React Native). This function compensates for that fact.
@@ -143,4 +155,23 @@ export const toUint8Array = (input: string | ArrayBuffer | Uint8Array) => {
       '`input` must be one of `string | ArrayBuffer | Uint8Array`',
     );
   }
+};
+
+// Precompute hex octets for best performance
+// Credit: https://stackoverflow.com/questions/40031688/javascript-arraybuffer-to-hex/40031979#40031979
+
+const byteToHex: string[] = [];
+
+for (let byte = 0x00; byte <= 0xff; ++byte) {
+  byteToHex[byte] = byte.toString(16).padStart(2, '0');
+}
+
+export const byteArrayToHexString = (array: Uint8Array) => {
+  const hexOctets = new Array(array.length);
+
+  for (let idx = 0; idx < array.length; ++idx) {
+    hexOctets[idx] = byteToHex[array[idx]];
+  }
+
+  return hexOctets.join('');
 };

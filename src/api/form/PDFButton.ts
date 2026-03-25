@@ -1,27 +1,23 @@
-import PDFDocument from 'src/api/PDFDocument';
-import PDFPage from 'src/api/PDFPage';
-import PDFFont from 'src/api/PDFFont';
-import PDFImage from 'src/api/PDFImage';
-import { ImageAlignment } from 'src/api/image/alignment';
+import PDFDocument from '../PDFDocument';
+import PDFPage from '../PDFPage';
+import PDFFont from '../PDFFont';
+import PDFImage from '../PDFImage';
+import { ImageAlignment } from '../image/alignment';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
   defaultButtonAppearanceProvider,
-} from 'src/api/form/appearances';
+} from './appearances';
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
-} from 'src/api/form/PDFField';
-import { rgb } from 'src/api/colors';
-import { degrees } from 'src/api/rotations';
+} from './PDFField';
+import { rgb } from '../colors';
+import { degrees } from '../rotations';
 
-import {
-  PDFRef,
-  PDFStream,
-  PDFAcroPushButton,
-  PDFWidgetAnnotation,
-} from 'src/core';
-import { assertIs, assertOrUndefined, assertPositive } from 'src/utils';
+import { PDFRef, PDFAcroPushButton, PDFWidgetAnnotation } from '../../core';
+import { assertIs, assertOrUndefined, assertPositive } from '../../utils';
+import { isPDFInstance, PDFClasses } from '../objects';
 
 /**
  * Represents a button field of a [[PDFForm]].
@@ -33,6 +29,10 @@ import { assertIs, assertOrUndefined, assertPositive } from 'src/utils';
  * have a text label describing the action that they perform when clicked.
  */
 export default class PDFButton extends PDFField {
+  static className = () => PDFClasses.PDFButton;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFButton;
+  }
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
    * > consider using the [[PDFForm.getButton]] method, which will create an
@@ -199,8 +199,10 @@ export default class PDFButton extends PDFField {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const hasAppearances =
-        widget.getAppearances()?.normal instanceof PDFStream;
+      const hasAppearances = isPDFInstance(
+        widget.getAppearances()?.normal,
+        PDFClasses.PDFStream,
+      );
       if (!hasAppearances) return true;
     }
 

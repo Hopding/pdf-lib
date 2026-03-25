@@ -1,13 +1,13 @@
 import pako from 'pako';
 
-import { MethodNotImplementedError } from 'src/core/errors';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFStream from 'src/core/objects/PDFStream';
-import { Cache } from 'src/utils';
+import { MethodNotImplementedError } from '../errors';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFStream from '../objects/PDFStream';
+import { Cache } from '../../utils';
 
 class PDFFlateStream extends PDFStream {
-  protected readonly contentsCache: Cache<Uint8Array>;
+  protected contentsCache: Cache<Uint8Array>;
   protected readonly encode: boolean;
 
   constructor(dict: PDFDict, encode: boolean) {
@@ -37,6 +37,10 @@ class PDFFlateStream extends PDFStream {
       this.constructor.name,
       'getUnencodedContents',
     );
+  }
+
+  updateContents(contents: Uint8Array): void {
+    this.contentsCache = Cache.populatedBy(() => contents);
   }
 }
 

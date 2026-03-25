@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
     "allowJs": false,
     "checkJs": false,
     "declaration": true,
     "declarationMap": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./build",
     "rootDir": "./src",
@@ -18,28 +19,35 @@
     "downlevelIteration": false,
     "isolatedModules": false,
     "newLine": "LF",
-
     /* Strict Type-Checking Options */
     "strict": true,
-
     /* Additional Checks */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
     /* Module Resolution Options */
     "baseUrl": "./src",
     "paths": {
-      "src/*": ["./*"]
+      "src/*": ["./*"],
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "preserveSymlinks": true,
     "moduleResolution": "node",
-
-    /* Plugins */
-    "plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
+    "jsx": "react",
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": [
+    ".circleci",
+    ".github",
+    ".vscode",
+    "apps",
+    "assets",
+    "cjs",
+    "docs",
+    "node_modules",
+    "scratchpad",
+    "tests",
+  ],
 }

@@ -15,9 +15,9 @@ import {
   pushGraphicsState,
   toCharCode,
   typedArrayFor,
-} from 'src/index';
+} from '../../../src/index';
 
-describe(`PDFContentStream`, () => {
+describe('PDFContentStream', () => {
   const context = PDFContext.create();
   const dict = PDFDict.withContext(context);
   const operators = [
@@ -28,13 +28,13 @@ describe(`PDFContentStream`, () => {
     PDFOperator.of(Ops.EndText),
   ];
 
-  it(`can be constructed from PDFContentStream.of(...)`, () => {
+  it('can be constructed from PDFContentStream.of(...)', () => {
     expect(PDFContentStream.of(dict, operators, false)).toBeInstanceOf(
       PDFContentStream,
     );
   });
 
-  it(`allows operators to be pushed to the end of the stream`, () => {
+  it('allows operators to be pushed to the end of the stream', () => {
     const stream = PDFContentStream.of(dict, [pushGraphicsState()], false);
     stream.push(moveText(21, 99), popGraphicsState());
     expect(String(stream)).toEqual(
@@ -47,14 +47,14 @@ describe(`PDFContentStream`, () => {
     );
   });
 
-  it(`can be cloned`, () => {
+  it('can be cloned', () => {
     const original = PDFContentStream.of(dict, operators, false);
     const clone = original.clone();
     expect(clone).not.toBe(original);
     expect(String(clone)).toBe(String(original));
   });
 
-  it(`can be converted to a string`, () => {
+  it('can be converted to a string', () => {
     expect(String(PDFContentStream.of(dict, operators, false))).toEqual(
       '<<\n/Length 55\n>>\n' +
         'stream\n' +
@@ -67,11 +67,11 @@ describe(`PDFContentStream`, () => {
     );
   });
 
-  it(`can provide its size in bytes`, () => {
+  it('can provide its size in bytes', () => {
     expect(PDFContentStream.of(dict, operators, false).sizeInBytes()).toBe(89);
   });
 
-  it(`can be serialized`, () => {
+  it('can be serialized', () => {
     const stream = PDFContentStream.of(dict, operators, false);
     const buffer = new Uint8Array(stream.sizeInBytes() + 3).fill(
       toCharCode(' '),
@@ -91,7 +91,7 @@ describe(`PDFContentStream`, () => {
     );
   });
 
-  it(`can be serialized when encoded`, () => {
+  it('can be serialized when encoded', () => {
     const contents =
       'BT\n' +
       '/F1 24 Tf\n' +

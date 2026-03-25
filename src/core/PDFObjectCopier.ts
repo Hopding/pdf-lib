@@ -1,11 +1,12 @@
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFContext from 'src/core/PDFContext';
-import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
+import { isPDFInstance, PDFClasses } from '../api/objects';
+import PDFArray from './objects/PDFArray';
+import PDFDict from './objects/PDFDict';
+import PDFName from './objects/PDFName';
+import PDFObject from './objects/PDFObject';
+import PDFRef from './objects/PDFRef';
+import PDFStream from './objects/PDFStream';
+import PDFContext from './PDFContext';
+import PDFPageLeaf from './structures/PDFPageLeaf';
 
 /**
  * PDFObjectCopier copies PDFObjects from a src context to a dest context.
@@ -43,11 +44,11 @@ class PDFObjectCopier {
 
   // prettier-ignore
   copy = <T extends PDFObject>(object: T): T => (
-      object instanceof PDFPageLeaf ? this.copyPDFPage(object)
-    : object instanceof PDFDict     ? this.copyPDFDict(object)
-    : object instanceof PDFArray    ? this.copyPDFArray(object)
-    : object instanceof PDFStream   ? this.copyPDFStream(object)
-    : object instanceof PDFRef      ? this.copyPDFIndirectObject(object)
+      isPDFInstance(object, PDFClasses.PDFPageLeaf) ? this.copyPDFPage(object as any as PDFPageLeaf)
+    : isPDFInstance(object, PDFClasses.PDFDict)     ? this.copyPDFDict(object as any as PDFDict)
+    : isPDFInstance(object, PDFClasses.PDFArray)    ? this.copyPDFArray(object as any as PDFArray)
+    : isPDFInstance(object, PDFClasses.PDFStream)   ? this.copyPDFStream(object as any as PDFStream)
+    : isPDFInstance(object, PDFClasses.PDFRef)      ? this.copyPDFIndirectObject(object as any as PDFRef)
     : object.clone()
   ) as T;
 

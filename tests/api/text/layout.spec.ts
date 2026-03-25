@@ -1,11 +1,11 @@
-import { PDFDocument, StandardFonts, TextAlignment } from 'src/index';
+import { PDFDocument, StandardFonts, TextAlignment } from '../../../src/index';
 
-import { layoutMultilineText } from 'src/api/text/layout';
+import { layoutMultilineText } from '../../../src/api/text/layout';
 
 const MIN_FONT_SIZE = 4;
 const MAX_FONT_SIZE = 500;
 
-describe(`layoutMultilineText`, () => {
+describe('layoutMultilineText', () => {
   it('should layout the text on one line when it fits near-perfectly', async () => {
     const pdfDoc = await PDFDocument.create();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);

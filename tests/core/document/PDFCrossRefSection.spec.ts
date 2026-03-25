@@ -1,8 +1,8 @@
-import { PDFCrossRefSection, PDFRef } from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+import { PDFCrossRefSection, PDFRef } from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
-describe(`PDFCrossRefSection`, () => {
-  it(`can be constructed from PDFCrossRefSection.create()`, () => {
+describe('PDFCrossRefSection', () => {
+  it('can be constructed from PDFCrossRefSection.create()', () => {
     expect(PDFCrossRefSection.create()).toBeInstanceOf(PDFCrossRefSection);
   });
 
@@ -18,11 +18,16 @@ describe(`PDFCrossRefSection`, () => {
   xref2.addEntry(PDFRef.of(6), 192188923);
   xref2.addEntry(PDFRef.of(7), 129219);
 
-  it(`can be converted to a string with a single subsection`, () => {
+  const xref3 = PDFCrossRefSection.create();
+  xref3.addEntry(PDFRef.of(23), 21);
+  xref3.addEntry(PDFRef.of(16), 192188923);
+  xref3.addEntry(PDFRef.of(78), 129219);
+
+  it('can be converted to a string with a single subsection', () => {
     expect(String(xref1)).toEqual(
       'xref\n' +
         '0 5\n' +
-        '0000000000 65535 f \n' +
+        '0000000002 65535 f \n' +
         '0000000021 00000 n \n' +
         '0000000024 00001 f \n' +
         '0192188923 00000 n \n' +
@@ -30,11 +35,11 @@ describe(`PDFCrossRefSection`, () => {
     );
   });
 
-  it(`can be converted to a string with multiple subsections and without object number 1`, () => {
+  it('can be converted to a string with multiple subsections and without object number 1', () => {
     expect(String(xref2)).toEqual(
       'xref\n' +
         '0 1\n' +
-        '0000000000 65535 f \n' +
+        '0000000004 65535 f \n' +
         '3 2\n' +
         '0000000021 00000 n \n' +
         '0000000024 00001 f \n' +
@@ -44,22 +49,36 @@ describe(`PDFCrossRefSection`, () => {
     );
   });
 
-  it(`can provide its size in bytes with a single subsection`, () => {
+  it('can be converted to a string with multiple subsections correctly ordered', () => {
+    expect(String(xref3)).toEqual(
+      'xref\n' +
+        '0 1\n' +
+        '0000000000 65535 f \n' +
+        '16 1\n' +
+        '0192188923 00000 n \n' +
+        '23 1\n' +
+        '0000000021 00000 n \n' +
+        '78 1\n' +
+        '0000129219 00000 n \n',
+    );
+  });
+
+  it('can provide its size in bytes with a single subsection', () => {
     expect(xref1.sizeInBytes()).toBe(109);
   });
 
-  it(`can provide its size in bytes with multiple subsections and without object number 1`, () => {
+  it('can provide its size in bytes with multiple subsections and without object number 1', () => {
     expect(xref2.sizeInBytes()).toBe(117);
   });
 
-  it(`can be serialized with a single subsection`, () => {
+  it('can be serialized with a single subsection', () => {
     const buffer = new Uint8Array(113).fill(toCharCode(' '));
     expect(xref1.copyBytesInto(buffer, 3)).toBe(109);
     expect(buffer).toEqual(
       typedArrayFor(
         '   xref\n' +
           '0 5\n' +
-          '0000000000 65535 f \n' +
+          '0000000002 65535 f \n' +
           '0000000021 00000 n \n' +
           '0000000024 00001 f \n' +
           '0192188923 00000 n \n' +
@@ -68,14 +87,14 @@ describe(`PDFCrossRefSection`, () => {
     );
   });
 
-  it(`can be serialized with multiple subsections and without object number 1`, () => {
+  it('can be serialized with multiple subsections and without object number 1', () => {
     const buffer = new Uint8Array(121).fill(toCharCode(' '));
     expect(xref2.copyBytesInto(buffer, 3)).toBe(117);
     expect(buffer).toEqual(
       typedArrayFor(
         '   xref\n' +
           '0 1\n' +
-          '0000000000 65535 f \n' +
+          '0000000004 65535 f \n' +
           '3 2\n' +
           '0000000021 00000 n \n' +
           '0000000024 00001 f \n' +
@@ -84,5 +103,11 @@ describe(`PDFCrossRefSection`, () => {
           '0000129219 00000 n \n ',
       ),
     );
+  });
+
+  it('lists its entries, without entry 0', () => {
+    expect(xref1.listRefs().length).toBe(4);
+    expect(xref2.listRefs().length).toBe(4);
+    expect(xref3.listRefs().length).toBe(3);
   });
 });

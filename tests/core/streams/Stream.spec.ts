@@ -1,6 +1,6 @@
-import Stream from 'src/core/streams/Stream';
+import Stream from '../../../src/core/streams/Stream';
 
-describe(`Stream`, () => {
+describe('Stream', () => {
   it('can get the stream length', () => {
     const bytes = Uint8Array.from([1, 1, 2]);
     const stream = new Stream(bytes, 0, bytes.length);

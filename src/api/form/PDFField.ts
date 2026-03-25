@@ -1,7 +1,7 @@
-import PDFDocument from 'src/api/PDFDocument';
-import PDFFont from 'src/api/PDFFont';
-import { AppearanceMapping } from 'src/api/form/appearances';
-import { Color, colorToComponents, setFillingColor } from 'src/api/colors';
+import PDFDocument from '../PDFDocument';
+import PDFFont from '../PDFFont';
+import { AppearanceMapping } from './appearances';
+import { Color, colorToComponents, setFillingColor } from '../colors';
 import {
   Rotation,
   toDegrees,
@@ -9,7 +9,7 @@ import {
   reduceRotation,
   adjustDimsForRotation,
   degrees,
-} from 'src/api/rotations';
+} from '../rotations';
 
 import {
   PDFRef,
@@ -21,11 +21,12 @@ import {
   AcroFieldFlags,
   PDFAcroTerminal,
   AnnotationFlags,
-} from 'src/core';
-import { assertIs, assertMultiple, assertOrUndefined } from 'src/utils';
+} from '../../core';
+import { assertIs, assertMultiple, assertOrUndefined } from '../../utils';
 import { ImageAlignment } from '../image';
 import PDFImage from '../PDFImage';
 import { drawImage, rotateInPlace } from '../operations';
+import { PDFClasses } from '../objects';
 
 export interface FieldAppearanceOptions {
   x?: number;
@@ -82,6 +83,10 @@ export const assertFieldAppearanceOptions = (
  * to be rendered.
  */
 export default class PDFField {
+  static className = () => PDFClasses.PDFField;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFField;
+  }
   /** The low-level PDFAcroTerminal wrapped by this field. */
   readonly acroField: PDFAcroTerminal;
 

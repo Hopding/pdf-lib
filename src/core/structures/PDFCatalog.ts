@@ -1,12 +1,18 @@
-import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFContext from 'src/core/PDFContext';
-import PDFPageTree from 'src/core/structures/PDFPageTree';
-import { PDFAcroForm } from 'src/core/acroform';
+import PDFDict, { DictMap } from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFRef from '../objects/PDFRef';
+import PDFContext from '../PDFContext';
+import PDFPageTree from './PDFPageTree';
+import { PDFAcroForm } from '../acroform';
 import ViewerPreferences from '../interactive/ViewerPreferences';
+import PDFArray from '../objects/PDFArray';
+import { PDFClasses } from '../../api/objects';
 
 class PDFCatalog extends PDFDict {
+  static className = () => PDFClasses.PDFCatalog;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFCatalog;
+  }
   static withContextAndPages = (
     context: PDFContext,
     pages: PDFPageTree | PDFRef,
@@ -26,6 +32,14 @@ class PDFCatalog extends PDFDict {
 
   AcroForm(): PDFDict | undefined {
     return this.lookupMaybe(PDFName.of('AcroForm'), PDFDict);
+  }
+
+  Names(): PDFDict | undefined {
+    return this.lookupMaybe(PDFName.of('Names'), PDFDict);
+  }
+
+  AttachedFiles(): PDFArray | undefined {
+    return this.lookupMaybe(PDFName.of('AF'), PDFArray);
   }
 
   getAcroForm(): PDFAcroForm | undefined {

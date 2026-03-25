@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource:;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 23</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test22.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test24.html'">
+        Next
+      </button>
+    </div>
+    <!-- <div  ></div> -->
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    // startFpsTracker('animation-target');
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const { PDFDocument, PDFPage, radians, StandardFonts, rgb, degrees } =
+        PDFLib;
+
+      const pdfDoc = await PDFDocument.create();
+      const firstPage = pdfDoc.addPage([1000, 1000]);
+
+      const fontSize = 20;
+
+      const svg = `<svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      width="841.89" height="595.28"
+      
+      viewBox="0 0 841.89 595.28"
+    >
+      <g transform="scale(1 -1) translate(0 -595.28)">
+      <g transform="translate(210.4725 445.95954697986576) scale(1 -1) ">
+        <svg viewBox="0 0 197 231" width="420.94500000000005" height="296.63909395973155">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="167.5 146 197 231" id="66de662e-af46-4e51-ac2b-fe6dfa7e4c4f" preserveAspectRatio="xMidYMid">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="535" height="695.5" viewBox="0.18711018711019248 -0.12474012474011253 20.000000000000018 26.694386694386722" x="0" y="0">
+      <g transform="scale(1 -1) translate(0 -26.444906444906493)">
+      <line id="gridX:0.18711018711019248" x1="0.18711018711019248" x2="0.18711018711019248" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:1.1871101871101926" x1="1.1871101871101926" x2="1.1871101871101926" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:2.187110187110193" x1="2.187110187110193" x2="2.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:3.187110187110193" x1="3.187110187110193" x2="3.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:4.187110187110193" x1="4.187110187110193" x2="4.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:5.187110187110193" x1="5.187110187110193" x2="5.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:6.187110187110193" x1="6.187110187110193" x2="6.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:7.187110187110193" x1="7.187110187110193" x2="7.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:8.187110187110193" x1="8.187110187110193" x2="8.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:9.187110187110193" x1="9.187110187110193" x2="9.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:10.187110187110193" x1="10.187110187110193" x2="10.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:11.187110187110193" x1="11.187110187110193" x2="11.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:12.187110187110193" x1="12.187110187110193" x2="12.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:13.187110187110193" x1="13.187110187110193" x2="13.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:14.187110187110193" x1="14.187110187110193" x2="14.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:15.187110187110193" x1="15.187110187110193" x2="15.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:16.187110187110193" x1="16.187110187110193" x2="16.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:17.187110187110193" x1="17.187110187110193" x2="17.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:18.187110187110193" x1="18.187110187110193" x2="18.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:19.187110187110193" x1="19.187110187110193" x2="19.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridX:20.187110187110193" x1="20.187110187110193" x2="20.187110187110193" y1="-0.12474012474011253" y2="26.569646569646608" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:0" x1="0.18711018711019248" x2="20.18711018711021" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:1" x1="0.18711018711019248" x2="20.18711018711021" y1="1" y2="1" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:2" x1="0.18711018711019248" x2="20.18711018711021" y1="2" y2="2" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:3" x1="0.18711018711019248" x2="20.18711018711021" y1="3" y2="3" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:4" x1="0.18711018711019248" x2="20.18711018711021" y1="4" y2="4" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:5" x1="0.18711018711019248" x2="20.18711018711021" y1="5" y2="5" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:6" x1="0.18711018711019248" x2="20.18711018711021" y1="6" y2="6" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:7" x1="0.18711018711019248" x2="20.18711018711021" y1="7" y2="7" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:8" x1="0.18711018711019248" x2="20.18711018711021" y1="8" y2="8" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:9" x1="0.18711018711019248" x2="20.18711018711021" y1="9" y2="9" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:10" x1="0.18711018711019248" x2="20.18711018711021" y1="10" y2="10" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:11" x1="0.18711018711019248" x2="20.18711018711021" y1="11" y2="11" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:12" x1="0.18711018711019248" x2="20.18711018711021" y1="12" y2="12" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:13" x1="0.18711018711019248" x2="20.18711018711021" y1="13" y2="13" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:14" x1="0.18711018711019248" x2="20.18711018711021" y1="14" y2="14" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:15" x1="0.18711018711019248" x2="20.18711018711021" y1="15" y2="15" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:16" x1="0.18711018711019248" x2="20.18711018711021" y1="16" y2="16" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:17" x1="0.18711018711019248" x2="20.18711018711021" y1="17" y2="17" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:18" x1="0.18711018711019248" x2="20.18711018711021" y1="18" y2="18" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:19" x1="0.18711018711019248" x2="20.18711018711021" y1="19" y2="19" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:20" x1="0.18711018711019248" x2="20.18711018711021" y1="20" y2="20" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:21" x1="0.18711018711019248" x2="20.18711018711021" y1="21" y2="21" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:22" x1="0.18711018711019248" x2="20.18711018711021" y1="22" y2="22" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:23" x1="0.18711018711019248" x2="20.18711018711021" y1="23" y2="23" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:24" x1="0.18711018711019248" x2="20.18711018711021" y1="24" y2="24" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:25" x1="0.18711018711019248" x2="20.18711018711021" y1="25" y2="25" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="gridy:26" x1="0.18711018711019248" x2="20.18711018711021" y1="26" y2="26" stroke-width="0.041580041580041624" stroke-linecap="round" stroke="#E5E5E5"></line>
+<line id="160ee56b-b76e-4c17-a9e7-cdbb28f09f5e" x1="7.5" x2="13.217926616881726" y1="20" y2="11.796018332300132" stroke-width="0.12474012474012487" stroke-linecap="round" stroke="#000000FF"></line>
+<ellipse id="51777a25-c1cb-4043-9ea2-9b9d860236e3" cx="7.5" cy="20" rx="0.1871101871101873" ry="0.18711018711018731" fill="#808080"></ellipse>
+<ellipse id="2b44732c-7829-4361-ac78-03b9e068030c" cx="13.217926616881726" cy="11.796018332300132" rx="0.1871101871101873" ry="0.18711018711018731" fill="#808080"></ellipse>
+<g id="6a9c3e2d-5e63-4346-88f4-6e7bc5aebab2" transform="translate(10.483703433180988 16.02274929089019) scale(0.9999999999999998 -1)">
+  <text id="6a9c3e2d-5e63-4346-88f4-6e7bc5aebab2-0" font-size="0.665280665280666" fill="#808080" x="0" y="0">10</text>
+  </g>
+<line id="ed32291c-9320-4dff-b8a5-45571b8c0b7f" x1="13.75" x2="7.503049524455758" y1="19" y2="14.002439619564605" stroke-width="0.12474012474012487" stroke-linecap="round" stroke="#000000FF"></line>
+<ellipse id="2c0fffbc-13b3-4fc2-b681-b1dfdf924337" cx="13.75" cy="19" rx="0.1871101871101873" ry="0.18711018711018731" fill="#808080"></ellipse>
+<ellipse id="3e3a94c9-8c77-46ac-833f-c193c82b5fa1" cx="7.503049524455758" cy="14.002439619564605" rx="0.1871101871101873" ry="0.18711018711018731" fill="#808080"></ellipse>
+<g id="4d7be57e-7271-47ef-b2d4-0b318626049f" transform="translate(10.751264886968004 15.711199019761512) scale(0.9999999999999998 -1)">
+  <text id="4d7be57e-7271-47ef-b2d4-0b318626049f-0" font-size="0.665280665280666" fill="#808080" x="0" y="0">8</text>
+  </g>
+<ellipse id="5ad439e3-e95f-413f-85d5-ba2724605f29" cx="10.184824902723735" cy="16.147859922178984" rx="0.1871101871101873" ry="0.18711018711018731" fill="black"></ellipse>
+      </g>
+    </svg></svg></svg></g>
+      </g>
+    </svg>`;
+      const svg2 = `<svg width="100" height="100" viewBox="0 0 100 100">
+      <rect width="100" height="100" x="0" y="0" fill="black"/>
+      <circle cx="50" cy="40" r="55" fill="red"/>
+      </svg>`;
+      // <circle cx="80" cy="80" r="25" fill="red"/>
+
+      const drawLines = (page) => {
+        Array(10)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText('----' + v, {
+              x: 5,
+              y: v * 100,
+              size: 20,
+            });
+          });
+        Array(100)
+          .fill(1)
+          .map((v, i) => i)
+          .forEach((v) => {
+            page.drawText(v % 5 == 0 ? '---' : '--', {
+              x: 5,
+              y: v * 10,
+              size: 20,
+            });
+          });
+      };
+      const drawGrid = (page) => {
+        Array(parseInt(page.getHeight() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: 0, y: i * 10 },
+              end: { x: page.getWidth(), y: i * 10 },
+            });
+          });
+        Array(parseInt(page.getWidth() / 10))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: i * 10, y: 0 },
+              end: { x: i * 10, y: page.getHeight() },
+            });
+          });
+      };
+      // drawGrid(firstPage)
+      drawLines(firstPage);
+
+      firstPage.drawSvg(svg, {
+        height: 595.28,
+        width: 841.89,
+        // height: 100,
+        // width: 100,
+        x: 100,
+        y: 700,
+      });
+
+      const pdfBytes = await pdfDoc.save();
+
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

@@ -1,5 +1,5 @@
-import PDFObject from 'src/core/objects/PDFObject';
-import CharCodes from 'src/core/syntax/CharCodes';
+import PDFObject from './PDFObject';
+import CharCodes from '../syntax/CharCodes';
 import {
   copyStringIntoBuffer,
   toHexStringOfMinLength,
@@ -8,10 +8,16 @@ import {
   pdfDocEncodingDecode,
   parseDate,
   hasUtf16BOM,
-} from 'src/utils';
-import { InvalidPDFDateStringError } from 'src/core/errors';
+  byteArrayToHexString,
+} from '../../utils';
+import { InvalidPDFDateStringError } from '../errors';
+import { PDFClasses } from '../../api/objects';
 
 class PDFHexString extends PDFObject {
+  static className = () => PDFClasses.PDFHexString;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFHexString;
+  }
   static of = (value: string) => new PDFHexString(value);
 
   static fromText = (value: string) => {
@@ -24,6 +30,9 @@ class PDFHexString extends PDFObject {
 
     return new PDFHexString(hex);
   };
+
+  static fromBytes = (bytes: Uint8Array) =>
+    PDFHexString.of(byteArrayToHexString(bytes));
 
   private readonly value: string;
 

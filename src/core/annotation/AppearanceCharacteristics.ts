@@ -1,9 +1,10 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFString from 'src/core/objects/PDFString';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
+import PDFArray from '../objects/PDFArray';
+import PDFHexString from '../objects/PDFHexString';
+import PDFString from '../objects/PDFString';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 class AppearanceCharacteristics {
   readonly dict: PDFDict;
@@ -17,37 +18,49 @@ class AppearanceCharacteristics {
 
   R(): PDFNumber | undefined {
     const R = this.dict.lookup(PDFName.of('R'));
-    if (R instanceof PDFNumber) return R;
+    if (isPDFInstance(R, PDFClasses.PDFNumber)) return R as PDFNumber;
     return undefined;
   }
 
   BC(): PDFArray | undefined {
     const BC = this.dict.lookup(PDFName.of('BC'));
-    if (BC instanceof PDFArray) return BC;
+    if (isPDFInstance(BC, PDFClasses.PDFArray)) return BC as PDFArray;
     return undefined;
   }
 
   BG(): PDFArray | undefined {
     const BG = this.dict.lookup(PDFName.of('BG'));
-    if (BG instanceof PDFArray) return BG;
+    if (isPDFInstance(BG, PDFClasses.PDFArray)) return BG as PDFArray;
     return undefined;
   }
 
   CA(): PDFHexString | PDFString | undefined {
     const CA = this.dict.lookup(PDFName.of('CA'));
-    if (CA instanceof PDFHexString || CA instanceof PDFString) return CA;
+    if (
+      isPDFInstance(CA, PDFClasses.PDFHexString) ||
+      isPDFInstance(CA, PDFClasses.PDFString)
+    )
+      return CA as PDFString | PDFHexString;
     return undefined;
   }
 
   RC(): PDFHexString | PDFString | undefined {
     const RC = this.dict.lookup(PDFName.of('RC'));
-    if (RC instanceof PDFHexString || RC instanceof PDFString) return RC;
+    if (
+      isPDFInstance(RC, PDFClasses.PDFHexString) ||
+      isPDFInstance(RC, PDFClasses.PDFString)
+    )
+      return RC as PDFString | PDFHexString;
     return undefined;
   }
 
   AC(): PDFHexString | PDFString | undefined {
     const AC = this.dict.lookup(PDFName.of('AC'));
-    if (AC instanceof PDFHexString || AC instanceof PDFString) return AC;
+    if (
+      isPDFInstance(AC, PDFClasses.PDFHexString) ||
+      isPDFInstance(AC, PDFClasses.PDFString)
+    )
+      return AC as PDFString | PDFHexString;
     return undefined;
   }
 
@@ -63,7 +76,8 @@ class AppearanceCharacteristics {
     const components: number[] = [];
     for (let idx = 0, len = BC?.size(); idx < len; idx++) {
       const component = BC.get(idx);
-      if (component instanceof PDFNumber) components.push(component.asNumber());
+      if (isPDFInstance(component, PDFClasses.PDFNumber))
+        components.push((component as PDFNumber).asNumber());
     }
 
     return components;
@@ -77,7 +91,8 @@ class AppearanceCharacteristics {
     const components: number[] = [];
     for (let idx = 0, len = BG?.size(); idx < len; idx++) {
       const component = BG.get(idx);
-      if (component instanceof PDFNumber) components.push(component.asNumber());
+      if (isPDFInstance(component, PDFClasses.PDFNumber))
+        components.push((component as PDFNumber).asNumber());
     }
 
     return components;

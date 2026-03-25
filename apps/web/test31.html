@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+    default-src 'self' 'unsafe-inline' blob: resource:;
+    object-src 'self' blob:;
+    frame-src 'self' blob:;
+  "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test - Draw SVG with Text and TSpans using PDF-Lib</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test30.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test32.html'">
+        Next
+      </button>
+    </div>
+    <iframe id="iframe"></iframe>
+    <script type="text/javascript">
+      const renderInIframe = (pdfBytes) => {
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const blobUrl = URL.createObjectURL(blob);
+        document.getElementById('iframe').src = blobUrl;
+      };
+
+      async function test() {
+        const { PDFDocument, rgb, degrees } = PDFLib;
+
+        const pdfDoc = await PDFDocument.create();
+        const page = pdfDoc.addPage([600, 600]);
+
+        // Example SVG with text and tspans
+        const svg1 = `
+    <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="lightgrey"/>
+      <text x="10" y="30" font-family="Verdana" font-size="20" fill="black">
+        Hello, 
+        <tspan fill="blue" font-weight="bold">SVG</tspan>
+        <tspan x="10" dy="25">on</tspan>
+        <tspan fill="red"> PDF!</tspan>
+      </text>
+      <text x="10" y="100" font-family="Verdana" font-size="15" fill="green">
+        Another line,
+        <tspan dx="20" dy="20" fill="purple">with offset</tspan>
+        <tspan dx="20">tspan.</tspan>
+      </text>
+    </svg>`;
+
+        const svg2 = `<svg width="800px" height="650px" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <text x="100" y="50" dominant-baseline="auto">Auto Alignment</text>
+        <text x="100" y="100" dominant-baseline="text-bottom">Text-Bottom Alignment</text>
+        <text x="100" y="150" dominant-baseline="alphabetic">Alphabetic Alignment</text>
+        <text x="100" y="200" dominant-baseline="ideographic">Ideographic Alignment</text>
+        <text x="100" y="250" dominant-baseline="middle">Middle Alignment</text>
+        <text x="100" y="300" dominant-baseline="central">Central Alignment</text>
+        <text x="100" y="350" dominant-baseline="mathematical">Mathematical Alignment</text>
+        <text x="100" y="400" dominant-baseline="hanging">Hanging Alignment</text>
+        <text x="100" y="450" dominant-baseline="text-top">Text-Top Alignment</text>
+        <text x="100" y="500" dominant-baseline="text-after-edge">Text-After-Edge Alignment</text>
+        <text x="100" y="550" dominant-baseline="text-before-edge">Text-Before-Edge Alignment</text>
+        <text x="100" y="600">No baseline</text>
+
+        <!-- Guide Lines -->
+        <line x1="50" y1="50" x2="750" y2="50" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="100" x2="750" y2="100" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="150" x2="750" y2="150" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="200" x2="750" y2="200" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="250" x2="750" y2="250" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="300" x2="750" y2="300" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="350" x2="750" y2="350" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="400" x2="750" y2="400" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="450" x2="750" y2="450" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="500" x2="750" y2="500" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="550" x2="750" y2="550" stroke="#cccccc" stroke-width="1"/>
+        <line x1="50" y1="600" x2="750" y2="600" stroke="#cccccc" stroke-width="1"/>
+      </svg>`;
+
+        // Draw the SVG onto the PDF
+        page.drawSvg(svg1, {
+          x: 50,
+          y: 130,
+          width: 200,
+          height: 130,
+        });
+
+        page.drawSvg(svg2, {
+          x: 50,
+          y: 650,
+          width: 600,
+          height: 600,
+        });
+
+        const pdfBytes = await pdfDoc.save();
+        renderInIframe(pdfBytes);
+      }
+    </script>
+  </body>
+</html>

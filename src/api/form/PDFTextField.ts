@@ -1,41 +1,41 @@
-import PDFDocument from 'src/api/PDFDocument';
-import PDFPage from 'src/api/PDFPage';
-import PDFFont from 'src/api/PDFFont';
-import PDFImage from 'src/api/PDFImage';
+import PDFDocument from '../PDFDocument';
+import PDFPage from '../PDFPage';
+import PDFFont from '../PDFFont';
+import PDFImage from '../PDFImage';
 import PDFField, {
   FieldAppearanceOptions,
   assertFieldAppearanceOptions,
-} from 'src/api/form/PDFField';
+} from './PDFField';
 import {
   AppearanceProviderFor,
   normalizeAppearance,
   defaultTextFieldAppearanceProvider,
-} from 'src/api/form/appearances';
-import { rgb } from 'src/api/colors';
-import { degrees } from 'src/api/rotations';
+} from './appearances';
+import { rgb } from '../colors';
+import { degrees } from '../rotations';
 import {
   RichTextFieldReadError,
   ExceededMaxLengthError,
   InvalidMaxLengthError,
-} from 'src/api/errors';
-import { ImageAlignment } from 'src/api/image/alignment';
-import { TextAlignment } from 'src/api/text/alignment';
+} from '../errors';
+import { ImageAlignment } from '../image/alignment';
+import { TextAlignment } from '../text/alignment';
 
 import {
   PDFHexString,
   PDFRef,
-  PDFStream,
   PDFAcroText,
   AcroTextFlags,
   PDFWidgetAnnotation,
-} from 'src/core';
+} from '../../core';
 import {
   assertIs,
   assertIsOneOf,
   assertOrUndefined,
   assertPositive,
   assertRangeOrUndefined,
-} from 'src/utils';
+} from '../../utils';
+import { isPDFInstance, PDFClasses } from '../objects';
 
 /**
  * Represents a text field of a [[PDFForm]].
@@ -47,6 +47,10 @@ import {
  * to be entered (see [[PDFTextField.isMultiline]]).
  */
 export default class PDFTextField extends PDFField {
+  static className = () => PDFClasses.PDFTextField;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFTextField;
+  }
   /**
    * > **NOTE:** You probably don't want to call this method directly. Instead,
    * > consider using the [[PDFForm.getTextField]] method, which will create an
@@ -297,7 +301,7 @@ export default class PDFTextField extends PDFField {
     const fieldAlignment = this.getAlignment();
 
     // prettier-ignore
-    const alignment = 
+    const alignment =
         fieldAlignment === TextAlignment.Center ? ImageAlignment.Center
       : fieldAlignment === TextAlignment.Right ? ImageAlignment.Right
       : ImageAlignment.Left;
@@ -606,7 +610,7 @@ export default class PDFTextField extends PDFField {
    */
   enableCombing() {
     if (this.getMaxLength() === undefined) {
-      const msg = `PDFTextFields must have a max length in order to be combed`;
+      const msg = 'PDFTextFields must have a max length in order to be combed';
       console.warn(msg);
     }
 
@@ -760,8 +764,10 @@ export default class PDFTextField extends PDFField {
     const widgets = this.acroField.getWidgets();
     for (let idx = 0, len = widgets.length; idx < len; idx++) {
       const widget = widgets[idx];
-      const hasAppearances =
-        widget.getAppearances()?.normal instanceof PDFStream;
+      const hasAppearances = isPDFInstance(
+        widget.getAppearances()?.normal,
+        PDFClasses.PDFStream,
+      );
       if (!hasAppearances) return true;
     }
 

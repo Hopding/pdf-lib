@@ -1,13 +1,6 @@
-import {
-  PDFDocument,
-  PDFPage,
-  radians,
-  StandardFonts,
-  rgb,
-  degrees,
-} from 'pdf-lib';
+import { PDFDocument, radians, StandardFonts, rgb, degrees } from 'pdf-lib';
 
-import { fetchAsset, writePdf } from './assets';
+import { fetchAsset } from './assets';
 
 export default async () => {
   const [inputPdf, minionsLaughingBytes] = await Promise.all([
@@ -36,7 +29,7 @@ export default async () => {
     // prettier-ignore
     const text = (
         fontName === StandardFonts.Symbol ? `${idx + 1}. Τηεσε αρε τηε 14 Στανδαρδ Φοντσ.`
-      : fontName === StandardFonts.ZapfDingbats ? `✑✔✎ ✴❈❅▲❅ ❁❒❅ ▼❈❅ ✑✔ ✳▼❁■❄❁❒❄ ✦❏■▼▲✎`
+      : fontName === StandardFonts.ZapfDingbats ? '✑✔✎ ✴❈❅▲❅ ❁❒❅ ▼❈❅ ✑✔ ✳▼❁■❄❁❒❄ ✦❏■▼▲✎'
       : `${idx + 1}. These are the 14 Standard Fonts.`
     );
 

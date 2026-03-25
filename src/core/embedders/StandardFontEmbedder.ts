@@ -5,10 +5,11 @@ import {
   EncodingType,
 } from '@pdf-lib/standard-fonts';
 
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFContext from 'src/core/PDFContext';
-import { toCodePoint, toHexString } from 'src/utils';
+import PDFHexString from '../objects/PDFHexString';
+import PDFRef from '../objects/PDFRef';
+import PDFContext from '../PDFContext';
+import { toCodePoint, toHexString } from '../../utils';
+import { PDFClasses } from '../../api/objects';
 
 export interface Glyph {
   code: number;
@@ -21,6 +22,10 @@ export interface Glyph {
  *   https://github.com/foliojs/pdfkit/blob/f91bdd61c164a72ea06be1a43dc0a412afc3925f/lib/font/afm.coffee
  */
 class StandardFontEmbedder {
+  static className = () => PDFClasses.StandardFontEmbedder;
+  myClass(): PDFClasses {
+    return PDFClasses.StandardFontEmbedder;
+  }
   static for = (fontName: FontNames, customName?: string) =>
     new StandardFontEmbedder(fontName, customName);
 
@@ -121,7 +126,12 @@ class StandardFontEmbedder {
     const glyphs: Glyph[] = new Array(codePoints.length);
     for (let idx = 0, len = codePoints.length; idx < len; idx++) {
       const codePoint = toCodePoint(codePoints[idx])!;
-      glyphs[idx] = this.encoding.encodeUnicodeCodePoint(codePoint);
+      try {
+        glyphs[idx] = this.encoding.encodeUnicodeCodePoint(codePoint);
+      } catch (error) {
+        // Replace non-WinAnsi characters with a placeholder
+        glyphs[idx] = this.encoding.encodeUnicodeCodePoint(toCodePoint('?')!);
+      }
     }
     return glyphs;
   }

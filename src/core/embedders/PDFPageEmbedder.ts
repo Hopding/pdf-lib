@@ -1,19 +1,20 @@
 import {
   MissingPageContentsEmbeddingError,
   UnrecognizedStreamTypeError,
-} from 'src/core/errors';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFContext from 'src/core/PDFContext';
-import { decodePDFRawStream } from 'src/core/streams/decode';
-import PDFContentStream from 'src/core/structures/PDFContentStream';
-import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
-import CharCodes from 'src/core/syntax/CharCodes';
-import { TransformationMatrix } from 'src/types/matrix';
-import { mergeIntoTypedArray } from 'src/utils';
+} from '../errors';
+import PDFArray from '../objects/PDFArray';
+import PDFNumber from '../objects/PDFNumber';
+import PDFRawStream from '../objects/PDFRawStream';
+import PDFRef from '../objects/PDFRef';
+import PDFStream from '../objects/PDFStream';
+import PDFContext from '../PDFContext';
+import { decodePDFRawStream } from '../streams/decode';
+import PDFContentStream from '../structures/PDFContentStream';
+import PDFPageLeaf from '../structures/PDFPageLeaf';
+import CharCodes from '../syntax/CharCodes';
+import { TransformationMatrix } from '../../types/matrix';
+import { mergeIntoTypedArray } from '../../utils';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 /**
  * Represents a page bounding box.
@@ -40,15 +41,17 @@ export interface PageBoundingBox {
 const fullPageBoundingBox = (page: PDFPageLeaf) => {
   const mediaBox = page.MediaBox();
 
-  const width =
-    mediaBox.lookup(2, PDFNumber).asNumber() -
-    mediaBox.lookup(0, PDFNumber).asNumber();
+  const x0 = mediaBox.lookup(0, PDFNumber).asNumber();
+  const y0 = mediaBox.lookup(1, PDFNumber).asNumber();
+  const x1 = mediaBox.lookup(2, PDFNumber).asNumber();
+  const y1 = mediaBox.lookup(3, PDFNumber).asNumber();
 
-  const height =
-    mediaBox.lookup(3, PDFNumber).asNumber() -
-    mediaBox.lookup(1, PDFNumber).asNumber();
-
-  return { left: 0, bottom: 0, right: width, top: height };
+  return {
+    left: Math.min(x0, x1),
+    bottom: Math.min(y0, y1),
+    right: Math.max(x0, x1),
+    top: Math.max(y0, y1),
+  };
 };
 
 // Returns the identity matrix, modified to position the content of the given
@@ -123,10 +126,10 @@ class PDFPageEmbedder {
       const stream = contents.lookup(idx, PDFStream);
 
       let content: Uint8Array;
-      if (stream instanceof PDFRawStream) {
-        content = decodePDFRawStream(stream).decode();
-      } else if (stream instanceof PDFContentStream) {
-        content = stream.getUnencodedContents();
+      if (isPDFInstance(stream, PDFClasses.PDFRawStream)) {
+        content = decodePDFRawStream(stream as PDFRawStream).decode();
+      } else if (isPDFInstance(stream, PDFClasses.PDFContentStream)) {
+        content = (stream as PDFContentStream).getUnencodedContents();
       } else {
         throw new UnrecognizedStreamTypeError(stream);
       }

@@ -960,10 +960,10 @@
   dependencies:
     pako "^1.0.6"
 
-"@pdf-lib/upng@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@pdf-lib/upng/-/upng-1.0.1.tgz#7dc9c636271aca007a9df4deaf2dd7e7960280cb"
-  integrity sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==
+"@adnsistemas/upng@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/@adnsistemas/upng/-/upng-1.0.3.tgz"
+  integrity sha512-NFvcGsilB79BxXtGKT+oRjzG4Ksr4Dg4t00x//PQgiE4PtRmyA9vWCRdCNhMVmWXHkuimcC5mkyqvsbHiUJufA==
   dependencies:
     pako "^1.0.10"
 
@@ -4888,7 +4888,7 @@ pdf-lib@./../..:
   version "1.17.1"
   dependencies:
     "@pdf-lib/standard-fonts" "^1.0.0"
-    "@pdf-lib/upng" "^1.0.1"
+    "@adnsistemas/upng" "^1.0.3"
     pako "^1.0.11"
     tslib "^1.11.1"
 

@@ -1,4 +1,4 @@
-import { Color, rgb } from 'src/api/colors';
+import { Color, rgb } from './colors';
 import {
   drawImage,
   drawLine,
@@ -7,18 +7,20 @@ import {
   drawRectangle,
   drawSvgPath,
   drawEllipse,
-} from 'src/api/operations';
+} from './operations';
 import {
   popGraphicsState,
   pushGraphicsState,
   translate,
   LineCapStyle,
   scale,
-} from 'src/api/operators';
-import PDFDocument from 'src/api/PDFDocument';
-import PDFEmbeddedPage from 'src/api/PDFEmbeddedPage';
-import PDFFont from 'src/api/PDFFont';
-import PDFImage from 'src/api/PDFImage';
+  FillRule,
+} from './operators';
+import PDFDocument from './PDFDocument';
+import PDFEmbeddedPage from './PDFEmbeddedPage';
+import PDFFont from './PDFFont';
+import PDFImage from './PDFImage';
+import PDFSvg from './PDFSvg';
 import {
   PDFPageDrawCircleOptions,
   PDFPageDrawEllipseOptions,
@@ -30,9 +32,10 @@ import {
   PDFPageDrawSVGOptions,
   PDFPageDrawTextOptions,
   BlendMode,
-} from 'src/api/PDFPageOptions';
-import { degrees, Rotation, toDegrees } from 'src/api/rotations';
-import { StandardFonts } from 'src/api/StandardFonts';
+  PDFPageDrawSVGElementOptions,
+} from './PDFPageOptions';
+import { degrees, Rotation, toDegrees } from './rotations';
+import { StandardFonts } from './StandardFonts';
 import {
   PDFContentStream,
   PDFHexString,
@@ -42,7 +45,7 @@ import {
   PDFRef,
   PDFDict,
   PDFArray,
-} from 'src/core';
+} from '../core';
 import {
   assertEachIs,
   assertIs,
@@ -54,7 +57,9 @@ import {
   lineSplit,
   assertRangeOrUndefined,
   assertIsOneOfOrUndefined,
-} from 'src/utils';
+} from '../utils';
+import { drawSvg } from './svg';
+import { isPDFInstance, PDFClasses } from './objects';
 
 /**
  * Represents a single page of a [[PDFDocument]].
@@ -648,7 +653,8 @@ export default class PDFPage {
 
     for (let idx = 0; idx < annots.size(); idx++) {
       const annot = annots.lookup(idx);
-      if (annot instanceof PDFDict) this.scaleAnnot(annot, x, y);
+      if (isPDFInstance(annot, PDFClasses.PDFDict))
+        this.scaleAnnot(annot as PDFDict, x, y);
     }
   }
 
@@ -977,6 +983,11 @@ export default class PDFPage {
     assertOrUndefined(options.maxWidth, 'options.maxWidth', ['number']);
     assertOrUndefined(options.wordBreaks, 'options.wordBreaks', [Array]);
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
+    assertOrUndefined(options.strokeColor, 'options.strokeColor', [
+      [Object, 'Color'],
+    ]);
+    assertOrUndefined(options.strokeWidth, 'options.strokeWidth', ['number']);
+    assertOrUndefined(options.renderMode, 'options.renderMode', ['number']);
 
     const { oldFont, newFont, newFontKey } = this.setOrEmbedFont(options.font);
     const fontSize = options.size || this.fontSize;
@@ -1011,6 +1022,11 @@ export default class PDFPage {
         y: options.y ?? this.y,
         lineHeight: options.lineHeight ?? this.lineHeight,
         graphicsState: graphicsStateKey,
+        matrix: options.matrix,
+        clipSpaces: options.clipSpaces,
+        strokeColor: options.strokeColor,
+        strokeWidth: options.strokeWidth,
+        renderMode: options.renderMode,
       }),
     );
 
@@ -1076,6 +1092,8 @@ export default class PDFPage {
         xSkew: options.xSkew ?? degrees(0),
         ySkew: options.ySkew ?? degrees(0),
         graphicsState: graphicsStateKey,
+        matrix: options.matrix,
+        clipSpaces: options.clipSpaces,
       }),
     );
   }
@@ -1144,16 +1162,16 @@ export default class PDFPage {
 
     // prettier-ignore
     const xScale = (
-        options.width  !== undefined ? options.width / embeddedPage.width
-      : options.xScale !== undefined ? options.xScale
-      : 1
+      options.width !== undefined ? options.width / embeddedPage.width
+        : options.xScale !== undefined ? options.xScale
+          : 1
     );
 
     // prettier-ignore
     const yScale = (
-        options.height !== undefined ? options.height / embeddedPage.height
-      : options.yScale !== undefined ? options.yScale
-      : 1
+      options.height !== undefined ? options.height / embeddedPage.height
+        : options.yScale !== undefined ? options.yScale
+          : 1
     );
 
     const contentStream = this.getContentStream();
@@ -1238,6 +1256,7 @@ export default class PDFPage {
       1,
     );
     assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
+    assertIsOneOfOrUndefined(options.fillRule, 'options.fillRule', FillRule);
 
     const graphicsStateKey = this.maybeEmbedGraphicsState({
       opacity: options.opacity,
@@ -1258,11 +1277,14 @@ export default class PDFPage {
         rotate: options.rotate ?? degrees(0),
         color: options.color ?? undefined,
         borderColor: options.borderColor ?? undefined,
-        borderWidth: options.borderWidth ?? 0,
+        borderWidth: options.borderWidth ?? 1,
         borderDashArray: options.borderDashArray ?? undefined,
         borderDashPhase: options.borderDashPhase ?? undefined,
         borderLineCap: options.borderLineCap ?? undefined,
         graphicsState: graphicsStateKey,
+        fillRule: options.fillRule,
+        matrix: options.matrix,
+        clipSpaces: options.clipSpaces,
       }),
     );
   }
@@ -1321,6 +1343,8 @@ export default class PDFPage {
         dashPhase: options.dashPhase ?? undefined,
         lineCap: options.lineCap ?? undefined,
         graphicsState: graphicsStateKey,
+        matrix: options.matrix,
+        clipSpaces: options.clipSpaces,
       }),
     );
   }
@@ -1333,6 +1357,8 @@ export default class PDFPage {
    * page.drawRectangle({
    *   x: 25,
    *   y: 75,
+   *   rx: 5, // This is the border radius
+   *   ry: 5,
    *   width: 250,
    *   height: 75,
    *   rotate: degrees(-15),
@@ -1355,7 +1381,9 @@ export default class PDFPage {
     assertOrUndefined(options.ySkew, 'options.ySkew', [[Object, 'Rotation']]);
     assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
     assertOrUndefined(options.color, 'options.color', [[Object, 'Color']]);
-    assertRangeOrUndefined(options.opacity, 'opacity.opacity', 0, 1);
+    assertRangeOrUndefined(options.opacity, 'options.opacity', 0, 1);
+    assertOrUndefined(options.rx, 'options.rx', ['number']);
+    assertOrUndefined(options.ry, 'options.ry', ['number']);
     assertOrUndefined(options.borderColor, 'options.borderColor', [
       [Object, 'Color'],
     ]);
@@ -1400,11 +1428,15 @@ export default class PDFPage {
         ySkew: options.ySkew ?? degrees(0),
         borderWidth: options.borderWidth ?? 0,
         color: options.color ?? undefined,
+        rx: options.rx ?? 0,
+        ry: options.ry ?? 0,
         borderColor: options.borderColor ?? undefined,
         borderDashArray: options.borderDashArray ?? undefined,
         borderDashPhase: options.borderDashPhase ?? undefined,
         graphicsState: graphicsStateKey,
         borderLineCap: options.borderLineCap ?? undefined,
+        matrix: options.matrix,
+        clipSpaces: options.clipSpaces,
       }),
     );
   }
@@ -1508,6 +1540,8 @@ export default class PDFPage {
         borderDashPhase: options.borderDashPhase ?? undefined,
         borderLineCap: options.borderLineCap ?? undefined,
         graphicsState: graphicsStateKey,
+        matrix: options.matrix,
+        clipSpaces: options.clipSpaces,
       }),
     );
   }
@@ -1549,7 +1583,48 @@ export default class PDFPage {
     return { oldFont, oldFontKey, newFont, newFontKey };
   }
 
-  private getFont(): [PDFFont, PDFName] {
+  /**
+   * Draw an SVG on this page. For example:
+   * ```js
+   * const svg = '<svg><path d="M 0,20 L 100,160 Q 130,200 150,120 C 190,-40 200,200 300,150 L 400,90"></path></svg>'
+   *
+   * // Draw svg
+   * page.drawSvg(svg, { x: 25, y: 75 })
+   * ```
+   *
+   * If the svg contains images, you must call embedSvg from the document that contains that page first:
+   * ```js
+   * const svg = '<svg><image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="/></svg>'
+   *
+   * // Draw svg
+   * const pdfSvg = await pdfDoc.embedSvg(svg)
+   * page.drawSvg(pdfSvg, { x: 25, y: 75 })
+   * ```
+   * @param svg The SVG to be drawn.
+   * @param options The options to be used when drawing the SVG.
+   */
+  drawSvg(
+    svg: PDFSvg | string,
+    options: PDFPageDrawSVGElementOptions = {},
+  ): void {
+    assertIs(svg, 'svg', ['string', [PDFSvg, 'PDFSvg']]);
+    assertOrUndefined(options.x, 'options.x', ['number']);
+    assertOrUndefined(options.y, 'options.y', ['number']);
+    assertOrUndefined(options.width, 'options.width', ['number']);
+    assertOrUndefined(options.height, 'options.height', ['number']);
+    assertIsOneOfOrUndefined(options.blendMode, 'options.blendMode', BlendMode);
+
+    drawSvg(this, svg, {
+      x: options.x ?? this.x,
+      y: options.y ?? this.y,
+      fonts: options.fonts,
+      width: options.width,
+      height: options.height,
+      blendMode: options.blendMode,
+    });
+  }
+
+  getFont(): [PDFFont, PDFName] {
     if (!this.font || !this.fontKey) {
       const font = this.doc.embedStandardFont(StandardFonts.Helvetica);
       this.setFont(font);
@@ -1607,14 +1682,16 @@ export default class PDFPage {
     const selectors = ['RD', 'CL', 'Vertices', 'QuadPoints', 'L', 'Rect'];
     for (let idx = 0, len = selectors.length; idx < len; idx++) {
       const list = annot.lookup(PDFName.of(selectors[idx]));
-      if (list instanceof PDFArray) list.scalePDFNumbers(x, y);
+      if (isPDFInstance(list, PDFClasses.PDFArray))
+        (list as PDFArray).scalePDFNumbers(x, y);
     }
 
     const inkLists = annot.lookup(PDFName.of('InkList'));
-    if (inkLists instanceof PDFArray) {
-      for (let idx = 0, len = inkLists.size(); idx < len; idx++) {
-        const arr = inkLists.lookup(idx);
-        if (arr instanceof PDFArray) arr.scalePDFNumbers(x, y);
+    if (isPDFInstance(inkLists, PDFClasses.PDFArray)) {
+      for (let idx = 0, len = (inkLists as PDFArray).size(); idx < len; idx++) {
+        const arr = (inkLists as PDFArray).lookup(idx);
+        if (isPDFInstance(arr, PDFClasses.PDFArray))
+          (arr as PDFArray).scalePDFNumbers(x, y);
       }
     }
   }

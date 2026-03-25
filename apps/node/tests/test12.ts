@@ -148,7 +148,7 @@ const thirdPage = async (pdfDoc: PDFDocument, assets: Assets) => {
     blendMode: BlendMode.Normal,
   });
 
-  page.drawText(`pdf-lib Blend Mode Test`, {
+  page.drawText('pdf-lib Blend Mode Test', {
     size: 24,
     x: 45,
     y: 735,

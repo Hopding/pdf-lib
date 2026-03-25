@@ -23,5 +23,6 @@
     "preserveSymlinks": true,
     "moduleResolution": "node"
   },
-  "include": ["./**/*"]
+  "include": ["./**/*"],
+  "exclude": ["tests", "node_modules"]
 }

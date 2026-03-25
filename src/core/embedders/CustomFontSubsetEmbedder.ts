@@ -1,8 +1,14 @@
-import { Font, Fontkit, Glyph, Subset, TypeFeatures } from 'src/types/fontkit';
+import {
+  Font,
+  Fontkit,
+  Glyph,
+  Subset,
+  TypeFeatures,
+} from '../../types/fontkit';
 
-import CustomFontEmbedder from 'src/core/embedders/CustomFontEmbedder';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import { Cache, mergeUint8Arrays, toHexStringOfMinLength } from 'src/utils';
+import CustomFontEmbedder from './CustomFontEmbedder';
+import PDFHexString from '../objects/PDFHexString';
+import { Cache, mergeUint8Arrays, toHexStringOfMinLength } from '../../utils';
 
 /**
  * A note of thanks to the developers of https://github.com/foliojs/pdfkit, as

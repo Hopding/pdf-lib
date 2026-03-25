@@ -1,6 +1,6 @@
-import { PageSizes, PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, rgb } from 'pdf-lib';
 
-import { fetchAsset, writePdf } from './assets';
+import { fetchAsset } from './assets';
 
 // prettier-ignore
 const pngSuite = [
@@ -55,7 +55,7 @@ export default async () => {
   const solarizedWhite = rgb(253 / 255, 246 / 255, 227 / 255);
   page.drawRectangle({ ...page.getSize(), color: solarizedWhite });
 
-  const etwePng = await fetchAsset(`images/etwe.png`);
+  const etwePng = await fetchAsset('images/etwe.png');
   const etweImg = await pdfDoc.embedPng(etwePng);
   page.drawImage(etweImg, {
     x: 25,
@@ -63,7 +63,7 @@ export default async () => {
     ...etweImg.scale(0.2),
   });
 
-  const selfDrivePng = await fetchAsset(`images/self_drive.png`);
+  const selfDrivePng = await fetchAsset('images/self_drive.png');
   const selfDriveImg = await pdfDoc.embedPng(selfDrivePng);
   page.drawImage(selfDriveImg, {
     x: page.getWidth() / 2,

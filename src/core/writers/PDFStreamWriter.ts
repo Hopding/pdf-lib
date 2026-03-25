@@ -1,18 +1,24 @@
-import PDFHeader from 'src/core/document/PDFHeader';
-import PDFTrailer from 'src/core/document/PDFTrailer';
-import PDFInvalidObject from 'src/core/objects/PDFInvalidObject';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFContext from 'src/core/PDFContext';
-import PDFCrossRefStream from 'src/core/structures/PDFCrossRefStream';
-import PDFObjectStream from 'src/core/structures/PDFObjectStream';
-import PDFWriter from 'src/core/writers/PDFWriter';
-import { last, waitForTick } from 'src/utils';
+import { defaultDocumentSnapshot } from '../../api/snapshot';
+import type { DocumentSnapshot } from '../../api/snapshot';
+import PDFHeader from '../document/PDFHeader';
+import PDFTrailer from '../document/PDFTrailer';
+import PDFName from '../objects/PDFName';
+import PDFNumber from '../objects/PDFNumber';
+import PDFObject from '../objects/PDFObject';
+import PDFRef from '../objects/PDFRef';
+import PDFContext from '../PDFContext';
+import PDFCrossRefStream from '../structures/PDFCrossRefStream';
+import PDFObjectStream from '../structures/PDFObjectStream';
+import PDFWriter from '../writers/PDFWriter';
+import { last, waitForTick } from '../../utils';
+import PDFDict from '../objects/PDFDict';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 class PDFStreamWriter extends PDFWriter {
+  static className = () => PDFClasses.PDFStreamWriter;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFStreamWriter;
+  }
   static forContext = (
     context: PDFContext,
     objectsPerTick: number,
@@ -22,6 +28,22 @@ class PDFStreamWriter extends PDFWriter {
     new PDFStreamWriter(
       context,
       objectsPerTick,
+      defaultDocumentSnapshot,
+      encodeStreams,
+      objectsPerStream,
+    );
+
+  static forContextWithSnapshot = (
+    context: PDFContext,
+    objectsPerTick: number,
+    snapshot: DocumentSnapshot,
+    encodeStreams = true,
+    objectsPerStream = 50,
+  ) =>
+    new PDFStreamWriter(
+      context,
+      objectsPerTick,
+      snapshot,
       encodeStreams,
       objectsPerStream,
     );
@@ -32,21 +54,27 @@ class PDFStreamWriter extends PDFWriter {
   private constructor(
     context: PDFContext,
     objectsPerTick: number,
+    snapshot: DocumentSnapshot,
     encodeStreams: boolean,
     objectsPerStream: number,
   ) {
-    super(context, objectsPerTick);
+    super(context, objectsPerTick, snapshot);
 
     this.encodeStreams = encodeStreams;
     this.objectsPerStream = objectsPerStream;
   }
 
-  protected async computeBufferSize() {
-    let objectNumber = this.context.largestObjectNumber + 1;
-
+  // the process of saving uses references numbers, and creates a new indirect object, that has to be deleted after saving
+  private _refToDeleteAfterSave = 0;
+  protected async computeBufferSize(incremental: boolean) {
+    this._refToDeleteAfterSave = 0;
     const header = PDFHeader.forVersion(1, 7);
 
-    let size = header.sizeInBytes() + 2;
+    let size = this.snapshot.pdfSize;
+    if (!incremental) {
+      size += header.sizeInBytes() + 1;
+    }
+    size += 1;
 
     const xrefStream = PDFCrossRefStream.create(
       this.createTrailerDict(),
@@ -57,19 +85,30 @@ class PDFStreamWriter extends PDFWriter {
     const compressedObjects: [PDFRef, PDFObject][][] = [];
     const objectStreamRefs: PDFRef[] = [];
 
+    const security = this.context.security;
+
     const indirectObjects = this.context.enumerateIndirectObjects();
     for (let idx = 0, len = indirectObjects.length; idx < len; idx++) {
       const indirectObject = indirectObjects[idx];
       const [ref, object] = indirectObject;
+      if (!this.shouldSave(incremental, ref.objectNumber, indirectObjects)) {
+        continue;
+      }
 
       const shouldNotCompress =
         ref === this.context.trailerInfo.Encrypt ||
-        object instanceof PDFStream ||
-        object instanceof PDFInvalidObject ||
-        ref.generationNumber !== 0;
+        isPDFInstance(object, PDFClasses.PDFStream) ||
+        isPDFInstance(object, PDFClasses.PDFInvalidObject) ||
+        isPDFInstance(object, PDFClasses.PDFCatalog) ||
+        isPDFInstance(object, PDFClasses.PDFPageTree) ||
+        isPDFInstance(object, PDFClasses.PDFPageLeaf) ||
+        ref.generationNumber !== 0 ||
+        (isPDFInstance(object, PDFClasses.PDFDict) &&
+          (object as PDFDict).lookup(PDFName.of('Type')) === PDFName.of('Sig'));
 
       if (shouldNotCompress) {
         uncompressedObjects.push(indirectObject);
+        if (security) this.encrypt(ref, object, security);
         xrefStream.addUncompressedEntry(ref, size);
         size += this.computeIndirectObjectSize(indirectObject);
         if (this.shouldWaitForTick(1)) await waitForTick();
@@ -79,7 +118,8 @@ class PDFStreamWriter extends PDFWriter {
         if (!chunk || chunk.length % this.objectsPerStream === 0) {
           chunk = [];
           compressedObjects.push(chunk);
-          objectStreamRef = PDFRef.of(objectNumber++);
+          objectStreamRef = this.context.nextRef();
+          this._refToDeleteAfterSave += 1;
           objectStreamRefs.push(objectStreamRef);
         }
         xrefStream.addCompressedEntry(ref, objectStreamRef, chunk.length);
@@ -96,6 +136,9 @@ class PDFStreamWriter extends PDFWriter {
         chunk,
         this.encodeStreams,
       );
+      this.context.assign(ref, objectStream);
+
+      if (security) this.encrypt(ref, objectStream, security);
 
       xrefStream.addUncompressedEntry(ref, size);
       size += this.computeIndirectObjectSize([ref, objectStream]);
@@ -105,8 +148,18 @@ class PDFStreamWriter extends PDFWriter {
       if (this.shouldWaitForTick(chunk.length)) await waitForTick();
     }
 
-    const xrefStreamRef = PDFRef.of(objectNumber++);
-    xrefStream.dict.set(PDFName.of('Size'), PDFNumber.of(objectNumber));
+    const xrefStreamRef = this.context.nextRef();
+    this._refToDeleteAfterSave += 1;
+    xrefStream.dict.set(
+      PDFName.of('Size'),
+      PDFNumber.of(this.context.largestObjectNumber + 1),
+    );
+    if (this.snapshot.prevStartXRef) {
+      xrefStream.dict.set(
+        PDFName.of('Prev'),
+        PDFNumber.of(this.snapshot.prevStartXRef),
+      );
+    }
     xrefStream.addUncompressedEntry(xrefStreamRef, size);
     const xrefOffset = size;
     size += this.computeIndirectObjectSize([xrefStreamRef, xrefStream]);
@@ -115,8 +168,18 @@ class PDFStreamWriter extends PDFWriter {
 
     const trailer = PDFTrailer.forLastCrossRefSectionOffset(xrefOffset);
     size += trailer.sizeInBytes();
+    size -= this.snapshot.pdfSize;
 
     return { size, header, indirectObjects: uncompressedObjects, trailer };
+  }
+
+  override async serializeToBuffer(): Promise<Uint8Array> {
+    const buffer = await super.serializeToBuffer();
+    // delete xref stream created for saving
+    this.context.delete(PDFRef.of(this.context.largestObjectNumber - 1));
+    // fix largestObjectNumbering
+    this.context.largestObjectNumber -= this._refToDeleteAfterSave;
+    return buffer;
   }
 }
 

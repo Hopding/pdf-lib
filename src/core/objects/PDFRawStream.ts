@@ -1,17 +1,32 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFContext from 'src/core/PDFContext';
-import { arrayAsString } from 'src/utils';
+import PDFDict from './PDFDict';
+import PDFStream from './PDFStream';
+import PDFContext from '../PDFContext';
+import { arrayAsString } from '../../utils';
+import { CipherTransform } from '../crypto';
+import { PDFClasses } from '../../api/objects';
 
 class PDFRawStream extends PDFStream {
-  static of = (dict: PDFDict, contents: Uint8Array) =>
-    new PDFRawStream(dict, contents);
+  static className = () => PDFClasses.PDFRawStream;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFRawStream;
+  }
+  static of = (
+    dict: PDFDict,
+    contents: Uint8Array,
+    transform?: CipherTransform,
+  ) => new PDFRawStream(dict, contents, transform);
 
-  readonly contents: Uint8Array;
+  contents: Uint8Array;
+  readonly transform?: CipherTransform;
 
-  private constructor(dict: PDFDict, contents: Uint8Array) {
+  private constructor(
+    dict: PDFDict,
+    contents: Uint8Array,
+    transform?: CipherTransform,
+  ) {
     super(dict);
     this.contents = contents;
+    this.transform = transform;
   }
 
   asUint8Array(): Uint8Array {
@@ -32,6 +47,11 @@ class PDFRawStream extends PDFStream {
 
   getContentsSize(): number {
     return this.contents.length;
+  }
+
+  updateContents(contents: Uint8Array): void {
+    this.dict.registerChange();
+    this.contents = contents;
   }
 }
 

@@ -1,9 +1,10 @@
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFNumber from 'src/core/objects/PDFNumber';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFStream from '../objects/PDFStream';
+import PDFArray from '../objects/PDFArray';
+import PDFRef from '../objects/PDFRef';
+import PDFNumber from '../objects/PDFNumber';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 class PDFAnnotation {
   readonly dict: PDFDict;
@@ -41,7 +42,7 @@ class PDFAnnotation {
 
   getAppearanceState(): PDFName | undefined {
     const AS = this.dict.lookup(PDFName.of('AS'));
-    if (AS instanceof PDFName) return AS;
+    if (isPDFInstance(AS, PDFClasses.PDFName)) return AS as PDFName;
     return undefined;
   }
 
@@ -65,7 +66,11 @@ class PDFAnnotation {
   getNormalAppearance(): PDFRef | PDFDict {
     const AP = this.ensureAP();
     const N = AP.get(PDFName.of('N'));
-    if (N instanceof PDFRef || N instanceof PDFDict) return N;
+    if (
+      isPDFInstance(N, PDFClasses.PDFRef) ||
+      isPDFInstance(N, PDFClasses.PDFDict)
+    )
+      return N as PDFRef | PDFDict;
 
     throw new Error(`Unexpected N type: ${N?.constructor.name}`);
   }

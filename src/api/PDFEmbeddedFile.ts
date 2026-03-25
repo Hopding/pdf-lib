@@ -1,7 +1,7 @@
-import Embeddable from 'src/api/Embeddable';
-import PDFDocument from 'src/api/PDFDocument';
-import FileEmbedder from 'src/core/embedders/FileEmbedder';
-import { PDFName, PDFArray, PDFDict, PDFHexString, PDFRef } from 'src/core';
+import Embeddable from './Embeddable';
+import PDFDocument from './PDFDocument';
+import FileEmbedder from '../core/embedders/FileEmbedder';
+import { PDFName, PDFArray, PDFDict, PDFHexString, PDFRef } from '../core';
 
 /**
  * Represents a file that has been embedded in a [[PDFDocument]].
@@ -86,5 +86,25 @@ export default class PDFEmbeddedFile implements Embeddable {
 
       this.alreadyEmbedded = true;
     }
+  }
+
+  /**
+   * Get the embedder used to embed the file.
+   * @returns the embedder.
+   */
+  getEmbedder() {
+    return this.embedder;
+  }
+
+  /**
+   * Returns whether or not this file has already been embedded.
+   * @returns true if the file has already been embedded, false otherwise.
+   */
+  getAlreadyEmbedded() {
+    return this.alreadyEmbedded;
+  }
+
+  getRef() {
+    return this.ref;
   }
 }

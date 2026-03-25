@@ -1,4 +1,4 @@
-import { toHexString } from 'src/utils/strings';
+import { toHexString } from './strings';
 
 /**
  * Encodes a string to UTF-8.

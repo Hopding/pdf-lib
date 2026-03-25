@@ -1,24 +1,29 @@
 import pako from 'pako';
+import type { DocumentSnapshot } from '../api/snapshot/DocumentSnapshot';
+import { isPDFInstance, PDFClasses } from '../api/objects';
 
-import PDFHeader from 'src/core/document/PDFHeader';
-import { UnexpectedObjectTypeError } from 'src/core/errors';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFBool from 'src/core/objects/PDFBool';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNull from 'src/core/objects/PDFNull';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFString from 'src/core/objects/PDFString';
-import PDFOperator from 'src/core/operators/PDFOperator';
-import Ops from 'src/core/operators/PDFOperatorNames';
-import PDFContentStream from 'src/core/structures/PDFContentStream';
-import { typedArrayFor } from 'src/utils';
-import { SimpleRNG } from 'src/utils/rng';
+import PDFHeader from './document/PDFHeader';
+import { UnexpectedObjectTypeError } from './errors';
+import PDFArray from './objects/PDFArray';
+import PDFBool from './objects/PDFBool';
+import PDFDict from './objects/PDFDict';
+import PDFHexString from './objects/PDFHexString';
+import PDFName from './objects/PDFName';
+import PDFNull from './objects/PDFNull';
+import PDFNumber from './objects/PDFNumber';
+import PDFObject from './objects/PDFObject';
+import PDFRawStream from './objects/PDFRawStream';
+import PDFRef from './objects/PDFRef';
+import PDFStream from './objects/PDFStream';
+import PDFString from './objects/PDFString';
+import PDFOperator from './operators/PDFOperator';
+import Ops from './operators/PDFOperatorNames';
+import PDFContentStream from './structures/PDFContentStream';
+import PDFSecurity from './security/PDFSecurity';
+import { typedArrayFor } from '../utils';
+import { SimpleRNG } from '../utils/rng';
+import PDFCrossRefSection from './document/PDFCrossRefSection';
+import type { Entry } from './document/PDFCrossRefSection';
 
 type LookupKey = PDFRef | PDFObject | undefined;
 
@@ -39,40 +44,85 @@ type Literal =
   | null
   | undefined;
 
+interface LiteralConfig {
+  deep?: boolean;
+  literalRef?: boolean;
+  literalStreamDict?: boolean;
+  literalString?: boolean;
+}
+
 const byAscendingObjectNumber = (
   [a]: [PDFRef, PDFObject],
   [b]: [PDFRef, PDFObject],
 ) => a.objectNumber - b.objectNumber;
 
 class PDFContext {
-  static create = () => new PDFContext();
+  isDecrypted = true;
+  static create = (withObjectVersions: boolean = false) =>
+    new PDFContext(withObjectVersions);
 
   largestObjectNumber: number;
   header: PDFHeader;
   trailerInfo: {
+    Size?: PDFNumber;
     Root?: PDFObject;
     Encrypt?: PDFObject;
     Info?: PDFObject;
     ID?: PDFObject;
   };
   rng: SimpleRNG;
+  pdfFileDetails: {
+    pdfSize: number;
+    prevStartXRef: number;
+    useObjectStreams: boolean;
+    originalBytes?: Uint8Array;
+  };
+  snapshot?: DocumentSnapshot;
+  xrefs: PDFCrossRefSection[] = [];
+  private _preserveObjectsVersions: boolean;
+  public get preserveObjectsVersions(): boolean {
+    return this._preserveObjectsVersions;
+  }
 
-  private readonly indirectObjects: Map<PDFRef, PDFObject>;
+  security?: PDFSecurity;
+
+  private readonly indirectObjects: Map<string, [PDFRef, PDFObject]>;
+  private readonly objectsPreviousVersions: Map<string, PDFObject[]>;
 
   private pushGraphicsStateContentStreamRef?: PDFRef;
   private popGraphicsStateContentStreamRef?: PDFRef;
 
-  private constructor() {
+  private constructor(preserveObjectsVersions?: boolean) {
+    this._preserveObjectsVersions = preserveObjectsVersions
+      ? preserveObjectsVersions
+      : false;
     this.largestObjectNumber = 0;
     this.header = PDFHeader.forVersion(1, 7);
     this.trailerInfo = {};
 
     this.indirectObjects = new Map();
+    this.objectsPreviousVersions = new Map();
     this.rng = SimpleRNG.withSeed(1);
+    this.pdfFileDetails = {
+      pdfSize: 0,
+      prevStartXRef: 0,
+      useObjectStreams: false,
+    };
   }
 
   assign(ref: PDFRef, object: PDFObject): void {
-    this.indirectObjects.set(ref, object);
+    if (this.preserveObjectsVersions) {
+      const prevOV = this.indirectObjects.get(ref.toString());
+      if (prevOV) {
+        const prevList = this.objectsPreviousVersions.get(ref.toString());
+        if (!prevList) {
+          this.objectsPreviousVersions.set(ref.toString(), [prevOV[1]]);
+        } else {
+          prevList.unshift(prevOV[1]);
+        }
+      }
+    }
+    this.indirectObjects.set(ref.toString(), [ref, object]);
     if (ref.objectNumber > this.largestObjectNumber) {
       this.largestObjectNumber = ref.objectNumber;
     }
@@ -80,7 +130,9 @@ class PDFContext {
 
   nextRef(): PDFRef {
     this.largestObjectNumber += 1;
-    return PDFRef.of(this.largestObjectNumber);
+    const ref = PDFRef.of(this.largestObjectNumber);
+    if (this.snapshot) this.snapshot.markRefForSave(ref);
+    return ref;
   }
 
   register(object: PDFObject): PDFRef {
@@ -90,7 +142,20 @@ class PDFContext {
   }
 
   delete(ref: PDFRef): boolean {
-    return this.indirectObjects.delete(ref);
+    if (this.snapshot) this.snapshot.markDeletedRef(ref);
+    if (this.preserveObjectsVersions) {
+      const object = this.indirectObjects.get(ref.toString());
+      if (object) {
+        // check is not already deleted
+        const verlist = this.objectsPreviousVersions.get(ref.toString());
+        if (verlist) {
+          verlist.unshift(object[1]);
+        } else {
+          this.objectsPreviousVersions.set(ref.toString(), [object[1]]);
+        }
+      }
+    }
+    return this.indirectObjects.delete(ref.toString());
   }
 
   lookupMaybe(ref: LookupKey, type: typeof PDFArray): PDFArray | undefined;
@@ -117,17 +182,27 @@ class PDFContext {
     // removed in next breaking API change.
     const preservePDFNull = types.includes(PDFNull);
 
-    const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
-
-    if (!result || (result === PDFNull && !preservePDFNull)) return undefined;
+    let result;
+    if (isPDFInstance(ref, PDFClasses.PDFRef)) {
+      const iobj = this.indirectObjects.get((ref as PDFRef).toString());
+      result = iobj ? iobj[1] : undefined;
+    } else {
+      result = ref;
+    }
+    if (
+      !result ||
+      (isPDFInstance(result, PDFClasses.PDFNull) && !preservePDFNull)
+    )
+      return undefined;
 
     for (let idx = 0, len = types.length; idx < len; idx++) {
       const type = types[idx];
-      if (type === PDFNull) {
-        if (result === PDFNull) return result;
-      } else {
-        if (result instanceof type) return result;
-      }
+      if (
+        isPDFInstance(type, PDFClasses.PDFNull) &&
+        isPDFInstance(result, PDFClasses.PDFNull)
+      )
+        return result;
+      if (isPDFInstance(result, type)) return result;
     }
     throw new UnexpectedObjectTypeError(types, result);
   }
@@ -150,24 +225,36 @@ class PDFContext {
   ): PDFString | PDFHexString;
 
   lookup(ref: LookupKey, ...types: any[]) {
-    const result = ref instanceof PDFRef ? this.indirectObjects.get(ref) : ref;
+    let result;
+    if (isPDFInstance(ref, PDFClasses.PDFRef)) {
+      const iobj = this.indirectObjects.get((ref as PDFRef).toString());
+      result = iobj ? iobj[1] : undefined;
+    } else {
+      result = ref;
+    }
 
     if (types.length === 0) return result;
 
     for (let idx = 0, len = types.length; idx < len; idx++) {
       const type = types[idx];
-      if (type === PDFNull) {
-        if (result === PDFNull) return result;
-      } else {
-        if (result instanceof type) return result;
-      }
+      if (
+        isPDFInstance(type, PDFClasses.PDFNull) &&
+        isPDFInstance(result, PDFClasses.PDFNull)
+      )
+        return result;
+      if (isPDFInstance(result, type)) return result;
     }
 
     throw new UnexpectedObjectTypeError(types, result);
   }
 
+  getRef(pdfObject: PDFObject | PDFRef): PDFRef | undefined {
+    if (isPDFInstance(pdfObject, PDFClasses.PDFRef)) return pdfObject as PDFRef;
+    return this.getObjectRef(pdfObject);
+  }
+
   getObjectRef(pdfObject: PDFObject): PDFRef | undefined {
-    const entries = Array.from(this.indirectObjects.entries());
+    const entries = Array.from(this.indirectObjects.values());
     for (let idx = 0, len = entries.length; idx < len; idx++) {
       const [ref, object] = entries[idx];
       if (object === pdfObject) {
@@ -179,7 +266,7 @@ class PDFContext {
   }
 
   enumerateIndirectObjects(): [PDFRef, PDFObject][] {
-    return Array.from(this.indirectObjects.entries()).sort(
+    return Array.from(this.indirectObjects.values()).sort(
       byAscendingObjectNumber,
     );
   }
@@ -192,7 +279,7 @@ class PDFContext {
   obj(literal: LiteralArray): PDFArray;
 
   obj(literal: Literal) {
-    if (literal instanceof PDFObject) {
+    if (isPDFInstance(literal, PDFClasses.PDFObject)) {
       return literal;
     } else if (literal === null || literal === undefined) {
       return PDFNull;
@@ -202,6 +289,8 @@ class PDFContext {
       return PDFNumber.of(literal);
     } else if (typeof literal === 'boolean') {
       return literal ? PDFBool.True : PDFBool.False;
+    } else if (literal instanceof Uint8Array) {
+      return PDFHexString.fromBytes(literal);
     } else if (Array.isArray(literal)) {
       const array = PDFArray.withContext(this);
       for (let idx = 0, len = literal.length; idx < len; idx++) {
@@ -218,6 +307,69 @@ class PDFContext {
       }
       return dict;
     }
+  }
+
+  /*
+   * @param obj The input PDFObject to convert to a literal.
+   * @param cfg The configuration to be used when converting the object.
+   * @param cfg.deep Recursively call this function on all encountered PDFArray elements and PDFDict values.
+   * @param cfg.literalRef Also convert PDFRef to a (literal) object number.
+   * @param cfg.literalStreamDict Also convert PDFStream to its associated dictionary's (literal) representation.
+   * @param cfg.literalString Also convert PDFString and PDFHexString to a (literal) string value.
+   * @returns Resolves with a document loaded from the input.
+   */
+  getLiteral(obj: PDFArray, cfg?: LiteralConfig): LiteralArray;
+  getLiteral(obj: PDFBool, cfg?: LiteralConfig): boolean;
+  getLiteral(obj: PDFDict, cfg?: LiteralConfig): LiteralObject;
+  getLiteral(obj: PDFHexString, cfg?: LiteralConfig): PDFHexString | string;
+  getLiteral(obj: PDFName, cfg?: LiteralConfig): string;
+  getLiteral(obj: typeof PDFNull, cfg?: LiteralConfig): null;
+  getLiteral(obj: PDFNumber, cfg?: LiteralConfig): number;
+  getLiteral(obj: PDFRef, cfg?: LiteralConfig): PDFRef | number;
+  getLiteral(obj: PDFStream, cfg?: LiteralConfig): PDFStream | LiteralObject;
+  getLiteral(obj: PDFString, cfg?: LiteralConfig): PDFString | string;
+  getLiteral(obj: PDFObject, cfg?: LiteralConfig): PDFObject;
+  getLiteral(
+    obj: PDFObject,
+    {
+      deep = true,
+      literalRef = false,
+      literalStreamDict = false,
+      literalString = false,
+    }: LiteralConfig = {},
+  ): Literal | PDFObject {
+    const cfg = { deep, literalRef, literalStreamDict, literalString };
+    if (isPDFInstance(obj, PDFClasses.PDFArray)) {
+      const lit = (obj as PDFArray).asArray();
+      return deep ? lit.map((value) => this.getLiteral(value, cfg)) : lit;
+    } else if (isPDFInstance(obj, PDFClasses.PDFBool)) {
+      return (obj as PDFBool).asBoolean();
+    } else if (isPDFInstance(obj, PDFClasses.PDFDict)) {
+      const lit: LiteralObject = {};
+      const entries = (obj as PDFDict).entries();
+      for (let idx = 0, len = entries.length; idx < len; idx++) {
+        const [name, value] = entries[idx];
+        lit[this.getLiteral(name)] = deep ? this.getLiteral(value, cfg) : value;
+      }
+      return lit;
+    } else if (isPDFInstance(obj, PDFClasses.PDFName)) {
+      return (obj as PDFName).decodeText();
+    } else if (obj === PDFNull) {
+      return null;
+    } else if (isPDFInstance(obj, PDFClasses.PDFNumber)) {
+      return (obj as PDFNumber).asNumber();
+    } else if (isPDFInstance(obj, PDFClasses.PDFRef) && literalRef) {
+      return (obj as PDFRef).objectNumber;
+    } else if (isPDFInstance(obj, PDFClasses.PDFStream) && literalStreamDict) {
+      return this.getLiteral((obj as PDFStream).dict, cfg);
+    } else if (
+      (isPDFInstance(obj, PDFClasses.PDFString) ||
+        isPDFInstance(obj, PDFClasses.PDFHexString)) &&
+      literalString
+    ) {
+      return (obj as PDFString | PDFHexString).asString();
+    }
+    return obj;
   }
 
   stream(
@@ -293,6 +445,66 @@ class PDFContext {
 
   addRandomSuffix(prefix: string, suffixLength = 4): string {
     return `${prefix}-${Math.floor(this.rng.nextInt() * 10 ** suffixLength)}`;
+  }
+
+  registerObjectChange(obj: PDFObject) {
+    if (!this.snapshot) return;
+
+    const ref = this.getObjectRef(obj);
+    if (ref) {
+      this.snapshot.markRefForSave(ref);
+      return;
+    }
+
+    const containingRef = this.findContainingIndirectObject(obj);
+    if (containingRef) {
+      this.snapshot.markRefForSave(containingRef);
+    }
+  }
+
+  private findContainingIndirectObject(target: PDFObject): PDFRef | undefined {
+    const entries = Array.from(this.indirectObjects.values());
+    for (let idx = 0, len = entries.length; idx < len; idx++) {
+      const [ref, object] = entries[idx];
+      if (this.objectContains(object, target)) {
+        return ref;
+      }
+    }
+    return undefined;
+  }
+
+  private objectContains(container: PDFObject, target: PDFObject): boolean {
+    if (container === target) return true;
+
+    if (isPDFInstance(container, PDFClasses.PDFDict)) {
+      const values = (container as PDFDict).values();
+      for (let i = 0, len = values.length; i < len; i++) {
+        if (this.objectContains(values[i], target)) return true;
+      }
+    } else if (isPDFInstance(container, PDFClasses.PDFArray)) {
+      for (let i = 0, len = (container as PDFArray).size(); i < len; i++) {
+        if (this.objectContains((container as PDFArray).get(i), target))
+          return true;
+      }
+    } else if (isPDFInstance(container, PDFClasses.PDFStream)) {
+      if (this.objectContains((container as PDFStream).dict, target))
+        return true;
+    }
+
+    return false;
+  }
+
+  getObjectVersions(ref: PDFRef): PDFObject[] {
+    if (!this.preserveObjectsVersions) return [];
+    const list = this.objectsPreviousVersions.get(ref.toString());
+    if (list) return list;
+    return [];
+  }
+
+  listXrefEntries(xrefIndex: number = -1): Entry[] {
+    if (xrefIndex < 0) xrefIndex = this.xrefs.length - 1;
+    if (xrefIndex < 0 || xrefIndex >= this.xrefs.length) return [];
+    return this.xrefs[xrefIndex].listRefs();
   }
 }
 

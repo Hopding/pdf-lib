@@ -1,6 +1,11 @@
-import PDFObject from 'src/core/objects/PDFObject';
+import { PDFClasses } from '../../api/objects';
+import PDFObject from './PDFObject';
 
 class PDFInvalidObject extends PDFObject {
+  static className = () => PDFClasses.PDFInvalidObject;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFInvalidObject;
+  }
   static of = (data: Uint8Array) => new PDFInvalidObject(data);
 
   private readonly data: Uint8Array;

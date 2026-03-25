@@ -1,3 +1,11 @@
+## Forked by [ADNSistemas](https://adnsistemas.com.ar)
+
+This fork was initially made to improve REMDRAs incremental update implementation, and was later merge with Cantoo-Scribe fork of pdf-lib, which has a number of improvements over original pdf-lib.
+
+Install with: `npm install @adnsistemas/pdf-lib`
+
+<hr/>
+
 <a href="https://pdf-lib.js.org">
 <h1 align="center">
 <img alt="pdf-lib" height="300" src="https://raw.githubusercontent.com/Hopding/pdf-lib-docs/master/assets/logo-full.svg?sanitize=true">
@@ -15,17 +23,10 @@
 
 <div align="center">
   <!-- NPM Version -->
-  <a href="https://www.npmjs.com/package/pdf-lib">
+  <a href="https://www.npmjs.com/package/@adnsistemas/pdf-lib">
     <img
-      src="https://img.shields.io/npm/v/pdf-lib.svg?style=flat-square"
+      src="https://img.shields.io/npm/v/@adnsistemas/pdf-lib.svg?style=flat-square"
       alt="NPM Version"
-    />
-  </a>
-  <!-- Build Status -->
-  <a href="https://circleci.com/gh/Hopding/pdf-lib">
-    <img
-      src="https://img.shields.io/circleci/project/github/Hopding/pdf-lib/master.svg?style=flat-square&label=CircleCI"
-      alt="CircleCI Build Status"
     />
   </a>
   <!-- Prettier Badge -->
@@ -35,13 +36,8 @@
       alt="Prettier Badge"
     />
   </a>
-  <!-- Discord Badge -->
-  <a href="https://discord.gg/Y7uuVMc">
-    <img
-      src="https://img.shields.io/static/v1?label=discord&message=pdf-lib&color=566fbb&style=flat-square"
-      alt="Discord Badge"
-    />
-  </a>
+  <!-- Coverall Badge -->
+  <a href='https://coveralls.io/github/adnsistemas/pdf-lib?branch=master'><img src='https://coveralls.io/repos/github/adnsistemas/pdf-lib/badge.svg?branch=master' alt='Coverage Status' /></a>
 </div>
 
 <br />
@@ -50,11 +46,15 @@
 
 ## Table of Contents
 
+- [Important Changes](#changes)
 - [Features](#features)
 - [Motivation](#motivation)
 - [Usage Examples](#usage-examples)
   - [Create Document](#create-document)
   - [Modify Document](#modify-document)
+  - [Incremental Document Modification](#incremental-document-modification)
+  - [Consecutive Incremental Updates](#consecutive-incremental-updates)
+  - [Get Incremental Update Changed Objects](#get-modified-objects-in-incremental-update)
   - [Create Form](#create-form)
   - [Fill Form](#fill-form)
   - [Flatten Form](#flatten-form)
@@ -63,11 +63,13 @@
   - [Embed PDF Pages](#embed-pdf-pages)
   - [Embed Font and Measure Text](#embed-font-and-measure-text)
   - [Add Attachments](#add-attachments)
+  - [Extract Attachments](#extract-attachments)
   - [Set Document Metadata](#set-document-metadata)
   - [Read Document Metadata](#read-document-metadata)
   - [Set Viewer Preferences](#set-viewer-preferences)
   - [Read Viewer Preferences](#read-viewer-preferences)
   - [Draw SVG Paths](#draw-svg-paths)
+  - [Draw SVG](#draw-svg)
 - [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
@@ -85,10 +87,15 @@
 - [Git History Rewrite](#git-history-rewrite)
 - [License](#license)
 
+## Changes
+
+- 2026-03-24: version 2.9.0 replaced the use of ```instanceof``` by the function ```isPDFInstance()``` which allows the library to properly function in complex environments where code comes from more than a single pdf-lib package (issue detected on monorepos using Vertest). This makes the library more flexible, but slower than previous versions.
+
 ## Features
 
 - Create new PDFs
 - Modify existing PDFs
+- Modify existing PDFs with incremental updates (preserves original PDF, required for electronic/digital signatures)
 - Create forms
 - Fill forms
 - Flatten forms
@@ -108,6 +115,9 @@
 - Set viewer preferences
 - Read viewer preferences
 - Add attachments
+- Extract attachments
+- Delete attachments
+- Get PDFObjects modified in a specific update of the PDF (used to check for changes between electronic/digital signatures)
 
 ## Motivation
 
@@ -211,6 +221,296 @@ const pdfBytes = await pdfDoc.save()
 //   • Downloaded from the browser
 //   • Rendered in an <iframe>
 ```
+
+
+### Incremental Document Modification
+
+You can load a PDF for incremental update, generating the original document plus the increment, on save. You can also handle incremental update manually.
+The incremental modification saving is designed to be used for pdf signing. The signature is added to an existing page, then only the 'incremental' PDF is generated and concatenated to the initial version.
+
+_This example produces [this PDF](assets/pdfs/examples/incremental_document_modification.pdf)_ (when [this PDF](assets/pdfs/simple.pdf) is used for the `existingPdfBytes` variable).
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts } from 'pdf-lib';
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const existingPdfBytes = ...
+
+// Load a PDFDocument from the existing PDF bytes
+const pdfDoc = await PDFDocument.load(existingPdfBytes)
+
+// Take a snapshot of the document
+const snapshot = pdfDoc.takeSnapshot();
+
+// Get the first page of the document
+const pages = pdfDoc.getPages()
+const firstPage = pages[0]
+
+// Mark the page as modified
+snapshot.markRefForSave(firstPage.ref)
+
+// Draw a string of text diagonally across the first page
+firstPage.drawText('Incremental saving is also awesome!', {
+  x: 50,
+  y: 4 * fontSize,
+  size: fontSize
+})
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfIncrementalBytes = await pdfDoc.saveIncremental(snapshot)
+const pdfBytes = Buffer.concatenate([ existingPdfBytes, pdfIncrementalBytes ])
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+
+Loading an existing PDF forIncrementalUpdate, makes things easier:
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts } from 'pdf-lib';
+
+// This should be a Uint8Array or ArrayBuffer
+const existingPdfBytes = ...
+
+// Load a PDFDocument from the existing PDF bytes, for incremental update
+const pdfDoc = await PDFDocument.load(existingPdfBytes,{forIncrementalUpdate:true})
+
+// Get the first page of the document
+const pages = pdfDoc.getPages()
+const firstPage = pages[0]
+
+// Draw a string of text diagonally across the first page
+firstPage.drawText('Incremental saving is also awesome!', {
+  x: 50,
+  y: 4 * fontSize,
+  size: fontSize
+})
+
+// Serialize the PDFDocument to bytes (a Uint8Array), using incremental updates
+const pdfBytes = await pdfDoc.save()
+
+// For example, `pdfBytes` can be:
+//   • Written to a file in Node
+//   • Downloaded from the browser
+//   • Rendered in an <iframe>
+```
+You can force a rewrite of a PDF that was open for incremental update with the right parameter on save:
+<!-- prettier-ignore -->
+```js
+import { PDFDocument } from 'pdf-lib';
+
+// This should be a Uint8Array or ArrayBuffer
+const existingPdfBytes = ...
+
+// Load a PDFDocument from the existing PDF bytes, for incremental update
+const pdfDoc = await PDFDocument.load(existingPdfBytes,{forIncrementalUpdate:true})
+
+// Do something..
+
+// Serialize the PDFDocument to bytes (a Uint8Array), NOT using incremental updates
+const pdfBytes = await pdfDoc.save({rewrite: true})
+```
+
+#### Using pdf-lib to generate a placeholder for an electronic signature
+@signpdf includes a placeholder-pdf-lib component, but it is based on the pdf-lib package that has no incremental update functionality. This code is taken from that library and modified to use incremental update for not invalidating previous file signatures. Is an example, that can be seen in integration test #20, some @signpdf constants has been changed to arbitrary values for the example to work "out of the box".  
+If you need this functionality, you should take a look at [@adnsistemas/placeholder-pdf-lib](https://www.npmjs.com/package/@adnsistemas/placeholder-pdf-lib).
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts, rgb, PDFArray, PDFNumber, PDFName, PDFHexString, PDFString, PDFInvalidObject, isPDFInstance, PDFClasses } from 'pdf-lib';
+const pdfBytes = ...
+
+const pdfDoc = await PDFDocument.load(pdfBytes, {forIncrementalUpdate: true});
+// visual representation of the signature
+const page = pdfDoc.addPage([500, 200]);
+const font = pdfDoc.embedStandardFont(StandardFonts.Helvetica);
+page.drawRectangle({
+  x: 10,
+  y: 30,
+  width: 280,
+  height: 150,
+  borderWidth: 2,
+  borderColor: rgb(0.45, 0.45, 0.45),
+});
+page.drawText(`Electronic Signature Example\nSigned on ${(new Date()).toIsoString()}\nThis is not the real signature!!`, {
+  x: 20,
+  y: 200,
+  size: 14,
+  font,
+});
+// Add an AcroForm or update the existing one
+let acroForm = pdfDoc.catalog.getOrCreateAcroForm();
+// Create a placeholder where the last 3 parameters of the
+// actual range will be replaced when signing is done.
+const byteRange = PDFArray.withContext(pdfDoc.context);
+byteRange.push(PDFNumber.of(0));
+byteRange.push(PDFName.of('*********'));
+byteRange.push(PDFName.of('*********'));
+byteRange.push(PDFName.of('*********'));
+// Fill the contents of the placeholder with 00s.
+const placeholder = PDFHexString.of(String.fromCharCode(0).repeat(8096));
+// Create a signature dictionary to be referenced in the signature widget.
+const appBuild = { App: { Name: 'Signature Example pdf-lib' } };
+const signatureDict = pdfDoc.context.obj({
+    Type: 'Sig',
+    Filter: 'Adobe.PPKLite',
+    SubFilter: 'adbe.pkcs7.detached',
+    ByteRange: byteRange,
+    Contents: placeholder,
+    Reason: PDFString.of('Example Signature'),
+    M: PDFString.fromDate(new Date()),
+    ContactInfo: PDFString.of('me@pdf-lib.org'),
+    Name: PDFString.of('Example Signer'),
+    Location: PDFString.of('In a far away galaxy..'),
+    Prop_Build: {
+      Filter: { Name: 'Adobe.PPKLite' },
+      ...appBuild,
+    },
+});
+// Register signatureDict as a PDFInvalidObject to prevent PDFLib from serializing it
+// in an object stream.
+const signatureBuffer = new Uint8Array(signatureDict.sizeInBytes());
+signatureDict.copyBytesInto(signatureBuffer, 0);
+const signatureObj = PDFInvalidObject.of(signatureBuffer);
+const signatureDictRef = pdfDoc.context.register(signatureObj);
+// Create the signature widget
+const widgetRect = [0, 0, 0, 0];
+const rect = PDFArray.withContext(pdfDoc.context);
+widgetRect.forEach((c) => rect.push(PDFNumber.of(c)));
+const apStream = pdfDoc.context.formXObject([], {
+  BBox: widgetRect,
+  Resources: {}, // Necessary to avoid Acrobat bug (see https://stackoverflow.com/a/73011571)
+});
+const widgetDict = pdfDoc.context.obj({
+  Type: 'Annot',
+  Subtype: 'Widget',
+  FT: 'Sig',
+  Rect: rect,
+  V: signatureDictRef,
+  T: PDFString.of('TestSig'),
+  TU: PDFString.of('Electronic Signature Example'),
+  F: 2,
+  P: page.ref,
+  AP: { N: pdfDoc.context.register(apStream) }, // Required for PDF/A compliance
+});
+const widgetDictRef = pdfDoc.context.register(widgetDict);
+// Annotate the widget on the given page
+let annotations = page.node.lookupMaybe(PDFName.of('Annots'), PDFArray);
+if (typeof annotations === 'undefined') {
+  annotations = pdfDoc.context.obj([]);
+}
+annotations.push(widgetDictRef);
+page.node.set(PDFName.of('Annots'), annotations);
+let sigFlags: PDFNumber;
+if (acroForm.dict.has(PDFName.of('SigFlags'))) {
+  // Already has some flags, will merge
+  sigFlags = acroForm.dict.get(PDFName.of('SigFlags')) as PDFNumber;
+} else {
+  // Create blank flags
+  sigFlags = PDFNumber.of(0);
+}
+const updatedFlags = PDFNumber.of(sigFlags!.asNumber() | 1 | 2);
+acroForm.dict.set(PDFName.of('SigFlags'), updatedFlags);
+let fields = acroForm.dict.get(PDFName.of('Fields'));
+if (!isPDFInstance(fields, PDFClasses.PDFArray)) {
+  fields = pdfDoc.context.obj([]);
+  acroForm.dict.set(PDFName.of('Fields'), fields);
+}
+(fields as PDFArray).push(widgetDictRef);
+// Serialize the PDFDocument to bytes (a Uint8Array), using incremental updates
+const pdfBytes = await pdfDoc.save()
+
+// `pdfBytes` should be handled to the signing library to calculate the
+//  file hash and fill in the generated placeholder for the signature
+```
+
+### Consecutive Incremental Updates
+
+You can load a PDF for incremental update, and then generate multiple increments, over the original document, with saveAndContinue() method.  
+This method simplifies the sequence:
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts } from 'pdf-lib';
+
+// This should be a Uint8Array or ArrayBuffer
+const existingPdfBytes = ...
+// Load a PDFDocument from the existing PDF bytes, for incremental update
+const pdfDoc = await PDFDocument.load(existingPdfBytes,{forIncrementalUpdate:true})
+// modify pdf
+...
+// Serialize the PDFDocument to bytes (a Uint8Array), using incremental updates
+const firstUpdatedDoc = await pdfDoc.save()
+const pdfDoc2 = await PDFDocument.load(firstUpdatedDoc,{forIncrementalUpdate:true})
+// modify pdf
+...
+// Serialize the PDFDocument to bytes (a Uint8Array), using incremental updates
+const secondUpdateDoc = await pdfDoc2.save()
+// etc, etc
+```
+Allowing this:  
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts } from 'pdf-lib';
+
+// This should be a Uint8Array or ArrayBuffer
+const existingPdfBytes = ...
+// Load a PDFDocument from the existing PDF bytes, for incremental update
+const pdfDoc = await PDFDocument.load(existingPdfBytes,{forIncrementalUpdate:true})
+// modify pdf
+...
+// Serialize the PDFDocument to bytes (a Uint8Array), using incremental updates
+const firstUpdatedDoc = await pdfDoc.saveAndContinue();
+// modify pdf
+...
+const secondUpdateDoc = await pdfDoc2.saveAndContinue();
+// etc, etc
+```
+The *saveAndContinue* method has the same parameters than *save* method. If document is not loaded **forIncrementalUpdate**, an exception is raised. After calling *saveAndContinue* an update section is added to the original document, and this replaces the original document, and a new snapshot is taken.  
+
+### Get Modified Objects In Incremental Update
+
+You can load a PDF that has incremental update and get the PDFObjects that were modified in each update.
+The list includes the actual version of the object, at the time of the update, and previous versions of it.
+If actual is undefined, then the object was deleted in the update. If has no previous versions, the object was added in the update.
+
+<!-- prettier-ignore -->
+```js
+import { PDFDocument, StandardFonts } from 'pdf-lib';
+
+// This should be a Uint8Array or ArrayBuffer
+// This data can be obtained in a number of different ways
+// If your running in a Node environment, you could use fs.readFile()
+// In the browser, you could make a fetch() call and use res.arrayBuffer()
+const existingPdfBytes = ...
+
+// Load a PDFDocument from the existing PDF bytes, indicating you want the objects versions information preserved
+const pdfDoc = await PDFDocument.load(existingPdfBytes,{preserveObjectsVersions: true})
+
+// Get the first page of the document
+const lastChangedObjects = pdfDoc.getChangedObjects(); // last update
+const prevChangedObjects = pdfDoc.getChangedObjects(1); // 1 update prior the last one
+for (const lco of lastChangedObjects) {
+  const pco = prevChangedObjects.find( pco => pco.ref.objectNumber == lco.ref.objectNumber);
+  if (pco) { // the object changed in both updates
+    // pco.previous.length == lco.previos.length - 1
+    console.log('This is true',pco.actual, '===', lco.previous[0]);    
+  } else {
+    if (lco.previous.length)
+      console.log('The object existed, and was not updated in previous update');
+    else
+      console.log('The object was added in the last PDF update');
+  }
+  if (!lco.actual)
+    console.log('The object was deleted in the last PDF update');
+}
+```
+
 
 ### Create Form
 
@@ -756,6 +1056,22 @@ const pdfBytes = await pdfDoc.save()
 //   • Rendered in an <iframe>
 ```
 
+### Extract Attachments
+
+If you load a PDF that has `cars.csv` as an attachment, you can use the
+following to extract the attachments:
+
+<!-- prettier-ignore -->
+```js
+const pdfDoc = await PDFDocument.load(...)
+const attachments = pdfDoc.getAttachments()
+const csv = attachments.find(({ name }) => name === 'cars.csv')
+fs.writeFileSync(csv.name, csv.data)
+```
+
+> NOTE: The method also finds attachments added after the last call to
+> `save()`.
+
 ### Set Document Metadata
 
 _This example produces [this PDF](assets/pdfs/examples/set_document_metadata.pdf)_.
@@ -1002,6 +1318,37 @@ const pdfBytes = await pdfDoc.save()
 //   • Written to a file in Node
 //   • Downloaded from the browser
 //   • Rendered in an <iframe>
+```
+
+### Draw SVG
+
+```js
+import { PDFDocument, rgb } from 'pdf-lib'
+
+// SVG of a square inside a square
+const svg = `<svg width="100" height="100">
+  <rect y="0" x="0" width="100" height="100" fill="none" stroke="black"/>
+  <rect y="25" x="25" width="50" height="50" fill="black"/>
+</svg>`;
+const svg2 = '<svg><image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="/></svg>'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+
+// Add a blank page to the document
+const page = pdfDoc.addPage()
+
+// drawSvg can accept the svg as a string, as long as there are no images in it
+page.moveTo(100, 10)
+page.drawSvg(svg)
+
+// If the svg has images, or if you don't know if it does, you should call embedSVG first
+page.moveTo(200, 10)
+const pdfSvg = await pdfDoc.embedSvg(svg2)
+page.drawSvg(pdfSvg)
+
+// Serialize the PDFDocument to bytes (a Uint8Array)
+const pdfBytes = await pdfDoc.save()
 ```
 
 ## Deno Usage
@@ -1405,34 +1752,25 @@ See also [MAINTAINERSHIP.md#communication](docs/MAINTAINERSHIP.md#communication)
 
 ## Encryption Handling
 
-**`pdf-lib` does not currently support encrypted documents.** You should not use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
+**`pdf-lib` does support encrypted documents.**
 
-When an encrypted document is passed to `PDFDocument.load(...)`, an error will be thrown:
-
-<!-- prettier-ignore -->
-```js
-import { PDFDocument, EncryptedPDFError } from 'pdf-lib'
-
-const encryptedPdfBytes = ...
-
-// Assignment fails. Throws an `EncryptedPDFError`.
-const pdfDoc = PDFDocument.load(encryptedPdfBytes)
-```
-
-This default behavior is usually what you want. It allows you to easily detect if a given document is encrypted, and it prevents you from trying to modify it. However, if you really want to load the document, you can use the `{ ignoreEncryption: true }` option:
+To load a document, use this:
 
 ```js
-import { PDFDocument } from 'pdf-lib'
-
-const encryptedPdfBytes = ...
-
-// Assignment succeeds. Does not throw an error.
-const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
+// Load a random document you know nothing about:
+const doc = PDFDocument.load(content, { ignoreEncryption: true })
+// Check if the document is encrypted:
+const isEncrypted = doc.isEncrypted
+// If isEncrypted is true, you know the you need to ask the user for the password.
 ```
 
-Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
+If you know the password of the document, or if it was provided by the user, you can now open the document with it:
 
-**You should not use this option.** It only exists for backwards compatibility reasons.
+```js
+// Load an encrypted document with its password:
+const password = "The password"
+const doc = PDFDocument.load(content, { ignoreEncryption: true, password })
+```
 
 ## Contributing
 

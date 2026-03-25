@@ -10,13 +10,13 @@ import {
   PDFRef,
   PDFString,
   PDFObject,
-} from 'src/core';
-import { toCharCode, typedArrayFor } from 'src/utils';
+} from '../../../src/core';
+import { toCharCode, typedArrayFor } from '../../../src/utils';
 
-describe(`PDFDict`, () => {
+describe('PDFDict', () => {
   const context = PDFContext.create();
 
-  it(`can be constructed from PDFDict.withContext(...)`, () => {
+  it('can be constructed from PDFDict.withContext(...)', () => {
     expect(PDFDict.withContext(context)).toBeInstanceOf(PDFDict);
   });
 
@@ -47,7 +47,7 @@ describe(`PDFDict`, () => {
 
   pdfDict.set(PDFName.of('Dictionary'), pdfSubDict);
 
-  it(`can detect if a value is present`, () => {
+  it('can detect if a value is present', () => {
     expect(pdfDict.has(PDFName.of('Boolean'))).toBe(true);
     expect(pdfDict.has(PDFName.of('HexString'))).toBe(true);
     expect(pdfDict.has(PDFName.of('Name'))).toBe(true);
@@ -60,7 +60,7 @@ describe(`PDFDict`, () => {
     expect(pdfDict.has(PDFName.of('foo'))).toBe(false);
   });
 
-  it(`retains entered objects`, () => {
+  it('retains entered objects', () => {
     expect(pdfDict.entries().length).toBe(8);
 
     expect(pdfDict.get(PDFName.of('Boolean'))).toBe(pdfBool);
@@ -74,7 +74,7 @@ describe(`PDFDict`, () => {
     expect(pdfSubDict.get(PDFName.of('Array'))).toBe(pdfArray);
   });
 
-  it(`can be converted to a Map`, () => {
+  it('can be converted to a Map', () => {
     expect(pdfDict.asMap()).toEqual(
       new Map<PDFName, PDFObject>([
         [PDFName.of('Boolean'), pdfBool],
@@ -89,14 +89,14 @@ describe(`PDFDict`, () => {
     );
   });
 
-  it(`can be cloned`, () => {
+  it('can be cloned', () => {
     const original = pdfDict;
     const clone = original.clone();
     expect(clone).not.toBe(original);
     expect(clone.toString()).toBe(original.toString());
   });
 
-  it(`can be converted to a string`, () => {
+  it('can be converted to a string', () => {
     expect(String(pdfDict)).toBe(
       `<<
 /Boolean true
@@ -113,11 +113,11 @@ describe(`PDFDict`, () => {
     );
   });
 
-  it(`can provide its size in bytes`, () => {
+  it('can provide its size in bytes', () => {
     expect(pdfDict.sizeInBytes()).toBe(153);
   });
 
-  it(`can be serialized`, () => {
+  it('can be serialized', () => {
     const buffer = new Uint8Array(157).fill(toCharCode(' '));
     expect(pdfDict.copyBytesInto(buffer, 3)).toBe(153);
     expect(buffer).toEqual(
@@ -138,7 +138,7 @@ describe(`PDFDict`, () => {
     );
   });
 
-  it(`returns "undefined" if the underlying value is "PDFNull"`, () => {
+  it('returns "undefined" if the underlying value is "PDFNull"', () => {
     const dict = context.obj({ foo: null });
     dict.set(PDFName.of('Bar'), PDFNull);
     context.assign(PDFRef.of(21), PDFNull);
@@ -166,7 +166,7 @@ describe(`PDFDict`, () => {
   });
 
   // https://github.com/Hopding/pdf-lib/issues/1075
-  it(`can generate new keys that don't conflict with existing ones`, () => {
+  it("can generate new keys that don't conflict with existing ones", () => {
     const anotherContext = PDFContext.create();
     const anotherDict = anotherContext.obj({});
     const anotherKey = anotherDict.uniqueKey();

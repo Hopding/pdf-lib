@@ -1,4 +1,4 @@
-import { Color, setFillingColor, setStrokingColor } from 'src/api/colors';
+import { Color, setFillingColor, setStrokingColor } from './colors';
 import {
   beginText,
   closePath,
@@ -30,12 +30,19 @@ import {
   endMarkedContent,
   clip,
   endPath,
-  appendBezierCurve,
-} from 'src/api/operators';
-import { Rotation, degrees, toRadians } from 'src/api/rotations';
-import { svgPathToOperators } from 'src/api/svgPath';
-import { PDFHexString, PDFName, PDFNumber, PDFOperator } from 'src/core';
-import { asNumber } from 'src/api/objects';
+  FillRule,
+  fillEvenOdd,
+  concatTransformationMatrix,
+  TextRenderingMode,
+  setTextRenderingMode,
+} from './operators';
+import { Rotation, degrees, toDegrees, toRadians } from './rotations';
+import { svgPathToOperators } from './svgPath';
+import { PDFHexString, PDFName, PDFNumber, PDFOperator } from '../core';
+import { asNumber } from './objects';
+import type { Space, TransformationMatrix } from '../types';
+import { transformationToMatrix, combineMatrix } from './svg';
+import { identityMatrix } from '../types/matrix';
 
 export interface DrawTextOptions {
   color: Color;
@@ -47,7 +54,23 @@ export interface DrawTextOptions {
   x: number | PDFNumber;
   y: number | PDFNumber;
   graphicsState?: string | PDFName;
+  matrix?: TransformationMatrix;
+  clipSpaces?: Space[];
+  strokeWidth?: number;
+  strokeColor?: Color;
+  renderMode?: TextRenderingMode;
 }
+
+const clipSpace = ({ topLeft, topRight, bottomRight, bottomLeft }: Space) => [
+  moveTo(topLeft.x, topLeft.y),
+  lineTo(topRight.x, topRight.y),
+  lineTo(bottomRight.x, bottomRight.y),
+  lineTo(bottomLeft.x, bottomLeft.y),
+  closePath(),
+  clip(),
+  endPath(),
+];
+const clipSpaces = (spaces: Space[]) => spaces.flatMap(clipSpace);
 
 export const drawText = (
   line: PDFHexString,
@@ -59,6 +82,9 @@ export const drawText = (
     beginText(),
     setFillingColor(options.color),
     setFontAndSize(options.font, options.size),
+    options.strokeWidth && setLineWidth(options.strokeWidth),
+    options.strokeColor && setStrokingColor(options.strokeColor),
+    options.renderMode && setTextRenderingMode(options.renderMode),
     rotateAndSkewTextRadiansAndTranslate(
       toRadians(options.rotate),
       toRadians(options.xSkew),
@@ -82,10 +108,15 @@ export const drawLinesOfText = (
   const operators = [
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
+    ...(options.clipSpaces ? clipSpaces(options.clipSpaces) : []),
+    options.matrix && concatTransformationMatrix(...options.matrix),
     beginText(),
     setFillingColor(options.color),
     setFontAndSize(options.font, options.size),
     setLineHeight(options.lineHeight),
+    options.strokeWidth && setLineWidth(options.strokeWidth),
+    options.strokeColor && setStrokingColor(options.strokeColor),
+    options.renderMode && setTextRenderingMode(options.renderMode),
     rotateAndSkewTextRadiansAndTranslate(
       toRadians(options.rotate),
       toRadians(options.xSkew),
@@ -114,11 +145,15 @@ export const drawImage = (
     xSkew: Rotation;
     ySkew: Rotation;
     graphicsState?: string | PDFName;
+    matrix?: TransformationMatrix;
+    clipSpaces?: Space[];
   },
 ): PDFOperator[] =>
   [
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
+    ...(options.clipSpaces ? clipSpaces(options.clipSpaces) : []),
+    options.matrix && concatTransformationMatrix(...options.matrix),
     translate(options.x, options.y),
     rotateRadians(toRadians(options.rotate)),
     scale(options.width, options.height),
@@ -160,10 +195,14 @@ export const drawLine = (options: {
   dashPhase?: number | PDFNumber;
   lineCap?: LineCapStyle;
   graphicsState?: string | PDFName;
+  matrix?: TransformationMatrix;
+  clipSpaces?: Space[];
 }) =>
   [
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
+    ...(options.clipSpaces ? clipSpaces(options.clipSpaces) : []),
+    options.matrix && concatTransformationMatrix(...options.matrix),
     options.color && setStrokingColor(options.color),
     setLineWidth(options.thickness),
     setDashPattern(options.dashArray ?? [], options.dashPhase ?? 0),
@@ -175,114 +214,96 @@ export const drawLine = (options: {
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
 
+const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
+
 export const drawRectangle = (options: {
   x: number | PDFNumber;
   y: number | PDFNumber;
   width: number | PDFNumber;
   height: number | PDFNumber;
-  borderWidth: number | PDFNumber;
   color: Color | undefined;
-  borderColor: Color | undefined;
   rotate: Rotation;
   xSkew: Rotation;
   ySkew: Rotation;
+  rx?: number;
+  ry?: number;
+  borderWidth: number | PDFNumber;
+  borderColor: Color | undefined;
   borderLineCap?: LineCapStyle;
   borderDashArray?: (number | PDFNumber)[];
   borderDashPhase?: number | PDFNumber;
   graphicsState?: string | PDFName;
-}) =>
-  [
-    pushGraphicsState(),
-    options.graphicsState && setGraphicsState(options.graphicsState),
-    options.color && setFillingColor(options.color),
-    options.borderColor && setStrokingColor(options.borderColor),
-    setLineWidth(options.borderWidth),
-    options.borderLineCap && setLineCap(options.borderLineCap),
-    setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
-    translate(options.x, options.y),
-    rotateRadians(toRadians(options.rotate)),
-    skewRadians(toRadians(options.xSkew), toRadians(options.ySkew)),
-    moveTo(0, 0),
-    lineTo(0, options.height),
-    lineTo(options.width, options.height),
-    lineTo(options.width, 0),
-    closePath(),
+  matrix?: TransformationMatrix;
+  clipSpaces?: Space[];
+}) => {
+  const { width, height, xSkew, ySkew, rotate, matrix } = options;
+  const w = typeof width === 'number' ? width : width.asNumber();
+  const h = typeof height === 'number' ? height : height.asNumber();
+  const x = typeof options.x === 'number' ? options.x : options.x.asNumber();
+  const y = typeof options.y === 'number' ? options.y : options.y.asNumber();
 
-    // prettier-ignore
-    options.color && options.borderWidth ? fillAndStroke()
-  : options.color                      ? fill()
-  : options.borderColor                ? stroke()
-  : closePath(),
+  // Ensure rx and ry are within bounds
+  const rx = Math.max(0, Math.min(options.rx || 0, w / 2));
+  const ry = Math.max(0, Math.min(options.ry || 0, h / 2));
 
-    popGraphicsState(),
-  ].filter(Boolean) as PDFOperator[];
+  // Generate the SVG path
+  const d =
+    rx > 0 || ry > 0
+      ? [
+          `M ${rx},0`,
+          `H ${w - rx}`,
+          `C ${w - rx * (1 - KAPPA)},0 ${w},${ry * (1 - KAPPA)} ${w},${ry}`,
+          `V ${h - ry}`,
+          `C ${w},${h - ry * (1 - KAPPA)} ${w - rx * (1 - KAPPA)},${h} ${w - rx},${h}`,
+          `H ${rx}`,
+          `C ${rx * (1 - KAPPA)},${h} 0,${h - ry * (1 - KAPPA)} 0,${h - ry}`,
+          `V ${ry}`,
+          `C 0,${ry * (1 - KAPPA)} ${rx * (1 - KAPPA)},0 ${rx},0`,
+          'Z',
+        ].join(' ')
+      : `M 0,0 H ${w} V ${h} H 0 Z`;
 
-const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
+  // the drawRectangle applies the rotation around its anchor point (bottom-left), it means that the translation should be applied before the rotation
+  // invert the y parameter because transformationToMatrix expects parameters from an svg space. The same is valid for rotate and ySkew
+  let fullMatrix = combineMatrix(
+    matrix || identityMatrix,
+    transformationToMatrix('translate', [x, -y]),
+  );
 
-/** @deprecated */
-export const drawEllipsePath = (config: {
-  x: number | PDFNumber;
-  y: number | PDFNumber;
-  xScale: number | PDFNumber;
-  yScale: number | PDFNumber;
-}): PDFOperator[] => {
-  let x = asNumber(config.x);
-  let y = asNumber(config.y);
-  const xScale = asNumber(config.xScale);
-  const yScale = asNumber(config.yScale);
+  // Transformation to apply rotation and skew
+  if (rotate) {
+    fullMatrix = combineMatrix(
+      fullMatrix,
+      transformationToMatrix('rotate', [-toDegrees(rotate)]),
+    );
+  }
+  if (xSkew) {
+    fullMatrix = combineMatrix(
+      fullMatrix,
+      transformationToMatrix('skewX', [toDegrees(xSkew)]),
+    );
+  }
+  if (ySkew) {
+    fullMatrix = combineMatrix(
+      fullMatrix,
+      transformationToMatrix('skewY', [-toDegrees(ySkew)]),
+    );
+  }
 
-  x -= xScale;
-  y -= yScale;
+  // move the rectangle upward so that the (x, y) coord is bottom-left
+  fullMatrix = combineMatrix(
+    fullMatrix,
+    transformationToMatrix('translateY', [-h]),
+  );
 
-  const ox = xScale * KAPPA;
-  const oy = yScale * KAPPA;
-  const xe = x + xScale * 2;
-  const ye = y + yScale * 2;
-  const xm = x + xScale;
-  const ym = y + yScale;
-
-  return [
-    pushGraphicsState(),
-    moveTo(x, ym),
-    appendBezierCurve(x, ym - oy, xm - ox, y, xm, y),
-    appendBezierCurve(xm + ox, y, xe, ym - oy, xe, ym),
-    appendBezierCurve(xe, ym + oy, xm + ox, ye, xm, ye),
-    appendBezierCurve(xm - ox, ye, x, ym + oy, x, ym),
-    popGraphicsState(),
-  ];
-};
-
-const drawEllipseCurves = (config: {
-  x: number | PDFNumber;
-  y: number | PDFNumber;
-  xScale: number | PDFNumber;
-  yScale: number | PDFNumber;
-  rotate: Rotation;
-}): PDFOperator[] => {
-  const centerX = asNumber(config.x);
-  const centerY = asNumber(config.y);
-  const xScale = asNumber(config.xScale);
-  const yScale = asNumber(config.yScale);
-
-  const x = -xScale;
-  const y = -yScale;
-
-  const ox = xScale * KAPPA;
-  const oy = yScale * KAPPA;
-  const xe = x + xScale * 2;
-  const ye = y + yScale * 2;
-  const xm = x + xScale;
-  const ym = y + yScale;
-
-  return [
-    translate(centerX, centerY),
-    rotateRadians(toRadians(config.rotate)),
-    moveTo(x, ym),
-    appendBezierCurve(x, ym - oy, xm - ox, y, xm, y),
-    appendBezierCurve(xm + ox, y, xe, ym - oy, xe, ym),
-    appendBezierCurve(xe, ym + oy, xm + ox, ye, xm, ye),
-    appendBezierCurve(xm - ox, ye, x, ym + oy, x, ym),
-  ];
+  return drawSvgPath(d, {
+    ...options,
+    x: 0,
+    y: 0,
+    rotate: degrees(0), // Already applied in matrix transform
+    scale: 1,
+    matrix: fullMatrix,
+  });
 };
 
 export const drawEllipse = (options: {
@@ -298,41 +319,48 @@ export const drawEllipse = (options: {
   borderDashPhase?: number | PDFNumber;
   graphicsState?: string | PDFName;
   borderLineCap?: LineCapStyle;
-}) =>
-  [
-    pushGraphicsState(),
-    options.graphicsState && setGraphicsState(options.graphicsState),
-    options.color && setFillingColor(options.color),
-    options.borderColor && setStrokingColor(options.borderColor),
-    setLineWidth(options.borderWidth),
-    options.borderLineCap && setLineCap(options.borderLineCap),
-    setDashPattern(options.borderDashArray ?? [], options.borderDashPhase ?? 0),
+  matrix?: TransformationMatrix;
+  clipSpaces?: Space[];
+}) => {
+  const xScale = asNumber(options.xScale);
+  const yScale = asNumber(options.yScale);
+  const x = asNumber(options.x);
+  const y = asNumber(options.y);
 
-    // The `drawEllipsePath` branch is only here for backwards compatibility.
-    // See https://github.com/Hopding/pdf-lib/pull/511#issuecomment-667685655.
-    ...(options.rotate === undefined
-      ? drawEllipsePath({
-          x: options.x,
-          y: options.y,
-          xScale: options.xScale,
-          yScale: options.yScale,
-        })
-      : drawEllipseCurves({
-          x: options.x,
-          y: options.y,
-          xScale: options.xScale,
-          yScale: options.yScale,
-          rotate: options.rotate ?? degrees(0),
-        })),
+  const KAPPA = 4.0 * ((Math.sqrt(2) - 1.0) / 3.0);
+  const ox = xScale * KAPPA;
+  const oy = yScale * KAPPA;
 
-    // prettier-ignore
-    options.color && options.borderWidth ? fillAndStroke()
-  : options.color                      ? fill()
-  : options.borderColor                ? stroke()
-  : closePath(),
+  // Path en sens mathématique (y vers le haut)
+  const d = [
+    `M 0,${yScale}`,
+    `C ${ox},${yScale} ${xScale},${oy} ${xScale},0`,
+    `C ${xScale},${-oy} ${ox},${-yScale} 0,${-yScale}`,
+    `C ${-ox},${-yScale} ${-xScale},${-oy} ${-xScale},0`,
+    `C ${-xScale},${oy} ${-ox},${yScale} 0,${yScale}`,
+    'Z',
+  ].join(' ');
 
-    popGraphicsState(),
-  ].filter(Boolean) as PDFOperator[];
+  let fullMatrix = combineMatrix(
+    options.matrix || identityMatrix,
+    transformationToMatrix('translate', [x, -y]),
+  );
+  if (options.rotate) {
+    fullMatrix = combineMatrix(
+      fullMatrix,
+      transformationToMatrix('rotate', [-toDegrees(options.rotate)]),
+    );
+  }
+
+  return drawSvgPath(d, {
+    ...options,
+    x: 0,
+    y: 0,
+    rotate: degrees(0),
+    scale: 1, // Laisse le flip vertical de drawSvgPath
+    matrix: fullMatrix,
+  });
+};
 
 export const drawSvgPath = (
   path: string,
@@ -348,18 +376,28 @@ export const drawSvgPath = (
     borderDashPhase?: number | PDFNumber;
     borderLineCap?: LineCapStyle;
     graphicsState?: string | PDFName;
+    fillRule?: FillRule;
+    matrix?: TransformationMatrix;
+    clipSpaces?: Space[];
   },
-) =>
-  [
+) => {
+  const drawingOperator = getDrawingOperator(options);
+  if (!drawingOperator) {
+    // no-op when there is no fill and no border color/width.
+    return [];
+  }
+
+  return [
     pushGraphicsState(),
     options.graphicsState && setGraphicsState(options.graphicsState),
+    ...(options.clipSpaces ? clipSpaces(options.clipSpaces) : []),
+    options.matrix && concatTransformationMatrix(...options.matrix),
 
     translate(options.x, options.y),
     rotateRadians(toRadians(options.rotate ?? degrees(0))),
 
     // SVG path Y axis is opposite pdf-lib's
     options.scale ? scale(options.scale, -options.scale) : scale(1, -1),
-
     options.color && setFillingColor(options.color),
     options.borderColor && setStrokingColor(options.borderColor),
     options.borderWidth && setLineWidth(options.borderWidth),
@@ -369,14 +407,11 @@ export const drawSvgPath = (
 
     ...svgPathToOperators(path),
 
-    // prettier-ignore
-    options.color && options.borderWidth ? fillAndStroke()
-  : options.color                      ? fill()
-  : options.borderColor                ? stroke()
-  : closePath(),
+    drawingOperator(),
 
     popGraphicsState(),
   ].filter(Boolean) as PDFOperator[];
+};
 
 export const drawCheckMark = (options: {
   x: number | PDFNumber;
@@ -797,4 +832,25 @@ export const drawOptionList = (options: {
     ...markedContent,
     popGraphicsState(),
   ];
+};
+
+const getDrawingOperator = ({
+  color,
+  borderWidth,
+  borderColor,
+  fillRule,
+}: {
+  color?: Color;
+  borderWidth?: number | PDFNumber;
+  borderColor?: Color;
+  fillRule?: FillRule;
+}) => {
+  if (color && borderColor && borderWidth !== 0) {
+    return fillAndStroke;
+  } else if (color) {
+    return fillRule === FillRule.EvenOdd ? fillEvenOdd : fill;
+  } else if (borderColor && borderWidth !== 0) {
+    return stroke;
+  }
+  return undefined;
 };

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: data: resource: https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js;
+        object-src 'self' blob: data:;
+        frame-src 'self' blob: data:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test 32 - Ellipse Drawing</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js"
+    ></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test31.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test33.html'">
+        Next
+      </button>
+    </div>
+    <div id="animation-target"></div>
+    <iframe id="iframe"></iframe>
+  </body>
+
+  <script type="text/javascript">
+    // startFpsTracker('animation-target');
+
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    async function test() {
+      const { PDFDocument, rgb, degrees, LineCapStyle } = PDFLib;
+
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([600, 800]);
+
+      // Title
+      page.drawText('Ellipse Drawing Tests', {
+        x: 50,
+        y: 750,
+        size: 24,
+        color: rgb(0, 0, 0),
+      });
+
+      // Test 1: Basic Ellipse
+      page.drawText('1. Basic Ellipse', {
+        x: 50,
+        y: 700,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+      page.drawEllipse({
+        x: 150,
+        y: 650,
+        xScale: 50,
+        yScale: 30,
+        color: rgb(1, 0, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 2,
+      });
+
+      // Test 2: Rotated Ellipse
+      page.drawText('2. Rotated Ellipse', {
+        x: 50,
+        y: 600,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+      page.drawEllipse({
+        x: 150,
+        y: 550,
+        xScale: 50,
+        yScale: 30,
+        rotate: degrees(45),
+        color: rgb(0, 1, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 2,
+      });
+
+      // Test 3: Dashed Border
+      page.drawText('3. Dashed Border', {
+        x: 50,
+        y: 500,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+      page.drawEllipse({
+        x: 150,
+        y: 450,
+        xScale: 50,
+        yScale: 30,
+        color: rgb(0, 0, 1),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 2,
+        borderDashArray: [5, 5],
+      });
+
+      // Test 4: Round Line Cap
+      page.drawText('4. Round Line Cap', {
+        x: 50,
+        y: 400,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+      page.drawEllipse({
+        x: 150,
+        y: 350,
+        xScale: 50,
+        yScale: 30,
+        color: rgb(1, 1, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 5,
+        borderLineCap: LineCapStyle.Round,
+      });
+
+      // Test 5: Clipped Ellipse
+      page.drawText('5. Clipped Ellipse', {
+        x: 50,
+        y: 300,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+      page.drawEllipse({
+        x: 150,
+        y: 250,
+        xScale: 50,
+        yScale: 30,
+        color: rgb(1, 0, 1),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 2,
+        clipSpaces: [
+          {
+            topLeft: { x: 100, y: 200 },
+            topRight: { x: 200, y: 200 },
+            bottomRight: { x: 200, y: 300 },
+            bottomLeft: { x: 100, y: 300 },
+          },
+        ],
+      });
+
+      // Test 6: Transformed Ellipse
+      page.drawText('6. Transformed Ellipse', {
+        x: 50,
+        y: 200,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+      page.drawEllipse({
+        x: 150,
+        y: 150,
+        xScale: 50,
+        yScale: 30,
+        color: rgb(1, 0.5, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 2,
+        matrix: [1, 0, 0, 1, 50, 50], // Translate by (50, 50)
+      });
+
+      // Test 7: Multiple Ellipses
+      page.drawText('7. Multiple Ellipses', {
+        x: 300,
+        y: 700,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+
+      // Draw multiple ellipses with different properties
+      page.drawEllipse({
+        x: 400,
+        y: 650,
+        xScale: 40,
+        yScale: 20,
+        color: rgb(1, 0, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 1,
+      });
+
+      page.drawEllipse({
+        x: 400,
+        y: 600,
+        xScale: 40,
+        yScale: 20,
+        rotate: degrees(45),
+        color: rgb(0, 1, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 2,
+      });
+
+      page.drawEllipse({
+        x: 400,
+        y: 550,
+        xScale: 40,
+        yScale: 20,
+        color: rgb(0, 0, 1),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 3,
+        borderDashArray: [5, 5],
+      });
+
+      page.drawEllipse({
+        x: 400,
+        y: 500,
+        xScale: 40,
+        yScale: 20,
+        rotate: degrees(-45),
+        color: rgb(1, 1, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 4,
+        borderLineCap: LineCapStyle.Round,
+      });
+
+      // Test 8: Extreme Aspect Ratios
+      page.drawText('8. Extreme Aspect Ratios', {
+        x: 300,
+        y: 450,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+
+      page.drawEllipse({
+        x: 400,
+        y: 400,
+        xScale: 100,
+        yScale: 10,
+        color: rgb(0.5, 0.5, 0.5),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 1,
+      });
+
+      page.drawEllipse({
+        x: 400,
+        y: 350,
+        xScale: 10,
+        yScale: 100,
+        color: rgb(0.5, 0.5, 0.5),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 1,
+      });
+
+      // Test 9: Nested Ellipses
+      page.drawText('9. Nested Ellipses', {
+        x: 300,
+        y: 250,
+        size: 14,
+        color: rgb(0, 0, 0),
+      });
+
+      const centerX = 400;
+      const centerY = 200;
+      const scales = [80, 60, 40, 20];
+      const colors = [rgb(1, 0, 0), rgb(0, 1, 0), rgb(0, 0, 1), rgb(1, 1, 0)];
+
+      scales.forEach((scale, i) => {
+        page.drawEllipse({
+          x: centerX,
+          y: centerY,
+          xScale: scale,
+          yScale: scale,
+          color: colors[i],
+          borderColor: rgb(0, 0, 0),
+          borderWidth: 1,
+        });
+      });
+
+      const pdfBytes = await pdfDoc.save();
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

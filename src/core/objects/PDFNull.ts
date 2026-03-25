@@ -1,7 +1,12 @@
-import PDFObject from 'src/core/objects/PDFObject';
-import CharCodes from 'src/core/syntax/CharCodes';
+import PDFObject from './PDFObject';
+import CharCodes from '../syntax/CharCodes';
+import { PDFClasses } from '../../api/objects';
 
 class PDFNull extends PDFObject {
+  static className = () => PDFClasses.PDFNull;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFNull;
+  }
   asNull(): null {
     return null;
   }

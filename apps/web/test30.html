@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-inline' blob: resource:;
+        object-src 'self' blob:;
+        frame-src 'self' blob:;
+      "
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/apps/web/index.css" />
+    <title>Test - Draw Rectangles with PDF-Lib</title>
+    <script type="text/javascript" src="/dist/pdf-lib.js"></script>
+    <script type="text/javascript" src="/apps/web/utils.js"></script>
+  </head>
+
+  <body>
+    <div id="button-container">
+      <button onclick="window.location.href = '/apps/web/test29.html'">
+        Prev
+      </button>
+      <button onclick="test()">Run Test</button>
+      <button onclick="window.location.href = '/apps/web/test31.html'">
+        Next
+      </button>
+    </div>
+    <iframe id="iframe"></iframe>
+  </body>
+  <script type="text/javascript">
+    const renderInIframe = (pdfBytes) => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('iframe').src = blobUrl;
+    };
+
+    const svg = `<svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="50" fill="lightgrey" />
+      <rect x="5" y="5" width="140" height="40" rx="20" ry="20" fill="blue" stroke="black" stroke-width="3" />
+    </svg>`;
+
+    async function test() {
+      const { PDFDocument, rgb, degrees } = PDFLib;
+
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([600, 600]);
+
+      // Helper function to add rectangles to the page
+      function drawRectangle(x, y, width, height, options) {
+        const {
+          color = undefined,
+          borderColor = undefined,
+          borderWidth = 1,
+          rx,
+          ry,
+        } = options;
+
+        const drawRect = page.drawRectangle;
+        drawRect.bind(page)({
+          x,
+          y,
+          width,
+          height,
+          color,
+          borderColor,
+          borderWidth,
+          rx,
+          ry,
+        });
+      }
+
+      const drawGrid = (page) => {
+        const n = 100;
+        Array(parseInt(page.getHeight() / n))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: 0, y: i * n },
+              end: { x: page.getWidth(), y: i * n },
+            });
+          });
+        Array(parseInt(page.getWidth() / n))
+          .fill(1)
+          .map((v, i) => {
+            page.drawLine({
+              start: { x: i * n, y: 0 },
+              end: { x: i * n, y: page.getHeight() },
+            });
+          });
+      };
+
+      drawGrid(page);
+
+      // Draw a filled rectangle with sharp corners
+      drawRectangle(50, 500, 100, 50, {
+        color: rgb(1, 0, 0), // red
+      });
+
+      // Draw a rectangle with sharp corners and only a border
+      drawRectangle(200, 500, 100, 50, {
+        borderColor: rgb(0, 1, 0), // green
+        borderWidth: 3,
+      });
+
+      // Draw a filled rectangle with rounded corners in one dimension only
+      drawRectangle(50, 400, 100, 50, {
+        color: rgb(0, 0, 1), // blue
+        rx: 10,
+      });
+
+      // Draw a rectangle with rounded corners and only a border
+      drawRectangle(200, 400, 100, 50, {
+        borderColor: rgb(1, 0, 1), // purple
+        borderWidth: 3,
+        rx: 5,
+        ry: 10,
+      });
+
+      // Draw a rectangle with a very large borderRadius to test maximum rounding
+      drawRectangle(50, 300, 100, 50, {
+        color: rgb(0.5, 0.5, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 2,
+        rx: 25, // Half of the smallest dimension
+        ry: 25, // Half of the smallest dimension
+      });
+
+      page.drawSvg(svg, { x: 200, y: 300, width: 100, height: 50 });
+
+      drawRectangle(300, 300, 100, 50, {
+        color: rgb(0.5, 0.5, 0),
+        rx: 25,
+        ry: 25,
+      });
+
+      const pdfBytes = await pdfDoc.save();
+      renderInIframe(pdfBytes);
+    }
+  </script>
+</html>

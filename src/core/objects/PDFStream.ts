@@ -1,12 +1,17 @@
-import { MethodNotImplementedError } from 'src/core/errors';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFContext from 'src/core/PDFContext';
-import CharCodes from 'src/core/syntax/CharCodes';
+import { MethodNotImplementedError } from '../errors';
+import PDFDict from './PDFDict';
+import PDFName from './PDFName';
+import PDFNumber from './PDFNumber';
+import PDFObject from './PDFObject';
+import PDFContext from '../PDFContext';
+import CharCodes from '../syntax/CharCodes';
+import { PDFClasses } from '../../api/objects';
 
 class PDFStream extends PDFObject {
+  static className = () => PDFClasses.PDFStream;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFStream;
+  }
   readonly dict: PDFDict;
 
   constructor(dict: PDFDict) {
@@ -33,6 +38,13 @@ class PDFStream extends PDFObject {
     throw new MethodNotImplementedError(
       this.constructor.name,
       'getContentsSize',
+    );
+  }
+
+  updateContents(_contents: Uint8Array): void {
+    throw new MethodNotImplementedError(
+      this.constructor.name,
+      'updateContents',
     );
   }
 

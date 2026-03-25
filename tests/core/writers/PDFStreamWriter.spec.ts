@@ -1,6 +1,11 @@
 import fs from 'fs';
 
-import { PDFContext, PDFName, PDFRef, PDFStreamWriter } from 'src/index';
+import {
+  PDFContext,
+  PDFName,
+  PDFRef,
+  PDFStreamWriter,
+} from '../../../src/index';
 
 const expectedPdfBytes = new Uint8Array(
   fs.readFileSync('./tests/core/writers/data/stream-writer-1.pdf'),
@@ -14,8 +19,8 @@ const contentStreamText = `
   ET
 `;
 
-describe(`PDFStreamWriter`, () => {
-  it(`serializes PDFContext objects using Indirect Objects, Object Streams, and XRef Streams`, async () => {
+describe('PDFStreamWriter', () => {
+  it('serializes PDFContext objects using Indirect Objects, Object Streams, and XRef Streams', async () => {
     const context = PDFContext.create();
 
     const contentStream = context.flateStream(contentStreamText);

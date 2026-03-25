@@ -1,11 +1,16 @@
-import { PrivateConstructorError } from 'src/core/errors';
-import PDFObject from 'src/core/objects/PDFObject';
-import { copyStringIntoBuffer } from 'src/utils';
+import { PrivateConstructorError } from '../errors';
+import PDFObject from '../objects/PDFObject';
+import { copyStringIntoBuffer } from '../../utils';
+import { PDFClasses } from '../../api';
 
 const ENFORCER = {};
 const pool = new Map<string, PDFRef>();
 
 class PDFRef extends PDFObject {
+  static className = () => PDFClasses.PDFRef;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFRef;
+  }
   static of = (objectNumber: number, generationNumber = 0) => {
     const tag = `${objectNumber} ${generationNumber} R`;
 
@@ -47,7 +52,7 @@ class PDFRef extends PDFObject {
   }
 
   copyBytesInto(buffer: Uint8Array, offset: number): number {
-    offset += copyStringIntoBuffer(this.tag, buffer, offset);
+    copyStringIntoBuffer(this.tag, buffer, offset);
     return this.tag.length;
   }
 }

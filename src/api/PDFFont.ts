@@ -1,12 +1,13 @@
-import Embeddable from 'src/api//Embeddable';
-import PDFDocument from 'src/api/PDFDocument';
+import Embeddable from './Embeddable';
+import PDFDocument from './PDFDocument';
 import {
   CustomFontEmbedder,
   PDFHexString,
   PDFRef,
   StandardFontEmbedder,
-} from 'src/core';
-import { assertIs, assertOrUndefined } from 'src/utils';
+} from '../core';
+import { assertIs, assertOrUndefined } from '../utils';
+import { isPDFInstance, PDFClasses } from './objects';
 
 export type FontEmbedder = CustomFontEmbedder | StandardFontEmbedder;
 
@@ -38,7 +39,7 @@ export default class PDFFont implements Embeddable {
   /** The name of this font. */
   readonly name: string;
 
-  private modified = true;
+  private alreadyEmbedded = false;
   private readonly embedder: FontEmbedder;
 
   private constructor(ref: PDFRef, doc: PDFDocument, embedder: FontEmbedder) {
@@ -68,7 +69,6 @@ export default class PDFFont implements Embeddable {
    */
   encodeText(text: string): PDFHexString {
     assertIs(text, 'text', ['string']);
-    this.modified = true;
     return this.embedder.encodeText(text);
   }
 
@@ -128,10 +128,11 @@ export default class PDFFont implements Embeddable {
    * @returns The set of unicode code points supported by this font.
    */
   getCharacterSet(): number[] {
-    if (this.embedder instanceof StandardFontEmbedder) {
-      return this.embedder.encoding.supportedCodePoints;
+    if (isPDFInstance(this.embedder, PDFClasses.StandardFontEmbedder)) {
+      return (this.embedder as StandardFontEmbedder).encoding
+        .supportedCodePoints;
     } else {
-      return this.embedder.font.characterSet;
+      return (this.embedder as CustomFontEmbedder).font.characterSet;
     }
   }
 
@@ -145,10 +146,9 @@ export default class PDFFont implements Embeddable {
    * @returns Resolves when the embedding is complete.
    */
   async embed(): Promise<void> {
-    // TODO: Cleanup orphan embedded objects if a font is embedded multiple times...
-    if (this.modified) {
+    if (!this.alreadyEmbedded) {
       await this.embedder.embedIntoContext(this.doc.context, this.ref);
-      this.modified = false;
+      this.alreadyEmbedded = true;
     }
   }
 }

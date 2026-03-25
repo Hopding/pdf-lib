@@ -1,23 +1,24 @@
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFName from 'src/core/objects/PDFName';
-import PDFArray from 'src/core/objects/PDFArray';
-import PDFRef from 'src/core/objects/PDFRef';
+import PDFObject from '../objects/PDFObject';
+import PDFNumber from '../objects/PDFNumber';
+import PDFDict from '../objects/PDFDict';
+import PDFName from '../objects/PDFName';
+import PDFArray from '../objects/PDFArray';
+import PDFRef from '../objects/PDFRef';
 
-import PDFAcroField from 'src/core/acroform/PDFAcroField';
-import PDFAcroTerminal from 'src/core/acroform/PDFAcroTerminal';
-import PDFAcroNonTerminal from 'src/core/acroform/PDFAcroNonTerminal';
-import PDFAcroButton from 'src/core/acroform/PDFAcroButton';
-import PDFAcroSignature from 'src/core/acroform/PDFAcroSignature';
-import PDFAcroChoice from 'src/core/acroform/PDFAcroChoice';
-import PDFAcroText from 'src/core/acroform/PDFAcroText';
-import PDFAcroPushButton from 'src/core/acroform/PDFAcroPushButton';
-import PDFAcroRadioButton from 'src/core/acroform/PDFAcroRadioButton';
-import PDFAcroCheckBox from 'src/core/acroform/PDFAcroCheckBox';
-import PDFAcroComboBox from 'src/core/acroform/PDFAcroComboBox';
-import PDFAcroListBox from 'src/core/acroform/PDFAcroListBox';
-import { AcroButtonFlags, AcroChoiceFlags } from 'src/core/acroform/flags';
+import PDFAcroField from './PDFAcroField';
+import PDFAcroTerminal from './PDFAcroTerminal';
+import PDFAcroNonTerminal from './PDFAcroNonTerminal';
+import PDFAcroButton from './PDFAcroButton';
+import PDFAcroSignature from './PDFAcroSignature';
+import PDFAcroChoice from './PDFAcroChoice';
+import PDFAcroText from './PDFAcroText';
+import PDFAcroPushButton from './PDFAcroPushButton';
+import PDFAcroRadioButton from './PDFAcroRadioButton';
+import PDFAcroCheckBox from './PDFAcroCheckBox';
+import PDFAcroComboBox from './PDFAcroComboBox';
+import PDFAcroListBox from './PDFAcroListBox';
+import { AcroButtonFlags, AcroChoiceFlags } from './flags';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 export const createPDFAcroFields = (
   kidDicts?: PDFArray,
@@ -28,9 +29,15 @@ export const createPDFAcroFields = (
   for (let idx = 0, len = kidDicts.size(); idx < len; idx++) {
     const ref = kidDicts.get(idx);
     const dict = kidDicts.lookup(idx);
-    // if (dict instanceof PDFDict) kids.push(PDFAcroField.fromDict(dict));
-    if (ref instanceof PDFRef && dict instanceof PDFDict) {
-      kids.push([createPDFAcroField(dict, ref), ref]);
+    // if (isPDFInstance(dict, PDFClasses.PDFDict)) kids.push(PDFAcroField.fromDict(dict));
+    if (
+      isPDFInstance(ref, PDFClasses.PDFRef) &&
+      isPDFInstance(dict, PDFClasses.PDFDict)
+    ) {
+      kids.push([
+        createPDFAcroField(dict as PDFDict, ref as PDFRef),
+        ref as PDFRef,
+      ]);
     }
   }
 
@@ -65,10 +72,12 @@ export const createPDFAcroField = (
 const isNonTerminalAcroField = (dict: PDFDict): boolean => {
   const kids = dict.lookup(PDFName.of('Kids'));
 
-  if (kids instanceof PDFArray) {
-    for (let idx = 0, len = kids.size(); idx < len; idx++) {
-      const kid = kids.lookup(idx);
-      const kidIsField = kid instanceof PDFDict && kid.has(PDFName.of('T'));
+  if (isPDFInstance(kids, PDFClasses.PDFArray)) {
+    for (let idx = 0, len = (kids as PDFArray).size(); idx < len; idx++) {
+      const kid = (kids as PDFArray).lookup(idx);
+      const kidIsField =
+        isPDFInstance(kid, PDFClasses.PDFDict) &&
+        (kid as PDFDict).has(PDFName.of('T'));
       if (kidIsField) return true;
     }
   }

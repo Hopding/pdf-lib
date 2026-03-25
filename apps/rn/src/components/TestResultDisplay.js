@@ -45,7 +45,7 @@ export default class TestResultDisplay extends Component {
 
   render() {
     const { base64Pdf, runtimeSecs, onDone } = this.props;
-    const { page, numberOfPages, filePath } = this.state;
+    const { page, numberOfPages } = this.state;
 
     return (
       <SafeAreaView style={styles.container}>

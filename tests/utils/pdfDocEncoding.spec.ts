@@ -1,4 +1,4 @@
-import { range, pdfDocEncodingDecode } from 'src/utils';
+import { range, pdfDocEncodingDecode } from '../../src/utils';
 
 type Mapping = [number, string];
 
@@ -60,8 +60,8 @@ const mappings: Mapping[] = [
   ...range(0xae, 0xff + 1).map(identityMapping),
 ];
 
-describe(`pdfDocEncodingDecode`, () => {
-  it(`maps all PDFDocEncoding codes from 0-255 to the correct Unicode code points`, () => {
+describe('pdfDocEncodingDecode', () => {
+  it('maps all PDFDocEncoding codes from 0-255 to the correct Unicode code points', () => {
     // Make sure we have defined mappings for all codes from 0-255
     expect(mappings.map(([code]) => code).sort((a, b) => a - b)).toEqual(
       range(0, 256),

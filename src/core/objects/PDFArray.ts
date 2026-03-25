@@ -1,19 +1,24 @@
-import PDFBool from 'src/core/objects/PDFBool';
-import PDFDict from 'src/core/objects/PDFDict';
-import PDFHexString from 'src/core/objects/PDFHexString';
-import PDFName from 'src/core/objects/PDFName';
-import PDFNull from 'src/core/objects/PDFNull';
-import PDFNumber from 'src/core/objects/PDFNumber';
-import PDFObject from 'src/core/objects/PDFObject';
-import PDFRef from 'src/core/objects/PDFRef';
-import PDFStream from 'src/core/objects/PDFStream';
-import PDFString from 'src/core/objects/PDFString';
-import PDFContext from 'src/core/PDFContext';
-import CharCodes from 'src/core/syntax/CharCodes';
-import { PDFArrayIsNotRectangleError } from 'src/core/errors';
-import PDFRawStream from 'src/core/objects/PDFRawStream';
+import PDFBool from './PDFBool';
+import PDFDict from './PDFDict';
+import PDFHexString from './PDFHexString';
+import PDFName from './PDFName';
+import PDFNull from './PDFNull';
+import PDFNumber from './PDFNumber';
+import PDFObject from './PDFObject';
+import PDFRef from './PDFRef';
+import PDFStream from './PDFStream';
+import PDFString from './PDFString';
+import PDFContext from '../PDFContext';
+import CharCodes from '../syntax/CharCodes';
+import { PDFArrayIsNotRectangleError } from '../errors';
+import PDFRawStream from './PDFRawStream';
+import { isPDFInstance, PDFClasses } from '../../api/objects';
 
 class PDFArray extends PDFObject {
+  static className = () => PDFClasses.PDFArray;
+  myClass(): PDFClasses {
+    return PDFClasses.PDFArray;
+  }
   static withContext = (context: PDFContext) => new PDFArray(context);
 
   private readonly array: PDFObject[];
@@ -30,10 +35,12 @@ class PDFArray extends PDFObject {
   }
 
   push(object: PDFObject): void {
+    this.registerChange();
     this.array.push(object);
   }
 
   insert(index: number, object: PDFObject): void {
+    this.registerChange();
     this.array.splice(index, 0, object);
   }
 
@@ -43,10 +50,12 @@ class PDFArray extends PDFObject {
   }
 
   remove(index: number): void {
+    this.registerChange();
     this.array.splice(index, 1);
   }
 
   set(idx: number, object: PDFObject): void {
+    this.registerChange();
     this.array[idx] = object;
   }
 
@@ -114,15 +123,15 @@ class PDFArray extends PDFObject {
   asRectangle(): { x: number; y: number; width: number; height: number } {
     if (this.size() !== 4) throw new PDFArrayIsNotRectangleError(this.size());
 
-    const lowerLeftX = this.lookup(0, PDFNumber).asNumber();
-    const lowerLeftY = this.lookup(1, PDFNumber).asNumber();
-    const upperRightX = this.lookup(2, PDFNumber).asNumber();
-    const upperRightY = this.lookup(3, PDFNumber).asNumber();
+    const x1 = this.lookup(0, PDFNumber).asNumber();
+    const y1 = this.lookup(1, PDFNumber).asNumber();
+    const x2 = this.lookup(2, PDFNumber).asNumber();
+    const y2 = this.lookup(3, PDFNumber).asNumber();
 
-    const x = lowerLeftX;
-    const y = lowerLeftY;
-    const width = upperRightX - lowerLeftX;
-    const height = upperRightY - lowerLeftY;
+    const x = Math.min(x1, x2);
+    const y = Math.min(y1, y2);
+    const width = Math.abs(x1 - x2);
+    const height = Math.abs(y1 - y2);
 
     return { x, y, width, height };
   }
@@ -174,11 +183,15 @@ class PDFArray extends PDFObject {
   scalePDFNumbers(x: number, y: number): void {
     for (let idx = 0, len = this.size(); idx < len; idx++) {
       const el = this.lookup(idx);
-      if (el instanceof PDFNumber) {
+      if (isPDFInstance(el, PDFClasses.PDFNumber)) {
         const factor = idx % 2 === 0 ? x : y;
-        this.set(idx, PDFNumber.of(el.asNumber() * factor));
+        this.set(idx, PDFNumber.of((el as PDFNumber).asNumber() * factor));
       }
     }
+  }
+
+  registerChange(): void {
+    this.context.registerObjectChange(this);
   }
 }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta
@@ -47,15 +47,12 @@
     async function test() {
       const { PDFDocument, StandardFonts, rgb, TextAlignment } = PDFLib;
 
-      const [
-        dodCharacterPdf,
-        smallMarioPng,
-        marioEmblemPng,
-      ] = await Promise.all([
-        fetchBinaryAsset('pdfs/dod_character.pdf'),
-        fetchBinaryAsset('images/small_mario.png'),
-        fetchBinaryAsset('images/mario_emblem.png'),
-      ]);
+      const [dodCharacterPdf, smallMarioPng, marioEmblemPng] =
+        await Promise.all([
+          fetchBinaryAsset('pdfs/dod_character.pdf'),
+          fetchBinaryAsset('images/small_mario.png'),
+          fetchBinaryAsset('images/mario_emblem.png'),
+        ]);
 
       const pdfDoc = await PDFDocument.load(dodCharacterPdf);
 
