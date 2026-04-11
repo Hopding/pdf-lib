@@ -15,10 +15,17 @@ import Stream, { StreamType } from 'src/core/streams/Stream';
 // buffer.
 const emptyBuffer = new Uint8Array(0);
 
+// Default maximum decompressed size: 256 MB.
+// Prevents decompression bombs from consuming all available memory.
+const DEFAULT_MAX_BUFFER_SIZE = 256 * 1024 * 1024;
+
 /**
  * Super class for the decoding streams
  */
+
 class DecodeStream implements StreamType {
+  static maxBufferSize = DEFAULT_MAX_BUFFER_SIZE;
+
   protected bufferLength: number;
   protected buffer: Uint8Array;
   protected eof: boolean;
@@ -149,6 +156,14 @@ class DecodeStream implements StreamType {
     const buffer = this.buffer;
     if (requested <= buffer.byteLength) {
       return buffer;
+    }
+    if (requested > DecodeStream.maxBufferSize) {
+      throw new Error(
+        `DecodeStream: buffer size limit exceeded (requested ${requested} bytes, ` +
+          `limit ${DecodeStream.maxBufferSize} bytes). ` +
+          `This may indicate a decompression bomb. ` +
+          `You can increase the limit by setting DecodeStream.maxBufferSize.`,
+      );
     }
     let size = this.minBufferLength;
     while (size < requested) {
