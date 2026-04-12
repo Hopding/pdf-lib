@@ -16,6 +16,12 @@ import Stream, { StreamType } from 'src/core/streams/Stream';
 const emptyBuffer = new Uint8Array(0);
 
 /**
+ * Default maximum decompressed size (100 MB). Prevents decompression bomb
+ * attacks where a small compressed payload expands into gigabytes of memory.
+ */
+const DEFAULT_MAX_DECOMPRESSED_SIZE = 100 * 1024 * 1024; // 100 MB
+
+/**
  * Super class for the decoding streams
  */
 class DecodeStream implements StreamType {
@@ -25,13 +31,18 @@ class DecodeStream implements StreamType {
 
   private pos: number;
   private minBufferLength: number;
+  private maxDecompressedSize: number;
 
-  constructor(maybeMinBufferLength?: number) {
+  constructor(
+    maybeMinBufferLength?: number,
+    maxDecompressedSize: number = DEFAULT_MAX_DECOMPRESSED_SIZE,
+  ) {
     this.pos = 0;
     this.bufferLength = 0;
     this.eof = false;
     this.buffer = emptyBuffer;
     this.minBufferLength = 512;
+    this.maxDecompressedSize = maxDecompressedSize;
     if (maybeMinBufferLength) {
       // Compute the first power of two that is as big as maybeMinBufferLength.
       while (this.minBufferLength < maybeMinBufferLength) {
@@ -146,6 +157,15 @@ class DecodeStream implements StreamType {
   }
 
   protected ensureBuffer(requested: number) {
+    if (requested > this.maxDecompressedSize) {
+      throw new Error(
+        `Decompressed stream size exceeds the allowed limit of ` +
+          `${this.maxDecompressedSize} bytes. This may indicate a ` +
+          `decompression bomb attack. If this is a legitimate file, ` +
+          `increase the limit via the maxDecompressedSize option.`,
+      );
+    }
+
     const buffer = this.buffer;
     if (requested <= buffer.byteLength) {
       return buffer;
