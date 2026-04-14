@@ -219,3 +219,12 @@ export class MissingKeywordError extends PDFParsingError {
     super(pos, msg);
   }
 }
+
+export class InvalidXRefStreamByteWidthError extends Error {
+  constructor(width: number, index: number) {
+    const msg =
+      `Invalid XRef stream /W byte width: W[${index}] = ${width}, ` +
+      `but must be between 0 and 8 (per ISO 32000-1:2008, Table 17)`;
+    super(msg);
+  }
+}
