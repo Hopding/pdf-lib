@@ -1,4 +1,7 @@
-import { ReparseError } from 'src/core/errors';
+import {
+  InvalidXRefStreamByteWidthError,
+  ReparseError,
+} from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
@@ -54,7 +57,11 @@ class PDFXRefStreamParser {
     const W = this.dict.lookup(PDFName.of('W'), PDFArray);
     this.byteWidths = [-1, -1, -1];
     for (let idx = 0, len = W.size(); idx < len; idx++) {
-      this.byteWidths[idx] = W.lookup(idx, PDFNumber).asNumber();
+      const width = W.lookup(idx, PDFNumber).asNumber();
+      if (width < 0 || width > 8) {
+        throw new InvalidXRefStreamByteWidthError(width, idx);
+      }
+      this.byteWidths[idx] = width;
     }
   }
 
@@ -95,17 +102,23 @@ class PDFXRefStreamParser {
       for (let objIdx = 0; objIdx < length; objIdx++) {
         let type = 0;
         for (let idx = 0, len = typeFieldWidth; idx < len; idx++) {
-          type = (type << 8) | this.bytes.next();
+          const byte = this.bytes.next();
+          if (byte === undefined) return entries;
+          type = (type << 8) | byte;
         }
 
         let offset = 0;
         for (let idx = 0, len = offsetFieldWidth; idx < len; idx++) {
-          offset = (offset << 8) | this.bytes.next();
+          const byte = this.bytes.next();
+          if (byte === undefined) return entries;
+          offset = (offset << 8) | byte;
         }
 
         let generationNumber = 0;
         for (let idx = 0, len = genFieldWidth; idx < len; idx++) {
-          generationNumber = (generationNumber << 8) | this.bytes.next();
+          const byte = this.bytes.next();
+          if (byte === undefined) return entries;
+          generationNumber = (generationNumber << 8) | byte;
         }
 
         // When the `type` field is absent, it defaults to 1

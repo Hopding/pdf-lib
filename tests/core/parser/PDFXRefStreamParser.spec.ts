@@ -165,6 +165,37 @@ describe(`PDFXRefStreamParser`, () => {
   //   expect(context.lookup(barRef)).not.toBeUndefined();
   // });
 
+  it(`throws for invalid /W byte widths exceeding 8`, () => {
+    const context = PDFContext.create();
+    const dict = context.obj({
+      Index: [0, 1],
+      Length: 0,
+      Size: 1,
+      W: [100, 100, 100],
+    });
+    const contents = new Uint8Array(0);
+    const stream = PDFRawStream.of(dict, contents);
+
+    expect(() => PDFXRefStreamParser.forStream(stream)).toThrow(
+      /Invalid XRef stream \/W byte width/,
+    );
+  });
+
+  it(`accepts /W byte widths within valid range 0-8`, () => {
+    const context = PDFContext.create();
+    const dict = context.obj({
+      Index: [0, 1],
+      Length: 5,
+      Size: 1,
+      W: [1, 4, 0],
+    });
+    // 1 byte type + 4 bytes offset = 5 bytes for 1 entry
+    const contents = new Uint8Array([1, 0, 0, 0, 1]);
+    const stream = PDFRawStream.of(dict, contents);
+
+    expect(() => PDFXRefStreamParser.forStream(stream)).not.toThrow();
+  });
+
   it(`prevents reparsing`, () => {
     const context = PDFContext.create();
     const dict = context.obj({
