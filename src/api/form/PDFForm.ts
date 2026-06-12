@@ -584,7 +584,10 @@ export default class PDFForm {
 
     for (let i = 0, len = widgets.length; i < len; i++) {
       const widget = widgets[i];
-      const widgetRef = this.findWidgetAppearanceRef(field, widget);
+      const widgetRef = this.doc.context.getObjectRef(widget.dict);
+      if (widgetRef === undefined) {
+        throw new Error('Could not find PDFRef for widget annotation');
+      }
 
       const page = this.findWidgetPage(widget);
       pages.add(page);

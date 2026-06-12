@@ -30,6 +30,21 @@ const getWidgets = (pdfDoc: PDFDocument) =>
 const getRefs = (pdfDoc: PDFDocument) =>
   pdfDoc.context.enumerateIndirectObjects().map(([ref]) => ref as PDFRef);
 
+const getPageWidgetAnnotRefs = (pdfDoc: PDFDocument) =>
+  flatten(
+    pdfDoc.getPages().map((page) => {
+      const annots = page.node.Annots();
+      if (!annots) return [];
+      return annots.asArray().filter((annotRef) => {
+        const obj = pdfDoc.context.lookup(annotRef);
+        return (
+          obj instanceof PDFDict &&
+          obj.get(PDFName.of('Subtype')) === PDFName.of('Widget')
+        );
+      });
+    }),
+  );
+
 const getApRefs = (widget: PDFWidgetAnnotation) => {
   const onValue = widget.getOnValue() ?? PDFName.of('Yes');
   const aps = widget.getAppearances();
@@ -326,6 +341,26 @@ describe(`PDFForm`, () => {
     expect(refs2.includes(rg.ref)).toBe(false);
     cbWidgetRefs.forEach((ref) => expect(refs2).not.toContain(ref));
     rgWidgetRefs.forEach((ref) => expect(refs2).not.toContain(ref));
+  });
+
+  it(`removes widget annotation refs from page Annots arrays`, async () => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+    const form = pdfDoc.getForm();
+
+    const tf = form.createTextField('example.text.field');
+    tf.addToPage(page, { x: 50, y: 50, width: 100, height: 20 });
+
+    const widgetRef = pdfDoc.context.getObjectRef(
+      tf.acroField.getWidgets()[0].dict,
+    );
+
+    expect(getPageWidgetAnnotRefs(pdfDoc)).toContain(widgetRef);
+
+    form.removeField(tf);
+
+    expect(getPageWidgetAnnotRefs(pdfDoc)).not.toContain(widgetRef);
+    expect(getPageWidgetAnnotRefs(pdfDoc)).toHaveLength(0);
   });
 
   it(`it cleans references of removed fields and their widgets when created with pdf-lib`, async () => {
