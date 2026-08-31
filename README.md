@@ -1499,6 +1499,12 @@ The simplest way to deal with this fact is to:
 
 See this [StackOverflow answer](https://stackoverflow.com/a/48268766) for a great, in depth explanation of what a git history rewrite entails.
 
+## Projects Using pdf-lib
+
+Real-world applications built with pdf-lib:
+
+- **[I Have A Tool For That](https://ihaveatoolforthat.com/category/pdf-tools)** — A suite of client-side PDF tools (Merge PDF, Split PDF, Compress PDF, Add Watermark, Add Page Numbers, Protect/Unlock PDF, and more) built entirely on pdf-lib with no file uploads. PDFs are processed locally in the browser using pdf-lib's JavaScript API, with output exported directly to the user's device. ([Technical details](https://ihaveatoolforthat.com/privacy-guarantee))
+
 ## License
 
 [MIT](LICENSE.md)
