@@ -51,6 +51,7 @@
   "scripts": {
     "release": "yarn release:prep && release-it",
     "release:prep": "yarn lint && yarn clean && yarn typecheck && yarn test && yarn build",
+    "release:publish": "npm publish --access public",
     "get:version": "node --eval 'console.log(require(`./package.json`).version)'",
     "clean": "rimraf ts3.4 build cjs dist es scratchpad/build coverage tsBuildInfo.json apps/node-build apps/node/tsBuildInfo.json isolate*.log flamegraph.html out.pdf",
     "typecheck": "tsc --noEmit --incremental false --tsBuildInfoFile null",

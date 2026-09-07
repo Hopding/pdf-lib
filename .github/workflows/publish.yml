@@ -1,0 +1,59 @@
+# Publishes @cantoo/pdf-lib via npm Trusted Publishing (OIDC).
+# No NPM_TOKEN required — configure the Trusted Publisher on npmjs.com to:
+#   Organization/user: cantoo-scribe
+#   Repository:        pdf-lib
+#   Workflow filename: publish.yml
+#   Allowed actions:   include "npm publish" (direct publish)
+#
+# Docs: https://docs.npmjs.com/trusted-publishers
+
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  id-token: write # required for OIDC → npm
+  contents: read
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          # Never cache package manager state for release builds.
+          package-manager-cache: false
+
+      - name: Use npm with OIDC support
+        run: npm install -g npm@latest
+
+      - name: Enable Corepack (Yarn classic)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Test
+        run: yarn test
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish
+        # Do NOT set NODE_AUTH_TOKEN here — that would bypass OIDC.
+        # Provenance attestations are generated automatically with Trusted Publishing.
+        run: npm publish --access public
