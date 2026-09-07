@@ -142,4 +142,29 @@ describe('PDFDocument.encrypt', () => {
     const reopened = await PDFDocument.load(await pdfDoc.save(), { password });
     expect(decodedContentStreams(reopened)[0]).toContain(SECRET_HEX);
   });
+
+  it('decrypts when the crypt filters are indirect objects', async () => {
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    pdfDoc
+      .addPage([300, 200])
+      .drawText(SECRET, { x: 20, y: 100, size: 14, font });
+    pdfDoc.encrypt({ userPassword: '', ownerPassword: OWNER_PASSWORD });
+
+    // Some producers (e.g. iText 2.x) write /CF and each crypt filter as
+    // indirect objects instead of inline dictionaries.
+    const encrypted = await PDFDocument.load(await pdfDoc.save(), {
+      ignoreEncryption: true,
+    });
+    const { context } = encrypted;
+    const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
+    const cf = encryptDict.lookup(PDFName.of('CF'), PDFDict);
+    const stdCf = cf.lookup(PDFName.of('StdCF'), PDFDict);
+    cf.set(PDFName.of('StdCF'), context.register(stdCf));
+    encryptDict.set(PDFName.of('CF'), context.register(cf));
+    const bytes = await encrypted.save({ useObjectStreams: false });
+
+    const reopened = await PDFDocument.load(bytes, { password: '' });
+    expect(decodedContentStreams(reopened)[0]).toContain(SECRET_HEX);
+  });
 });

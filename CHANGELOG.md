@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.2]
+
+- Decrypt PDFs whose `/Encrypt` crypt filters (`/CF`, `/StdCF`, …) are
+  indirect objects (e.g. iText 2.x). `CipherTransformFactory` now resolves
+  those entries with `lookup` instead of `get`.
+
 ## [2.9.1]
 
 - `PDFDocument.encrypt()` defaults to AES-256 (`/V 5`, `/R 6`, ISO 32000-2
