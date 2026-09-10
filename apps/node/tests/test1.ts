@@ -1,4 +1,4 @@
-import fontkit from 'fontkit';
+import fontkit from '@cantoo/fontkit';
 import { Assets } from '..';
 import {
   clip,

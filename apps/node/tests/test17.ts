@@ -11,7 +11,7 @@ import {
   PDFWidgetAnnotation,
 } from '../../..';
 
-import fontkit from 'fontkit';
+import fontkit from '@cantoo/fontkit';
 
 export default async (assets: Assets) => {
   const pdfDoc = await PDFDocument.load(assets.pdfs.fancy_fields);

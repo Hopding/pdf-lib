@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+- Prefer Cantoo's maintained [`@cantoo/fontkit`](https://www.npmjs.com/package/@cantoo/fontkit)
+  (≥2.0.9) for custom font embedding (devDependency, docs, web/Deno demos). It
+  ships TypeScript types, a default export, and UMD builds
+  (`dist/fontkit.umd.js` / `dist/fontkit.umd.min.js`). Upstream `fontkit` and
+  `@pdf-lib/fontkit` remain supported via `registerFontkit`. Dropped the
+  `@types/fontkit` devDependency.
+
 ## [2.9.2]
 
 - Decrypt PDFs whose `/Encrypt` crypt filters (`/CF`, `/StdCF`, …) are

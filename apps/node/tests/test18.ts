@@ -1,7 +1,7 @@
 import { Assets } from '..';
 import { PDFDocument } from '../../..';
 
-import fontkit from 'fontkit';
+import fontkit from '@cantoo/fontkit';
 
 // Based on test14.ts
 const loadA = async (assets: Assets) => {

@@ -1,8 +1,8 @@
 /**
  * Minimal structural types for a fontkit-compatible engine registered via
- * `PDFDocument.registerFontkit`. Compatible with upstream `fontkit` v2+
- * (`@types/fontkit`) and `@pdf-lib/fontkit`. Not a full mirror of either
- * package's typings — intentionally a structural subset so both engines
+ * `PDFDocument.registerFontkit`. Compatible with `@cantoo/fontkit` (preferred),
+ * upstream `fontkit` v2+, and `@pdf-lib/fontkit`. Not a full mirror of any
+ * package's typings — intentionally a structural subset so these engines
  * (and their typings) are assignable to `Fontkit`.
  */
 
@@ -34,14 +34,14 @@ export interface SubsetStream {
 
 export interface Subset {
   /**
-   * Upstream fontkit returns a subset glyph id (`number`).
-   * `@types/fontkit` incorrectly types this as `boolean`, so both are accepted
-   * at the type level; callers must still treat a non-number as an error.
+   * `@cantoo/fontkit` / upstream fontkit return a subset glyph id (`number`).
+   * Older typings / engines may report `boolean`; callers must still treat a
+   * non-number as an error.
    */
   includeGlyph(glyph: number | Glyph): number | boolean;
-  /** Upstream `fontkit` v2+ */
+  /** `@cantoo/fontkit` / upstream fontkit v2+ */
   encode?(): Uint8Array;
-  /** `@pdf-lib/fontkit` */
+  /** `@pdf-lib/fontkit` Node-style stream API */
   encodeStream?(): SubsetStream;
 }
 
@@ -58,34 +58,38 @@ export interface Font {
   xHeight: number;
   bbox: BoundingBox;
   characterSet: number[];
-  /** Present on CFF/OTF fonts; often absent on TrueType (and on `@types/fontkit`). */
+  /** Present on CFF/OTF fonts; often absent on TrueType. */
   cff?: any;
   'OS/2'?: { sFamilyClass: number };
   head?: { macStyle?: { italic?: boolean } };
   post?: { isFixedPitch?: boolean | number };
 
-  glyphForCodePoint(codePoint: number): Glyph;
+  glyphForCodePoint(codePoint: number): Glyph | null;
   layout(str: string, features?: TypeFeatures | string[]): GlyphRun;
   createSubset(): Subset;
 }
 
-/** TrueType / DFont collection returned by upstream fontkit for some buffers. */
+/** TrueType / DFont collection returned by fontkit for some buffers. */
 export interface FontCollection {
   type?: string;
   fonts: Font[];
   getFont?(name: string): Font | null;
 }
 
+export type FontkitCreateResult =
+  | Font
+  | FontCollection
+  | null
+  | Promise<Font | FontCollection | null>;
+
 export interface Fontkit {
   /**
    * Load a font (or font collection) from raw bytes.
    * Accepts `Uint8Array` / `Buffer` (Buffer is a Uint8Array subclass in Node).
    * For collections (`.ttc` / `.dfont`), pass `postscriptName` to select a face.
+   * May return `null` when a collection face cannot be resolved.
    */
-  create(
-    buffer: Uint8Array,
-    postscriptName?: string,
-  ): Font | FontCollection | Promise<Font | FontCollection>;
+  create(buffer: Uint8Array, postscriptName?: string): FontkitCreateResult;
 }
 
 export const isFontCollection = (
@@ -102,7 +106,12 @@ export const isFontCollection = (
 };
 
 /** Narrow `fontkit.create()` result to a single face (rejects TTC/DFont collections). */
-export const asFont = (font: Font | FontCollection): Font => {
+export const asFont = (font: Font | FontCollection | null): Font => {
+  if (!font) {
+    throw new Error(
+      'fontkit.create() returned null. Check the font bytes, or pass EmbedFontOptions.postscriptName to select a face from a collection.',
+    );
+  }
   if (isFontCollection(font)) {
     throw new Error(
       'fontkit.create() returned a font collection (e.g. .ttc/.dfont). Pass EmbedFontOptions.postscriptName to select a face, or embed a single-font file.',

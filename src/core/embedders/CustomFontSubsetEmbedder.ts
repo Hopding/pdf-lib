@@ -84,8 +84,8 @@ class CustomFontSubsetEmbedder extends CustomFontEmbedder {
   }
 
   protected serializeFont(): Promise<Uint8Array> {
-    // Upstream fontkit v2+ exposes sync `encode()`; @pdf-lib/fontkit uses
-    // Node-style `encodeStream()`.
+    // `@cantoo/fontkit` / upstream fontkit v2+ expose sync `encode()`;
+    // `@pdf-lib/fontkit` uses Node-style `encodeStream()`.
     if (typeof this.subset.encode === 'function') {
       return Promise.resolve(this.subset.encode());
     }

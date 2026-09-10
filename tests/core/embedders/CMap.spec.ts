@@ -1,4 +1,4 @@
-import fontkit from 'fontkit';
+import fontkit from '@cantoo/fontkit';
 import { Font, Glyph, asFont } from '../../../src/types/fontkit';
 import fs from 'fs';
 
@@ -18,10 +18,10 @@ const sourceHansJpFontCmap = fs.readFileSync(
 );
 
 const allGlyphsInFontSortedById = (font: Font) => {
-  const glyphs: Glyph[] = new Array(font.characterSet.length);
-  for (let idx = 0, len = glyphs.length; idx < len; idx++) {
-    const codePoint = font.characterSet[idx];
-    glyphs[idx] = font.glyphForCodePoint(codePoint);
+  const glyphs: Glyph[] = [];
+  for (let idx = 0, len = font.characterSet.length; idx < len; idx++) {
+    const glyph = font.glyphForCodePoint(font.characterSet[idx]);
+    if (glyph) glyphs.push(glyph);
   }
   return sortedUniq(glyphs.sort(byAscendingId), (g) => g.id);
 };

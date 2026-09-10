@@ -1,4 +1,4 @@
-import fontkit from 'https://esm.sh/fontkit@2.0.4';
+import fontkit from 'https://esm.sh/@cantoo/fontkit@2.0.9';
 
 import { Assets } from '../index.ts';
 

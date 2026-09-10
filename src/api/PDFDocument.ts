@@ -344,7 +344,7 @@ export default class PDFDocument {
    * For example:
    * ```js
    * import { PDFDocument } from 'pdf-lib'
-   * import * as fontkit from 'fontkit'
+   * import fontkit from '@cantoo/fontkit'
    *
    * const pdfDoc = await PDFDocument.create()
    * pdfDoc.registerFontkit(fontkit)

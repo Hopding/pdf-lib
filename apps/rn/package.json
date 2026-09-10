@@ -8,7 +8,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@pdf-lib/fontkit": "^0.0.4",
+    "@cantoo/fontkit": "^2.0.9",
     "pdf-lib": "./../..",
     "react": "16.8.3",
     "react-native": "0.59.10",

@@ -1095,9 +1095,9 @@ const pdfBytes = await pdfDoc.save()
 
 ### Embed Font and Measure Text
 
-`pdf-lib` relies on [`fontkit`](https://www.npmjs.com/package/fontkit) to support embedding custom fonts. You must add the `fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts. The older [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit) package still works if you already depend on it.
+`pdf-lib` relies on [`@cantoo/fontkit`](https://www.npmjs.com/package/@cantoo/fontkit) to support embedding custom fonts. You must add the `@cantoo/fontkit` module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts. Upstream [`fontkit`](https://www.npmjs.com/package/fontkit) and the older [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit) package still work if you already depend on them.
 
-> **[See below for detailed installation instructions on installing `fontkit` as an NPM module (or `@pdf-lib/fontkit` as a UMD module).](#fontkit-installation)**
+> **[See below for detailed installation instructions on installing `@cantoo/fontkit` as an NPM or UMD module.](#fontkit-installation)**
 
 _This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_text.pdf)_ (when [this font](assets/fonts/ubuntu/Ubuntu-R.ttf) is used for the `fontBytes` variable).
 
@@ -1106,7 +1106,7 @@ _This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_te
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument, rgb } from 'pdf-lib'
-import * as fontkit from 'fontkit'
+import fontkit from '@cantoo/fontkit'
 
 // This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
@@ -1238,7 +1238,7 @@ standard fonts are not PDF/A compliant). Validate the result with a tool such as
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument } from '@cantoo/pdf-lib'
-import * as fontkit from 'fontkit'
+import fontkit from '@cantoo/fontkit'
 
 const fontBytes = ... // e.g. fs.readFileSync('Roboto-Regular.ttf')
 
@@ -1280,7 +1280,7 @@ complete `factur-x.xml` from your invoicing stack.
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument, embedFacturX } from '@cantoo/pdf-lib'
-import * as fontkit from 'fontkit'
+import fontkit from '@cantoo/fontkit'
 
 const fontBytes = ...
 const invoiceXmlBytes = ... // Factur-X / ZUGFeRD XML (Uint8Array)
@@ -1639,7 +1639,7 @@ import {
   rgb,
   StandardFonts,
 } from 'https://cdn.skypack.dev/pdf-lib@^1.11.1?dts';
-import fontkit from 'https://esm.sh/fontkit@2.0.4';
+import fontkit from 'https://esm.sh/@cantoo/fontkit@2.0.9';
 
 const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
 const fontBytes = await fetch(url).then((res) => res.arrayBuffer());
@@ -1714,7 +1714,7 @@ This assumes you're using [npm](https://www.npmjs.com/) or [yarn](https://yarnpk
 
 ### Pinning `pako` to v2
 
-`@cantoo/pdf-lib` depends on [`pako`](https://www.npmjs.com/package/pako) v2. Some transitive dependencies still declare older ranges (`@pdf-lib/standard-fonts`, `@pdf-lib/upng`, and — if you use custom fonts — `fontkit` → `unicode-trie`). Those call sites are compatible with pako v2, so this package forces a single version via Yarn `resolutions` / npm `overrides`.
+`@cantoo/pdf-lib` depends on [`pako`](https://www.npmjs.com/package/pako) v2. Some transitive dependencies still declare older ranges (`@pdf-lib/standard-fonts`, `@pdf-lib/upng`). Those call sites are compatible with pako v2, so this package forces a single version via Yarn `resolutions` / npm `overrides`. (Custom fonts via [`@cantoo/fontkit`](https://www.npmjs.com/package/@cantoo/fontkit) use `fflate` instead of pako.)
 
 That force only applies when installing **this** repository. In your own app, add the same pin if you want one `pako@2` everywhere:
 
@@ -1760,26 +1760,26 @@ var rgb = PDFLib.rgb;
 
 ## Fontkit Installation
 
-`pdf-lib` relies upon [`fontkit`](https://www.npmjs.com/package/fontkit) to support embedding custom fonts. You must add a fontkit-compatible module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts (see the [font embedding example](#embed-font-and-measure-text)). This module is not included by default because not all users need it, and it increases bundle size.
+`pdf-lib` relies upon [`@cantoo/fontkit`](https://www.npmjs.com/package/@cantoo/fontkit) to support embedding custom fonts. You must add a fontkit-compatible module to your project and register it using `pdfDoc.registerFontkit(...)` before embedding custom fonts (see the [font embedding example](#embed-font-and-measure-text)). This module is not included by default because not all users need it, and it increases bundle size.
 
-Prefer the maintained upstream [`fontkit`](https://www.npmjs.com/package/fontkit) package (v2+). The older [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit) fork remains supported for compatibility (including UMD builds).
+Prefer Cantoo's maintained [`@cantoo/fontkit`](https://www.npmjs.com/package/@cantoo/fontkit) fork (based on fontkit v2). It ships TypeScript types and UMD builds (including a minified file). Upstream [`fontkit`](https://www.npmjs.com/package/fontkit) and the older [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit) package remain supported for compatibility.
 
 ### Fontkit NPM Module
 
 ```bash
 # With npm
-npm install --save fontkit
+npm install --save @cantoo/fontkit
 
 # With yarn
-yarn add fontkit
+yarn add @cantoo/fontkit
 ```
 
-To register the `fontkit` instance, use a namespace import. Upstream `fontkit` v2 has no default export under Node's `import` condition (`dist/module.mjs`), so `import fontkit from 'fontkit'` throws in a `"type": "module"` package. Bundlers and CommonJS apply interop, so the default form may still work there.
+Register the `fontkit` instance before embedding custom fonts. With `@cantoo/fontkit` ≥2.0.9 you can use a default import (recommended). A namespace import also works. Upstream `fontkit` still has no default export under Node ESM, so use `import * as fontkit from 'fontkit'` if you depend on that package.
 
 <!-- prettier-ignore -->
 ```js
 import { PDFDocument } from 'pdf-lib'
-import * as fontkit from 'fontkit'
+import fontkit from '@cantoo/fontkit'
 
 const pdfDoc = await PDFDocument.create()
 pdfDoc.registerFontkit(fontkit)
@@ -1787,17 +1787,17 @@ pdfDoc.registerFontkit(fontkit)
 
 ### Fontkit UMD Module
 
-Upstream `fontkit` does not ship a UMD build. For script-tag usage in the browser, you can keep using `@pdf-lib/fontkit`:
+You can also download `@cantoo/fontkit` as a UMD module from [unpkg](https://unpkg.com/#/) or [jsDelivr](https://www.jsdelivr.com/):
 
-- https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js
-- https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.min.js
-- https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit/dist/fontkit.umd.js
-- https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit/dist/fontkit.umd.min.js
+- https://unpkg.com/@cantoo/fontkit/dist/fontkit.umd.min.js
+- https://unpkg.com/@cantoo/fontkit/dist/fontkit.umd.js
+- https://cdn.jsdelivr.net/npm/@cantoo/fontkit/dist/fontkit.umd.min.js
+- https://cdn.jsdelivr.net/npm/@cantoo/fontkit/dist/fontkit.umd.js
 
 > **NOTE:** if you are using the CDN scripts in production, you should include a specific version number in the URL, for example:
 >
-> - https://unpkg.com/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js
-> - https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js
+> - https://unpkg.com/@cantoo/fontkit@2.0.9/dist/fontkit.umd.min.js
+> - https://cdn.jsdelivr.net/npm/@cantoo/fontkit@2.0.9/dist/fontkit.umd.min.js
 
 When using a UMD build, you will have access to a global `window.fontkit` variable. To register the `fontkit` instance:
 
@@ -1836,7 +1836,7 @@ When working with PDFs, you will frequently come across the terms "character enc
   <!-- prettier-ignore -->
   ```js
   import { PDFDocument } from 'pdf-lib'
-  import * as fontkit from 'fontkit'
+  import fontkit from '@cantoo/fontkit'
 
   const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf'
   const fontBytes = await fetch(url).then((res) => res.arrayBuffer())
@@ -1888,7 +1888,7 @@ You can use an embedded font when filling form fields as follows:
 
 ```js
 import { PDFDocument } from 'pdf-lib';
-import * as fontkit from 'fontkit';
+import fontkit from '@cantoo/fontkit';
 
 // Fetch the PDF with form fields
 const formUrl = 'https://pdf-lib.js.org/assets/dod_character.pdf';

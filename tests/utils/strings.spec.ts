@@ -1,4 +1,4 @@
-import fontkit from 'fontkit';
+import fontkit from '@cantoo/fontkit';
 import { FontNames } from '@pdf-lib/standard-fonts';
 import fs from 'fs';
 

@@ -1,4 +1,4 @@
-import fontkit from 'fontkit';
+import fontkit from '@cantoo/fontkit';
 import fs from 'fs';
 import {
   AFRelationship,
