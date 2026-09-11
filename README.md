@@ -1,8 +1,61 @@
 ## Forked by [Cantoo](https://cantoo.fr)
 
-This fork adds the support for svg to the pdf-lib project. Until pdf-lib project gets a better maintainance, we will maintain this project as long as we need it but cannot guarantee the support for issues too far from our own roadmap.
+[`@cantoo/pdf-lib`](https://www.npmjs.com/package/@cantoo/pdf-lib) is an actively maintained fork of [`Hopding/pdf-lib`](https://github.com/Hopding/pdf-lib). We keep the original API and docs, and ship the features below that upstream does not (or no longer) provide. Install with:
 
-Install with: `npm install @cantoo/pdf-lib`
+```bash
+npm install @cantoo/pdf-lib
+# or
+yarn add @cantoo/pdf-lib
+```
+
+We maintain this project for our own product needs and cannot guarantee support for every issue outside that roadmap — but contributions that fit the library are welcome.
+
+### Benefits vs original `pdf-lib`
+
+**Drawing & content**
+
+- **Full SVG drawing** (`page.drawSvg` / `embedSvg`) — not just `drawSvgPath`: shapes, text, transforms, viewBox cropping, blend modes, rounded rects, CSS colors via [`culori`](https://culorijs.org/)
+- **`PDFPage.extractContents()`** — pull typed assets (text, images, approximate vector graphics as SVG) out of page content streams
+- **`characterSpacing`** on `drawText`
+
+**Documents & save**
+
+- **Incremental updates** (`forIncrementalUpdate`, `save({ useObjectStreams… })`, `commit()`) — append changes without rewriting the whole file (signing / multi-increment workflows)
+- **PDF header preserved** on save (writers no longer always force `%PDF-1.7`)
+- **Recover truncated PDFs** instead of failing hard on a broken trailer object
+- More robust parsing (hex-string whitespace, object streams on older PDFs, HTML closing tags spanning lines, case-insensitive PDF names, …)
+
+**Forms & scripts**
+
+- **XFA helpers** — `preserveXFA`, read/modify XFA JavaScript, signature-field discovery (static / government-style XFA)
+- Extract / work with **document-level JavaScript**
+- **`PDFForm.flatten()`** also flattens orphaned widget annotations not listed in `AcroForm.Fields`
+- **Attachments** — add, extract (including unsaved), and detach embedded files; name trees kept in PDF lexical order
+
+**Standards & e-invoicing**
+
+- **`convertToPDFA()`** — PDF/A-1/2/3 structural pieces (OutputIntent + sRGB ICC, `/ID`, XMP synced with Info)
+- **`embedFacturX()`** — Factur-X / ZUGFeRD PDF/A-3 hybrid invoices
+
+**Security & crypto**
+
+- **`PDFDocument.encrypt()`** — AES-256 revision 6 by default; AES-128 / RC4 via `algorithm` (RC4 needs `allowWeakCryptography`)
+- Decrypt PDFs whose crypt filters are **indirect objects**
+- No `crypto-js`: in-tree AES/RC4/MD5/SHA-256 + Web Crypto `getRandomValues`
+
+**Fonts & layers**
+
+- First-class **[`@cantoo/fontkit`](https://www.npmjs.com/package/@cantoo/fontkit)** support (types, default export, UMD); still compatible with upstream `fontkit` / `@pdf-lib/fontkit`
+- **`postscriptName`** to pick a face from `.ttc` / `.dfont` collections
+- **Optional content (PDF layers)** — `getOptionalContentGroups()` / `setOptionalContentGroupVisibility()`
+
+**Packaging & deps**
+
+- Vendored **[`@cantoo/upng`](./src/packages/upng)** and **[`@cantoo/standard-fonts`](./src/packages/standard-fonts)** (also as `@cantoo/pdf-lib/upng` and `@cantoo/pdf-lib/standard-fonts`)
+- Compression via **[`fflate`](https://www.npmjs.com/package/fflate)** instead of `pako` (modular TS UPNG with Photopea `quantize` / `framize` / lossy `cnum`)
+- Lighter color parsing with **`culori`**; `html-entities` as a peer (pulled in by the HTML/SVG parser)
+
+See [CHANGELOG.md](CHANGELOG.md) for version-by-version detail.
 
 <hr/>
 
@@ -58,6 +111,7 @@ Install with: `npm install @cantoo/pdf-lib`
 
 ## Table of Contents
 
+- [Benefits vs original `pdf-lib`](#benefits-vs-original-pdf-lib)
 - [Features](#features)
 - [Motivation](#motivation)
 - [Usage Examples](#usage-examples)
@@ -90,7 +144,7 @@ Install with: `npm install @cantoo/pdf-lib`
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
   - [NPM Module](#npm-module)
-  - [Pinning `pako` to v2](#pinning-pako-to-v2)
+  - [Vendored PNG & standard fonts](#vendored-png--standard-fonts)
   - [UMD Module](#umd-module)
   - [Fontkit Installation](#fontkit-installation)
 - [Documentation](#documentation)
@@ -112,6 +166,8 @@ Install with: `npm install @cantoo/pdf-lib`
 
 - Create new PDFs
 - Modify existing PDFs
+- Incremental document updates (append-only saves / multi-commit)
+- Encrypt / decrypt PDFs (AES-256 by default)
 - Create forms
 - Fill forms
 - Flatten forms
@@ -123,19 +179,22 @@ Install with: `npm install @cantoo/pdf-lib`
 - Insert Pages
 - Remove Pages
 - Copy pages between PDFs
-- Draw Text
+- Draw Text (including character spacing)
 - Draw Images
 - Draw PDF Pages
 - Draw Vector Graphics
 - Draw SVG Paths
+- Draw full SVG documents (`drawSvg` / `embedSvg`)
+- Extract page contents (text, images, vector graphics)
+- Optional content / PDF layer visibility
 - Measure width and height of text
-- Embed Fonts (supports UTF-8 and UTF-16 character sets)
+- Embed Fonts (supports UTF-8 and UTF-16 character sets; TTC/DFont face selection)
 - Set document metadata
 - Read document metadata
 - Set viewer preferences
 - Read viewer preferences
 - Add attachments
-- Extract attachments
+- Extract / detach attachments
 - Create PDF/A documents (parts 1–3)
 - Embed Factur-X / ZUGFeRD e-invoices (PDF/A-3)
 
@@ -1700,36 +1759,30 @@ There are currently four apps:
 
 ### NPM Module
 
-To install the latest stable version:
+To install the latest stable Cantoo fork:
 
 ```bash
 # With npm
-npm install --save pdf-lib
+npm install --save @cantoo/pdf-lib
 
 # With yarn
-yarn add pdf-lib
+yarn add @cantoo/pdf-lib
 ```
 
-This assumes you're using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/lang/en/) as your package manager.
+(`pdf-lib` without the scope is still the original Hopding package on npm.)
 
-### Pinning `pako` to v2
+### Vendored PNG & standard fonts
 
-`@cantoo/pdf-lib` depends on [`pako`](https://www.npmjs.com/package/pako) v2. Some transitive dependencies still declare older ranges (`@pdf-lib/standard-fonts`, `@pdf-lib/upng`). Those call sites are compatible with pako v2, so this package forces a single version via Yarn `resolutions` / npm `overrides`. (Custom fonts via [`@cantoo/fontkit`](https://www.npmjs.com/package/@cantoo/fontkit) use `fflate` instead of pako.)
+`@cantoo/pdf-lib` vendors [`@cantoo/upng`](./src/packages/upng) and [`@cantoo/standard-fonts`](./src/packages/standard-fonts) under `src/packages/` (same pattern as [`@cantoo/fontkit`](https://github.com/cantoo-scribe/fontkit)). Compression uses [`fflate`](https://www.npmjs.com/package/fflate) (no `pako`).
 
-That force only applies when installing **this** repository. In your own app, add the same pin if you want one `pako@2` everywhere:
+Install the subpackages alone if needed:
 
-```json
-{
-  "resolutions": {
-    "pako": "^2.2.0"
-  },
-  "overrides": {
-    "pako": "^2.2.0"
-  }
-}
+```bash
+npm install @cantoo/upng @cantoo/standard-fonts
+# or via pdf-lib subpath exports:
+# import UPNG from '@cantoo/pdf-lib/upng'
+# import { FontNames } from '@cantoo/pdf-lib/standard-fonts'
 ```
-
-(`resolutions` is used by Yarn classic; `overrides` by npm and Yarn Berry. For pnpm, use `pnpm.overrides`.)
 
 ### UMD Module
 
