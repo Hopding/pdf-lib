@@ -1,4 +1,4 @@
-import { deflate } from 'pako';
+import { zlibSync } from 'fflate';
 
 import {
   PDFArray,
@@ -14,7 +14,7 @@ import {
   PDFRef,
   PDFString,
 } from '../../src/core';
-import { mergeIntoTypedArray } from '../../src/utils';
+import { mergeIntoTypedArray, typedArrayFor } from '../../src/utils';
 
 describe('PDFContext', () => {
   it('retains assigned objects', () => {
@@ -128,7 +128,7 @@ describe('PDFContext', () => {
         '/Length 25\n',
         '>>\n',
         'stream\n',
-        deflate('stuff and things!'),
+        zlibSync(typedArrayFor('stuff and things!')),
         '\nendstream',
       ),
     );

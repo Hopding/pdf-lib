@@ -1,4 +1,4 @@
-import { deflate } from 'pako';
+import { zlibSync } from 'fflate';
 import type { DocumentSnapshot } from '../api';
 
 import PDFHeader from './document/PDFHeader';
@@ -328,7 +328,7 @@ class PDFContext {
     contents: string | Uint8Array,
     dict: LiteralObject = {},
   ): PDFRawStream {
-    return this.stream(deflate(typedArrayFor(contents)), {
+    return this.stream(zlibSync(typedArrayFor(contents)), {
       ...dict,
       Filter: 'FlateDecode',
     });

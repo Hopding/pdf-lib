@@ -1,6 +1,6 @@
 import fontkit from '@cantoo/fontkit';
 import fs from 'fs';
-import { inflate } from 'pako';
+import { unzlibSync } from 'fflate';
 import {
   buildPDFAMetadata,
   extractForeignXmpDescriptions,
@@ -244,7 +244,7 @@ describe('PDFDocument.convertToPDFA', () => {
     expect(profile.dict.lookup(PDFName.of('Filter'))).toBe(
       PDFName.of('FlateDecode'),
     );
-    const inflated = inflate(profile.asUint8Array());
+    const inflated = unzlibSync(profile.asUint8Array());
     expect(inflated.length).toBe(3144);
     expect(inflated).toEqual(getDefaultSRGBProfile());
   });

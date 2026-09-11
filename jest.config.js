@@ -18,6 +18,9 @@ module.exports = {
   // Module resolution
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
+    // UPNG source is ESM; Jest runs in CJS — use the built CJS artifact.
+    'packages/upng(/index)?(\\.(ts|js))?$':
+      '<rootDir>/src/packages/upng/dist/index.cjs',
   },
 
   // Supported file extensions

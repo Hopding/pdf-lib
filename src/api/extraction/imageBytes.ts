@@ -1,4 +1,4 @@
-import { deflate } from 'pako';
+import { zlibSync } from 'fflate';
 
 import PDFArray from '../../core/objects/PDFArray';
 import PDFDict from '../../core/objects/PDFDict';
@@ -158,7 +158,7 @@ const encodePng = (
     }
   }
 
-  const compressed = deflate(raw);
+  const compressed = zlibSync(raw);
 
   const signature = Uint8Array.of(
     0x89,

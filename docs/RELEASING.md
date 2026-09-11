@@ -1,14 +1,20 @@
 # Release Process
 
-This document describes how to release a new version of `@cantoo/pdf-lib`.
+This document describes how to release `@cantoo/pdf-lib`, `@cantoo/upng`, and
+`@cantoo/standard-fonts`.
 
 Publishing to npm is done by GitHub Actions via [Trusted Publishing
 (OIDC)](https://docs.npmjs.com/trusted-publishers) — there is no long-lived
 `NPM_TOKEN`. The workflow is [`.github/workflows/publish.yml`](../.github/workflows/publish.yml).
+On each `v*` tag it publishes the root package and the two vendored packages
+under `src/packages/`.
 
 ## One-time npm setup
 
-1. Open https://www.npmjs.com/package/@cantoo/pdf-lib → **Settings** → **Trusted Publisher**
+For **each** of `@cantoo/pdf-lib`, `@cantoo/upng`, and `@cantoo/standard-fonts`:
+
+1. Open the package page on npmjs.com → **Settings** → **Trusted Publisher**
+   (for brand-new packages, publish once manually or create the package first)
 2. Add a GitHub Actions publisher:
    - **Organization or user:** `cantoo-scribe`
    - **Repository:** `pdf-lib`

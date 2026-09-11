@@ -3,7 +3,7 @@ import {
   Font,
   FontNames,
   EncodingType,
-} from '@pdf-lib/standard-fonts';
+} from '../../packages/standard-fonts';
 
 import PDFHexString from '../objects/PDFHexString';
 import PDFRef from '../objects/PDFRef';
@@ -127,7 +127,7 @@ class StandardFontEmbedder {
       const codePoint = toCodePoint(codePoints[idx])!;
       try {
         glyphs[idx] = this.encoding.encodeUnicodeCodePoint(codePoint);
-      } catch (error) {
+      } catch (_error) {
         // Replace non-WinAnsi characters with a placeholder
         glyphs[idx] = this.encoding.encodeUnicodeCodePoint(toCodePoint('?')!);
       }

@@ -1,4 +1,4 @@
-import UPNG from '@pdf-lib/upng';
+import UPNG from '../packages/upng';
 
 const getImageType = (ctype: number) => {
   if (ctype === 0) return PngType.Greyscale;
@@ -48,10 +48,6 @@ export class PNG {
   readonly bitsPerComponent: number;
 
   private constructor(pngData: Uint8Array) {
-    const UPNGmod = (UPNG as typeof UPNG).decode
-      ? UPNG
-      : (UPNG as unknown as { default: typeof UPNG }).default;
-
     const buffer =
       pngData.buffer instanceof ArrayBuffer &&
       pngData.byteOffset === 0 &&
@@ -63,8 +59,8 @@ export class PNG {
               pngData.byteOffset + pngData.byteLength,
             )
           : pngData.slice().buffer;
-    const upng = UPNGmod.decode(buffer);
-    const frames = UPNGmod.toRGBA8(upng);
+    const upng = UPNG.decode(buffer);
+    const frames = UPNG.toRGBA8(upng);
 
     if (frames.length > 1) throw new Error('Animated PNGs are not supported');
 

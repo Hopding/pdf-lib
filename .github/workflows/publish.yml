@@ -53,7 +53,15 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Publish
+      - name: Publish @cantoo/pdf-lib
         # Do NOT set NODE_AUTH_TOKEN here — that would bypass OIDC.
         # Provenance attestations are generated automatically with Trusted Publishing.
+        run: npm publish --access public
+
+      - name: Publish @cantoo/upng
+        working-directory: src/packages/upng
+        run: npm publish --access public
+
+      - name: Publish @cantoo/standard-fonts
+        working-directory: src/packages/standard-fonts
         run: npm publish --access public

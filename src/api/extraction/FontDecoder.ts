@@ -1,4 +1,4 @@
-import { Encodings } from '@pdf-lib/standard-fonts';
+import { Encodings } from '../../packages/standard-fonts';
 
 import PDFDict from '../../core/objects/PDFDict';
 import PDFName from '../../core/objects/PDFName';

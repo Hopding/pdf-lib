@@ -1,3 +1,4 @@
+import { converter } from 'culori';
 import {
   setFillingCmykColor,
   setFillingGrayscaleColor,
@@ -7,7 +8,8 @@ import {
   setStrokingRgbColor,
 } from './operators';
 import { assertRange, assertIs, error } from '../utils';
-import ColorParser from 'color';
+
+const toRgb = converter('rgb');
 
 export enum ColorTypes {
   Grayscale = 'Grayscale',
@@ -64,10 +66,13 @@ export const cmyk = (
 
 export const colorString = (color: string): { rgb: Color; alpha?: number } => {
   assertIs(color, 'color', ['string']);
-  const colorDescription = ColorParser(color).unitObject();
+  const parsed = toRgb(color);
+  if (!parsed) {
+    throw new Error(`Unable to parse color from string: ${color}`);
+  }
   return {
-    rgb: rgb(colorDescription.r, colorDescription.g, colorDescription.b),
-    alpha: colorDescription.alpha,
+    rgb: rgb(parsed.r!, parsed.g!, parsed.b!),
+    alpha: parsed.alpha,
   };
 };
 

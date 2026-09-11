@@ -1,0 +1,4 @@
+# Generated / vendored metrics — do not reformat
+src/packages/standard-fonts/*.compressed.json
+src/packages/standard-fonts/font_metrics/**
+src/packages/standard-fonts/encoding_metrics/**

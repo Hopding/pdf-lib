@@ -6,9 +6,18 @@ import {
   PngEmbedder,
 } from '../../../src/core';
 
-const greyscalePng = fs.readFileSync('./assets/images/greyscale_bird.png');
-const rgbaPng = fs.readFileSync('./assets/images/minions_banana_alpha.png');
-const rgbPng = fs.readFileSync('./assets/images/minions_banana_no_alpha.png');
+const asUint8Array = (buf: Buffer) =>
+  new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+
+const greyscalePng = asUint8Array(
+  fs.readFileSync('./assets/images/greyscale_bird.png'),
+);
+const rgbaPng = asUint8Array(
+  fs.readFileSync('./assets/images/minions_banana_alpha.png'),
+);
+const rgbPng = asUint8Array(
+  fs.readFileSync('./assets/images/minions_banana_no_alpha.png'),
+);
 
 describe('PngEmbedder', () => {
   it('can be constructed with PngEmbedder.for(...)', async () => {

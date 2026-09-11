@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0]
+
+- Keep the modular TypeScript UPNG rewrite and port Photopea's current
+  `quantize` (KD-tree + k-means), `framize`, and lossy `cnum` encode into it
+  (`quantize.ts`, `framize.ts`, `dither.ts`). Drop the temporary Hopding
+  `UPNG.js` restore; compression stays on [`fflate`](https://www.npmjs.com/package/fflate).
+- Document Cantoo fork benefits vs upstream in the root README and in
+  `@cantoo/upng` / `@cantoo/standard-fonts` READMEs.
+- Modernize `@cantoo/standard-fonts` metric scripts (`fs/promises` + Node
+  `Buffer`, shared `compressJson` helper, `yarn standard-fonts:metrics` via
+  esbuild). Remove the legacy `Makefile.js` / shelljs / ts-node / `mz` /
+  `base64-arraybuffer` path.
+- Replace `color` with [`culori`](https://culorijs.org/) for CSS color string
+  parsing (`colorString`). Move `html-entities` to a peer dependency (also
+  pulled in by `node-html-better-parser`). Drop unused `node-fetch` /
+  `@types/node-fetch` / `@types/color`. Align ESLint 9 with
+  `@typescript-eslint` v8 and `@eslint/js` v9; upgrade Husky to v9 and
+  TypeScript to v5 (`@types/culori` as a devDependency).
+- Vendor `@cantoo/upng` and `@cantoo/standard-fonts` under `src/packages/`
+  (publishable subpackages + `@cantoo/pdf-lib/upng` /
+  `@cantoo/pdf-lib/standard-fonts` exports). Replace `pako` with
+  [`fflate`](https://www.npmjs.com/package/fflate) for FlateDecode compression
+  and the vendored packages (aligned with `@cantoo/fontkit`).
+- First npm releases of [`@cantoo/upng`](https://www.npmjs.com/package/@cantoo/upng)
+  and [`@cantoo/standard-fonts`](https://www.npmjs.com/package/@cantoo/standard-fonts)
+  (`1.0.0`).
+
+## [2.10.0]
+
 - Prefer Cantoo's maintained [`@cantoo/fontkit`](https://www.npmjs.com/package/@cantoo/fontkit)
   (≥2.0.9) for custom font embedding (devDependency, docs, web/Deno demos). It
   ships TypeScript types, a default export, and UMD builds

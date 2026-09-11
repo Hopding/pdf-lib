@@ -1,4 +1,4 @@
-import { deflate } from 'pako';
+import { zlibSync } from 'fflate';
 
 import { MethodNotImplementedError } from '../errors';
 import PDFDict from '../objects/PDFDict';
@@ -21,7 +21,7 @@ class PDFFlateStream extends PDFStream {
 
   computeContents = (): Uint8Array => {
     const unencodedContents = this.getUnencodedContents();
-    return this.encode ? deflate(unencodedContents) : unencodedContents;
+    return this.encode ? zlibSync(unencodedContents) : unencodedContents;
   };
 
   getContents(): Uint8Array {

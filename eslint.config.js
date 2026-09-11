@@ -16,6 +16,8 @@ module.exports = [
       'coverage/**',
       'build/**',
       'apps/node-build/**',
+      'src/packages/*/dist/**',
+      'src/packages/standard-fonts/scripts/**',
       '**/*.min.js',
       '**/*.js.map',
       '**/*.d.ts.map',
@@ -61,6 +63,7 @@ module.exports = [
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^(_|unused|UNUSED)',
+          caughtErrorsIgnorePattern: '^_',
           ignoreRestSiblings: true,
         },
       ],

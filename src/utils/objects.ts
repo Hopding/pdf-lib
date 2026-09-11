@@ -1,4 +1,4 @@
-import { FontNames } from '@pdf-lib/standard-fonts';
+import { FontNames } from '../packages/standard-fonts';
 
 export const values = (obj: any) => Object.keys(obj).map((k) => obj[k]);
 

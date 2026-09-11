@@ -17,3 +17,7 @@ out.pdf
 *.tgz
 
 .vscode/settings.json
+
+src/packages/*/dist/
+src/packages/standard-fonts/font_metrics/*.json
+src/packages/standard-fonts/encoding_metrics/*.json

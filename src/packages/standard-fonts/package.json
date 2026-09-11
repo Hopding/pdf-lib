@@ -1,0 +1,51 @@
+{
+  "name": "@cantoo/standard-fonts",
+  "version": "1.0.0",
+  "description": "Metrics and encodings for the standard 14 PDF fonts (vendored for @cantoo/pdf-lib)",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/index.umd.js",
+  "jsdelivr": "./dist/index.umd.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE.md",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node ../../../scripts/build-packages.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cantoo-scribe/pdf-lib.git",
+    "directory": "src/packages/standard-fonts"
+  },
+  "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
+  "contributors": [
+    "Christopher Brown <io@henrian.com> (http://henrian.com)",
+    "Cantoo"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "afm",
+    "adobe",
+    "font",
+    "metrics",
+    "pdf"
+  ]
+}

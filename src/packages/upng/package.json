@@ -1,0 +1,51 @@
+{
+  "name": "@cantoo/upng",
+  "version": "1.0.0",
+  "description": "Small, fast and advanced PNG / APNG encoder and decoder (vendored for @cantoo/pdf-lib)",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/index.umd.js",
+  "jsdelivr": "./dist/index.umd.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node ../../../scripts/build-packages.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cantoo-scribe/pdf-lib.git",
+    "directory": "src/packages/upng"
+  },
+  "author": "photopea (https://github.com/photopea)",
+  "contributors": [
+    "Andrew Dillon (https://github.com/Hopding)",
+    "Cantoo",
+    "Scimonster (https://github.com/Scimonster)"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "png",
+    "apng",
+    "image",
+    "conversion"
+  ]
+}

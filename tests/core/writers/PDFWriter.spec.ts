@@ -1,4 +1,4 @@
-import { deflate } from 'pako';
+import { zlibSync } from 'fflate';
 import {
   mergeIntoTypedArray,
   PDFContext,
@@ -16,7 +16,7 @@ const contentStreamText = `
   ET
 `;
 
-const encodedContentStream = deflate(typedArrayFor(contentStreamText));
+const encodedContentStream = zlibSync(typedArrayFor(contentStreamText));
 
 const pdfBytes = mergeIntoTypedArray(
   `%PDF-1.7
