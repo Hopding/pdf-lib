@@ -1,4 +1,6 @@
 import fs from 'fs';
+
+import { asUint8Array } from '../../asUint8Array';
 import {
   JpegEmbedder,
   PDFContext,
@@ -6,9 +8,15 @@ import {
   PDFRef,
 } from '../../../src/core';
 
-const catUnicornJpg = fs.readFileSync('./assets/images/cat_riding_unicorn.jpg');
-const minionsLaughing = fs.readFileSync('./assets/images/minions_laughing.jpg');
-const cmykJpg = fs.readFileSync('./assets/images/cmyk_colorspace.jpg');
+const catUnicornJpg = asUint8Array(
+  fs.readFileSync('./assets/images/cat_riding_unicorn.jpg'),
+);
+const minionsLaughing = asUint8Array(
+  fs.readFileSync('./assets/images/minions_laughing.jpg'),
+);
+const cmykJpg = asUint8Array(
+  fs.readFileSync('./assets/images/cmyk_colorspace.jpg'),
+);
 
 describe('JpegEmbedder', () => {
   it('can be constructed with JpegEmbedder.for(...)', async () => {

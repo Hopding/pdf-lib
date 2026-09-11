@@ -1,10 +1,14 @@
 import fs from 'fs';
+
+import { asUint8Array } from '../../asUint8Array';
 import { PDFContext, PDFDict, PDFRef, FileEmbedder } from '../../../src/index';
 
-const catRidingUnicornJpg = fs.readFileSync(
-  'assets/images/cat_riding_unicorn.jpg',
+const catRidingUnicornJpg = asUint8Array(
+  fs.readFileSync('assets/images/cat_riding_unicorn.jpg'),
 );
-const usConstitutionPdf = fs.readFileSync('assets/pdfs/us_constitution.pdf');
+const usConstitutionPdf = asUint8Array(
+  fs.readFileSync('assets/pdfs/us_constitution.pdf'),
+);
 
 describe('FileEmbedder', () => {
   it('can be constructed with FileEmbedder.for(...)', () => {

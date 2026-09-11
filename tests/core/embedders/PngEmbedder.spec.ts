@@ -1,13 +1,12 @@
 import fs from 'fs';
+
+import { asUint8Array } from '../../asUint8Array';
 import {
   PDFContext,
   PDFRawStream,
   PDFRef,
   PngEmbedder,
 } from '../../../src/core';
-
-const asUint8Array = (buf: Buffer) =>
-  new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
 
 const greyscalePng = asUint8Array(
   fs.readFileSync('./assets/images/greyscale_bird.png'),

@@ -1,6 +1,8 @@
 import fontkit from '@cantoo/fontkit';
 import fs from 'fs';
 
+import { asUint8Array } from '../../asUint8Array';
+
 import {
   CustomFontSubsetEmbedder,
   PDFContext,
@@ -8,7 +10,9 @@ import {
   PDFHexString,
 } from '../../../src/index';
 
-const ubuntuFont = fs.readFileSync('./assets/fonts/ubuntu/Ubuntu-R.ttf');
+const ubuntuFont = asUint8Array(
+  fs.readFileSync('./assets/fonts/ubuntu/Ubuntu-R.ttf'),
+);
 
 describe('CustomFontSubsetEmbedder', () => {
   it('can be constructed with CustomFontSubsetEmbedder.for(...)', async () => {
@@ -18,10 +22,7 @@ describe('CustomFontSubsetEmbedder', () => {
 
   it('can embed standard font dictionaries into PDFContexts', async () => {
     const context = PDFContext.create();
-    const embedder = await CustomFontSubsetEmbedder.for(
-      fontkit,
-      new Uint8Array(ubuntuFont),
-    );
+    const embedder = await CustomFontSubsetEmbedder.for(fontkit, ubuntuFont);
 
     expect(context.enumerateIndirectObjects().length).toBe(0);
     const ref = await embedder.embedIntoContext(context);

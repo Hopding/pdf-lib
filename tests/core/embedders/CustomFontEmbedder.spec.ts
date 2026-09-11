@@ -1,6 +1,8 @@
 import fontkit from '@cantoo/fontkit';
 import fs from 'fs';
 
+import { asUint8Array } from '../../asUint8Array';
+
 import {
   CustomFontEmbedder,
   PDFContext,
@@ -9,7 +11,9 @@ import {
   PDFRef,
 } from '../../../src/index';
 
-const ubuntuFont = fs.readFileSync('./assets/fonts/ubuntu/Ubuntu-R.ttf');
+const ubuntuFont = asUint8Array(
+  fs.readFileSync('./assets/fonts/ubuntu/Ubuntu-R.ttf'),
+);
 
 describe('CustomFontEmbedder', () => {
   it('can be constructed with CustomFontEmbedder.for(...)', async () => {
@@ -18,10 +22,7 @@ describe('CustomFontEmbedder', () => {
   });
 
   it("exposes the font's name", async () => {
-    const embedder = await CustomFontEmbedder.for(
-      fontkit,
-      new Uint8Array(ubuntuFont),
-    );
+    const embedder = await CustomFontEmbedder.for(fontkit, ubuntuFont);
     expect(embedder.fontName).toBe('Ubuntu');
   });
 
@@ -29,7 +30,7 @@ describe('CustomFontEmbedder', () => {
     const customName = 'abc123';
     const embedder = await CustomFontEmbedder.for(
       fontkit,
-      new Uint8Array(ubuntuFont),
+      ubuntuFont,
       customName,
     );
     expect(embedder.customName).toBe(customName);
@@ -37,10 +38,7 @@ describe('CustomFontEmbedder', () => {
 
   it('can embed font dictionaries into PDFContexts without a predefined ref', async () => {
     const context = PDFContext.create();
-    const embedder = await CustomFontEmbedder.for(
-      fontkit,
-      new Uint8Array(ubuntuFont),
-    );
+    const embedder = await CustomFontEmbedder.for(fontkit, ubuntuFont);
 
     expect(context.enumerateIndirectObjects().length).toBe(0);
     const ref = await embedder.embedIntoContext(context);
@@ -51,10 +49,7 @@ describe('CustomFontEmbedder', () => {
   it('can embed font dictionaries into PDFContexts with a predefined ref', async () => {
     const context = PDFContext.create();
     const predefinedRef = PDFRef.of(9999);
-    const embedder = await CustomFontEmbedder.for(
-      fontkit,
-      new Uint8Array(ubuntuFont),
-    );
+    const embedder = await CustomFontEmbedder.for(fontkit, ubuntuFont);
 
     expect(context.enumerateIndirectObjects().length).toBe(0);
     const ref = await embedder.embedIntoContext(context, predefinedRef);

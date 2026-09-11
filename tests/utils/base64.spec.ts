@@ -1,7 +1,9 @@
 import fs from 'fs';
+
+import { asUint8Array } from '../asUint8Array';
 import { decodeFromBase64DataUri } from '../../src/utils';
 
-const pdfBytes = fs.readFileSync('tests/utils/data/simple.pdf');
+const pdfBytes = asUint8Array(fs.readFileSync('tests/utils/data/simple.pdf'));
 const pdfBase64Bytes = fs.readFileSync('tests/utils/data/simple.pdf.base64');
 
 // Jest stalls when comparing large arrays, so we'll use this instead

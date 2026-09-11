@@ -2,6 +2,8 @@ import fontkit from '@cantoo/fontkit';
 import { FontNames } from '../../src/packages/standard-fonts';
 import fs from 'fs';
 
+import { asUint8Array } from '../asUint8Array';
+
 import { CustomFontEmbedder, StandardFontEmbedder } from '../../src/core';
 import { breakTextIntoLines } from '../../src/utils';
 
@@ -71,8 +73,10 @@ describe('breakTextIntoLines', () => {
   });
 
   it('handles non-ascii code points and empty breaks', async () => {
-    const sourceHansBytes = fs.readFileSync(
-      'assets/fonts/source_hans_jp/SourceHanSerifJP-Regular.otf',
+    const sourceHansBytes = asUint8Array(
+      fs.readFileSync(
+        'assets/fonts/source_hans_jp/SourceHanSerifJP-Regular.otf',
+      ),
     );
     const sourceHansFont = await CustomFontEmbedder.for(
       fontkit,
