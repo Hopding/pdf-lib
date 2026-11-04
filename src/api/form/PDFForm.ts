@@ -514,6 +514,174 @@ export default class PDFForm {
   }
 
   /**
+   * Get the button field in this [[PDFForm]] with the given name, or create
+   * a new one if no such field exists. For example:
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const button = form.getOrCreateButton('Page1.Foo.Button[0]')
+   * ```
+   * This is useful when a field should appear in more than one place (for
+   * example, on multiple pages). Every widget of a field shares the field's
+   * value, so adding widgets of the returned field to several pages creates
+   * linked fields like those produced by Adobe Acrobat:
+   * ```js
+   * const button = form.getOrCreateButton('customer_name')
+   * button.addToPage('Do Stuff', page)
+   * ```
+   * An error will be thrown if a field exists with the provided name, but
+   * is not a button.
+   * @param name A fully qualified button name.
+   * @returns The existing or newly created button field.
+   */
+  getOrCreateButton(name: string): PDFButton {
+    assertIs(name, 'name', ['string']);
+    const field = this.getFieldMaybe(name);
+    if (!field) return this.createButton(name);
+    if (field instanceof PDFButton) return field;
+    throw new UnexpectedFieldTypeError(name, PDFButton, field);
+  }
+
+  /**
+   * Get the check box field in this [[PDFForm]] with the given name, or create
+   * a new one if no such field exists. For example:
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const checkBox = form.getOrCreateCheckBox('Page1.Foo.CheckBox[0]')
+   * ```
+   * This is useful when a field should appear in more than one place (for
+   * example, on multiple pages). Every widget of a field shares the field's
+   * value, so adding widgets of the returned field to several pages creates
+   * linked fields like those produced by Adobe Acrobat:
+   * ```js
+   * const checkBox = form.getOrCreateCheckBox('customer_name')
+   * checkBox.addToPage(page)
+   * ```
+   * An error will be thrown if a field exists with the provided name, but
+   * is not a check box.
+   * @param name A fully qualified check box name.
+   * @returns The existing or newly created check box field.
+   */
+  getOrCreateCheckBox(name: string): PDFCheckBox {
+    assertIs(name, 'name', ['string']);
+    const field = this.getFieldMaybe(name);
+    if (!field) return this.createCheckBox(name);
+    if (field instanceof PDFCheckBox) return field;
+    throw new UnexpectedFieldTypeError(name, PDFCheckBox, field);
+  }
+
+  /**
+   * Get the dropdown field in this [[PDFForm]] with the given name, or create
+   * a new one if no such field exists. For example:
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const dropdown = form.getOrCreateDropdown('Page1.Foo.Dropdown[0]')
+   * ```
+   * This is useful when a field should appear in more than one place (for
+   * example, on multiple pages). Every widget of a field shares the field's
+   * value, so adding widgets of the returned field to several pages creates
+   * linked fields like those produced by Adobe Acrobat:
+   * ```js
+   * const dropdown = form.getOrCreateDropdown('customer_name')
+   * dropdown.addToPage(page)
+   * ```
+   * An error will be thrown if a field exists with the provided name, but
+   * is not a dropdown.
+   * @param name A fully qualified dropdown name.
+   * @returns The existing or newly created dropdown field.
+   */
+  getOrCreateDropdown(name: string): PDFDropdown {
+    assertIs(name, 'name', ['string']);
+    const field = this.getFieldMaybe(name);
+    if (!field) return this.createDropdown(name);
+    if (field instanceof PDFDropdown) return field;
+    throw new UnexpectedFieldTypeError(name, PDFDropdown, field);
+  }
+
+  /**
+   * Get the option list field in this [[PDFForm]] with the given name, or create
+   * a new one if no such field exists. For example:
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const optionList = form.getOrCreateOptionList('Page1.Foo.OptionList[0]')
+   * ```
+   * This is useful when a field should appear in more than one place (for
+   * example, on multiple pages). Every widget of a field shares the field's
+   * value, so adding widgets of the returned field to several pages creates
+   * linked fields like those produced by Adobe Acrobat:
+   * ```js
+   * const optionList = form.getOrCreateOptionList('customer_name')
+   * optionList.addToPage(page)
+   * ```
+   * An error will be thrown if a field exists with the provided name, but
+   * is not a option list.
+   * @param name A fully qualified option list name.
+   * @returns The existing or newly created option list field.
+   */
+  getOrCreateOptionList(name: string): PDFOptionList {
+    assertIs(name, 'name', ['string']);
+    const field = this.getFieldMaybe(name);
+    if (!field) return this.createOptionList(name);
+    if (field instanceof PDFOptionList) return field;
+    throw new UnexpectedFieldTypeError(name, PDFOptionList, field);
+  }
+
+  /**
+   * Get the radio group field in this [[PDFForm]] with the given name, or create
+   * a new one if no such field exists. For example:
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const radioGroup = form.getOrCreateRadioGroup('Page1.Foo.RadioGroup[0]')
+   * ```
+   * This is useful when a field should appear in more than one place (for
+   * example, on multiple pages). Every widget of a field shares the field's
+   * value, so adding widgets of the returned field to several pages creates
+   * linked fields like those produced by Adobe Acrobat:
+   * ```js
+   * const radioGroup = form.getOrCreateRadioGroup('customer_name')
+   * radioGroup.addOptionToPage('option1', page)
+   * ```
+   * An error will be thrown if a field exists with the provided name, but
+   * is not a radio group.
+   * @param name A fully qualified radio group name.
+   * @returns The existing or newly created radio group field.
+   */
+  getOrCreateRadioGroup(name: string): PDFRadioGroup {
+    assertIs(name, 'name', ['string']);
+    const field = this.getFieldMaybe(name);
+    if (!field) return this.createRadioGroup(name);
+    if (field instanceof PDFRadioGroup) return field;
+    throw new UnexpectedFieldTypeError(name, PDFRadioGroup, field);
+  }
+
+  /**
+   * Get the text field field in this [[PDFForm]] with the given name, or create
+   * a new one if no such field exists. For example:
+   * ```js
+   * const form = pdfDoc.getForm()
+   * const textField = form.getOrCreateTextField('Page1.Foo.TextField[0]')
+   * ```
+   * This is useful when a field should appear in more than one place (for
+   * example, on multiple pages). Every widget of a field shares the field's
+   * value, so adding widgets of the returned field to several pages creates
+   * linked fields like those produced by Adobe Acrobat:
+   * ```js
+   * const textField = form.getOrCreateTextField('customer_name')
+   * textField.addToPage(page)
+   * ```
+   * An error will be thrown if a field exists with the provided name, but
+   * is not a text field.
+   * @param name A fully qualified text field name.
+   * @returns The existing or newly created text field field.
+   */
+  getOrCreateTextField(name: string): PDFTextField {
+    assertIs(name, 'name', ['string']);
+    const field = this.getFieldMaybe(name);
+    if (!field) return this.createTextField(name);
+    if (field instanceof PDFTextField) return field;
+    throw new UnexpectedFieldTypeError(name, PDFTextField, field);
+  }
+
+  /**
    * Flatten all fields in this [[PDFForm]].
    *
    * Flattening a form field will take the current appearance for each of that

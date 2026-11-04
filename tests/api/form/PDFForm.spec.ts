@@ -365,6 +365,113 @@ describe(`PDFForm`, () => {
     tfWidgetRefs.forEach((ref) => expect(refs2).not.toContain(ref));
   });
 
+  describe(`getOrCreate*`, () => {
+    it(`creates a new field when no field exists with the given name`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const form = pdfDoc.getForm();
+
+      const textField = form.getOrCreateTextField('a.new.text.field');
+
+      expect(textField).toBeInstanceOf(PDFTextField);
+      expect(textField.getName()).toBe('a.new.text.field');
+      expect(form.getFields().length).toBe(1);
+    });
+
+    it(`returns the existing field when a field exists with the given name`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const form = pdfDoc.getForm();
+
+      const created = form.createTextField('customer_name');
+      created.setText('Jane Doe');
+
+      const fetched = form.getOrCreateTextField('customer_name');
+
+      expect(fetched.ref).toBe(created.ref);
+      expect(fetched.getText()).toBe('Jane Doe');
+      expect(form.getFields().length).toBe(1);
+    });
+
+    it(`throws if the existing field is not of the requested type`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const form = pdfDoc.getForm();
+
+      form.createCheckBox('shared.name');
+
+      expect(() => form.getOrCreateTextField('shared.name')).toThrowError(
+        'Expected field "shared.name" to be of type PDFTextField, ' +
+          'but it is actually of type PDFCheckBox',
+      );
+    });
+
+    it(`creates and returns existing fields of every other type`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const form = pdfDoc.getForm();
+
+      expect(form.getOrCreateButton('b')).toBeInstanceOf(PDFButton);
+      expect(form.getOrCreateButton('b').ref).toBe(form.getButton('b').ref);
+
+      expect(form.getOrCreateCheckBox('c')).toBeInstanceOf(PDFCheckBox);
+      expect(form.getOrCreateCheckBox('c').ref).toBe(form.getCheckBox('c').ref);
+
+      expect(form.getOrCreateDropdown('d')).toBeInstanceOf(PDFDropdown);
+      expect(form.getOrCreateDropdown('d').ref).toBe(form.getDropdown('d').ref);
+
+      expect(form.getOrCreateOptionList('o')).toBeInstanceOf(PDFOptionList);
+      expect(form.getOrCreateOptionList('o').ref).toBe(
+        form.getOptionList('o').ref,
+      );
+
+      expect(form.getOrCreateRadioGroup('r')).toBeInstanceOf(PDFRadioGroup);
+      expect(form.getOrCreateRadioGroup('r').ref).toBe(
+        form.getRadioGroup('r').ref,
+      );
+
+      expect(form.getFields().length).toBe(5);
+    });
+
+    it(`allows two same-named widgets that share a value, as in Acrobat`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const page1 = pdfDoc.addPage();
+      const page2 = pdfDoc.addPage();
+      const form = pdfDoc.getForm();
+
+      // The scenario reported in issue #1652: the same field appearing
+      // twice, with both instances linked to a single value.
+      const first = form.getOrCreateTextField('customer_name');
+      first.addToPage(page1, { x: 50, y: 50, width: 50, height: 50 });
+
+      const second = form.getOrCreateTextField('customer_name');
+      second.addToPage(page2, { x: 50, y: 50, width: 50, height: 50 });
+
+      expect(second.ref).toBe(first.ref);
+      expect(form.getFields().length).toBe(1);
+      expect(first.acroField.getWidgets().length).toBe(2);
+
+      first.setText('Jane Doe');
+      expect(second.getText()).toBe('Jane Doe');
+
+      // The saved document must contain a single field with two widgets,
+      // not two separate fields with the same name.
+      const loaded = await PDFDocument.load(await pdfDoc.save());
+      const loadedForm = loaded.getForm();
+      expect(loadedForm.getFields().length).toBe(1);
+      const loadedField = loadedForm.getTextField('customer_name');
+      expect(loadedField.getText()).toBe('Jane Doe');
+      expect(loadedField.acroField.getWidgets().length).toBe(2);
+    });
+
+    it(`does not change create* semantics: duplicates still throw`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const form = pdfDoc.getForm();
+
+      form.createTextField('customer_name');
+
+      expect(() => form.createTextField('customer_name')).toThrowError(
+        'A field already exists with the specified name: "customer_name"',
+      );
+    });
+  });
+
   // TODO: Add method to remove APs and use `NeedsAppearances`? How would this
   //       work with RadioGroups? Just set the APs to `null`but keep the keys?
 });
