@@ -53,6 +53,12 @@ jobs:
       - name: Build
         run: yarn build
 
+      # "prepare": "husky" is a contributor-only git-hook setup. It must not ship in the published
+      # manifest: registry installs never run it, but scanners (e.g. Socket) score it as an
+      # install-time lifecycle script.
+      - name: Strip dev-only lifecycle scripts from the published manifest
+        run: npm pkg delete scripts.prepare
+
       - name: Publish @cantoo/pdf-lib
         # Do NOT set NODE_AUTH_TOKEN here — that would bypass OIDC.
         # Provenance attestations are generated automatically with Trusted Publishing.
