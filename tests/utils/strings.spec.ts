@@ -22,23 +22,62 @@ describe(`breakTextIntoLines`, () => {
 
   it(`handles trailing newlines`, () => {
     const input = 'foo\n';
-    const expected = ['foo'];
+    const expected = ['foo', ''];
     const actual = breakTextIntoLines(input, [], 21, computeTextWidth);
     expect(actual).toEqual(expected);
   });
 
   it(`handles trailing carriage returns`, () => {
     const input = 'foo\r';
-    const expected = ['foo'];
+    const expected = ['foo', ''];
     const actual = breakTextIntoLines(input, [], 21, computeTextWidth);
     expect(actual).toEqual(expected);
   });
 
   it(`always breaks lines when EOLs are encountered`, () => {
     const input = 'foo\nbar-qux\rbaz\n';
-    const expected = ['foo', 'bar-qux', 'baz'];
+    const expected = ['foo', 'bar-qux', 'baz', ''];
     const actual = breakTextIntoLines(input, [], 90000, computeTextWidth);
     expect(actual).toEqual(expected);
+  });
+
+  it(`handles empty text`, () => {
+    expect(breakTextIntoLines('', [], 100, computeTextWidth)).toEqual(['']);
+  });
+
+  it(`preserves leading empty lines`, () => {
+    const actual = breakTextIntoLines('\n\nfoo', [], 100, computeTextWidth);
+    expect(actual).toEqual(['', '', 'foo']);
+  });
+
+  it(`preserves consecutive newlines`, () => {
+    const actual = breakTextIntoLines('foo\n\nbar', [], 100, computeTextWidth);
+    expect(actual).toEqual(['foo', '', 'bar']);
+  });
+
+  it(`preserves text containing only newlines`, () => {
+    const actual = breakTextIntoLines('\n\n', [], 100, computeTextWidth);
+    expect(actual).toEqual(['', '', '']);
+  });
+
+  it(`preserves empty lines while wrapping words`, () => {
+    const actual = breakTextIntoLines(
+      'foo bar\n\nbaz qux\n',
+      [' '],
+      6,
+      (text) => text.length,
+    );
+    expect(actual).toEqual(['foo ', 'bar', '', 'baz ', 'qux', '']);
+  });
+
+  it(`does not add empty lines around words wider than maxWidth`, () => {
+    const actual = breakTextIntoLines(
+      'foobar\nquxbaz',
+      [],
+      21,
+      computeTextWidth,
+    );
+    expect(actual).toEqual(['foobar', 'quxbaz']);
   });
 
   it(`breaks at the last possible 'wordBreak' before exceeding 'maxWidth' (1)`, () => {
