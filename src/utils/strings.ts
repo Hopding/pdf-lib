@@ -117,7 +117,7 @@ export const breakTextIntoLines = (
   const lines: string[] = [];
 
   const pushCurrLine = () => {
-    if (currLine !== '') lines.push(currLine);
+    lines.push(currLine);
     currLine = '';
     currWidth = 0;
   };
@@ -126,9 +126,9 @@ export const breakTextIntoLines = (
     const word = words[idx];
     if (isNewlineChar(word)) {
       pushCurrLine();
-    } else {
+    } else if (word !== '') {
       const width = computeWidthOfText(word);
-      if (currWidth + width > maxWidth) pushCurrLine();
+      if (currWidth + width > maxWidth && currLine !== '') pushCurrLine();
       currLine += word;
       currWidth += width;
     }

@@ -1,9 +1,45 @@
 import fs from 'fs';
-import { PDFArray, PDFDocument, PDFName, StandardFonts } from 'src/index';
+import {
+  PDFArray,
+  PDFContentStream,
+  PDFDocument,
+  PDFName,
+  StandardFonts,
+} from 'src/index';
 
 const birdPng = fs.readFileSync('assets/images/greyscale_bird.png');
 
 describe(`PDFDocument`, () => {
+  describe(`drawText() method`, () => {
+    it(`preserves empty lines when maxWidth is provided`, async () => {
+      const pdfDoc = await PDFDocument.create();
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const text = 'first\n\nsecond\n';
+      const expected = ['first', '', 'second', ''].reduce<string[]>(
+        (operators, line) => [
+          ...operators,
+          `${font.encodeText(line)} Tj`,
+          'T*',
+        ],
+        [],
+      );
+
+      for (const maxWidth of [undefined, 500]) {
+        const page = pdfDoc.addPage();
+        page.drawText(text, { font, size: 24, lineHeight: 24, maxWidth });
+
+        const contents = page.node.Contents() as PDFArray;
+        const stream = contents.lookup(0) as PDFContentStream;
+        const operators = stream
+          .getContentsString()
+          .split('\n')
+          .filter((operator) => operator.endsWith(' Tj') || operator === 'T*');
+
+        expect(operators).toEqual(expected);
+      }
+    });
+  });
+
   describe(`getSize() method`, () => {
     it(`returns the width and height of the the page's MediaBox`, async () => {
       const pdfDoc = await PDFDocument.create();
