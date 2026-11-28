@@ -395,4 +395,55 @@ describe(`PDFParser`, () => {
     const object2 = context.lookup(PDFRef.of(2));
     expect(object2).toBeInstanceOf(PDFString);
   });
+
+  it(`handles malformed xref entries gracefully`, async () => {
+    // xref entry missing generation number (malformed but recoverable)
+    const input = `
+%PDF-1.7
+1 0 obj
+  (test)
+endobj
+xref
+0 2
+0000000000 65535 f 
+0000000009 n
+trailer
+<< /Root 1 0 R /Size 2 >>
+startxref
+49
+%%EOF
+`;
+    const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
+    const context = await parser.parseDocument();
+
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+    const object = context.lookup(PDFRef.of(1));
+    expect(object).toBeInstanceOf(PDFString);
+  });
+
+  it(`handles xref entries with garbage data`, async () => {
+    // xref entry with non-numeric garbage
+    const input = `
+%PDF-1.7
+1 0 obj
+  (test)
+endobj
+xref
+0 2
+0000000000 65535 f 
+garbage data here
+0000000009 00000 n 
+trailer
+<< /Root 1 0 R /Size 2 >>
+startxref
+49
+%%EOF
+`;
+    const parser = PDFParser.forBytesWithOptions(typedArrayFor(input));
+    const context = await parser.parseDocument();
+
+    expect(context.enumerateIndirectObjects().length).toBe(1);
+    const object = context.lookup(PDFRef.of(1));
+    expect(object).toBeInstanceOf(PDFString);
+  });
 });

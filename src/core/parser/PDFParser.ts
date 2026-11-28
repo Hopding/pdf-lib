@@ -241,11 +241,23 @@ class PDFParser extends PDFObjectParser {
     const xref = PDFCrossRefSection.createEmpty();
 
     while (!this.bytes.done() && IsDigit[this.bytes.peek()]) {
-      const firstInt = this.parseRawInt();
-      this.skipWhitespaceAndComments();
+      const initialOffset = this.bytes.offset();
+      let firstInt: number;
+      let secondInt: number;
 
-      const secondInt = this.parseRawInt();
-      this.skipWhitespaceAndComments();
+      try {
+        firstInt = this.parseRawInt();
+        this.skipWhitespaceAndComments();
+
+        secondInt = this.parseRawInt();
+        this.skipWhitespaceAndComments();
+      } catch (e) {
+        // Malformed entry - skip to next line and continue
+        this.bytes.moveTo(initialOffset);
+        this.skipLine();
+        this.skipWhitespaceAndComments();
+        continue;
+      }
 
       const byte = this.bytes.peek();
       if (byte === CharCodes.n || byte === CharCodes.f) {
